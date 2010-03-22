@@ -14,7 +14,7 @@
   * Automatically select first file when you enter a directory!
   * Hold down right mouse button and click left to go back!
 
-=== Windows 7/Vista specific ===
+==== Windows 7/Vista specific ====
   * Show favorite folders in the explorer folder band bar like Web Browser favorite bars!
   * Make Backspace go upwards again!
   * Show free space and selected file size in status bar!
@@ -29,7 +29,7 @@
   * Close programs by middle clicking the title bar!
   * Kill programs by pressing ALT+F5 or right clicking the close button!
 
-=== Windows 7/Vista specific ===
+==== Windows 7/Vista specific ====
   * Activate Aero Flip 3D by moving the mouse to the top left corner of the screen!
   * Change the desktop wallpaper by middle clicking on the desktop! (Win7 only)
   * Cycle through windows by clicking on a task group button! (Win7 only)
