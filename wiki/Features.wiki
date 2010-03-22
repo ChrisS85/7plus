@@ -23,19 +23,19 @@ Below is a list of features. You can enable/disable each feature one by one in t
  
 == Window Handling, Taskbar ==
   * Set windows to be "Always on top" by right clicking the title bar! [http://www.youtube.com/watch?v=JJ-kqjRY910 (Video)]
-  * Close windows by middle clicking task buttons! [http://www.youtube.com/watch?v=v__ZiHFt7NE(Video)]
-  * Execute a program by double clicking the taskbar! [http://www.youtube.com/watch?v=v__ZiHFt7NE(Video)]
+  * Close windows by middle clicking task buttons! [http://www.youtube.com/watch?v=v__ZiHFt7NE (Video)]
+  * Execute a program by double clicking the taskbar! [http://www.youtube.com/watch?v=v__ZiHFt7NE (Video)]
   * Move windows out of the screen and have them slide in when you move the mouse to the border! [http://www.youtube.com/watch?v=e0yLqr8mjsg (Video)]
   * Activate blinking windows and toggle between current and previous window with Capslock! [http://www.youtube.com/watch?v=im088NYiSvw (Video)]
   * Close programs by middle clicking the title bar! [http://www.youtube.com/watch?v=JJ-kqjRY910 (Video)]
   * Kill programs by pressing ALT+F5 or right clicking the close button! [http://www.youtube.com/watch?v=JJ-kqjRY910 (Video)]
 
 ==== Windows 7/Vista specific ====
-  * Activate Aero Flip 3D by moving the mouse to the top left corner of the screen! [ (Video)]
+  * Activate Aero Flip 3D by moving the mouse to the top left corner of the screen! 
   * Change the desktop wallpaper by middle clicking on the desktop! (Win7 only) [http://www.youtube.com/watch?v=JJ-kqjRY910 (Video)]
   * Cycle through windows by clicking on a task group button! (Win7 only) [ http://www.youtube.com/watch?v=v__ZiHFt7NE (Video)]
 == Misc ==
   * Paste previous clipboard text entries by pressing WIN+V! [http://www.youtube.com/watch?v=Yq8HXOuSEiU (Video)]
   * Use a Joypad/Gamepad to remote control the mouse, keyboard and zoom! [http://www.youtube.com/watch?v=MZiK7E98hOU (Video)]
   * Open current folder in CMD by pressing WIN+C and enable CTRL+V to paste and ALT+F4 in CMD! [http://www.youtube.com/watch?v=irMu69t3kEg (Video)]
-  * Rotate images in Windows Picture Viewer by pressing R and L! [ (Video)]
+  * Rotate images in Windows Picture Viewer by pressing R and L!
