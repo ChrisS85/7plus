@@ -1,7 +1,4 @@
-#summary List of 7plus features
 #labels Featured,Phase-Design
-= Features =
-
 == Explorer ==
   * Store favorite folders and recall them for _very_ fast navigation!
   * Upload files directly from explorer to an FTP server with just one hotkey!
