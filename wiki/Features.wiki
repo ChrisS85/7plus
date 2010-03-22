@@ -2,7 +2,7 @@
 Below is a list of features. You can enable/disable each feature one by one in the settings dialog.
 
 == Explorer ==
-  * Store favorite folders and recall them for _very_ fast navigation! [http://www.youtube.com/watch?v=dTIGxue6WCY [Video 1]] [http://www.youtube.com/watch?v=cC6cnG87j2M [Video 2]]
+  * Store favorite folders and recall them for _very_ fast navigation! [http://www.youtube.com/watch?v=dTIGxue6WCY (Video 1)] [http://www.youtube.com/watch?v=cC6cnG87j2M (Video 2)]
   * Upload files directly from explorer to an FTP server with just one hotkey!
   * Automatic links to other wiki pages
   * Create new folders and textfiles by pressing F8/F7!
