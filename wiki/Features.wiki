@@ -1,13 +1,43 @@
-#summary One-sentence summary of this page.
+#summary List of 7plus features
+#labels Featured,Phase-Design
+= Features =
 
-= Introduction =
-
-Add your content here.
-
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
+== Explorer ==
+  * Store favorite folders and recall them for _very_ fast navigation!
+  * Upload files directly from explorer to an FTP server with just one hotkey!
   * Automatic links to other wiki pages
+  * Create new folders and textfiles by pressing F8/F7!
+  * Paste text or image from clipboard as file!
+  * Open any file in your favorite text/image editor by pressing F3!
+  * Copy filenames (ALT+C) and Filepaths (CTRL+ALT+C)!
+  * Append files to the clipboard without replacing the current clipboard!
+  * Go upwards by double clicking on free space in the file list!
+  * Scroll the explorer tree without activating it!
+  * Execute files which are only focussed but not selected with Enter!
+  * Automatically select first file when you enter a directory!
+  * Hold down right mouse button and click left to go back!
+
+=== Windows 7/Vista specific ===
+  * Show favorite folders in the explorer folder band bar like Web Browser favorite bars!
+  * Make Backspace go upwards again!
+  * Show free space and selected file size in status bar!
+  * Automatically check "Apply to all further operations" checkboxes in file operation dialog boxes!
+ 
+== Window Handling, Taskbar ==
+  * Set windows to be "Always on top" by right clicking the title bar!
+  * Close windows by middle clicking task buttons!
+  * Execute a program by double clicking the taskbar!
+  * Move windows out of the screen and have them slide in when you move the mouse to the border!
+  * Activate blinking windows and toggle between current and previous window with Capslock!
+  * Close programs by middle clicking the title bar!
+  * Kill programs by pressing ALT+F5 or right clicking the close button!
+
+=== Windows 7/Vista specific ===
+  * Activate Aero Flip 3D by moving the mouse to the top left corner of the screen!
+  * Change the desktop wallpaper by middle clicking on the desktop! (Win7 only)
+  * Cycle through windows by clicking on a task group button! (Win7 only)
+== Misc ==
+  * Paste previous clipboard text entries by pressing WIN+V!
+  * Use a Joypad/Gamepad to remote control the mouse, keyboard and zoom!
+  * Open current folder in CMD by pressing WIN+C and enable CTRL+V to paste and ALT+F4 in CMD!
+  * Rotate images in Windows Picture Viewer by pressing R and L!
