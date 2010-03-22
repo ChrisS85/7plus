@@ -1,5 +1,6 @@
 #labels Featured,Phase-Design
 Below is a list of features. You can enable/disable each feature one by one in the settings dialog.
+Watch the videos to see how it works!
 
 == Explorer ==
   * Store favorite folders and recall them for _very_ fast navigation! [http://www.youtube.com/watch?v=dTIGxue6WCY (Video 1)] [http://www.youtube.com/watch?v=cC6cnG87j2M (Video 2)]
