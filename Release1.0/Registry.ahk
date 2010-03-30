@@ -2,7 +2,6 @@
 ;This file contains methods for storing and restoring fast folders related registry settings
 ;---------------------------------------------------------------------------------------------------------------
 
-
 PrepareFolderBand()
 {
 	global Vista7

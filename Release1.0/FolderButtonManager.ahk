@@ -1,13 +1,9 @@
 #include lib\com.ahk
-;run ySetACL.exe -on "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes" -ot reg -actn ace -ace "n:Chriss-PC\Everyone;p:full"
-;run %a_scriptdir%\setacl.exe HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes /registry /grant S-1-1-0 /write_owner /sid
-;runwait regini -h %a_scriptdir%\reg.txt
+;Some stuff here to use those functions separately to add custom buttons, might have to be expanded a bit later on
 MsgBox, 4,, Would you like to add a button(yes) or remove one(no)?
 IfMsgBox Yes
 {
 	path:=COM_CreateObject("Shell.Application").BrowseForFolder(0, "Enter Path to add as button", 0).Self.Path
-	
-	;FileSelectFolder, path, ,3,Enter Path to add as button
 	SplitPath, path , foldername
 	if(foldername="")
 		foldername:=path
@@ -274,21 +270,6 @@ AddButton(Command,path,Args="",Name="")
 	}
 }
 
-/*
-
-;Replaces strings in a registry key and subkeys. Note: key should still contain HKEY_LOCAL_MACHINE etc.
-RegReplace(branch,key,search,replace)
-{
-	runwait,%windir%\REGEDIT /E  %A_Temp%\temp.reg "%branch%\%key%"
-	regdelete, %branch%,%key%
-	FileRead,varReplace,%A_Temp%\temp.reg
-	StringReplace, varReplace, varReplace, search, replace, A
-	FileDelete, %A_Temp%\temp.reg
-	FileAppend , %varReplace%, %A_Temp%\temp.reg 
-	runwait, regedit /s  %A_Temp%\temp.reg
-	FileDelete, %A_Temp%\temp.reg
-}
-*/
 uuid(c = false) { ; v1.1 - by Titan 
    static n = 0, l, i 
    f := A_FormatInteger, t := A_Now, s := "-" 

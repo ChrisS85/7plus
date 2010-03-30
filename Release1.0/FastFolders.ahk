@@ -1,4 +1,3 @@
-#include %a_scriptdir%\FolderButtonManager.ahk
 FFCondition()
 {
 	global Vista7, HKFastFolders
@@ -10,6 +9,7 @@ FFCondition()
 		return true
 	return false
 }
+
 #if FFCondition()
 Numpad0::SetDirectory(FF0)
 Numpad1::SetDirectory(FF1)
@@ -78,6 +78,7 @@ UpdateStoredFolder(ByRef FF, ByRef FFTitle)
 		FFtitle:=title
 	RefreshFastFolders()	
 }
+
 RefreshFastFolders()
 {
 	global
@@ -102,12 +103,13 @@ RefreshFastFolders()
 		}
 	}
 }
+
 IsFastFolderButton(Command,Title,Tooltip)
 {
-x:=substr(Title,1,1)
-if(IsNumeric(x)&&substr(Title,2,1)=":")
-	return true
-return false
+	x:=substr(Title,1,1)
+	if(IsNumeric(x)&&substr(Title,2,1)=":")
+		return true
+	return false
 }
 
 FastFolderMenu()
@@ -137,6 +139,7 @@ FastFolderMenu()
 	}	
 	return false
 }
+
 FastFolderMenuHandler0:
 FastFolderMenuClicked(0)
 return
@@ -167,6 +170,7 @@ return
 FastFolderMenuHandler9:
 FastFolderMenuClicked(9)
 return
+
 FastFolderMenuClicked(index)
 {
 	global

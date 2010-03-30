@@ -1,7 +1,22 @@
-#Persistent
+;Checks if a context menu is active and has focus
+IsContextMenuActive() 
+{ 
+	GuiThreadInfoSize = 48 
+	VarSetCapacity(GuiThreadInfo, 48) 
+	NumPut(GuiThreadInfoSize, GuiThreadInfo, 0) 
+	if not DllCall("GetGUIThreadInfo", uint, 0, str, GuiThreadInfo) 
+	{ 
+	  MsgBox GetGUIThreadInfo() indicated a failure. 
+	  return 
+	} 
+	; GuiThreadInfo contains a DWORD flags at byte 4 
+	; Bit 4 of this flag is set if the thread is in menu mode. GUI_INMENUMODE = 0x4 
+	if (NumGet(GuiThreadInfo, 4) & 0x4) 
+	  return true
+	return false
+}
 
 ;This stuff doesn't use COM.ahk yet :(
-
 /*
 Executes context menu entries of shell items without showing their menus
 Usage:
@@ -138,123 +153,4 @@ API_GetSubmenu( hMenu, nPos ) {
 API_GetMenuItemsCount(hMenu) 
 { 
    return DllCall("GetMenuItemCount", "Uint", hMenu, "Uint") 
-} 
-
-;Executes context menu entries by comparing the name of the selected entry with a desired one and using key navigation
-;NOT USED
-ContextMenuCommand(name, name2="") 
-{ 
-   ;SendInput,{APPSKEY}    
-   winwait ahk_class #32768
-   if WinExist("ahk_class #32768") 
-   {        
-   	outputdebug dialog found
-      ;WinGet, activeWindow, ID 
-      ;hWnd := activeWindow 
-      ;activeWindow := DllCall("GetWindow", "Uint", activeWindow, "Uint", 4, "Uint") 
-      SendMessage,0x01E1 
-      hmenu := ErrorLevel 
-      nPos := -1 
-      nPos2 := -1 
-      
-      if hmenu!=1 
-      { 
-      	outputdebug hmenu found
-            ;hmenu := API_GetSubMenu(hmenu, itemCount-1) 
-            nPos := findMenuItem(hmenu, name, keyPos) 
-            outputdebug menu item: %npos%
-            ;MsgBox % "m2 " . nPos 
-            if(nPos != -1 and name2 != "") 
-            { 
-              hMenu2 := API_GetSubMenu(hmenu, nPos)   
-							 outputdebug 2nd hwnd: %hmenu2%             
-               nPos2 := findMenuItem(hmenu2, name2, keyPos2) 
-               outputdebug 2nd menu item: %npos2%
-               ;MsgBox % "m2 " . nPos2 
-            } 
-
-            if((nPos2 != -1) or (nPos != -1 and name2 = "")) 
-            { 
-            	outputdebug go to entry %nPos%
-               
-							 Loop %keyPos% 
-               { 
-                  SendInput,{DOWN} 
-               } 
-               SendInput,{ENTER},{Up}    
-
-               if(name2 <> "") 
-               { 
-                  Loop %keyPos2% { 
-                     SendInput,{DOWN} 
-                  	sleep,500
-                  } 
-                  SendInput,{ENTER}    
-               } 
-            } 
-
-      } 
-   } 
-}
-
-GetMenuString(hMenu, nPos) 
-{ 
-   length := DllCall("GetMenuString" 
-         , "UInt", hMenu 
-         , "UInt", nPos 
-         , "UInt", 0   ; NULL 
-         , "Int", 0   ; Get length 
-         , "UInt", 0x0400)   ; MF_BYPOSITION 
-      VarSetCapacity(lpString, length + 1)   ; I don't check the result... 
-      length := DllCall("GetMenuString" 
-         , "UInt", hMenu 
-         , "UInt", nPos 
-         , "Str", lpString 
-         , "Int", length + 1 
-         , "UInt", 0x0400) 
-   return lpString 
-} 
-
-findMenuItem(hMenu, name, ByRef keyPos) { 
-		outputdebug findmenuitem called with hmenu: %hmenu% name: %name% keypos: %keypos%
-   RepeatCount := API_GetMenuItemsCount(hMenu)
-	 outputdebug repeatcount %repeatcount% 
-	 nPos:=0
-   Loop %RepeatCount% { 
-   		nPos:=A_Index-1
-       keyPos++
-       outputdebug keyPos: %keyPos%
-       string:=GetMenuString(hMenu, nPos)
-       ;Separators don't count
-       if(!string)
-			 {
-			 	outputdebug decrease
-			  keyPos--
-			 }
-       outputdebug string %string%
-       if (string=name) { 
-       		outputdebug return %nPos%, keypos=%keypos%
-       		
-          return nPos
-       } 
-   } 
-   return -1 
-} 
-
-;Checks if a context menu is active and has focus
-IsContextMenuActive() 
-{ 
-	GuiThreadInfoSize = 48 
-	VarSetCapacity(GuiThreadInfo, 48) 
-	NumPut(GuiThreadInfoSize, GuiThreadInfo, 0) 
-	if not DllCall("GetGUIThreadInfo", uint, 0, str, GuiThreadInfo) 
-	{ 
-	  MsgBox GetGUIThreadInfo() indicated a failure. 
-	  return 
-	} 
-	; GuiThreadInfo contains a DWORD flags at byte 4 
-	; Bit 4 of this flag is set if the thread is in menu mode. GUI_INMENUMODE = 0x4 
-	if (NumGet(GuiThreadInfo, 4) & 0x4) 
-	  return true
-	return false
 }

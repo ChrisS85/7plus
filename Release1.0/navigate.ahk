@@ -1,24 +1,4 @@
-/*
-LPITEMIDLIST ConvertPathToLpItemIdList(const char *pszPath)
-{
-    LPITEMIDLIST  pidl;
-    LPSHELLFOLDER pDesktopFolder;
-    OLECHAR       olePath[MAX_PATH];
-    ULONG         chEaten;
-    ULONG         dwAttributes;
-    HRESULT       hr;
-
-    if (SUCCEEDED(SHGetDesktopFolder(&pDesktopFolder)))
-    {
-        MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, pszPath, -1, olePath, 
-                            MAX_PATH);
-        hr = pDesktopFolder->ParseDisplayName(NULL,NULL,olePath,&chEaten,
-                                              &pidl,&dwAttributes);
-        pDesktopFolder->Release();
-    }
-    return pidl;
-}
-*/
+;Maybe cleanup later for release as library?
 
 Shell_GoBack(hWnd=0)
 {
@@ -38,6 +18,7 @@ Shell_GoBack(hWnd=0)
 		return
   }
 }
+
 ShellNavigate(sPath, hWnd=0) 
 { 
 	Critical
@@ -58,6 +39,7 @@ ShellNavigate(sPath, hWnd=0)
 		return
   }
 }
+
 RefreshExplorer() 
 { 
 	Critical
@@ -78,20 +60,6 @@ RefreshExplorer()
   else if(IsDialog())
   	Send {F5}
 }
-  	/*
-	;Get Desktop IShellFolder
-	DllCall("SHGetDesktopFolder","str",pDesktopFolder)
-	Ansi2Unicode(sPath,sPath)
-	
-	hr = pDesktopFolder->ParseDisplayName(NULL,NULL,olePath,&chEaten,
-                                              &pidl,&dwAttributes);
-                                              
-	DllCall("MultiByteToWideChar"
-	DllCall("MultiByteToWideChar", "Uint", 0, "Uint", 0, "str", sPath, "int", -1, "Uint", 0, "int", 0)
-	window.Navigate(sPath)
-	}
-	return
-	*/
 	
 /*
 fileO:
@@ -109,38 +77,38 @@ http://msdn.microsoft.com/en-us/library/bb759795(VS.85).aspx for more
 */
 ShellFileOperation( fileO=0x0, fSource="", fTarget="", flags=0x0, ghwnd=0x0 )     
 { 
- If ( SubStr(fSource,0) != "|" ) 
-      fSource := fSource . "|" 
-
- If ( SubStr(fTarget,0) != "|" ) 
-      fTarget := fTarget . "|" 
-
- fsPtr := &fSource 
- Loop, % StrLen(fSource) 
-  If ( *(fsPtr+(A_Index-1)) = 124 ) 
-      DllCall( "RtlFillMemory", UInt, fsPtr+(A_Index-1), Int,1, UChar,0 ) 
-
- ftPtr := &fTarget 
- Loop, % StrLen(fTarget) 
-  If ( *(ftPtr+(A_Index-1)) = 124 ) 
-      DllCall( "RtlFillMemory", UInt, ftPtr+(A_Index-1), Int,1, UChar,0 ) 
-
- VarSetCapacity( SHFILEOPSTRUCT, 30, 0 )                 ; Encoding SHFILEOPSTRUCT 
- NextOffset := NumPut( ghwnd, &SHFILEOPSTRUCT )          ; hWnd of calling GUI 
- NextOffset := NumPut( fileO, NextOffset+0    )          ; File operation 
- NextOffset := NumPut( fsPtr, NextOffset+0    )          ; Source file / pattern 
- NextOffset := NumPut( ftPtr, NextOffset+0    )          ; Target file / folder 
- NextOffset := NumPut( flags, NextOffset+0, 0, "Short" ) ; options 
-
- DllCall( "Shell32\SHFileOperationA", UInt,&SHFILEOPSTRUCT ) 
-Return NumGet( NextOffset+0 ) 
+	If ( SubStr(fSource,0) != "|" ) 
+	    fSource := fSource . "|" 
+	
+	If ( SubStr(fTarget,0) != "|" ) 
+	    fTarget := fTarget . "|" 
+	
+	fsPtr := &fSource 
+	Loop, % StrLen(fSource) 
+	If ( *(fsPtr+(A_Index-1)) = 124 ) 
+	    DllCall( "RtlFillMemory", UInt, fsPtr+(A_Index-1), Int,1, UChar,0 ) 
+	
+	ftPtr := &fTarget 
+	Loop, % StrLen(fTarget) 
+	If ( *(ftPtr+(A_Index-1)) = 124 ) 
+	    DllCall( "RtlFillMemory", UInt, ftPtr+(A_Index-1), Int,1, UChar,0 ) 
+	
+	VarSetCapacity( SHFILEOPSTRUCT, 30, 0 )                 ; Encoding SHFILEOPSTRUCT 
+	NextOffset := NumPut( ghwnd, &SHFILEOPSTRUCT )          ; hWnd of calling GUI 
+	NextOffset := NumPut( fileO, NextOffset+0    )          ; File operation 
+	NextOffset := NumPut( fsPtr, NextOffset+0    )          ; Source file / pattern 
+	NextOffset := NumPut( ftPtr, NextOffset+0    )          ; Target file / folder 
+	NextOffset := NumPut( flags, NextOffset+0, 0, "Short" ) ; options 
+	
+	DllCall( "Shell32\SHFileOperationA", UInt,&SHFILEOPSTRUCT ) 
+	Return NumGet( NextOffset+0 ) 
 }
 SetDirectory(sPath)
 {
 	sPath:=ExpandEnvVars(sPath)
 	if(strEndsWith(sPath,":"))
 		sPath .="\"s
-	If (WinActive("ahk_group ExplorerGroup")) ;&& InStr(FileExist(sPath), "D"))
+	If (WinActive("ahk_group ExplorerGroup"))
 	{
 		if (InStr(FileExist(sPath), "D") || SubStr(sPath,1,3)="::{" || SubStr(sPath,1,6)="ftp://" || strEndsWith(sPath,".search-ms")) 
 		{
@@ -161,11 +129,13 @@ SetDirectory(sPath)
 	else
 		MsgBox Can't navigate: Wrong window
 }
+
 SetWinRarDirectory(Path)
 {
 	ControlSetText , Edit1, %sPath%, A 
 	ControlClick, Button1, A
 }
+
 SetDialogDirectory(Path)
 {
 	ControlGetFocus, focussed, A
@@ -180,6 +150,7 @@ SetDialogDirectory(Path)
 	ControlSetText, Edit1, %w_Edit1Text%, A
 	ControlFocus %focussed%,A
 }
+
 IsDialog(window=0)
 {
 	result:=0
@@ -279,6 +250,7 @@ GetSelectedFiles(FullName=1)
 		return result
 	}
 }
+
 GetFocussedFile()
 {
 	If (WinActive("ahk_group ExplorerGroup"))
@@ -291,6 +263,7 @@ GetFocussedFile()
 		return focussed
 	}
 }
+
 GetCurrentFolder()
 {
 	global MuteClipboardList
@@ -308,6 +281,7 @@ GetCurrentFolder()
 	}
 	return ""
 }
+
 SelectFiles(sSelect, hWnd=0)
 {
 	Critical
@@ -333,6 +307,7 @@ SelectFiles(sSelect, hWnd=0)
 				}
    } 
 }
+
 ShellFolder(hWnd=0,returntype=0) 
 { 
 	Critical

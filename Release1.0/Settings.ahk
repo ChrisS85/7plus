@@ -37,7 +37,7 @@ ShowSettings()
 		Gui, Add, Button, x444 y370 w80 h23 gCancel, Cancel
 		Gui, Add, Button, x364 y370 w70 h23 gOK, OK
 		Gui, Add, Text, x%xBase% y374, Click on ? to see video tutorial help!
-		Gui, Add, Tab, x12 y10 w512 h350 , Explorer 1|Explorer 2|Windows|FTP|Misc|About ;Explorer 1|Explorer 2|Windows|FTP|Calendar|Misc|About
+		Gui, Add, Tab, x12 y10 w512 h350 , Explorer 1|Explorer 2|Windows|FTP|Misc|About
 		;---------------------------------------------------------------------------------------------------------------
 		Gui, Add, Text, x%x1% y%y%, Text and images from clipboard can be pasted as file in explorer with these settings
 		yIt+=checkboxstep
@@ -91,9 +91,6 @@ ShowSettings()
 		
 		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghCopyFilenames vURL_CopyFilenames, ?
 		Gui, Add, Checkbox, x%x1% y%yIt% vHKCopyFilenames, ALT + C: Copy Filenames	
-		;Gui, Add, Checkbox, x%x2% y%yIt% vHKImprovedWinE, WIN+E:
-		;x:=x2+60
-		;Gui, Add, Text, x%x% y%yIt% R2, Starts a second explorer window`, and aligns `nthem to the left and right of the screen
 		yIt+=checkboxstep	
 		
 		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghCopyFilenames vURL_CopyFilenames1, ?
@@ -294,43 +291,6 @@ ShowSettings()
 		Gui, Add, Text, x%x1% y%y%, URL
 		Gui, Add, Edit, x%x2% y%yIt% w%wTBMedium% R1 vFTP_URL, %FTP_URL%
 		
-		/*
-		;---------------------------------------------------------------------------------------------------------------
-		Gui, Tab, Calendar
-		yIt:=yBase
-		Gui, Add, Text, x%xBase% y%yIt% R5, It is possible to replace the lame windows calender that pops up when`nyou click on the clock with a custom one`, such as Google Calendar or`nSunbird. The program will run hidden in the background while it isn't used`,`nso it can remind you of upcoming events by showing a popup dialog.
-		yIt:=100
-		Gui, Add, CheckBox, x%xBase% y%yIt% gReplaceCalendar, Use Calendar
-		yIt+=checkboxstep
-		
-		x1:=xBase+xCheckBoxTextOffset
-		x2:=202
-		y:=yIt+TextBoxTextOffset
-		Gui, Add, Text, x%x1% y%y%, Calendar program path
-		outputdebug calendar command:  %CalendarCommand%
-		Gui, Add, Edit, x%x2% y%yIt% w%wTBMedium% R1 vCalendarCommand, %CalendarCommand%
-		y:=yIt+TextBoxButtonOffset
-		x:=x2+wTBMedium+10
-		Gui, Add, Button, x%x% y%y% w%wButton% gCalenderBrowse, ...
-		yIt+=TextBoxStep
-			
-		y:=yIt+TextBoxTextOffset
-		Gui, Add, Text, x%x1% y%y%, Calendar window class
-		Gui, Add, Edit, x%x2% y%yIt% w%wTBLarge% R1 vCalendarClass, %CalendarClass%
-		yIt+=TextBoxStep
-		
-		y:=yIt+TextBoxTextOffset
-		Gui, Add, Text, x%x1% y%y%, Presets for
-		x:=x1+64
-		Gui, Add, Button, x%x% y%yIt% w140 gChromeGoogle, Google Chrome + Calendar
-		x+=140+10
-		Gui, Add, Button, x%x% y%yIt% w75 gSunbird, Sunbird
-		x+=75+10
-		Gui, Add, Button, x%x% y%yIt% w75 gOutlook, Outlook	
-		yIt+=TextBoxStep
-		
-		Gui, Add, Text, x%xbase% y%yIt% R2, For other calendar programs, please use window spy utility which comes with `nAutohotkey to figure out window classes.
-		*/
 		;---------------------------------------------------------------------------------------------------------------
 		Gui, Tab, Misc
 		x1:=xBase+10
@@ -339,7 +299,6 @@ ShowSettings()
 		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghImproveConsole vURL_ImproveConsole, ?
 		Gui, Add, Checkbox, x%x1% y%yIt% vHKImproveConsole, Open current folder in CMD by pressing WIN + C and enable CTRL + V and Alt + F4 in CMD
 		yIt+=checkboxstep
-		;Gui, Add, Text, y%yIt% x%xhelp% cBlue ghImproveConsole vURL_ImproveConsole1, ?
 		Gui, Add, Checkbox, x%x1% y%yIt% vHKPhotoViewer, Windows picture viewer: Rotate image with R and L
 		yIt+=checkboxstep
 		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghJoyControl vURL_JoyControl, ?
@@ -419,8 +378,7 @@ ShowSettings()
 		{
 			GuiControl, disable,TaskbarLaunchPath
 			GuiControl, disable,Button25
-		}
-		
+		}		
 		
 		if HKCreateNewFile
 			GuiControl,,HKCreateNewFile,1
@@ -438,8 +396,6 @@ ShowSettings()
 			GuiControl,,HKFastFolders,1
 		if HKProperBackspace
 			GuiControl,,HKProperBackspace,1
-		;if HKImprovedWinE
-		;	GuiControl,,HKImprovedWinE,1
 		if HKSelectFirstFile
 			GuiControl,,HKSelectFirstFile,1
 		if HKImproveEnter
@@ -497,6 +453,7 @@ ShowSettings()
 			GuiControl,,ScrollUnderMouse,1
 		if ClipboardManager
 			GuiControl,,ClipboardManager,1
+		
 		;Setup Aero Flip 3D
 		if(AeroFlipTime>=0)
 		{
@@ -520,17 +477,6 @@ ShowSettings()
 			GuiControl, disable, FTP_Path
 			GuiControl, disable, FTP_URL
 		}
-		/*
-		;Setup Calendar
-		if(ReplaceCalendar)
-			GuiControl,,Use Calendar,1
-		else
-		{
-			GuiControl, disable, CalendarCommand
-			GuiControl, disable, CalendarClass
-			GuiControl, disable, Button39
-		}
-		*/
 		
 		;Figure out if Autorun is enabled
 		RegRead, Autorun, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus
@@ -557,6 +503,7 @@ ShowSettings()
 }
 GuiClose: 
 ExitApp 
+
 ;---------------------------------------------------------------------------------------------------------------
 ; Control Handlers
 ;---------------------------------------------------------------------------------------------------------------
@@ -680,65 +627,6 @@ else
 	GuiControl, disable, FTP_URL
 }
 Return
-/*
-ReplaceCalendar:
-GuiControlGet, Calendar , ,Use Calendar
-if(Calendar)
-{
-	GuiControl, enable, CalendarClass
-	GuiControl, enable, CalendarCommand
-	GuiControl, enable, Button39
-}
-else
-{
-	GuiControl, disable, CalendarClass
-	GuiControl, disable, CalendarCommand
-	GuiControl, disable, Button39
-}
-Return
-
-CalenderBrowse:
-FileSelectFile, calendarpath , 3, , Select Calendar executable, *.exe
-if !ErrorLevel
-	GuiControl, ,CalendarCommand,%calendarpath%
-Return
-
-ChromeGoogle:
-RegRead, path, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe
-if(!path)
-	FileSelectFile, path , 3, , Select Google Chrome executable, *.exe
-if(path)
-{
-	GuiControl,,Use Calendar,1
-	GuiControl, enable, CalendarClass
-	GuiControl, enable, CalendarCommand
-	GuiControl, enable, Button39
-	path:=Quote(path)
-	GuiControl,, CalendarCommand, %path% --app="http://www.google.com/calendar"
-	GuiControl,, CalendarClass, Chrome_WindowImpl_0
-	msgbox If you use another language in Google Calendar, you will have to adjust the calendar window title to match your language.
-} 
-Return
-
-Sunbird:
-Return
-
-Outlook:
-RegRead, path, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\OUTLOOK.EXE, path
-if(!path)
-	FileSelectFile, path , 3, , Select Outlook executable, *.exe
-if(path)
-{
-	GuiControl,,Use Calendar,1
-	GuiControl, enable, CalendarClass
-	GuiControl, enable, CalendarCommand
-	GuiControl, enable, Button39
-	GuiControl,, CalendarCommand, "%path%Outlook.exe"
-	GuiControl,, CalendarClass, rctrl_renwnd32
-}
-
-Return
-*/
 
 ;---------------------------------------------------------------------------------------------------------------
 ; Help Links
@@ -960,15 +848,6 @@ if(!HKSlideWindows)
 ;Store FTP Settings
 GuiControlGet, FTP_Enabled, ,Use FTP
 ValidateFTPVars()
-/*
-;Store Calendar Settings
-x:=ReplaceCalendar
-GuiControlGet, ReplaceCalendar, ,Use Calendar
-if(ReplaceCalendar && !x)
-	RunCalendar()
-else if(!ReplaceCalendar && x)
-	KillCalendar()
-*/
 
 ;Store Autorun setting
 if(Autorun)
@@ -992,7 +871,6 @@ Return
 
 
 ;Link hand cursor handling
-;######## Function ############################################################# 
 HandleMessage(p_w, p_l, p_m, p_hw) 
   { 
     global   WM_SETCURSOR, WM_MOUSEMOVE, 
@@ -1035,5 +913,4 @@ HandleMessage(p_w, p_l, p_m, p_hw)
               } 
           } 
       } 
-  } 
-;######## End Of Functions #####################################################
+  }

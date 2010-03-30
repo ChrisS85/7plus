@@ -25,6 +25,7 @@ HoverCheck()
   lasty := MouseY
 	return
 }
+
 ;Hovering timer for Aero Flip 3D
 hovering: 	
 	if (GetKeyState("LButton") || GetKeyState("RButton") || WinActive("ahk_class Flip3D")) 
@@ -72,6 +73,7 @@ WheelDown::WheelUp
 	CloseKill()
 	return
 #if
+
 ;Force kill program on Alt+F5 and on right click close button
 CloseKill()
 {
@@ -145,4 +147,3 @@ Capslock::WinActivate ahk_id %PreviousWindow%
   	CloseKill()  	
 	Return
 #if
-

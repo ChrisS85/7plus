@@ -1,18 +1,3 @@
-#if HKMouseGestureBack && GetKeyState("RButton") && (WinActive("ahk_group ExplorerGroup")||IsDialog()) && IsMouseOverFileList()
-LButton::
-  outputdebug go back
-	SuppressRButtonUp:=true
-	;Send !{Left}
-	Shell_GoBack()
-	return
-#if
-#if HKMouseGestureBack && SuppressRButtonUp
-~RButton UP::
-	SuppressRButtonUp:=false
-	Send, {Esc}
-	Return
-#if
-
 XPGetFocussed()
 {
   WinGet ctrlList, ControlList, A 
@@ -207,6 +192,7 @@ ExplorerPathChanged(from, to)
 		}
 	}
 }
+
 FixExplorerConfirmationDialogs()
 {
 	global
@@ -228,7 +214,8 @@ FixExplorerConfirmationDialogs()
 			Control, Check , , %ExplorerConfirmationDialogButton2%, A
 		}
 	}
-}			
+}
+
 IsExplorerConfirmationDialog()
 {
 	global
@@ -244,6 +231,57 @@ IsExplorerConfirmationDialog()
 	}
 	return 0
 }
+
+AcquireExplorerConfirmationDialogStrings()
+{
+	global shell32MUIpath
+	VarSetCapacity(buffer, 85*2)
+	length:=DllCall("GetUserDefaultLocaleName","uint",&buffer,"uint",85)
+	locale:=COM_Ansi4Unicode(&buffer)
+	shell32MUIpath:=A_WinDir "\winsxs\*_microsoft-windows-*resources*" locale "*" ;\x86_microsoft-windows-shell32.resources_31bf3856ad364e35_6.1.7600.16385_de-de_b08f46c44b512da0\shell32.dll.mui
+	loop %shell32MUIpath%,2,0
+	{
+		if(FileExist(A_LoopFileFullPath "\shell32.dll.mui"))
+		{
+			shell32MUIpath:=A_LoopFileFullPath "\shell32.dll.mui"
+			found:=true
+			break
+		}
+	}	
+	if(found)
+	{
+		global ExplorerConfirmationDialogTitle1:=TranslateMUI(shell32MUIpath,16705)
+		global ExplorerConfirmationDialogTitle2:=TranslateMUI(shell32MUIpath,16877)
+		global ExplorerConfirmationDialogTitle3:=TranslateMUI(shell32MUIpath,16875)
+		global ExplorerConfirmationDialogTitle4:=TranslateMUI(shell32MUIpath,16876)
+		global ExplorerConfirmationDialogTitle5:=TranslateMUI(shell32MUIpath,16706)
+		global ExplorerConfirmationDialogTitle6:=TranslateMUI(shell32MUIpath,16864)
+		global ExplorerConfirmationDialogButton1:=strStripRight(TranslateMUI(shell32MUIpath,16928),"%")
+		global ExplorerConfirmationDialogButton2:=strStripRight(TranslateMUI(shell32MUIpath,17039),"%")
+		global ExplorerConfirmationDialogButton3:=TranslateMUI(shell32MUIpath,16663)
+		return true
+	}
+	Outputdebug Failed to acquire translated Explorer dialog names
+	return false
+}
+
+;Scroll control under mouse
+#if HKMouseGestureBack && GetKeyState("RButton") && (WinActive("ahk_group ExplorerGroup")||IsDialog()) && IsMouseOverFileList()
+LButton::
+  outputdebug go back
+	SuppressRButtonUp:=true
+	;Send !{Left}
+	Shell_GoBack()
+	return
+#if
+#if HKMouseGestureBack && SuppressRButtonUp
+~RButton UP::
+	SuppressRButtonUp:=false
+	Send, {Esc}
+	Return
+#if
+
+;Enter:Execute focussed file
 #if HKImproveEnter && WinActive("ahk_group ExplorerGroup") && InFileList() && !IsRenaming() && !IsContextMenuActive()
 Enter::
 Return::
@@ -278,7 +316,7 @@ Backspace::Send !{Up}
 	;This check is needed so that we don't send CTRL+C in a textfield control, which would disrupt the text entering process
 	;Make sure only filelist is focussed
 	if(!IsRenaming()&&InFileList())
-	{					
+	{
 		path:=GetCurrentFolder()
 		OutputDebug first click path: %path%
 		files:=GetSelectedFiles()
@@ -298,8 +336,6 @@ Backspace::Send !{Up}
 			if(path!=path1)
 			{
 				OutputDebug("Directory changed from " path1 " to " path)
-				;path1:=path
-				;time1:=A_TickCount
 				time1:=0
 				return
 			}					
@@ -308,7 +344,6 @@ Backspace::Send !{Up}
 		;it would swallow the second click otherwise and won't be able to count it in a double clickwait for anotherat this plac
 		if (files!="")
 		{ 
-			;dorun:=true
 			OutputDebug("preexpected return becuse file was selected")
 			;
 			return
@@ -323,18 +358,6 @@ Backspace::Send !{Up}
 			MouseGetPos, Click2X, Click2Y
 			if(abs(Click1X-Click2X)**2+abs(Click1Y-Click2Y)**2>16) ;Max 4 pixels between clicks
 				return
-			;Explorer sends a redraw message when it changes the path. Is this still needed?
-		  /*
-			ExplorerRedraw:=false
-		  Loop
-		  {
-	      Sleep 10
-	      if(ExplorerRedraw||A_Index>5)
-	      {
-	      	break
-	      }
-	    }
-	    */
 	    
 			path1:=GetCurrentFolder()
 			OutputDebug("path after second click: " path1)
@@ -347,7 +370,7 @@ Backspace::Send !{Up}
 					;check if no files selected after second click either
 					files:=GetSelectedFiles()
 					OutputDebug("selected files after second click:" files)
-				  if (!files) ;(files=""||files=""))
+				  if (!files)
 				  {
 				  	OutputDebug("go upwards")
 					 	if (Vista7)
@@ -363,41 +386,6 @@ Backspace::Send !{Up}
 	}	
 	Return
 #if
-
-;Explorer Tweaks
-/*
-#if Vista7 && HKImprovedWinE && WinActive("ahk_group ExplorerGroup") 
-;Win+E: Open new explorer and arrange them on the left and right
-#e::
-	KeyWait RWin
-	KeyWait LWin
-	hwnd:=WinExist("A")
-	WinGetPos x,y, Width,, A
-	Width:=A_ScreenWidth/2
-	WinMove, A, , 0, 0 , Width, Height, ExcludeTitle, ExcludeText]
-	SendInput {LWin Down}
-	
-	WinGetPos x,, Width,, A
-	while(x!=0||Width!=A_ScreenWidth/2)
-	{	
-		SendInput {Left}		
-		Sleep 50
-		WinGetPos x,, Width,, A
-	}
-	SendInput {e}
-	while(hwnd!=WinExist("A"))
-		Sleep 50
-	WinGetPos x,, Width,, A
-	while(x!=A_ScreenWidth/2||Width!=A_ScreenWidth/2)
-	{	
-		SendInput {Right}		
-		Sleep 50
-		WinGetPos x,, Width,, A
-	}
-	SendInput {LWin Up}
-	return
-#if
-*/
 
 #if IsMouseOverTaskList()
 LButton::
@@ -436,23 +424,22 @@ IsDoubleClick()
 }
 
 *MButton::
-	Handled:=TaskbuttonClose()
-	if !Handled
-		Handled:=ToggleWallpaper()
-	if !Handled
-		Handled:=TitleBarClose()
-	if !Handled
-		Handled:=FastFolderMenu()
-	if !Handled
-	{
-		key:=GetKeyState("CTRL") ? "^" : ""
-		key.=GetKeyState("ALT") ? "!" : ""
-		key.=(GetKeyState("LWIN") || GetKeyState("LWIN")) ? "#" : ""
-		key.="{MButton}"
-		Send %key%
-	}
-	return 
-
+Handled:=TaskbuttonClose()
+if !Handled
+	Handled:=ToggleWallpaper()
+if !Handled
+	Handled:=TitleBarClose()
+if !Handled
+	Handled:=FastFolderMenu()
+if !Handled
+{
+	key:=GetKeyState("CTRL") ? "^" : ""
+	key.=GetKeyState("ALT") ? "!" : ""
+	key.=(GetKeyState("LWIN") || GetKeyState("LWIN")) ? "#" : ""
+	key.="{MButton}"
+	Send %key%
+}
+return 
 
 ;Middle click on desktop -> Change wallpaper
 ToggleWallpaper()
@@ -475,7 +462,7 @@ CreateNewTextFile()
 	;This is done manually, by creating a text file with the translated name, which is then focussed
 	SetFocusToFileView()
 	if(Vista7)
-    TextTranslated:=TranslateMUI("notepad.exe",470) ;"Neues Textdokument"
+    TextTranslated:=TranslateMUI("notepad.exe",470) ;"New Textfile"
   else
   {
     newstring:=TranslateMUI("shell32.dll",8587) ;"New"
@@ -507,19 +494,6 @@ CreateNewTextFile()
 	Send {F2}
 	return
 }
-/* ; Replace in Files/Filenames function might come later
-#if !IsRenaming() && (WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog())
-^h::
-handle:=Dlg_Replace( WinExist("A"), Handler, "-d-w-c", "", "")
-return
-#if
-
-Handler(Event, Flags, FindText, ReplaceText)
-{
-outputdebug Event %event% flags %flags% findtext %findtext% Replacetext %replacetext%
-return
-}
-*/
 
 ;F8: Create new Folder  
 #if HKCreateNewFolder && !IsRenaming() && (WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog())
@@ -562,6 +536,7 @@ CreateNewFolder()
 	Send {F2}
 	return
 }
+
 ;F3: edit selected files
 #if (WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog()) && !IsRenaming() 
 F3::EditSelectedFiles()
@@ -695,12 +670,12 @@ CreateInfoGui()
 {
 	global FreeSpace, SelectedFileSize
 	outputdebug creategui
-	gui, 1: font, s9, Segoe UI  ; Set 10-point Verdana.
+	gui, 1: font, s9, Segoe UI 
 	Gui, 1: Add, Text, x60 y0 w60 h12 vFreeSpace, %A_Space%
 	Gui, 1: Add, Text, x0 y0 w50 h12 vSelectedFileSize, %A_Space%
 	Gui, 1: -Caption  +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs
 	Gui, 1: Color, FFFFFF
-	Gui 1: +LastFound  ; Make the GUI window the last found window for use by the line below.
+	Gui 1: +LastFound
 	WinSet, TransColor, FFFFFF
 }
 DestroyInfoGui()
@@ -714,16 +689,14 @@ ShouldShowInfo()
 	ControlGet, visible, visible, , msctls_statusbar321, A ;Check if status bar is visible
 	if(!visible)
 		return false
-	Gui 1: +LastFound  ; Make the GUI window the last found window for use by the line below.
+	Gui 1: +LastFound
 	WinGetPos , X, Y, Width, Height,A
 	WinGetClass,class
-	;outputdebug class %class% x %x% y %y% width %width% height %height%
 	x1:= GetVisibleWindowAtPoint(X+Width-370,Y+Height-26,class) 
 	x2:= GetVisibleWindowAtPoint(X+Width-370+131,Y+Height-26,class) 
 	y1:=GetVisibleWindowAtPoint(X+Width-370+131,Y+Height-26+18,class)				;window border doesn't seem to count to window?
 	y2:=GetVisibleWindowAtPoint(X+Width-370+131,Y+Height-26+18,class) 
 	list:="ExplorerWClass,CabinetWClass"
-	;outputdebug x1 %x1% x2 %x2% y1 %y1% y2 %y2%
 	if x1 not in %list%
 		return false
 	if x2 not in %list%
@@ -748,7 +721,7 @@ UpdateInfos()
 		totalsize:=0
 		count:=0
 		realfiles:=0 ;check if only folders are selected
-		Loop, Parse, files, `n,`r  ; Rows are delimited by linefeeds ('r`n). 
+		Loop, Parse, files, `n,`r
 	  {
 	  	FileGetSize, size, %A_LoopField%
 	  	if(realfiles=0)	  		
@@ -854,13 +827,10 @@ UpdateInfoPosition()
 		InfoX:=X+Width-370
 		InfoY:=Y+Height-26
 		if(Width>540)
-		{
-			;outputdebug show gui
 			Gui, 1: Show, AutoSize NA x%InfoX% y%InfoY%
-		}		
 	}
 	else
-	{
 		Gui, 1: Hide
-	}
 }
+
+

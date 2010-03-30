@@ -1,5 +1,5 @@
 ;usage example:
-;outputdebug % "blup" TranslateMUI("shell32.dll",31236)
+;x:=TranslateMUI("shell32.dll",31236)
 TranslateMUI(resDll, resID)
 {
 VarSetCapacity(buf, 256) 
@@ -7,6 +7,7 @@ hDll := DllCall("LoadLibrary", "str", resDll)
 Result := DllCall("LoadString", "uint", hDll, "uint", resID, "str", buf, "int", 128)
 return buf
 }
+
 ;Splits a command into command and arguments
 SplitCommand(fullcmd, ByRef cmd, ByRef args)
 {
@@ -25,6 +26,7 @@ SplitCommand(fullcmd, ByRef cmd, ByRef args)
 		args:=strTrim(args," ")
 	}
 }
+
 IsWindowUnderCursor(what)
 {
 	MouseGetPos, , , win
@@ -32,6 +34,7 @@ IsWindowUnderCursor(what)
 		return true
 	return false
 }
+
 IsControlUnderCursor(what)
 {
 	MouseGetPos, , , , control
@@ -90,11 +93,13 @@ MouseHitTest()
   return ErrorLevel
 }
 
-/*! TheGood 
+/*! TheGood (modified a bit by Fragman)
     Checks if a window is in fullscreen mode. 
     ______________________________________________________________________________________________________________ 
     sWinTitle       - WinTitle of the window to check. Same syntax as the WinTitle parameter of, e.g., WinExist(). 
     bRefreshRes     - Forces a refresh of monitor data (necessary if resolution has changed) 
+    UseExcludeList  - returns false if window class is in FullScreenExclude (explorer, browser etc)
+    UseIncludeList  - returns true if window class is in FullScreenInclude (applications capturing gamepad input)
     Return value    o If window is fullscreen, returns the index of the monitor on which the window is fullscreen. 
                     o If window is not fullscreen, returns False. 
     ErrorLevel      - Sets ErrorLevel to True if no window could match sWinTitle 
@@ -184,16 +189,19 @@ absmin(x,y)
 {
 	return abs(x)>abs(y) ? y : x
 }
+
 ;Returns the (signed) maximum of the absolute values of x and y
 absmax(x,y)
 {
 	return abs(x)<abs(y) ? y : x
 }
+
 ;Returns 1 if x is positive and -1 if x is negative
 sign(x)
 {
 	return x<0 ? -1 : 1
 }
+
 ;returns the maximum of xdir and y, but with the sign of xdir
 dirmax(xdir,y)
 {
@@ -203,6 +211,7 @@ dirmax(xdir,y)
 		return xdir
 	return xdir/abs(xdir)*abs(y)
 }
+
 ;returns the maximum of xdir and y, but with the sign of xdir
 dirmin(xdir,y)
 {
@@ -212,14 +221,17 @@ dirmin(xdir,y)
 		return xdir
 	return xdir/abs(xdir)*abs(y)
 }
+
 min(x,y)
 {
 	return x>y ? y : x
 }
+
 max(x,y)
 {
 	return x<y ? y : x
 }
+
 strStartsWith(string,start)
 {	
 	x:=(strlen(start)<=strlen(string)&&Substr(string,1,strlen(start))=start)
@@ -255,20 +267,24 @@ strTrimRight(string,trim)
 	}
 	return string
 }
+
 strStripLeft(string,strip)
 {
 	return substr(string,InStr(string, strip ,0, 0)+strLen(strip))
 }
+
 strStripRight(string,strip)
 {
 	StringGetPos, pos, string, %strip% ,R
 	x:=substr(string,1,pos)
 	return substr(string,1,pos)
 }
+
 strStrip(string, strip)
 {
 	return strStripLeft(strStripRight(string,strip),strip)
 }
+
 Quote(string, once=1)
 {
 	if(once)
@@ -281,6 +297,7 @@ Quote(string, once=1)
 	}
 	return """" string """"
 }
+
 UnQuote(string)
 {
 	if(strStartswith(string,"""") && strEndsWith(string,""""))
@@ -327,10 +344,12 @@ GetVisibleWindowAtPoint(x,y,IgnoredWindow)
 	}
 	DetectHiddenWindows,on
 }
+
 IsInArea(px,py,x,y,w,h)
 {
 	return (px>x&&py>y&&px<x+w&&py<y+h)
 }
+
 ExpandEnvVars(ppath)
 {
 	VarSetCapacity(dest, 2000) 
@@ -367,11 +386,13 @@ GetFocusedControl()
    focusedHwnd := *(addr + 12) + (*(addr + 13) << 8) +  (*(addr + 14) << 16) + (*(addr + 15) << 24) 
    Return focusedHwnd 
 } 
+
 InsertInteger(pInteger, ByRef pDest, pOffset = 0, pSize = 4) 
 { 
     Loop %pSize%  ; Copy each byte in the integer into the structure as raw binary data. 
         DllCall("RtlFillMemory", "UInt", &pDest + pOffset + A_Index-1, "UInt", 1, "UChar", pInteger >> 8*(A_Index-1) & 0xFF) 
-} 
+}
+
 PointerToString(string)
 {
 	return DllCall("MulDiv", int, &sTest, int, 1, int, 1, str)
@@ -407,6 +428,7 @@ Loop {
      } 
 Return String 
 }
+
 ReadUnicodeFile(path)
 {
 	FileGetSize fileSize, %path%
@@ -436,6 +458,7 @@ ReadUnicodeFile(path)
 			
 	return ansiText
 }
+
 WriteUnicodeFile(path,text)
 {
 	;===== Use a Bom
@@ -475,6 +498,7 @@ WriteUnicodeFile(path,text)
 	}
 	CloseFile(fh)
 }
+
 IsNumeric(x)
 {
    If x is number 

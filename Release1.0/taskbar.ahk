@@ -4,6 +4,7 @@ IsMouseOverStartButton()
 	WinGetClass,class,ahk_id %win%
 	return class="button"
 }
+
 GetTaskbarDirection()
 {
 	WinGetPos X, Y, Width, Height, ahk_class Shell_TrayWnd
@@ -22,6 +23,7 @@ GetTaskbarDirection()
 	msgbox Invalid Taskbar position detected!
 	return 0
 }
+
 IsMouseOverTaskList()
 {
 	WinGetPos , X, Y,,, ahk_class Shell_TrayWnd
@@ -33,8 +35,6 @@ IsMouseOverTaskList()
 	TaskListX+=X
 	TaskListY+=Y
 	MouseGetPos,x,y
-	;outputdebug x %x% y %y% tlx %tasklistX% tly %tasklisty% tlw %tasklistwidth% tlh %tasklistheight% 
-	;blah:=IsInArea(x,y,TaskListX,TaskListY,TaskListWidth,TaskListHeight)
 	z:=GetTaskBarDirection()
 	if(z=2||z=4)
 		return IsMouseOverTaskbar() && IsInArea(x,y,TaskListX,TaskListY,TaskListWidth,TaskListHeight)
@@ -92,25 +92,9 @@ IsMouseOverFreeTaskListSpace()
 {
 	Critical
 	global result,IsRunning,Vista7
-	
-	/*
-	while(IsRunning=true)
-	{
-		outputdebug wait for finish
-		Sleep 10
-	}
-	*/
 	SetWinDelay 0
 	SetKeyDelay 0
 	SetMouseDelay 0
-	/*
-	if(result!="")
-	{
-		IsRunning:=false
-		outputdebug return cached result
-		return %result%
-	}
-	*/
 	if(!IsMouseOverTaskList())
 	{
 		IsRunning:=false
@@ -128,7 +112,7 @@ IsMouseOverFreeTaskListSpace()
 	x:=0
 	while(x<50)
 	{
-		if(WinExist("ahk_class #32768")) ;ahk_id #32768"))
+		if(WinExist("ahk_class #32768"))
 		{
 			result:=true
 			outputdebug break
@@ -149,97 +133,4 @@ IsMouseOverFreeTaskListSpace()
 		Send {Esc}
 	IsRunning:=false
 	return %result%
-}
-
-;This hackish function figures out what taskbar element was clicked.
-;It should only be called when there was an actual click on the taskbar (Use IsMouseOverTaskbar for this)
-;Return values are: Timeout, Start, Multi, Empty, Single, Tray, Clock, ShowDesktop
-GetClickedTaskbarElement()
-{
-	global listening, ClickedTaskbarElement
-	Outputdebug taskbarclick
-	ClickedTaskbarElement:="Checking"
-	listening:=1
-	SetTimer, CheckShellMessage , 200
-	loop
-	{
-		if(ClickedTaskbarElement!="Checking")
-			return ClickedTaskbarElement
-		Sleep 10
-		if(A_Index>110)
-			break
-	}
-	return "Timeout"
-}
-
-CheckShellMessage:
-SetTimer, CheckShellMessage , off
-outputdebug timer
-If(listening)
-{
-	outputdebug and listening
-	listening:=false
-	TaskbarClicked()
-}
-return
-
-TaskbarClicked()
-{
-	global ClickedTaskbarElement
-	outputdebug TaskbarClicked
-	
-	;outputdebug TrayX: %trayx% Tray Width: %traywidth% mouse x: %x%
-	WinGetClass classname, A
-	;outputdebug ActiveWindow: %classname%
-	if (IsMouseOverStartButton())
-	{
-		OutputDebug startbutton clicked
-		ClickedTaskbarElement:="Start"
-	}
-	else if (IsMouseOverTaskList())
-	{
-		if WinActive("ahk_class TaskListThumbnailWnd")
-		{
-			ClickedTaskbarElement:="Multi"
-			OutputDebug multibutton clicked
-			
-		}	
-		else if WinActive("ahk_class Shell_TrayWnd")
-		{
-			ClickedTaskbarElement:="Empty"
-			OutputDebug empty space clicked
-		}
-		else
-		{
-			ClickedTaskbarElement:="Single"
-			OutputDebug Single button clicked
-		}
-	}
-	else if (IsMouseOverTray())
-	{
-		ClickedTaskbarElement:="Tray"
-		OutputDebug, Tray clicked
-	}
-	else if (IsMouseOverClock())
-	{
-		ClickedTaskbarElement:="Clock"
-		OutputDebug Clock clicked
-	}
-	else if (IsMouseOverShowDesktop())
-	{
-		ClickedTaskbarElement:="ShowDesktop"
-		OutputDebug Show desktop clicked
-	}	
-}
-
-;Function gets called on windows_activated shell message
-TaskbarShellMessage() 
-{
-	global listening
-	if(listening){
-	outputdebug and listening
-	;need a IsMouseOverTaskbar check here?
-		listening:=false
-		TaskbarClicked()
-	}
 }

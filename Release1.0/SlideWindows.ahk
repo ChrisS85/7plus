@@ -91,14 +91,10 @@ SlideWindow_SlideOut(SlideWindow)
 	SlideWindow.SlideState:=3	
 	SlideWindow.Move(SlideWindow.SlideInX,SlideWindow.SlideInY,SlideWindow.SlideOutX,SlideWindow.SlideOutY,2)
 	SlideWindow.SlideState:=0
-	;WinRestore ahk_id %hwnd%
 	DllCall("ShowWindow","UInt", hwnd, "UINT", 11) ;#define SW_MINIMIZE         6 SW_FORCEMINIMIZE    11
 	
-	;DllCall("MoveWindow","UInt", hwnd, "UINT", toX, "UINT", toY, "UINT", Slidewindow.width, "UINT", SlideWindow.Height, "UINT", 1)
-	;SlideWindow.UpdatePosition()
 	outputdebug unsuspending check
 	SuspendWindowMoveCheck:=false	
-	;WinHide ahk_id %hwnd% ;Do it later
 	outputdebug slide window out finished 
 	SlideWindowArray.Print()
 }
@@ -110,8 +106,7 @@ SlideWindow_SlideIn(SlideWindow)
 	hwnd:=SlideWindow.hwnd
 	WinSet, AlwaysOnTop, On , ahk_id %hwnd%
 	SuspendWindowMoveCheck:=true
-
-
+		
 	;Disable Minimize/Restore animation
 	RegRead, Animate, HKCU, Control Panel\Desktop\WindowMetrics , MinAnimate
 	outputdebug animate is currently set to %animate%
@@ -119,11 +114,12 @@ SlideWindow_SlideIn(SlideWindow)
   NumPut(8, struct, 0, "UInt")
   NumPut(0, struct, 4, "Int")
 	DllCall("SystemParametersInfo", "UINT", 0x0049,"UINT", 8,"STR", struct,"UINT", 0x0003) ;SPI_SETANIMATION            0x0049 SPIF_SENDWININICHANGE 0x0002
-	;WinRestore ahk_id %hwnd%
+	
 	WinActivate ahk_id %hwnd%
 	SlideWindow.SlideState:=2
 	SlideWindow.Move(SlideWindow.SlideOutX,SlideWindow.SlideOutY,SlideWindow.SlideInX,SlideWindow.SlideInY,2)
 	SlideWindow.SlideState:=1
+	
 	;Possibly activate it again
 	if(Animate=1)
 	{
@@ -139,7 +135,6 @@ SlideWindow_Release(SlideWindow,soft=0)
 	global SlideWindowArray,SuspendWindowMoveCheck
 	hwnd:=SlideWindow.hwnd
 	outputdebug release %hwnd% %soft%
-	;WinShow ahk_id %hwnd%
 	SuspendWindowMoveCheck:=true
 	if(!soft)
 	{
@@ -177,18 +172,7 @@ SlideWindow_Print(SlideWindow)
 	outputdebug("SlideInX: " SlideWindow.SlideInX)
 	outputdebug("SlideInY: " SlideWindow.SlideInY)
 }
-/*
-SlideWindow_UpdatePosition(SlideWindow)
-{
-	hwnd:=SlideWindow.hwnd
-	WinGetPos X, Y, Width, Height, ahk_id %hwnd%
-	SlideWindow.X:=X
-	SlideWindow.Y:=Y
-	SlideWindow.Width:=Width
-	SlideWindow.Height:=Height
-	outputdebug("updated position of " WinGetClass("ahk_id " hwnd) " to " X " " Y " " Width " " Height) 
-}
-*/
+
 ;---------------------------------------------------------------------------------------------------------------
 ; SlideWindowArray functions
 ;---------------------------------------------------------------------------------------------------------------
@@ -209,7 +193,8 @@ SlideWindowArray(p1="Ņ", p2="Ņ", p3="Ņ", p4="Ņ", p5="Ņ", p6="Ņ"){
    While (_:=p%A_Index%)!="Ņ" && A_Index<=6 
       Slide[A_Index] := _ 
    Return Slide 
-} 
+}
+
 SlideWindowArray_IsASlideWindowInState(SlideWindowArray, state, state2="")
 {
 	if(state2="")
@@ -219,6 +204,7 @@ SlideWindowArray_IsASlideWindowInState(SlideWindowArray, state, state2="")
 			return SlideWindowArray[A_INDEX]
 	return 0
 }
+
 SlideWindowArray_Add(SlideWindowArray, hwnd, dir)
 {
 	global PreviousWindow,CurrentWindow,SlideWin
@@ -271,16 +257,6 @@ SlideWindowArray_Add(SlideWindowArray, hwnd, dir)
 		ct:=SlideWindowArray.len()
 		outputdebug array count: %ct%
 		SlideWindow.SlideOut()
-		/*
-		WinGetClass,class,ahk_id %PreviousWindow%
-		outputdebug activate previous window: %class%
-		if(previouswindow!=hwnd&&!SlideWindowArray.ContainsHWND(PreviousWindow))
-			WinActivate ahk_id %PreviousWindow%
-		else if(!SlideWindowArray.ContainsHWND(CurrentWindow))
-			WinActivate ahk_id %CurrentWindow%
-		else
-			WinActivate ahk_class Shell_TrayWnd
-		*/
 	}
 }
 
@@ -381,7 +357,6 @@ SlideWindowArray_ContainsHWND(SlideWindowArray,hwnd)
 ;Check if window was moved, closed etc
 SlideWindows_CheckWindowState()
 {	
-	;Critical
 	global SlideWindowArray, SuspendWindowMoveCheck
 	DetectHiddenWindows, On
 	SlideWindows_CheckActivated()
@@ -434,7 +409,6 @@ SlideWindow_Move(SlideWindow, fromX,fromY,toX,toY, speed)
 	SetWinDelay 0
 	hwnd:=SlideWindow.hwnd	
 	outputdebug move window %hwnd% from %fromX% %fromY% %toX% %toY% %speed%
-	;WinGetPos ,,, Width, Height, ahk_id %hwnd%
 	diffX:=toX-fromX
 	diffY:=toY-fromY
 	while(fromX!=toX||fromY!=toY)
@@ -448,8 +422,6 @@ SlideWindow_Move(SlideWindow, fromX,fromY,toX,toY, speed)
 		WinMove, ahk_id %hwnd%,,%fromX%, %fromY%
 		SlideWindow.x:=fromX
 		SlideWindow.y:=fromY
-		;SlideWindow.Width:=Width
-		;SlideWindow.Height:=Height
 		Sleep 10
 	}
 	outputdebug move finished
@@ -479,7 +451,6 @@ SlideWindows_OnMouseMove(x,y)
 		BorderActivation:=true
 		WinGetClass class, ahk_id %hwnd%
 		outputdebug activate border %class%
-		;WinActivate ahk_id %hwnd% 
 		SlideWindow.SlideIn()
 		return
 	}
@@ -488,7 +459,6 @@ SlideWindows_OnMouseMove(x,y)
 	visibleWin:=SlideWindowArray.IsASlideWindowInState(1)
 	if(visibleWin && !visibleWin.KeepOpen && visibleWin.hwnd!=win)
 	{
-		;outputdebug slidehwnd %slidehwnd% winmouse %win%
 		WinGetClass class, ahk_id %CurrentWindow%
 		outputdebug mouse left window, slide out and activate %class%
 		SuspendWindowMoveCheck:=1
@@ -510,8 +480,6 @@ SlideWindows_CheckActivated()
 	WinGet, ExStyle, ExStyle, ahk_id %hwnd%
   If (ExStyle & 0x80)
   	validWindow:=false
-;~              If not (ExStyle & 0x40000) and DllCall("GetWindow", "UInt", id, "UInt", 4)
-;~                      Continue
   WinGetPos,,, W, H, ahk_id %hwnd%
   If W+H=0
   	validWindow:=false
@@ -533,7 +501,6 @@ SlideWindows_CheckActivated()
 		WinGetClass,class2,ahk_id %PreviousWindow%
 		WinGetClass,class1,ahk_id %CurrentWindow%
 		outputdebug window changed from %class2% to %class1%		
-		;Tooltip hwnd: %class% `ncurrent: %class1%`nprevious: %class2%
 		SlideWindowPrevious:=SlideWindowArray.ContainsHWND(PreviousWindow)
 		;If a (slide window was active and another )slide window gets activated
 		if(SlideWindow && visibleWindow!=SlideWindow&&!BorderActivation)

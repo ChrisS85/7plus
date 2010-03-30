@@ -1,9 +1,3 @@
-+#c::
-outputdebug clipboard %clipboard%
-text:=ReadClipboardtext()
-outputdebug text: %text%
-return
-
 ;Called when clipboard changes, used for "Paste text/image as file" functionality and for clipboard manager
 ;To use the clipboard without triggering these features, set MuteClipboardList:=true before writing to clipboard
 OnClipboardChange:
@@ -39,6 +33,7 @@ Stack_Push(stack,item)
 	ClipboardManagerMenu()
 return
 #if
+
 ClipboardManagerMenu()
 {
 	global ClipboardList
@@ -60,6 +55,7 @@ ClipboardManagerMenu()
 	}
 	Menu, ClipboardMenu, Show
 }
+
 ;Need separate handlers because menu index doesn't have to match array index
 ClipboardHandler1:
 ClipboardMenuClicked(1)
@@ -91,6 +87,7 @@ return
 ClipboardHandler10:
 ClipboardMenuClicked(10)
 return
+
 ClipboardMenuClicked(index)
 {
 	global ClipboardList,MuteClipboardList,clipboardchanged
@@ -114,10 +111,11 @@ ClipboardMenuClicked(index)
 	}
 	Menu, ClipboardMenu, DeleteAll
 }
+
 ;Creates a file for pasting text/image in explorer
 CreateFile()
 {
-	global temp_img, temp_txt, CF_HDROP,MuteClipboardList
+	global temp_img, temp_txt, CF_HDROP, MuteClipboardList
 	outputdebug CreateFile
 	if(!MuteClipboardList)
 	{	 
@@ -162,6 +160,7 @@ ReadClipboardText()
 	}
 	return text
 }
+
 ;Read image from clipboard and return a pointer to a bitmap
 ReadClipboardImage()
 {
@@ -199,9 +198,10 @@ WriteClipboardTextToFile(path)
 	FileAppend , %text%, %path%
 	return 1 
 }
+
 ;Copies a list of files (separated by new line) to the clipboard so they can be pasted in explorer
 CopyToClipboard(files, clear, cut=0){
-	global MuteClipboardList
+	global MuteClipboardList, CF_HDROP
 	FileCount:=0
 	PathLength:=0
 	Loop, Parse, files, `n,`r  ; Rows are delimited by linefeeds (`r`n).
@@ -230,7 +230,7 @@ CopyToClipboard(files, clear, cut=0){
   	Clipwait, 1, 1		
 		MuteClipboardList:=true	
   }
-  result:=DllCall("SetClipboardData", "uint", 0xF, "uint", hPath) ; Place the data on the clipboard. CF_HDROP=0xF
+  result:=DllCall("SetClipboardData", "uint", CF_HDROP, "uint", hPath) ; Place the data on the clipboard. CF_HDROP=0xF
 	Clipwait, 1, 1
 	MuteClipboardList:=true	
   outputdebug hdrop setclipboarddata result: %result% errorlevel %errorlevel%
@@ -249,13 +249,7 @@ CopyToClipboard(files, clear, cut=0){
   cfFormat := DllCall("RegisterClipboardFormat","Str","Preferred DropEffect") 
   result:=DllCall("SetClipboardData","UInt",cfFormat,"UInt",mem)
   Clipwait, 1, 1
-  outputdebug mute 9
-  MuteClipboardList:=true
-  outputdebug drop effect setclipboarddata result: %result% errorlevel %errorlevel%
-	;DllCall("SetClipboardData", "uint", 49320, "uint", 0x02000000)
 	DllCall("CloseClipboard")
-  Clipwait, 1, 1
-  MuteClipboardSurveillance:=false
 	return
 }
 

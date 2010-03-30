@@ -6,6 +6,7 @@
 		Upload(files)
 	return
 #If
+
 ;Alt+Insert:Upload full screenshot, Win+Insert: Upload screenshot of active window, Win+Delete: Upload text/image from clipboard
 #if FTP_Enabled
 !Insert::
@@ -50,7 +51,7 @@ Upload(Files)
 	cliptext=
 	if(result=1)
 	{
-		Loop, Parse, files, `n,`r  ; Rows are delimited by linefeeds ('r`n). 
+		Loop, Parse, files, `n,`r
 	  {
 	  	SplitPath A_LoopField, file
 	   	result:=FtpPutFile(A_LoopField,FTP_Path file) 

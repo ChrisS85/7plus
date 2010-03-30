@@ -40,29 +40,8 @@ IniRead, TxtName, %A_ScriptDir%\Settings.ini, Explorer, Text, clip.txt
 temp_img := A_Temp . "\" . ImgName
 temp_txt := A_Temp . "\" . TxtName
 
-;some clipboard data type constants
-CF_DIB = 8
-CF_HDROP = 15 ;clipboard identifier of copied file from explorer
-CF_BITMAP = 2
-CF_TEXT = 1
-;Used to temporarily suppress the surveillance of the clipboard
-MuteClipboardSurveillance:=false
+CF_HDROP = 0xF ;clipboard identifier of copied file from explorer
 
-;Explorer command prompt
-ExplorerCommandMode:=0
-
-/*
-;Replace Calendar
-IniRead, ReplaceCalendar, %A_ScriptDir%\Settings.ini, Calendar, ReplaceCalendar , 1
-IniRead, CalendarClass, %A_ScriptDir%\Settings.ini, Calendar, CalendarClass, Chrome_WindowImpl_0
-IniRead, CalendarCommand, %A_ScriptDir%\Settings.ini, Calendar, CalendarCommand,  "%A_LOCALAPPDATA%\Google\Chrome\Application\chrome.exe" --app="http://www.google.com/calendar"
-*/
-;Some explorer temporary variables
-time1:=0
-path1:=""
-ExplorerSysListView32HWND:=""
-ExplorerSysTreeView32HWND:=""
-ExplorerEdit1HWND:=""
 SetDefaultMouseSpeed, 0
 
 ;Register a shell hook to get messages when windows get activated, closed etc
@@ -83,16 +62,6 @@ if(Vista7)
 	API_SetWinEventHook(0x0,0x8002,0,HookProcAdr,0,0,0) 
 }
 DetectHiddenWindows, On
-/*
-;Install a CBT hook to catch and prevent minimize/maximize messages
-pid:=DllCall("GetCurrentProcessId","Uint")
-
-hwnd:=WinExist("ahk_pid " . pid)
-hHookModule := DllCall("LoadLibrary", "str", "ahkhook.dll")
-HookFuncHndl:=DllCall("ahkhook.dll\reghook", "UInt", 5, "UInt", hwnd, "UInt", 0x550, "UInt", (1<<1)+(1<<5))
-OnMessage(0x551, "CBTHook")
-OnMessage(0x555, "CBTHook2")
-*/
 
 ;FTP Upload script
 IniRead, FTP_Enabled, %A_ScriptDir%\Settings.ini, FTP, UseFTP , 1
@@ -192,12 +161,6 @@ if(Vista7)
 	AcquireExplorerConfirmationDialogStrings()
 }
 
-;Polling timer
-;SetTimer, PollingTimer , 200
-
-;Calendar
-;RunCalendar()
-
 ;possibly start wizard
 if (Firstrun=1)
 	GoSub wizardry
@@ -207,7 +170,6 @@ Menu, tray, add  ; Creates a separator line.
 Menu, tray, add, Settings, SettingsHandler  ; Creates a new menu item.
 
 result:=DllCall("uxtheme.dll\IsThemeActive") ; On non-themed environments, standard icon is used
-outputdebug os: %A_OSVersion%
 if(A_IsCompiled)
 {
 	if(result)
@@ -228,43 +190,8 @@ Return
 ExitSub:
 Gdip_Shutdown(pToken)
 WriteIni()
-;KillCalendar()
 SlideWindows_Exit()
-;DllCall("UnhookWindowsHookEx", "UInt", HookFuncHndl)
 ExitApp
-
-AcquireExplorerConfirmationDialogStrings()
-{
-	global shell32MUIpath
-	VarSetCapacity(buffer, 85*2)
-	length:=DllCall("GetUserDefaultLocaleName","uint",&buffer,"uint",85)
-	locale:=COM_Ansi4Unicode(&buffer)
-	shell32MUIpath:=A_WinDir "\winsxs\*_microsoft-windows-*resources*" locale "*" ;\x86_microsoft-windows-shell32.resources_31bf3856ad364e35_6.1.7600.16385_de-de_b08f46c44b512da0\shell32.dll.mui
-	loop %shell32MUIpath%,2,0
-	{
-		if(FileExist(A_LoopFileFullPath "\shell32.dll.mui"))
-		{
-			shell32MUIpath:=A_LoopFileFullPath "\shell32.dll.mui"
-			found:=true
-			break
-		}
-	}	
-	if(found)
-	{
-		global ExplorerConfirmationDialogTitle1:=TranslateMUI(shell32MUIpath,16705)
-		global ExplorerConfirmationDialogTitle2:=TranslateMUI(shell32MUIpath,16877)
-		global ExplorerConfirmationDialogTitle3:=TranslateMUI(shell32MUIpath,16875)
-		global ExplorerConfirmationDialogTitle4:=TranslateMUI(shell32MUIpath,16876)
-		global ExplorerConfirmationDialogTitle5:=TranslateMUI(shell32MUIpath,16706)
-		global ExplorerConfirmationDialogTitle6:=TranslateMUI(shell32MUIpath,16864)
-		global ExplorerConfirmationDialogButton1:=strStripRight(TranslateMUI(shell32MUIpath,16928),"%")
-		global ExplorerConfirmationDialogButton2:=strStripRight(TranslateMUI(shell32MUIpath,17039),"%")
-		global ExplorerConfirmationDialogButton3:=TranslateMUI(shell32MUIpath,16663)
-		return true
-	}
-	Outputdebug Failed to acquire translated Explorer dialog names
-	return false
-}
 
 WriteIni()
 {
@@ -279,13 +206,6 @@ WriteIni()
 	IniWrite, %FTP_PORT%, %A_ScriptDir%\Settings.ini, FTP, Port
 	IniWrite, %FTP_URL%, %A_ScriptDir%\Settings.ini, FTP, URL
 	IniWrite, %FTP_Path%, %A_ScriptDir%\Settings.ini, FTP, Path
-	
-	/*
-	IniWrite, %ReplaceCalendar%, %A_ScriptDir%\Settings.ini, Calendar, ReplaceCalendar
-	IniWrite, %CalendarClass%, %A_ScriptDir%\Settings.ini, Calendar, CalendarClass
-	x:=Quote(CalendarCommand,0)
-	IniWrite, %x%, %A_ScriptDir%\Settings.ini, Calendar, CalendarCommand
-	*/
 	
 	IniWrite, %ImgName%, %A_ScriptDir%\Settings.ini, Explorer, Image
 	IniWrite, %TxtName%, %A_ScriptDir%\Settings.ini, Explorer, Text
@@ -304,7 +224,6 @@ WriteIni()
 	IniWrite, %HKFolderBand%, %A_ScriptDir%\Settings.ini, Explorer, HKFolderBand	
 	
 	IniWrite, %HKProperBackspace%, %A_ScriptDir%\Settings.ini, Explorer, HKProperBackspace
-	;IniWrite, %HKImprovedWinE%, %A_ScriptDir%\Settings.ini, Explorer, HKImprovedWinE
 	IniWrite, %HKSelectFirstFile%, %A_ScriptDir%\Settings.ini, Explorer, HKSelectFirstFile
 	IniWrite, %HKImproveEnter%, %A_ScriptDir%\Settings.ini, Explorer, HKImproveEnter
 	IniWrite, %HKDoubleClickUpwards%, %A_ScriptDir%\Settings.ini, Explorer, HKDoubleClickUpwards
