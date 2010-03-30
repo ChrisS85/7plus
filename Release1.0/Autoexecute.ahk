@@ -185,6 +185,7 @@ else
 		Menu, tray, Icon, %A_ScriptDir%\7+-w.ico,,1
 }
 menu, tray, Icon
+menu, tray, Default, Settings
 if (Firstrun=1)
 {
 	Tooltip(1, "That's it for now. Have fun!", "Everything Done!","O1 L1 P99 C1 XTrayIcon YTrayIcon I1")
