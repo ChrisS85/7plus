@@ -130,7 +130,7 @@ IniRead, ClipboardManager, %A_ScriptDir%\Settings.ini, Misc, ClipboardManager, 1
 
 ;Fullscreen exclusion list
 IniRead, FullscreenExclude, %A_ScriptDir%\Settings.ini, Misc, FullscreenExclude,VLC DirectX,OpWindow,CabinetWClass
-IniRead, FullscreenInclude, %A_ScriptDir%\Settings.ini, Misc, FullscreenInclude,VLC DirectX,OpWindow,CabinetWClass
+IniRead, FullscreenInclude, %A_ScriptDir%\Settings.ini, Misc, FullscreenInclude,Project64
 ;Clipboard manager list (is some sort of fixed size stack which removes oldest entry on add/insert/push)
 Stack := Object("len", "Array_Length", "indexOf", "Array_indexOf", "join", "Array_Join" 
       , "append", "Array_Append", "insert", "Array_Insert", "delete", "Array_Delete" 
