@@ -8,8 +8,4 @@ IfMsgBox Yes
 	ShowSettings()
 while(WinExist("7plus Settings"))
 	Sleep 100
-Sleep 1000
-Tooltip(1, "That's it for now. Have fun!", "Invalid Command","O1 L1 P99 C1 XTrayIcon YTrayIcon I1")
-SetTimer, ToolTipClose, -5000	
-IniWrite, 0, %A_ScriptDir%\Settings.ini, General, FirstRun
 return

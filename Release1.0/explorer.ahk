@@ -185,10 +185,19 @@ ExplorerPathChanged(from, to)
 		x:=GetSelectedFiles()
 		if(!x && (!vista7||SubStr(to, 1 ,40)!="::{26EE0668-A00A-44D7-9371-BEB064C98683}"))
 		{
-			if(A_OSVersion="Win_7")
+			if(A_OSVersion="WIN_7")
+			{
+		    ControlGetFocus focussed, A
+		    ControlFocus DirectUIHWND3, A
 				Send {Home}{Space}
+		  }
 			else
-				Send {Home} ;^{Space}
+			{
+				focussed:=XPGetFocussed()
+				ControlFocus SysListView321, A
+				Send {Home}
+			}
+			ControlFocus %focussed%, A
 		}
 	}
 }
