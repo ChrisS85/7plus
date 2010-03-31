@@ -1,42 +1,42 @@
 #labels Featured,Phase-Design
 Below is a list of features. You can enable/disable each feature one by one in the settings dialog.
-Watch the videos to see how it works!
+Watch the videos to see how it works
 
 == Explorer ==
-  * Store favorite folders and recall them for _very_ fast navigation! [http://www.youtube.com/watch?v=dTIGxue6WCY (Video 1)] [http://www.youtube.com/watch?v=cC6cnG87j2M (Video 2)]
-  * Upload files directly from explorer to an FTP server with just one hotkey! [http://www.youtube.com/watch?v=d01Mjiny_E8 (Video)]
-  * Create new folders and textfiles by pressing F8/F7! [http://www.youtube.com/watch?v=e3op-boVfOk (Video)]
-  * Paste text or image from clipboard as file! [http://www.youtube.com/watch?v=yOJ8evyuVhY (Video)]
-  * Open any file in your favorite text/image editor by pressing F3! [http://www.youtube.com/watch?v=6bxiyNRh0dk (Video)]
-  * Copy filenames (ALT+C) and Filepaths (CTRL+ALT+C)! [http://www.youtube.com/watch?v=CA-W1i1bMmQ (Video)]
-  * Append files to the clipboard without replacing the current clipboard! [http://www.youtube.com/watch?v=je9zk1zy5Xk (Video)]
-  * Go upwards by double clicking on free space in the file list! [http://www.youtube.com/watch?v=RZOdgDl2ujU (Video)]
-  * Scroll the explorer tree without activating it! [http://www.youtube.com/watch?v=qJ_u4C3EuhU (Video)]
-  * Execute files which are only focussed but not selected with Enter! [http://www.youtube.com/watch?v=Bih7HEtpk0A (Video)]
-  * Automatically select first file when you enter a directory! [http://www.youtube.com/watch?v=Bih7HEtpk0A (Video)]
-  * Hold down right mouse button and click left to go back! [http://www.youtube.com/watch?v=RZOdgDl2ujU (Video)]
+  * Store favorite folders and recall them for _very_ fast navigation [http://www.youtube.com/watch?v=dTIGxue6WCY (Video 1)] [http://www.youtube.com/watch?v=cC6cnG87j2M (Video 2)]
+  * Upload files directly from explorer to an FTP server with just one hotkey [http://www.youtube.com/watch?v=d01Mjiny_E8 (Video)]
+  * Create new folders and textfiles by pressing F8/F7 [http://www.youtube.com/watch?v=e3op-boVfOk (Video)]
+  * Paste text or image from clipboard as file [http://www.youtube.com/watch?v=yOJ8evyuVhY (Video)]
+  * Open any file in your favorite text/image editor by pressing F3 [http://www.youtube.com/watch?v=6bxiyNRh0dk (Video)]
+  * Copy filenames (ALT+C) and Filepaths (CTRL+ALT+C) [http://www.youtube.com/watch?v=CA-W1i1bMmQ (Video)]
+  * Append files to the clipboard without replacing the current clipboard [http://www.youtube.com/watch?v=je9zk1zy5Xk (Video)]
+  * Go upwards by double clicking on free space in the file list [http://www.youtube.com/watch?v=RZOdgDl2ujU (Video)]
+  * Scroll the explorer tree without activating it [http://www.youtube.com/watch?v=qJ_u4C3EuhU (Video)]
+  * Execute files which are only focussed but not selected with Enter [http://www.youtube.com/watch?v=Bih7HEtpk0A (Video)]
+  * Automatically select first file when you enter a directory [http://www.youtube.com/watch?v=Bih7HEtpk0A (Video)]
+  * Hold down right mouse button and click left to go back [http://www.youtube.com/watch?v=RZOdgDl2ujU (Video)]
 
 ==== Windows 7/Vista specific ====
-  * Show favorite folders in the explorer folder band bar like Web Browser favorite bars! [http://www.youtube.com/watch?v=dTIGxue6WCY (Video)]
-  * Make Backspace go upwards again! [http://www.youtube.com/watch?v=RZOdgDl2ujU (Video)]
-  * Show free space and selected file size in status bar! [http://www.youtube.com/watch?v=-fnOBf3Ggoc (Video)]
-  * Automatically check "Apply to all further operations" checkboxes in file operation dialog boxes! [http://www.youtube.com/watch?v=flBnx2NETlc (Video)]
+  * Show favorite folders in the explorer folder band bar like Web Browser favorite bars [http://www.youtube.com/watch?v=dTIGxue6WCY (Video)]
+  * Make Backspace go upwards again [http://www.youtube.com/watch?v=RZOdgDl2ujU (Video)]
+  * Show free space and selected file size in status bar [http://www.youtube.com/watch?v=-fnOBf3Ggoc (Video)]
+  * Automatically check "Apply to all further operations" checkboxes in file operation dialog boxes [http://www.youtube.com/watch?v=flBnx2NETlc (Video)]
  
 == Window Handling, Taskbar ==
-  * Set windows to be "Always on top" by right clicking the title bar! [http://www.youtube.com/watch?v=JJ-kqjRY910 (Video)]
-  * Close windows by middle clicking task buttons! [http://www.youtube.com/watch?v=v__ZiHFt7NE (Video)]
-  * Execute a program by double clicking the taskbar! [http://www.youtube.com/watch?v=v__ZiHFt7NE (Video)]
-  * Move windows out of the screen and have them slide in when you move the mouse to the border! [http://www.youtube.com/watch?v=e0yLqr8mjsg (Video)]
-  * Activate blinking windows and toggle between current and previous window with Capslock! [http://www.youtube.com/watch?v=im088NYiSvw (Video)]
-  * Close programs by middle clicking the title bar! [http://www.youtube.com/watch?v=JJ-kqjRY910 (Video)]
-  * Kill programs by pressing ALT+F5 or right clicking the close button! [http://www.youtube.com/watch?v=JJ-kqjRY910 (Video)]
+  * Set windows to be "Always on top" by right clicking the title bar [http://www.youtube.com/watch?v=JJ-kqjRY910 (Video)]
+  * Close windows by middle clicking task buttons [http://www.youtube.com/watch?v=v__ZiHFt7NE (Video)]
+  * Execute a program by double clicking the taskbar [http://www.youtube.com/watch?v=v__ZiHFt7NE (Video)]
+  * Move windows out of the screen and have them slide in when you move the mouse to the border [http://www.youtube.com/watch?v=e0yLqr8mjsg (Video)]
+  * Activate blinking windows and toggle between current and previous window with Capslock [http://www.youtube.com/watch?v=im088NYiSvw (Video)]
+  * Close programs by middle clicking the title bar [http://www.youtube.com/watch?v=JJ-kqjRY910 (Video)]
+  * Kill programs by pressing ALT+F5 or right clicking the close button [http://www.youtube.com/watch?v=JJ-kqjRY910 (Video)]
 
 ==== Windows 7/Vista specific ====
-  * Activate Aero Flip 3D by moving the mouse to the top left corner of the screen! 
-  * Change the desktop wallpaper by middle clicking on the desktop! (Win7 only) [http://www.youtube.com/watch?v=JJ-kqjRY910 (Video)]
-  * Cycle through windows by clicking on a task group button! (Win7 only) [http://www.youtube.com/watch?v=v__ZiHFt7NE (Video)]
+  * Activate Aero Flip 3D by moving the mouse to the top left corner of the screen 
+  * Change the desktop wallpaper by middle clicking on the desktop (Win7 only) [http://www.youtube.com/watch?v=JJ-kqjRY910 (Video)]
+  * Cycle through windows by clicking on a task group button (Win7 only) [http://www.youtube.com/watch?v=v__ZiHFt7NE (Video)]
 == Misc ==
-  * Paste previous clipboard text entries by pressing WIN+V! [http://www.youtube.com/watch?v=Yq8HXOuSEiU (Video)]
-  * Use a Joypad/Gamepad to remote control the mouse, keyboard and zoom! [http://www.youtube.com/watch?v=MZiK7E98hOU (Video)]
-  * Open current folder in CMD by pressing WIN+C and enable CTRL+V to paste and ALT+F4 in CMD! [http://www.youtube.com/watch?v=irMu69t3kEg (Video)]
-  * Rotate images in Windows Picture Viewer by pressing R and L!
+  * Paste previous clipboard text entries by pressing WIN+V [http://www.youtube.com/watch?v=Yq8HXOuSEiU (Video)]
+  * Use a Joypad/Gamepad to remote control the mouse, keyboard and zoom [http://www.youtube.com/watch?v=MZiK7E98hOU (Video)]
+  * Open current folder in CMD by pressing WIN+C and enable CTRL+V to paste and ALT+F4 in CMD [http://www.youtube.com/watch?v=irMu69t3kEg (Video)]
+  * Rotate images in Windows Picture Viewer by pressing R and L
