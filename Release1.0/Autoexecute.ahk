@@ -145,12 +145,15 @@ Loop 10
 	if(x!="Error")
 		ClipboardList.Append(x)
 }
-
+IniRead, FF0, %A_ScriptDir%\Settings.ini, FastFolders, Folder0, ::{20D04FE0-3AEA-1069-A2D8-08002B30309D}
+IniRead, FFTitle0, %A_ScriptDir%\Settings.ini, FastFolders, FolderTitle0, Computer
+IniRead, FF1, %A_ScriptDir%\Settings.ini, FastFolders, Folder1, C:\
+IniRead, FFTitle1, %A_ScriptDir%\Settings.ini, FastFolders, FolderTitle1, C:\
 ;FastFolders
-Loop 10
+Loop 8
 {
-    z:=A_Index-1
-    IniRead, FF%z%, %A_ScriptDir%\Settings.ini, FastFolders, Folder%z%, `%systemdrive`%
+    z:=A_Index+1
+    IniRead, FF%z%, %A_ScriptDir%\Settings.ini, FastFolders, Folder%z%, %A_Space%
     IniRead, FFTitle%z%, %A_ScriptDir%\Settings.ini, FastFolders, FolderTitle%z%, %A_Space%
 }
 

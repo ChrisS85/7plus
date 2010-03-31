@@ -82,20 +82,23 @@ UpdateStoredFolder(ByRef FF, ByRef FFTitle)
 RefreshFastFolders()
 {
 	global
-	local pos, value
-	Critical
-	if(!(HKFolderBand||HKPlacesBar))
-		return
 	if (HKFolderBand)
 		RemoveAllButtons(IsFastFolderButton)
+	AddAllButtons(HKFolderBand,HKPlacesBar)
+}
+AddAllButtons(FolderBand,PlacesBar)
+{
+	global	
+	local pos, value
+	Critical
 	loop 10
 	{
 		pos:=A_Index-1
 		if FF%pos%
 		{				
-			if (HKFolderBand)		
+			if (FolderBand)		
 				AddButton("",FF%pos%,,pos ":" FFTitle%pos%)
-			if(pos<=4 && HKPlacesBar)	;Also update placesbar
+			if(pos<=4 && PlacesBar)	;Also update placesbar
 			{
 				value:=FF%pos%
 				RegWrite, REG_SZ,HKCU,Software\Microsoft\Windows\CurrentVersion\Policies\comdlg32\Placesbar, Place%pos%,%value%
@@ -103,7 +106,7 @@ RefreshFastFolders()
 		}
 	}
 }
-
+;Callback function for determining if a specific registry key was created by 7plus
 IsFastFolderButton(Command,Title,Tooltip)
 {
 	x:=substr(Title,1,1)

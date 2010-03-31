@@ -95,7 +95,7 @@ ClipboardMenuClicked(index)
 	{	
 		ClipboardBackup:=ClipboardAll
 		MuteClipboardList:=true
-		Clipboard:=y		
+		Clipboard:=ClipboardList[index]
 		Clipwait,1,1
 		if(!Errorlevel)
 		{

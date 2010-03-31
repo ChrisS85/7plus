@@ -4,7 +4,7 @@ XPGetFocussed()
   ctrlHwnd:=GetFocusedControl()
   ; Built an array indexing the control names by their hwnd 
   Loop Parse, ctrlList, `n 
-  { 
+  {
     ControlGet hwnd, Hwnd, , %A_LoopField%, A 
     hwnd += 0   ; Convert from hexa to decimal 
     if(hwnd=ctrlHwnd)
@@ -302,9 +302,8 @@ Return::
 		Send {Enter}
 	return
 #if
-
 ;Backspace: go up instead of back    
-#if Vista7 && HKProperBackspace && (IsDialog() || WinActive("ahk_group ExplorerGroup")) && !IsRenaming() && (InTree()||InFileList()) 
+#if Vista7 && HKProperBackspace && (IsDialog() || WinActive("ahk_group ExplorerGroup")) && !IsRenaming() && (InTree()||InFileList()) && !strEndsWith(GetCurrentFolder(),".search-ms")
 Backspace::Send !{Up}
 #if
 
@@ -382,7 +381,7 @@ Backspace::Send !{Up}
 				  if (!files)
 				  {
 				  	OutputDebug("go upwards")
-					 	if (Vista7)
+					 	if (Vista7 && !strEndsWith(GetCurrentFolder(),".search-ms"))
 	            Send !{Up}
 					  else
 					    Send {Backspace}

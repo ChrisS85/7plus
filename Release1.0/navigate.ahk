@@ -307,7 +307,27 @@ SelectFiles(sSelect, hWnd=0)
 				}
    } 
 }
-
+type1(hWnd=0,returntype=0) 
+{ 
+	Critical
+	If   hWnd||(hWnd:=WinActive("ahk_class CabinetWClass"))||(hWnd:=WinActive("ahk_class ExploreWClass")) 
+  {
+		sa := Com_CreateObject("Shell.Application")
+		
+		;Find hwnd window
+		wins := sa.Windows
+		loop % wins.count
+		{
+			window:=wins.Item(A_Index-1)
+			If Not InStr( window.FullName, "steam.exe" ) ; ensure pwb isn't IE window
+				if(window.Hwnd=hWnd)
+					break
+		}
+    doc:=window.Document
+    sFolder   := doc.Folder.Self.Type
+    return sFolder
+	}
+}
 ShellFolder(hWnd=0,returntype=0) 
 { 
 	Critical
@@ -320,7 +340,7 @@ ShellFolder(hWnd=0,returntype=0)
 		loop % wins.count
 		{
 			window:=wins.Item(A_Index-1)
-			If Not InStr( window.FullName, "steam.exe" ) ; ensure pwb isn't IE
+			If Not InStr( window.FullName, "steam.exe" ) ; ensure pwb isn't IE window
 				if(window.Hwnd=hWnd)
 					break
 		}
