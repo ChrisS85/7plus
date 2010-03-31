@@ -37,6 +37,8 @@ ShowSettings()
 		Gui, Add, Button, x444 y370 w80 h23 gCancel, Cancel
 		Gui, Add, Button, x364 y370 w70 h23 gOK, OK
 		Gui, Add, Text, x%xBase% y374, Click on ? to see video tutorial help!
+		Gui, Add, Text, y374 x200 vWait, Applying settings, please wait!
+		GuiControl, Hide, Wait
 		Gui, Add, Tab, x12 y10 w512 h350 , Explorer 1|Explorer 2|Windows|FTP|Misc|About
 		;---------------------------------------------------------------------------------------------------------------
 		Gui, Add, Text, x%x1% y%y%, Text and images from clipboard can be pasted as file in explorer with these settings
@@ -718,6 +720,7 @@ x:=HKShowSpaceAndSize
 wasActive:=HKFastFolders
 GuiControlGet, active , , Use Fast Folders
 HKFastFolders:=active
+GuiControl, Show, Wait
 
 changed:=false
 GuiControlGet, active , , HKFolderBand

@@ -92,7 +92,7 @@ ClipboardMenuClicked(index)
 {
 	global ClipboardList,MuteClipboardList,clipboardchanged
 	if(ClipboardList[index])
-	{	
+	{
 		ClipboardBackup:=ClipboardAll
 		MuteClipboardList:=true
 		Clipboard:=ClipboardList[index]

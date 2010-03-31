@@ -20,7 +20,6 @@ GetTaskbarDirection()
 		return 4
 	if(IsFullscreen("A",false,false))
 		return -1
-	msgbox Invalid Taskbar position detected!
 	return 0
 }
 
