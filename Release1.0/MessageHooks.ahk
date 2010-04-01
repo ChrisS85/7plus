@@ -59,7 +59,7 @@ ShellMessage( wParam,lParam )
 	if(wParam=4||wParam=32772) ;HSHELL_WINDOWACTIVATED||HSHELL_RUDEAPPACTIVATED
 	{
 		;Explorer info stuff
-		if(Vista7 && HKShowSpaceAndSize)
+		if(HKShowSpaceAndSize)
 		{
 			SetTimer, UpdateInfos, 100
 		}

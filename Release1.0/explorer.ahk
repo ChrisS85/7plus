@@ -679,8 +679,11 @@ CreateInfoGui()
 	global FreeSpace, SelectedFileSize
 	outputdebug creategui
 	gui, 1: font, s9, Segoe UI 
-	Gui, 1: Add, Text, x60 y0 w60 h12 vFreeSpace, %A_Space%
-	Gui, 1: Add, Text, x0 y0 w50 h12 vSelectedFileSize, %A_Space%
+	if(A_OSVersion="WIN_XP")
+		Gui, 1: Add, Text, x80 y0 w60 h12 vFreeSpace, %A_Space%
+	else
+		Gui, 1: Add, Text, x60 y0 w60 h12 vFreeSpace, %A_Space%
+	Gui, 1: Add, Text, x0 y0 w60 h12 vSelectedFileSize, %A_Space%
 	Gui, 1: -Caption  +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs
 	Gui, 1: Color, FFFFFF
 	Gui 1: +LastFound
@@ -721,7 +724,7 @@ UpdateInfos()
 return
 UpdateInfos()
 {
-	global shell32MUIpath
+	global shell32MUIpath,Vista7
 	if(WinActive("ahk_group ExplorerGroup") && !IsContextMenuActive())
 	{
 		path:=GetCurrentFolder()
@@ -733,7 +736,7 @@ UpdateInfos()
 	  {
 	  	FileGetSize, size, %A_LoopField%
 	  	if(realfiles=0)	  		
-	  		realfiles:=!InStr(FileExist(sPath), "D")
+	  		realfiles:=!InStr(FileExist(A_LoopField), "D")
 	  	totalsize+=size
 	  	count++
 	  }
@@ -790,8 +793,17 @@ UpdateInfos()
 		{
 			SetFormat float,0.2
 			free+=0
-			freetext:=TranslateMUI(shell32MUIpath,12336) ;Aquire a translated version of "free"
-			freetext:=SubStr(freetext,InStr(freetext," ",0,0)+1)
+			if(Vista7)
+			{
+				freetext:=TranslateMUI(shell32MUIpath,12336) ;Aquire a translated version of "free"outputdebug freetext %freetext%
+				freetext:=SubStr(freetext,InStr(freetext," ",0,0)+1)
+			}
+			else
+			{
+				freetext:=TranslateMUI("shell32.dll",12336) ;Aquire a translated version of "free"
+				StringReplace, freetext, freetext, `%d`%`%
+				freetext:=strTrim(freetext, " ") 
+			}
 			if(A_OSVersion="WIN_7")
 				GuiControl 1:Text, FreeSpace, %free%%freeunit% %freetext%
 			else
@@ -799,7 +811,10 @@ UpdateInfos()
 		}
 		else
 		{
-			GuiControl 1:Text, FreeSpace, %A_Space%
+			if(A_OSVersion="WIN_7")
+				GuiControl 1:Text, FreeSpace, %A_Space%
+			else
+				GuiControl 1:Text, SelectedFileSize, %A_Space%
 		}
 		if(count && realfiles)
 		{
@@ -807,12 +822,11 @@ UpdateInfos()
 			totalsize+=0			
 			if(A_OSVersion="WIN_7")
 				GuiControl 1:Text, SelectedFileSize, %totalsize%%totalunit%
-			else
-				GuiControl 1:Text, FreeSpace, %A_Space%
 		}
 		else
 		{
-			GuiControl 1:Text, SelectedFileSize, %A_Space%
+			if(A_OSVersion="WIN_7")
+				GuiControl 1:Text, SelectedFileSize, %A_Space%
 		}
 	}
 	else
@@ -832,8 +846,17 @@ UpdateInfoPosition()
 	if(ShouldShowInfo())
 	{
 		WinGetPos , X, Y, Width, Height, A
-		InfoX:=X+Width-370
-		InfoY:=Y+Height-26
+		ControlGetPos , , cY, , cHeight, msctls_statusbar321, A
+		if(A_OSVersion="WIN_XP")
+		{
+			InfoX:=X+Width-360
+			InfoY:=Y+cY+cHeight/2-5 ;+Height-26
+		}
+		else
+		{
+			InfoX:=X+Width-380
+			InfoY:=Y+cY+cHeight/2-6 ;+Height-26
+		}
 		if(Width>540)
 			Gui, 1: Show, AutoSize NA x%InfoX% y%InfoY%
 	}

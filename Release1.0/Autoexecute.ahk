@@ -157,12 +157,9 @@ Loop 8
     IniRead, FFTitle%z%, %A_ScriptDir%\Settings.ini, FastFolders, FolderTitle%z%, %A_Space%
 }
 
-;Explorer info stuff
+CreateInfoGui()
 if(Vista7)
-{
-	CreateInfoGui()
 	AcquireExplorerConfirmationDialogStrings()
-}
 
 ;possibly start wizard
 if (Firstrun=1)
