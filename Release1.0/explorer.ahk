@@ -679,10 +679,7 @@ CreateInfoGui()
 	global FreeSpace, SelectedFileSize
 	outputdebug creategui
 	gui, 1: font, s9, Segoe UI 
-	if(A_OSVersion="WIN_XP")
-		Gui, 1: Add, Text, x80 y0 w60 h12 vFreeSpace, %A_Space%
-	else
-		Gui, 1: Add, Text, x60 y0 w60 h12 vFreeSpace, %A_Space%
+	Gui, 1: Add, Text, x60 y0 w60 h12 vFreeSpace, %A_Space%
 	Gui, 1: Add, Text, x0 y0 w60 h12 vSelectedFileSize, %A_Space%
 	Gui, 1: -Caption  +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs
 	Gui, 1: Color, FFFFFF
@@ -724,7 +721,7 @@ UpdateInfos()
 return
 UpdateInfos()
 {
-	global shell32MUIpath,Vista7
+	global shell32MUIpath
 	if(WinActive("ahk_group ExplorerGroup") && !IsContextMenuActive())
 	{
 		path:=GetCurrentFolder()
@@ -793,41 +790,20 @@ UpdateInfos()
 		{
 			SetFormat float,0.2
 			free+=0
-			if(Vista7)
-			{
-				freetext:=TranslateMUI(shell32MUIpath,12336) ;Aquire a translated version of "free"outputdebug freetext %freetext%
-				freetext:=SubStr(freetext,InStr(freetext," ",0,0)+1)
-			}
-			else
-			{
-				freetext:=TranslateMUI("shell32.dll",12336) ;Aquire a translated version of "free"
-				StringReplace, freetext, freetext, `%d`%`%
-				freetext:=strTrim(freetext, " ") 
-			}
-			if(A_OSVersion="WIN_7")
-				GuiControl 1:Text, FreeSpace, %free%%freeunit% %freetext%
-			else
-				GuiControl 1:Text, SelectedFileSize, %free%%freeunit% %freetext% ;Show on left label control for non-Win7
+			freetext:=TranslateMUI(shell32MUIpath,12336) ;Aquire a translated version of "free"outputdebug freetext %freetext%
+			freetext:=SubStr(freetext,InStr(freetext," ",0,0)+1)
+			GuiControl 1:Text, FreeSpace, %free%%freeunit% %freetext%
 		}
 		else
-		{
-			if(A_OSVersion="WIN_7")
-				GuiControl 1:Text, FreeSpace, %A_Space%
-			else
-				GuiControl 1:Text, SelectedFileSize, %A_Space%
-		}
+			GuiControl 1:Text, FreeSpace, %A_Space%
 		if(count && realfiles)
 		{
 			SetFormat float,0.2
 			totalsize+=0			
-			if(A_OSVersion="WIN_7")
-				GuiControl 1:Text, SelectedFileSize, %totalsize%%totalunit%
+			GuiControl 1:Text, SelectedFileSize, %totalsize%%totalunit%
 		}
 		else
-		{
-			if(A_OSVersion="WIN_7")
-				GuiControl 1:Text, SelectedFileSize, %A_Space%
-		}
+			GuiControl 1:Text, SelectedFileSize, %A_Space%
 	}
 	else
 	{
@@ -847,16 +823,8 @@ UpdateInfoPosition()
 	{
 		WinGetPos , X, Y, Width, Height, A
 		ControlGetPos , , cY, , cHeight, msctls_statusbar321, A
-		if(A_OSVersion="WIN_XP")
-		{
-			InfoX:=X+Width-360
-			InfoY:=Y+cY+cHeight/2-5 ;+Height-26
-		}
-		else
-		{
-			InfoX:=X+Width-380
-			InfoY:=Y+cY+cHeight/2-6 ;+Height-26
-		}
+		InfoX:=X+Width-380
+		InfoY:=Y+cY+cHeight/2-6 ;+Height-26
 		if(Width>540)
 			Gui, 1: Show, AutoSize NA x%InfoX% y%InfoY%
 	}

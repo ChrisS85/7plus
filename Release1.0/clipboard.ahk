@@ -120,12 +120,11 @@ CreateFile()
 	if(!MuteClipboardList)
 	{	 
     MuteClipboardList:=true
-		DllCall("OpenClipboard", "Uint", 0)
 		if(!DllCall("IsClipboardFormatAvailable", "Uint", CF_HDROP))
 		{			
 		  If (DllCall("IsClipboardFormatAvailable", "Uint", 2) && temp_img!="" )
 			{
-				outputdebug image in clipboard
+				outputdebug image in clipboard			
 				x:=WriteClipboardImageToFile(temp_img)
 				if (x)
 					CopyToClipboard(temp_img, false)
@@ -139,8 +138,9 @@ CreateFile()
 			}
 		}
 		else
+		{
 			outputdebug a file is already in the clipboard
-		DllCall("CloseClipboard")		
+		}	
     MuteClipboardList:=false
 	}
 }
@@ -166,10 +166,11 @@ ReadClipboardImage()
 {
 	if(DllCall("IsClipboardFormatAvailable", "Uint", 2))
 	{
-		DllCall("OpenClipboard", "Uint", 0)	
+		DllCall("OpenClipboard", "Uint", 0)
 		hBM:=DllCall("GetClipboardData", "Uint", 2)
 		pBitmap := Gdip_CreateBitmapFromHBITMAP(hBM)
 		Gdip_DisposeImage(hBM)
+		DllCall("CloseClipboard")
 		return pBitmap
 	}
 }
@@ -181,11 +182,14 @@ WriteClipboardImageToFile(path)
 	if(!pBitmap)
 		return -1
 	Gdip_SaveBitmapToFile(pBitmap, path, 100)
-	DllCall("EmptyClipboard") 
+	;clipback:=ClipboardAll
+	;DllCall("OpenClipboard", "Uint", 0)
+	;DllCall("EmptyClipboard") 
+	;DllCall("CloseClipboard")
 	;Write the file into clipboard again
-	Gdip_ImageToClipboard(temp_img)
-	DllCall("CloseClipboard")
-	return 1 
+	;Gdip_ImageToClipboard(temp_img)
+	;Clipboard:=clipback
+	return 1
 }
 
 WriteClipboardTextToFile(path)
@@ -201,7 +205,7 @@ WriteClipboardTextToFile(path)
 
 ;Copies a list of files (separated by new line) to the clipboard so they can be pasted in explorer
 CopyToClipboard(files, clear, cut=0){
-	global MuteClipboardList, CF_HDROP
+	global CF_HDROP
 	FileCount:=0
 	PathLength:=0
 	Loop, Parse, files, `n,`r  ; Rows are delimited by linefeeds (`r`n).
@@ -209,7 +213,6 @@ CopyToClipboard(files, clear, cut=0){
 		FileCount++
 		PathLength+=StrLen(A_LoopField)
 	}	
-	MuteClipboardList:=true
 	; Copy image file - CF_HDROP	
 	pid:=DllCall("GetCurrentProcessId","Uint")
 	hwnd:=WinExist("ahk_pid " . pid)
@@ -223,16 +226,13 @@ CopyToClipboard(files, clear, cut=0){
 		DllCall("lstrcpy", "uint", pPath+offset, "str", A_LoopField)    ; Copy the file into moveable memory.
 			, offset+=StrLen(A_LoopField)+1
   DllCall("GlobalUnlock", "uint", hPath)  
-  MuteClipboardList:=true
 	if clear
 	{
   	DllCall("EmptyClipboard")                                                              ; Empty the clipboard, otherwise SetClipboardData may fail.
-  	Clipwait, 1, 1		
-		MuteClipboardList:=true	
+  	Clipwait, 1, 1
   }
   result:=DllCall("SetClipboardData", "uint", CF_HDROP, "uint", hPath) ; Place the data on the clipboard. CF_HDROP=0xF
 	Clipwait, 1, 1
-	MuteClipboardList:=true	
   outputdebug hdrop setclipboarddata result: %result% errorlevel %errorlevel%
   x:=GetLastError()
  	mem := DllCall("GlobalAlloc","UInt",2,"UInt",4) 
@@ -271,8 +271,6 @@ AppendToClipboard( files, cut=0) {
 Gdip_ImageToClipboard(Filename) 
 {
 	global MuteClipboardList
-	outputdebug mute 10
-	MuteClipboardList:=true
   pBitmap := Gdip_CreateBitmapFromFile(Filename) 
   if !pBitmap 
       return 
@@ -312,5 +310,4 @@ Gdip_ImageToClipboard(Filename)
           DllCall("GlobalFree","uint",hMem) 
       DllCall("CloseClipboard")
   } 
-  MuteClipboardList:=false
 } 

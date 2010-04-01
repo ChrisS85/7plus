@@ -157,7 +157,9 @@ Loop 8
     IniRead, FFTitle%z%, %A_ScriptDir%\Settings.ini, FastFolders, FolderTitle%z%, %A_Space%
 }
 
-CreateInfoGui()
+if(A_OSVersion="WIN_7")
+	CreateInfoGui()
+
 if(Vista7)
 	AcquireExplorerConfirmationDialogStrings()
 
