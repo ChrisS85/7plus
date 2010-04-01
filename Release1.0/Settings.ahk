@@ -126,12 +126,13 @@ ShowSettings()
 		Gui, Add, Checkbox, x%x1% y%yIt% vHKImproveEnter, Files which are only focussed but not selected can be executed by pressing enter
 		yIt+=checkboxstep
 		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghShowSpaceAndSize vURL_ShowSpaceAndSize, ?
-		if(Vista7)
-			Gui, Add, Checkbox, x%x1% y%yIt% vHKShowSpaceAndSize, Show free space and size of selected files in status bar like in XP 
+		Gui, Add, Checkbox, x%x1% y%yIt% vHKShowSpaceAndSize, Show free space and size of selected files in status bar like in XP (7 only)
+		if(A_OSVersion!="WIN_7")
+			GuiControl, disable, HKShowSpaceAndSize
 		yIt+=checkboxstep	
 		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghApplyOperation vURL_ApplyOperation, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKAutoCheck, Automatically check "Apply to all further operations" checkboxes in file operations (7 only)
-		if(A_OSVersion!="WIN_7")
+		Gui, Add, Checkbox, x%x1% y%yIt% vHKAutoCheck, Automatically check "Apply to all further operations" checkboxes in file operations (Vista/7 only)
+		if(!Vista7)
 			GuiControl, disable, HKAutoCheck
 		yIt+=checkboxstep	
 		
