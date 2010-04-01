@@ -4,7 +4,7 @@ Watch the videos to see how it works!
 
 == Explorer ==
   * Store favorite folders and recall them for _very_ fast navigation [http://www.youtube.com/watch?v=dTIGxue6WCY (Video 1)] [http://www.youtube.com/watch?v=cC6cnG87j2M (Video 2)]
-  * Upload files directly from explorer to an FTP server with just one hotkey [http://www.youtube.com/watch?v=d01Mjiny_E8 (Video)]
+  * Upload files, screenshots and clipboard content directly to an FTP server with just one hotkey [http://www.youtube.com/watch?v=d01Mjiny_E8 (Video)]
   * Create new folders and textfiles by pressing F8/F7 [http://www.youtube.com/watch?v=e3op-boVfOk (Video)]
   * Paste text or image from clipboard as file [http://www.youtube.com/watch?v=yOJ8evyuVhY (Video)]
   * Open any file in your favorite text/image editor by pressing F3 [http://www.youtube.com/watch?v=6bxiyNRh0dk (Video)]
