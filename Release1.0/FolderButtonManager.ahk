@@ -1,6 +1,11 @@
 #include lib\com.ahk
 ;Some stuff here to use those functions separately to add custom buttons, might have to be expanded a bit later on
-MsgBox, 4,, Would you like to add a button(yes) or remove one(no)?
+if(A_OSVersion!="WIN_VISTA" && A_OSVersion!="WIN_7")
+{
+	MsgBox This program is only used for Windows Vista and Windows 7. 
+	return
+}
+MsgBox, 4,, This program allows you to add buttons to the explorer bar.`nWould you like to add a button(yes) or remove one(no)?
 IfMsgBox Yes
 {
 	path:=COM_CreateObject("Shell.Application").BrowseForFolder(0, "Enter Path to add as button", 0).Self.Path
@@ -26,7 +31,6 @@ IfMsgBox No
 	}
 }
 return
-
 ;Removes all buttons created with this script. Function can be the name of a function with these arguments: func(command,title,tooltip) and it can be used to tell the script if an entry may be deleted
 RemoveAllButtons(function="")
 {
