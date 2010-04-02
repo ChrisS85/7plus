@@ -2,6 +2,12 @@
 IniRead, DebugEnabled, %A_ScriptDir%\Settings.ini, General, DebugEnabled , 0
 if(DebugEnabled)
 	DebuggingStart()
+	
+;Update checker
+IniRead, AutoUpdate, %A_ScriptDir%\Settings.ini, Misc, AutoUpdate, 1
+if(AutoUpdate)
+	AutoUpdate()
+PostUpdate()
 ;Groups for explorer classes
 GroupAdd, ExplorerGroup, ahk_class ExploreWClass
 GroupAdd, ExplorerGroup, ahk_class CabinetWClass
@@ -186,8 +192,10 @@ else
 	else
 		Menu, tray, Icon, %A_ScriptDir%\7+-w.ico,,1
 }
-menu, tray, Icon
 menu, tray, Default, Settings
+IniRead, HideTrayIcon, %A_ScriptDir%\Settings.ini, Misc, HideTrayIcon, 0
+if(!HidetrayIcon)
+	menu, tray, Icon
 if (Firstrun=1)
 {
 	Tooltip(1, "That's it for now. Have fun!", "Everything Done!","O1 L1 P99 C1 XTrayIcon YTrayIcon I1")
@@ -203,6 +211,54 @@ WriteIni()
 SlideWindows_Exit()
 ExitApp
 
+AutoUpdate()
+{	
+	global CurrentVersion
+	URLDownloadToFile, http://7plus.googlecode.com/files/Version.ini, %A_ScriptDir%\Version.ini
+	if(!Errorlevel)
+	{
+		IniRead, Version, %A_ScriptDir%\Version.ini, Version,Version
+		if(Version>CurrentVersion)
+		{
+			MsgBox,4,,A new update is available. Download now?
+			IfMsgBox Yes
+			{
+				IniRead, Link, %A_ScriptDir%\Version.ini, Version,Link
+				MsgBox Downloading, Please wait
+				URLDownloadToFile, %link%,%A_ScriptDir%\Update.zip
+				if(!Errorlevel)
+				{
+					Run %A_ScriptDir%\Update.zip
+					ExitApp
+				}
+				else
+					MsgBox Error while updating. Make sure you are connected to the internet.				
+			}
+		}
+	}
+	else
+		MsgBox Could not download version info. Make sure you're connected to the internet.
+}
+PostUpdate()
+{
+	global CurrentVersion
+	if(FileExist(A_ScriptDir "\Update.zip"))
+	{
+		outputdebug exists
+		IniRead, Version, %A_ScriptDir%\Version.ini,Version,Version
+		if(CurrentVersion=Version)
+		{
+			if(FileExist(A_ScriptDir "\Changelog.txt"))
+			{
+				MsgBox,4,, Update successful. View Changelog?
+				IfMsgBox Yes
+					run %A_ScriptDir%\Changelog.txt
+			}
+		}
+		FileDelete %A_ScriptDir%\Version.ini
+		FileDelete %A_ScriptDir%\Update.zip
+	}
+}
 WriteIni()
 {
 	global
@@ -262,6 +318,7 @@ WriteIni()
 	IniWrite, %FullscreenExclude%, %A_ScriptDir%\Settings.ini, Misc, FullscreenExclude
 	IniWrite, %FullscreenInclude%, %A_ScriptDir%\Settings.ini, Misc, FullscreenInclude
 	IniWrite, %ClipboardManager%, %A_ScriptDir%\Settings.ini, Misc, ClipboardManager
+	IniWrite, %HideTrayIcon%, %A_ScriptDir%\Settings.ini, Misc, HideTrayIcon
 	;FastFolders
 	Loop 10
 	{

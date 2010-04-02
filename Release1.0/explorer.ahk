@@ -189,14 +189,15 @@ ExplorerPathChanged(from, to)
 			{
 		    ControlGetFocus focussed, A
 		    ControlFocus DirectUIHWND3, A
-				Send {Home}{Space}
+				ControlSend DirectUIHWND3, {Home}{Space},A
 		  }
 			else
 			{
 				focussed:=XPGetFocussed()
 				ControlFocus SysListView321, A
-				Send {Home}
+				ControlSend SysListView321, {Home},A
 			}
+			Sleep 50 ;Better wait some time
 			ControlFocus %focussed%, A
 		}
 	}
@@ -444,8 +445,10 @@ if !Handled
 	key:=GetKeyState("CTRL") ? "^" : ""
 	key.=GetKeyState("ALT") ? "!" : ""
 	key.=(GetKeyState("LWIN") || GetKeyState("LWIN")) ? "#" : ""
-	key.="{MButton}"
-	Send %key%
+	Send %key%{MButton down}
+	while(GetKeyState("MButton", "P"))
+		Sleep 50
+	Send {MButton up}
 }
 return 
 

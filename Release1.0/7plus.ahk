@@ -7,6 +7,7 @@ SetBatchLines -1
 SetMouseDelay, -1 ; no pause after mouse clicks 
 SetKeyDelay, -1 ; no pause after keys sent 
 CoordMode, Mouse, Screen
+CurrentVersion:=1.1
 #include %a_scriptdir%\lib\binreadwrite.ahk
 #include %a_scriptdir%\lib\gdip.ahk
 #include %a_scriptdir%\lib\Functions.ahk

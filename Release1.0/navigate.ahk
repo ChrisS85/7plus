@@ -116,18 +116,17 @@ SetDirectory(sPath)
 			ShellNavigate(sPath,hwnd)
 		}
 		else
-		{
-			ToolTip(1, "The path " sPath " cannot be opened!", "Invalid path","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
-			SetTimer, ToolTipClose, -5000
-			TooltipShowSettings:=false
-		} 
+			MsgBox The path %sPath% cannot be opened!
 	}
 	else if (IsWinRarExtractionDialog())
 		SetWinRarDirectory(sPath)
 	else if (IsDialog())
 		SetDialogDirectory(sPath)
 	else
-		MsgBox Can't navigate: Wrong window
+	{
+		class:=WinGetClass("A")
+		MsgBox Can't navigate: Wrong window %class%
+	}
 }
 
 SetWinRarDirectory(Path)

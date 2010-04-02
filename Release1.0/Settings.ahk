@@ -311,6 +311,10 @@ ShowSettings()
 		
 		yIt+=2*checkboxstep
 		Gui, Add, Checkbox, x%x1% y%yIt% vAutorun, Autorun 7plus on windows startup
+		yIt+=checkboxstep
+		Gui, Add, Checkbox, x%x1% y%yIt% vHideTrayIcon, Hide Tray Icon (press WIN + H to show settings!)
+		yIt+=checkboxstep
+		Gui, Add, Checkbox, x%x1% y%yIt% vAutoUpdate, Automatically look for updates on startup
 		;---------------------------------------------------------------------------------------------------------------
 		Gui, Tab, About
 		yIt:=YBase
@@ -455,7 +459,10 @@ ShowSettings()
 			GuiControl,,ScrollUnderMouse,1
 		if ClipboardManager
 			GuiControl,,ClipboardManager,1
-		
+		if HideTrayIcon
+			GuiControl,,HideTrayIcon,1
+		if AutoUpdate
+			GuiControl,,AutoUpdate,1
 		;Setup Aero Flip 3D
 		if(AeroFlipTime>=0)
 		{
@@ -573,17 +580,20 @@ FastFolders:
 GuiControlGet, ffenabled , , Use Fast Folders
 if(ffenabled)
 {
+	if(Vista7)
+	{
 		GuiControl, enable, HKFolderBand
 		GuiControl, enable, HKCleanFolderBand
-		GuiControl, enable, HKPlacesBar
-		GuiControl, enable, HKFFMenu
+	}
+	GuiControl, enable, HKPlacesBar
+	GuiControl, enable, HKFFMenu
 }
 else
 {
-		GuiControl, disable, HKFolderBand
-		GuiControl, disable, HKCleanFolderBand
-		GuiControl, disable, HKPlacesBar
-		GuiControl, disable, HKFFMenu
+	GuiControl, disable, HKFolderBand
+	GuiControl, disable, HKCleanFolderBand
+	GuiControl, disable, HKPlacesBar
+	GuiControl, disable, HKFFMenu
 }
 return
 
@@ -761,7 +771,7 @@ else if(HKPlacesBar && ((wasActive && !HKFastFolders) || !active))
 if(changed)
 	RefreshFastFolders()
 
-Autorun:=0
+Autorun:=0 ;?
 
 ;Store variables which can be stored directly
 Gui Submit
@@ -857,7 +867,13 @@ if(Autorun)
 	RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptFullPath%"
 else
 	RegDelete, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus
-
+if(HideTrayIcon)
+{
+	MsgBox You have chosen to hide the tray icon. This means that you will only be able to access the settings dialog by pressing WIN + H. Also, the program can only be ended by using the task manager then.
+	Menu, Tray, NoIcon
+}
+else
+	Menu, Tray, Icon
 WriteIni()
 SettingsActive:=False
 Gui Destroy
@@ -875,45 +891,45 @@ Return
 
 ;Link hand cursor handling
 HandleMessage(p_w, p_l, p_m, p_hw) 
-  { 
-    global   WM_SETCURSOR, WM_MOUSEMOVE, 
-    static   URL_hover, h_cursor_hand, h_old_cursor, CtrlIsURL, LastCtrl 
-    
-    If (p_m = WM_SETCURSOR) 
-      { 
-        If URL_hover 
-          Return, true 
-      } 
-    Else If (p_m = WM_MOUSEMOVE) 
-      { 
-        ; Mouse cursor hovers URL text control 
-        StringLeft, CtrlIsURL, A_GuiControl, 3 
-        If (CtrlIsURL = "URL") 
-          { 
-            If URL_hover= 
-              { 
-                Gui, Font, cBlue underline 
-                GuiControl, Font, %A_GuiControl% 
-                LastCtrl = %A_GuiControl% 
-                
-                h_cursor_hand := DllCall("LoadCursor", "uint", 0, "uint", 32649) 
-                
-                URL_hover := true 
-              }                  
-              h_old_cursor := DllCall("SetCursor", "uint", h_cursor_hand) 
-          } 
-        ; Mouse cursor doesn't hover URL text control 
-        Else 
-          { 
-            If URL_hover 
-              { 
-                Gui, Font, norm cBlue 
-                GuiControl, Font, %LastCtrl% 
-                
-                DllCall("SetCursor", "uint", h_old_cursor) 
-                
-                URL_hover= 
-              } 
-          } 
-      } 
-  }
+{ 
+  global   WM_SETCURSOR, WM_MOUSEMOVE, 
+  static   URL_hover, h_cursor_hand, h_old_cursor, CtrlIsURL, LastCtrl 
+  
+  If (p_m = WM_SETCURSOR) 
+    { 
+      If URL_hover 
+        Return, true 
+    } 
+  Else If (p_m = WM_MOUSEMOVE) 
+    { 
+      ; Mouse cursor hovers URL text control 
+      StringLeft, CtrlIsURL, A_GuiControl, 3 
+      If (CtrlIsURL = "URL") 
+        { 
+          If URL_hover= 
+            { 
+              Gui, Font, cBlue underline 
+              GuiControl, Font, %A_GuiControl% 
+              LastCtrl = %A_GuiControl% 
+              
+              h_cursor_hand := DllCall("LoadCursor", "uint", 0, "uint", 32649) 
+              
+              URL_hover := true 
+            }                  
+            h_old_cursor := DllCall("SetCursor", "uint", h_cursor_hand) 
+        } 
+      ; Mouse cursor doesn't hover URL text control 
+      Else 
+        { 
+          If URL_hover 
+            { 
+              Gui, Font, norm cBlue 
+              GuiControl, Font, %LastCtrl% 
+              
+              DllCall("SetCursor", "uint", h_old_cursor) 
+              
+              URL_hover= 
+            } 
+        } 
+    } 
+}
