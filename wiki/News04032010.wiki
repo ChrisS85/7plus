@@ -1,0 +1,9 @@
+7plus has become quite popular in the first 2 days after its release, as I write this it's at about 1500 downloads already!
+
+=Small question=
+For the next version, I wanted to add some more support for the capslock key.
+I want to ask some questions for its usage:
+
+1) Do you use the default capslock key? If so, are you happy how you can currently use it with 7plus (modifier key like alt+capslock can still toggle it) Or would you rather see Capslock disabled completely?
+
+2) I would like to add support for programs which show small notification windows near the tray area, so you could activate those programs with the capslock key when such a window pops up. For this I need to know which programs show those notifications, so I can add support for them.
