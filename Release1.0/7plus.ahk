@@ -14,11 +14,9 @@ CurrentVersion:=1.1
 #include %a_scriptdir%\lib\com.ahk
 #include %a_scriptdir%\lib\FTPLib.ahk
 #include %a_scriptdir%\lib\Array.ahk
-#include %a_scriptdir%\lib\SetCursor.ahk
 #include %a_scriptdir%\lib\RemoteBuf.ahk
-#include %a_scriptdir%\lib\win.ahk
 #include %a_scriptdir%\lib\Taskbutton.ahk
-
+#include %a_scriptdir%\lib\Cursor.ahk
 #include %a_scriptdir%\Autoexecute.ahk
 #include %a_scriptdir%\messagehooks.ahk
 #include %a_scriptdir%\navigate.ahk
@@ -39,6 +37,7 @@ CurrentVersion:=1.1
 #include %a_scriptdir%\SlideWindows.ahk
 #include %a_scriptdir%\JoyControl.ahk
 #include %a_scriptdir%\Tooltip.ahk
+#include %a_scriptdir%\Newstuff.ahk
 #if !IsFullscreen("A",true,false)
 #h::
 	if(WinExist("7plus Settings"))

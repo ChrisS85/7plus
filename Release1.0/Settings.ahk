@@ -2,18 +2,427 @@
 SettingsHandler:
 ShowSettings()
 return
+CreateHotkeys()
+{
+	global
+	local yIt,x1,x2,x
+	Gui, Add, Tab2, x156 y14 w410 h350 vExplorerHotkeys, 
+	AddTab(1, "","SysTabControl321") 
+	yIt:=yBase
+	
+	x1:=xHelp+10
+	x2:=xBase+280
+	x:=xBase+247
+	y:=yIt+TextBoxCheckBoxOffset
+	Gui, Add, CheckBox, x%x1% y%y% gEditor, F3: Open selected files in text/image editor
+	Gui, Add, Text, y%y% x%xhelp% cBlue ghOpenEditor vURL_OpenEditor, ?
+	y:=yIt+TextBoxTextOffset
+	Gui, Add, Text, x%x% y%y%, Editor:
+	y:=yIt
+	Gui, Add, Edit, x%x2% y%y% w%wTBMedium% vTextEditor R1,%TextEditor% 
+	x:=x2+wTBMedium+10
+	y:=yIt+TextBoxButtonOffset
+	Gui, Add, Button, x%x% y%y% w%wButton% gTextBrowse, ...
+	yIt+=textboxstep
+	x:=xBase+215
+	y:=yIt+TextBoxTextOffset
+	Gui, Add, Text, x%x% y%y%, Image editor:
+	y:=yIt
+	Gui, Add, Edit, x%x2% y%y% w%wTBMedium% vImageEditor R1,%ImageEditor% 
+	x:=x2+wTBMedium+10
+	y:=yIt+TextBoxButtonOffset
+	Gui, Add, Button, x%x% y%y% w%wButton% gImageBrowse, ...
+	yIt+=textboxstep
+	
+	x2:=x2-60
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghCreateNew vURL_CreateNew, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKCreateNewFile, F7: Create new file
+	yIt+=checkboxstep
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghCreateNew vURL_CreateNew1, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKCreateNewFolder, F8: Create new folder
+	yIt+=checkboxstep	
+	
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghCopyFilenames vURL_CopyFilenames, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKCopyFilenames, ALT + C: Copy Filenames	
+	yIt+=checkboxstep	
+	
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghCopyFilenames vURL_CopyFilenames1, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKCopyPaths, CTRL + ALT + C: Copy paths + filenames
+	yIt+=checkboxstep	
+	
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghNavigation vURL_Navigation, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKProperBackspace, Backspace (Vista/7): Go upwards
+	if(!Vista7)
+		GuiControl, disable, HKProperBackspace
+	x:=x2+80
+	yIt+=checkboxstep	
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghNavigation vURL_Navigation1, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKMouseGestureBack, Hold down right mouse button and click left: Go back
+	yIt+=checkboxstep	
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghNavigation vURL_Navigation2, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKDoubleClickUpwards, Double click on empty space in filelist: Go upwards
+	yIt+=checkboxstep	
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghAppendClipboard vURL_AppendClipboard, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKAppendClipboard, Shift + X / Shift + C: Append files to clipboard instead of replacing (cut/copy)
+	yIt+=checkboxstep	
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKInvertSelection, CTRL + I: Invert selection
+}
+CreateBehavior()
+{
+	global
+	local yIt,x1,x,y
+	yIt:=yBase
+	x1:=xHelp+10
+	x2:=xBase+280
+	
+	Gui, Add, Tab2, x156 y14 w410 h350 vExplorerBehavior, 
+	AddTab(0, "","SysTabControl322")
 
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghSelectFirstFile vURL_SelectFirstFile, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKSelectFirstFile, Explorer automatically selects the first file when you enter a directory
+	yIt+=checkboxstep	
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghSelectFirstFile vURL_SelectFirstFile1, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKImproveEnter, Files which are only focussed but not selected can be executed by pressing enter
+	yIt+=checkboxstep		
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghScrollUnderMouse vURL_ScrollUnderMouse, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vScrollUnderMouse, Scroll explorer scrollbars with mouse over them
+	yIt+=checkboxstep
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghShowSpaceAndSize vURL_ShowSpaceAndSize, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKShowSpaceAndSize, Show free space and size of selected files in status bar like in XP (7 only)
+	if(A_OSVersion!="WIN_7")
+		GuiControl, disable, HKShowSpaceAndSize
+	yIt+=checkboxstep	
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghApplyOperation vURL_ApplyOperation, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKAutoCheck, Automatically check "Apply to all further operations" checkboxes in file operations (Vista/7 only)
+	if(!Vista7)
+		GuiControl, disable, HKAutoCheck
+	yIt+=checkboxstep*2
+		
+	Gui, Add, Text, x%x1% y%yIt%, Text and images from clipboard can be pasted as file in explorer with these settings
+	yIt+=checkboxstep
+	
+	y:=yIt+TextBoxCheckBoxOffset
+	Gui, Add, CheckBox, x%x1% y%y% gtxt, Paste text as file
+	Gui, Add, Text, y%y% x%xhelp% cBlue ghPasteAsFile vURL_PasteAsFile, ?
+	
+	x:=xBase+232
+	Gui, Add, Text, x%x% y%y%, Filename:
+	y:=yIt
+	Gui, Add, Edit, x%x2% y%y% w%wTBMedium% vTxtName R1,%TxtName%
+	yIt+=textboxstep
+	
+	y:=yIt+TextBoxCheckBoxOffset
+	Gui, Add, CheckBox, x%x1% y%y% gimg, Paste image as file
+	Gui, Add, Text, y%y% x%xhelp% cBlue ghPasteAsFile vURL_PasteAsFile1, ?
+	y:=yIt+TextBoxTextOffset
+	Gui, Add, Text, x%x% y%y%, Filename:
+	y:=yIt
+	Gui, Add, Edit, x%x2% y%y% w%wTBMedium% vImgName R1, %ImgName%	
+	yIt+=textboxstep	
+	
+}
+CreateFastFolders()
+{
+	global
+	local yIt,x1,x,y
+	yIt:=yBase
+	xHelp:=xBase
+	x1:=xHelp+10
+	Gui, Add, Tab2, x156 y14 w410 h350 vFastFolders
+	AddTab(0, "","SysTabControl323")
+	
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders1 vURL_FastFolders1, ?		
+	Gui, Add, Checkbox, x%x1% y%yIt% gFastFolders,Use Fast Folders
+	yIt+=checkboxstep	
+	x:=x1+xCheckboxTextOffset
+	xhelp+=xCheckboxTextOffset
+	y:=yIt+yCheckboxTextOffset
+	Gui, Add, Text, x%x% y%y% R2, In all kinds of file views you can store a path in one of ten slots by pressing CTRL`nand a numpad number key, and restore it by pressing the numpad number key again
+	yIt+=checkboxstep*1.5
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders1 vURL_FastFolders11, ?
+	Gui, Add, Checkbox, x%x% y%yIt% vHKFolderBand, Integrate Fast Folders into explorer folder band bar (Vista/7 only)		
+	if(!Vista7)
+		GuiControl, disable, HKFolderBand
+	yIt+=checkboxstep
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders2 vURL_FastFolders2, ?
+	Gui, Add, Checkbox, x%x% y%yIt% vHKCleanFolderBand, Remove windows folder band buttons (Vista/7 only)
+	yIt+=checkboxstep
+	x+=xCheckboxTextOffset
+	y:=yIt+yCheckboxTextOffset
+	text:="If you use the folder band as a favorites bar like in browsers, it is recommended that you get rid`nof the buttons predefined by windows whereever possible (such as Slideshow, Add to Library,...)"
+	Gui, Add, Text, x%x% y%y% R2, %text%
+	if(!Vista7)
+	{
+		GuiControl, disable, HKCleanFolderBand
+		GuiControl, disable, %text%
+	}
+	x-=xCheckboxTextOffset
+	yIt+=checkboxstep*1.5
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders2 vURL_FastFolders21, ?
+	Gui, Add, Checkbox, x%x% y%yIt% vHKPlacesBar, Integrate Fast Folders into open/save dialog places bar (First 5 Entries)
+	yIt+=checkboxstep
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders2 vURL_FastFolders22, ?
+	Gui, Add, Checkbox, x%x% y%yIt% vHKFFMenu, Middle mouse button: Show Fast Folders move/copy menu
+	yIt+=checkboxstep
+	y:=yIt+yCheckboxTextOffset
+	x+=xCheckboxTextOffset
+	Gui, Add, Text, x%x% y%y% R3, When clicking with middle mouse button in a supported file view, a menu`nwith the stored Fast Folders will show up. Clicking an entry will move all`nselected files into that directory, holding CTRL while clicking will copy the files.
+}
+CreateWindowHandling1()
+{
+	global
+	local yIt,x1,x,y
+	yIt:=yBase
+	xHelp:=xBase
+	x1:=xHelp+10
+	Gui, Add, Tab2, x156 y14 w410 h350 vWindowHandling1, 
+	AddTab(0, "","SysTabControl324")
+	yIt:=yBase
+	y:=yIt+TextBoxCheckBoxOffset
+	xhelp:=xBase
+	Gui, Add, Text, y%y% x%xhelp% cBlue ghTaskbar vURL_Taskbar, ?
+	Gui, Add, Checkbox, x%x1% y%y% gTaskbarLaunch, Double click on empty taskbar: Run
+	x:=xBase+258
+	Gui, Add, Edit, 		x%x% y%yIt% w%wTBLarge% R1 vTaskbarLaunchPath, %TaskbarLaunchPath%
+	y:=yIt+TextBoxButtonOffset
+	x:=x+wTBLarge+10
+	Gui, Add, Button, x%x% y%y% w%wButton% gTaskbarLaunchBrowse, ...
+	yIt+=textboxstep
+	
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar1, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKMiddleClose, Middle click on taskbuttons: close task
+	yIt+=checkboxstep	
+	
+	x:=x1+xCheckboxTextOffset
+	y:=yIt+yCheckBoxTextOffset
+	Gui, Add, Text, x%x% y%y%, Middle click on empty taskbar: Taskbar properties
+	yIt+=checkboxstep	
+	
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar2, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKActivateBehavior, Left click on task group button (7 only): cycle through windows		
+	if(A_OsVersion!="WIN_7")
+		GuiControl, disable, HKActivateBehavior
+	yIt+=checkboxstep	
+	
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar3, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKTitleClose, Middle click on title bar: Close program
+	yIt+=checkboxstep	
+	
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKToggleAlwaysOnTop, Right click on title bar: Toggle "Always on top"
+	yIt+=checkboxstep			
+	
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window1, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKKillWindows, Alt+F5/Right click on close button: Force-close active window (kill process)
+	yIt+=checkboxstep	
+	
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window2, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKToggleWallpaper, Middle mouse click on desktop: Toggle wallpaper (7 only)
+	if(A_OsVersion!="WIN_7")
+		GuiControl, disable, HKToggleWallpaper
+	yIt+=checkboxstep	
+	
+	y:=yIt+TextBoxCheckBoxOffset
+	Gui, Add, Text, y%y% x%xhelp% cBlue ghWindow vURL_Window3, ?
+	Gui, Add, Checkbox, x%x1% y%y% gFlip3D, Mouse in upper left corner: Toggle Aero Flip 3D (Vista/7 only)
+	x:=xBase+362
+	y:=yIt+TextBoxTextOffset
+	Gui, Add, Text, x%x% y%y%, Seconds in corner:
+	x:=xBase+248+wTBLarge
+	Gui, Add, Edit, 		x%x% y%yIt% w%wTBShort% R1 vAeroFlipTime, %AeroFlipTime%		
+	if(!Vista7)
+	{
+		GuiControl, disable, AeroFlipTime
+		GuiControl, disable, Mouse in upper left corner: Toggle Aero Flip 3D (Vista/7 only)
+		GuiControl, disable, Seconds in corner:
+	}
+	y:=yIt+TextBoxButtonOffset
+	yIt+=textboxstep
+	
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghSlideWindow vURL_SlideWindow, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKSlideWindows, WIN + SHIFT + Arrow keys: Slide Window function
+	yIt+=checkboxstep	
+	y:=yIt+yCheckboxTextOffset
+	x:=x1+xCheckboxTextOffset
+	Gui, Add, Text, x%x% y%y% R4, A Slide Window is moved off screen, it will not be shown until you activate it through task bar /`nALT + TAB or move the mouse to the border where it was hidden. It will then slide into the screen,`nand slide out again when the mouse leaves the window or when another window gets activated.`nDeactivate this mode by moving the window or pressing WIN+SHIFT+Arrow key in another direction.
+	yIt+=checkboxstep*2.5
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghCapslock vURL_Capslock, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKFlashWindow, Capslock: Activate flashing window (blinking on taskbar, e.g. instant messengers, ...)
+	yIt+=checkboxstep
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghCapslock vURL_Capslock1, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKToggleWindows, Capslock: Switch between current and previous window
+	yIt+=checkboxstep		
+}
+CreateWindowHandling2()
+{
+	global
+	Gui, Add, Tab2, x156 y14 w410 h350 vWindowHandling2, 
+	AddTab(0, "","SysTabControl325")
+}
+CreateFTP()
+{
+	global
+	local yIt,x1,x,y
+	yIt:=yBase
+	xHelp:=xBase
+	x1:=xHelp+10
+	Gui, Add, Tab2, x156 y14 w410 h350 vFTP, 
+	AddTab(0, "","SysTabControl326")
+	Gui, Add, Text, x%x1% y%yIt% R4, You can upload selected files from explorer to an FTP server by`npressing CTRL + U. You can also take screenshots (ALT + Insert = fullscreen`,`nWIN + Insert = active window) and directly upload them. WIN + Delete will upload`nimage or text data from clipboard. URL(s) will be copied to the clipboard.
+	yIt:=100
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghFTP vURL_FTP, ?
+	Gui, Add, CheckBox, x%x1% y%yIt% gFTP, Use FTP
+	yIt+=checkboxstep	
+	x1:=xHelp+xCheckBoxTextOffset+10
+	x2:=xHelp+122
+	y:=yIt+TextBoxTextOffset
+	Gui, Add, Text, x%x1% y%y%, Hostname
+	Gui, Add, Edit, x%x2% y%yIt% w%wTBMedium% R1 vFTP_Host, %FTP_Host%
+	yIt+=TextBoxStep	
+	
+	y:=yIt+TextBoxTextOffset
+	Gui, Add, Text, x%x1% y%y%, Port
+	Gui, Add, Edit, x%x2% y%yIt% w%wTBShort% R1 vFTP_PORT Number, %FTP_PORT%
+	yIt+=TextBoxStep
+	
+	y:=yIt+TextBoxTextOffset
+	Gui, Add, Text, x%x1% y%y%, Username
+	Gui, Add, Edit, x%x2% y%yIt% w%wTBMedium% R1 vFTP_Username ,%FTP_Username% 
+	yIt+=TextBoxStep	
+	
+	y:=yIt+TextBoxTextOffset
+	Gui, Add, Text, x%x1% y%y%, Password
+	Gui, Add, Edit, x%x2% y%yIt% w%wTBMedium% R1 vFTP_Password Password, %FTP_Password%
+	yIt+=TextBoxStep	
+	
+	y:=yIt+TextBoxTextOffset
+	Gui, Add, Text, x%x1% y%y%, Remote Folder
+	Gui, Add, Edit, x%x2% y%yIt% w%wTBMedium% R1 vFTP_Path, %FTP_Path%
+	yIt+=TextBoxStep
+	
+	Gui, Add, Text, x%x1% y%yIt%, URL under which the files can be accessed through HTTP
+	yIt+=checkboxstep
+	
+	y:=yIt+TextBoxTextOffset
+	Gui, Add, Text, x%x1% y%y%, URL
+	Gui, Add, Edit, x%x2% y%yIt% w%wTBMedium% R1 vFTP_URL, %FTP_URL%
+}
+CreateMisc()
+{
+	global
+	local yIt,x1
+	Gui, Add, Tab2, x156 y14 w410 h350 vMisc, 
+	AddTab(0, "","SysTabControl327")
+	x1:=xBase+10
+	xhelp:=xBase
+	yIt:=yBase
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghImproveConsole vURL_ImproveConsole, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKImproveConsole, Open current folder in CMD by pressing WIN + C and enable CTRL + V and Alt + F4 in CMD
+	yIt+=checkboxstep
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKPhotoViewer, Windows picture viewer: Rotate image with R and L
+	yIt+=checkboxstep
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghJoyControl vURL_JoyControl, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vJoyControl, Use joystick/gamepad as remote control when not in fullscreen (optimized for XBOX360 gamepad)
+	yIt+=checkboxstep
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghClipboardManager vURL_ClipboardManager, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vClipboardManager, WIN + V: Clipboard manager (stores last 10 entries)
+	
+	yIt+=2*checkboxstep
+	Gui, Add, Checkbox, x%x1% y%yIt% vAutorun, Autorun 7plus on windows startup
+	yIt+=checkboxstep
+	Gui, Add, Checkbox, x%x1% y%yIt% vHideTrayIcon, Hide Tray Icon (press WIN + H to show settings!)
+	yIt+=checkboxstep
+	Gui, Add, Checkbox, x%x1% y%yIt% vAutoUpdate, Automatically look for updates on startup
+}
+CreateAbout()
+{
+	global
+	local yIt,x1,x2,x,y
+	Gui, Add, Tab2, x156 y14 w410 h350 vAbout, 
+	AddTab(0, "","SysTabControl328")
+	yIt:=YBase
+	x1:=XBase+10
+	x2:=xBase+350
+	if(A_IsCompiled)			
+		Gui, Add, Picture, w128 h128 y%yIt% x%x2% Icon3 vLogo, %A_ScriptFullPath%
+	else
+		Gui, Add, Picture, w128 h128 y%yIt% x%x2% vLogo, %A_ScriptDir%\128.png
+	
+	gui, font, s20
+	Gui, Add, Text, y%yIt% x%x1%, 7plus Version 1.0
+	gui, font
+	yIt+=hText*3
+	x2:=x1+100
+	Gui, Add, Text, y%yIt% x%x1% , Project page:
+	Gui, Add, Text, y%yIt% x%x2% cBlue gProjectpage vURL_Projectpage, http://code.google.com/p/7plus/
+	yIt+=hText
+	Gui, Add, Text, y%yIt% x%x1% , Report bugs:
+	Gui, Add, Text, y%yIt% x%x2% cBlue gBugtracker vURL_Bugtracker, http://code.google.com/p/7plus/issues/list
+	yIt+=hText
+	Gui, Add, Text, y%yIt% x%x1% , Author:
+	Gui, Add, Text, y%yIt% x%x2% , Christian Sander
+	yIt+=hText
+	Gui, Add, Text, y%yIt% x%x1% , E-Mail:
+	Gui, Add, Text, y%yIt% x%x2% cBlue gMail vURL_Mail, fragman@gmail.com
+	yIt+=hText*2
+	Gui, Add, Text, y%yIt% x%x1%, Proudly written in Autohotkey
+	yIt+=hText
+	Gui, Add, Text, y%yIt% x%x1% cBlue gAhk vURL_AHK, www.autohotkey.com		
+	yIt+=hText*2
+	Gui, Add, Text, y%yIt% x%x1% , Licensed under  
+	Gui, Add, Text, y%yIt% x%x2% cBlue gGPL vURL_GPL, GNU General Public License v3
+	yIt+=hText*2
+	Gui, Add, Text, y%yIt% x%x1% , Credits for lots of code samples and help go out to:`nSean, HotKeyIt, majkinetor, Titan, Lexikos, TheGood, PhiLho, Temp01`nand the other guys and gals on #ahk and the forums.	
+}
+AddTab(IconNumber, TabName, TabControl) 
+{  
+   Gui 2: +LastFound
+   VarSetCapacity(TCITEM, 100, 0)
+	 NumPut(3, TCITEM ,0) ; Mask (3) comes from TCIF_TEXT(1) + TCIF_IMAGE(2). 
+	 NumPut(&TabName, TCITEM ,12) ; pszText
+	 NumPut(IconNumber - 1, TCITEM ,20) ; iImage: -1 to convert to zero-based. 
+   SendMessage, 0x1307, 999, &TCITEM, %TabControl%  ; 0x1307 is TCM_INSERTITEM 
+}
+listbox: 
+GuiControlGet,selected,,MyListBox
+outputdebug listbox %selected%
+Loop, Parse, TabList, | 
+{
+	StringReplace, stripped, A_LoopField, %A_Space% , , 1
+  If (selected = A_LoopField) 
+  {
+  	outputdebug show %stripped%
+     GuiControl, Show, %stripped%
+     GuiControl, Text, GGroupBox, %A_LoopField% 
+     test:=stripped
+
+  } 
+  else 
+  {
+		outputdebug hide %stripped% 
+     GuiControl, Hide, %stripped%
+  } 
+}
+GuiControl, MoveDraw, MyListBox
+GuiControl, Movedraw, GGroupbox
+GuiControl, Movedraw, %test% 
+GuiControl, MoveDraw, BtnOK
+GuiControl, MoveDraw, BtnCancel
+GuiControl, MoveDraw, TutLabel
+GuiControl, MoveDraw, Wait
+return 
 ShowSettings()
 {
 	global
-	local x,y,ybase,checkboxstep,textboxstep,TextBoxCheckBoxOffset,TextBoxTextOffset,TextBoxButtonOffset,xCheckBoxTextOffset,yCheckBoxTextOffset,hText,yIt,xBase,wTBShort,wTBMedium,wTBLarge,wButton,hCheckbox,xHelp
+	local x,y,yIt,x1,x2
 	if(!SettingsActive)
-	{
+	{			
+		SettingsActive:=True
 		;---------------------------------------------------------------------------------------------------------------
 		; Create GUI
 		;---------------------------------------------------------------------------------------------------------------
 		Gui, 2:Default
-		ybase:=40
+		ybase:=36
 		checkboxstep:=20
 		textboxstep:=30
 		TextBoxCheckBoxOffset:=4
@@ -24,334 +433,73 @@ ShowSettings()
 		hText:=16
 		yIt:=yBase
 		y:=yIt
-		xBase:=22
+		xBase:=170
 		xHelp:=xBase
 		x1:=xHelp+10
-		x2:=302
+		x2:=xBase+280
 		wTBShort:=50
 		wTBMedium:=170
 		wTBLarge:=210
 		wButton:=30
-		hCheckbox:=16
+		hCheckbox:=16 
+		TabList = Explorer Hotkeys|Explorer Behavior|Fast Folders|Window Handling 1|Window Handling 2|FTP|Misc|About 
+		Gui, Add, ListBox, x16 y20 w120 h350 gListbox vMyListBox, %TabList%
+		Gui, Add, GroupBox, x156 y14 w530 h350 vGGroupBox , Explorer Hotkeys  
+		/*
+		Gui, Add, Treeview, x0 y0 w120 h540 vTree gTree -Lines -Buttons -HScroll
 		
-		Gui, Add, Button, x444 y370 w80 h23 gCancel, Cancel
-		Gui, Add, Button, x364 y370 w70 h23 gOK, OK
-		Gui, Add, Text, x%xBase% y374, Click on ? to see video tutorial help!
-		Gui, Add, Text, y374 x200 vWait, Applying settings, please wait!
+		TV_Explorer:=TV_Add("Explorer","","Expand")
+		TV_ExplorerHotkeys:=TV_Add("Hotkeys",TV_Explorer,"Select")
+		TV_ExplorerBehavior:=TV_Add("Behavior",TV_Explorer)
+		TV_ExplorerFastFolders:=TV_Add("Fast Folders",TV_Explorer)
+		TV_WindowHandling:=TV_Add("Window handling","","Expand")
+		TV_WindowHandling1:=TV_Add("Window handling 1",TV_WindowHandling)
+		TV_WindowHandling2:=TV_Add("Window handling 2",TV_WindowHandling)
+		TV_FTP:=TV_Add("FTP","","Expand")
+		TV_Misc:=TV_Add("Misc","","Expand")
+		TV_About:=TV_Add("About","","Expand")
+		*/
+		Gui, Add, Button, x606 y370 w80 h23 vBtnOK gCancel, Cancel
+		Gui, Add, Button, x526 y370 w70 h23 vBtnCancel gOK, OK
+		Gui, Add, Text, x16 y375 vTutLabel, Click on ? to see video tutorial help!
+		Gui, Add, Text, y375 x370 vWait, Applying settings, please wait!
+		CreateHotkeys()
+		CreateBehavior()
+		CreateFastFolders()
+		CreateWindowHandling1()
+		CreateWindowHandling2()
+		CreateFTP()
+		CreateMisc()
+		CreateAbout()
+		
+		GuiControl, Hide, ExplorerBehavior 
+		GuiControl, Hide, FastFolders
+		GuiControl, Hide, WindowHandling1
+		GuiControl, Hide, WindowHandling2
+		GuiControl, Hide, FTP
+		GuiControl, Hide, Misc
+		GuiControl, Hide, About
 		GuiControl, Hide, Wait
-		Gui, Add, Tab, x12 y10 w512 h350 , Explorer 1|Explorer 2|Windows|FTP|Misc|About
+		Gui, Show, x338 y159 h404 w700, 7plus Settings
+		Winwaitactive 7plus Settings
+		/*
+		Gui, Add, Tab2, x120 y10 w512 h350 , Explorer 1|Explorer 2|Windows|FTP|Misc|About
 		;---------------------------------------------------------------------------------------------------------------
-		Gui, Add, Text, x%x1% y%y%, Text and images from clipboard can be pasted as file in explorer with these settings
-		yIt+=checkboxstep
 		
-		y:=yIt+TextBoxCheckBoxOffset
-		Gui, Add, CheckBox, x%x1% y%y% gtxt, Paste text as file
-		Gui, Add, Text, y%y% x%xhelp% cBlue ghPasteAsFile vURL_PasteAsFile, ?
-		
-		Gui, Add, Text, x252 y%y%, Filename:
-		y:=yIt
-		Gui, Add, Edit, x%x2% y%y% w%wTBMedium% vTxtName R1,%TxtName%
-		yIt+=textboxstep
-		
-		y:=yIt+TextBoxCheckBoxOffset
-		Gui, Add, CheckBox, x%x1% y%y% gimg, Paste image as file
-		Gui, Add, Text, y%y% x%xhelp% cBlue ghPasteAsFile vURL_PasteAsFile1, ?
-		y:=yIt+TextBoxTextOffset
-		Gui, Add, Text, x252 y%y%, Filename:
-		y:=yIt
-		Gui, Add, Edit, x302 y%y% w%wTBMedium% vImgName R1, %ImgName%	
-		yIt+=textboxstep	
-		
-		y:=yIt+TextBoxCheckBoxOffset
-		Gui, Add, CheckBox, x%x1% y%y% gEditor, F3: Open selected files in text/image editor
-		Gui, Add, Text, y%y% x%xhelp% cBlue ghOpenEditor vURL_OpenEditor, ?
-		y:=yIt+TextBoxTextOffset
-		Gui, Add, Text, x267 y%y%, Editor:
-		y:=yIt
-		Gui, Add, Edit, x%x2% y%y% w%wTBMedium% vTextEditor R1,%TextEditor% 
-		x:=x2+wTBMedium+10
-		y:=yIt+TextBoxButtonOffset
-		Gui, Add, Button, x%x% y%y% w%wButton% gTextBrowse, ...
-		yIt+=textboxstep
-		
-		y:=yIt+TextBoxTextOffset
-		Gui, Add, Text, x235 y%y%, Image editor:
-		y:=yIt
-		Gui, Add, Edit, x%x2% y%y% w%wTBMedium% vImageEditor R1,%ImageEditor% 
-		x:=x2+wTBMedium+10
-		y:=yIt+TextBoxButtonOffset
-		Gui, Add, Button, x%x% y%y% w%wButton% gImageBrowse, ...
-		yIt+=textboxstep
-		
-		x2:=x2-60
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghCreateNew vURL_CreateNew, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKCreateNewFile, F7: Create new file
-		yIt+=checkboxstep
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghCreateNew vURL_CreateNew1, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKCreateNewFolder, F8: Create new folder
-		yIt+=checkboxstep	
-		
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghCopyFilenames vURL_CopyFilenames, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKCopyFilenames, ALT + C: Copy Filenames	
-		yIt+=checkboxstep	
-		
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghCopyFilenames vURL_CopyFilenames1, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKCopyPaths, CTRL + ALT + C: Copy paths + filenames
-		yIt+=checkboxstep	
-		
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghNavigation vURL_Navigation, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKProperBackspace, Backspace (Vista/7): Go upwards
-		if(!Vista7)
-			GuiControl, disable, HKProperBackspace
-		x:=x2+80
-		yIt+=checkboxstep	
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghNavigation vURL_Navigation1, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKMouseGestureBack, Hold down right mouse button and click left: Go back
-		yIt+=checkboxstep	
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghNavigation vURL_Navigation2, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKDoubleClickUpwards, Double click on empty space in filelist: Go upwards
-		yIt+=checkboxstep	
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghAppendClipboard vURL_AppendClipboard, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKAppendClipboard, Shift + X / Shift + C: Append files to clipboard instead of replacing (cut/copy)
-		yIt+=checkboxstep	
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghScrollUnderMouse vURL_ScrollUnderMouse, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vScrollUnderMouse, Scroll explorer scrollbars with mouse over them
 		;---------------------------------------------------------------------------------------------------------------
 		Gui, Tab, Explorer 2
-		yIt:=yBase
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghSelectFirstFile vURL_SelectFirstFile, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKSelectFirstFile, Explorer automatically selects the first file when you enter a directory
-		yIt+=checkboxstep	
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghSelectFirstFile vURL_SelectFirstFile1, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKImproveEnter, Files which are only focussed but not selected can be executed by pressing enter
-		yIt+=checkboxstep
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghShowSpaceAndSize vURL_ShowSpaceAndSize, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKShowSpaceAndSize, Show free space and size of selected files in status bar like in XP (7 only)
-		if(A_OSVersion!="WIN_7")
-			GuiControl, disable, HKShowSpaceAndSize
-		yIt+=checkboxstep	
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghApplyOperation vURL_ApplyOperation, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKAutoCheck, Automatically check "Apply to all further operations" checkboxes in file operations (Vista/7 only)
-		if(!Vista7)
-			GuiControl, disable, HKAutoCheck
-		yIt+=checkboxstep	
-		
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders1 vURL_FastFolders1, ?		
-		Gui, Add, Checkbox, x%x1% y%yIt% gFastFolders,Use Fast Folders
-		yIt+=checkboxstep	
-		x:=x1+xCheckboxTextOffset
-		xhelp+=xCheckboxTextOffset
-		y:=yIt+yCheckboxTextOffset
-		Gui, Add, Text, x%x% y%y% R2, In all kinds of file views you can store a path in one of ten slots by pressing CTRL`nand a numpad number key, and restore it by pressing the numpad number key again
-		yIt+=checkboxstep*1.5
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders1 vURL_FastFolders11, ?
-		Gui, Add, Checkbox, x%x% y%yIt% vHKFolderBand, Integrate Fast Folders into explorer folder band bar (Vista/7 only)		
-		if(!Vista7)
-			GuiControl, disable, HKFolderBand
-		yIt+=checkboxstep
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders2 vURL_FastFolders2, ?
-		Gui, Add, Checkbox, x%x% y%yIt% vHKCleanFolderBand, Remove windows folder band buttons (Vista/7 only)
-		yIt+=checkboxstep
-		x+=xCheckboxTextOffset
-		y:=yIt+yCheckboxTextOffset
-		text:="If you use the folder band as a favorites bar like in browsers, it is recommended that you get rid`nof the buttons predefined by windows whereever possible (such as Slideshow, Add to Library,...)"
-		Gui, Add, Text, x%x% y%y% R2, %text%
-		if(!Vista7)
-		{
-			GuiControl, disable, HKCleanFolderBand
-			GuiControl, disable, %text%
-		}
-		x-=xCheckboxTextOffset
-		yIt+=checkboxstep*1.5
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders2 vURL_FastFolders21, ?
-		Gui, Add, Checkbox, x%x% y%yIt% vHKPlacesBar, Integrate Fast Folders into open/save dialog places bar (First 5 Entries)
-		yIt+=checkboxstep
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders2 vURL_FastFolders22, ?
-		Gui, Add, Checkbox, x%x% y%yIt% vHKFFMenu, Middle mouse button: Show Fast Folders move/copy menu
-		yIt+=checkboxstep
-		y:=yIt+yCheckboxTextOffset
-		x+=xCheckboxTextOffset
-		Gui, Add, Text, x%x% y%y% R3, When clicking with middle mouse button in a supported file view, a menu`nwith the stored Fast Folders will show up. Clicking an entry will move all`nselected files into that directory, holding CTRL while clicking will copy the files.
 		
 		;---------------------------------------------------------------------------------------------------------------
 		Gui, Tab, Windows	
-		yIt:=yBase
-		y:=yIt+TextBoxCheckBoxOffset
-		xhelp:=xBase
-		Gui, Add, Text, y%y% x%xhelp% cBlue ghTaskbar vURL_Taskbar, ?
-		Gui, Add, Checkbox, x%x1% y%y% gTaskbarLaunch, Double click on empty taskbar: Run
-		x:=232
-		Gui, Add, Edit, 		x%x% y%yIt% w%wTBLarge% R1 vTaskbarLaunchPath, %TaskbarLaunchPath%
-		y:=yIt+TextBoxButtonOffset
-		x:=x+wTBLarge+10
-		Gui, Add, Button, x%x% y%y% w%wButton% gTaskbarLaunchBrowse, ...
-		yIt+=textboxstep
 		
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar1, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKMiddleClose, Middle click on taskbuttons: close task
-		yIt+=checkboxstep	
-		
-		x:=x1+xCheckboxTextOffset
-		y:=yIt+yCheckBoxTextOffset
-		Gui, Add, Text, x%x% y%y%, Middle click on empty taskbar: Taskbar properties
-		yIt+=checkboxstep	
-		
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar2, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKActivateBehavior, Left click on task group button (7 only): cycle through windows		
-		if(A_OsVersion!="WIN_7")
-			GuiControl, disable, HKActivateBehavior
-		yIt+=checkboxstep	
-		
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar3, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKTitleClose, Middle click on title bar: Close program
-		yIt+=checkboxstep	
-		
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKToggleAlwaysOnTop, Right click on title bar: Toggle "Always on top"
-		yIt+=checkboxstep			
-		
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window1, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKKillWindows, Alt+F5/Right click on close button: Force-close active window (kill process)
-		yIt+=checkboxstep	
-		
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window2, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKToggleWallpaper, Middle mouse click on desktop: Toggle wallpaper (7 only)
-		if(A_OsVersion!="WIN_7")
-			GuiControl, disable, HKToggleWallpaper
-		yIt+=checkboxstep	
-		
-		y:=yIt+TextBoxCheckBoxOffset
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window3, ?
-		Gui, Add, Checkbox, x%x1% y%y% gFlip3D, Mouse in upper left corner: Toggle Aero Flip 3D (Vista/7 only)
-		x:=362
-		y:=yIt+TextBoxTextOffset
-		Gui, Add, Text, x%x% y%y%, Seconds in corner:
-		x:=248+wTBLarge
-		Gui, Add, Edit, 		x%x% y%yIt% w%wTBShort% R1 vAeroFlipTime, %AeroFlipTime%		
-		if(!Vista7)
-		{
-			GuiControl, disable, AeroFlipTime
-			GuiControl, disable, Mouse in upper left corner: Toggle Aero Flip 3D (Vista/7 only)
-			GuiControl, disable, Seconds in corner:
-		}
-		y:=yIt+TextBoxButtonOffset
-		yIt+=textboxstep
-		
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghSlideWindow vURL_SlideWindow, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKSlideWindows, WIN + SHIFT + Arrow keys: Slide Window function
-		yIt+=checkboxstep	
-		y:=yIt+yCheckboxTextOffset
-		x:=x1+xCheckboxTextOffset
-		Gui, Add, Text, x%x% y%y% R4, A Slide Window is moved off screen, it will not be shown until you activate it through task bar /`nALT + TAB or move the mouse to the border where it was hidden. It will then slide into the screen,`nand slide out again when the mouse leaves the window or when another window gets activated.`nDeactivate this mode by moving the window or pressing WIN+SHIFT+Arrow key in another direction.
-		yIt+=checkboxstep*2.5
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghCapslock vURL_Capslock, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKFlashWindow, Capslock: Activate flashing window (blinking on taskbar, e.g. instant messengers, ...)
-		yIt+=checkboxstep
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghCapslock vURL_Capslock1, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKToggleWindows, Capslock: Switch between current and previous window
-		yIt+=checkboxstep	
 		;---------------------------------------------------------------------------------------------------------------
 		Gui, Tab, FTP
-		yIt:=yBase
-		xhelp:=xBase
-		Gui, Add, Text, x%x1% y%yIt% R4, You can upload selected files from explorer to an FTP server by`npressing CTRL + U. You can also take screenshots (ALT + Insert = fullscreen`,`nWIN + Insert = active window) and directly upload them. WIN + Delete will upload`nimage or text data from clipboard. URL(s) will be copied to the clipboard.
-		yIt:=100
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghFTP vURL_FTP, ?
-		Gui, Add, CheckBox, x%x1% y%yIt% gFTP, Use FTP
-		yIt+=checkboxstep	
-		x1:=xBase+xCheckBoxTextOffset
-		x2:=122
-		y:=yIt+TextBoxTextOffset
-		Gui, Add, Text, x%x1% y%y%, Hostname
-		Gui, Add, Edit, x%x2% y%yIt% w%wTBMedium% R1 vFTP_Host, %FTP_Host%
-		yIt+=TextBoxStep	
 		
-		y:=yIt+TextBoxTextOffset
-		Gui, Add, Text, x%x1% y%y%, Port
-		Gui, Add, Edit, x%x2% y%yIt% w%wTBShort% R1 vFTP_PORT Number, %FTP_PORT%
-		yIt+=TextBoxStep
-		
-		y:=yIt+TextBoxTextOffset
-		Gui, Add, Text, x%x1% y%y%, Username
-		Gui, Add, Edit, x%x2% y%yIt% w%wTBMedium% R1 vFTP_Username ,%FTP_Username% 
-		yIt+=TextBoxStep	
-		
-		y:=yIt+TextBoxTextOffset
-		Gui, Add, Text, x%x1% y%y%, Password
-		Gui, Add, Edit, x%x2% y%yIt% w%wTBMedium% R1 vFTP_Password Password, %FTP_Password%
-		yIt+=TextBoxStep	
-		
-		y:=yIt+TextBoxTextOffset
-		Gui, Add, Text, x%x1% y%y%, Remote Folder
-		Gui, Add, Edit, x%x2% y%yIt% w%wTBMedium% R1 vFTP_Path, %FTP_Path%
-		yIt+=TextBoxStep
-		
-		Gui, Add, Text, x%x1% y%yIt%, URL under which the files can be accessed through HTTP
-		yIt+=checkboxstep
-		
-		y:=yIt+TextBoxTextOffset
-		Gui, Add, Text, x%x1% y%y%, URL
-		Gui, Add, Edit, x%x2% y%yIt% w%wTBMedium% R1 vFTP_URL, %FTP_URL%
 		
 		;---------------------------------------------------------------------------------------------------------------
 		Gui, Tab, Misc
-		x1:=xBase+10
-		xhelp:=xBase
-		yIt:=yBase
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghImproveConsole vURL_ImproveConsole, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKImproveConsole, Open current folder in CMD by pressing WIN + C and enable CTRL + V and Alt + F4 in CMD
-		yIt+=checkboxstep
-		Gui, Add, Checkbox, x%x1% y%yIt% vHKPhotoViewer, Windows picture viewer: Rotate image with R and L
-		yIt+=checkboxstep
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghJoyControl vURL_JoyControl, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vJoyControl, Use joystick/gamepad as remote control when not in fullscreen (optimized for XBOX360 gamepad)
-		yIt+=checkboxstep
-		Gui, Add, Text, y%yIt% x%xhelp% cBlue ghClipboardManager vURL_ClipboardManager, ?
-		Gui, Add, Checkbox, x%x1% y%yIt% vClipboardManager, WIN + V: Clipboard manager (stores last 10 entries)
 		
-		yIt+=2*checkboxstep
-		Gui, Add, Checkbox, x%x1% y%yIt% vAutorun, Autorun 7plus on windows startup
-		yIt+=checkboxstep
-		Gui, Add, Checkbox, x%x1% y%yIt% vHideTrayIcon, Hide Tray Icon (press WIN + H to show settings!)
-		yIt+=checkboxstep
-		Gui, Add, Checkbox, x%x1% y%yIt% vAutoUpdate, Automatically look for updates on startup
-		;---------------------------------------------------------------------------------------------------------------
-		Gui, Tab, About
-		yIt:=YBase
-		if(A_IsCompiled)			
-			Gui, Add, Picture, w128 h128 y%yIt% x350 Icon3 vLogo, %A_ScriptFullPath%
-		else
-			Gui, Add, Picture, w128 h128 y%yIt% x350 vLogo, %A_ScriptDir%\128.png
-		
-		gui, font, s20
-		Gui, Add, Text, y%yIt% x%x1%, 7plus Version 1.0
-		gui, font
-		yIt+=hText*3
-		x2:=x1+100
-		Gui, Add, Text, y%yIt% x%x1% , Project page:
-		Gui, Add, Text, y%yIt% x%x2% cBlue gProjectpage vURL_Projectpage, http://code.google.com/p/7plus/
-		yIt+=hText
-		Gui, Add, Text, y%yIt% x%x1% , Report bugs:
-		Gui, Add, Text, y%yIt% x%x2% cBlue gBugtracker vURL_Bugtracker, http://code.google.com/p/7plus/issues/list
-		yIt+=hText
-		Gui, Add, Text, y%yIt% x%x1% , Author:
-		Gui, Add, Text, y%yIt% x%x2% , Christian Sander
-		yIt+=hText
-		Gui, Add, Text, y%yIt% x%x1% , E-Mail:
-		Gui, Add, Text, y%yIt% x%x2% cBlue gMail vURL_Mail, fragman@gmail.com
-		yIt+=hText*2
-		Gui, Add, Text, y%yIt% x%x1%, Proudly written in Autohotkey
-		yIt+=hText
-		Gui, Add, Text, y%yIt% x%x1% cBlue gAhk vURL_AHK, www.autohotkey.com		
-		yIt+=hText*2
-		Gui, Add, Text, y%yIt% x%x1% , Licensed under  
-		Gui, Add, Text, y%yIt% x%x2% cBlue gGPL vURL_GPL, GNU General Public License v3
-		yIt+=hText*2
-		Gui, Add, Text, y%yIt% x%x1% , Credits for lots of code samples and help go out to:`nSean, HotKeyIt, majkinetor, Titan, Lexikos, TheGood, PhiLho, Temp01`nand the other guys and gals on #ahk and the forums.
-		
-		Gui, Show, x338 y159 h404 w540, 7plus Settings
-		Winwaitactive 7plus Settings
-		SettingsActive:=True
+*/
 		
 		;---------------------------------------------------------------------------------------------------------------
 		; Setup Control Status
@@ -373,9 +521,9 @@ ShowSettings()
 		else
 		{
 			GuiControl, disable,TextEditor
-			GuiControl, disable,Button6
+			GuiControl, disable,Button5
 			GuiControl, disable,ImageEditor
-			GuiControl, disable,Button7
+			GuiControl, disable,Button6
 		}
 		;Setup taskbar launch
 		if(TaskbarLaunchPath!="")
@@ -383,7 +531,7 @@ ShowSettings()
 		else
 		{
 			GuiControl, disable,TaskbarLaunchPath
-			GuiControl, disable,Button25
+			GuiControl, disable,Button29
 		}		
 		
 		if HKCreateNewFile
@@ -463,6 +611,9 @@ ShowSettings()
 			GuiControl,,HideTrayIcon,1
 		if AutoUpdate
 			GuiControl,,AutoUpdate,1
+		if HKInvertSelection
+			GuiControl,,HKInvertSelection,1
+			
 		;Setup Aero Flip 3D
 		if(AeroFlipTime>=0)
 		{
@@ -507,6 +658,7 @@ ShowSettings()
 	  ; Call "HandleMessage" when script receives WM_MOUSEMOVE message 
 	  WM_MOUSEMOVE = 0x200 
 	  OnMessage(WM_MOUSEMOVE, "HandleMessage")
+	  
 	}
 	Return
 }
@@ -539,15 +691,15 @@ if editorenabled
 {
 	GuiControl, enable,TextEditor
 	GuiControl, enable,ImageEditor
+	GuiControl, enable,Button5
 	GuiControl, enable,Button6
-	GuiControl, enable,Button7
 }
 else
 {
 	GuiControl, disable,TextEditor
 	GuiControl, disable,ImageEditor
+	GuiControl, disable,Button5
 	GuiControl, disable,Button6
-	GuiControl, disable,Button7
 }
 Return
 
@@ -556,12 +708,12 @@ GuiControlGet, taskbarlaunchenabled , , Double click on empty taskbar: Run
 if taskbarlaunchenabled
 {
 	GuiControl, enable,TaskbarLaunchPath
-	GuiControl, enable,Button25
+	GuiControl, enable,Button29
 }
 else
 {
 	GuiControl, disable,TaskbarLaunchPath
-	GuiControl, disable,Button25
+	GuiControl, disable,Button29
 }
 Return
 
@@ -600,7 +752,11 @@ return
 TaskbarLaunchBrowse:
 FileSelectFile, TaskbarPath , 3, , Select taskbar executable, *.exe
 if !ErrorLevel
+{
+	if(InStr(TaskbarPath," "))
+		TaskbarPath:=Quote(TaskbarPath)
 	GuiControl, ,TaskbarLaunchPath,%TaskbarPath%
+}
 Return
 
 Flip3D:
@@ -731,13 +887,13 @@ wasActive:=HKFastFolders
 GuiControlGet, active , , Use Fast Folders
 HKFastFolders:=active
 GuiControl, Show, Wait
-
+GuiControl, MoveDraw, Wait
 changed:=false
 GuiControlGet, active , , HKFolderBand
 if(active && HKFastFolders && (!HKFolderBand || !wasactive))
 {
 	PrepareFolderBand()
-	changed:=true
+	;changed:=true
 }
 else if(HKFolderBand && ((wasActive && !HKFastFolders) || !active))
 {
@@ -749,28 +905,25 @@ GuiControlGet, active , , HKCleanFolderBand
 if(active && HKFastFolders && (!HKCleanFolderBand || !wasactive))
 {
 	BackupAndRemoveFolderBandButtons()
-	changed:=true
 }
 else if(HKCleanFolderBand && ((wasActive && !HKFastFolders) || !active))
 {
 	RestoreFolderBandButtons()
-	changed:=true
 }
 		
 GuiControlGet, active , , HKPlacesBar
 if(active && HKFastFolders && (!HKPlacesBar || !wasactive))
 {
 	BackupPlacesBar()
-	changed:=true
 }
 else if(HKPlacesBar && ((wasActive && !HKFastFolders) || !active))
 {
 	RestorePlacesBar()
-	changed:=true
 }
+/*
 if(changed)
 	RefreshFastFolders()
-
+*/
 Autorun:=0 ;?
 
 ;Store variables which can be stored directly
@@ -887,7 +1040,6 @@ SettingsActive:=False
 Gui Destroy
 Gui 1:Default
 Return
-
 
 ;Link hand cursor handling
 HandleMessage(p_w, p_l, p_m, p_hw) 

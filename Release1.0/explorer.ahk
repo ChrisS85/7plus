@@ -397,13 +397,14 @@ Backspace::Send !{Up}
 #if
 
 #if IsMouseOverTaskList()
-LButton::
-	path:=ExpandEnvVars(TaskbarLaunchPath)
+LButton::	
 	if(IsDoubleClick() && IsMouseOverFreeTaskListSpace())
 	{
-		if(FileExist(path))
-			run, %path%
-		else if(path)
+		SplitCommand(TaskbarLaunchPath, cmd, args)
+		cmd:=ExpandEnvVars(cmd)
+		if(FileExist(cmd))
+			run, "%cmd%" %args%
+		else if(TaskbarLaunchPath)
 		{
 			ToolTip(1, "You need to enter a valid command in <a>Settings</a> to run when you double click on empty taskbar space!", "Invalid Command","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
 			SetTimer, ToolTipClose, -10000
@@ -433,25 +434,44 @@ IsDoubleClick()
 }
 
 *MButton::
+key:=GetKeyState("CTRL") ? "^" : ""
+key.=GetKeyState("ALT") ? "!" : ""
+key.=GetKeyState("SHIFT") ? "+" : ""
+key.=(GetKeyState("RWIN") || GetKeyState("LWIN")) ? "#" : ""
 Handled:=TaskbuttonClose()
 if !Handled
 	Handled:=ToggleWallpaper()
 if !Handled
 	Handled:=TitleBarClose()
 if !Handled
+	Handled:=OpenInNewFolder()
+if !Handled
 	Handled:=FastFolderMenu()
 if !Handled
-{
-	key:=GetKeyState("CTRL") ? "^" : ""
-	key.=GetKeyState("ALT") ? "!" : ""
-	key.=(GetKeyState("LWIN") || GetKeyState("LWIN")) ? "#" : ""
+{	
 	Send %key%{MButton down}
-	while(GetKeyState("MButton", "P"))
-		Sleep 50
+	KeyWait, MButton
 	Send {MButton up}
 }
 return 
 
+OpenInNewFolder()
+{
+	global HKOpenInNewFolder
+ 	if(!HKOpenInNewFolder||!WinActive("ahk_group ExplorerGroup")||!IsMouseOverFileList())
+ 		return false	
+	selected:=GetSelectedFiles(0)
+	SendEvent {LButton}
+	;Sleep 100
+	if(InStr(FileExist(undermouse:=GetSelectedFiles()), "D"))
+		dir:=true
+	if(select!=selected)
+		SelectFiles(selected)
+	if(!dir)
+		return false
+	run explorer.exe %undermouse%
+	return true
+}
 ;Middle click on desktop -> Change wallpaper
 ToggleWallpaper()
 {
@@ -501,7 +521,7 @@ CreateNewTextFile()
 		SelectFiles(TextTranslated ".txt")
 	else
 		SelectFiles(TextTranslated " (" i ").txt")
-	Sleep 20
+	Sleep 50
 	Send {F2}
 	return
 }
@@ -523,7 +543,7 @@ CreateNewFolder()
 	if(A_OSVersion="WIN_VISTA")
 		TextTranslated:=TranslateMUI(shell32muipath,16859) ;"New Folder"
 	else
-  TextTranslated:=TranslateMUI("shell32.dll",30320) ;"New Folder"
+  	TextTranslated:=TranslateMUI("shell32.dll",30320) ;"New Folder"
 	path:=GetCurrentFolder()
 	Testpath := path "\" TextTranslated
 	i:=1 ;Find free filename
@@ -544,6 +564,7 @@ CreateNewFolder()
 		SelectFiles(TextTranslated)
 	else
 		SelectFiles(TextTranslated " (" i ")")
+	Sleep 50
 	Send {F2}
 	return
 }
@@ -677,6 +698,9 @@ SendMessage, 0x20A, -120 << 16, ( MouseY << 16 )|MouseX,, ahk_id %hw_m_target%
 return
 #if
 
+#if HKInvertSelection && WinActive("ahk_group ExplorerGroup")
+^i::InvertSelection()
+#if
 CreateInfoGui()
 {
 	global FreeSpace, SelectedFileSize

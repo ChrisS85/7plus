@@ -106,6 +106,8 @@ IniRead, HKShowSpaceAndSize, %A_ScriptDir%\Settings.ini, Explorer, HKShowSpaceAn
 IniRead, HKMouseGestureBack, %A_ScriptDir%\Settings.ini, Explorer, HKMouseGestureBack, 1
 IniRead, HKAutoCheck, %A_ScriptDir%\Settings.ini, Explorer, HKAutoCheck, 1
 IniRead, ScrollUnderMouse, %A_ScriptDir%\Settings.ini, Explorer, ScrollUnderMouse, 1
+IniRead, HKInvertSelection, %A_ScriptDir%\Settings.ini, Explorer, HKInvertSelection, 1
+IniRead, HKOpenInNewFolder, %A_ScriptDir%\Settings.ini, Explorer, HKOpenInNewFolder, 1
 
 IniRead, HKKillWindows, %A_ScriptDir%\Settings.ini, Windows, HKKillWindows, 1
 IniRead, HKToggleWallpaper, %A_ScriptDir%\Settings.ini, Windows, HKToggleWallpaper, 1
@@ -297,6 +299,8 @@ WriteIni()
 	IniWrite, %HKMouseGestureBack%, %A_ScriptDir%\Settings.ini, Explorer, HKMouseGestureBack
 	IniWrite, %HKAutoCheck%, %A_ScriptDir%\Settings.ini, Explorer, HKAutoCheck
 	IniWrite, %ScrollUnderMouse%, %A_ScriptDir%\Settings.ini, Explorer, ScrollUnderMouse
+	IniWrite, %HKInvertSelection%, %A_ScriptDir%\Settings.ini, Explorer, HKInvertSelection
+	IniWrite, %HKOpenInNewFolder%, %A_ScriptDir%\Settings.ini, Explorer, HKOpenInNewFolder
 	
 	IniWrite, %HKToggleAlwaysOnTop%, %A_ScriptDir%\Settings.ini, Windows, HKToggleAlwaysOnTop
 	IniWrite, %HKActivateBehavior%, %A_ScriptDir%\Settings.ini, Windows, HKActivateBehavior

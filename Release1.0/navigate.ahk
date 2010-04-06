@@ -281,7 +281,7 @@ GetCurrentFolder()
 	return ""
 }
 
-SelectFiles(sSelect, hWnd=0)
+SelectFiles(sSelect,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)
 {
 	Critical
 	If   hWnd||(hWnd:=WinActive("ahk_class CabinetWClass"))||(hWnd:=WinActive("ahk_class ExploreWClass")) 
@@ -296,37 +296,37 @@ SelectFiles(sSelect, hWnd=0)
 				if(window.Hwnd=hWnd)
 					break
 			}
-	    doc:=window.Document
+	    doc:=window.Document  		
+			value:=!Deselect
+			value1:=!Deselect+focus*16+MakeVisible*8
+			if(!Deselect)
+				value1+=clear*4
       Loop, Parse, sSelect, `n 
+			{
 				If  A_LoopField <>
-				{ 
-					item:=COM_Invoke(doc,"Folder.ParseName",A_LoopField)
-					;first, deselect all but first item, then add other items to selection
-					COM_Invoke(doc,"SelectItem",item,(A_Index=1 ? 29 : 1)) ;http://msdn.microsoft.com/en-us/library/bb774047(VS.85).aspx
-				}
+					COM_Invoke(doc,"SelectItem",doc.Folder.ParseName(A_LoopField),(A_Index=1 ? value1 : value)) ;http://msdn.microsoft.com/en-us/library/bb774047(VS.85).aspx					
+			}
    } 
 }
-type1(hWnd=0,returntype=0) 
-{ 
-	Critical
-	If   hWnd||(hWnd:=WinActive("ahk_class CabinetWClass"))||(hWnd:=WinActive("ahk_class ExploreWClass")) 
-  {
-		sa := Com_CreateObject("Shell.Application")
-		
-		;Find hwnd window
-		wins := sa.Windows
-		loop % wins.count
-		{
-			window:=wins.Item(A_Index-1)
-			If Not InStr( window.FullName, "steam.exe" ) ; ensure pwb isn't IE window
-				if(window.Hwnd=hWnd)
-					break
-		}
-    doc:=window.Document
-    sFolder   := doc.Folder.Self.Type
-    return sFolder
-	}
+
+InvertSelection()
+{
+	;Calling the menu item is more reliable than doing it through COM because right now only real files are supported
+	PostMessage,0x112,0xf100,0,,A
+	SendInput {Right}{Down}{Up}{Enter}
+	return
+	/*
+	selected:="`n" GetSelectedFiles(0) "`n"
+	path:=GetCurrentFolder()
+	Loop, %path%\* , 1
+		if(!InStr(selected,"`n" A_LoopFileName "`n"))
+			NewSelection.= "`n" A_LoopFileName
+	NewSelection:=strTrimLeft(NewSelection,"`n")
+	SelectFiles(NewSelection,0,0,0,0)
+	SelectFiles(selected,0,1,0,0)
+	*/
 }
+
 ShellFolder(hWnd=0,returntype=0) 
 { 
 	Critical
