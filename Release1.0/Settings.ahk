@@ -66,6 +66,8 @@ CreateHotkeys()
 	Gui, Add, Checkbox, x%x1% y%yIt% vHKAppendClipboard, Shift + X / Shift + C: Append files to clipboard instead of replacing (cut/copy)
 	yIt+=checkboxstep	
 	Gui, Add, Checkbox, x%x1% y%yIt% vHKInvertSelection, CTRL + I: Invert selection
+	yIt+=checkboxstep	
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKOpenInNewFolder, Middle Mouse Button: Open in new folder
 }
 CreateBehavior()
 {
@@ -613,7 +615,8 @@ ShowSettings()
 			GuiControl,,AutoUpdate,1
 		if HKInvertSelection
 			GuiControl,,HKInvertSelection,1
-			
+		if HKOpenInNewFolder
+			GuiControl,,HKOpenInNewFolder,1	
 		;Setup Aero Flip 3D
 		if(AeroFlipTime>=0)
 		{
