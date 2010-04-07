@@ -212,7 +212,7 @@ IsDialog(window=0)
 
 GetSelectedFiles(FullName=1)
 {
-	global MuteClipboardSurveillance, MuteClipboardList,Vista7
+	global MuteClipboardList,Vista7
 	If (WinActive("ahk_group ExplorerGroup"))
 	{
 		hWnd:=WinExist("A")
@@ -234,18 +234,14 @@ GetSelectedFiles(FullName=1)
 		outputdebug clearing clipboard
 		clipboard := ""
 		ClipWait, 0.05, 1
-		outputdebug mute 13
-		MuteClipboardList := true
 		outputdebug copying files to clipboard
 		Send ^c
 		ClipWait, 0.05, 1
 		result := clipboard
-		outputdebug mute 14
-		MuteClipboardList := true
-		outputdebug restoring clipboard
 		clipboard := clipboardbackup
 		ControlFocus %focussed%, A
 		OutputDebug, Selected Files: %result%
+		MuteClipboardList:=false
 		return result
 	}
 }

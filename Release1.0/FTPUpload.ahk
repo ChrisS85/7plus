@@ -11,20 +11,15 @@
 #if FTP_Enabled
 !Insert::
 #Insert::
-	MuteClipboardSurveillance:=true
-	outputdebug mute 11
 	MuteClipboardList:=true
 	clipboard:=""
 	ClipWait , 0.05, 1
-	outputdebug mute 12
-	MuteClipboardList:=true
 	if(!GetKeyState("Alt"))
 		Send !{PrintScreen}
 	else
 		Send {PrintScreen}
 	ClipWait , 1, 1	
 	MuteClipboardList:=false
-	MuteClipboardSurveillance:=false
 	outputdebug pre upload mute: %muteclipboardlist%
 	if(!Errorlevel)
 	{

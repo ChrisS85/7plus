@@ -68,6 +68,8 @@ CreateHotkeys()
 	Gui, Add, Checkbox, x%x1% y%yIt% vHKInvertSelection, CTRL + I: Invert selection
 	yIt+=checkboxstep	
 	Gui, Add, Checkbox, x%x1% y%yIt% vHKOpenInNewFolder, Middle Mouse Button: Open in new folder
+	yIt+=checkboxstep	
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKFlattenDirectory, SHIFT + Enter: Show selected directories in flat view
 }
 CreateBehavior()
 {
@@ -174,14 +176,54 @@ CreateWindowHandling1()
 {
 	global
 	local yIt,x1,x,y
-	yIt:=yBase
 	xHelp:=xBase
 	x1:=xHelp+10
 	Gui, Add, Tab2, x156 y14 w410 h350 vWindowHandling1, 
 	AddTab(0, "","SysTabControl324")
 	yIt:=yBase
+
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar3, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKTitleClose, Middle click on title bar: Close program
+	yIt+=checkboxstep	
+	
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKToggleAlwaysOnTop, Right click on title bar: Toggle "Always on top"
+	yIt+=checkboxstep			
+	
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window1, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKKillWindows, Alt+F5/Right click on close button: Force-close active window (kill process)
+	yIt+=checkboxstep		
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghSlideWindow vURL_SlideWindow, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKSlideWindows, WIN + SHIFT + Arrow keys: Slide Window function
+	yIt+=checkboxstep	
+	y:=yIt+yCheckboxTextOffset
+	x:=x1+xCheckboxTextOffset
+	Gui, Add, Text, x%x% y%y% R4, A Slide Window is moved off screen, it will not be shown until you activate it through task bar /`nALT + TAB or move the mouse to the border where it was hidden. It will then slide into the screen,`nand slide out again when the mouse leaves the window or when another window gets activated.`nDeactivate this mode by moving the window or pressing WIN+SHIFT+Arrow key in another direction.
+	yIt+=checkboxstep*2.5
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghCapslock vURL_Capslock, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKFlashWindow, Capslock: Activate flashing window (blinking on taskbar, e.g. instant messengers, ...)
+	yIt+=checkboxstep
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghCapslock vURL_Capslock1, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKToggleWindows, Capslock: Switch between current and previous window
+	yIt+=checkboxstep
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKAltDrag, ALT+Left Mouse Drag: Move windows
+	yIt+=checkboxstep
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKMMinMax, Middle Mouse Button + Mouse wheel: Minimize/Maximize/Restore window under mouse
+	yIt+=checkboxstep
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKAltMinMax, ALT + Mouse wheel: Minimize/Maximize/Restore window under mouse
+	yIt+=checkboxstep
+}
+CreateWindowHandling2()
+{
+	global
+	local yIt,x1,x,y
+	xHelp:=xBase
+	x1:=xHelp+10
+	yIt:=yBase
 	y:=yIt+TextBoxCheckBoxOffset
-	xhelp:=xBase
+	Gui, Add, Tab2, x156 y14 w410 h350 vWindowHandling2, 
+	AddTab(0, "","SysTabControl325")
+	y:=yIt+TextBoxCheckBoxOffset
 	Gui, Add, Text, y%y% x%xhelp% cBlue ghTaskbar vURL_Taskbar, ?
 	Gui, Add, Checkbox, x%x1% y%y% gTaskbarLaunch, Double click on empty taskbar: Run
 	x:=xBase+258
@@ -205,19 +247,6 @@ CreateWindowHandling1()
 	if(A_OsVersion!="WIN_7")
 		GuiControl, disable, HKActivateBehavior
 	yIt+=checkboxstep	
-	
-	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar3, ?
-	Gui, Add, Checkbox, x%x1% y%yIt% vHKTitleClose, Middle click on title bar: Close program
-	yIt+=checkboxstep	
-	
-	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window, ?
-	Gui, Add, Checkbox, x%x1% y%yIt% vHKToggleAlwaysOnTop, Right click on title bar: Toggle "Always on top"
-	yIt+=checkboxstep			
-	
-	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window1, ?
-	Gui, Add, Checkbox, x%x1% y%yIt% vHKKillWindows, Alt+F5/Right click on close button: Force-close active window (kill process)
-	yIt+=checkboxstep	
-	
 	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window2, ?
 	Gui, Add, Checkbox, x%x1% y%yIt% vHKToggleWallpaper, Middle mouse click on desktop: Toggle wallpaper (7 only)
 	if(A_OsVersion!="WIN_7")
@@ -240,26 +269,6 @@ CreateWindowHandling1()
 	}
 	y:=yIt+TextBoxButtonOffset
 	yIt+=textboxstep
-	
-	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghSlideWindow vURL_SlideWindow, ?
-	Gui, Add, Checkbox, x%x1% y%yIt% vHKSlideWindows, WIN + SHIFT + Arrow keys: Slide Window function
-	yIt+=checkboxstep	
-	y:=yIt+yCheckboxTextOffset
-	x:=x1+xCheckboxTextOffset
-	Gui, Add, Text, x%x% y%y% R4, A Slide Window is moved off screen, it will not be shown until you activate it through task bar /`nALT + TAB or move the mouse to the border where it was hidden. It will then slide into the screen,`nand slide out again when the mouse leaves the window or when another window gets activated.`nDeactivate this mode by moving the window or pressing WIN+SHIFT+Arrow key in another direction.
-	yIt+=checkboxstep*2.5
-	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghCapslock vURL_Capslock, ?
-	Gui, Add, Checkbox, x%x1% y%yIt% vHKFlashWindow, Capslock: Activate flashing window (blinking on taskbar, e.g. instant messengers, ...)
-	yIt+=checkboxstep
-	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghCapslock vURL_Capslock1, ?
-	Gui, Add, Checkbox, x%x1% y%yIt% vHKToggleWindows, Capslock: Switch between current and previous window
-	yIt+=checkboxstep		
-}
-CreateWindowHandling2()
-{
-	global
-	Gui, Add, Tab2, x156 y14 w410 h350 vWindowHandling2, 
-	AddTab(0, "","SysTabControl325")
 }
 CreateFTP()
 {
@@ -351,7 +360,7 @@ CreateAbout()
 		Gui, Add, Picture, w128 h128 y%yIt% x%x2% vLogo, %A_ScriptDir%\128.png
 	
 	gui, font, s20
-	Gui, Add, Text, y%yIt% x%x1%, 7plus Version 1.0
+	Gui, Add, Text, y%yIt% x%x1%, 7plus Version %CurrentVersion%
 	gui, font
 	yIt+=hText*3
 	x2:=x1+100
@@ -617,6 +626,14 @@ ShowSettings()
 			GuiControl,,HKInvertSelection,1
 		if HKOpenInNewFolder
 			GuiControl,,HKOpenInNewFolder,1	
+		if HKAltDrag
+			GuiControl,,HKAltDrag,1	
+		if HKFlattenDirectory
+			GuiControl,,HKFlattenDirectory,1	
+		if HKMMinMax
+			GuiControl,,HKMMinMax,1	
+		if HKAltMinMax
+			GuiControl,,HKAltMinMax,1	
 		;Setup Aero Flip 3D
 		if(AeroFlipTime>=0)
 		{

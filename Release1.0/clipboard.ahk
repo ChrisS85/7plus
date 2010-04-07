@@ -90,7 +90,7 @@ return
 
 ClipboardMenuClicked(index)
 {
-	global ClipboardList,MuteClipboardList,clipboardchanged
+	global ClipboardList,MuteClipboardList
 	if(ClipboardList[index])
 	{
 		ClipboardBackup:=ClipboardAll
@@ -108,6 +108,8 @@ ClipboardMenuClicked(index)
 			SetTimer, ToolTipClose, -10000
 		}
 		Clipboard:=ClipboardBackup
+		Clipwait,1,1
+		MuteClipboardList:=false
 	}
 	Menu, ClipboardMenu, DeleteAll
 }
@@ -270,7 +272,6 @@ AppendToClipboard( files, cut=0) {
 ;Writes image data from file to clipboard
 Gdip_ImageToClipboard(Filename) 
 {
-	global MuteClipboardList
   pBitmap := Gdip_CreateBitmapFromFile(Filename) 
   if !pBitmap 
       return 

@@ -108,6 +108,7 @@ IniRead, HKAutoCheck, %A_ScriptDir%\Settings.ini, Explorer, HKAutoCheck, 1
 IniRead, ScrollUnderMouse, %A_ScriptDir%\Settings.ini, Explorer, ScrollUnderMouse, 1
 IniRead, HKInvertSelection, %A_ScriptDir%\Settings.ini, Explorer, HKInvertSelection, 1
 IniRead, HKOpenInNewFolder, %A_ScriptDir%\Settings.ini, Explorer, HKOpenInNewFolder, 1
+IniRead, HKFlattenDirectory, %A_ScriptDir%\Settings.ini, Explorer, HKFlattenDirectory, 1
 
 IniRead, HKKillWindows, %A_ScriptDir%\Settings.ini, Windows, HKKillWindows, 1
 IniRead, HKToggleWallpaper, %A_ScriptDir%\Settings.ini, Windows, HKToggleWallpaper, 1
@@ -118,6 +119,9 @@ IniRead, HKActivateBehavior, %A_ScriptDir%\Settings.ini, Windows, HKActivateBeha
 IniRead, AeroFlipTime, %A_ScriptDir%\Settings.ini, Windows, AeroFlipTime, 0.2
 IniRead, HKFlashWindow, %A_ScriptDir%\Settings.ini, Windows, HKFlashWindow, 1
 IniRead, HKToggleWindows, %A_ScriptDir%\Settings.ini, Windows, HKToggleWindows, 1
+IniRead, HKAltDrag, %A_ScriptDir%\Settings.ini, Windows, HKAltDrag, 1
+IniRead, HKMMinMax, %A_ScriptDir%\Settings.ini, Windows, HKMMinMax, 1
+IniRead, HKAltMinMax, %A_ScriptDir%\Settings.ini, Windows, HKAltMinMax, 1
 
 if((AeroFlipTime>=0&&Vista7)||HKSlideWindows)
 {
@@ -301,6 +305,7 @@ WriteIni()
 	IniWrite, %ScrollUnderMouse%, %A_ScriptDir%\Settings.ini, Explorer, ScrollUnderMouse
 	IniWrite, %HKInvertSelection%, %A_ScriptDir%\Settings.ini, Explorer, HKInvertSelection
 	IniWrite, %HKOpenInNewFolder%, %A_ScriptDir%\Settings.ini, Explorer, HKOpenInNewFolder
+	IniWrite, %HKFlattenDirectory%, %A_ScriptDir%\Settings.ini, Explorer, HKFlattenDirectory
 	
 	IniWrite, %HKToggleAlwaysOnTop%, %A_ScriptDir%\Settings.ini, Windows, HKToggleAlwaysOnTop
 	IniWrite, %HKActivateBehavior%, %A_ScriptDir%\Settings.ini, Windows, HKActivateBehavior
@@ -314,6 +319,9 @@ WriteIni()
 	IniWrite, %SlideWindowsBorder%, %A_ScriptDir%\Settings.ini, Windows, SlideWindowsBorder
 	IniWrite, %HKFlashWindow%, %A_ScriptDir%\Settings.ini, Windows, HKFlashWindow
 	IniWrite, %HKToggleWindows%, %A_ScriptDir%\Settings.ini, Windows, HKToggleWindows
+	IniWrite, %HKAltDrag%, %A_ScriptDir%\Settings.ini, Windows, HKAltDrag
+	IniWrite, %HKAltMinMax%, %A_ScriptDir%\Settings.ini, Windows, HKAltMinMax
+	IniWrite, %HKMMinMax%, %A_ScriptDir%\Settings.ini, Windows, HKMMinMax
 	
 	IniWrite, %HKImproveConsole%, %A_ScriptDir%\Settings.ini, Misc, HKImproveConsole
 	IniWrite, %HKPhotoViewer%, %A_ScriptDir%\Settings.ini, Misc, HKPhotoViewer
