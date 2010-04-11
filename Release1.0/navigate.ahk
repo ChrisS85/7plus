@@ -128,7 +128,8 @@ SetDirectory(sPath)
 		sPath .="\"s
 	If (WinActive("ahk_group ExplorerGroup"))
 	{
-		if (InStr(FileExist(sPath), "D") || SubStr(sPath,1,3)="::{" || SubStr(sPath,1,6)="ftp://" || strEndsWith(sPath,".search-ms")) 
+		;Folders || Namespace || FTP || Saved search || network computers
+		if (InStr(FileExist(sPath), "D") || SubStr(sPath,1,3)="::{" || SubStr(sPath,1,6)="ftp://" || strEndsWith(sPath,".search-ms") || (strStartsWith(sPath,"\\") && !InStr(sPath,"\",false,3))) 
 		{
 			hWnd:=WinExist("A")
 			ShellNavigate(sPath,hwnd)

@@ -396,6 +396,13 @@ CreateAbout()
 	Gui, Add, Text, y%yIt% x%x1% , E-Mail:
 	Gui, Add, Text, y%yIt% x%x2% cBlue gMail vURL_Mail, fragman@gmail.com
 	yIt+=hText*2
+	Gui, Add, Text, y%yIt% x%x1%, To support the development of this project, please donate:
+	yIt+=hText*1.5
+	if(A_IsCompiled)			
+		Gui, Add, Picture, y%yIt% x%x1% cBlue gDonate Icon4 vURL_Donate, %A_ScriptFullPath%
+	else
+		Gui, Add, Picture, y%yIt% x%x1% cBlue gDonate vURL_Donate, %A_ScriptDir%\Donate.png		
+	yIt+=hText*2
 	Gui, Add, Text, y%yIt% x%x1%, Proudly written in Autohotkey
 	yIt+=hText
 	Gui, Add, Text, y%yIt% x%x1% cBlue gAhk vURL_AHK, www.autohotkey.com		
@@ -915,6 +922,10 @@ return
 Bugtracker:
 run http://code.google.com/p/7plus/issues/list
 return
+
+Donate:
+run https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CCDPER7Z2CHZW
+return
 ;---------------------------------------------------------------------------------------------------------------
 ; OK/Cancel/Close
 ;---------------------------------------------------------------------------------------------------------------
@@ -1109,7 +1120,7 @@ HandleMessage(p_w, p_l, p_m, p_hw)
               h_cursor_hand := DllCall("LoadCursor", "uint", 0, "uint", 32649) 
               
               URL_hover := true 
-            }                  
+            }
             h_old_cursor := DllCall("SetCursor", "uint", h_cursor_hand) 
         } 
       ; Mouse cursor doesn't hover URL text control 

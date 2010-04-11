@@ -17,9 +17,29 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 	}
 }
 
-ShellMessage( wParam,lParam ) 
+ShellMessage( wParam,lParam, msg) 
 {
-	global Vista7, ExplorerPath,hwnd1,HKShowSpaceAndSize,BlinkingWindows
+	Critical
+	global Vista7, ExplorerPath,hwnd1,HKShowSpaceAndSize,BlinkingWindows,wtmwParam
+	;Traymin
+	If	msg=1028
+	{
+		If	wParam=1028
+			Return
+		Else If lParam=0x205 ; RButton 
+		{ 
+			wtmwParam := wParam
+			Menu, wtmMenu, Show 
+		}
+		Else If	(lParam=0x201||lParam=0x207)
+			WinTraymin(wParam,3)
+		Return 0
+	}
+	Else If	(wParam=1||wParam=2)
+	{
+		WinTraymin(lParam,wParam)
+		return 0
+	}
 	; Execute a command based on wParam and lParam 
 	
 	;Code for "catching" minimize events. Does not work properly when minimize animation is enabled.

@@ -90,7 +90,7 @@ IsMouseOverTaskbar()
 IsMouseOverFreeTaskListSpace()
 {
 	Critical
-	global result,IsRunning,Vista7
+	global result,IsRunning
 	SetWinDelay 0
 	SetKeyDelay 0
 	SetMouseDelay 0
@@ -99,7 +99,7 @@ IsMouseOverFreeTaskListSpace()
 		IsRunning:=false
 		return false
 	}
-	if(!Vista7)
+	if(A_OSVersion!="WIN_7")
 	{
 		x:=HitTest()
 		outputdebug x %x%

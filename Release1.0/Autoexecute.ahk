@@ -52,8 +52,8 @@ SetDefaultMouseSpeed, 0
 
 ;Register a shell hook to get messages when windows get activated, closed etc
 Gui +LastFound 
-hWnd := WinExist() 
-DllCall( "RegisterShellHookWindow", UInt,hWnd ) 
+hAHK := WinExist() 
+DllCall( "RegisterShellHookWindow", UInt,hAHK ) 
 MsgNum := DllCall( "RegisterWindowMessage", Str,"SHELLHOOK" ) 
 OnMessage( MsgNum, "ShellMessage" ) 
 
@@ -177,6 +177,8 @@ if(A_OSVersion="WIN_7")
 
 if(Vista7)
 	AcquireExplorerConfirmationDialogStrings()
+	
+GoSub TrayminOpen
 
 ;possibly start wizard
 if (Firstrun=1)
@@ -218,6 +220,7 @@ ExitSub:
 Gdip_Shutdown(pToken)
 WriteIni()
 SlideWindows_Exit()
+GoSub TrayminClose
 ExitApp
 
 AutoUpdate()
