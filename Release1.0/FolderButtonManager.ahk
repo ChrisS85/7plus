@@ -1,4 +1,4 @@
-#include lib\com.ahk
+#include %A_ScriptDir%\lib\com.ahk
 ;Some stuff here to use those functions separately to add custom buttons, might have to be expanded a bit later on
 if(A_OSVersion!="WIN_VISTA" && A_OSVersion!="WIN_7")
 {

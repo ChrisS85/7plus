@@ -1,7 +1,7 @@
 HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEventTime ){ 
 	global HKShowSpaceAndSize,HKAutoCheck	
 	;timer while explorer is moved for info gui update
-	if(HKShowSpaceAndSize && WinActive("ahk_group ExplorerGroup"))
+	if(A_OSVersion="WIN_7" && HKShowSpaceAndSize && WinActive("ahk_group ExplorerGroup"))
 	{
 		if(event = 10) 
 			settimer,MoveExplorer,10    

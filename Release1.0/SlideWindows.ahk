@@ -1,7 +1,7 @@
 ;---------------------------------------------------------------------------------------------------------------
 ; Hotkeys and startup/exit
 ;---------------------------------------------------------------------------------------------------------------
-#if HKSlideWindows && !Winactive("ahk_group DesktopGroup") && !Winactive("ahk_group TaskbarGroup") && !WinActive("ahk_class AutoHotkeyGUI") && !SlideWindows.IsASlideWindowInState(2,3) && !IsFullScreen("A",true,true)
+#if HKSlideWindows && !Winactive("ahk_group DesktopGroup") && !Winactive("ahk_group TaskbarGroup") && !WinActive("ahk_class AutoHotkeyGUI") && !SlideWindowArray.IsASlideWindowInState(2,4) && !IsFullScreen("A",true,true)
 #+Left::
 	dir:=1
 	if(SlideWindow:=SlideWindowArray.ContainsHWND(WinExist("A")))
@@ -45,6 +45,7 @@ SlideWindows_Startup()
 	;1: Visible
 	;2: Sliding in
 	;3: Sliding out
+	;4: Releasing
   If !SlideWin 
 		SlideWin := Object("hwnd", 0, "dir", 0, "OrigX", -1 
 		, "OrigY", -1 , "X", -1, "Y", -1 
@@ -90,10 +91,9 @@ SlideWindow_SlideOut(SlideWindow)
 	SuspendWindowMoveCheck:=true
 	SlideWindow.SlideState:=3	
 	SlideWindow.Move(SlideWindow.SlideInX,SlideWindow.SlideInY,SlideWindow.SlideOutX,SlideWindow.SlideOutY,2)
-	SlideWindow.SlideState:=0
 	;DllCall("ShowWindow","UInt", hwnd, "UINT", 6) ;#define SW_MINIMIZE         6 SW_FORCEMINIMIZE    11
 	PostMessage, 0x112, 0xF020,,, ahk_id %hwnd% ;Winminimize, but apparently more reliable
-	outputdebug unsuspending check
+	SlideWindow.SlideState:=0
 	SuspendWindowMoveCheck:=false	
 	outputdebug slide window out finished 
 	SlideWindowArray.Print()
@@ -142,12 +142,14 @@ SlideWindow_Release(SlideWindow,soft=0)
 	{
 		WinRestore ahk_id %hwnd%
 		if(SlideWindow.SlideState=1)
+		{
+			SlideWindow.SlideState:=4
 			SlideWindow.Move(SlideWindow.SlideInX,SlideWindow.SlideInY,SlideWindow.OrigX,SlideWindow.OrigY,2)
+		}
 		else 
 		{
+			SlideWindow.SlideState:=4
 			SlideWindow.Move(SlideWindow.SlideOutX,SlideWindow.SlideOutY,SlideWindow.OrigX,SlideWindow.OrigY,2)
-			if(SlideWindow.SlideState!=0)
-				msgbox Slide window release while sliding!
 		}
 	}
 	WinSet, AlwaysOnTop, Off , ahk_id %hwnd%
@@ -211,7 +213,8 @@ SlideWindowArray_Add(SlideWindowArray, hwnd, dir)
 {
 	global PreviousWindow,CurrentWindow,SlideWin
 	outputdebug add window
-	if(SlideWindowArray.IsSlideSpaceFree(hwnd,dir) && (z:=GetTaskbarDirection())!=dir&&z>0)
+	WinGet, maxstate,minmax, ahk_id %hwnd%
+	if(SlideWindowArray.IsSlideSpaceFree(hwnd,dir) && (z:=GetTaskbarDirection())!=dir&&z>0 && maxstate!=1)
 	{
 		outputdebug add slide window
 		SlideWindow:=object("base",SlideWin)
@@ -447,7 +450,7 @@ SlideWindows_OnMouseMove(x,y)
 	SlideWindow:=SlideWindowArray.IsSlideSpaceOccupied(x,y,0,0,dir)
 	if(SlideWindow)
 		outputdebug at slide window pos
-	if(dir>0 && !SlideWindowArray.IsASlideWindowInState(1,3) && SlideWindow)
+	if(dir>0 && !SlideWindowArray.IsASlideWindowInState(1,4) && SlideWindow)
 	{
 		hwnd:=SlideWindow.hwnd
 		BorderActivation:=true
@@ -477,7 +480,7 @@ SlideWindows_CheckActivated()
 		return
 	class:=WinGetClass("ahk_id " hwnd)
 	SlideWindow:=SlideWindowArray.ContainsHWND(hwnd)
-	visibleWindow:=SlideWindowArray.IsASlideWindowInState(1,3)
+	visibleWindow:=SlideWindowArray.IsASlideWindowInState(1,4)
 	validWindow:=true
 	WinGet, ExStyle, ExStyle, ahk_id %hwnd%
   If (ExStyle & 0x80)
