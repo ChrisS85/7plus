@@ -91,8 +91,8 @@ SlideWindow_SlideOut(SlideWindow)
 	SlideWindow.SlideState:=3	
 	SlideWindow.Move(SlideWindow.SlideInX,SlideWindow.SlideInY,SlideWindow.SlideOutX,SlideWindow.SlideOutY,2)
 	SlideWindow.SlideState:=0
-	DllCall("ShowWindow","UInt", hwnd, "UINT", 6) ;#define SW_MINIMIZE         6 SW_FORCEMINIMIZE    11
-	
+	;DllCall("ShowWindow","UInt", hwnd, "UINT", 6) ;#define SW_MINIMIZE         6 SW_FORCEMINIMIZE    11
+	PostMessage, 0x112, 0xF020,,, ahk_id %hwnd% ;Winminimize, but apparently more reliable
 	outputdebug unsuspending check
 	SuspendWindowMoveCheck:=false	
 	outputdebug slide window out finished 

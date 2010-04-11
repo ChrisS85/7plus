@@ -105,13 +105,18 @@ TaskButtonClose()
 	outputdebug taskbuttonclose
 	if(HKMiddleClose && IsMouseOverTaskList())
 	{
+		/*
 		if(A_OSVersion="WIN_7")
 			Send {Shift down}
+		*/
 		click right
-		while(!IsContextMenuActive())
+		while(!IsContextMenuActive() && A_OSVersion!="WIN_7")
 			sleep 10
+		Sleep 300
+		/*
 		if(A_OSVersion="WIN_7")
 			Send {Shift up}
+		*/
 		Send {up}{enter}
 		return true
 	}
@@ -133,16 +138,17 @@ Capslock::WinActivate ahk_id %PreviousWindow%
 #if
 
 ;RButton on title bar -> toggle always on top
-#if HKToggleAlwaysOnTop && x:=MouseHittest()=2 || (x=20 && HKKillWindows)
+#if (HKToggleAlwaysOnTop && MouseHittest()=2) || (MouseHittest()=20 && HKKillWindows)
 ~RButton::
+z:=MouseHitTest()
 ;If we hit something, we swallow the click, and need that toggle var therefore
-If (x=2)
+If (z=2)
 {  
 	WinSet, AlwaysOnTop, toggle, A
 	;outputdebug clicked on title bar, toggle always on top and cancel menu
 	SendInput {Escape} ;Escape is needed to suppress the annoying win7 menu on titlebar right click     
 }
-else if(x=20)
+else if(z=20)
 	CloseKill()  	
 Return
 #if

@@ -21,7 +21,12 @@ ShellMessage( wParam,lParam )
 {
 	global Vista7, ExplorerPath,hwnd1,HKShowSpaceAndSize,BlinkingWindows
 	; Execute a command based on wParam and lParam 
-	if(false && wParam=5)
+	
+	;Code for "catching" minimize events. Does not work properly when minimize animation is enabled.
+	;A CBT hook would be required for that, but it injects itsself into every process and can cause a huge system fuckup.
+	;Some minimize events could be catched, like click on min button, but not sure if it's worth it
+	/*
+	if(wParam=5)
 	{		
 		outputdebug getminrect %lParam%
 		hwnd := NumGet(lParam+0, 0, "UInt")
@@ -29,19 +34,21 @@ ShellMessage( wParam,lParam )
 		RegRead, Animate, HKCU, Control Panel\Desktop\WindowMetrics , MinAnimate
 		outputdebug animate is currently set to %animate%
 		VarSetCapacity(struct, 8, 0)	
-	  NumPut(8, struct, 0, "UInt")
-	  NumPut(0, struct, 4, "Int")
+		NumPut(8, struct, 0, "UInt")
+		NumPut(0, struct, 4, "Int")
 		DllCall("SystemParametersInfo", "UINT", 0x0049,"UINT", 8,"STR", struct,"UINT", 0x0003) ;SPI_SETANIMATION            0x0049 SPIF_SENDWININICHANGE 0x0002
 		WinActivate ahk_id %hwnd%
 		;Possibly activate it again
 		if(Animate=1)
 		{
-	  	NumPut(1, struct, 4, "UInt")
-	  	DllCall("SystemParametersInfo", "UINT", 0x0049,"UINT", 8,"STR", struct,"UINT", 0x0003) ;SPI_SETANIMATION            0x0049 SPIF_SENDWININICHANGE 0x0002
-	  }
+			NumPut(1, struct, 4, "UInt")
+			DllCall("SystemParametersInfo", "UINT", 0x0049,"UINT", 8,"STR", struct,"UINT", 0x0003) ;SPI_SETANIMATION            0x0049 SPIF_SENDWININICHANGE 0x0002
+		}
 		outputdebug %hwnd%
 		
 	}
+	*/
+	
 	;Blinking windows detection, add new blinking windows
 	if(wParam=32774)
 	{

@@ -27,7 +27,7 @@ CurrentVersion:=1.1
 #include FolderButtonManager.ahk
 #include ContextMenu.ahk
 #include FastFolders.ahk
-#include WindowTweaks.ahk
+#include WindowHandling.ahk
 #include explorer.ahk
 #include clipboard.ahk
 #include FTPUpload.ahk 

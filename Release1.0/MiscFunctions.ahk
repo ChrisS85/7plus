@@ -90,8 +90,10 @@ MouseHitTest()
   	return -2
   if IsContextMenuActive()
   	return -2
+  /*
   IfWinNotActive, ahk_id %WindowUnderMouseID%
   	WinActivate, ahk_id %WindowUnderMouseID% 
+	*/
   ; WM_NCHITTEST 
   SendMessage, 0x84,, ( MouseY << 16 )|MouseX,, ahk_id %WindowUnderMouseID%
   return ErrorLevel
