@@ -12,9 +12,9 @@ HoverCheck()
 	x:=IsFullscreen("A",false,false)
 	if(!x)
 	{
-		if(MouseX != lastx || MouseY != lasty)
-			SlideWindows_OnMouseMove(MouseX,MouseY)
-		SlideWindows_CheckWindowState()
+    if(MouseX != lastx || MouseY != lasty)
+    	SlideWindows_OnMouseMove(MouseX,MouseY)
+    SlideWindows_CheckWindowState()
 	}
   if (Vista7 && !x && (MouseX != lastx || MouseY != lasty) && MouseX=0 && MouseY=0 && !WinActive("ahk_class Flip3D"))
   { 
@@ -133,19 +133,18 @@ Capslock::WinActivate ahk_id %PreviousWindow%
 #if
 
 ;RButton on title bar -> toggle always on top
-#if HKToggleAlwaysOnTop
+#if HKToggleAlwaysOnTop && x:=MouseHittest()=2 || (x=20 && HKKillWindows)
 ~RButton::
-	x:=MouseHittest()
-  ;If we hit something, we swallow the click, and need that toggle var therefore
-	If (x=2) ;,3,8,9,20,21 ; in titlebar enclosed area - top of window 
-  {  
-    WinSet, AlwaysOnTop, toggle, A
-    ;outputdebug clicked on title bar, toggle always on top and cancel menu
-    SendInput {Escape} ;Escape is needed to suppress the annoying win7 menu on titlebar right click     
-  }
-	else if(x=20 && HKKillWindows)
-  	CloseKill()  	
-	Return
+;If we hit something, we swallow the click, and need that toggle var therefore
+If (x=2)
+{  
+	WinSet, AlwaysOnTop, toggle, A
+	;outputdebug clicked on title bar, toggle always on top and cancel menu
+	SendInput {Escape} ;Escape is needed to suppress the annoying win7 menu on titlebar right click     
+}
+else if(x=20)
+	CloseKill()  	
+Return
 #if
 
 ; Alt+LButton Window dragging, slightly modified by Fragman
@@ -160,8 +159,11 @@ Capslock::WinActivate ahk_id %PreviousWindow%
 
 IsDraggable()
 {
-	WinGet,style,style,A
+	MouseGetPos,,,win
+	WinGet,style,style,ahk_id %win%
 	if(style & 0x80000000 && !(style & 0x00400000 || style & 0x00800000 || style & 0x00080000)) ;WS_POPUP && !WS_DLGFRAME && !WS_BORDER && !WS_SYSMENU
+		return false
+	if(WinGetClass("ahk_id " win)="Notepad++") ;Notepad++ uses Alt+LButton for rectangular text selection
 		return false
 	return true
 }

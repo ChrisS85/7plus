@@ -103,7 +103,7 @@ IniRead, HKSelectFirstFile, %A_ScriptDir%\Settings.ini, Explorer, HKSelectFirstF
 IniRead, HKImproveEnter, %A_ScriptDir%\Settings.ini, Explorer, HKImproveEnter, 1
 IniRead, HKDoubleClickUpwards, %A_ScriptDir%\Settings.ini, Explorer, HKDoubleClickUpwards, 1
 IniRead, HKShowSpaceAndSize, %A_ScriptDir%\Settings.ini, Explorer, HKShowSpaceAndSize, 1
-IniRead, HKMouseGestureBack, %A_ScriptDir%\Settings.ini, Explorer, HKMouseGestureBack, 1
+IniRead, HKMouseGestures, %A_ScriptDir%\Settings.ini, Explorer, HKMouseGestures, 1
 IniRead, HKAutoCheck, %A_ScriptDir%\Settings.ini, Explorer, HKAutoCheck, 1
 IniRead, ScrollUnderMouse, %A_ScriptDir%\Settings.ini, Explorer, ScrollUnderMouse, 1
 IniRead, HKInvertSelection, %A_ScriptDir%\Settings.ini, Explorer, HKInvertSelection, 1
@@ -123,10 +123,6 @@ IniRead, HKAltDrag, %A_ScriptDir%\Settings.ini, Windows, HKAltDrag, 1
 IniRead, HKMMinMax, %A_ScriptDir%\Settings.ini, Windows, HKMMinMax, 1
 IniRead, HKAltMinMax, %A_ScriptDir%\Settings.ini, Windows, HKAltMinMax, 1
 
-if((AeroFlipTime>=0&&Vista7)||HKSlideWindows)
-{
-	SetTimer, hovercheck, 10
-}
 IniRead, HKHoverStart, %A_ScriptDir%\Settings.ini, Windows, HKHoverStart, 1
 ;program to launch on double click on taskbar
 IniRead, TaskbarLaunchPath, %A_ScriptDir%\Settings.ini, Windows, TaskbarLaunchPath , %A_Windir%\system32\taskmgr.exe
@@ -143,6 +139,13 @@ IniRead, ClipboardManager, %A_ScriptDir%\Settings.ini, Misc, ClipboardManager, 1
 ;Fullscreen exclusion list
 IniRead, FullscreenExclude, %A_ScriptDir%\Settings.ini, Misc, FullscreenExclude,VLC DirectX,OpWindow,CabinetWClass
 IniRead, FullscreenInclude, %A_ScriptDir%\Settings.ini, Misc, FullscreenInclude,Project64
+IniRead, ImageQuality, %A_ScriptDir%\Settings.ini, Misc, ImageQuality,100
+IniRead, ImageExtension, %A_ScriptDir%\Settings.ini, Misc, ImageExtension,png
+
+if((AeroFlipTime>=0&&Vista7)||HKSlideWindows)
+{
+	SetTimer, hovercheck, 10
+}
 ;Clipboard manager list (is some sort of fixed size stack which removes oldest entry on add/insert/push)
 Stack := Object("len", "Array_Length", "indexOf", "Array_indexOf", "join", "Array_Join" 
       , "append", "Array_Append", "insert", "Array_Insert", "delete", "Array_Delete" 
@@ -300,7 +303,7 @@ WriteIni()
 	IniWrite, %HKImproveEnter%, %A_ScriptDir%\Settings.ini, Explorer, HKImproveEnter
 	IniWrite, %HKDoubleClickUpwards%, %A_ScriptDir%\Settings.ini, Explorer, HKDoubleClickUpwards
 	IniWrite, %HKShowSpaceAndSize%, %A_ScriptDir%\Settings.ini, Explorer, HKShowSpaceAndSize
-	IniWrite, %HKMouseGestureBack%, %A_ScriptDir%\Settings.ini, Explorer, HKMouseGestureBack
+	IniWrite, %HKMouseGestures%, %A_ScriptDir%\Settings.ini, Explorer, HKMouseGestures
 	IniWrite, %HKAutoCheck%, %A_ScriptDir%\Settings.ini, Explorer, HKAutoCheck
 	IniWrite, %ScrollUnderMouse%, %A_ScriptDir%\Settings.ini, Explorer, ScrollUnderMouse
 	IniWrite, %HKInvertSelection%, %A_ScriptDir%\Settings.ini, Explorer, HKInvertSelection
@@ -331,6 +334,8 @@ WriteIni()
 	IniWrite, %FullscreenInclude%, %A_ScriptDir%\Settings.ini, Misc, FullscreenInclude
 	IniWrite, %ClipboardManager%, %A_ScriptDir%\Settings.ini, Misc, ClipboardManager
 	IniWrite, %HideTrayIcon%, %A_ScriptDir%\Settings.ini, Misc, HideTrayIcon
+	IniWrite, %ImageQuality%, %A_ScriptDir%\Settings.ini, Misc, ImageQuality
+	IniWrite, %ImageExtension%, %A_ScriptDir%\Settings.ini, Misc, ImageExtension
 	;FastFolders
 	Loop 10
 	{

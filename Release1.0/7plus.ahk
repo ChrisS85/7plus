@@ -7,37 +7,41 @@ SetBatchLines -1
 SetMouseDelay, -1 ; no pause after mouse clicks 
 SetKeyDelay, -1 ; no pause after keys sent 
 CoordMode, Mouse, Screen
+#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases. 
+SendMode Input  ; Recommended for new scripts due to its superior speed and reliability. 
+SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 CurrentVersion:=1.1
-#include %a_scriptdir%\lib\binreadwrite.ahk
-#include %a_scriptdir%\lib\gdip.ahk
-#include %a_scriptdir%\lib\Functions.ahk
-#include %a_scriptdir%\lib\com.ahk
-#include %a_scriptdir%\lib\FTPLib.ahk
-#include %a_scriptdir%\lib\Array.ahk
-#include %a_scriptdir%\lib\RemoteBuf.ahk
-#include %a_scriptdir%\lib\Taskbutton.ahk
-#include %a_scriptdir%\lib\Cursor.ahk
-#include %a_scriptdir%\Autoexecute.ahk
-#include %a_scriptdir%\messagehooks.ahk
-#include %a_scriptdir%\navigate.ahk
-#include %a_scriptdir%\FolderButtonManager.ahk
-#include %a_scriptdir%\ContextMenu.ahk
-#include %a_scriptdir%\FastFolders.ahk
-#include %a_scriptdir%\WindowTweaks.ahk
-#include %a_scriptdir%\explorer.ahk
-#include %a_scriptdir%\clipboard.ahk
-#include %a_scriptdir%\FTPUpload.ahk 
-#include %a_scriptdir%\Taskbar.ahk
-#include %a_scriptdir%\CustomHotkeys.ahk
-#include %a_scriptdir%\debugging.ahk
-#include %a_scriptdir%\wizard.ahk
-#include %a_scriptdir%\settings.ahk
-#include %a_scriptdir%\miscfunctions.ahk
-#include %a_scriptdir%\Registry.ahk
-#include %a_scriptdir%\SlideWindows.ahk
-#include %a_scriptdir%\JoyControl.ahk
-#include %a_scriptdir%\Tooltip.ahk
-#include %a_scriptdir%\Newstuff.ahk
+#Include %A_ScriptDir%
+#include lib\binreadwrite.ahk
+#include lib\gdip.ahk
+#include lib\Functions.ahk
+#include lib\com.ahk
+#include lib\FTPLib.ahk
+#include lib\Array.ahk
+#include lib\RemoteBuf.ahk
+#include lib\Taskbutton.ahk
+#include lib\Cursor.ahk
+#include Autoexecute.ahk
+#include messagehooks.ahk
+#include navigate.ahk
+#include FolderButtonManager.ahk
+#include ContextMenu.ahk
+#include FastFolders.ahk
+#include WindowTweaks.ahk
+#include explorer.ahk
+#include clipboard.ahk
+#include FTPUpload.ahk 
+#include Taskbar.ahk
+#include CustomHotkeys.ahk
+#include debugging.ahk
+#include wizard.ahk
+#include settings.ahk
+#include miscfunctions.ahk
+#include Registry.ahk
+#include SlideWindows.ahk
+#include JoyControl.ahk
+#include Tooltip.ahk
+#include Newstuff.ahk
 #if !IsFullscreen("A",true,false)
 #h::
 	if(WinExist("7plus Settings"))
@@ -46,3 +50,4 @@ CurrentVersion:=1.1
 		GoSub Settingshandler
 	return
 #if
+#y::Reload

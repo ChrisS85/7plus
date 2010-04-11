@@ -18,12 +18,16 @@ SplitCommand(fullcmd, ByRef cmd, ByRef args)
 		args:=SubStr(fullcmd,pos+1)
 		args:=strTrim(args," ")
 	}
-	else
+	else if(pos:=InStr(fullcmd, " " ,0, 1))
 	{
-		pos:=InStr(fullcmd, " " ,0, 1)
 		cmd:=SubStr(fullcmd,1,pos-1)
 		args:=SubStr(fullcmd,pos+1)
 		args:=strTrim(args," ")
+	}
+	else
+	{
+		cmd:=fullcmd
+		args:=""
 	}
 }
 

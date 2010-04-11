@@ -91,7 +91,7 @@ SlideWindow_SlideOut(SlideWindow)
 	SlideWindow.SlideState:=3	
 	SlideWindow.Move(SlideWindow.SlideInX,SlideWindow.SlideInY,SlideWindow.SlideOutX,SlideWindow.SlideOutY,2)
 	SlideWindow.SlideState:=0
-	DllCall("ShowWindow","UInt", hwnd, "UINT", 11) ;#define SW_MINIMIZE         6 SW_FORCEMINIMIZE    11
+	DllCall("ShowWindow","UInt", hwnd, "UINT", 6) ;#define SW_MINIMIZE         6 SW_FORCEMINIMIZE    11
 	
 	outputdebug unsuspending check
 	SuspendWindowMoveCheck:=false	
@@ -134,7 +134,9 @@ SlideWindow_Release(SlideWindow,soft=0)
 {
 	global SlideWindowArray,SuspendWindowMoveCheck
 	hwnd:=SlideWindow.hwnd
-	outputdebug release %hwnd% %soft%
+	class:=WinGetClass("ahk_id " hwnd)
+	outputdebug release %class% %hwnd% %soft%
+	SlideWindowArray.Print()
 	SuspendWindowMoveCheck:=true
 	if(!soft)
 	{
@@ -440,24 +442,24 @@ SlideWindows_OnMouseMove(x,y)
 		dir=4
 	if((z:=GetTaskbarDirection())=dir||z<=0)
 		return
+	
 	;Don't Slide in while other window is active or while sliding
 	SlideWindow:=SlideWindowArray.IsSlideSpaceOccupied(x,y,0,0,dir)
 	if(SlideWindow)
 		outputdebug at slide window pos
 	if(dir>0 && !SlideWindowArray.IsASlideWindowInState(1,3) && SlideWindow)
-	{		
-		outputdebug mouse slide in
+	{
 		hwnd:=SlideWindow.hwnd
 		BorderActivation:=true
 		WinGetClass class, ahk_id %hwnd%
-		outputdebug activate border %class%
+		outputdebug border slide in %class%
 		SlideWindow.SlideIn()
 		return
 	}
 	;Now see if mouse is currently over a shown slide window and maybe hide it
 	MouseGetPos, , ,win
 	visibleWin:=SlideWindowArray.IsASlideWindowInState(1)
-	if(visibleWin && !visibleWin.KeepOpen && visibleWin.hwnd!=win)
+	if(visibleWin && !visibleWin.KeepOpen && visibleWin.hwnd!=win && !IsContextMenuActive())
 	{
 		WinGetClass class, ahk_id %CurrentWindow%
 		outputdebug mouse left window, slide out and activate %class%

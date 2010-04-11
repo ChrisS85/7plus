@@ -275,8 +275,8 @@ AcquireExplorerConfirmationDialogStrings()
 	return false
 }
 
-;Scroll control under mouse
-#if HKMouseGestureBack && GetKeyState("RButton") && (WinActive("ahk_group ExplorerGroup")||IsDialog()) && IsMouseOverFileList()
+
+#if HKMouseGestures && GetKeyState("RButton") && (WinActive("ahk_group ExplorerGroup")||IsDialog()) && IsMouseOverFileList()
 LButton::
   outputdebug go back
 	SuppressRButtonUp:=true
@@ -284,13 +284,19 @@ LButton::
 	Shell_GoBack()
 	return
 #if
-#if HKMouseGestureBack && SuppressRButtonUp
+#if HKMouseGestures && SuppressRButtonUp
 ~RButton UP::
 	SuppressRButtonUp:=false
 	Send, {Esc}
 	Return
 #if
-
+#if HKMouseGestures && GetKeyState("LButton","P") && (WinActive("ahk_group ExplorerGroup")||IsDialog()) && IsMouseOverFileList()
+RButton::
+	outputdebug go forward
+	Shell_GoForward()
+	SuppressRButtonUp:=true
+	Return
+#if
 ;Enter:Execute focussed file
 #if HKImproveEnter && WinActive("ahk_group ExplorerGroup") && InFileList() && !IsRenaming() && !IsContextMenuActive()
 Enter::
@@ -701,13 +707,20 @@ return
 #if HKInvertSelection && WinActive("ahk_group ExplorerGroup")
 ^i::InvertSelection()
 #if
-
+#x::Outputdebug(GetCurrentFolder())
 ;Flat View
-#if HKFlattenDirectory && WinActive("ahk_group ExplorerGroup")
+#if HKFlattenDirectory && Vista7 && WinActive("ahk_group ExplorerGroup")
 +Enter::
 if(FileExist(a_scriptdir "\FlatView.search-ms"))
 	FileDelete %a_scriptdir%\FlatView.search-ms 
 files:=GetSelectedFiles()
+/*
+if(files="::{26EE0668-A00A-44D7-9371-BEB064C98683}")
+{
+	outputdebug god mode
+	SetDirectory("::{ED7BA470-8E54-465E-825C-99712043E01C}")
+}
+*/
 searchString=
 (
 <?xml version="1.0"?>

@@ -99,6 +99,7 @@ ClipboardMenuClicked(index)
 		Clipwait,1,1
 		if(!Errorlevel)
 		{
+			Sleep 100 ;Some extra sleep to increase reliability
 			Send ^v
 			Sleep 20
 		}
@@ -127,7 +128,7 @@ CreateFile()
 		  If (DllCall("IsClipboardFormatAvailable", "Uint", 2) && temp_img!="" )
 			{
 				outputdebug image in clipboard			
-				x:=WriteClipboardImageToFile(temp_img)
+				x:=WriteClipboardImageToFile(temp_img,100)
 				if (x)
 					CopyToClipboard(temp_img, false)
 			}
@@ -178,12 +179,15 @@ ReadClipboardImage()
 }
 
 ;Reads an image from clipboard, saves it to a file, and puts CF_HDROP structure in clipboard for file pasting
-WriteClipboardImageToFile(path)
+WriteClipboardImageToFile(path,Quality="")
 {
+	global ImageQuality
+	if(!Quality)
+		Quality:=ImageQuality
 	pBitmap:=ReadClipboardImage()
 	if(!pBitmap)
 		return -1
-	Gdip_SaveBitmapToFile(pBitmap, path, 100)
+	Gdip_SaveBitmapToFile(pBitmap, path, ImageQuality)
 	;clipback:=ClipboardAll
 	;DllCall("OpenClipboard", "Uint", 0)
 	;DllCall("EmptyClipboard") 

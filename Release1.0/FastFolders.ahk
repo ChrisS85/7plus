@@ -156,7 +156,7 @@ FastFolderMenuHandler3:
 FastFolderMenuClicked(3)
 return
 FastFolderMenuHandler4:
-FastFolderMenuClicked(5)
+FastFolderMenuClicked(4)
 return
 FastFolderMenuHandler5:
 FastFolderMenuClicked(5)
@@ -203,6 +203,7 @@ FastFolderMenuClicked(index)
 	}
 	else
 	{
+		Sleep 100
 		SetDirectory(y)
 	}
 	Menu, FastFolders, DeleteAll

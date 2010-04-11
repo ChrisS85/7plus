@@ -82,6 +82,7 @@ Upload(Files)
 ;Uploads text/image from clipboard and puts links in clipboard
 UploadFromClipboard()
 {
+	global ImageExtension
 	text:=DllCall("IsClipboardFormatAvailable", "Uint", 1)
 	image:=DllCall("IsClipboardFormatAvailable", "Uint", 2)
 	outputdebug text: %text% image: %image%
@@ -102,7 +103,14 @@ UploadFromClipboard()
 			{
 				if(!(OutExtension="jpg"||OutExtension="png"||OutExtension="bmp"))
 				{
-					Destination:=OutNameNoExt ".png"
+					if(ImageExtension="jpg"||ImageExtension="png"||ImageExtension="bmp")
+						Destination:=OutNameNoExt "." ImageExtension
+					Else
+					{
+						Destination:=OutNameNoExt ".png"
+						ToolTip(1, ImageExtension " is no supported file extension. Using png...", "Invalid file extension","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
+						SetTimer, ToolTipClose, -5000
+					}
 				}	
 				WriteClipboardImageToFile(A_Temp "\" Destination)			
 			}

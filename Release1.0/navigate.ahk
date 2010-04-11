@@ -2,9 +2,9 @@
 
 Shell_GoBack(hWnd=0)
 {
-  Critical
+	Critical
 	If   hWnd||(hWnd:=WinExist("ahk_class CabinetWClass"))||(hWnd:=WinExist("ahk_class ExploreWClass")) 
-  {
+	{
 		sa := Com_CreateObject("Shell.Application")
 		wins := sa.Windows
 		loop % wins.count
@@ -14,9 +14,27 @@ Shell_GoBack(hWnd=0)
 			if(window.Hwnd=hWnd)
 				break
 		}
-    Window.GoBack()
+		Window.GoBack()
 		return
-  }
+	}
+}
+Shell_GoForward(hWnd=0)
+{
+	Critical
+	If   hWnd||(hWnd:=WinExist("ahk_class CabinetWClass"))||(hWnd:=WinExist("ahk_class ExploreWClass")) 
+	{
+		sa := Com_CreateObject("Shell.Application")
+		wins := sa.Windows
+		loop % wins.count
+		{
+		window:=wins.Item(A_Index-1)
+		If Not InStr( window.FullName, "steam.exe" ) ; ensure pwb isn't IE
+			if(window.Hwnd=hWnd)
+				break
+		}
+		Window.GoForward()
+		return
+	}
 }
 
 ShellNavigate(sPath, hWnd=0) 

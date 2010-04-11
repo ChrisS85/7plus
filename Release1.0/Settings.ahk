@@ -57,7 +57,7 @@ CreateHotkeys()
 	x:=x2+80
 	yIt+=checkboxstep	
 	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghNavigation vURL_Navigation1, ?
-	Gui, Add, Checkbox, x%x1% y%yIt% vHKMouseGestureBack, Hold down right mouse button and click left: Go back
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKMouseGestures, Hold right mouse and click left: Go back, Hold left mouse and click right: Go forward
 	yIt+=checkboxstep	
 	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghNavigation vURL_Navigation2, ?
 	Gui, Add, Checkbox, x%x1% y%yIt% vHKDoubleClickUpwards, Double click on empty space in filelist: Go upwards
@@ -69,7 +69,7 @@ CreateHotkeys()
 	yIt+=checkboxstep	
 	Gui, Add, Checkbox, x%x1% y%yIt% vHKOpenInNewFolder, Middle Mouse Button: Open in new folder
 	yIt+=checkboxstep	
-	Gui, Add, Checkbox, x%x1% y%yIt% vHKFlattenDirectory, SHIFT + Enter: Show selected directories in flat view
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKFlattenDirectory, SHIFT + Enter: Show selected directories in flat view (Vista/7 only)
 }
 CreateBehavior()
 {
@@ -338,7 +338,27 @@ CreateMisc()
 	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghClipboardManager vURL_ClipboardManager, ?
 	Gui, Add, Checkbox, x%x1% y%yIt% vClipboardManager, WIN + V: Clipboard manager (stores last 10 entries)
 	
+	
 	yIt+=2*checkboxstep
+	y:=yIt+TextBoxTextOffset
+	x2:=x1+180
+	Gui, Add, Text, x%x1% y%y% Number, Image compression quality:
+	Gui, Add, Edit, x%x2% y%yIt% w%wTBShort% R1 vImageQuality ,%ImageQuality% 
+	yIt+=TextBoxStep
+	y:=yIt+TextBoxTextOffset
+	Gui, Add, Text, x%x1% y%y%, Default image extension:
+	Gui, Add, Edit, x%x2% y%yIt% w%wTBShort% R1 vImageExtension ,%ImageExtension% 
+	yIt+=TextBoxStep
+	y:=yIt+TextBoxTextOffset
+	Gui, Add, Text, x%x1% y%y%, Fullscreen detection include list
+	Gui, Add, Edit, x%x2% y%yIt% w%wTBHuge% R1 vFullscreenInclude ,%FullscreenInclude% 
+	yIt+=TextBoxStep
+	y:=yIt+TextBoxTextOffset
+	Gui, Add, Text, x%x1% y%y%, Fullscreen detection exclude list
+	Gui, Add, Edit, x%x2% y%yIt% w%wTBHuge% R1 vFullscreenExclude ,%FullscreenExclude% 
+	yIt+=TextBoxStep
+	
+	yIt+=checkboxstep
 	Gui, Add, Checkbox, x%x1% y%yIt% vAutorun, Autorun 7plus on windows startup
 	yIt+=checkboxstep
 	Gui, Add, Checkbox, x%x1% y%yIt% vHideTrayIcon, Hide Tray Icon (press WIN + H to show settings!)
@@ -451,6 +471,7 @@ ShowSettings()
 		wTBShort:=50
 		wTBMedium:=170
 		wTBLarge:=210
+		wTBHuge:=300
 		wButton:=30
 		hCheckbox:=16 
 		TabList = Explorer Hotkeys|Explorer Behavior|Fast Folders|Window Handling 1|Window Handling 2|FTP|Misc|About 
@@ -579,8 +600,8 @@ ShowSettings()
 			GuiControl,,HKActivateBehavior,1
 		if HKShowSpaceAndSize
 			GuiControl,,HKShowSpaceAndSize,1
-		if HKMouseGestureBack
-			GuiControl,,HKMouseGestureBack,1
+		if HKMouseGestures
+			GuiControl,,HKMouseGestures,1
 		if HKKillWindows
 			GuiControl,,HKKillWindows,1
 		if HKToggleWallpaper
@@ -1040,6 +1061,7 @@ if(Autorun)
 	RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptFullPath%"
 else
 	RegDelete, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus
+	
 if(HideTrayIcon)
 {
 	MsgBox You have chosen to hide the tray icon. This means that you will only be able to access the settings dialog by pressing WIN + H. Also, the program can only be ended by using the task manager then.
