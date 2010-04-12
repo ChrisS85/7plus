@@ -95,10 +95,9 @@ MouseHitTest()
   	WinActivate, ahk_id %WindowUnderMouseID% 
 	*/
   ; WM_NCHITTEST 
-  SendMessage, 0x84,, ( MouseY << 16 )|MouseX,, ahk_id %WindowUnderMouseID%
+  SendMessage, 0x84,, ( (MouseY&0xFFFF) << 16 )|(MouseX&0xFFFF),, ahk_id %WindowUnderMouseID%
   return ErrorLevel
 }
-
 /*! TheGood (modified a bit by Fragman)
     Checks if a window is in fullscreen mode. 
     ______________________________________________________________________________________________________________ 

@@ -212,6 +212,8 @@ CreateWindowHandling1()
 	yIt+=checkboxstep
 	Gui, Add, Checkbox, x%x1% y%yIt% vHKAltMinMax, ALT + Mouse wheel: Minimize/Maximize/Restore window under mouse
 	yIt+=checkboxstep
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKTrayMin, Right click minimize button or WIN + SHIFT + Arrow key in taskbar direction: Minimize to tray
+	yIt+=checkboxstep
 }
 CreateWindowHandling2()
 {
@@ -662,6 +664,8 @@ ShowSettings()
 			GuiControl,,HKMMinMax,1	
 		if HKAltMinMax
 			GuiControl,,HKAltMinMax,1	
+		if HKTrayMin
+			GuiControl,,HKTrayMin,1	
 		;Setup Aero Flip 3D
 		if(AeroFlipTime>=0)
 		{

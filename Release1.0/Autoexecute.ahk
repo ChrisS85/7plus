@@ -122,6 +122,7 @@ IniRead, HKToggleWindows, %A_ScriptDir%\Settings.ini, Windows, HKToggleWindows, 
 IniRead, HKAltDrag, %A_ScriptDir%\Settings.ini, Windows, HKAltDrag, 1
 IniRead, HKMMinMax, %A_ScriptDir%\Settings.ini, Windows, HKMMinMax, 1
 IniRead, HKAltMinMax, %A_ScriptDir%\Settings.ini, Windows, HKAltMinMax, 1
+IniRead, HKTrayMin, %A_ScriptDir%\Settings.ini, Windows, HKTrayMin, 1
 
 IniRead, HKHoverStart, %A_ScriptDir%\Settings.ini, Windows, HKHoverStart, 1
 ;program to launch on double click on taskbar
@@ -328,6 +329,7 @@ WriteIni()
 	IniWrite, %HKAltDrag%, %A_ScriptDir%\Settings.ini, Windows, HKAltDrag
 	IniWrite, %HKAltMinMax%, %A_ScriptDir%\Settings.ini, Windows, HKAltMinMax
 	IniWrite, %HKMMinMax%, %A_ScriptDir%\Settings.ini, Windows, HKMMinMax
+	IniWrite, %HKTrayMin%, %A_ScriptDir%\Settings.ini, Windows, HKTrayMin
 	
 	IniWrite, %HKImproveConsole%, %A_ScriptDir%\Settings.ini, Misc, HKImproveConsole
 	IniWrite, %HKPhotoViewer%, %A_ScriptDir%\Settings.ini, Misc, HKPhotoViewer

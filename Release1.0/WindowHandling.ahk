@@ -138,18 +138,24 @@ Capslock::WinActivate ahk_id %PreviousWindow%
 #if
 
 ;RButton on title bar -> toggle always on top
-#if (HKToggleAlwaysOnTop && MouseHittest()=2) || (MouseHittest()=20 && HKKillWindows)
+#if ((z:=MouseHittest())=2 && HKToggleAlwaysOnTop) || (z=20 && HKKillWindows)|| (z=8 && HKTrayMin)
 ~RButton::
-z:=MouseHitTest()
 ;If we hit something, we swallow the click, and need that toggle var therefore
 If (z=2)
 {  
-	WinSet, AlwaysOnTop, toggle, A
-	;outputdebug clicked on title bar, toggle always on top and cancel menu
-	SendInput {Escape} ;Escape is needed to suppress the annoying win7 menu on titlebar right click     
+	MouseGetPos, , , z
+	WinActivate ahk_id %z%
+	WinSet, AlwaysOnTop, toggle, ahk_id %z%
+	SendInput {Escape} ;Escape is needed to suppress the annoying menu on titlebar right click     
 }
 else if(z=20)
 	CloseKill()  	
+else if(z=8)
+{
+	MouseGetPos, , , z
+	WinTraymin(z)
+}
+	
 Return
 #if
 

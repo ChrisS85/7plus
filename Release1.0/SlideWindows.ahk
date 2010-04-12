@@ -1,34 +1,54 @@
 ;---------------------------------------------------------------------------------------------------------------
 ; Hotkeys and startup/exit
 ;---------------------------------------------------------------------------------------------------------------
-#if HKSlideWindows && !Winactive("ahk_group DesktopGroup") && !Winactive("ahk_group TaskbarGroup") && !WinActive("ahk_class AutoHotkeyGUI") && !SlideWindowArray.IsASlideWindowInState(2,4) && !IsFullScreen("A",true,true)
+#if ((HKSlideWindows && !SlideWindowArray.IsASlideWindowInState(2,4)) || HKTrayMin ) && !Winactive("ahk_group DesktopGroup") && !Winactive("ahk_group TaskbarGroup") && !WinActive("ahk_class AutoHotkeyGUI") && !IsFullScreen("A",true,true)
 #+Left::
 	dir:=1
-	if(SlideWindow:=SlideWindowArray.ContainsHWND(WinExist("A")))
+	if(HKSlideWindows && SlideWindow:=SlideWindowArray.ContainsHWND(WinExist("A")))
 		SlideWindow.SlideOutOrRelease(dir)
 	else
-		SlideWindowArray.Add(WinExist("A"),dir)
+	{	
+		if(dir!=GetTaskbarDirection())
+			SlideWindowArray.Add(WinExist("A"),dir)
+		Else if(HKTrayMin)
+			WinTrayMin(WinExist("A"))
+	}
 	return
 #+Up::
 	dir:=2
-	if(SlideWindow:=SlideWindowArray.ContainsHWND(WinExist("A")))
+	if(HKSlideWindows && SlideWindow:=SlideWindowArray.ContainsHWND(WinExist("A")))
 		SlideWindow.SlideOutOrRelease(dir)
 	else
-		SlideWindowArray.Add(WinExist("A"),dir)
+	{	
+		if(dir!=GetTaskbarDirection())
+			SlideWindowArray.Add(WinExist("A"),dir)
+		Else if(HKTrayMin)
+			WinTrayMin(WinExist("A"))
+	}
 	return
 #+Right::
 	dir:=3
-	if(SlideWindow:=SlideWindowArray.ContainsHWND(WinExist("A")))
+	if(HKSlideWindows && SlideWindow:=SlideWindowArray.ContainsHWND(WinExist("A")))
 		SlideWindow.SlideOutOrRelease(dir)
 	else
-		SlideWindowArray.Add(WinExist("A"),dir)
+	{	
+		if(dir!=GetTaskbarDirection())
+			SlideWindowArray.Add(WinExist("A"),dir)
+		Else if(HKTrayMin)
+			WinTrayMin(WinExist("A"))
+	}
 	return
 #+Down::
 	dir:=4
-	if(SlideWindow:=SlideWindowArray.ContainsHWND(WinExist("A")))
+	if(HKSlideWindows && SlideWindow:=SlideWindowArray.ContainsHWND(WinExist("A")))
 		SlideWindow.SlideOutOrRelease(dir)
 	else
-		SlideWindowArray.Add(WinExist("A"),dir)
+	{	
+		if(dir!=GetTaskbarDirection())
+			SlideWindowArray.Add(WinExist("A"),dir)
+		Else if(HKTrayMin)
+			WinTrayMin(WinExist("A"))
+	}
 	return
 #if
 
