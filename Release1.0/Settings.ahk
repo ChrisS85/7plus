@@ -405,7 +405,12 @@ CreateAbout()
 	else
 		Gui, Add, Picture, y%yIt% x%x1% cBlue gDonate vURL_Donate, %A_ScriptDir%\Donate.png		
 	yIt+=hText*2
+	x2:=x1+300
 	Gui, Add, Text, y%yIt% x%x1%, Proudly written in Autohotkey
+	Gui, Add, Text, y%yIt% x%x2%, Updater uses
+	Gui, Add, Text, y%yIt% vURL_7zip g7zip cBlue, 7zip
+	Gui, Add, Text, y%yIt% , , which is licensed under the 
+	Gui, Add, Text, y%yIt% vURL_LGPL gLGPL cBlue, LGPL
 	yIt+=hText
 	Gui, Add, Text, y%yIt% x%x1% cBlue gAhk vURL_AHK, www.autohotkey.com		
 	yIt+=hText*2
@@ -926,7 +931,12 @@ return
 Bugtracker:
 run http://code.google.com/p/7plus/issues/list
 return
-
+7zip:
+run http://www.7-zip.org
+Return
+LGPL:
+run http://www.gnu.org/licenses/lgpl.html
+return
 Donate:
 run https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CCDPER7Z2CHZW
 return

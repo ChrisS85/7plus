@@ -255,9 +255,8 @@ AutoUpdate()
 PostUpdate()
 {
 	global CurrentVersion
-	if(FileExist(A_ScriptDir "\Update.zip"))
+	if(FileExist(A_ScriptDir "\Updater.exe"))
 	{
-		outputdebug exists
 		IniRead, Version, %A_ScriptDir%\Version.ini,Version,Version
 		if(CurrentVersion=Version)
 		{
@@ -269,7 +268,7 @@ PostUpdate()
 			}
 		}
 		FileDelete %A_ScriptDir%\Version.ini
-		FileDelete %A_ScriptDir%\Update.zip
+		FileDelete %A_ScriptDir%\Updater.exe
 	}
 }
 WriteIni()

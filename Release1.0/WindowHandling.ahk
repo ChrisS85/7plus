@@ -112,7 +112,21 @@ TaskButtonClose()
 		click right
 		while(!IsContextMenuActive() && A_OSVersion!="WIN_7")
 			sleep 10
-		Sleep 300
+		if(A_OsVersion="WIN_7") ;wait until the menu has slided out
+		{
+			prevx:=0
+			prevy:=0
+			x:=1
+			y:=1
+			WinWaitActive ahk_class DV2ControlHost
+			while(prevx!=x || prevy!=y)
+			{
+				prevx:=x
+				prevy:=y
+				WinGetPos x,y,,,ahk_class DV2ControlHost
+				Sleep 10
+			}
+		}
 		/*
 		if(A_OSVersion="WIN_7")
 			Send {Shift up}
