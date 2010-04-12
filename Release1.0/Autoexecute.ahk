@@ -236,12 +236,15 @@ AutoUpdate()
 			MsgBox,4,,A new update is available. Download now?
 			IfMsgBox Yes
 			{
-				IniRead, Link, %A_ScriptDir%\Version.ini, Version,Link
+				if(A_IsCompiled)
+					IniRead, Link, %A_ScriptDir%\Version.ini, Version,Link
+				else
+					IniRead, Link, %A_ScriptDir%\Version.ini, Version,LinkSource
 				MsgBox Downloading, Please wait
-				URLDownloadToFile, %link%,%A_ScriptDir%\Update.zip
+				URLDownloadToFile, %link%,%A_ScriptDir%\Updater.exe
 				if(!Errorlevel)
 				{
-					Run %A_ScriptDir%\Update.zip
+					Run %A_ScriptDir%\Updater.exe
 					ExitApp
 				}
 				else

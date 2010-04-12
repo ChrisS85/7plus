@@ -1,6 +1,7 @@
 SetWorkingDir %A_scriptdir%
 SetBatchLines 1
 #NoEnv
+MsgBox Updating, Please wait
 FileInstall, C:\Program Files\Autohotkey\Update.7z, Update.7z,1
 FileInstall, C:\Program Files\Autohotkey\7za.exe, 7za.exe,1
 runwait 7za.exe x Update.7z, %a_scriptdir%,hide
