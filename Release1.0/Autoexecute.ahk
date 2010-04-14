@@ -238,7 +238,7 @@ AutoUpdate()
 				MsgBox,4,,A new update is available. Download now?
 				IfMsgBox Yes
 				{
-					SetTimer,downloadmsg,-1
+					Progress zh0 fs18,Downloading Update, please wait.
 					if(A_IsCompiled)
 						IniRead, Link, %A_ScriptDir%\Version.ini, Version,Link
 					else
