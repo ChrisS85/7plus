@@ -229,7 +229,6 @@ AutoUpdate()
 	global CurrentVersion
 	if(IsConnected())
 	{
-		SetTimer,downloadmsg,0
 		URLDownloadToFile, http://7plus.googlecode.com/files/Version.ini, %A_ScriptDir%\Version.ini
 		if(!Errorlevel)
 		{
@@ -239,11 +238,11 @@ AutoUpdate()
 				MsgBox,4,,A new update is available. Download now?
 				IfMsgBox Yes
 				{
+					SetTimer,downloadmsg,-1
 					if(A_IsCompiled)
 						IniRead, Link, %A_ScriptDir%\Version.ini, Version,Link
 					else
 						IniRead, Link, %A_ScriptDir%\Version.ini, Version,LinkSource
-					MsgBox Downloading, Please wait
 					URLDownloadToFile, %link%,%A_ScriptDir%\Updater.exe
 					if(!Errorlevel)
 					{

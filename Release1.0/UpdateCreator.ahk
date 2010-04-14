@@ -42,7 +42,7 @@ WriteUpdater()
 	FileDelete %A_scriptdir%\Updater.ahk
 	FileAppend, #NoTrayIcon`n,%A_scriptdir%\Updater.ahk
 	FileAppend, SetWorkingDir `%A_scriptdir`%`n,%A_scriptdir%\Updater.ahk
-	FileAppend, SetTimer msg`,0`n,%A_scriptdir%\Updater.ahk
+	FileAppend, SetTimer msg`,-1`n,%A_scriptdir%\Updater.ahk
 	FileAppend, FileInstall`, %A_scriptdir%\Update.7z`, Update.7z`,1`n,%A_scriptdir%\Updater.ahk
 	FileAppend, FileInstall`, %A_scriptdir%\7za.exe`, 7za.exe`,1`n,%A_scriptdir%\Updater.ahk
 	FileAppend, runwait 7za.exe x Update.7z`, `%a_scriptdir`%`,hide`n,%A_scriptdir%\Updater.ahk
