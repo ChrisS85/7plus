@@ -3,6 +3,7 @@ FileRemoveDir %A_TEMP%\7plusUpdateCreator,1
 FolderLoop()
 runwait 7za.exe a "%a_scriptdir%\update.7z" "%A_TEMP%\7plusUpdateCreator\*", %a_scriptdir%,Hide
 WriteUpdater()
+runwait %a_scriptdir%\update.7z
 runwait Compiler\Compile_AHK.exe /nogui "%A_ScriptDir%\Updater.ahk"
 FileRemoveDir %A_TEMP%\7plusUpdateCreator,1
 return
