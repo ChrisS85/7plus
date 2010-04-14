@@ -405,16 +405,20 @@ CreateAbout()
 	else
 		Gui, Add, Picture, y%yIt% x%x1% cBlue gDonate vURL_Donate, %A_ScriptDir%\Donate.png		
 	yIt+=hText*2
-	x2:=x1+300
+	x2:=x1+200
 	Gui, Add, Text, y%yIt% x%x1%, Proudly written in Autohotkey
 	Gui, Add, Text, y%yIt% x%x2%, Updater uses
-	Gui, Add, Text, y%yIt% vURL_7zip g7zip cBlue, 7zip
-	Gui, Add, Text, y%yIt% , , which is licensed under the 
-	Gui, Add, Text, y%yIt% vURL_LGPL gLGPL cBlue, LGPL
+	x2+=66
+	Gui, Add, Text, y%yIt% x%x2% vURL_7zip g7zip cBlue, 7-Zip
+	x2+=24
+	Gui, Add, Text, y%yIt% x%x2%, , which is licensed under the 
+	x2+=136
+	Gui, Add, Text, y%yIt% x%x2% vURL_LGPL gLGPL cBlue, LGPL
 	yIt+=hText
 	Gui, Add, Text, y%yIt% x%x1% cBlue gAhk vURL_AHK, www.autohotkey.com		
 	yIt+=hText*2
-	Gui, Add, Text, y%yIt% x%x1% , Licensed under  
+	Gui, Add, Text, y%yIt% x%x1% , Licensed under  	
+	x2:=x1+100
 	Gui, Add, Text, y%yIt% x%x2% cBlue gGPL vURL_GPL, GNU General Public License v3
 	yIt+=hText*2
 	Gui, Add, Text, y%yIt% x%x1% , Credits for lots of code samples and help go out to:`nSean, HotKeyIt, majkinetor, Titan, Lexikos, TheGood, PhiLho, Temp01`nand the other guys and gals on #ahk and the forums.	

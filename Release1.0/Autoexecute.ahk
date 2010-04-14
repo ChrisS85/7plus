@@ -227,34 +227,41 @@ ExitApp
 AutoUpdate()
 {	
 	global CurrentVersion
-	URLDownloadToFile, http://7plus.googlecode.com/files/Version.ini, %A_ScriptDir%\Version.ini
-	if(!Errorlevel)
+	if(IsConnected())
 	{
-		IniRead, Version, %A_ScriptDir%\Version.ini, Version,Version
-		if(Version>CurrentVersion)
+		SetTimer,downloadmsg,0
+		URLDownloadToFile, http://7plus.googlecode.com/files/Version.ini, %A_ScriptDir%\Version.ini
+		if(!Errorlevel)
 		{
-			MsgBox,4,,A new update is available. Download now?
-			IfMsgBox Yes
+			IniRead, Version, %A_ScriptDir%\Version.ini, Version,Version
+			if(Version>CurrentVersion)
 			{
-				if(A_IsCompiled)
-					IniRead, Link, %A_ScriptDir%\Version.ini, Version,Link
-				else
-					IniRead, Link, %A_ScriptDir%\Version.ini, Version,LinkSource
-				MsgBox Downloading, Please wait
-				URLDownloadToFile, %link%,%A_ScriptDir%\Updater.exe
-				if(!Errorlevel)
+				MsgBox,4,,A new update is available. Download now?
+				IfMsgBox Yes
 				{
-					Run %A_ScriptDir%\Updater.exe
-					ExitApp
+					if(A_IsCompiled)
+						IniRead, Link, %A_ScriptDir%\Version.ini, Version,Link
+					else
+						IniRead, Link, %A_ScriptDir%\Version.ini, Version,LinkSource
+					MsgBox Downloading, Please wait
+					URLDownloadToFile, %link%,%A_ScriptDir%\Updater.exe
+					if(!Errorlevel)
+					{
+						Run %A_ScriptDir%\Updater.exe
+						ExitApp
+					}
+					else
+						MsgBox Error while updating. Make sure http://7plus.googlecode.com is reachable.				
 				}
-				else
-					MsgBox Error while updating. Make sure you are connected to the internet.				
 			}
 		}
+		else
+			MsgBox Could not download version info. Make sure http://7plus.googlecode.com is reachable.
 	}
-	else
-		MsgBox Could not download version info. Make sure you're connected to the internet.
 }
+downloadmsg:
+	Msgbox Downloading Update, please wait.
+	return
 PostUpdate()
 {
 	global CurrentVersion
@@ -269,10 +276,10 @@ PostUpdate()
 				IfMsgBox Yes
 					run %A_ScriptDir%\Changelog.txt
 			}
-		}
-		FileDelete %A_ScriptDir%\Version.ini
+		}		
 		FileDelete %A_ScriptDir%\Updater.exe
 	}
+	FileDelete %A_ScriptDir%\Version.ini
 }
 WriteIni()
 {

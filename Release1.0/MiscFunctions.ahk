@@ -98,6 +98,16 @@ MouseHitTest()
   SendMessage, 0x84,, ( (MouseY&0xFFFF) << 16 )|(MouseX&0xFFFF),, ahk_id %WindowUnderMouseID%
   return ErrorLevel
 }
+IsConnected()
+{
+	FileDelete, %a_temp%\result.txt
+	RunWait, cmd /c ping  www.google.com -n 1 >%a_temp%\result.txt,, hide
+	FileRead, result, %a_temp%\result.txt
+	FileDelete, %a_temp%\result.txt
+	IfInString, result, 0`%
+		return true
+	return false
+}
 /*! TheGood (modified a bit by Fragman)
     Checks if a window is in fullscreen mode. 
     ______________________________________________________________________________________________________________ 
