@@ -1,7 +1,8 @@
 SetWorkingDir %a_scriptdir%
 FileRemoveDir %A_TEMP%\7plusUpdateCreator,1
+FileDelete Updater.exe
 FolderLoop()
-runwait 7za.exe a "%a_scriptdir%\update.7z" "%A_TEMP%\7plusUpdateCreator\*", %a_scriptdir%,Hide
+runwait 7za.exe a -y "%a_scriptdir%\update.7z" "%A_TEMP%\7plusUpdateCreator\*", %a_scriptdir%,Hide
 WriteUpdater()
 sleep 500
 runwait %a_scriptdir%\update.7z
@@ -49,12 +50,12 @@ WriteUpdater()
 	FileAppend, Progress zh0 fs18`, Updating, please wait.`n,%A_scriptdir%\Updater.ahk
 	FileAppend, FileInstall`, %A_scriptdir%\Update.7z`, Update.7z`,1`n,%A_scriptdir%\Updater.ahk
 	FileAppend, FileInstall`, %A_scriptdir%\7za.exe`, 7za.exe`,1`n,%A_scriptdir%\Updater.ahk
-	FileAppend, runwait 7za.exe x Update.7z`, `%a_scriptdir`%`,hide`n,%A_scriptdir%\Updater.ahk
+	FileAppend, runwait 7za.exe x -y Update.7z`, `%a_scriptdir`%`,hide`n,%A_scriptdir%\Updater.ahk
 	FileAppend, FileDelete 7za.exe`n,%A_scriptdir%\Updater.ahk
 	FileAppend, FileDelete Update.7z`n,%A_scriptdir%\Updater.ahk
-	FileAppend, if(FileExist("7plus.exe"))`n,%A_scriptdir%\Updater.ahk
+	FileAppend, if(FileExist("7plus.ahk"))`n,%A_scriptdir%\Updater.ahk
+	FileAppend, `trun 7plusahk`n,%A_scriptdir%\Updater.ahk
+	FileAppend, else if(FileExist("7plus.exe"))`n,%A_scriptdir%\Updater.ahk
 	FileAppend, `trun 7plus.exe`n,%A_scriptdir%\Updater.ahk
-	FileAppend, else if(FileExist("7plus.ahk"))`n,%A_scriptdir%\Updater.ahk
-	FileAppend, `trun 7plus.ahk`n,%A_scriptdir%\Updater.ahk
 	FileAppend, ExitApp`n,%A_scriptdir%\Updater.ahk
 }
