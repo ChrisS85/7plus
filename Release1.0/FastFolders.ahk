@@ -132,6 +132,7 @@ FastFolderMenu()
 				x:=FFTitle%i%
 				if(x && (!strStartsWith(x,"ftp://")||!y))
 				{
+					x := "&" i ": " x
 					Menu, FastFolders, add, %x%, FastFolderMenuHandler%i%
 				}
 			} 

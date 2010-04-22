@@ -208,8 +208,6 @@ CreateWindowHandling1()
 	yIt+=checkboxstep
 	Gui, Add, Checkbox, x%x1% y%yIt% vHKAltDrag, ALT+Left Mouse Drag: Move windows
 	yIt+=checkboxstep
-	Gui, Add, Checkbox, x%x1% y%yIt% vHKMMinMax, Middle Mouse Button + Mouse wheel: Minimize/Maximize/Restore window under mouse
-	yIt+=checkboxstep
 	Gui, Add, Checkbox, x%x1% y%yIt% vHKAltMinMax, ALT + Mouse wheel: Minimize/Maximize/Restore window under mouse
 	yIt+=checkboxstep
 	Gui, Add, Checkbox, x%x1% y%yIt% vHKTrayMin, Right click minimize button or WIN + SHIFT + Arrow key in taskbar direction: Minimize to tray
@@ -668,9 +666,7 @@ ShowSettings()
 		if HKAltDrag
 			GuiControl,,HKAltDrag,1	
 		if HKFlattenDirectory
-			GuiControl,,HKFlattenDirectory,1	
-		if HKMMinMax
-			GuiControl,,HKMMinMax,1	
+			GuiControl,,HKFlattenDirectory,1
 		if HKAltMinMax
 			GuiControl,,HKAltMinMax,1	
 		if HKTrayMin

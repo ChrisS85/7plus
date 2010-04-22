@@ -101,9 +101,9 @@ UploadFromClipboard()
 			}
 			else if image
 			{
-				if(!(OutExtension="jpg"||OutExtension="png"||OutExtension="bmp"))
+				if OutExtension not in jpg,png,bmp,gif
 				{
-					if(ImageExtension="jpg"||ImageExtension="png"||ImageExtension="bmp")
+					if ImageExtension in jpg,png,bmp,gif
 						Destination:=OutNameNoExt "." ImageExtension
 					Else
 					{

@@ -49,7 +49,7 @@ ClipboardManagerMenu()
 		StringReplace,x,x,`n,[NEWLINE],All
 		y:="`t"
 		StringReplace,x,x,%y%,[TAB],All ;Weird syntax bug requires `t to be stored in a variable here
-		x:=Substr(x,1,100)
+		x:="&" (A_Index-1) ": " Substr(x,1,100)
 		if(x)
 			Menu, ClipboardMenu, add, %x%, ClipboardHandler%i%
 	}

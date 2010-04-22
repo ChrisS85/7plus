@@ -120,7 +120,6 @@ IniRead, AeroFlipTime, %A_ScriptDir%\Settings.ini, Windows, AeroFlipTime, 0.2
 IniRead, HKFlashWindow, %A_ScriptDir%\Settings.ini, Windows, HKFlashWindow, 1
 IniRead, HKToggleWindows, %A_ScriptDir%\Settings.ini, Windows, HKToggleWindows, 1
 IniRead, HKAltDrag, %A_ScriptDir%\Settings.ini, Windows, HKAltDrag, 1
-IniRead, HKMMinMax, %A_ScriptDir%\Settings.ini, Windows, HKMMinMax, 1
 IniRead, HKAltMinMax, %A_ScriptDir%\Settings.ini, Windows, HKAltMinMax, 1
 IniRead, HKTrayMin, %A_ScriptDir%\Settings.ini, Windows, HKTrayMin, 1
 
@@ -336,7 +335,6 @@ WriteIni()
 	IniWrite, %HKToggleWindows%, %A_ScriptDir%\Settings.ini, Windows, HKToggleWindows
 	IniWrite, %HKAltDrag%, %A_ScriptDir%\Settings.ini, Windows, HKAltDrag
 	IniWrite, %HKAltMinMax%, %A_ScriptDir%\Settings.ini, Windows, HKAltMinMax
-	IniWrite, %HKMMinMax%, %A_ScriptDir%\Settings.ini, Windows, HKMMinMax
 	IniWrite, %HKTrayMin%, %A_ScriptDir%\Settings.ini, Windows, HKTrayMin
 	
 	IniWrite, %HKImproveConsole%, %A_ScriptDir%\Settings.ini, Misc, HKImproveConsole

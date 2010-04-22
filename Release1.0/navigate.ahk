@@ -150,7 +150,7 @@ SetDirectory(sPath)
 
 SetWinRarDirectory(Path)
 {
-	ControlSetText , Edit1, %sPath%, A 
+	ControlSetText , Edit1, %Path%, A 
 	ControlClick, Button1, A
 }
 
