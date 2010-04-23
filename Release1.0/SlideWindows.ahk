@@ -53,7 +53,7 @@
 #if
 
 SlideWindows_Startup()
-{	
+{
 	global SlideWin, SlideWindowArray, BlinkingWindows
 	;Slide Directions:
 	;0=no/invalid direction
@@ -100,7 +100,7 @@ SlideWindow_SlideOutOrRelease(SlideWindow,dir)
 }
 SlideWindow_SlideOut(SlideWindow)
 {
-	Global SuspendWindowMoveCheck, SlideWindowArray
+	Global SuspendWindowMoveCheck, SlideWindowArray, SlideWinHide
 	SetWinDelay 0
 	hwnd:=SlideWindow.hwnd
 	WinGet, maxstate , minmax, ahk_id %hwnd%
@@ -112,7 +112,10 @@ SlideWindow_SlideOut(SlideWindow)
 	SlideWindow.SlideState:=3	
 	SlideWindow.Move(SlideWindow.SlideInX,SlideWindow.SlideInY,SlideWindow.SlideOutX,SlideWindow.SlideOutY,2)
 	;DllCall("ShowWindow","UInt", hwnd, "UINT", 6) ;#define SW_MINIMIZE         6 SW_FORCEMINIMIZE    11
-	PostMessage, 0x112, 0xF020,,, ahk_id %hwnd% ;Winminimize, but apparently more reliable
+	if(SlideWinHide)
+		WinHide, ahk_id %hwnd%
+	else
+		PostMessage, 0x112, 0xF020,,, ahk_id %hwnd% ;Winminimize, but apparently more reliable
 	SlideWindow.SlideState:=0
 	SuspendWindowMoveCheck:=false	
 	outputdebug slide window out finished 
@@ -120,7 +123,7 @@ SlideWindow_SlideOut(SlideWindow)
 }
 SlideWindow_SlideIn(SlideWindow)
 {
-	global SlideHwnd,SuspendWindowMoveCheck, SlideWindowArray
+	global SlideHwnd,SuspendWindowMoveCheck, SlideWindowArray, SlideWinHide
 	SetWinDelay 0
 	outputdebug slide in
 	hwnd:=SlideWindow.hwnd
@@ -134,7 +137,8 @@ SlideWindow_SlideIn(SlideWindow)
   NumPut(8, struct, 0, "UInt")
   NumPut(0, struct, 4, "Int")
 	DllCall("SystemParametersInfo", "UINT", 0x0049,"UINT", 8,"STR", struct,"UINT", 0x0003) ;SPI_SETANIMATION            0x0049 SPIF_SENDWININICHANGE 0x0002
-	
+	if(SlideWinHide)
+		WinShow ahk_id %hwnd%
 	WinActivate ahk_id %hwnd%
 	SlideWindow.SlideState:=2
 	SlideWindow.Move(SlideWindow.SlideOutX,SlideWindow.SlideOutY,SlideWindow.SlideInX,SlideWindow.SlideInY,2)
@@ -152,7 +156,7 @@ SlideWindow_SlideIn(SlideWindow)
 ;soft=Don't move window
 SlideWindow_Release(SlideWindow,soft=0)
 {
-	global SlideWindowArray,SuspendWindowMoveCheck
+	global SlideWindowArray,SuspendWindowMoveCheck,SlideWinHide
 	hwnd:=SlideWindow.hwnd
 	class:=WinGetClass("ahk_id " hwnd)
 	outputdebug release %class% %hwnd% %soft%
@@ -160,7 +164,10 @@ SlideWindow_Release(SlideWindow,soft=0)
 	SuspendWindowMoveCheck:=true
 	if(!soft)
 	{
-		WinRestore ahk_id %hwnd%
+		if(SlideWinHide)
+			WinShow ahk_id %hwnd%
+		Else
+			WinRestore ahk_id %hwnd%
 		if(SlideWindow.SlideState=1)
 		{
 			SlideWindow.SlideState:=4

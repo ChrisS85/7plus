@@ -194,12 +194,14 @@ CreateWindowHandling1()
 	Gui, Add, Checkbox, x%x1% y%yIt% vHKKillWindows, Alt+F5/Right click on close button: Force-close active window (kill process)
 	yIt+=checkboxstep		
 	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghSlideWindow vURL_SlideWindow, ?
-	Gui, Add, Checkbox, x%x1% y%yIt% vHKSlideWindows, WIN + SHIFT + Arrow keys: Slide Window function
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKSlideWindows gSlideWindow, WIN + SHIFT + Arrow keys: Slide Window function
 	yIt+=checkboxstep	
 	y:=yIt+yCheckboxTextOffset
 	x:=x1+xCheckboxTextOffset
 	Gui, Add, Text, x%x% y%y% R4, A Slide Window is moved off screen, it will not be shown until you activate it through task bar /`nALT + TAB or move the mouse to the border where it was hidden. It will then slide into the screen,`nand slide out again when the mouse leaves the window or when another window gets activated.`nDeactivate this mode by moving the window or pressing WIN+SHIFT+Arrow key in another direction.
 	yIt+=checkboxstep*2.5
+	Gui, Add, Checkbox, x%x% y%yIt% vSlideWinHide, Hide Slide Windows in taskbar and from ALT + TAB
+	yIt+=checkboxstep
 	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghCapslock vURL_Capslock, ?
 	Gui, Add, Checkbox, x%x1% y%yIt% vHKFlashWindow, Capslock: Activate flashing window (blinking on taskbar, e.g. instant messengers, ...)
 	yIt+=checkboxstep
@@ -627,7 +629,9 @@ ShowSettings()
 		if HKAutoCheck
 			GuiControl,,HKAutoCheck,1
 		if HKSlideWindows
-			GuiControl,,HKSlideWindows,1	
+			GuiControl,,HKSlideWindows,1
+		if SlideWinHide
+			GuiControl,,SlideWinHide,1	
 		if HKFlashWindow
 			GuiControl,,HKFlashWindow,1
 		if HKToggleWindows
@@ -831,6 +835,14 @@ else
 	GuiControl, disable, AeroFlipTime
 }
 return
+SlideWindow:
+GuiControlGet, slide, , HKSlideWindows
+if(slide)
+	GuiControl, enable, SlideWinHide
+else
+	GuiControl, disable, SlideWinHide
+return
+
 FTP:
 GuiControlGet, ftp , ,Use FTP
 if(ftp)

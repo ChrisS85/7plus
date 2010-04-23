@@ -75,7 +75,7 @@ IsMouseOverFileList()
 	else if(winclass="CabinetWClass" || winclass="ExploreWClass" || z=2) ;Old dialogs or Vista/XP
 	{
 		ControlGetPos , cX, cY, Width, Height, SysListView321, A
-		if(IsInArea(MouseX,MouseY,cX,cY,Width,Height))
+		if(IsInArea(MouseX,MouseY,cX,cY,Width,Height) && UnderMouse = "SysListView321") ;Additional check needed for XP because of header
 			return true			
 	}
 	return false

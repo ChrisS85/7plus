@@ -155,7 +155,17 @@ TaskButtonClose()
 			prevy:=0
 			x:=1
 			y:=1
-			WinWaitActive ahk_class DV2ControlHost
+			while(true)
+			{
+				if(IsContextMenuActive())
+				{
+					Send {Esc}
+					return true
+				}
+				if(WinActive("ahk_class DV2ControlHost"))
+					break
+				Sleep 10
+			}
 			while(prevx!=x || prevy!=y)
 			{
 				prevx:=x
@@ -176,17 +186,110 @@ TaskButtonClose()
 }
 
 ;Flash Windows activation
-#if HKFlashWindow && BlinkingWindows.len()>0 && !IsFullscreen()
-Capslock::
-	z:=BlinkingWindows[1]
-	WinActivate ahk_id %z%
-	return
-#if
-
 ;Current/Previous Window toggle
-#if HKToggleWindows && (!HKFlashWindow || BlinkingWindows.len()=0) && !IsFullscreen()
-Capslock::WinActivate ahk_id %PreviousWindow%
+#if (HKFlashWindow||HKToggleWindows) && !IsFullscreen()
+Capslock::FlashWindows()
 #if
+FindWindow(title,class="",style="",exstyle="",processname="",allowempty=false)
+{
+	WinGet, id, list,,, Program Manager
+	Loop, %id%
+	{
+		this_id := id%A_Index%
+		WinGetClass, this_class, ahk_id %this_id%
+		if(class && class!=this_class)
+			Continue
+		WinGetTitle, this_title, ahk_id %this_id%
+		if(title && title!=this_title)
+			Continue
+		WinGet, this_style, style, ahk_id %this_id%
+		if(style && style!=this_style)
+			Continue
+		WinGet, this_exstyle, exstyle, ahk_id %this_id%
+		if(exstyle && exstyle!=this_exstyle)
+			Continue			
+		WinGetPos ,,,w,h,ahk_id %this_id%
+		if(!allowempty && (w=0 || h=0))
+			Continue		
+		WinGet, this_processname, processname, ahk_id %this_id%
+		if(!processname && processname!=this_processname)
+			Continue
+		return this_id
+	}
+	return 0
+}
+FlashWindows()
+{ 
+	global BlinkingWindows,HKToggleWindows,PreviousWindow
+	if(z:=FindWindow("","OpWindow", 0x96000000, 0x88))
+	{
+		WinGetPos x,y,w,h,ahk_id %z%
+		outputdebug click opera
+		MouseGetPos,mx,my
+		ControlClick,,ahk_id %z% ;for some reason clicking the notification window isn't enough, so we manually activate opera window
+		MouseMove %mx%,%my%,0
+		z:=FindWindow("","OpWindow","",0x00000110)
+		WinActivate ahk_id %z%
+	}
+	else if(z:=FindWindow("","MozillaUIWindowClass", 0x94000000, 0x88))
+	{
+		WinGetPos x,y,w,h,ahk_id %z%
+		x+=w/2
+		y+=h/2
+		outputdebug click firefox/thunderbird %x% %y% %w% %h%
+		MouseGetPos,mx,my
+		ControlClick,,ahk_id %z%
+		MouseMove %mx%,%my%,0
+	}
+	else if(z:=FindWindow("","",0x16CF0000,0x00000188,"trillian.exe"))
+	{
+		WinGetPos x,y,w,h,ahk_id %z%
+		x+=w/2
+		y+=5
+		outputdebug click trillian %x% %y%
+		MouseGetPos,mx,my
+		Click %x% %y%
+		MouseMove %mx%,%my%,0
+	}
+	else if(z:=FindWindow("","",0x96000000,0x00000088,"Steam.exe"))
+	{
+		WinGetPos x,y,w,h,ahk_id %z%
+		x+=w/2
+		y+=h/2
+		outputdebug click steam %x% %y%
+		MouseGetPos,mx,my
+		Click %x% %y%
+		MouseMove %mx%,%my%,0
+	}
+	else if(z:=FindWindow("TTrayAlert"))
+	{
+		WinGetPos x,y,w,h,ahk_id %z%
+		x+=w/2
+		y+=h/2
+		outputdebug click skype %x% %y%
+		MouseGetPos,mx,my
+		Click %x% %y%
+		MouseMove %mx%,%my%,0
+	}
+	else if(z:=FindWindow("","tooltips_class32", 0x940001C2, ""))
+	{
+		WinGetPos x,y,w,h,ahk_id %z%
+		x+=w/2
+		y+=h/2
+		outputdebug click tooltip %x% %y%
+		MouseGetPos,mx,my
+		Click %x% %y%
+		MouseMove %mx%,%my%,0
+	}
+	else if (BlinkingWindows.len()>0)
+	{
+		z:=BlinkingWindows[1]
+		WinActivate ahk_id %z%
+	}
+	else if(HKToggleWindows)
+		WinActivate ahk_id %PreviousWindow%
+	return
+}
 
 ;RButton on title bar -> toggle always on top
 #if ((z:=MouseHittest())=2 && HKToggleAlwaysOnTop) || (z=20 && HKKillWindows)|| (z=8 && HKTrayMin)

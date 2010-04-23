@@ -129,6 +129,7 @@ IniRead, TaskbarLaunchPath, %A_ScriptDir%\Settings.ini, Windows, TaskbarLaunchPa
 stringreplace, TaskbarLaunchPath, TaskbarLaunchPath, `%A_ProgramFiles`%, %A_ProgramFiles% 
 ;Slide windows
 IniRead, HKSlideWindows, %A_ScriptDir%\Settings.ini, Windows, HKSlideWindows , 1
+IniRead, SlideWinHide, %A_ScriptDir%\Settings.ini, Windows, SlideWinHide , 1
 SlideWindows_Startup()
 IniRead, SlideWindowsBorder, %A_ScriptDir%\Settings.ini, Windows, SlideWindowsBorder , 30
 IniRead, HKImproveConsole, %A_ScriptDir%\Settings.ini, Misc, HKImproveConsole, 1
@@ -330,6 +331,7 @@ WriteIni()
 	IniWrite, %HKMiddleClose%, %A_ScriptDir%\Settings.ini, Windows, HKMiddleClose
 	IniWrite, %AeroFlipTime%, %A_ScriptDir%\Settings.ini, Windows, AeroFlipTime
 	IniWrite, %HKSlideWindows%, %A_ScriptDir%\Settings.ini, Windows, HKSlideWindows
+	IniWrite, %SlideWinHide%, %A_ScriptDir%\Settings.ini, Windows, SlideWinHide
 	IniWrite, %SlideWindowsBorder%, %A_ScriptDir%\Settings.ini, Windows, SlideWindowsBorder
 	IniWrite, %HKFlashWindow%, %A_ScriptDir%\Settings.ini, Windows, HKFlashWindow
 	IniWrite, %HKToggleWindows%, %A_ScriptDir%\Settings.ini, Windows, HKToggleWindows
