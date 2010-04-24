@@ -190,38 +190,27 @@ TaskButtonClose()
 #if (HKFlashWindow||HKToggleWindows) && !IsFullscreen()
 Capslock::FlashWindows()
 #if
-FindWindow(title,class="",style="",exstyle="",processname="",allowempty=false)
-{
-	WinGet, id, list,,, Program Manager
-	Loop, %id%
-	{
-		this_id := id%A_Index%
-		WinGetClass, this_class, ahk_id %this_id%
-		if(class && class!=this_class)
-			Continue
-		WinGetTitle, this_title, ahk_id %this_id%
-		if(title && title!=this_title)
-			Continue
-		WinGet, this_style, style, ahk_id %this_id%
-		if(style && style!=this_style)
-			Continue
-		WinGet, this_exstyle, exstyle, ahk_id %this_id%
-		if(exstyle && exstyle!=this_exstyle)
-			Continue			
-		WinGetPos ,,,w,h,ahk_id %this_id%
-		if(!allowempty && (w=0 || h=0))
-			Continue		
-		WinGet, this_processname, processname, ahk_id %this_id%
-		if(!processname && processname!=this_processname)
-			Continue
-		return this_id
-	}
-	return 0
-}
+
 FlashWindows()
 { 
 	global BlinkingWindows,HKToggleWindows,PreviousWindow
-	if(z:=FindWindow("","OpWindow", 0x96000000, 0x88))
+	outputdebug capslock!	
+	if(z:=FindWindow("","",0x16CF0000,0x00000188,"trillian.exe")) ;Trillian isn't needed usually, but if tabs are used, clicking the window is preferred
+	{
+		WinGetPos x,y,w,h,ahk_id %z%
+		x+=w/2
+		y+=5
+		outputdebug click trillian %x% %y%
+		MouseGetPos,mx,my
+		ControlClick,, ahk_id %z%
+		MouseMove %mx%,%my%,0
+	}
+	else if (BlinkingWindows.len()>0)
+	{
+		z:=BlinkingWindows[1]
+		WinActivate ahk_id %z%
+	}
+	else if(z:=FindWindow("","OpWindow", 0x96000000, 0x88))
 	{
 		WinGetPos x,y,w,h,ahk_id %z%
 		outputdebug click opera
@@ -240,17 +229,7 @@ FlashWindows()
 		MouseGetPos,mx,my
 		ControlClick,,ahk_id %z%
 		MouseMove %mx%,%my%,0
-	}
-	else if(z:=FindWindow("","",0x16CF0000,0x00000188,"trillian.exe"))
-	{
-		WinGetPos x,y,w,h,ahk_id %z%
-		x+=w/2
-		y+=5
-		outputdebug click trillian %x% %y%
-		MouseGetPos,mx,my
-		Click %x% %y%
-		MouseMove %mx%,%my%,0
-	}
+	}	
 	else if(z:=FindWindow("","",0x96000000,0x00000088,"Steam.exe"))
 	{
 		WinGetPos x,y,w,h,ahk_id %z%
@@ -280,11 +259,6 @@ FlashWindows()
 		MouseGetPos,mx,my
 		Click %x% %y%
 		MouseMove %mx%,%my%,0
-	}
-	else if (BlinkingWindows.len()>0)
-	{
-		z:=BlinkingWindows[1]
-		WinActivate ahk_id %z%
 	}
 	else if(HKToggleWindows)
 		WinActivate ahk_id %PreviousWindow%
