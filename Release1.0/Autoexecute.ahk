@@ -239,6 +239,7 @@ AutoUpdate()
 				IfMsgBox Yes
 				{
 					Progress zh0 fs18,Downloading Update, please wait.
+					Sleep 10
 					if(A_IsCompiled)
 						IniRead, Link, %A_ScriptDir%\Version.ini, Version,Link
 					else
@@ -258,9 +259,6 @@ AutoUpdate()
 			MsgBox Could not download version info. Make sure http://7plus.googlecode.com is reachable.
 	}
 }
-downloadmsg:
-	Msgbox Downloading Update, please wait.
-	return
 PostUpdate()
 {
 	global CurrentVersion
