@@ -54,7 +54,7 @@ WriteUpdater()
 	FileAppend, FileDelete 7za.exe`n,%A_scriptdir%\Updater.ahk
 	FileAppend, FileDelete Update.7z`n,%A_scriptdir%\Updater.ahk
 	FileAppend, if(FileExist("7plus.ahk"))`n,%A_scriptdir%\Updater.ahk
-	FileAppend, `trun 7plusahk`n,%A_scriptdir%\Updater.ahk
+	FileAppend, `trun 7plus.ahk`n,%A_scriptdir%\Updater.ahk
 	FileAppend, else if(FileExist("7plus.exe"))`n,%A_scriptdir%\Updater.ahk
 	FileAppend, `trun 7plus.exe`n,%A_scriptdir%\Updater.ahk
 	FileAppend, ExitApp`n,%A_scriptdir%\Updater.ahk
