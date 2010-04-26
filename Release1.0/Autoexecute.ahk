@@ -2,7 +2,9 @@
 IniRead, DebugEnabled, %A_ScriptDir%\Settings.ini, General, DebugEnabled , 0
 if(DebugEnabled)
 	DebuggingStart()
-	
+
+;Settings version (required for added ftp password encryption)
+IniRead, SettingsVersion, %A_ScriptDir%\Settings.ini, General, SettingsVersion, 1.0
 ;Update checker
 IniRead, AutoUpdate, %A_ScriptDir%\Settings.ini, Misc, AutoUpdate, 1
 if(AutoUpdate)
@@ -73,6 +75,8 @@ DetectHiddenWindows, On
 IniRead, FTP_Enabled, %A_ScriptDir%\Settings.ini, FTP, UseFTP , 1
 IniRead, FTP_Username, %A_ScriptDir%\Settings.ini, FTP, Username , Username
 IniRead, FTP_Password, %A_ScriptDir%\Settings.ini, FTP, Password , Password
+if(SettingsVersion="1.0") ;Legacy for 1.0 settings files which have no ftp pw encryption
+	FTP_Password:=Encrypt(FTP_Password)
 IniRead, FTP_Host, %A_ScriptDir%\Settings.ini, FTP, Host , Host address
 IniRead, FTP_PORT, %A_ScriptDir%\Settings.ini, FTP, Port , 21
 IniRead, FTP_URL, %A_ScriptDir%\Settings.ini, FTP, URL , URL to webspace
@@ -283,10 +287,12 @@ WriteIni()
 	global
 	local temp
 	IniWrite, %DebugEnabled%, %A_ScriptDir%\Settings.ini, General, DebugEnabled
+	IniWrite, %CurrentVersion%, %A_ScriptDir%\Settings.ini, General, SettingsVersion
 	
 	IniWrite, %FTP_Enabled%, %A_ScriptDir%\Settings.ini, FTP, UseFTP
 	IniWrite, %FTP_Username%, %A_ScriptDir%\Settings.ini, FTP, Username
-	IniWrite, %FTP_Password%, %A_ScriptDir%\Settings.ini, FTP, Password
+	temp := Encrypt(FTP_Password)
+	IniWrite, %temp%, %A_ScriptDir%\Settings.ini, FTP, Password
 	IniWrite, %FTP_Host%, %A_ScriptDir%\Settings.ini, FTP, Host
 	IniWrite, %FTP_PORT%, %A_ScriptDir%\Settings.ini, FTP, Port
 	IniWrite, %FTP_URL%, %A_ScriptDir%\Settings.ini, FTP, URL

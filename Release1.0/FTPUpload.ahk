@@ -42,7 +42,8 @@ Upload(Files)
 {
 	global FTP_Host, FTP_Port, FTP_Username, FTP_Password,FTP_Path,FTP_URL
 	outputdebug upload %files%
-	result:=FtpOpen(FTP_Host, FTP_Port, FTP_Username, FTP_Password)
+	decrypted:=Decrypt(FTP_Password)
+	result:=FtpOpen(FTP_Host, FTP_Port, FTP_Username, decrypted)
 	cliptext=
 	if(result=1)
 	{

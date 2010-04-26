@@ -22,6 +22,7 @@ CurrentVersion:=1.1
 #include %A_ScriptDir%\lib\Taskbutton.ahk
 #include %A_ScriptDir%\lib\Cursor.ahk
 #include %A_ScriptDir%\lib\Win.ahk
+#include %A_ScriptDir%\lib\Crypt.ahk
 #include %A_ScriptDir%\Autoexecute.ahk
 #include %A_ScriptDir%\messagehooks.ahk
 #include %A_ScriptDir%\navigate.ahk

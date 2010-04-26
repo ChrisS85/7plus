@@ -1003,7 +1003,7 @@ if(changed)
 	RefreshFastFolders()
 */
 Autorun:=0 ;?
-
+temp:=FTP_Password
 ;Store variables which can be stored directly
 Gui Submit
 
@@ -1091,6 +1091,8 @@ if(!HKSlideWindows)
 	SlideWindows_Exit()
 ;Store FTP Settings
 GuiControlGet, FTP_Enabled, ,Use FTP
+if(FTP_Password!=temp)
+	FTP_Password:=Encrypt(FTP_Password)
 ValidateFTPVars()
 
 ;Store Autorun setting
@@ -1098,7 +1100,6 @@ if(Autorun)
 	RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptFullPath%"
 else
 	RegDelete, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus
-	
 if(HideTrayIcon)
 {
 	MsgBox You have chosen to hide the tray icon. This means that you will only be able to access the settings dialog by pressing WIN + H. Also, the program can only be ended by using the task manager then.
