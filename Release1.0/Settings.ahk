@@ -67,7 +67,7 @@ CreateHotkeys()
 	yIt+=checkboxstep	
 	Gui, Add, Checkbox, x%x1% y%yIt% vHKInvertSelection, CTRL + I: Invert selection
 	yIt+=checkboxstep	
-	Gui, Add, Checkbox, x%x1% y%yIt% vHKOpenInNewFolder, Middle Mouse Button: Open in new folder
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKOpenInNewFolder, Middle Mouse Button: Open in new window
 	yIt+=checkboxstep	
 	Gui, Add, Checkbox, x%x1% y%yIt% vHKFlattenDirectory, SHIFT + Enter: Show selected directories in flat view (Vista/7 only)
 }
@@ -421,7 +421,7 @@ CreateAbout()
 	x2:=x1+100
 	Gui, Add, Text, y%yIt% x%x2% cBlue gGPL vURL_GPL, GNU General Public License v3
 	yIt+=hText*2
-	Gui, Add, Text, y%yIt% x%x1% , Credits for lots of code samples and help go out to:`nSean, HotKeyIt, majkinetor, Titan, Lexikos, TheGood, PhiLho, Temp01`nand the other guys and gals on #ahk and the forums.	
+	Gui, Add, Text, y%yIt% x%x1% , Credits for lots of code samples and help go out to:`nSean, HotKeyIt, majkinetor, Titan, Lexikos, TheGood, PhiLho, Temp01, Laszlo`nand the other guys and gals on #ahk and the forums.	
 }
 AddTab(IconNumber, TabName, TabControl) 
 {  
