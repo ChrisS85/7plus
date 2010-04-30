@@ -43,7 +43,6 @@ CurrentVersion:=1.1
 #include %A_ScriptDir%\SlideWindows.ahk
 #include %A_ScriptDir%\JoyControl.ahk
 #include %A_ScriptDir%\Tooltip.ahk
-#include %A_ScriptDir%\Newstuff.ahk
 #include %A_ScriptDir%\WinTrayMin.ahk
 #if !IsFullscreen("A",true,false)
 #h::
