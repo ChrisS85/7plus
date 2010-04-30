@@ -65,10 +65,14 @@ CreateHotkeys()
 	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghAppendClipboard vURL_AppendClipboard, ?
 	Gui, Add, Checkbox, x%x1% y%yIt% vHKAppendClipboard, Shift + X / Shift + C: Append files to clipboard instead of replacing (cut/copy)
 	yIt+=checkboxstep	
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghExplorer1dot1 vURL_Explorer1dot1, ?
 	Gui, Add, Checkbox, x%x1% y%yIt% vHKInvertSelection, CTRL + I: Invert selection
+
 	yIt+=checkboxstep	
-	Gui, Add, Checkbox, x%x1% y%yIt% vHKOpenInNewFolder, Middle Mouse Button: Open in new window
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghExplorer1dot1 vURL_Explorer1dot11, ?
+	Gui, Add, Checkbox, x%x1% y%yIt% vHKOpenInNewFolder, Middle Mouse Button: Open folder in new window
 	yIt+=checkboxstep	
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghExplorer1dot1 vURL_Explorer1dot12, ?
 	Gui, Add, Checkbox, x%x1% y%yIt% vHKFlattenDirectory, SHIFT + Enter: Show selected directories in flat view (Vista/7 only)
 }
 CreateBehavior()
@@ -208,10 +212,13 @@ CreateWindowHandling1()
 	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghCapslock vURL_Capslock1, ?
 	Gui, Add, Checkbox, x%x1% y%yIt% vHKToggleWindows, Capslock: Switch between current and previous window
 	yIt+=checkboxstep
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghWindow1dot1 vURL_Window1dot1, ?
 	Gui, Add, Checkbox, x%x1% y%yIt% vHKAltDrag, ALT+Left Mouse Drag: Move windows
 	yIt+=checkboxstep
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghWindow1dot1 vURL_Window1dot11, ?
 	Gui, Add, Checkbox, x%x1% y%yIt% vHKAltMinMax, ALT + Mouse wheel: Minimize/Maximize/Restore window under mouse
 	yIt+=checkboxstep
+	Gui, Add, Text, y%yIt% x%xhelp% cBlue ghWindow1dot1 vURL_Window1dot12, ?
 	Gui, Add, Checkbox, x%x1% y%yIt% vHKTrayMin, Right click minimize button or WIN + SHIFT + Arrow key in taskbar direction: Minimize to tray
 	yIt+=checkboxstep
 }
@@ -614,6 +621,7 @@ ShowSettings()
 			GuiControl,,HKTitleClose,1
 		if HKToggleAlwaysOnTop
 			GuiControl,,HKToggleAlwaysOnTop,1
+		RegRead, HKActivateBehavior, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick
 		if HKActivateBehavior
 			GuiControl,,HKActivateBehavior,1
 		if HKShowSpaceAndSize
@@ -883,6 +891,9 @@ return
 hNavigation:
 run http://www.youtube.com/watch?v=RZOdgDl2ujU
 return
+hExplorer1dot1:
+run http://www.youtube.com/watch?v=xKmWOEbMI1Q
+return
 hScrollUnderMouse:
 run http://www.youtube.com/watch?v=qJ_u4C3EuhU
 return
@@ -915,6 +926,9 @@ run http://www.youtube.com/watch?v=im088NYiSvw
 return
 hSlideWindow:
 run http://www.youtube.com/watch?v=e0yLqr8mjsg
+return
+hWindow1dot1:
+run http://www.youtube.com/watch?v=1vutsoA3j7Y
 return
 hFTP:
 run http://www.youtube.com/watch?v=d01Mjiny_E8
@@ -1100,6 +1114,28 @@ if(Autorun)
 	RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptFullPath%"
 else
 	RegDelete, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus
+
+RegRead, temp, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick
+RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick, %HKActivateBehavior%
+if(temp!=HKActivateBehavior)
+{
+	MsgBox, 4, Restart Explorer, You need to restart explorer to apply a setting. Do you want to do this now?
+	IfMsgBox Yes
+	{
+		Send {CTRL down}{ESC}{CTRL up}
+		WinWaitActive ahk_class DV2ControlHost
+		Send {Right}
+		Send {CTRL down}{SHIFT down}{AppsKey}
+		while(!IsContextMenuActive())
+		{
+			Sleep 10
+		}
+		Send {CTRL up}{Shift up}{Up}
+		Send {Enter}
+		Sleep 500
+		Run %a_windir%\explorer.exe
+	}
+}
 if(HideTrayIcon)
 {
 	MsgBox You have chosen to hide the tray icon. This means that you will only be able to access the settings dialog by pressing WIN + H. Also, the program can only be ended by using the task manager then.

@@ -402,7 +402,7 @@ Backspace::Send !{Up}
 	Return
 #if
 
-#if IsMouseOverTaskList()
+#if IsMouseOverTaskList() ;Can't add the conditions below here right now, because IsDoubleClick seems to fail when called in the #if condition
 LButton::	
 	if(IsDoubleClick() && IsMouseOverFreeTaskListSpace())
 	{
@@ -417,6 +417,7 @@ LButton::
 			TooltipShowSettings:=true
 		}
 	}
+	/*
 	else if (HKActivateBehavior && A_OSVersion="WIN_7")
 	{
 		Send {CTRL Down}{LButton Down}
@@ -424,6 +425,7 @@ LButton::
   		Sleep 20
   	Send {LButton Up}{CTRL Up}
   }
+  */
 	else
 	{
 		Send {LButton Down}

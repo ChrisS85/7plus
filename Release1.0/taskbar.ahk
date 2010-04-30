@@ -116,7 +116,7 @@ IsMouseOverFreeTaskListSpace()
 			result:=true
 			outputdebug break
 			break
-		} 
+		}
 		else if(WinActive("ahk_id DV2ControlHost"))
 		{
 			result:=false
