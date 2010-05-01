@@ -1,4 +1,7 @@
-====March 2010====
+====May 2010====
+  * 05/01/2010: [News05012010 7plus V.1.1 released!]
+====April 2010====
   * 04/03/2010: [News04032010 Small question]
   * 04/01/2010: [News04012010 7plus V.1.0 released!]
+====March 2010====
   * 03/22/2010: [http://code.google.com/p/7plus/wiki/News22032010 Project page created!]
