@@ -96,8 +96,9 @@ ShellMessage( wParam,lParam, msg)
 		outputdebug activate
 		;If we change from another program to explorer/desktop/dialog
 		if(WinActive("ahk_group ExplorerGroup")||WinActive("ahk_group DesktopGroup")||IsDialog())
-    {
-    	;Backup current clipboard contents and write "simple" text/image data in clipboard while explorer is active
+		{
+			ExplorerActivated(lParam)
+			;Backup current clipboard contents and write "simple" text/image data in clipboard while explorer is active
 			ExplorerPath:=GetCurrentFolder()
 			;Paste text/image as file file creation
 			CreateFile()
@@ -107,16 +108,16 @@ ShellMessage( wParam,lParam, msg)
 	else if(wParam=6)
 	{
 		;Detect changed path
-    if(WinActive("ahk_group ExplorerGroup")||IsDialog())
-    {
-    	newpath:=GetCurrentFolder()
-    	if(newpath && newpath!=ExplorerPath)
-    	{
-    		outputdebug Explorer path changed from %ExplorerPath% to %newpath%
-    		ExplorerPathChanged(ExplorerPath, newpath)
-    		ExplorerPath:=newpath
-    	}
-    }
+		if(WinActive("ahk_group ExplorerGroup")||IsDialog())
+		{
+			newpath:=GetCurrentFolder()
+			if(newpath && newpath!=ExplorerPath)
+			{
+				outputdebug Explorer path changed from %ExplorerPath% to %newpath%
+				ExplorerPathChanged(ExplorerPath, newpath)
+				ExplorerPath:=newpath
+			}
+		}
   }
 }
 
@@ -141,8 +142,3 @@ Return
 ToolTipClose: 
 Tooltip()
 return
-
-API_SetWinEventHook(eventMin, eventMax, hmodWinEventProc, lpfnWinEventProc, idProcess, idThread, dwFlags) { 
-   DllCall("CoInitialize", "uint", 0) 
-   return DllCall("SetWinEventHook", "uint", eventMin, "uint", eventMax, "uint", hmodWinEventProc, "uint", lpfnWinEventProc, "uint", idProcess, "uint", idThread, "uint", dwFlags) 
-}

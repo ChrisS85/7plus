@@ -44,6 +44,8 @@ CurrentVersion:=1.1
 #include %A_ScriptDir%\JoyControl.ahk
 #include %A_ScriptDir%\Tooltip.ahk
 #include %A_ScriptDir%\WinTrayMin.ahk
+#include %A_ScriptDir%\ExplorerTabs.ahk
+#include %A_ScriptDir%\lib\Dock.ahk
 #if !IsFullscreen("A",true,false)
 #h::
 	if(WinExist("7plus Settings"))

@@ -31,6 +31,19 @@ SplitCommand(fullcmd, ByRef cmd, ByRef args)
 	}
 }
 
+/* Group: About
+	o v0.81 by majkinetor.
+	o Licenced under BSD <http://creativecommons.org/licenses/BSD/> 
+*/
+GetFreeGuiNum(){
+	loop, 99  {
+		Gui %A_Index%:+LastFoundExist
+		IfWinNotExist
+			return A_Index
+	}
+	return 0
+}
+
 IsWindowUnderCursor(what)
 {
 	MouseGetPos, , , win
