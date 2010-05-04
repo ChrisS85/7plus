@@ -1,4 +1,5 @@
 ====May 2010====
+  * 05/04/2010: [News05042010 7plus Hotfix V.1.11 released!]
   * 05/01/2010: [News05012010 7plus V.1.1 released!]
 ====April 2010====
   * 04/03/2010: [News04032010 Small question]
