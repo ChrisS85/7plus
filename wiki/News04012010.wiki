@@ -1,4 +1,3 @@
-#labels Featured
 = 7plus V.1.0 released! =
 
 I'm finally releasing the first version of 7plus.
