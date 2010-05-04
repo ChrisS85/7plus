@@ -1,9 +1,12 @@
-= 7plus Hotfix Version 1.11 released! =
+7plus has become quite popular in the first 2 days after its release, as I write this it's at about 1500 downloads already!
 
-I had to release a small hotfix that addresses a bug which would cause FTP password to become invalid after program restart, forcing everyone to enter the password again in settings after each start.
 
-Most people should have it by now or get it after restart of 7plus, due to the new autoupdater. If you don't see it yet, get it [url=http://code.google.com/p/7plus/downloads/list here].
+=Small question=
+For the next version, I wanted to add some more support for the capslock key.
+I want to ask some questions for its usage:
 
-I noticed there is a slight problem with caching downloaded files from google code, causing the autoupdater not to notice an update immediately. This will be fixed in next release, as it shouldn't be that much of a problem.
 
-If you like 7plus, feel free to spread the word, publicity doesn't hurt and will also lead to more bugs being found and fixed ;)
+1) Do you use the default capslock key? If so, are you happy how you can currently use it with 7plus (modifier key like alt+capslock can still toggle it) Or would you rather see Capslock disabled completely?
+
+
+2) I would like to add support for programs which show small notification windows near the tray area, so you could activate those programs with the capslock key when such a window pops up. For this I need to know which programs show those notifications, so I can add support for them.
