@@ -1,0 +1,9 @@
+= 7plus Hotfix Version 1.11 released! =
+
+I had to release a small hotfix that addresses a bug which would cause FTP password to become invalid after program restart, forcing everyone to enter the password again in settings after each start.
+
+Most people should have it by now or get it after restart of 7plus, due to the new autoupdater. If you don't see it yet, get it [url=http://code.google.com/p/7plus/downloads/list here].
+
+I noticed there is a slight problem with caching downloaded files from google code, causing the autoupdater not to notice an update immediately. This will be fixed in next release, as it shouldn't be that much of a problem.
+
+If you like 7plus, feel free to spread the word, publicity doesn't hurt and will also lead to more bugs being found and fixed ;)
