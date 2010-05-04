@@ -1,5 +1,5 @@
 HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEventTime ){ 
-	global HKShowSpaceAndSize,HKAutoCheck	
+	global HKShowSpaceAndSize,HKAutoCheck,TabNum,TabWindow,TabContainerList
 	;timer while explorer is moved for info gui update
 	if(A_OSVersion="WIN_7" && HKShowSpaceAndSize && WinActive("ahk_group ExplorerGroup"))
 	{
@@ -15,12 +15,25 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 		if(HKAutoCheck)
 			FixExplorerConfirmationDialogs()
 	}
+	
+	if(event=0x8001) ;EVENT_OBJECT_DESTROY
+	{
+		DecToHex(hwnd)
+		if(TabContainerList.ContainsHWND(hwnd))		
+		{
+			outputdebug tab closed
+			ExplorerDestroyed(hwnd)
+		}
+	}
+	;if(event=0x800B)
+		;UpdatePosition(TabNum,TabWindow)
 }
 
 ShellMessage( wParam,lParam, msg) 
 {
 	Critical
-	global Vista7, ExplorerPath,hwnd1,HKShowSpaceAndSize,BlinkingWindows,wtmwParam
+	global Vista7, ExplorerPath,hwnd1,HKShowSpaceAndSize,BlinkingWindows,wtmwParam,TabContainerList, SuppressTabEvents
+	
 	;Traymin
 	If	msg=1028
 	{
@@ -93,31 +106,52 @@ ShellMessage( wParam,lParam, msg)
 		;Blinking windows detection, remove activated windows
 		if(x:=BlinkingWindows.indexOf(lParam))
 			BlinkingWindows.Delete(x)
-		outputdebug activate
+		DecToHex(lParam)
+		class:=WinGetClass("ahk_id " lParam)
+		outputdebug activate %class% %lParam%
 		;If we change from another program to explorer/desktop/dialog
 		if(WinActive("ahk_group ExplorerGroup")||WinActive("ahk_group DesktopGroup")||IsDialog())
 		{
-			ExplorerActivated(lParam)
 			;Backup current clipboard contents and write "simple" text/image data in clipboard while explorer is active
 			ExplorerPath:=GetCurrentFolder()
 			;Paste text/image as file file creation
 			CreateFile()
 		}
+		if(WinActive("ahk_group ExplorerGroup"))
+		{
+			ExplorerActivated(lParam)
+		}
+		Else
+		{
+			;SetTimer, ExplorerDeactivated, -10
+			ExplorerDeactivated(lParam)
+		}
 	}
 	;Redraw is fired on Explorer path change
 	else if(wParam=6)
 	{
-		;Detect changed path
-		if(WinActive("ahk_group ExplorerGroup")||IsDialog())
-		{
-			newpath:=GetCurrentFolder()
-			if(newpath && newpath!=ExplorerPath)
+	;Detect changed path
+	
+    if(WinActive("ahk_group ExplorerGroup")||IsDialog())
+    {
+    	newpath:=GetCurrentFolder()
+    	if(newpath && newpath!=ExplorerPath)
+    	{
+    		outputdebug Explorer path changed from %ExplorerPath% to %newpath%
+    		ExplorerPathChanged(ExplorerPath, newpath)
+    		ExplorerPath:=newpath
+			if(!SuppressTabEvents && hwnd:=WinActive("ahk_group ExplorerGroup"))
 			{
-				outputdebug Explorer path changed from %ExplorerPath% to %newpath%
-				ExplorerPathChanged(ExplorerPath, newpath)
-				ExplorerPath:=newpath
+				UpdateTabs()
+				/*
+				SplitPath,newpath, name
+				if(!name)
+					name:=newpath
+				GuiControl, %TabNum%:,Tab%hwnd%,%name%
+				*/
 			}
-		}
+    	}
+    }
   }
 }
 

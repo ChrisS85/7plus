@@ -1,4 +1,5 @@
 ; Array Lib - temp01 - http://www.autohotkey.com/forum/viewtopic.php?t=49736 
+; Array is 1-based!!!
 Array(p1="Ņ", p2="Ņ", p3="Ņ", p4="Ņ", p5="Ņ", p6="Ņ"){ 
    static ArrBase 
    If !ArrBase 

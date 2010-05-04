@@ -50,8 +50,6 @@ temp_txt := A_Temp . "\" . TxtName
 
 CF_HDROP = 0xF ;clipboard identifier of copied file from explorer
 
-SetDefaultMouseSpeed, 0
-
 ;Register a shell hook to get messages when windows get activated, closed etc
 Gui +LastFound 
 hAHK := WinExist() 
@@ -67,7 +65,7 @@ if(Vista7)
 {
 	;Register an event hook to catch move and dialog creation messages
 	HookProcAdr := RegisterCallback("HookProc", "F" ) 
-	API_SetWinEventHook(0x0,0x8002,0,HookProcAdr,0,0,0) 
+	API_SetWinEventHook(0x0,0x800B,0,HookProcAdr,0,0,0) 
 }
 DetectHiddenWindows, On
 
@@ -179,6 +177,10 @@ Loop 8
 
 if(A_OSVersion="WIN_7")
 	CreateInfoGui()
+	
+TabContainerList := TabContainerList()
+CreateTabWindow()
+
 
 if(Vista7)
 	AcquireExplorerConfirmationDialogStrings()
@@ -233,7 +235,8 @@ AutoUpdate()
 	global CurrentVersion
 	if(IsConnected())
 	{
-		URLDownloadToFile, http://7plus.googlecode.com/files/Version.ini, %A_ScriptDir%\Version.ini
+		random, rand
+		URLDownloadToFile, http://7plus.googlecode.com/files/Version.ini?x=%rand%, %A_ScriptDir%\Version.ini
 		if(!Errorlevel)
 		{
 			IniRead, Version, %A_ScriptDir%\Version.ini, Version,Version
@@ -248,7 +251,7 @@ AutoUpdate()
 						IniRead, Link, %A_ScriptDir%\Version.ini, Version,Link
 					else
 						IniRead, Link, %A_ScriptDir%\Version.ini, Version,LinkSource
-					URLDownloadToFile, %link%,%A_ScriptDir%\Updater.exe
+					URLDownloadToFile, %link%?x=%rand%,%A_ScriptDir%\Updater.exe
 					if(!Errorlevel)
 					{
 						Run %A_ScriptDir%\Updater.exe
@@ -291,8 +294,7 @@ WriteIni()
 	
 	IniWrite, %FTP_Enabled%, %A_ScriptDir%\Settings.ini, FTP, UseFTP
 	IniWrite, %FTP_Username%, %A_ScriptDir%\Settings.ini, FTP, Username
-	temp := Encrypt(FTP_Password)
-	IniWrite, %temp%, %A_ScriptDir%\Settings.ini, FTP, Password
+	IniWrite, %FTP_Password%, %A_ScriptDir%\Settings.ini, FTP, Password
 	IniWrite, %FTP_Host%, %A_ScriptDir%\Settings.ini, FTP, Host
 	IniWrite, %FTP_PORT%, %A_ScriptDir%\Settings.ini, FTP, Port
 	IniWrite, %FTP_URL%, %A_ScriptDir%\Settings.ini, FTP, URL

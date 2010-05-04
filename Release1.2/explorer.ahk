@@ -317,7 +317,8 @@ Backspace::Send !{Up}
 ;Double click upwards is buggy in filedialogs, so only explorer for now until someone comes up with non-intrusive getpath, getselectedfiles functionsunrel
 #if HKDoubleClickUpwards && WinActive("ahk_group ExplorerGroup") && IsMouseOverFileList() && GetKeyState("RButton")!=1
 ;LButton on empty space in explorer -> go upwards
-~LButton::		
+~LButton::
+	time1:=A_TimeSinceThisHotkey
 	outputdebug left clicked on explorer or file dialog window	
 	;SendMessage, FM_GETFILESEL [, wParam, lParam, Control, WinTitle, WinText, ExcludeTitle, ExcludeText]
 	CoordMode,Mouse,Relative
@@ -340,14 +341,12 @@ Backspace::Send !{Up}
 		OutputDebug("Time difference: " A_tickCount-time1)
 		if(A_TickCount-time1>WaitTime*1000)
 		{
-			time1:=A_TickCount
 			path1:=path
 		}
 		else
 		{			
 			;if less time has passed, the previous double click was cancelled for some reason and we need to check its dir too to see directory changes
 			OutputDebug("Second click after first has returned for some reason, old path:" path1 "current path:" path)
-			time1:=A_TickCount
 			if(path!=path1)
 			{
 				OutputDebug("Directory changed from " path1 " to " path)
@@ -364,8 +363,11 @@ Backspace::Send !{Up}
 			return
 		}
 		OutputDebug( "start waiting for second click")
-		;wait for second click
-		KeyWait, LButton, D T%WaitTime% 
+		if(!(A_TimeSinceThisHotkey != time1 && A_ThisHotkey = "LButton")) ;if key wasn't pressed before
+		{
+			;wait for second click
+			KeyWait, LButton, D T%WaitTime%
+		}
 		
 		If(errorlevel=0)
 		{		  
@@ -385,14 +387,14 @@ Backspace::Send !{Up}
 					;check if no files selected after second click either
 					files:=GetSelectedFiles()
 					OutputDebug("selected files after second click:" files)
-				  if (!files)
-				  {
-				  	OutputDebug("go upwards")
-					 	if (Vista7 && !strEndsWith(GetCurrentFolder(),".search-ms"))
-	            Send !{Up}
-					  else
-					    Send {Backspace}
-					  time1:=0
+					if (!files)
+					{
+						OutputDebug("go upwards")
+						if (Vista7 && !strEndsWith(path1,".search-ms"))
+							Send !{Up}
+						else
+							Send {Backspace}
+						time1:=0
 					}
 				}	
 			}
@@ -448,13 +450,26 @@ key.=GetKeyState("SHIFT") ? "+" : ""
 key.=(GetKeyState("RWIN") || GetKeyState("LWIN")) ? "#" : ""
 Handled:=TaskbuttonClose()
 if !Handled
-	Handled:=ToggleWallpaper()
+{
+	outputdebug testcreatetab
+	MouseGetPos,,,window
+	if(MouseHittest()=2 && (IsWindowUnderCursor("ExploreWClass") || IsWindowUnderCursor("CabinetWClass")))
+	{
+		CreateTab(window)
+		Handled:=true
+	}
+}
 if !Handled
 	Handled:=TitleBarClose()
+if !Handled
+	Handled:=ToggleWallpaper()
 if !Handled
 	Handled:=OpenInNewFolder()
 if !Handled
 	Handled:=FastFolderMenu()
+if (!Handled && Handled:=IsMouseOverTabButton())
+	CloseTab(Handled)
+
 if !Handled
 {	
 	Send %key%{MButton down}
@@ -763,17 +778,17 @@ CreateInfoGui()
 {
 	global FreeSpace, SelectedFileSize
 	outputdebug creategui
-	gui, 1: font, s9, Segoe UI 
-	Gui, 1: Add, Text, x60 y0 w60 h12 vFreeSpace, %A_Space%
-	Gui, 1: Add, Text, x0 y0 w60 h12 vSelectedFileSize, %A_Space%
-	Gui, 1: -Caption  +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs
-	Gui, 1: Color, FFFFFF
-	Gui 1: +LastFound
+	gui, 2: font, s9, Segoe UI 
+	Gui, 2: Add, Text, x60 y0 w60 h12 vFreeSpace, %A_Space%
+	Gui, 2: Add, Text, x0 y0 w60 h12 vSelectedFileSize, %A_Space%
+	Gui, 2: -Caption  +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs
+	Gui, 2: Color, FFFFFF
+	Gui 2: +LastFound
 	WinSet, TransColor, FFFFFF
 }
 DestroyInfoGui()
 {
-	Gui 1:Destroy
+	Gui 2:Destroy
 }
 ShouldShowInfo()
 {
@@ -782,7 +797,7 @@ ShouldShowInfo()
 	ControlGet, visible, visible, , msctls_statusbar321, A ;Check if status bar is visible
 	if(!visible)
 		return false
-	Gui 1: +LastFound
+	Gui 2: +LastFound
 	WinGetPos , X, Y, Width, Height,A
 	WinGetClass,class
 	x1:= GetVisibleWindowAtPoint(X+Width-370,Y+Height-26,class) 
@@ -877,23 +892,23 @@ UpdateInfos()
 			free+=0
 			freetext:=TranslateMUI(shell32MUIpath,12336) ;Aquire a translated version of "free"outputdebug freetext %freetext%
 			freetext:=SubStr(freetext,InStr(freetext," ",0,0)+1)
-			GuiControl 1:Text, FreeSpace, %free%%freeunit% %freetext%
+			GuiControl 2:Text, FreeSpace, %free%%freeunit% %freetext%
 		}
 		else
-			GuiControl 1:Text, FreeSpace, %A_Space%
+			GuiControl 2:Text, FreeSpace, %A_Space%
 		if(count && realfiles)
 		{
 			SetFormat float,0.2
 			totalsize+=0			
-			GuiControl 1:Text, SelectedFileSize, %totalsize%%totalunit%
+			GuiControl 2:Text, SelectedFileSize, %totalsize%%totalunit%
 		}
 		else
-			GuiControl 1:Text, SelectedFileSize, %A_Space%
+			GuiControl 2:Text, SelectedFileSize, %A_Space%
 	}
 	else
 	{
-		GuiControl 1:Text, SelectedFileSize, %A_Space%
-		GuiControl 1:Text, FreeSpace, %A_Space%
+		GuiControl 2:Text, SelectedFileSize, %A_Space%
+		GuiControl 2:Text, FreeSpace, %A_Space%
 	}
 	UpdateInfoPosition()
 	return
@@ -901,6 +916,7 @@ UpdateInfos()
 
 MoveExplorer:
 UpdateInfoPosition()
+UpdatePosition(TabNum,TabWindow)
 return
 UpdateInfoPosition()
 {
@@ -911,10 +927,10 @@ UpdateInfoPosition()
 		InfoX:=X+Width-380
 		InfoY:=Y+cY+cHeight/2-6 ;+Height-26
 		if(Width>540)
-			Gui, 1: Show, AutoSize NA x%InfoX% y%InfoY%
+			Gui, 2:Show, AutoSize NA x%InfoX% y%InfoY%
 	}
 	else
-		Gui, 1: Hide
+		Gui, 2:Hide
 }
 
 

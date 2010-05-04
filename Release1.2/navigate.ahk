@@ -278,13 +278,17 @@ GetFocussedFile()
 	}
 }
 
-GetCurrentFolder()
+GetCurrentFolder(hwnd=0, DisplayName=0)
 {
 	global MuteClipboardList
-	If (WinActive("ahk_group ExplorerGroup"))
+	If (WinActive("ahk_group ExplorerGroup")||hwnd)
 	{	
-		hWnd:=WinExist("A")
-		return ShellFolder(hwnd,1)
+		if(!hwnd)
+			hWnd:=WinExist("A")
+		if(DisplayName)
+			return ShellFolder(hwnd,5)
+		Else
+			return ShellFolder(hwnd,1)
 	}
 	If (WinActive("ahk_group DesktopGroup"))
 		return %A_Desktop%
@@ -359,7 +363,8 @@ ShellFolder(hWnd=0,returntype=0)
 					break
 		}
     doc:=window.Document
-    sFolder   := doc.Folder.Self.Path
+    sFolder   := doc.Folder.Self.path
+	sDisplay := doc.Folder.Self.name
     ;Don't get focussed item and selected files unless requested, because it will cause a COM error when called during/shortly after explorer path change sometimes
     if (returntype=2)
     {
@@ -387,6 +392,8 @@ ShellFolder(hWnd=0,returntype=0)
 			Return   sSelect
 		else if (returntype=4)
 			Return 	 sSelect
+		else if (returntype=5)
+			Return sDisplay
   }
 }
 

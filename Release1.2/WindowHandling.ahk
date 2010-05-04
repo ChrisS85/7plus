@@ -139,7 +139,6 @@ TitleBarClose()
 TaskButtonClose()
 {
 	global
-	outputdebug taskbuttonclose
 	if(HKMiddleClose && IsMouseOverTaskList())
 	{
 		/*
@@ -181,7 +180,6 @@ TaskButtonClose()
 		Send {up}{enter}
 		return true
 	}
-	outputdebug not handled
 	return false
 }
 
