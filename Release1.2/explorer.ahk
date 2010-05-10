@@ -318,14 +318,15 @@ Backspace::Send !{Up}
 #if HKDoubleClickUpwards && WinActive("ahk_group ExplorerGroup") && IsMouseOverFileList() && GetKeyState("RButton")!=1
 ;LButton on empty space in explorer -> go upwards
 ~LButton::
-	time1:=A_TimeSinceThisHotkey
+	Critical
+	FirstClickTime:=A_TickCount
 	outputdebug left clicked on explorer or file dialog window	
 	;SendMessage, FM_GETFILESEL [, wParam, lParam, Control, WinTitle, WinText, ExcludeTitle, ExcludeText]
 	CoordMode,Mouse,Relative
 	;wait until button is released again
-  KeyWait, LButton
-  OutputDebug, lbutton released
-  ;Time for a doubleclick in windows
+	KeyWait, LButton
+	OutputDebug, lbutton released
+	;Time for a doubleclick in windows
 	WaitTime:=DllCall("GetDoubleClickTime")/1000
 	OutputDebug, double click time=%Waittime%
 	MouseGetPos, Click1X, Click1Y
@@ -341,12 +342,14 @@ Backspace::Send !{Up}
 		OutputDebug("Time difference: " A_tickCount-time1)
 		if(A_TickCount-time1>WaitTime*1000)
 		{
+			time1:=A_TickCount
 			path1:=path
 		}
 		else
 		{			
 			;if less time has passed, the previous double click was cancelled for some reason and we need to check its dir too to see directory changes
 			OutputDebug("Second click after first has returned for some reason, old path:" path1 "current path:" path)
+			time1:=A_TickCount
 			if(path!=path1)
 			{
 				OutputDebug("Directory changed from " path1 " to " path)
@@ -363,12 +366,12 @@ Backspace::Send !{Up}
 			return
 		}
 		OutputDebug( "start waiting for second click")
-		if(!(A_TimeSinceThisHotkey != time1 && A_ThisHotkey = "LButton")) ;if key wasn't pressed before
+		if(!(A_TimeSinceThisHotkey < (A_TickCount-FirstClickTime) && A_ThisHotkey = "LButton")) ;if key wasn't pressed before
 		{
 			;wait for second click
-			KeyWait, LButton, D T%WaitTime%
-		}
-		
+			KeyWait, LButton, D T%WaitTime%			
+		}				
+		KeyWait, LButton
 		If(errorlevel=0)
 		{		  
 			OutputDebug("second click")
@@ -405,37 +408,37 @@ Backspace::Send !{Up}
 #if
 
 #if IsMouseOverTaskList() ;Can't add the conditions below here right now, because IsDoubleClick seems to fail when called in the #if condition
-LButton::	
-	if(IsDoubleClick() && IsMouseOverFreeTaskListSpace())
+LButton::
+if(IsDoubleClick() && IsMouseOverFreeTaskListSpace())
+{
+	SplitCommand(TaskbarLaunchPath, cmd, args)
+	cmd:=ExpandEnvVars(cmd)
+	if(FileExist(cmd))
+		run, "%cmd%" %args%
+	else if(TaskbarLaunchPath)
 	{
-		SplitCommand(TaskbarLaunchPath, cmd, args)
-		cmd:=ExpandEnvVars(cmd)
-		if(FileExist(cmd))
-			run, "%cmd%" %args%
-		else if(TaskbarLaunchPath)
-		{
-			ToolTip(1, "You need to enter a valid command in <a>Settings</a> to run when you double click on empty taskbar space!", "Invalid Command","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
-			SetTimer, ToolTipClose, -10000
-			TooltipShowSettings:=true
-		}
+		ToolTip(1, "You need to enter a valid command in <a>Settings</a> to run when you double click on empty taskbar space!", "Invalid Command","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
+		SetTimer, ToolTipClose, -10000
+		TooltipShowSettings:=true
 	}
-	/*
-	else if (HKActivateBehavior && A_OSVersion="WIN_7")
-	{
-		Send {CTRL Down}{LButton Down}
-  	while(GetKeyState("LButton", "P"))
-  		Sleep 20
-  	Send {LButton Up}{CTRL Up}
-  }
-  */
-	else
-	{
-		Send {LButton Down}
-  	while(GetKeyState("LButton", "P"))
-  		Sleep 50
-  	Send {LButton Up}
-	}
-	return
+}
+/*
+else if (HKActivateBehavior && A_OSVersion="WIN_7")
+{
+	Send {CTRL Down}{LButton Down}
+	while(GetKeyState("LButton", "P"))
+		Sleep 20
+	Send {LButton Up}{CTRL Up}
+}
+*/
+else
+{
+	Send {LButton Down}
+	while(GetKeyState("LButton", "P"))
+		Sleep 50
+	Send {LButton Up}
+}
+return
 #if
 
 IsDoubleClick()
@@ -458,6 +461,8 @@ if !Handled
 		CreateTab(window)
 		Handled:=true
 	}
+	if (!Handled && Handled:=IsMouseOverTabButton())
+		CloseTab(Handled)
 }
 if !Handled
 	Handled:=TitleBarClose()
@@ -724,7 +729,6 @@ return
 #if HKInvertSelection && WinActive("ahk_group ExplorerGroup")
 ^i::InvertSelection()
 #if
-#x::Outputdebug(GetCurrentFolder())
 ;Flat View
 #if HKFlattenDirectory && Vista7 && WinActive("ahk_group ExplorerGroup")
 +Enter::
@@ -776,7 +780,7 @@ return
 
 CreateInfoGui()
 {
-	global FreeSpace, SelectedFileSize
+	global FreeSpace, SelectedFileSize,shell32MUIpath,freetext
 	outputdebug creategui
 	gui, 2: font, s9, Segoe UI 
 	Gui, 2: Add, Text, x60 y0 w60 h12 vFreeSpace, %A_Space%
@@ -785,6 +789,8 @@ CreateInfoGui()
 	Gui, 2: Color, FFFFFF
 	Gui 2: +LastFound
 	WinSet, TransColor, FFFFFF
+	freetext:=TranslateMUI(shell32MUIpath,12336) ;Aquire a translated version of "free"outputdebug freetext %freetext%
+	freetext:=SubStr(freetext,InStr(freetext," ",0,0)+1)
 }
 DestroyInfoGui()
 {
@@ -821,22 +827,26 @@ UpdateInfos()
 return
 UpdateInfos()
 {
-	global shell32MUIpath
+	global freetext, selectedfiles1, currentfolder1, newstring, freestring
 	if(WinActive("ahk_group ExplorerGroup") && !IsContextMenuActive())
 	{
 		path:=GetCurrentFolder()
 		files:=GetSelectedFiles()
+		if(files=selectedfiles1 && path=currentfolder1)
+			return
+		selectedfiles1:=files
+		currentfolder1:=path
 		totalsize:=0
 		count:=0
 		realfiles:=0 ;check if only folders are selected
 		Loop, Parse, files, `n,`r
-	  {
-	  	FileGetSize, size, %A_LoopField%
-	  	if(realfiles=0)	  		
-	  		realfiles:=!InStr(FileExist(A_LoopField), "D")
-	  	totalsize+=size
-	  	count++
-	  }
+		{
+			FileGetSize, size, %A_LoopField%
+			if(realfiles=0)	  		
+				realfiles:=!InStr(FileExist(A_LoopField), "D")
+			totalsize+=size
+			count++
+		}
 		DriveSpaceFree, free, %Path%
 		freeunit:=6
 		totalunit:=0
@@ -890,25 +900,57 @@ UpdateInfos()
 		{
 			SetFormat float,0.2
 			free+=0
-			freetext:=TranslateMUI(shell32MUIpath,12336) ;Aquire a translated version of "free"outputdebug freetext %freetext%
-			freetext:=SubStr(freetext,InStr(freetext," ",0,0)+1)
-			GuiControl 2:Text, FreeSpace, %free%%freeunit% %freetext%
+			text=%free%%freeunit% %freetext%
+			if(text!=freestring)
+			{
+				GuiControl 2:Text, FreeSpace, %free%%freeunit% %freetext%
+				freestring:=text
+			}
 		}
 		else
-			GuiControl 2:Text, FreeSpace, %A_Space%
+		{
+			text=%A_Space%
+			if(text!=freestring)
+			{
+				GuiControl 2:Text, FreeSpace, %A_Space%
+				freestring:=text
+			}
+		}
 		if(count && realfiles)
 		{
 			SetFormat float,0.2
-			totalsize+=0			
-			GuiControl 2:Text, SelectedFileSize, %totalsize%%totalunit%
+			totalsize+=0
+			text=%totalsize%%totalunit%
+			if(text!=newstring)
+			{
+				GuiControl 2:Text, SelectedFileSize, %totalsize%%totalunit%
+				newstring:=text
+			}
 		}
 		else
-			GuiControl 2:Text, SelectedFileSize, %A_Space%
+		{
+			text=%A_Space%
+			if(text!=newstring)
+			{
+				GuiControl 2:Text, SelectedFileSize, %A_Space%
+				newstring:=text
+			}
+		}
 	}
 	else
 	{
-		GuiControl 2:Text, SelectedFileSize, %A_Space%
-		GuiControl 2:Text, FreeSpace, %A_Space%
+		text=%A_Space%
+		if(text!=newstring)
+		{
+			GuiControl 2:Text, SelectedFileSize, %A_Space%
+			newstring:=text
+		}
+		text=%A_Space%
+		if(text!=freestring)
+		{
+			GuiControl 2:Text, FreeSpace, %A_Space%
+			freestring:=text
+		}
 	}
 	UpdateInfoPosition()
 	return
@@ -916,7 +958,7 @@ UpdateInfos()
 
 MoveExplorer:
 UpdateInfoPosition()
-UpdatePosition(TabNum,TabWindow)
+;UpdatePosition(TabNum,TabWindow)
 return
 UpdateInfoPosition()
 {

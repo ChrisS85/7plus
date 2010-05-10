@@ -60,10 +60,10 @@ Upload(Files)
 			{
 				if(A_Index=1)
 				{
-					cliptext:=FTP_URL file
+					cliptext:=FTP_URL StringReplace(file, " ", "%20", 1)
 				}else
 				{
-					cliptext:=cliptext . "`r`n" . FTP_URL file
+					cliptext:=cliptext . "`r`n" . FTP_URL StringReplace(file, " ", "%20", 1)
 				}
 			}
 	  }

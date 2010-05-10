@@ -1,13 +1,5 @@
 HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEventTime ){ 
 	global HKShowSpaceAndSize,HKAutoCheck,TabNum,TabWindow,TabContainerList
-	;timer while explorer is moved for info gui update
-	if(A_OSVersion="WIN_7" && HKShowSpaceAndSize && WinActive("ahk_group ExplorerGroup"))
-	{
-		if(event = 10) 
-			settimer,MoveExplorer,10    
-	  else if (event=11)
-			settimer,MoveExplorer, off		 
-	} 	   
 	
 	;On dialog popup, check if its an explorer confirmation dialog
 	if(event=0x00008002) ;EVENT_OBJECT_SHOW
@@ -15,6 +7,21 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 		if(HKAutoCheck)
 			FixExplorerConfirmationDialogs()
 	}
+	
+	if idObject or idChild
+		return
+	WinGet, style, Style, ahk_id %hwnd%
+	if (style & 0x40000000)					;RETURN if hwnd is child window, for some reason idChild may be 0 for some children ?!?! ( I hate ms )
+		return
+
+	;timer while explorer is moved for info gui update
+	if(false && A_OSVersion="WIN_7" && HKShowSpaceAndSize && WinActive("ahk_group ExplorerGroup"))
+	{
+		if(event = 10) 
+			settimer,MoveExplorer,10    
+	  else if (event=11)
+			settimer,MoveExplorer, off		 
+	} 	   	
 	
 	if(event=0x8001) ;EVENT_OBJECT_DESTROY
 	{
@@ -25,8 +32,11 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 			ExplorerDestroyed(hwnd)
 		}
 	}
-	;if(event=0x800B)
-		;UpdatePosition(TabNum,TabWindow)
+	if(event=0x800B && WinActive("ahk_group ExplorerGroup"))
+	{
+		UpdatePosition(TabNum,TabWindow)
+		UpdateInfoPosition()
+	}
 }
 
 ShellMessage( wParam,lParam, msg) 
@@ -97,12 +107,7 @@ ShellMessage( wParam,lParam, msg)
 	
 	;Window Activation
 	if(wParam=4||wParam=32772) ;HSHELL_WINDOWACTIVATED||HSHELL_RUDEAPPACTIVATED
-	{
-		;Explorer info stuff
-		if(A_OSVersion="WIN_7" && HKShowSpaceAndSize)
-		{
-			SetTimer, UpdateInfos, 100
-		}
+	{		
 		;Blinking windows detection, remove activated windows
 		if(x:=BlinkingWindows.indexOf(lParam))
 			BlinkingWindows.Delete(x)
@@ -120,6 +125,11 @@ ShellMessage( wParam,lParam, msg)
 		if(WinActive("ahk_group ExplorerGroup"))
 		{
 			ExplorerActivated(lParam)
+			;Explorer info stuff
+			if(A_OSVersion="WIN_7" && HKShowSpaceAndSize)
+			{
+				SetTimer, UpdateInfos, 100
+			}
 		}
 		Else
 		{

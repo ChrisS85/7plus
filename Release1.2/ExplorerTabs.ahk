@@ -73,7 +73,7 @@ CloseTab(hwnd,TabContainer=0)
 	WinClose ahk_id %hwnd%	
 	DisableMinimizeAnim(0)
 	outputdebug update closed
-	UpdateTabs()
+	UpdateTabs(1)
 }
 CreateTabWindow()
 {
@@ -130,7 +130,7 @@ ExplorerActivated(hwnd)
 		Else
 			SetPressedButtonStyle(hwnd,OldTab)
 		UpdatePosition(TabNum, TabWindow)
-		SetTimer, UpdatePosition, 100
+		;SetTimer, UpdatePosition, 100
 	}
 }
 /*
@@ -150,7 +150,7 @@ ExplorerDeactivated(hwnd)
 	outputdebug unset active
 	TabContainerList.active:=0
 	UpdatePosition(TabNum, TabWindow)
-	SetTimer, UpdatePosition, Off
+	;SetTimer, UpdatePosition, Off
 }
 ExplorerDestroyed(hwnd)
 {
@@ -162,19 +162,19 @@ ExplorerDestroyed(hwnd)
 	CloseTab(hwnd,TabContainer)
 	return
 }
-UpdatePosition:
-UpdatePosition(TabNum, TabWindow)
-return
 UpdatePosition(TabNum, TabWindow)
 {
 	global SuppressTabEvents, TabContainerList
-	Critical
+	static gid=0   ;fid & gid are function id and global id. I use them to see if the function interupted itself. 
+	/*
 	if(SuppressTabEvents)
 	{
 		outputdebug update suppressed
 		return
 	}
-	SuppressTabEvents:=true
+	*/
+	fid:=gid+=1
+	;SuppressTabEvents:=true
 	;outputdebug UpdatePosition(%TabNum%,%TabWindow%)
 	hwnd:=WinActive("ahk_group ExplorerGroup")
 	TabContainer:=TabContainerList.ContainsHWND(hwnd)
@@ -187,6 +187,8 @@ UpdatePosition(TabNum, TabWindow)
 		w-=135
 		h:=30
 		y:=max(y,0)
+		if (fid != gid) 				;some newer instance of the function was running, so just return (function was interupted by itself). Without this, older instance will continue with old host window position and clients will jump to older location. This is not so visible with WinMove as it is very fast, but SetWindowPos shows this in full light. 
+			return
 		;DllCall("SetWindowPos", "uint", TabWindow, "uint", explorer, "uint", x, "uint", y, "uint", w, "uint", h, "uint", 19 | 0x4000 | 0x40)
 		WinMove ahk_id %TabWindow%,,%x%,%y%,%w%,%h%
 		WinGet, style, style, ahk_id %TabWindow%
@@ -197,7 +199,7 @@ UpdatePosition(TabNum, TabWindow)
 		}
 		;WinShow ahk_id %TabWindow%
 	}
-	else if (class && class!="AutohotkeyGUI")
+	else if (class && (class!="AutohotkeyGUI" || WinGet("minmax","ahk_id " TabContainerList.active)=-1))
 	{
 		WinGet, style, style, ahk_id %TabWindow%
 		if(style & 0x10000000)
@@ -206,13 +208,13 @@ UpdatePosition(TabNum, TabWindow)
 			WinHide ahk_id %TabWindow%
 		}
 	}
-	SuppressTabEvents:=false
+	;SuppressTabEvents:=false
 }
 
 /*
  * Recreates Tab GUI
 */
-UpdateTabs()
+UpdateTabs(force=0)
 {
 	global
 	local TabContainer, hwnd,tabhwnd,folder,text
@@ -224,19 +226,22 @@ UpdateTabs()
 	TabContainer:=TabContainerList.ContainsHWND(hwnd)
 	if(hwnd && TabContainer)
 	{
-		recreate:=0
-		Loop % TabContainer.tabs.len()
+		if(!force)
 		{
-			tabhwnd:=TabContainer.tabs[A_Index]
-			folder:=GetCurrentFolder(tabhwnd,1)
-			GuiControlGet, text,%tabnum%:,tab%tabhwnd%
-			if(!text || !folder || text!=folder)
+			recreate:=0
+			Loop % TabContainer.tabs.len()
 			{
-				recreate:=1
-				break
+				tabhwnd:=TabContainer.tabs[A_Index]
+				folder:=GetCurrentFolder(tabhwnd,1)
+				GuiControlGet, text,%tabnum%:,tab%tabhwnd%
+				if(!text || !folder || text!=folder)
+				{
+					recreate:=1
+					break
+				}
 			}
 		}
-		if(recreate)
+		if(force || recreate)
 		{
 			outputdebug recreate gui
 			;Recreate GUI since buttons aren't deleteable yet
