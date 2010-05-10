@@ -183,6 +183,11 @@ UpdatePosition(TabNum, TabWindow)
 	{
 		;outputdebug show tabs
 		WinGetPos, x,y,w,h,ahk_id %hwnd%
+		;Update stored position so we can restore it if a tab is closed
+		TabContainer.x := x
+		TabContainer.y := y
+		TabContainer.w := w
+		TabContainer.h := h
 		x+=24
 		w-=135
 		h:=30
@@ -320,7 +325,7 @@ CreateTab(hwnd)
 		outputdebug ---------------------
 		outputdebug add new tab container
 		outputdebug ---------------------
-		TabContainerBase := Object("tabs", Array(), "active", 0, "ContainsHWND", "TabContainer_ContainsHWND", "print", "TabContainer_Print")
+		TabContainerBase := Object("tabs", Array(), "active", 0, "x", 0, "y", 0, "w", 0, "h", 0, "ContainsHWND", "TabContainer_ContainsHWND", "print", "TabContainer_Print")
 		TabContainer:=Object("base",TabContainerBase)
 		TabContainer.tabs.append(hwnd)
 		TabContainer.active:=hwnd
@@ -396,7 +401,10 @@ ActivateTab(hwnd)
 		DisableMinimizeAnim(1)
 		SuppressTabEvents:=true
 		OldTab:=TabContainer.active
-		WinGetPos,x,y,w,h,ahk_id %OldTab%
+		x:=TabContainer.x
+		y:=TabContainer.y
+		w:=TabContainer.w
+		h:=TabContainer.h
 		WinHide, ahk_id %OldTab%
 		WinMove ahk_id %hwnd%,,%x%,%y%,%w%,%h%
 		WinShow, ahk_id %hwnd%

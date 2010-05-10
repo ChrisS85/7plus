@@ -3,7 +3,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 	
 	;On dialog popup, check if its an explorer confirmation dialog
 	if(event=0x00008002) ;EVENT_OBJECT_SHOW
-	{	
+	{
 		if(HKAutoCheck)
 			FixExplorerConfirmationDialogs()
 	}
@@ -21,7 +21,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 			settimer,MoveExplorer,10    
 	  else if (event=11)
 			settimer,MoveExplorer, off		 
-	} 	   	
+	}
 	
 	if(event=0x8001) ;EVENT_OBJECT_DESTROY
 	{
@@ -32,7 +32,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 			ExplorerDestroyed(hwnd)
 		}
 	}
-	if(event=0x800B && WinActive("ahk_group ExplorerGroup"))
+	if(event=0x800B && WinActive("ahk_group ExplorerGroup")) ;EVENT_OBJECT_LOCATIONCHANGE
 	{
 		UpdatePosition(TabNum,TabWindow)
 		UpdateInfoPosition()
