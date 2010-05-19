@@ -26,6 +26,7 @@ Leave 2nd parameter empty to show context menu and extract idn by clicking on an
 */ 
 ShellContextMenu(sPath,idn) 
 { 
+	global hAHK
    DllCall("ole32\OleInitialize", "Uint", 0) 
    if (spath="Desktop")
    {

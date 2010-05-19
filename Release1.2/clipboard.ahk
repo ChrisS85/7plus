@@ -119,7 +119,7 @@ ClipboardMenuClicked(index)
 CreateFile()
 {
 	global temp_img, temp_txt, CF_HDROP, MuteClipboardList
-	outputdebug CreateFile
+	;outputdebug CreateFile
 	if(!MuteClipboardList)
 	{	 
     MuteClipboardList:=true

@@ -51,12 +51,12 @@ temp_txt := A_Temp . "\" . TxtName
 CF_HDROP = 0xF ;clipboard identifier of copied file from explorer
 
 ;Register a shell hook to get messages when windows get activated, closed etc
-Gui +LastFound 
-hAHK := WinExist() 
+Gui +LastFound
+hAHK := WinExist()
+outputdebug hahk %hahk%
 DllCall( "RegisterShellHookWindow", UInt,hAHK ) 
 MsgNum := DllCall( "RegisterWindowMessage", Str,"SHELLHOOK" ) 
 OnMessage( MsgNum, "ShellMessage" ) 
-
 ;Tooltip messages
 OnMessage(0x202,"WM_LBUTTONUP") ;Will make ToolTip Click possible 
 OnMessage(0x4e,"WM_NOTIFY") ;Will make LinkClick and ToolTipClose possible
@@ -177,10 +177,16 @@ Loop 8
 
 if(A_OSVersion="WIN_7")
 	CreateInfoGui()
-	
+
+IniRead, UseTabs, %A_ScriptDir%\Settings.ini, Tabs, UseTabs, true
+IniRead, NewTabPosition, %A_ScriptDir%\Settings.ini, Tabs, NewTabPosition, 1
+IniRead, TabStartupPath, %A_ScriptDir%\Settings.ini, Tabs, TabStartupPath, %A_SPACE%
+IniRead, ActivateTab, %A_ScriptDir%\Settings.ini, Tabs, ActivateTab, true
+IniRead, TabWindowClose, %A_ScriptDir%\Settings.ini, Tabs, TabWindowClose, true
+IniRead, OnTabClose, %A_ScriptDir%\Settings.ini, Tabs, OnTabClose, 1
+IniRead, ShowSingleTab, %A_ScriptDir%\Settings.ini, Tabs, ShowSingleTab, false
 TabContainerList := TabContainerList()
 CreateTabWindow()
-
 
 if(Vista7)
 	AcquireExplorerConfirmationDialogStrings()
@@ -222,7 +228,10 @@ if (Firstrun=1)
 	IniWrite, 0, %A_ScriptDir%\Settings.ini, General, FirstRun
 }
 Return
-
+#k::
+hwnd:=WinExist("A")
+outputdebug hahk %hahk% hwnd %hwnd%
+return
 ExitSub:
 Gdip_Shutdown(pToken)
 WriteIni()
@@ -258,7 +267,10 @@ AutoUpdate()
 						ExitApp
 					}
 					else
-						MsgBox Error while updating. Make sure http://7plus.googlecode.com is reachable.				
+					{
+						MsgBox Error while updating. Make sure http://7plus.googlecode.com is reachable.
+						Progress, Off
+					}
 				}
 			}
 		}
@@ -328,6 +340,14 @@ WriteIni()
 	IniWrite, %HKOpenInNewFolder%, %A_ScriptDir%\Settings.ini, Explorer, HKOpenInNewFolder
 	IniWrite, %HKFlattenDirectory%, %A_ScriptDir%\Settings.ini, Explorer, HKFlattenDirectory
 	
+	IniWrite, %UseTabs%, %A_ScriptDir%\Settings.ini, Tabs, UseTabs
+	IniWrite, %NewTabPosition%, %A_ScriptDir%\Settings.ini, Tabs, NewTabPosition
+	IniWrite, %TabStartupPath%, %A_ScriptDir%\Settings.ini, Tabs, TabStartupPath
+	IniWrite, %ActivateTab%, %A_ScriptDir%\Settings.ini, Tabs, ActivateTab
+	IniWrite, %TabWindowClose%, %A_ScriptDir%\Settings.ini, Tabs, TabWindowClose
+	IniWrite, %OnTabClose%, %A_ScriptDir%\Settings.ini, Tabs, OnTabClose
+	IniWrite, %ShowSingleTab%, %A_ScriptDir%\Settings.ini, Tabs, ShowSingleTab
+	
 	IniWrite, %HKToggleAlwaysOnTop%, %A_ScriptDir%\Settings.ini, Windows, HKToggleAlwaysOnTop
 	IniWrite, %HKActivateBehavior%, %A_ScriptDir%\Settings.ini, Windows, HKActivateBehavior
 	IniWrite, %HKKillWindows%, %A_ScriptDir%\Settings.ini, Windows, HKKillWindows
@@ -355,6 +375,7 @@ WriteIni()
 	IniWrite, %HideTrayIcon%, %A_ScriptDir%\Settings.ini, Misc, HideTrayIcon
 	IniWrite, %ImageQuality%, %A_ScriptDir%\Settings.ini, Misc, ImageQuality
 	IniWrite, %ImageExtension%, %A_ScriptDir%\Settings.ini, Misc, ImageExtension
+	IniWrite, %AutoUpdate%, %A_ScriptDir%\Settings.ini, Misc, AutoUpdate
 	;FastFolders
 	Loop 10
 	{

@@ -2,10 +2,12 @@
 	Title: Command Functions
 		A wrapper set of functions for commands which have an output variable.
 
-	License:
-		- Version 1.5-r2 <http://www.autohotkey.net/~Titan/#functions>
-		- New BSD License <http://www.autohotkey.net/~Titan/license.txt>
+
+
+
+	License: http://www.autohotkey.net/~Titan/license.txt
 */
+
 Functions() {
 	Return, true
 }
@@ -163,43 +165,43 @@ SplitPath(ByRef InputVar, ByRef OutFileName = "", ByRef OutDir = "", ByRef OutEx
 	SplitPath, InputVar, OutFileName, OutDir, OutExtension, OutNameNoExt, OutDrive
 }
 StringGetPos(ByRef InputVar, SearchText, Mode = "", Offset = "") {
-	StringGetPos, v, %InputVar%, %SearchText%, %Mode%, %Offset%
+	StringGetPos, v, InputVar, %SearchText%, %Mode%, %Offset%
 	Return, v
 }
 StringLeft(ByRef InputVar, Count) {
-	StringLeft, v, %InputVar%, %Count%
+	StringLeft, v, InputVar, %Count%
 	Return, v
 }
 StringLen(ByRef InputVar) {
-	StringLen, v, %InputVar%
+	StringLen, v, InputVar
 	Return, v
 }
 StringLower(ByRef InputVar, T = "") {
-	StringLower, v, %InputVar%, %T%
+	StringLower, v, InputVar, %T%
 	Return, v
 }
 StringMid(ByRef InputVar, StartChar, Count , L = "") {
-	StringMid, v, %InputVar%, %StartChar%, %Count%, %L%
+	StringMid, v, InputVar, %StartChar%, %Count%, %L%
 	Return, v
 }
 StringReplace(ByRef InputVar, SearchText, ReplaceText = "", All = "") {
-	StringReplace, v, %InputVar%, %SearchText%, %ReplaceText%, %All%
+	StringReplace, v, InputVar, %SearchText%, %ReplaceText%, %All%
 	Return, v
 }
 StringRight(ByRef InputVar, Count) {
-	StringRight, v, %InputVar%, %Count%
+	StringRight, v, InputVar, %Count%
 	Return, v
 }
 StringTrimLeft(ByRef InputVar, Count) {
-	StringTrimLeft, v, %InputVar%, %Count%
+	StringTrimLeft, v, InputVar, %Count%
 	Return, v
 }
 StringTrimRight(ByRef InputVar, Count) {
-	StringTrimRight, v, %InputVar%, %Count%
+	StringTrimRight, v, InputVar, %Count%
 	Return, v
 }
 StringUpper(ByRef InputVar, T = "") {
-	StringUpper, v, %InputVar%, %T%
+	StringUpper, v, InputVar, %T%
 	Return, v
 }
 SysGet(Subcommand, Param3 = "") {

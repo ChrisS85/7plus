@@ -8,6 +8,7 @@ SetMouseDelay, -1 ; no pause after mouse clicks
 SetKeyDelay, -1 ; no pause after keys sent 
 SetDefaultMouseSpeed, 0
 CoordMode, Mouse, Screen
+SetWinDelay, -1
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases. 
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability. 
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
@@ -50,6 +51,7 @@ CurrentVersion:=1.2
 #include %A_ScriptDir%\lib\Dock.ahk
 #if !IsFullscreen("A",true,false)
 #h::
+	DetectHiddenWindows, Off
 	if(WinExist("7plus Settings"))
 		WinActivate 7plus Settings
 	else

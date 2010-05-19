@@ -1,5 +1,5 @@
 HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEventTime ){ 
-	global HKShowSpaceAndSize,HKAutoCheck,TabNum,TabWindow,TabContainerList
+	global HKShowSpaceAndSize,HKAutoCheck,TabNum,TabWindow,TabContainerList,UseTabs
 	
 	;On dialog popup, check if its an explorer confirmation dialog
 	if(event=0x00008002) ;EVENT_OBJECT_SHOW
@@ -13,17 +13,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 	WinGet, style, Style, ahk_id %hwnd%
 	if (style & 0x40000000)					;RETURN if hwnd is child window, for some reason idChild may be 0 for some children ?!?! ( I hate ms )
 		return
-
-	;timer while explorer is moved for info gui update
-	if(false && A_OSVersion="WIN_7" && HKShowSpaceAndSize && WinActive("ahk_group ExplorerGroup"))
-	{
-		if(event = 10) 
-			settimer,MoveExplorer,10    
-	  else if (event=11)
-			settimer,MoveExplorer, off		 
-	}
-	
-	if(event=0x8001) ;EVENT_OBJECT_DESTROY
+	if(event=0x8001 && UseTabs) ;EVENT_OBJECT_DESTROY
 	{
 		DecToHex(hwnd)
 		if(TabContainerList.ContainsHWND(hwnd))		
@@ -31,19 +21,32 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 			outputdebug tab closed
 			ExplorerDestroyed(hwnd)
 		}
+		return
 	}
+	
 	if(event=0x800B && WinActive("ahk_group ExplorerGroup")) ;EVENT_OBJECT_LOCATIONCHANGE
 	{
-		UpdatePosition(TabNum,TabWindow)
-		UpdateInfoPosition()
+		;outputdebug locationchange updateposition
+		if(UseTabs)
+			UpdatePosition(TabNum,TabWindow)
+		if(HKShowSpaceAndSize)
+			UpdateInfoPosition()
+		return
 	}
+	
+	;A small sleep is required here. Sleep command isn't precise enough for good performance
+	; On a PC whose sleep duration normally rounds up to 15.6 ms, try TimePeriod=7 to allow
+	; somewhat shorter sleeps, and try TimePeriod=3 or less to allow the shortest possible sleeps.
+	DllCall("Winmm\timeBeginPeriod", uint, 3)  ; Affects all applications, not just this script's DllCall("Sleep"...), but does not affect SetTimer. Try 7 or 3
+	DllCall("Sleep", UInt, 1)  ; Must use DllCall instead of the Sleep command.
+	DllCall("Winmm\timeEndPeriod", UInt, 3)  ; Should be called to restore system to normal.	
 }
 
 ShellMessage( wParam,lParam, msg) 
 {
 	Critical
-	global Vista7, ExplorerPath,hwnd1,HKShowSpaceAndSize,BlinkingWindows,wtmwParam,TabContainerList, SuppressTabEvents
-	
+	global Vista7, ExplorerPath,hwnd1,HKShowSpaceAndSize,BlinkingWindows,wtmwParam,TabContainerList, SuppressTabEvents, UseTabs,ea_lParam,ed_lParam
+	outputdebug shellmessage %wParam% %lParam% %msg%
 	;Traymin
 	If	msg=1028
 	{
@@ -56,12 +59,10 @@ ShellMessage( wParam,lParam, msg)
 		}
 		Else If	(lParam=0x201||lParam=0x207)
 			WinTraymin(wParam,3)
-		Return 0
 	}
 	Else If	(wParam=1||wParam=2)
 	{
 		WinTraymin(lParam,wParam)
-		return 0
 	}
 	; Execute a command based on wParam and lParam 
 	
@@ -107,7 +108,7 @@ ShellMessage( wParam,lParam, msg)
 	
 	;Window Activation
 	if(wParam=4||wParam=32772) ;HSHELL_WINDOWACTIVATED||HSHELL_RUDEAPPACTIVATED
-	{		
+	{
 		;Blinking windows detection, remove activated windows
 		if(x:=BlinkingWindows.indexOf(lParam))
 			BlinkingWindows.Delete(x)
@@ -120,51 +121,81 @@ ShellMessage( wParam,lParam, msg)
 			;Backup current clipboard contents and write "simple" text/image data in clipboard while explorer is active
 			ExplorerPath:=GetCurrentFolder()
 			;Paste text/image as file file creation
-			CreateFile()
+			SetTimer, CreateFile, -1
+			;CreateFile()
 		}
 		if(WinActive("ahk_group ExplorerGroup"))
 		{
-			ExplorerActivated(lParam)
+			if(UseTabs)
+			{
+				ea_lParam:=lParam
+				SetTimer, ExplorerActivated, -1
+				;ExplorerActivated(lParam)
+			}
 			;Explorer info stuff
 			if(A_OSVersion="WIN_7" && HKShowSpaceAndSize)
 			{
 				SetTimer, UpdateInfos, 100
 			}
 		}
-		Else
+		Else if(UseTabs)
 		{
 			;SetTimer, ExplorerDeactivated, -10
-			ExplorerDeactivated(lParam)
+			ed_lParam:=lParam
+			SetTimer, ExplorerDeactivated, -1
+			;ExplorerDeactivated(lParam)
 		}
 	}
 	;Redraw is fired on Explorer path change
 	else if(wParam=6)
 	{
-	;Detect changed path
-	
-    if(WinActive("ahk_group ExplorerGroup")||IsDialog())
-    {
-    	newpath:=GetCurrentFolder()
-    	if(newpath && newpath!=ExplorerPath)
-    	{
-    		outputdebug Explorer path changed from %ExplorerPath% to %newpath%
-    		ExplorerPathChanged(ExplorerPath, newpath)
-    		ExplorerPath:=newpath
-			if(!SuppressTabEvents && hwnd:=WinActive("ahk_group ExplorerGroup"))
+		;Detect changed path		
+		if(WinActive("ahk_group ExplorerGroup")||IsDialog())
+		{
+			newpath:=GetCurrentFolder()
+			if(newpath && newpath!=ExplorerPath)
 			{
-				UpdateTabs()
-				/*
-				SplitPath,newpath, name
-				if(!name)
-					name:=newpath
-				GuiControl, %TabNum%:,Tab%hwnd%,%name%
-				*/
+				outputdebug Explorer path changed from %ExplorerPath% to %newpath%
+				ExplorerPathChanged(ExplorerPath, newpath)
+				ExplorerPath:=newpath
+				if(UseTabs && !SuppressTabEvents && hwnd:=WinActive("ahk_group ExplorerGroup"))
+				{
+					SetTimer, UpdateTabs, -1
+					;UpdateTabs()
+					/*
+					SplitPath,newpath, name
+					if(!name)
+						name:=newpath
+					GuiControl, %TabNum%:,Tab%hwnd%,%name%
+					*/
+				}
 			}
-    	}
-    }
-  }
+		}
+	}
+	;A small sleep is required here. Sleep command isn't precise enough for good performance
+	; On a PC whose sleep duration normally rounds up to 15.6 ms, try TimePeriod=7 to allow
+	; somewhat shorter sleeps, and try TimePeriod=3 or less to allow the shortest possible sleeps.
+	DllCall("Winmm\timeBeginPeriod", uint, 3)  ; Affects all applications, not just this script's DllCall("Sleep"...), but does not affect SetTimer. Try 7 or 3
+	DllCall("Sleep", UInt, 1)  ; Must use DllCall instead of the Sleep command.
+	DllCall("Winmm\timeEndPeriod", UInt, 3)  ; Should be called to restore system to normal.	
 }
-
+CreateFile:
+CreateFile()
+Return
+ExplorerActivated:
+ExplorerActivated(ea_lParam)
+Return
+ExplorerDeactivated:
+ExplorerDeactivated(ed_lParam)
+Return
+UpdateTabs:
+UpdateTabs()
+Return
+/*
+UpdatePosition:
+UpdatePosition()
+return
+*/
 WM_LBUTTONUP(wParam,lParam,msg,hWnd){
 	SetTimer, TooltipClose, -20
 } 

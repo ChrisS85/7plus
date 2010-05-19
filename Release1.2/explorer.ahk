@@ -452,17 +452,19 @@ key.=GetKeyState("ALT") ? "!" : ""
 key.=GetKeyState("SHIFT") ? "+" : ""
 key.=(GetKeyState("RWIN") || GetKeyState("LWIN")) ? "#" : ""
 Handled:=TaskbuttonClose()
-if !Handled
+if !Handled && UseTabs 
 {
-	outputdebug testcreatetab
-	MouseGetPos,,,window
+	MouseGetPos,,,window,control
 	if(MouseHittest()=2 && (IsWindowUnderCursor("ExploreWClass") || IsWindowUnderCursor("CabinetWClass")))
 	{
 		CreateTab(window)
 		Handled:=true
 	}
-	if (!Handled && Handled:=IsMouseOverTabButton())
-		CloseTab(Handled)
+	if(!Handled && window = TabWindow)
+	{
+		MouseCloseTab()
+		Handled:=true
+	}
 }
 if !Handled
 	Handled:=TitleBarClose()
