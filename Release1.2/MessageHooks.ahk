@@ -116,9 +116,10 @@ ShellMessage( wParam,lParam, msg)
 		outputdebug activate %class% %lParam%
 		;If we change from another program to explorer/desktop/dialog
 		if(WinActive("ahk_group ExplorerGroup")||WinActive("ahk_group DesktopGroup")||IsDialog())
-		{
-			;Backup current clipboard contents and write "simple" text/image data in clipboard while explorer is active
-			ExplorerPath:=GetCurrentFolder()
+		{			
+			if(!WinActive("ahk_group DesktopGroup")) ;By doing this, recall explorer path works also when double clicking desktop to launch explorer
+				ExplorerPath:=GetCurrentFolder()
+				
 			;Paste text/image as file file creation
 			CreateFile()
 		}
@@ -129,6 +130,7 @@ ShellMessage( wParam,lParam, msg)
 			;Explorer info stuff
 			if(A_OSVersion="WIN_7" && HKShowSpaceAndSize)
 				SetTimer, UpdateInfos, 100
+			
 		}
 		Else if(UseTabs)
 			ExplorerDeactivated(lParam)

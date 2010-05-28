@@ -111,6 +111,7 @@ IniRead, ScrollUnderMouse, %A_ScriptDir%\Settings.ini, Explorer, ScrollUnderMous
 IniRead, HKInvertSelection, %A_ScriptDir%\Settings.ini, Explorer, HKInvertSelection, 1
 IniRead, HKOpenInNewFolder, %A_ScriptDir%\Settings.ini, Explorer, HKOpenInNewFolder, 1
 IniRead, HKFlattenDirectory, %A_ScriptDir%\Settings.ini, Explorer, HKFlattenDirectory, 1
+IniRead, RecallExplorerPath, %A_ScriptDir%\Settings.ini, Explorer, RecallExplorerPath, 1
 
 IniRead, HKKillWindows, %A_ScriptDir%\Settings.ini, Windows, HKKillWindows, 1
 IniRead, HKToggleWallpaper, %A_ScriptDir%\Settings.ini, Windows, HKToggleWallpaper, 1
@@ -124,6 +125,7 @@ IniRead, HKToggleWindows, %A_ScriptDir%\Settings.ini, Windows, HKToggleWindows, 
 IniRead, HKAltDrag, %A_ScriptDir%\Settings.ini, Windows, HKAltDrag, 1
 IniRead, HKAltMinMax, %A_ScriptDir%\Settings.ini, Windows, HKAltMinMax, 1
 IniRead, HKTrayMin, %A_ScriptDir%\Settings.ini, Windows, HKTrayMin, 1
+IniRead, DoubleClickDesktop, %A_ScriptDir%\Settings.ini, Windows, DoubleClickDesktop, %A_Windir%\explorer.exe
 
 IniRead, HKHoverStart, %A_ScriptDir%\Settings.ini, Windows, HKHoverStart, 1
 ;program to launch on double click on taskbar
@@ -338,6 +340,7 @@ WriteIni()
 	IniWrite, %HKInvertSelection%, %A_ScriptDir%\Settings.ini, Explorer, HKInvertSelection
 	IniWrite, %HKOpenInNewFolder%, %A_ScriptDir%\Settings.ini, Explorer, HKOpenInNewFolder
 	IniWrite, %HKFlattenDirectory%, %A_ScriptDir%\Settings.ini, Explorer, HKFlattenDirectory
+	IniWrite, %RecallExplorerPath%, %A_ScriptDir%\Settings.ini, Explorer, RecallExplorerPath
 	
 	IniWrite, %UseTabs%, %A_ScriptDir%\Settings.ini, Tabs, UseTabs
 	IniWrite, %NewTabPosition%, %A_ScriptDir%\Settings.ini, Tabs, NewTabPosition
@@ -364,6 +367,7 @@ WriteIni()
 	IniWrite, %HKAltDrag%, %A_ScriptDir%\Settings.ini, Windows, HKAltDrag
 	IniWrite, %HKAltMinMax%, %A_ScriptDir%\Settings.ini, Windows, HKAltMinMax
 	IniWrite, %HKTrayMin%, %A_ScriptDir%\Settings.ini, Windows, HKTrayMin
+	IniWrite, %DoubleClickDesktop%, %A_ScriptDir%\Settings.ini, Windows, DoubleClickDesktop
 	
 	IniWrite, %HKImproveConsole%, %A_ScriptDir%\Settings.ini, Misc, HKImproveConsole
 	IniWrite, %HKPhotoViewer%, %A_ScriptDir%\Settings.ini, Misc, HKPhotoViewer

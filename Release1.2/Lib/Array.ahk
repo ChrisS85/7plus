@@ -14,11 +14,28 @@ Array(p1="Ņ", p2="Ņ", p3="Ņ", p4="Ņ", p5="Ņ", p6="Ņ"){
    Return arr 
 } 
 
-Array_indexOf(arr, val, startpos=1){
-	enum := arr._newEnum() 
-	while enum[ k, v ]
-      If ( k >= startpos && v == val ) 
-         Return, k
+Array_indexOf(arr, val, opts="", startpos=1){
+	if(val is object)
+	{
+		enum := arr._newEnum()
+		while enum[ k, v ]
+		  If ( k >= startpos && v = val )
+			 Return, k
+	}
+	P := !!InStr(opts, "P"), C := !!InStr(opts, "C")
+	If A := !!InStr(opts, "A")
+		matches := Array()
+	Loop % arr.len()
+		If(A_Index>=startpos)
+			If(match := InStr(arr[A_Index], val, C)) and (P or StrLen(arr[A_Index])=StrLen(val))
+				If A
+					matches.append(A_Index)
+				Else
+					Return A_Index
+	If A
+	  Return matches
+	Else
+	  Return 0
 } 
 Array_Join(arr, sep="`n"){ 
    Loop, % arr.len() 

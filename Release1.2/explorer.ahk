@@ -314,6 +314,25 @@ Return::
 Backspace::Send !{Up}
 #if
 
+#if RecallExplorerPath && ExplorerPath != ""
+#e::run, %A_WinDir%\explorer.exe %ExplorerPath%
+#if
+
+#if (Vista7 && IsWindowUnderCursor("WorkerW")) || (!Vista7 && IsWindowUnderCursor("ProgMan"))
+~LButton::
+PreviousDesktopFiles:=CurrentDesktopFiles
+CurrentDesktopFiles:=GetSelectedFiles()
+outputdebug current: %CurrentDesktopFiles% previous: %PreviousDesktopFiles%
+if(IsDoubleClick() && PreviousDesktopFiles = "" && CurrentDesktopFiles = "")
+{
+	if(DoubleClickDesktop = A_WinDir "\explorer.exe" && RecallExplorerPath)
+		temp := A_WinDir "\explorer.exe " ExplorerPath
+	else
+		temp := DoubleClickDesktop
+	run %temp%
+}
+Return
+#if
 ;Double click upwards is buggy in filedialogs, so only explorer for now until someone comes up with non-intrusive getpath, getselectedfiles functionsunrel
 #if HKDoubleClickUpwards && WinActive("ahk_group ExplorerGroup") && IsMouseOverFileList() && GetKeyState("RButton")!=1
 ;LButton on empty space in explorer -> go upwards
@@ -383,14 +402,14 @@ if(!IsRenaming()&&InFileList())
 				;check if no files selected after second click either
 				files:=GetSelectedFiles()
 				OutputDebug("selected files after second click:" files)
-			  if (!files)
-			  {
-				OutputDebug("go upwards")
+				if (!files)
+				{
+					OutputDebug("go upwards")
 					if (Vista7 && !strEndsWith(path1,".search-ms"))
-			Send !{Up}
-				  else
-					Send {Backspace}
-				  time1:=0
+						Send !{Up}
+					else
+						Send {Backspace}
+					time1:=0
 				}
 			}	
 		}

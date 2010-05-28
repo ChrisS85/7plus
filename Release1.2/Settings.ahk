@@ -97,8 +97,10 @@ Settings_CreateBehavior() {
 	yIt+=checkboxstep	
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghApplyOperation vURL_ApplyOperation, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKAutoCheck, Automatically check "Apply to all further operations" checkboxes in file operations (Vista/7 only)
+	yIt+=checkboxstep
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vRecallExplorerPath, Win+E: Open explorer in last active directory
 	yIt+=checkboxstep*2
-		
+	
 	Gui, 1:Add, Text, x%x1% y%yIt%, Text and images from clipboard can be pasted as file in explorer with these settings
 	yIt+=checkboxstep
 	
@@ -202,12 +204,12 @@ Settings_CreateTabs() {
 	Gui, 1:Add, DropDownList, x%x2% y%yIt% w%wTBMedium% vMiddleOpenFolder AltSubmit, window|tab|tab in background
 	yIt+=checkboxstep	
 }
-Settings_CreateWindowHandling1() {
+Settings_CreateWindowHandling() {
 	global
 	local yIt,x1,x,y
 	xHelp:=xBase
 	x1:=xHelp+10
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vWindowHandling1, 
+	Gui, 1:Add, Tab2, x156 y14 w410 h350 vWindowHandling, 
 	AddTab(0, "","SysTabControl325")
 	yIt:=yBase
 
@@ -246,15 +248,25 @@ Settings_CreateWindowHandling1() {
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow1dot1 vURL_Window1dot12, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKTrayMin, Right click minimize button or WIN + SHIFT + Arrow key in taskbar direction: Minimize to tray
 	yIt+=checkboxstep
+	y:=yIt+TextBoxCheckBoxOffset
+	Gui, 1:Add, Text, y%y% x%xhelp% cBlue ghWindow vURL_Window3, ?
+	Gui, 1:Add, Checkbox, x%x1% y%y% gFlip3D, Mouse in upper left corner: Toggle Aero Flip 3D (Vista/7 only)
+	x:=xBase+362
+	y:=yIt+TextBoxTextOffset
+	Gui, 1:Add, Text, x%x% y%y%, Seconds in corner:
+	x:=xBase+248+wTBLarge
+	Gui, 1:Add, Edit, 		x%x% y%yIt% w%wTBShort% R1 vAeroFlipTime	
+	y:=yIt+TextBoxButtonOffset
+	yIt+=textboxstep
 }
-Settings_CreateWindowHandling2() {
+Settings_CreateDesktopTaskBar() {
 	global
 	local yIt,x1,x,y
 	xHelp:=xBase
 	x1:=xHelp+10
 	yIt:=yBase
 	y:=yIt+TextBoxCheckBoxOffset
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vWindowHandling2, 
+	Gui, 1:Add, Tab2, x156 y14 w410 h350 vDesktopTaskbar, 
 	AddTab(0, "","SysTabControl326")
 	y:=yIt+TextBoxCheckBoxOffset
 	Gui, 1:Add, Text, y%y% x%xhelp% cBlue ghTaskbar vURL_Taskbar, ?
@@ -263,12 +275,22 @@ Settings_CreateWindowHandling2() {
 	Gui, 1:Add, Edit, x%x% y%yIt% w%wTBLarge% R1 vTaskbarLaunchPath
 	y:=yIt+TextBoxButtonOffset
 	x:=x+wTBLarge+10
-	Gui, 1:Add, Button, x%x% y%y% w%wButton% gTaskbarLaunchBrowse, ...
+	Gui, 1:Add, Button, x%x% y%y% w%wButton% gTaskbarLaunchBrowse vTaskbarLaunchPathBrowse, ...
+	yIt+=textboxstep
+	
+	;Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window2, ?
+	y:=yIt+TextBoxCheckBoxOffset
+	Gui, 1:Add, CheckBox, x%x1% y%y% gDoubleClickDesktop, Double click on desktop: Run	
+	x:=xBase+258
+	Gui, 1:Add, Edit, x%x% y%yIt% w%wTBLarge% vDoubleClickDesktop R1
+	y:=yIt+TextBoxButtonOffset
+	x+=wTBLarge+10
+	Gui, 1:Add, Button, x%x% y%y% w%wButton% gDoubleClickDesktopBrowse vDoubleClickDesktopBrowse, ...
 	yIt+=textboxstep
 	
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar1, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKMiddleClose, Middle click on taskbuttons: close task
-	yIt+=checkboxstep	
+	yIt+=checkboxstep
 	
 	x:=x1+xCheckboxTextOffset
 	y:=yIt+yCheckBoxTextOffset
@@ -280,18 +302,7 @@ Settings_CreateWindowHandling2() {
 	yIt+=checkboxstep	
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window2, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKToggleWallpaper, Middle mouse click on desktop: Toggle wallpaper (7 only)
-	yIt+=checkboxstep	
-	
-	y:=yIt+TextBoxCheckBoxOffset
-	Gui, 1:Add, Text, y%y% x%xhelp% cBlue ghWindow vURL_Window3, ?
-	Gui, 1:Add, Checkbox, x%x1% y%y% gFlip3D, Mouse in upper left corner: Toggle Aero Flip 3D (Vista/7 only)
-	x:=xBase+362
-	y:=yIt+TextBoxTextOffset
-	Gui, 1:Add, Text, x%x% y%y%, Seconds in corner:
-	x:=xBase+248+wTBLarge
-	Gui, 1:Add, Edit, 		x%x% y%yIt% w%wTBShort% R1 vAeroFlipTime	
-	y:=yIt+TextBoxButtonOffset
-	yIt+=textboxstep
+	yIt+=checkboxstep
 }
 Settings_CreateFTP() {
 	global
@@ -490,11 +501,12 @@ Settings_SetupBehavior() {
 	GuiControl, 1:,Paste image as file,%temp%
 	GoSub img
 		
-	GuiControl, 1:,HKSelectFirstFile,%HKSelectFirstFile%
-	GuiControl, 1:,HKImproveEnter,%HKImproveEnter%
-	GuiControl, 1:,ScrollUnderMouse,%ScrollUnderMouse%
-	GuiControl, 1:,HKShowSpaceAndSize,%HKShowSpaceAndSize%	
-	GuiControl, 1:,HKAutoCheck,%HKAutoCheck%
+	GuiControl, 1:, HKSelectFirstFile, %HKSelectFirstFile%
+	GuiControl, 1:, HKImproveEnter, %HKImproveEnter%
+	GuiControl, 1:, ScrollUnderMouse, %ScrollUnderMouse%
+	GuiControl, 1:, HKShowSpaceAndSize, %HKShowSpaceAndSize%	
+	GuiControl, 1:, HKAutoCheck, %HKAutoCheck%
+	GuiControl, 1:, RecallExplorerPath, %RecallExplorerPath%
 }
 Settings_SetupFastFolders() {
 	global			
@@ -528,7 +540,7 @@ Settings_SetupTabs() {
 	local x:=max(MiddleOpenFolder,1)	
 	GuiControl, 1:Choose, MiddleOpenFolder, %x%
 }
-Settings_SetupWindowHandling1() {
+Settings_SetupWindowHandling() {
 	global
 	GuiControl, 1:,HKTitleClose,%HKTitleClose%
 	GuiControl, 1:,HKToggleAlwaysOnTop,%HKToggleAlwaysOnTop%
@@ -540,8 +552,15 @@ Settings_SetupWindowHandling1() {
 	GuiControl, 1:,HKAltDrag,%HKAltDrag%	
 	GuiControl, 1:,HKAltMinMax,%HKAltMinMax%	
 	GuiControl, 1:,HKTrayMin,%HKTrayMin%	
+	GuiControl, 1:, AeroFlipTime, %AeroFlipTime%
+	;Setup Aero Flip 3D
+	temp:=(AeroFlipTime>=0)
+	GuiControl, 1:,Mouse in upper left corner: Toggle Aero Flip 3D,%temp%
+	if(!temp)
+		GuiControl, 1:, AeroFlipTime, 0
+	GoSub Flip3D
 }
-Settings_SetupWindowHandling2() {
+Settings_SetupDesktopTaskBar() {
 	global
 	local temp
 	;Setup taskbar launch
@@ -549,31 +568,30 @@ Settings_SetupWindowHandling2() {
 	GuiControl, 1:,Double click on empty taskbar: Run,%temp%
 	GuiControl, 1:, TaskbarLaunchPath, %TaskbarLaunchPath%
 	GoSub TaskbarLaunch
-	GuiControl, 1:, AeroFlipTime, %AeroFlipTime%
+	
 		
 	if(A_OsVersion!="WIN_7")
 	{
 		GuiControl, 1:disable, HKActivateBehavior
 		GuiControl, 1:disable, HKToggleWallpaper
 	}
-		
+	/*
 	if(!Vista7)
 	{
 		GuiControl, 1:disable, AeroFlipTime
 		GuiControl, 1:disable, Mouse in upper left corner: Toggle Aero Flip 3D (Vista/7 only)
 		GuiControl, 1:disable, Seconds in corner:
 	}
+	*/
 	GuiControl, 1:,HKTaskbarLaunch,%HKTaskbarLaunch%
 	GuiControl, 1:,HKMiddleClose,%HKMiddleClose%
 	RegRead, HKActivateBehavior, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick
 	GuiControl, 1:,HKActivateBehavior,%HKActivateBehavior%
 	GuiControl, 1:,HKToggleWallpaper,%HKToggleWallpaper%
-	;Setup Aero Flip 3D
-	temp:=(AeroFlipTime>=0)
-	GuiControl, 1:,Mouse in upper left corner: Toggle Aero Flip 3D,%temp%
-	if(!temp)
-		GuiControl, 1:, AeroFlipTime, 0
-	GoSub Flip3D
+	temp:=(DoubleClickDesktop !=0 && DoubleClickDesktop != "")
+	GuiControl, 1:, Double click on desktop: Run, %temp%
+	GuiControl, 1:, DoubleClickDesktop, %DoubleClickDesktop%
+	GoSub DoubleClickDesktop
 }
 Settings_SetupFTP() {
 	global
@@ -610,49 +628,49 @@ Settings_SetupAbout() {
 	
 }
 
-AddTab(IconNumber, TabName, TabControl) {  
+AddTab(IconNumber, TabName, TabControl) {
    Gui 1: +LastFound
    VarSetCapacity(TCITEM, 100, 0)
-	 NumPut(3, TCITEM ,0) ; Mask (3) comes from TCIF_TEXT(1) + TCIF_IMAGE(2). 
+	 NumPut(3, TCITEM ,0) ; Mask (3) comes from TCIF_TEXT(1) + TCIF_IMAGE(2).
 	 NumPut(&TabName, TCITEM ,12) ; pszText
-	 NumPut(IconNumber - 1, TCITEM ,20) ; iImage: -1 to convert to zero-based. 
-   SendMessage, 0x1307, 999, &TCITEM, %TabControl%  ; 0x1307 is TCM_INSERTITEM 
+	 NumPut(IconNumber - 1, TCITEM ,20) ; iImage: -1 to convert to zero-based.
+   SendMessage, 0x1307, 999, &TCITEM, %TabControl%  ; 0x1307 is TCM_INSERTITEM
 }
-listbox: 
+listbox:
 GuiControlGet,selected,1:,MyListBox
 outputdebug listbox %selected%
-Loop, Parse, TabList, | 
+Loop, Parse, TabList, |
 {
 	StringReplace, stripped, A_LoopField, %A_Space% , , 1
-  If (selected = A_LoopField) 
-  {
-  	outputdebug show %stripped%
-     GuiControl, 1:Show, %stripped%
-     GuiControl, 1:Text, GGroupBox, %A_LoopField% 
-     test:=stripped
-
-  } 
-  else 
-  {
-		outputdebug hide %stripped% 
-     GuiControl, 1:Hide, %stripped%
-  } 
+	StringReplace, stripped, stripped, / , , 1
+	If (selected = A_LoopField)
+	{
+		outputdebug show %stripped%
+		GuiControl, 1:Show, %stripped%
+		GuiControl, 1:Text, GGroupBox, %A_LoopField%
+		test:=stripped
+	}
+	else 
+	{
+		outputdebug hide %stripped%
+		GuiControl, 1:Hide, %stripped%
+	}
 }
 GuiControl, 1:MoveDraw, MyListBox
 GuiControl, 1:Movedraw, GGroupbox
-GuiControl, 1:Movedraw, %test% 
+GuiControl, 1:Movedraw, %test%
 GuiControl, 1:MoveDraw, BtnOK
 GuiControl, 1:MoveDraw, BtnCancel
 GuiControl, 1:MoveDraw, TutLabel
 GuiControl, 1:MoveDraw, Wait
-return 
+return
 
 ShowSettings()
 {
 	global
 	local x,y,yIt,x1,x2
 	if(!SettingsActive)
-	{			
+	{
 		SettingsActive:=True
 		;---------------------------------------------------------------------------------------------------------------
 		; Create GUI
@@ -681,7 +699,7 @@ ShowSettings()
 			wTBHuge:=300
 			wButton:=30
 			hCheckbox:=16 
-			TabList = Explorer Hotkeys|Explorer Behavior|Fast Folders|Explorer Tabs|Window Handling 1|Window Handling 2|FTP|Misc|About 
+			TabList = Explorer Hotkeys|Explorer Behavior|Fast Folders|Explorer Tabs|Window Handling|Desktop / Taskbar|FTP|Misc|About 
 			Gui, 1:Add, ListBox, x16 y20 w120 h350 gListbox vMyListBox, %TabList%
 			Gui, 1:Add, GroupBox, x156 y14 w530 h350 vGGroupBox , Explorer Hotkeys  
 			/*
@@ -706,8 +724,8 @@ ShowSettings()
 			Settings_CreateBehavior()
 			Settings_CreateFastFolders()
 			Settings_CreateTabs()
-			Settings_CreateWindowHandling1()
-			Settings_CreateWindowHandling2()
+			Settings_CreateWindowHandling()
+			Settings_CreateDesktopTaskBar()
 			Settings_CreateFTP()
 			Settings_CreateMisc()
 			Settings_CreateAbout()			
@@ -726,8 +744,8 @@ ShowSettings()
 		Settings_SetupBehavior()
 		Settings_SetupFastFolders()
 		Settings_SetupTabs()
-		Settings_SetupWindowHandling1()
-		Settings_SetupWindowHandling2()
+		Settings_SetupWindowHandling()
+		Settings_SetupDesktopTaskBar()
 		Settings_SetupFTP()
 		Settings_SetupMisc()
 		Settings_SetupAbout()
@@ -773,12 +791,6 @@ GuiControl, 1:enable%enabled%,TextEditor
 GuiControl, 1:enable%enabled%,ImageEditor
 GuiControl, 1:enable%enabled%,Button5
 GuiControl, 1:enable%enabled%,Button6
-Return
-
-TaskbarLaunch:
-GuiControlGet, enabled ,1: , Double click on empty taskbar: Run
-GuiControl, 1:enable%enabled%,TaskbarLaunchPath
-GuiControl, 1:enable%enabled%,Button29
 Return
 
 TextBrowse:
@@ -829,10 +841,16 @@ GuiControl, 1:enable%enabled%, MiddleOpenFolder
 return
 
 TabStartupPathBrowse:
-	path:=COM_CreateObject("Shell.Application").BrowseForFolder(0, "Enter Path to add as button", 0).Self.Path
+path:=COM_CreateObject("Shell.Application").BrowseForFolder(0, "Enter Path to add as button", 0).Self.Path
 if(path!="")
 	GuiControl, , 1:TabStartupPath,%path%
 return
+
+TaskbarLaunch:
+GuiControlGet, enabled ,1: , Double click on empty taskbar: Run
+GuiControl, 1:enable%enabled%,TaskbarLaunchPath
+GuiControl, 1:enable%enabled%,TaskbarLaunchPathBrowse
+Return
 
 TaskbarLaunchBrowse:
 FileSelectFile, TaskbarPath , 3, , Select taskbar executable, *.exe
@@ -860,6 +878,18 @@ SlideWindow:
 GuiControlGet, enabled,1: , HKSlideWindows
 GuiControl, 1:enable%enabled%, SlideWinHide
 return
+
+DoubleClickDesktop:
+GuiControlGet, enabled ,1: ,Double click on desktop: Run
+GuiControl, 1:enable%enabled%, DoubleClickDesktop
+GuiControl, 1:enable%enabled%, DoubleClickDesktopBrowse
+return
+
+DoubleClickDesktopBrowse:
+FileSelectFile, path , 3, , Select file to execute, *.exe
+if(path!="")
+	GuiControl, , 1:DoubleClickDesktop,%path%
+Return
 
 FTP:
 GuiControlGet, enabled ,1: ,Use FTP
@@ -1040,7 +1070,7 @@ else
 	TxtName:=""
 	temp_txt:=""
 }
-outputdebug txtenabled:=%txtenabled% pastename=%pastename%
+
 ;Store paste image as file filename
 GuiControlGet, imgenabled ,1: , Paste image as file
 GuiControlGet, pastename ,1: , ImgName
@@ -1084,11 +1114,11 @@ if(!enabled)
 	MiddleOpenFolder:=0
 
 ;Store taskbar launch filename
-GuiControlGet, taskbarlaunchenabled ,1: , Double click on empty taskbar: Run
-GuiControlGet, taskbarPath ,1: , TaskbarLaunchPath
-if taskbarlaunchenabled
+GuiControlGet, enabled ,1: , Double click on empty taskbar: Run
+GuiControlGet, path ,1: , TaskbarLaunchPath
+if enabled
 {
-	TaskbarLaunchPath:=taskbarPath
+	TaskbarLaunchPath:=path
 }
 else
 {
@@ -1104,9 +1134,16 @@ else
 	AeroFlipTime:=-1
 	SetTimer, hovercheck, Off
 }
+
+;Store double click desktop
+GuiControlGet, enabled, 1:, DoubleClickDesktop
+if(!enabled)
+	DoubleClickDesktop:=0
+
 ;UnSlide hidden windows
 if(!HKSlideWindows)
 	SlideWindows_Exit()
+
 ;Store FTP Settings
 GuiControlGet, FTP_Enabled,1: ,Use FTP
 if(FTP_Password!=temp)
