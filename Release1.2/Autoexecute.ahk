@@ -185,6 +185,7 @@ IniRead, ActivateTab, %A_ScriptDir%\Settings.ini, Tabs, ActivateTab, true
 IniRead, TabWindowClose, %A_ScriptDir%\Settings.ini, Tabs, TabWindowClose, true
 IniRead, OnTabClose, %A_ScriptDir%\Settings.ini, Tabs, OnTabClose, 1
 IniRead, ShowSingleTab, %A_ScriptDir%\Settings.ini, Tabs, ShowSingleTab, false
+IniRead, MiddleOpenFolder, %A_ScriptDir%\Settings.ini, Tabs, MiddleOpenFolder, 1
 TabContainerList := TabContainerList()
 CreateTabWindow()
 
@@ -228,14 +229,12 @@ if (Firstrun=1)
 	IniWrite, 0, %A_ScriptDir%\Settings.ini, General, FirstRun
 }
 Return
-#k::
-hwnd:=WinExist("A")
-outputdebug hahk %hahk% hwnd %hwnd%
-return
+
 ExitSub:
 Gdip_Shutdown(pToken)
 WriteIni()
 SlideWindows_Exit()
+TabContainerList.CloseAllInactiveTabs()
 GoSub TrayminClose
 ExitApp
 
@@ -347,6 +346,7 @@ WriteIni()
 	IniWrite, %TabWindowClose%, %A_ScriptDir%\Settings.ini, Tabs, TabWindowClose
 	IniWrite, %OnTabClose%, %A_ScriptDir%\Settings.ini, Tabs, OnTabClose
 	IniWrite, %ShowSingleTab%, %A_ScriptDir%\Settings.ini, Tabs, ShowSingleTab
+	IniWrite, %MiddleOpenFolder%, %A_ScriptDir%\Settings.ini, Tabs, MiddleOpenFolder
 	
 	IniWrite, %HKToggleAlwaysOnTop%, %A_ScriptDir%\Settings.ini, Windows, HKToggleAlwaysOnTop
 	IniWrite, %HKActivateBehavior%, %A_ScriptDir%\Settings.ini, Windows, HKActivateBehavior

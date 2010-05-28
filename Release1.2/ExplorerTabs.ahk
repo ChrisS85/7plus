@@ -20,23 +20,18 @@ IsMouseOverTabButton()
 	global
 	local window,control,TabContainer,MouseHwnd,hwnd,controlhwnd
 	MouseGetPos,,,window, control
-	outputdebug window %window% tabWindow %TabWindow% control %control%
 	if(window && window=TabWindow && strStartsWith(control,"Tab"))
 	{
 		TabContainer:=TabContainerList.ContainsHWND(TabContainerList.active)
 		ControlGet, MouseHwnd, Hwnd,, %control%, ahk_id %window%
 		if(TabContainer)
 		{
-			outputdebug start loop
 			Loop % TabContainer.tabs.len()
 			{
 				hwnd:=TabContainer.tabs[A_Index]
 				GuiControlGet, controlhwnd,%TabNum%:Hwnd,Tab%hwnd%
-				outputdebug controlhwnd %controlhwnd% mousehwnd %mousehwnd%
 				if(ControlHWND=MouseHWND)
-				{
 					return hwnd ;Returns hwnd associated to the tab
-				}
 			}
 		}
 	}
@@ -113,18 +108,21 @@ backup:=SuppressTabEvents
 SuppressTabEvents:=true
 TabNum:=3
 Gui, %TabNum%:+LastFound +ToolWindow -Border -Resize -Caption +alwaysontop
-Gui, %TabNum%:Add,Tab2, +Theme -Wrap x0 w200 h20 HwndTabHWND vTabControl gTabEvent +AltSubmit, %A_Space%
+Gui, %TabNum%:Add,Tab2, +Theme -Wrap x0 w2000 h20 HwndTabHWND vTabControl gTabEvent +AltSubmit, %A_Space%
 Gui, %TabNum%:Show , NA x50 y50
 WinGetPos,x,y,w,h, ahk_id %TabHWND%
-x:=x+w-2
+x:=x+500 ;This method is not very reliable, as there might be painting issues outside of the screen!
 y:=y+h-2
 PixelGetColor,TabColor,%x%,%y%,RGB
-UpdateTabs()
 Gui, %TabNum%: Color, %TabColor%
 WinSet, TransColor, %TabColor%
 TabWindow := WinExist()
-SuppressTabEvents:=backup
+SuppressTabEvents:=false
+UpdateTabs()
 UpdatePosition(TabNum, TabWindow)
+GuiControl, %TabNum%:MoveDraw, TabControl
+DllCall("InvalidateRect",UInt, TabWindow, UInt, 0, UInt, 1)
+SuppressTabEvents:=backup
 ;Dock(c0, "T x(0,0,24) y(0,0,0) w(1,-135)")
 Return
 }
@@ -212,10 +210,20 @@ ExplorerDestroyed(hwnd)
 	if(TabWindowClose = 0)
 		CloseTab(hwnd,TabContainer)
 	else if(TabWindowClose = 1)
-		CloseAllTabs(TabContainer)
+		TabContainer.CloseAllTabs()
 	return
 }
-CloseAllTabs(TabContainer)
+TabContainerList_CloseAllInactiveTabs(TabContainerList)
+{
+	Critical
+	len := TabContainerList.len()
+	loop %len% ;Fixed length for delete loop
+	{
+		TabContainer := TabContainerList[1]
+		TabContainer.CloseInactiveTabs()
+	}
+}
+TabContainer_CloseInactiveTabs(TabContainer)
 {
 	global TabContainerList
 	Critical
@@ -224,9 +232,43 @@ CloseAllTabs(TabContainer)
 	loop % TabContainer.tabs.len()
 	{
 		hwnd := TabContainer.tabs[A_Index]
-		WinClose, ahk_id %hwnd%
+		if(hwnd!=TabContainer.active)
+			WinClose, ahk_id %hwnd%
 	}
 }
+TabContainer_CloseAllTabs(TabContainer)
+{
+	global TabContainerList
+	Critical
+	NoTabUpdate:=true
+	SuppressTabEvents:=true
+	outputdebug close all tabs
+	TabContainerList.Print()
+	index:=TabContainerList.indexOf(TabContainer)
+	TabContainerList.Delete(index)
+	outputdebug index %index%
+	outputdebug after deletion:
+	TabContainerList.Print()
+	DetectHiddenWindows, On
+	loop % TabContainer.tabs.len()
+	{
+		hwnd := TabContainer.tabs[A_Index]
+		WinClose, ahk_id %hwnd%
+	}	
+	NoTabUpdate:=false
+	SuppressTabEvents:=false
+}
+/*
+TabContainerList_indexOf(TabContainerList,TabContainer)
+{
+	Loop % TabContainerList.len()
+	{
+		tc:=TabContainerList[A_Index]
+		if(tc.ContainsHWND(TabContainer.active))
+			return A_Index
+	}
+}
+*/
 UpdatePosition(TabNum, TabWindow)
 {
 	global SuppressTabEvents, TabContainerList, TabControl, NoTabUpdate
@@ -243,34 +285,34 @@ UpdatePosition(TabNum, TabWindow)
 		return
 	fid:=gid+=1
 	;SuppressTabEvents:=true
-	;outputdebug UpdatePosition(%TabNum%,%TabWindow%)
+	outputdebug UpdatePosition(%TabNum%,%TabWindow%)
 	hwnd:=WinActive("ahk_group ExplorerGroup")
 	TabContainer:=TabContainerList.ContainsHWND(hwnd)
 	class:=WinGetClass("A")
 	if( hwnd && TabContainer)
 	{
-		;outputdebug show tabs
-		WinGetPos, x,y,w,h,ahk_id %hwnd%
+		;Get restored-state coordinates
+		WinGetPlacement(hwnd,x,y,w,h)
 		;Update stored position so we can restore it if a tab is closed		
 		WinGet, state, minmax, ahk_id %hwnd%
 		TabContainer.state := state
-		if(state=0) ;only update size on non-maximized windows
-		{
-			TabContainer.x := x
-			TabContainer.y := y
-			TabContainer.w := w
-			TabContainer.h := h
-		}
+		TabContainer.x := x
+		TabContainer.y := y
+		TabContainer.w := w
+		TabContainer.h := h
+		;Now get current coordinates for tab window placement
+		WinGetPos, x,y,w,h,ahk_id %hwnd%
 		x+=24
 		w-=135
 		h:=30
-		if(w=25) ;Strange fix for restore from minimize causing too small sizing until next update
-			return
+		;if(w=25) ;Strange fix for restore from minimize causing too small sizing until next update
+		; 	return
 		
 		;y:=max(y,0)
 		if (fid != gid) 				;some newer instance of the function was running, so just return (function was interupted by itself). Without this, older instance will continue with old host window position and clients will jump to older location. This is not so visible with WinMove as it is very fast, but SetWindowPos shows this in full light. 
 			return
 		;DllCall("SetWindowPos", "uint", TabWindow, "uint", explorer, "uint", x, "uint", y, "uint", w, "uint", h, "uint", 19 | 0x4000 | 0x40)
+		;WinSetPlacement(TabWindow,x,y,w,h,1)
 		WinMove, ahk_id %TabWindow%,,%x%,%y%,%w%,%h%
 		;outputdebug updateposition() tab control: w%w%
 		GuiControl, %TabNum%:Move, TabControl, w%w%
@@ -353,15 +395,21 @@ CycleTabs(hwnd,dir)
 	Else
 		msgbox tabcontainer is too small!
 }
-CreateTab(hwnd)
+CreateTab(hwnd,path=-1,Activate=-1)
 {
-	global TabContainerList, TabContainerBase, SuppressTabEvents, TabNum, TabWindow,TabControl,TabStartupPath,ActivateTab
+	global TabContainerList, TabContainerBase, SuppressTabEvents, TabNum, TabWindow,TabControl,TabStartupPath,ActivateTab,NewTabPosition
 	Critical
+	hwnd:=hwnd ? hwnd : WinActive("ahk_group ExplorerGroup")
 	if(!hwnd)
 	{
 		Msgbox CreateTab(): No active tab!
 		Return
 	}
+	Activate := Activate = -1 ? ActivateTab : Activate
+	path := path = -1 ? TabStartupPath : path
+	if(path="")
+		path:=GetCurrentFolder(hwnd)
+	
 	SuppressTabEvents:=true
 	DecToHex(hwnd)
 	outputdebug CreateTab(%hwnd%)	
@@ -371,7 +419,9 @@ CreateTab(hwnd)
 		outputdebug ---------------------
 		outputdebug add new tab container
 		outputdebug ---------------------
-		TabContainerBase := Object("tabs", Array(), "active", 0, "x", 0, "y", 0, "w", 0, "h", 0,"state",0, "ContainsHWND", "TabContainer_ContainsHWND", "print", "TabContainer_Print")
+		TabContainerBase := Object("tabs", Array(), "active", 0, "x", 0, "y", 0, "w", 0, "h", 0,"state",0
+		, "CloseAllTabs", "TabContainer_CloseAllTabs", "CloseInactiveTabs", "TabContainer_CloseInactiveTabs"
+		, "ContainsHWND", "TabContainer_ContainsHWND", "print", "TabContainer_Print")
 		TabContainer:=Object("base",TabContainerBase)
 		TabContainer.tabs.append(hwnd)
 		TabContainer.active:=hwnd
@@ -380,9 +430,6 @@ CreateTab(hwnd)
 	}
 	DetectHiddenWindows, On
 	DisableMinimizeAnim(1)
-	path := TabStartupPath
-	if(path="")
-		path:=GetCurrentFolder(hwnd)
 	Run %A_WinDir%\explorer.exe %path%
 	WinWaitNotActive ahk_id %hwnd%
 	WinWaitNotActive ahk_id %TabWindow%	
@@ -407,7 +454,7 @@ CreateTab(hwnd)
 		if(visible & 0x10000000)
 			break
 	}
-	if(!ActivateTab)
+	if(!Activate)
 	{
 		Loop ;and hide it until it is invisible again
 		{
@@ -427,9 +474,12 @@ CreateTab(hwnd)
 	}
 	
 	DisableMinimizeAnim(0)
-	WinGetPos x,y,w,h,ahk_id %hwnd%
-	WinMove ahk_id %hwndnew%,,%x%,%y%,%w%,%h%
-	if(!ActivateTab)
+	WinGetPlacement(hwnd,x,y,w,h,state)
+	WinSetPlacement(hwndnew,x,y,w,h,state)
+	;WinMove ahk_id %hwndnew%,,%x%,%y%,%w%,%h%
+	;if(state = 1)
+	;	WinMaximize ahk_id %hwndnew%
+	if(!Activate)
 	{
 		TabContainerList.active:=hwnd 	;Set it to avoid ExplorerActivated function
 		WinActivate ahk_id %hwnd%
@@ -441,12 +491,18 @@ CreateTab(hwnd)
 		WinHide ahk_id %hwnd%
 		outputdebug hide old tab
 	}
-	TabContainer.tabs.append(hwndnew) ;Add new tab to list
+	if(NewTabPosition=1)
+		TabContainer.tabs.insert(TabContainer.tabs.indexOf(hwnd)+1,hwndnew) ;Add new tab to list
+	else if(NewTabPosition=2)
+		TabContainer.tabs.append(hwndnew) ;Add new tab to list
+		
 	;AddTabButton(TabContainer, hwndnew)
-	TabContainerList.Print()	
+	TabContainerList.Print()
 	DetectHiddenWindows, On
 	if(!WinExist("ahk_id " TabWindow))
-		CreateTabWindow()
+	{
+		CreateTabWindow() ;WinExist("A"))
+	}
 	DetectHiddenWindows, Off
 	if(!WinExist("ahk_id " TabWindow))
 		Gui %TabNum%:Show, NA
@@ -456,6 +512,44 @@ CreateTab(hwnd)
 	GuiControl, %TabNum%:MoveDraw, TabControl
 }
 
+WinGetPlacement(hwnd, ByRef x="", ByRef y="", ByRef w="", ByRef h="", ByRef state="") 
+{ 
+    VarSetCapacity(wp, 44), NumPut(44, wp) 
+    DllCall("GetWindowPlacement", "uint", hwnd, "uint", &wp) 
+    x := NumGet(wp, 28, "int") 
+    y := NumGet(wp, 32, "int") 
+    w := NumGet(wp, 36, "int") - x 
+    h := NumGet(wp, 40, "int") - y
+	state := NumGet(wp, 8, "UInt")
+	;outputdebug get x%x% y%y% w%w% h%h% state%state%
+}
+WinSetPlacement(hwnd, x="",y="",w="",h="",state="")
+{
+	WinGetPlacement(hwnd, x1, y1, w1, h1, state1)
+	if(x = "")
+		x := x1
+	if(y = "")
+		y := y1
+	if(w = "")
+		w := w1
+	if(h = "")
+		h := h1
+	if(state = "")
+		state := state1
+	outputdebug set x%x% y%y% w%w% h%h% state%state%
+	VarSetCapacity(wp, 44), NumPut(44, wp)
+	if(state = 6)
+		NumPut(7, wp, 8) ;SW_SHOWMINNOACTIVE
+	else if(state = 1)
+		NumPut(4, wp, 8) ;SW_SHOWNOACTIVATE
+	else if(state = 3)
+		NumPut(3, wp, 8) ;SW_SHOWMAXIMIZED and/or SW_MAXIMIZE
+	NumPut(x, wp, 28, "Int")
+    NumPut(y, wp, 32, "Int")
+    NumPut(x+w, wp, 36, "Int")
+    NumPut(y+h, wp, 40, "Int")
+	DllCall("SetWindowPlacement", "uint", hwnd, "uint", &wp) 
+}
 ActivateTab(pos)
 {
 	global TabContainerList, SuppressTabEvents
@@ -480,12 +574,18 @@ ActivateTab(pos)
 			path:=GetCurrentFolder(hwnd)
 			outputdebug move window %path% to:
 			TabContainer.print()
-			WinMove ahk_id %hwnd%,,%x%,%y%,%w%,%h%
+			if(state=1)
+				WinSetPlacement(hwnd,x,y,w,h,3)
+			else
+				WinSetPlacement(hwnd,x,y,w,h,1)
+			;WinMove ahk_id %hwnd%,,%x%,%y%,%w%,%h%
 		}
+		/*
 		if(state = 1)
 			WinMaximize ahk_id %hwnd%
 		else if(state = 0)
 			WinRestore ahk_id %hwnd%
+			*/
 		WinShow, ahk_id %hwnd%
 		WinActivate, ahk_id %hwnd%
 		TabContainer.active:=hwnd
@@ -506,7 +606,9 @@ TabContainerList(p1="N", p2="N", p3="N", p4="N", p5="N", p6="N"){
       TabContainerListBase := Object("len", "Array_Length", "indexOf", "Array_indexOf", "join", "Array_Join" 
       , "append", "Array_Append", "insert", "Array_Insert", "delete", "Array_Delete" 
       , "sort", "Array_sort", "reverse", "Array_Reverse", "unique", "Array_Unique" 
-      , "extend", "Array_Extend", "copy", "Array_Copy", "pop", "Array_Pop", "ContainsHWND", "TabContainerList_ContainsHWND","Print","TabContainerList_Print", "active", 0) 
+      , "extend", "Array_Extend", "copy", "Array_Copy", "pop", "Array_Pop", "ContainsHWND", "TabContainerList_ContainsHWND"
+	  , "CloseAllInactiveTabs", "TabContainerList_CloseAllInactiveTabs", "Print","TabContainerList_Print"
+	  , "active", 0) 
    TabContainerList := Object("base", TabContainerListBase) 
    While (_:=p%A_Index%)!="N" && A_Index<=6 
       TabContainerList[A_Index] := _ 

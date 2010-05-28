@@ -45,8 +45,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 ShellMessage( wParam,lParam, msg) 
 {
 	Critical
-	global Vista7, ExplorerPath,hwnd1,HKShowSpaceAndSize,BlinkingWindows,wtmwParam,TabContainerList, SuppressTabEvents, UseTabs,ea_lParam,ed_lParam
-	outputdebug shellmessage %wParam% %lParam% %msg%
+	global Vista7, ExplorerPath,hwnd1,HKShowSpaceAndSize,BlinkingWindows,wtmwParam,TabContainerList, SuppressTabEvents, UseTabs
 	;Traymin
 	If	msg=1028
 	{
@@ -121,30 +120,18 @@ ShellMessage( wParam,lParam, msg)
 			;Backup current clipboard contents and write "simple" text/image data in clipboard while explorer is active
 			ExplorerPath:=GetCurrentFolder()
 			;Paste text/image as file file creation
-			SetTimer, CreateFile, -1
-			;CreateFile()
+			CreateFile()
 		}
 		if(WinActive("ahk_group ExplorerGroup"))
 		{
 			if(UseTabs)
-			{
-				ea_lParam:=lParam
-				SetTimer, ExplorerActivated, -1
-				;ExplorerActivated(lParam)
-			}
+				ExplorerActivated(lParam)
 			;Explorer info stuff
 			if(A_OSVersion="WIN_7" && HKShowSpaceAndSize)
-			{
 				SetTimer, UpdateInfos, 100
-			}
 		}
 		Else if(UseTabs)
-		{
-			;SetTimer, ExplorerDeactivated, -10
-			ed_lParam:=lParam
-			SetTimer, ExplorerDeactivated, -1
-			;ExplorerDeactivated(lParam)
-		}
+			ExplorerDeactivated(lParam)
 	}
 	;Redraw is fired on Explorer path change
 	else if(wParam=6)
@@ -160,8 +147,7 @@ ShellMessage( wParam,lParam, msg)
 				ExplorerPath:=newpath
 				if(UseTabs && !SuppressTabEvents && hwnd:=WinActive("ahk_group ExplorerGroup"))
 				{
-					SetTimer, UpdateTabs, -1
-					;UpdateTabs()
+					UpdateTabs()
 					/*
 					SplitPath,newpath, name
 					if(!name)
@@ -179,17 +165,6 @@ ShellMessage( wParam,lParam, msg)
 	DllCall("Sleep", UInt, 1)  ; Must use DllCall instead of the Sleep command.
 	DllCall("Winmm\timeEndPeriod", UInt, 3)  ; Should be called to restore system to normal.	
 }
-CreateFile:
-CreateFile()
-Return
-ExplorerActivated:
-ExplorerActivated(ea_lParam)
-Return
-ExplorerDeactivated:
-ExplorerDeactivated(ed_lParam)
-Return
-UpdateTabs:
-UpdateTabs()
 Return
 /*
 UpdatePosition:

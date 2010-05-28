@@ -69,10 +69,7 @@ Settings_CreateHotkeys() {
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghExplorer1dot1 vURL_Explorer1dot1, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKInvertSelection, CTRL + I: Invert selection
 
-	yIt+=checkboxstep	
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghExplorer1dot1 vURL_Explorer1dot11, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKOpenInNewFolder, Middle Mouse Button: Open folder in new window
-	yIt+=checkboxstep	
+	yIt+=checkboxstep
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghExplorer1dot1 vURL_Explorer1dot12, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKFlattenDirectory, SHIFT + Enter: Show selected directories in flat view (Vista/7 only)
 }
@@ -179,18 +176,18 @@ Settings_CreateTabs() {
 	yIt+=checkboxstep
 	x:=x1+xCheckboxTextOffset
 	xhelp+=xCheckboxTextOffset
-	x2:=x+200
+	x2:=x+240
 	y:=yIt+TextBoxCheckBoxOffset
 	Gui, 1:Add, Text, x%x% y%y% vTabLabel1, Create tabs:
-	Gui, 1:Add, DropDownList, x%x2% y%yIt% w%wTBLarge% vNewTabPosition AltSubmit,next to current tab|at the end
+	Gui, 1:Add, DropDownList, x%x2% y%yIt% w%wTBMedium% vNewTabPosition AltSubmit,next to current tab|at the end
 	yIt+=textboxstep
 	y:=yIt+TextBoxCheckBoxOffset
 	Gui, 1:Add, Text, x%x% y%y% vTabLabel2, Tab startup path (empty for current dir):
-	Gui, 1:Add, Edit, x%x2% y%yIt% vTabStartupPath w%wTBLarge% R1,%TabStartupPath%
-	x2+=wTBLarge+10
+	Gui, 1:Add, Edit, x%x2% y%yIt% vTabStartupPath w%wTBMedium% R1,%TabStartupPath%
+	x2+=wTBMedium+10
 	y:=yIt+TextBoxButtonOffset
-	Gui, 1:Add, Button, x%x2% y%yIt% vTabStartupPathBrowse gTabStartupPathBrowse,...
-	x2:=x+200
+	Gui, 1:Add, Button, x%x2% y%yIt% w%wButton% vTabStartupPathBrowse gTabStartupPathBrowse,...
+	x2:=x+240
 	yIt+=textboxstep
 	Gui, 1:Add, Checkbox, x%x% y%yIt% vActivateTab,Activate tab on tab creation
 	yIt+=checkboxstep
@@ -198,10 +195,12 @@ Settings_CreateTabs() {
 	yIt+=checkboxstep	
 	y:=yIt+TextBoxCheckBoxOffset
 	Gui, 1:Add, Text, x%x% y%y% vTabLabel3, On tab close:
-	Gui, 1:Add, DropDownList, x%x2% y%yIt% w%wTBLarge% vOnTabClose AltSubmit,activate left tab|activate right tab
+	Gui, 1:Add, DropDownList, x%x2% y%yIt% w%wTBMedium% vOnTabClose AltSubmit,activate left tab|activate right tab
 	yIt+=textboxstep
-	Gui, 1:Add, Checkbox, x%x% y%yIt% vShowSingleTab,Show single tab
-	yIt+=checkboxstep
+	y:=yIt+TextBoxCheckBoxOffset
+	Gui, 1:Add, Checkbox, x%x% y%y% gOpenFolderInNew vOpenFolderInNew, Middle mouse button on folder: Open in new
+	Gui, 1:Add, DropDownList, x%x2% y%yIt% w%wTBMedium% vMiddleOpenFolder AltSubmit, window|tab|tab in background
+	yIt+=checkboxstep	
 }
 Settings_CreateWindowHandling1() {
 	global
@@ -468,7 +467,6 @@ Settings_SetupHotkeys() {
 	GuiControl, 1:,HKProperBackspace,%HKProperBackspace%
 	GuiControl, 1:,HKMouseGestures,%HKMouseGestures%
 	GuiControl, 1:,HKInvertSelection,%HKInvertSelection%
-	GuiControl, 1:,HKOpenInNewFolder,%HKOpenInNewFolder%	
 	GuiControl, 1:,HKFlattenDirectory,%HKFlattenDirectory%
 }
 Settings_SetupBehavior() {
@@ -522,6 +520,13 @@ Settings_SetupTabs() {
 	GuiControl, 1:,ActivateTab,%ActivateTab%
 	GuiControl, 1:,ShowSingleTab,%ShowSingleTab%
 	GuiControl, 1:,TabWindowClose,%TabWindowClose%
+	if(MiddleOpenFolder>0)
+		GuiControl, 1:,OpenFolderInNew,1
+	else
+		GuiControl, 1:,OpenFolderInNew,0
+	GoSub OpenFolderInNew
+	local x:=max(MiddleOpenFolder,1)	
+	GuiControl, 1:Choose, MiddleOpenFolder, %x%
 }
 Settings_SetupWindowHandling1() {
 	global
@@ -818,6 +823,11 @@ GuiControl, 1:enable%enabled%, TabLabel2
 GuiControl, 1:enable%enabled%, TabLabel3
 Return
 
+OpenFolderInNew:
+GuiControlGet, enabled ,1: , OpenFolderInNew
+GuiControl, 1:enable%enabled%, MiddleOpenFolder
+return
+
 TabStartupPathBrowse:
 	path:=COM_CreateObject("Shell.Application").BrowseForFolder(0, "Enter Path to add as button", 0).Self.Path
 if(path!="")
@@ -1068,7 +1078,10 @@ else
 	ImageEditor:=""
 }
 
-		
+;Store MiddleOpenFolder
+GuiControlGet, enabled, 1: , OpenFolderInNew
+if(!enabled)
+	MiddleOpenFolder:=0
 
 ;Store taskbar launch filename
 GuiControlGet, taskbarlaunchenabled ,1: , Double click on empty taskbar: Run
