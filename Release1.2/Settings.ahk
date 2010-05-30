@@ -9,7 +9,7 @@ return
 Settings_CreateHotkeys() {
 	global
 	local yIt,x1,x2,x
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vExplorerHotkeys, 
+	Gui, 1:Add, Tab2, x156 y14 w410 h350 vExplorerHotkeysTab, 
 	AddTab(1, "","SysTabControl321") 
 	yIt:=yBase
 	
@@ -80,7 +80,7 @@ Settings_CreateBehavior() {
 	x1:=xHelp+10
 	x2:=xBase+280
 	
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vExplorerBehavior, 
+	Gui, 1:Add, Tab2, x156 y14 w410 h350 vExplorerBehaviorTab, 
 	AddTab(0, "","SysTabControl322")
 
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghSelectFirstFile vURL_SelectFirstFile, ?
@@ -99,6 +99,8 @@ Settings_CreateBehavior() {
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKAutoCheck, Automatically check "Apply to all further operations" checkboxes in file operations (Vista/7 only)
 	yIt+=checkboxstep
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vRecallExplorerPath, Win+E: Open explorer in last active directory
+	yIt+=checkboxstep
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vAlignExplorer, Win+E + explorer window active: Open new explorer and align them left and right
 	yIt+=checkboxstep*2
 	
 	Gui, 1:Add, Text, x%x1% y%yIt%, Text and images from clipboard can be pasted as file in explorer with these settings
@@ -130,7 +132,7 @@ Settings_CreateFastFolders() {
 	yIt:=yBase
 	xHelp:=xBase
 	x1:=xHelp+10
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vFastFolders
+	Gui, 1:Add, Tab2, x156 y14 w410 h350 vFastFoldersTab
 	AddTab(0, "","SysTabControl323")
 	
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders1 vURL_FastFolders1, ?		
@@ -168,7 +170,7 @@ Settings_CreateTabs() {
 	yIt:=yBase
 	xHelp:=xBase
 	x1:=xHelp+10
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vExplorerTabs
+	Gui, 1:Add, Tab2, x156 y14 w410 h350 vExplorerTabsTab
 	AddTab(0, "","SysTabControl324")
 	
 	Gui, 1:Add, Text, x%x1% y%yIt% R3, 7plus makes it possible to use tabs in explorer. New tabs are opened with the middle mouse button`nand with CTRL+T, Tabs are cycled by clicking the Tabs or pressing CTRL+(SHIFT)+TAB,`nand closed by middle clicking a tab and with CTRL+W
@@ -209,7 +211,7 @@ Settings_CreateWindowHandling() {
 	local yIt,x1,x,y
 	xHelp:=xBase
 	x1:=xHelp+10
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vWindowHandling, 
+	Gui, 1:Add, Tab2, x156 y14 w410 h350 vWindowHandlingTab, 
 	AddTab(0, "","SysTabControl325")
 	yIt:=yBase
 
@@ -266,7 +268,7 @@ Settings_CreateDesktopTaskBar() {
 	x1:=xHelp+10
 	yIt:=yBase
 	y:=yIt+TextBoxCheckBoxOffset
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vDesktopTaskbar, 
+	Gui, 1:Add, Tab2, x156 y14 w410 h350 vDesktopTaskbarTab, 
 	AddTab(0, "","SysTabControl326")
 	y:=yIt+TextBoxCheckBoxOffset
 	Gui, 1:Add, Text, y%y% x%xhelp% cBlue ghTaskbar vURL_Taskbar, ?
@@ -304,14 +306,42 @@ Settings_CreateDesktopTaskBar() {
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKToggleWallpaper, Middle mouse click on desktop: Toggle wallpaper (7 only)
 	yIt+=checkboxstep
 }
+Settings_CreateCustomHotkeys() {
+	global
+	local yIt,x1,x2,x,y
+	xHelp:=xBase
+	x1:=xHelp+10
+	x2 := x1 + 410
+	yIt:=yBase
+	Gui, 1:Add, Tab2, x156 y14 w410 h350 vCustomHotkeysTab, 
+	AddTab(0, "","SysTabControl327")
+	Gui, 1:Add, Text, x%x1% y%yIt% R2, You can add custom hotkeys to launch programs here. You should not use hotkeys that are used `nby this program elsewhere, also you should make sure not to overwrite hotkeys used by other programs.
+	yIt+=35
+	Gui, 1:Add, ListView, x%x1% y%yIt% w400 vCustomHotkeysList gCustomHotkeysList_SelectionChange Grid -LV0x10 -Multi R9 AltSubmit, Hotkey|Command
+	OnMessage(0x100, "WM_KEYDOWN")
+	Gui, 1:Add, Button, x%x2% y%yIt% w80 vCustomHotkeysAdd gAddHotkey, Add Hotkey
+	yIt += textboxstep
+	Gui, 1:Add, Button, x%x2% y%yIt% w80 vCustomHotkeysRemove gRemoveHotkey, Delete Hotkey
+	yIt += textboxstep
+	Gui, 1:Add, Button, x%x2% y%yIt% w80 vCustomHotkeysEditKey gEditHotkey, Edit Hotkey
+	yIt := 265
+	y := yIt + TextBoxTextOffset
+	Gui, 1:Add, Text, x%x1% y%y%, Command:
+	x:=x1+54
+	Gui, 1:Add, Edit, x%x% y%yIt% w348 vCustomHotkeysCommand gCustomHotkeysCommand_Change
+	y := yIt + TextBoxButtonOffset
+	Gui, 1:Add, Button, x%x2% y%yIt% w80 vCustomHotkeysEditCommand gEditCommand, Browse
+	yIt += textboxstep
+	Gui, 1:Add, Text, x%x1% y%yIt%, You can use placeholders to create context-sensitive hotkeys. Supported placeholders:`n${P}: Current path in explorer`n${1}...${N}: Selected file(s)`nExample usages are hotkeys to open files with specific programs (diff tools, editors,...)
+}
 Settings_CreateFTP() {
 	global
 	local yIt,x1,x,y
 	yIt:=yBase
 	xHelp:=xBase
 	x1:=xHelp+10
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vFTP, 
-	AddTab(0, "","SysTabControl327")
+	Gui, 1:Add, Tab2, x156 y14 w410 h350 vFTPTab, 
+	AddTab(0, "","SysTabControl328")
 	Gui, 1:Add, Text, x%x1% y%yIt% R4, You can upload selected files from explorer to an FTP server by`npressing CTRL + U. You can also take screenshots (ALT + Insert = fullscreen`,`nWIN + Insert = active window) and directly upload them. WIN + Delete will upload`nimage or text data from clipboard. URL(s) will be copied to the clipboard.
 	yIt:=100
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFTP vURL_FTP, ?
@@ -354,8 +384,8 @@ Settings_CreateFTP() {
 Settings_CreateMisc() {
 	global
 	local yIt,x1
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vMisc, 
-	AddTab(0, "","SysTabControl328")
+	Gui, 1:Add, Tab2, x156 y14 w410 h350 vMiscTab, 
+	AddTab(0, "","SysTabControl329")
 	x1:=xBase+10
 	xhelp:=xBase
 	yIt:=yBase
@@ -400,8 +430,8 @@ Settings_CreateMisc() {
 Settings_CreateAbout() {
 	global
 	local yIt,x1,x2,x,y
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vAbout, 
-	AddTab(0, "","SysTabControl329")
+	Gui, 1:Add, Tab2, x156 y14 w410 h350 vAboutTab, 
+	AddTab(0, "","SysTabControl3210")
 	yIt:=YBase
 	x1:=XBase+10
 	x2:=xBase+350
@@ -450,7 +480,7 @@ Settings_CreateAbout() {
 	x2:=x1+100
 	Gui, 1:Add, Text, y%yIt% x%x2% cBlue gGPL vURL_GPL, GNU General Public License v3
 	yIt+=hText*2
-	Gui, 1:Add, Text, y%yIt% x%x1% , Credits for lots of code samples and help go out to:`nSean, HotKeyIt, majkinetor, Titan, Lexikos, TheGood, PhiLho, Temp01, Laszlo`nand the other guys and gals on #ahk and the forums.	
+	Gui, 1:Add, Text, y%yIt% x%x1% , Credits for lots of code samples and help go out to:`nSean, HotKeyIt, majkinetor, Titan, Lexikos, TheGood, PhiLho, Temp01, Laszlo, jballi`nand the other guys and gals on #ahk and the forums.	
 }
 
 ;---------------------------------------------------------------------------------------------------------------
@@ -507,6 +537,7 @@ Settings_SetupBehavior() {
 	GuiControl, 1:, HKShowSpaceAndSize, %HKShowSpaceAndSize%	
 	GuiControl, 1:, HKAutoCheck, %HKAutoCheck%
 	GuiControl, 1:, RecallExplorerPath, %RecallExplorerPath%
+	GuiControl, 1:, AlignExplorer, %AlignExplorer%
 }
 Settings_SetupFastFolders() {
 	global			
@@ -530,7 +561,6 @@ Settings_SetupTabs() {
 	GuiControl, 1:,UseTabs,%UseTabs%
 	GoSub UseTabs
 	GuiControl, 1:,ActivateTab,%ActivateTab%
-	GuiControl, 1:,ShowSingleTab,%ShowSingleTab%
 	GuiControl, 1:,TabWindowClose,%TabWindowClose%
 	if(MiddleOpenFolder>0)
 		GuiControl, 1:,OpenFolderInNew,1
@@ -593,6 +623,15 @@ Settings_SetupDesktopTaskBar() {
 	GuiControl, 1:, DoubleClickDesktop, %DoubleClickDesktop%
 	GoSub DoubleClickDesktop
 }
+Settings_SetupCustomHotkeys() {
+	global CustomHotkeys
+	LV_Delete()
+	Loop % CustomHotkeys.len()
+	{
+		LV_Add("",CustomHotkeys[A_Index].key,CustomHotkeys[A_Index].command)
+	}
+	LV_Modify(1, "Select")
+}
 Settings_SetupFTP() {
 	global
 	;Setup FTP
@@ -643,6 +682,7 @@ Loop, Parse, TabList, |
 {
 	StringReplace, stripped, A_LoopField, %A_Space% , , 1
 	StringReplace, stripped, stripped, / , , 1
+	stripped .= "Tab"
 	If (selected = A_LoopField)
 	{
 		outputdebug show %stripped%
@@ -669,6 +709,7 @@ ShowSettings()
 {
 	global
 	local x,y,yIt,x1,x2
+	Critical, Off
 	if(!SettingsActive)
 	{
 		SettingsActive:=True
@@ -676,6 +717,7 @@ ShowSettings()
 		; Create GUI
 		;---------------------------------------------------------------------------------------------------------------
 		Gui, 1:Default
+		Gui, 1:+OwnDialogs
 		if(!SettingsInitialized)
 		{
 			ybase:=36
@@ -699,7 +741,7 @@ ShowSettings()
 			wTBHuge:=300
 			wButton:=30
 			hCheckbox:=16 
-			TabList = Explorer Hotkeys|Explorer Behavior|Fast Folders|Explorer Tabs|Window Handling|Desktop / Taskbar|FTP|Misc|About 
+			TabList = Explorer Hotkeys|Explorer Behavior|Fast Folders|Explorer Tabs|Window Handling|Desktop / Taskbar|Custom Hotkeys|FTP|Misc|About 
 			Gui, 1:Add, ListBox, x16 y20 w120 h350 gListbox vMyListBox, %TabList%
 			Gui, 1:Add, GroupBox, x156 y14 w530 h350 vGGroupBox , Explorer Hotkeys  
 			/*
@@ -726,6 +768,7 @@ ShowSettings()
 			Settings_CreateTabs()
 			Settings_CreateWindowHandling()
 			Settings_CreateDesktopTaskBar()
+			Settings_CreateCustomHotkeys()
 			Settings_CreateFTP()
 			Settings_CreateMisc()
 			Settings_CreateAbout()			
@@ -746,6 +789,7 @@ ShowSettings()
 		Settings_SetupTabs()
 		Settings_SetupWindowHandling()
 		Settings_SetupDesktopTaskBar()
+		Settings_SetupCustomHotkeys()
 		Settings_SetupFTP()
 		Settings_SetupMisc()
 		Settings_SetupAbout()
@@ -833,6 +877,8 @@ GuiControl, 1:enable%enabled%, TabStartupPathBrowse
 GuiControl, 1:enable%enabled%, TabLabel1
 GuiControl, 1:enable%enabled%, TabLabel2
 GuiControl, 1:enable%enabled%, TabLabel3
+GuiControl, 1:enable%enabled%, MiddleOpenFolder
+GuiControl, 1:enable%enabled%, OpenFolderInNew
 Return
 
 OpenFolderInNew:
@@ -888,7 +934,90 @@ return
 DoubleClickDesktopBrowse:
 FileSelectFile, path , 3, , Select file to execute, *.exe
 if(path!="")
-	GuiControl, , 1:DoubleClickDesktop,%path%
+	GuiControl, 1:,DoubleClickDesktop,%path%
+Return
+
+AddHotkey:
+LV_Add("Select","","")
+GoSub EditHotkey
+if(key)
+	GoSub EditCommand
+if(key="" || path="")
+{
+	i:=LV_GetNext("")
+	LV_Delete(i)
+}
+return
+
+RemoveHotkey:
+i:=LV_GetNext("")
+LV_Delete(i)
+return
+
+EditHotkey:
+Critical, Off
+i:=LV_GetNext("")
+if(i<=CustomHotkeys.len()) ;if editing existing hotkey
+{
+	keybackup := CustomHotkeys[i].key
+	CustomHotkeys[i].key := "" ;Temporarily remove hotkey so it doesn't collide with itself
+}
+key:=HotKeyGui(10,1, "Select Hotkey", 1)
+if(key)
+	LV_Modify(i,"Col1",key)	
+if(i<=CustomHotkeys.len()) ;And restore
+	CustomHotkeys[i].key := keybackup
+return
+
+EditCommand:
+FileSelectFile, path , 3, , Select hotkey command, *.exe
+if(path!="")
+{
+	path:=Quote(path)
+	GuiControl, 1:,CustomHotkeysCommand, %path%
+}
+return
+
+CustomHotkeysList_SelectionChange:
+if(A_GuiEvent="I" && InStr(ErrorLevel, "S", true))
+{
+	LV_GetText(CustomHotkeysCommand, A_EventInfo , 2)
+	GuiControl, 1:,CustomHotkeysCommand, %CustomHotkeysCommand%
+	GuiControl, 1:enable, CustomHotkeysCommand
+	GuiControl, 1:enable, CustomHotkeysEditCommand
+	GuiControl, 1:enable, CustomHotkeysRemove
+	GuiControl, 1:enable, CustomHotkeysEditKey
+}
+else if(A_GuiEvent="I" && InStr(ErrorLevel, "s", true))
+{
+	GuiControl, 1:disable, CustomHotkeysCommand
+	GuiControl, 1:disable, CustomHotkeysEditCommand
+	GuiControl, 1:disable, CustomHotkeysRemove
+	GuiControl, 1:disable, CustomHotkeysEditKey
+	outputdebug pre clearing
+	GuiControl, 1:,CustomHotkeysCommand, %A_Space%
+	outputdebug post clearing
+}
+else if(A_GuiEvent="DoubleClick")
+	GoSub EditHotkey
+Return
+
+WM_KEYDOWN(wParam, lParam)
+{
+	if(A_GUI = 1 && A_GuiControl = "CustomHotkeysList" && wParam = 0x2E) ;Delete key pressed on CustomHotkeysList
+	{
+		i:=LV_GetNext("")
+		LV_Delete(i)
+	}
+}
+
+CustomHotkeysCommand_Change:
+i:=LV_GetNext("")
+if(i!=0)
+{
+	GuiControlGet, CustomHotkeysCommand ,1: , %CustomHotkeysCommand%
+	LV_Modify(i,"Col2",CustomHotkeysCommand)
+}
 Return
 
 FTP:
@@ -1140,6 +1269,16 @@ GuiControlGet, enabled, 1:, DoubleClickDesktop
 if(!enabled)
 	DoubleClickDesktop:=0
 
+;Store custom hotkeys
+count := LV_GetCount()
+RemoveAllHotkeys()
+Loop % count
+{
+	LV_GetText(key,A_Index,1)
+	LV_GetText(command,A_Index,2)
+	if(key!="" && command != "")
+		AddHotkey(key,command)
+}
 ;UnSlide hidden windows
 if(!HKSlideWindows)
 	SlideWindows_Exit()

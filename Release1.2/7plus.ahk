@@ -37,7 +37,7 @@ CurrentVersion:=1.2
 #include %A_ScriptDir%\clipboard.ahk
 #include %A_ScriptDir%\FTPUpload.ahk 
 #include %A_ScriptDir%\Taskbar.ahk
-#include %A_ScriptDir%\CustomHotkeys.ahk
+#include %A_ScriptDir%\Misc.ahk
 #include %A_ScriptDir%\debugging.ahk
 #include %A_ScriptDir%\wizard.ahk
 #include %A_ScriptDir%\settings.ahk
@@ -48,6 +48,8 @@ CurrentVersion:=1.2
 #include %A_ScriptDir%\Tooltip.ahk
 #include %A_ScriptDir%\WinTrayMin.ahk
 #include %A_ScriptDir%\ExplorerTabs.ahk
+#include %A_ScriptDir%\CustomHotkeys.ahk
+#include %A_ScriptDir%\HotkeyGUI.ahk
 #include %A_ScriptDir%\lib\Dock.ahk
 #if !IsFullscreen("A",true,false)
 #h::

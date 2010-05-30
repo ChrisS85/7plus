@@ -240,14 +240,13 @@ GetSelectedFiles(FullName=1)
 		else
 			return ShellFolder(hwnd,4)
 	}
-	else if((Vista7 && x:=IsDialog())||WinActive("ahk_group DesktopGroup"))
+	else if(Vista7 && x:=IsDialog())
 	{		
-		ControlGetFocus, focussed ,A
 		if(x=1)
+		{
+			ControlGetFocus, focussed ,A
 			ControlFocus DirectUIHWND2, A
-		if(WinActive("ahk_group DesktopGroup"))
-			ControlFocus SysListView321, A
-			outputdebug mute 12
+		}
 		MuteClipboardList := true
 		clipboardbackup := clipboardall
 		outputdebug clearing clipboard
@@ -258,9 +257,15 @@ GetSelectedFiles(FullName=1)
 		ClipWait, 0.05, 1
 		result := clipboard
 		clipboard := clipboardbackup
-		ControlFocus %focussed%, A
+		if(x=1)
+			ControlFocus %focussed%, A
 		OutputDebug, Selected Files: %result%
 		MuteClipboardList:=false
+		return result
+	}
+	else if(WinActive("ahk_group DesktopGroup"))
+	{	
+		ControlGet, result, List, Selected Col1, SysListView321, A
 		return result
 	}
 }

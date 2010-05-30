@@ -314,16 +314,63 @@ Return::
 Backspace::Send !{Up}
 #if
 
-#if RecallExplorerPath && ExplorerPath != ""
-#e::run, %A_WinDir%\explorer.exe %ExplorerPath%
+#if (RecallExplorerPath && ExplorerPath != "") || AlignExplorer
+#e::
+active:=WinActive("ahk_group ExplorerGroup")
+if(active && AlignExplorer)
+{
+	WinRestore ahk_id %active%
+	if(A_OSVersion="WIN_7")
+	{
+		WinGetPos, x,y,w,h,ahk_id %active%
+		x++
+		WinMove, ahk_id %active%,, %x%, %y%
+		Send #{Left}
+	}
+	Else
+	{
+		w:=A_ScreenWidth/2
+		h:=A_ScreenHeight/2
+		WinMove, ahk_id %active%,, 0,0,%w%,%h%
+	}
+}
+if(RecallExplorerPath && ExplorerPath != "")
+	run, %A_WinDir%\explorer.exe %ExplorerPath%
+Else
+	run, %A_WinDir%\explorer.exe
+if(AlignExplorer && active)
+{
+	WinWaitNotActive ahk_id %active%	
+	Loop ;Make sure new window is really active
+	{ 
+        Sleep 10 
+        active2 := WinActive("ahk_group ExplorerGroup")
+		if(active2 && active2 != active)
+			   Break 
+    }
+	Loop ;Wait until new window is visible
+	{
+		Sleep 10
+		WinGet,visible,style, ahk_id %active2%
+		if(visible & 0x10000000)
+			break
+	}
+	if(A_OSVersion="WIN_7")
+		Send #{Right}
+	else
+		WinMove, ahk_id %active2%,, %w%,%h%,%w%,%h%
+}
+Return
 #if
-
+!v::
+CurrentDesktopFiles:=GetSelectedFiles()
+outputdebug current %CurrentDesktopFiles%
+return
 #if (Vista7 && IsWindowUnderCursor("WorkerW")) || (!Vista7 && IsWindowUnderCursor("ProgMan"))
 ~LButton::
-PreviousDesktopFiles:=CurrentDesktopFiles
 CurrentDesktopFiles:=GetSelectedFiles()
 outputdebug current: %CurrentDesktopFiles% previous: %PreviousDesktopFiles%
-if(IsDoubleClick() && PreviousDesktopFiles = "" && CurrentDesktopFiles = "")
+if(IsDoubleClick() && CurrentDesktopFiles = "")
 {
 	if(DoubleClickDesktop = A_WinDir "\explorer.exe" && RecallExplorerPath)
 		temp := A_WinDir "\explorer.exe " ExplorerPath

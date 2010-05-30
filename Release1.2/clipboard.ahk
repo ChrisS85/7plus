@@ -37,6 +37,7 @@ return
 ClipboardManagerMenu()
 {
 	global ClipboardList
+	Critical
 	Menu, ClipboardMenu, add, 1,ClipboardHandler1
 	Menu, ClipboardMenu, DeleteAll
 	loop % ClipboardList.len()

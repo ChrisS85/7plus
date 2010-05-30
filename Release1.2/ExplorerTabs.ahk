@@ -124,6 +124,7 @@ GuiControl, %TabNum%:MoveDraw, TabControl
 DllCall("InvalidateRect",UInt, TabWindow, UInt, 0, UInt, 1)
 SuppressTabEvents:=backup
 ;Dock(c0, "T x(0,0,24) y(0,0,0) w(1,-135)")
+Critical, Off
 Return
 }
 
@@ -285,7 +286,6 @@ UpdatePosition(TabNum, TabWindow)
 		return
 	fid:=gid+=1
 	;SuppressTabEvents:=true
-	outputdebug UpdatePosition(%TabNum%,%TabWindow%)
 	hwnd:=WinActive("ahk_group ExplorerGroup")
 	TabContainer:=TabContainerList.ContainsHWND(hwnd)
 	class:=WinGetClass("A")

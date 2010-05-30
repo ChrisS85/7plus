@@ -112,6 +112,7 @@ IniRead, HKInvertSelection, %A_ScriptDir%\Settings.ini, Explorer, HKInvertSelect
 IniRead, HKOpenInNewFolder, %A_ScriptDir%\Settings.ini, Explorer, HKOpenInNewFolder, 1
 IniRead, HKFlattenDirectory, %A_ScriptDir%\Settings.ini, Explorer, HKFlattenDirectory, 1
 IniRead, RecallExplorerPath, %A_ScriptDir%\Settings.ini, Explorer, RecallExplorerPath, 1
+IniRead, AlignExplorer, %A_ScriptDir%\Settings.ini, Explorer, AlignExplorer, 1
 
 IniRead, HKKillWindows, %A_ScriptDir%\Settings.ini, Windows, HKKillWindows, 1
 IniRead, HKToggleWallpaper, %A_ScriptDir%\Settings.ini, Windows, HKToggleWallpaper, 1
@@ -180,26 +181,24 @@ Loop 8
 if(A_OSVersion="WIN_7")
 	CreateInfoGui()
 
-IniRead, UseTabs, %A_ScriptDir%\Settings.ini, Tabs, UseTabs, true
+IniRead, UseTabs, %A_ScriptDir%\Settings.ini, Tabs, UseTabs, 1
 IniRead, NewTabPosition, %A_ScriptDir%\Settings.ini, Tabs, NewTabPosition, 1
 IniRead, TabStartupPath, %A_ScriptDir%\Settings.ini, Tabs, TabStartupPath, %A_SPACE%
-IniRead, ActivateTab, %A_ScriptDir%\Settings.ini, Tabs, ActivateTab, true
-IniRead, TabWindowClose, %A_ScriptDir%\Settings.ini, Tabs, TabWindowClose, true
+IniRead, ActivateTab, %A_ScriptDir%\Settings.ini, Tabs, ActivateTab, 1
+IniRead, TabWindowClose, %A_ScriptDir%\Settings.ini, Tabs, TabWindowClose, 1
 IniRead, OnTabClose, %A_ScriptDir%\Settings.ini, Tabs, OnTabClose, 1
-IniRead, ShowSingleTab, %A_ScriptDir%\Settings.ini, Tabs, ShowSingleTab, false
 IniRead, MiddleOpenFolder, %A_ScriptDir%\Settings.ini, Tabs, MiddleOpenFolder, 1
 TabContainerList := TabContainerList()
-CreateTabWindow()
 
 if(Vista7)
 	AcquireExplorerConfirmationDialogStrings()
 	
 GoSub TrayminOpen
 
-;possibly start wizard
-if (Firstrun=1)
-	GoSub wizardry
+ReadHotkeys()
 
+
+CreateTabWindow()
 ;Show tray icon when loading is complete
 Menu, tray, add  ; Creates a separator line.
 Menu, tray, add, Settings, SettingsHandler  ; Creates a new menu item.
@@ -223,6 +222,10 @@ menu, tray, Default, Settings
 IniRead, HideTrayIcon, %A_ScriptDir%\Settings.ini, Misc, HideTrayIcon, 0
 if(!HidetrayIcon)
 	menu, tray, Icon
+
+;possibly start wizard
+if (Firstrun=1)
+	GoSub wizardry
 if (Firstrun=1)
 {
 	Tooltip(1, "That's it for now. Have fun!", "Everything Done!","O1 L1 P99 C1 XTrayIcon YTrayIcon I1")
@@ -341,6 +344,7 @@ WriteIni()
 	IniWrite, %HKOpenInNewFolder%, %A_ScriptDir%\Settings.ini, Explorer, HKOpenInNewFolder
 	IniWrite, %HKFlattenDirectory%, %A_ScriptDir%\Settings.ini, Explorer, HKFlattenDirectory
 	IniWrite, %RecallExplorerPath%, %A_ScriptDir%\Settings.ini, Explorer, RecallExplorerPath
+	IniWrite, %AlignExplorer%, %A_ScriptDir%\Settings.ini, Explorer, AlignExplorer
 	
 	IniWrite, %UseTabs%, %A_ScriptDir%\Settings.ini, Tabs, UseTabs
 	IniWrite, %NewTabPosition%, %A_ScriptDir%\Settings.ini, Tabs, NewTabPosition
@@ -348,7 +352,6 @@ WriteIni()
 	IniWrite, %ActivateTab%, %A_ScriptDir%\Settings.ini, Tabs, ActivateTab
 	IniWrite, %TabWindowClose%, %A_ScriptDir%\Settings.ini, Tabs, TabWindowClose
 	IniWrite, %OnTabClose%, %A_ScriptDir%\Settings.ini, Tabs, OnTabClose
-	IniWrite, %ShowSingleTab%, %A_ScriptDir%\Settings.ini, Tabs, ShowSingleTab
 	IniWrite, %MiddleOpenFolder%, %A_ScriptDir%\Settings.ini, Tabs, MiddleOpenFolder
 	
 	IniWrite, %HKToggleAlwaysOnTop%, %A_ScriptDir%\Settings.ini, Windows, HKToggleAlwaysOnTop
@@ -396,4 +399,5 @@ WriteIni()
 		x := RegExReplace(RegExReplace(RegExReplace(x, "``", "````"), "\r?\n", "``r``n"), "%", "``%")
 		IniWrite, %x%, %A_ScriptDir%\Settings.ini, Misc, Clipboard%A_Index%
 	}
+	SaveHotkeys()
 }
