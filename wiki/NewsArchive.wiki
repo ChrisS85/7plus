@@ -1,8 +1,8 @@
 ====May 2010====
-  * 05/04/2010: [News05042010 7plus Hotfix V.1.11 released!]
-  * 05/01/2010: [News05012010 7plus V.1.1 released!]
+  * 2010-05-04: [News05042010 7plus Hotfix V.1.11 released!]
+  * 2010-05-01: [News05012010 7plus V.1.1 released!]
 ====April 2010====
-  * 04/03/2010: [News04032010 Small question]
-  * 04/01/2010: [News04012010 7plus V.1.0 released!]
+  * 2010-04-03: [News04032010 Small question]
+  * 2010-04-01: [News04012010 7plus V.1.0 released!]
 ====March 2010====
-  * 03/22/2010: [http://code.google.com/p/7plus/wiki/News22032010 Project page created!]
+  * 2010-03-22: [http://code.google.com/p/7plus/wiki/News22032010 Project page created!]
