@@ -505,6 +505,7 @@ IsDoubleClick()
 	return A_TimeSincePriorHotkey< DllCall("GetDoubleClickTime") && A_ThisHotkey=A_PriorHotkey
 }
 
+#if !IsFullScreen()
 *MButton::
 key:=GetKeyState("CTRL") ? "^" : ""
 key.=GetKeyState("ALT") ? "!" : ""
@@ -543,6 +544,7 @@ if !Handled
 	Send {MButton up}
 }
 return 
+#if
 
 OpenInNewFolder()
 {

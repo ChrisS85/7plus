@@ -317,14 +317,23 @@ Settings_CreateCustomHotkeys() {
 	AddTab(0, "","SysTabControl327")
 	Gui, 1:Add, Text, x%x1% y%yIt% R2, You can add custom hotkeys to launch programs here. You should not use hotkeys that are used `nby this program elsewhere, also you should make sure not to overwrite hotkeys used by other programs.
 	yIt+=35
-	Gui, 1:Add, ListView, x%x1% y%yIt% w400 vCustomHotkeysList gCustomHotkeysList_SelectionChange Grid -LV0x10 -Multi R9 AltSubmit, Hotkey|Command
+	Gui, 1:Add, Radio, x%x1% y%yIt% vCustomHotkeysGlobal gCustomHotkeysGlobal, Global hotkeys
+	yIt+=checkboxstep
+	y := yIt + TextBoxCheckBoxOffset
+	Gui, 1:Add, Radio, x%x1% y%y% vCustomHotkeysSpecific gCustomHotkeysSpecific, program-specific hotkeys
+	x := x1 + 150
+	Gui, 1:Add, DropDownList, x%x% y%yIt% w250 vCustomHotkeysFilter gCustomHotkeysFilter
+	y := yIt + TextBoxButtonOffset
+	Gui, 1:Add, Button, x%x2% y%yIt% w80 vCustomHotkeysFilterBrowse gCustomHotkeysFilterBrowse, Browse
+	yIt += textboxstep
+	Gui, 1:Add, ListView, x%x1% y%yIt% w400 vCustomHotkeysList gCustomHotkeysList_SelectionChange Grid -LV0x10 -Multi R10 AltSubmit, Hotkey|Command
 	OnMessage(0x100, "WM_KEYDOWN")
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vCustomHotkeysAdd gAddHotkey, Add Hotkey
 	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vCustomHotkeysRemove gRemoveHotkey, Delete Hotkey
 	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vCustomHotkeysEditKey gEditHotkey, Edit Hotkey
-	yIt := 265
+	yIt += 150
 	y := yIt + TextBoxTextOffset
 	Gui, 1:Add, Text, x%x1% y%y%, Command:
 	x:=x1+54
@@ -332,7 +341,7 @@ Settings_CreateCustomHotkeys() {
 	y := yIt + TextBoxButtonOffset
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vCustomHotkeysEditCommand gEditCommand, Browse
 	yIt += textboxstep
-	Gui, 1:Add, Text, x%x1% y%yIt%, You can use placeholders to create context-sensitive hotkeys. Supported placeholders:`n${P}: Current path in explorer`n${1}...${N}: Selected file(s)`nExample usages are hotkeys to open files with specific programs (diff tools, editors,...)
+	;Gui, 1:Add, Text, x%x1% y%yIt%, You can use placeholders to create context-sensitive hotkeys. Supported placeholders:`n${P}: Current path in explorer`n${1}...${N}: Selected file(s)`nExample usages are hotkeys to open files with specific programs (diff tools, editors,...)
 }
 Settings_CreateFTP() {
 	global
@@ -624,13 +633,122 @@ Settings_SetupDesktopTaskBar() {
 	GoSub DoubleClickDesktop
 }
 Settings_SetupCustomHotkeys() {
-	global CustomHotkeys
-	LV_Delete()
+	global
+	local filter
+	Settings_CustomHotkeys = Array()
+	Settings_CustomHotkeys_Filters := Array()
 	Loop % CustomHotkeys.len()
 	{
-		LV_Add("",CustomHotkeys[A_Index].key,CustomHotkeys[A_Index].command)
+		Settings_CustomHotkeys.append(Object("key", CustomHotkeys[A_Index].key, "command", CustomHotkeys[A_Index].command, "filter", CustomHotkeys[A_Index].filter))
+		filter := CustomHotkeys[A_Index].filter
+		if(filter && !Settings_CustomHotkeys_Filters.Contains(filter))
+		{
+			if(Filters.len() = 0)
+				GuiControl, 1:, CustomHotkeysFilter, %filter%||
+			else
+				GuiControl, 1:, CustomHotkeysFilter, %filter%
+			Settings_CustomHotkeys_Filters.append(filter)
+		}
+	}
+	GuiControl, 1:, CustomHotkeysFilter
+	GuiControl, 1:, CustomHotkeysGlobal, 1
+	GuiControl, 1:disable, CustomHotkeysFilter
+	GuiControl, 1:disable, CustomHotkeysFilterBrowse
+	CustomHotkeys_ApplyFilter("")
+}
+CustomHotkeysGlobal:
+outputdebug custom hotkeys global clicked
+;save to settings hotkey list, then apply filter in listview
+GuiControl, 1:disable, CustomHotkeysFilter
+GuiControl, 1:disable, CustomHotkeysFilterBrowse
+GuiControl, 1:enable, CustomHotkeysList
+GuiControl, 1:enable, CustomHotkeysAdd
+GuiControl, 1:enable, CustomHotkeysRemove
+GuiControl, 1:enable, CustomHotkeysEditKey
+GuiControl, 1:enable, CustomHotkeysCommand
+GuiControl, 1:enable, CustomHotkeysEditCommand
+CustomHotkeys_SaveCurrentView()
+CustomHotkeys_ApplyFilter("")
+return
+
+CustomHotkeysSpecific:
+GuiControl, 1:enable, CustomHotkeysFilter
+GuiControl, 1:enable, CustomHotkeysFilterBrowse
+GuiControlGet, selected, 1:, CustomHotkeysFilter
+CustomHotkeys_SaveCurrentView()
+LV_Delete()
+if(selected)
+{
+	CustomHotkeys_ApplyFilter(selected)
+}
+Else
+{
+	GuiControl, 1:disable, CustomHotkeysList
+	GuiControl, 1:disable, CustomHotkeysAdd
+	GuiControl, 1:disable, CustomHotkeysRemove
+	GuiControl, 1:disable, CustomHotkeysEditKey
+	GuiControl, 1:disable, CustomHotkeysCommand
+	GuiControl, 1:disable, CustomHotkeysEditCommand
+}
+return
+
+CustomHotkeysFilterBrowse:
+FileSelectFile, path , 3, , Select program for program-specific hotkeys, *.exe
+SplitPath,path,path
+if(!Settings_CustomHotkeys_Filters.Contains(path))
+{
+	Settings_CustomHotkeys_Filters.Append(path)
+	GuiControl, 1:, CustomHotkeysFilter, %path%||
+	CustomHotkeys_SaveCurrentView()
+	CustomHotkeys_ApplyFilter(path)
+	GuiControl, 1:enable, CustomHotkeysList
+	GuiControl, 1:enable, CustomHotkeysAdd
+	GuiControl, 1:enable, CustomHotkeysRemove
+	GuiControl, 1:enable, CustomHotkeysEditKey
+	GuiControl, 1:enable, CustomHotkeysCommand
+	GuiControl, 1:enable, CustomHotkeysEditCommand
+}
+Return
+
+CustomHotkeysFilter:
+GuiControlGet, selected, 1:, CustomHotkeysFilter
+CustomHotkeys_SaveCurrentView()
+CustomHotkeys_ApplyFilter(selected)
+return
+
+CustomHotkeys_ApplyFilter(filter) {
+	global Settings_CustomHotkeys
+	LV_Delete()
+	Loop % Settings_CustomHotkeys.len()
+	{
+		if(Settings_CustomHotkeys[A_Index].filter = filter)
+			LV_Add("",Settings_CustomHotkeys[A_Index].key,Settings_CustomHotkeys[A_Index].command)
 	}
 	LV_Modify(1, "Select")
+}
+CustomHotkeys_SaveCurrentView() {
+	global
+	local count, key, filter, i
+	GuiControlGet, filter, 1:, CustomHotkeysFilter
+	;Delete all previous entries from this filter
+	Loop % Settings_CustomHotkeys.len()
+	{
+		if(Settings_CustomHotkeys[i].filter = filter)
+		{
+			Settings_CustomHotkeys.Delete(i)
+			break
+		}
+		i++
+	}
+	;Now add all hotkeys from listview
+	count := LV_GetCount()
+	Loop % count
+	{
+		LV_GetText(key,A_Index,1)
+		LV_GetText(command,A_Index,2)
+		if(key!="" && command != "")
+			Settings_CustomHotkeys.append(key,command,filter)
+	}
 }
 Settings_SetupFTP() {
 	global
@@ -1270,15 +1388,14 @@ if(!enabled)
 	DoubleClickDesktop:=0
 
 ;Store custom hotkeys
-count := LV_GetCount()
+CustomHotkeys_SaveCurrentView()
 RemoveAllHotkeys()
-Loop % count
+Loop % Settings_CustomHotkeys.len()
 {
-	LV_GetText(key,A_Index,1)
-	LV_GetText(command,A_Index,2)
-	if(key!="" && command != "")
-		AddHotkey(key,command)
+	AddHotkey(Settings_CustomHotkeys[A_Index].key,Settings_CustomHotkeys[A_Index].commandSettings_CustomHotkeys[A_Index].filter)
 }
+Settings_CustomHotkeys := ""
+
 ;UnSlide hidden windows
 if(!HKSlideWindows)
 	SlideWindows_Exit()
@@ -1336,6 +1453,7 @@ GuiEscape:
 Cancel:
 GuiClose:
 SettingsActive:=False
+Settings_CustomHotkeys := ""
 Gui 1:Cancel
 Return
 

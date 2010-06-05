@@ -62,6 +62,9 @@
 ;                           group are enabled.  If false, all of these fields
 ;                           are disabled.
 ;
+;		p_filter			Used for hotkey collision check, if program-specific 
+;							hotkeys are used, to allow overrides
+;
 ;
 ;
 ;   Processing Notes
@@ -171,7 +174,8 @@ HotkeyGUI(p_GUI=""
     ,p_Title=""
     ,p_Limit=""
     ,p_LimitMsg=""
-    ,p_OptionalAttrib="")
+    ,p_OptionalAttrib=""
+	,p_filter="")
     {
     ;[==============]
     ;[  Initialize  ]
@@ -243,7 +247,8 @@ HotkeyGUI(p_GUI=""
      else
         if p_OptionalAttrib not between 0 and 1
             p_OptionalAttrib:=true
-
+			
+	HG_Filter := p_filter
 
     ;[=========================]
     ;[  Find available window  ]
@@ -726,7 +731,7 @@ HotkeyGUI(p_GUI=""
 	;[===================]
 	;[  Collision Check  ]
 	;[===================]
-	if(CollisionCheck(HG_HotKey))
+	if(CollisionCheck(HG_HotKey,HG_Filter))
 	{
 		MsgBox  262160,%p_Title%, This hotkey is already in use.
         return 

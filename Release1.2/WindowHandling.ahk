@@ -272,7 +272,8 @@ If (z=2)
 	MouseGetPos, , , z
 	WinActivate ahk_id %z%
 	WinSet, AlwaysOnTop, toggle, ahk_id %z%
-	SendInput {Escape} ;Escape is needed to suppress the annoying menu on titlebar right click     
+	if(IsContextMenuActive())
+		SendInput {Escape} ;Escape is needed to suppress the annoying menu on titlebar right click     
 }
 else if(z=20)
 	CloseKill()  	

@@ -7,36 +7,51 @@ ReadHotkeys()
 	{
 		if(!key)
 			key := A_LoopField
+		else if(key && !command)
+		{
+			command := A_LoopField
+		}
 		else
 		{
-			AddHotkey(key,A_LoopField)
+			AddHotkey(key,command,A_LoopField)
 			key := ""
+			command := ""
 		}
 	}
 }
-AddHotkey(key,command)
+AddHotkey(key,command,filter="")
 {	
 	global CustomHotkeys
-	CustomHotkeys.Append(Object("key",key,"command",command))
+	CustomHotkeys.Append(Object("key",key,"command",command,"filter",filter))
+	if(filter)
+		Hotkey, If, GetActiveProcessName()="%filter%"
 	Hotkey, %key%, CustomHotkey, On
+	if(filter)
+		Hotkey, If,
 }
 #p::
 Loop % CustomHotkeys.len()
 {
 key:=CustomHotkeys[A_Index].key
 command:=CustomHotkeys[A_Index].command
-outputdebug key %key% command %command%
+filter:=CustomHotkeys[A_Index].filter
+outputdebug key %key% command %command% filter %filter%
 }
 return
-RemoveHotkey(key)
+
+RemoveHotkey(key,filter="")
 {
 	global CustomHotkeys
 	Loop % CustomHotkeys.len()
 	{
-		if(CustomHotkeys[A_Index].key = key)
+		if((!filter && CustomHotkeys[A_Index].key = key)||(CustomHotkeys[A_Index].key = key && CustomHotkeys[A_Index].filter = filter))
 		{
 			CustomHotkeys.Delete(A_Index)
+			if(filter)
+				Hotkey, If, GetActiveProcessName()="%filter%"
 			Hotkey, %key%, Off
+			if(filter)
+				Hotkey, If,
 			break
 		}
 	}
@@ -50,8 +65,13 @@ RemoveAllHotkeys()
 	Loop % CustomHotkeys.len()
 	{
 		key := CustomHotkeys[A_Index].key
-		outputdeBug remove %key%
+		filter := CustomHotkeys[A_Index].filter
+		outputdeBug remove %key% %filter%
+		if(filter)
+			Hotkey, If, GetActiveProcessName()="%filter%"
 		Hotkey, %key%, Off
+		if(filter)
+			Hotkey, If,
 	}
 	CustomHotkeys := Array()	
 }
@@ -61,13 +81,13 @@ SaveHotkeys()
 	Loop % CustomHotkeys.len()
 	{
 		if(A_Index=0)
-			HotkeyString := CustomHotkeys[A_Index].key "|" CustomHotkeys[A_Index].command
+			HotkeyString := CustomHotkeys[A_Index].key "|" CustomHotkeys[A_Index].command "|" CustomHotkeys[A_Index].filter
 		else
-			HotkeyString .= "|" CustomHotkeys[A_Index].key "|" CustomHotkeys[A_Index].command
+			HotkeyString .= "|" CustomHotkeys[A_Index].key "|" CustomHotkeys[A_Index].command "|" CustomHotkeys[A_Index].filter
 	}
 	IniWrite, %HotkeyString%, %A_ScriptDir%\Settings.ini, CustomHotkeys, CustomHotkeys
 }
-CollisionCheck(key1)
+CollisionCheck(key1,filter1)
 {
 	global CustomHotkeys
 	7PlusHotkeys := "#h,#y,#v,#e,*!c,+c,+x,^i,+Enter,^t,^Tab,^+Tab,^w,^Numpad0,^Numpad1,^Numpad2,^Numpad3,^Numpad4,^Numpad5,^Numpad6,^Numpad7,^Numpad8,^Numpad9,!Numpad0,!Numpad1,!Numpad2,!Numpad3,!Numpad4,!Numpad5,!Numpad6,!Numpad7,!Numpad8,!Numpad9,^u,!Insert,#Insert,#Delete,#c,#+Left,#+Up,#+Right,#+Down,!WheelDown,!WheelUp,^v,!F4,!F5,!LButton"
@@ -99,6 +119,7 @@ CollisionCheck(key1)
     Loop % CustomHotkeys.len()
 	{
 		key2 := CustomHotkeys[A_Index].key
+		filter2 := CustomHotkeys[A_Index].key
 		key2_Win := InStr(key2, "#") > 0
 		key2_Alt := InStr(key2, "!") > 0
 		key2_Control := InStr(key2, "^") > 0
@@ -110,35 +131,56 @@ CollisionCheck(key1)
 		DirCollision:=((key1_Left = true && key1_Left = key2_Left)||(key1_Right = true && key1_Right = key2_Right))
 		KeyCollision:=(key1_stripped = key2_stripped)
 		StateCollision:=((key1_Win = key2_Win && key1_Alt = key2_Alt && key1_Control = key2_Control && key1_Shift = key2_Shift) || key1_WildCard || key2_WildCard)
-		if(KeyCollision && StateCollision && DirCollision)
+		if(KeyCollision && StateCollision && DirCollision && filter1 = filter2)
 			return true
 	}
 	return false
 }
 CustomHotkey:
-Loop % CustomHotkeys.len()
+CustomHotkey()
+return
+
+CustomHotkey()
 {
-	if(A_ThisHotkey = CustomHotkeys[A_Index].key)
+	global CustomHotkeys
+	name := GetActiveProcessName()
+	Loop % CustomHotkeys.len()
 	{
-		temp := CustomHotkeys[A_Index].command
-		if(InStr(temp,"${"))
+		if(A_ThisHotkey = CustomHotkeys[A_Index].key && name = CustomHotkeys[A_Index].filter)
+		{
+			command := CustomHotkeys[A_Index].command
+			break
+		}
+	}
+	if(!command)
+	{
+		Loop % CustomHotkeys.len()
+		{		
+			if(A_ThisHotkey = CustomHotkeys[A_Index].key)
+			{
+				command := CustomHotkeys[A_Index].command
+				break
+			}
+		}
+	}
+	if(command)
+	{
+		if(InStr(command,"${"))
 		{
 			If(WinActive("ahk_group ExplorerGroup"))
 			{
-				StringReplace, temp, temp, ${P}, "%ExplorerPath%"
+				StringReplace, command, command, ${P}, "%ExplorerPath%"
 				files:=GetSelectedFiles()
 				Loop, Parse, files, `n, %A_Space%
 				{
-					StringReplace, temp, temp, ${%A_Index%}, "%A_LoopField%"
+					StringReplace, command, command, ${%A_Index%}, "%A_LoopField%"
 				}
-				temp := RegExReplace(temp, "\$\{\d+}")
+				command := RegExReplace(command, "\$\{\d+}")
 			}
 			Else
-				temp := RegExReplace(temp, "\$\{.*}")
+				command := RegExReplace(command, "\$\{.*}")
 		}
-		outputdebug temp %temp%
-		run %temp%
-		break
+		run %command%
 	}
+	return 
 }
-return 

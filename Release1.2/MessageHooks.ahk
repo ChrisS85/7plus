@@ -1,6 +1,5 @@
 HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEventTime ){ 
 	global HKShowSpaceAndSize,HKAutoCheck,TabNum,TabWindow,TabContainerList,UseTabs
-	
 	;On dialog popup, check if its an explorer confirmation dialog
 	if(event=0x00008002) ;EVENT_OBJECT_SHOW
 	{

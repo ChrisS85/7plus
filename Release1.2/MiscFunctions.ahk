@@ -413,7 +413,11 @@ FindWindow(title,class="",style="",exstyle="",processname="",allowempty=false)
 	}
 	return 0
 }
-
+GetActiveProcessName()
+{
+	WinGet, ProcessName, processname, A
+	return ProcessName
+}
 GetVisibleWindowAtPoint(x,y,IgnoredWindow)
 {
 	DetectHiddenWindows,off
