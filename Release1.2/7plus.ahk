@@ -1,6 +1,7 @@
 #Persistent 
 #NoTrayIcon ;Added later
 #InstallMouseHook
+#InstallKeyBdHook
 #IfTimeout 150ms ;Might soften up mouse hook timeout problem
 #MaxHotkeysPerInterval 1000 ;Required for mouse wheel
 SetBatchLines -1

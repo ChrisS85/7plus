@@ -196,7 +196,7 @@ if(Vista7)
 GoSub TrayminOpen
 
 ReadHotkeys()
-
+SetTimer, ToggleHotkeys, 50
 
 CreateTabWindow()
 ;Show tray icon when loading is complete

@@ -65,6 +65,8 @@
 ;		p_filter			Used for hotkey collision check, if program-specific 
 ;							hotkeys are used, to allow overrides
 ;
+;		p_exclude			Used for hotkey collision check, this key is not considered
+;							a collision (useful when editing existing hotkey)
 ;
 ;
 ;   Processing Notes
@@ -175,7 +177,8 @@ HotkeyGUI(p_GUI=""
     ,p_Limit=""
     ,p_LimitMsg=""
     ,p_OptionalAttrib=""
-	,p_filter="")
+	,p_filter=""
+	,p_exclude="")
     {
     ;[==============]
     ;[  Initialize  ]
@@ -249,7 +252,7 @@ HotkeyGUI(p_GUI=""
             p_OptionalAttrib:=true
 			
 	HG_Filter := p_filter
-
+	HG_Exclude := p_exclude
     ;[=========================]
     ;[  Find available window  ]
     ;[  (Starting with p_GUI)  ]
@@ -731,7 +734,7 @@ HotkeyGUI(p_GUI=""
 	;[===================]
 	;[  Collision Check  ]
 	;[===================]
-	if(CollisionCheck(HG_HotKey,HG_Filter))
+	if(CollisionCheck(HG_HotKey,HG_Filter,HG_Exclude))
 	{
 		MsgBox  262160,%p_Title%, This hotkey is already in use.
         return 

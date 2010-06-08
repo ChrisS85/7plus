@@ -12,17 +12,17 @@ HoverCheck()
 	x:=IsFullscreen("A",false,false)
 	if(!x)
 	{
-    if(MouseX != lastx || MouseY != lasty)
-    	SlideWindows_OnMouseMove(MouseX,MouseY)
-    SlideWindows_CheckWindowState()
+		if(MouseX != lastx || MouseY != lasty)
+			SlideWindows_OnMouseMove(MouseX,MouseY)
+		SlideWindows_CheckWindowState()
 	}
-  if (Vista7 && !x && (MouseX != lastx || MouseY != lasty) && MouseX=0 && MouseY=0 && !WinActive("ahk_class Flip3D"))
-  { 
-  	z:=-(AeroFlipTime*1000+1)
-    SetTimer, hovering, %z%
-  } 
-  lastx := MouseX
-  lasty := MouseY
+	if (Vista7 && !x && (MouseX != lastx || MouseY != lasty) && MouseX=0 && MouseY=0 && !WinActive("ahk_class Flip3D"))
+	{ 
+		z:=-(AeroFlipTime*1000+1)
+		SetTimer, hovering, %z%
+	}
+	lastx := MouseX
+	lasty := MouseY
 	return
 }
 

@@ -22,7 +22,6 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 		}
 		return
 	}
-	
 	if(event=0x800B && WinActive("ahk_group ExplorerGroup")) ;EVENT_OBJECT_LOCATIONCHANGE
 	{
 		;outputdebug locationchange updateposition
@@ -32,15 +31,6 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 			UpdateInfoPosition()
 		return
 	}
-	Sleep 1
-	/*
-	;A small sleep is required here. Sleep command isn't precise enough for good performance
-	; On a PC whose sleep duration normally rounds up to 15.6 ms, try TimePeriod=7 to allow
-	; somewhat shorter sleeps, and try TimePeriod=3 or less to allow the shortest possible sleeps.
-	DllCall("Winmm\timeBeginPeriod", uint, 3)  ; Affects all applications, not just this script's DllCall("Sleep"...), but does not affect SetTimer. Try 7 or 3
-	DllCall("Sleep", UInt, 1)  ; Must use DllCall instead of the Sleep command.
-	DllCall("Winmm\timeEndPeriod", UInt, 3)  ; Should be called to restore system to normal.	
-	*/
 }
 
 ShellMessage( wParam,lParam, msg) 
@@ -161,7 +151,7 @@ ShellMessage( wParam,lParam, msg)
 			}
 		}
 	}
-	Sleep 1
+	;Sleep 1
 	/*
 	;A small sleep is required here. Sleep command isn't precise enough for good performance
 	; On a PC whose sleep duration normally rounds up to 15.6 ms, try TimePeriod=7 to allow

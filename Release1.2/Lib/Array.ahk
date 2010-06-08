@@ -3,7 +3,7 @@
 Array(p1="Ņ", p2="Ņ", p3="Ņ", p4="Ņ", p5="Ņ", p6="Ņ"){ 
    static ArrBase 
    If !ArrBase 
-      ArrBase := Object("len", "Array_Length", "indexOf", "Array_indexOf", "join", "Array_Join" 
+      ArrBase := Object("len", "Array_Length", "indexOf", "Array_indexOf", "contains", "Array_Contains","join", "Array_Join" 
       , "append", "Array_Append", "insert", "Array_Insert", "delete", "Array_Delete" 
       , "sort", "Array_sort", "reverse", "Array_Reverse", "unique", "Array_Unique" 
       , "extend", "Array_Extend", "copy", "Array_Copy", "pop", "Array_Pop", "swap", "Array_Swap", "Move", "Array_Move") 
@@ -36,7 +36,11 @@ Array_indexOf(arr, val, opts="", startpos=1){
 	  Return matches
 	Else
 	  Return 0
-} 
+}
+Array_Contains(arr, val)
+{
+	return arr.indexOf(val) > 0
+}
 Array_Join(arr, sep="`n"){ 
    Loop, % arr.len() 
       str .= arr[A_Index] sep 

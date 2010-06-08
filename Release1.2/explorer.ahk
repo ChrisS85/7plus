@@ -515,11 +515,6 @@ Handled:=TaskbuttonClose()
 if !Handled && UseTabs 
 {
 	MouseGetPos,,,window,control
-	if(MouseHittest()=2 && (IsWindowUnderCursor("ExploreWClass") || IsWindowUnderCursor("CabinetWClass")))
-	{
-		CreateTab(window)
-		Handled:=true
-	}
 	if(!Handled && window = TabWindow)
 	{
 		MouseCloseTab()
@@ -562,9 +557,9 @@ OpenInNewFolder()
 		return false
 	if(MiddleOpenFolder = 1)
 		run explorer.exe %undermouse%
-	else if(MiddleOpenFolder = 2)
+	else if(MiddleOpenFolder = 2 && UseTabs)
 		CreateTab(0,undermouse, 1)
-	else if(MiddleOpenFolder = 3)
+	else if(MiddleOpenFolder = 3 && UseTabs)
 		CreateTab(0,undermouse, 0)
 	return true
 }

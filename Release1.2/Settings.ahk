@@ -332,8 +332,10 @@ Settings_CreateCustomHotkeys() {
 	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vCustomHotkeysRemove gRemoveHotkey, Delete Hotkey
 	yIt += textboxstep
-	Gui, 1:Add, Button, x%x2% y%yIt% w80 vCustomHotkeysEditKey gEditHotkey, Edit Hotkey
-	yIt += 150
+	Gui, 1:Add, Button, x%x2% y%yIt% w80 vCustomHotkeysEditKey gEditHotkey, Edit Hotkey	
+	yIt += 150 - textboxstep -4
+	Gui, 1:Add, Button, x%x2% y%yIt% w80 gCustomHotkeyHelp, Help
+	yIt += textboxstep + 4
 	y := yIt + TextBoxTextOffset
 	Gui, 1:Add, Text, x%x1% y%y%, Command:
 	x:=x1+54
@@ -635,25 +637,40 @@ Settings_SetupDesktopTaskBar() {
 Settings_SetupCustomHotkeys() {
 	global
 	local filter
-	Settings_CustomHotkeys = Array()
+	Settings_CustomHotkeys := Array()
 	Settings_CustomHotkeys_Filters := Array()
+	GuiControl, 1:, CustomHotkeysFilter,|
 	Loop % CustomHotkeys.len()
 	{
-		Settings_CustomHotkeys.append(Object("key", CustomHotkeys[A_Index].key, "command", CustomHotkeys[A_Index].command, "filter", CustomHotkeys[A_Index].filter))
+		Settings_CustomHotkeys.Append(Object("key", CustomHotkeys[A_Index].key, "command", CustomHotkeys[A_Index].command, "filter", CustomHotkeys[A_Index].filter))
+		outputdebug("hotkeys: " CustomHotkeys[A_Index].key " " CustomHotkeys[A_Index].command " " CustomHotkeys[A_Index].filter " settings: " Settings_CustomHotkeys.key " " Settings_CustomHotkeys.command " " Settings_CustomHotkeys.filter)
 		filter := CustomHotkeys[A_Index].filter
 		if(filter && !Settings_CustomHotkeys_Filters.Contains(filter))
 		{
-			if(Filters.len() = 0)
+			outputdebug new filter %filter%
+			if(Settings_CustomHotkeys_Filters.len() = 0)
+			{
 				GuiControl, 1:, CustomHotkeysFilter, %filter%||
+				SelectedHotkeyFilter := filter
+			}
 			else
 				GuiControl, 1:, CustomHotkeysFilter, %filter%
-			Settings_CustomHotkeys_Filters.append(filter)
+			Settings_CustomHotkeys_Filters.Append(filter)
 		}
 	}
 	GuiControl, 1:, CustomHotkeysFilter
 	GuiControl, 1:, CustomHotkeysGlobal, 1
+	;GoSub CustomHotkeysGlobal
+	
 	GuiControl, 1:disable, CustomHotkeysFilter
 	GuiControl, 1:disable, CustomHotkeysFilterBrowse
+	GuiControl, 1:enable, CustomHotkeysList
+	GuiControl, 1:enable, CustomHotkeysAdd
+	GuiControl, 1:enable, CustomHotkeysRemove
+	GuiControl, 1:enable, CustomHotkeysEditKey
+	GuiControl, 1:enable, CustomHotkeysCommand
+	GuiControl, 1:enable, CustomHotkeysEditCommand
+	CustomHotkeysGlobal:=1
 	CustomHotkeys_ApplyFilter("")
 }
 CustomHotkeysGlobal:
@@ -667,19 +684,23 @@ GuiControl, 1:enable, CustomHotkeysRemove
 GuiControl, 1:enable, CustomHotkeysEditKey
 GuiControl, 1:enable, CustomHotkeysCommand
 GuiControl, 1:enable, CustomHotkeysEditCommand
-CustomHotkeys_SaveCurrentView()
+GuiControlGet, SelectedHotkeyFilter, 1:, CustomHotkeysFilter
+if(SelectedHotkeyFilter!="")
+	CustomHotkeys_SaveCurrentView()
 CustomHotkeys_ApplyFilter("")
+CustomHotkeysGlobal:=1
 return
 
 CustomHotkeysSpecific:
 GuiControl, 1:enable, CustomHotkeysFilter
 GuiControl, 1:enable, CustomHotkeysFilterBrowse
-GuiControlGet, selected, 1:, CustomHotkeysFilter
 CustomHotkeys_SaveCurrentView()
+GuiControlGet, SelectedHotkeyFilter, 1:, CustomHotkeysFilter
+outputdebug specific filter: %SelectedHotkeyFilter%
 LV_Delete()
-if(selected)
+if(SelectedHotkeyFilter)
 {
-	CustomHotkeys_ApplyFilter(selected)
+	CustomHotkeys_ApplyFilter(SelectedHotkeyFilter)
 }
 Else
 {
@@ -690,16 +711,19 @@ Else
 	GuiControl, 1:disable, CustomHotkeysCommand
 	GuiControl, 1:disable, CustomHotkeysEditCommand
 }
+CustomHotkeysGlobal:=0
 return
 
 CustomHotkeysFilterBrowse:
+Gui 1:+OwnDialogs
 FileSelectFile, path , 3, , Select program for program-specific hotkeys, *.exe
 SplitPath,path,path
 if(!Settings_CustomHotkeys_Filters.Contains(path))
 {
 	Settings_CustomHotkeys_Filters.Append(path)
-	GuiControl, 1:, CustomHotkeysFilter, %path%||
 	CustomHotkeys_SaveCurrentView()
+	GuiControl, 1:, CustomHotkeysFilter, %path%||
+	SelectedHotkeyFilter := path
 	CustomHotkeys_ApplyFilter(path)
 	GuiControl, 1:enable, CustomHotkeysList
 	GuiControl, 1:enable, CustomHotkeysAdd
@@ -711,13 +735,21 @@ if(!Settings_CustomHotkeys_Filters.Contains(path))
 Return
 
 CustomHotkeysFilter:
-GuiControlGet, selected, 1:, CustomHotkeysFilter
 CustomHotkeys_SaveCurrentView()
-CustomHotkeys_ApplyFilter(selected)
+PrintHotkeys()
+outputdebug change from %SelectedHotkeyFilter%
+GuiControlGet, SelectedHotkeyFilter, 1:, CustomHotkeysFilter
+outputdebug to %SelectedHotkeyFilter%
+CustomHotkeys_ApplyFilter(SelectedHotkeyFilter)
+PrintHotkeys()
 return
 
+CustomHotkeyHelp:
+MsgBox,0x2000, Custom Hotkeys Help, You can define global hotkeys, aswell as hotkeys that are application-specific. Those are only triggered when the selected program is active. You can also use placeholders in command arguments. Supported placeholders:`n`nExplorer:`n${P} : Current path of the active explorer window`n${1}...${n} : n-th selected file, enclosed in " "`n${N} : All selected files, separated by spaces
+return
 CustomHotkeys_ApplyFilter(filter) {
-	global Settings_CustomHotkeys
+	global
+	outputdebug apply filter %filter%
 	LV_Delete()
 	Loop % Settings_CustomHotkeys.len()
 	{
@@ -728,26 +760,37 @@ CustomHotkeys_ApplyFilter(filter) {
 }
 CustomHotkeys_SaveCurrentView() {
 	global
-	local count, key, filter, i
-	GuiControlGet, filter, 1:, CustomHotkeysFilter
+	local count, key, i
+	;GuiControlGet, filter, 1:, CustomHotkeysFilter
+	if(SelectedHotkeyFilter = "" && !CustomHotkeysGlobal) ;Don't save on unfilled dropdownlist
+		return
+	if(CustomHotkeysGlobal)
+		SelectedHotkeyFilter:=""
+	outputdebug save current view filter %filter%
+	i:=1
 	;Delete all previous entries from this filter
 	Loop % Settings_CustomHotkeys.len()
 	{
-		if(Settings_CustomHotkeys[i].filter = filter)
+		if(Settings_CustomHotkeys[i].filter = SelectedHotkeyFilter)
 		{
+			outputdebug("remove: " Settings_CustomHotkeys[A_Index].key " " Settings_CustomHotkeys[A_Index].command " " Settings_CustomHotkeys[A_Index].filter)
+			key := Settings_CustomHotkeys[i].key
+			outputdebug delete key %key%
 			Settings_CustomHotkeys.Delete(i)
-			break
+			continue
 		}
 		i++
 	}
 	;Now add all hotkeys from listview
 	count := LV_GetCount()
+	outputdebug #hotkeys in listview: %count%
 	Loop % count
 	{
 		LV_GetText(key,A_Index,1)
 		LV_GetText(command,A_Index,2)
+		outputdebug add key %key% command %command% filter %filter%
 		if(key!="" && command != "")
-			Settings_CustomHotkeys.append(key,command,filter)
+			Settings_CustomHotkeys.Append(Object("key",key,"command",command,"filter",SelectedHotkeyFilter))
 	}
 }
 Settings_SetupFTP() {
@@ -956,12 +999,14 @@ GuiControl, 1:enable%enabled%,Button6
 Return
 
 TextBrowse:
+Gui 1:+OwnDialogs
 FileSelectFile, editorpath , 3, , Select text editor executable, *.exe
 if !ErrorLevel
 	GuiControl, 1:,TextEditor,%editorpath%
 Return
 
 ImageBrowse:
+Gui 1:+OwnDialogs
 FileSelectFile, imagepath , 3, , Select image editor executable, *.exe
 if !ErrorLevel
 	GuiControl, 1:,ImageEditor,%imagepath%
@@ -1005,6 +1050,7 @@ GuiControl, 1:enable%enabled%, MiddleOpenFolder
 return
 
 TabStartupPathBrowse:
+Gui 1:+OwnDialogs
 path:=COM_CreateObject("Shell.Application").BrowseForFolder(0, "Enter Path to add as button", 0).Self.Path
 if(path!="")
 	GuiControl, , 1:TabStartupPath,%path%
@@ -1017,6 +1063,7 @@ GuiControl, 1:enable%enabled%,TaskbarLaunchPathBrowse
 Return
 
 TaskbarLaunchBrowse:
+Gui 1:+OwnDialogs
 FileSelectFile, TaskbarPath , 3, , Select taskbar executable, *.exe
 if !ErrorLevel
 {
@@ -1050,6 +1097,7 @@ GuiControl, 1:enable%enabled%, DoubleClickDesktopBrowse
 return
 
 DoubleClickDesktopBrowse:
+Gui 1:+OwnDialogs
 FileSelectFile, path , 3, , Select file to execute, *.exe
 if(path!="")
 	GuiControl, 1:,DoubleClickDesktop,%path%
@@ -1075,19 +1123,13 @@ return
 EditHotkey:
 Critical, Off
 i:=LV_GetNext("")
-if(i<=CustomHotkeys.len()) ;if editing existing hotkey
-{
-	keybackup := CustomHotkeys[i].key
-	CustomHotkeys[i].key := "" ;Temporarily remove hotkey so it doesn't collide with itself
-}
-key:=HotKeyGui(10,1, "Select Hotkey", 1)
+key:=HotKeyGui(10,1, "Select Hotkey", 1,"","","",key)
 if(key)
 	LV_Modify(i,"Col1",key)	
-if(i<=CustomHotkeys.len()) ;And restore
-	CustomHotkeys[i].key := keybackup
 return
 
 EditCommand:
+Gui 1:+OwnDialogs
 FileSelectFile, path , 3, , Select hotkey command, *.exe
 if(path!="")
 {
@@ -1392,9 +1434,9 @@ CustomHotkeys_SaveCurrentView()
 RemoveAllHotkeys()
 Loop % Settings_CustomHotkeys.len()
 {
-	AddHotkey(Settings_CustomHotkeys[A_Index].key,Settings_CustomHotkeys[A_Index].commandSettings_CustomHotkeys[A_Index].filter)
+	AddHotkey(Settings_CustomHotkeys[A_Index].key, Settings_CustomHotkeys[A_Index].command, Settings_CustomHotkeys[A_Index].filter)
 }
-Settings_CustomHotkeys := ""
+Settings_CustomHotkeys := Array()
 
 ;UnSlide hidden windows
 if(!HKSlideWindows)
