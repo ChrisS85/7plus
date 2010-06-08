@@ -745,7 +745,7 @@ PrintHotkeys()
 return
 
 CustomHotkeyHelp:
-MsgBox,0x2000, Custom Hotkeys Help, You can define global hotkeys, aswell as hotkeys that are application-specific. Those are only triggered when the selected program is active. You can also use placeholders in command arguments. Supported placeholders:`n`nExplorer:`n${P} : Current path of the active explorer window`n${1}...${n} : n-th selected file, enclosed in " "`n${N} : All selected files, separated by spaces
+MsgBox,0x2000, Custom Hotkeys Help, You can define global hotkeys, aswell as hotkeys that are application-specific. Those are only triggered when the selected program is active. You can also use placeholders in command arguments. Supported placeholders:`n`nAny window:`n${T} : Filepath+Filename extracted from current window title`n`nExplorer:`n${P} : Current path of the active explorer window`n${1}...${n} : n-th selected file, enclosed in " "`n${N} : All selected files, separated by spaces`n`nHint: If you have Autohotkey (or any other scripting language) installed, you can also launch your own scripts from here!
 return
 CustomHotkeys_ApplyFilter(filter) {
 	global

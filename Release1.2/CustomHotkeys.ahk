@@ -221,6 +221,10 @@ CustomHotkey()
 		{
 			if(InStr(command,"${")) ;Handle placeholders
 			{
+				;Try to match files in window titles
+				RegExMatch(WinGetTitle("A"),"([a-zA-Z]:\\[^/:\*\?<>\|]+\.\w{2,6})|(\\\\[^/:\*\?<>\|]+\.\w{2,6})",titlepath)
+				StringReplace, command, command, ${T}, "%titlepath%"
+				
 				If(WinActive("ahk_group ExplorerGroup")) ;Supported placeholders: ${P} - Current Path, ${\d+} - selectedfile[i], ${N} - All selected files separated by spaces
 				{
 					StringReplace, command, command, ${P}, "%ExplorerPath%"

@@ -314,6 +314,7 @@ Return::
 Backspace::Send !{Up}
 #if
 
+;Function(s) to align explorer windows side by side and to launch explorer with last used directory
 #if (RecallExplorerPath && ExplorerPath != "") || AlignExplorer
 #e::
 active:=WinActive("ahk_group ExplorerGroup")
