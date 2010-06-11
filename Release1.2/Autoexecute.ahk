@@ -65,7 +65,7 @@ if(Vista7)
 {
 	;Register an event hook to catch move and dialog creation messages
 	HookProcAdr := RegisterCallback("HookProc", "F" ) 
-	API_SetWinEventHook(0x0,0x800B,0,HookProcAdr,0,0,0) 
+	API_SetWinEventHook(0x8001,0x800B,0,HookProcAdr,0,0,0) ;Make sure not to register unneccessary messages, as this causes cpu load
 }
 DetectHiddenWindows, On
 

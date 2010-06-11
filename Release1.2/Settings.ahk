@@ -820,7 +820,7 @@ Settings_SetupMisc() {
 	GuiControl, 1:,AutoUpdate,%AutoUpdate%
 	;Figure out if Autorun is enabled
 	RegRead, Autorun, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus
-	temp:=(Autorun = """" A_ScriptFullPath """")
+	temp:=Autorun != ""
 	GuiControl, 1:, Autorun,%temp%
 }
 Settings_SetupAbout() {
@@ -1454,7 +1454,12 @@ ValidateFTPVars()
 
 ;Store Autorun setting
 if(Autorun)
-	RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptFullPath%"
+{
+	if(A_IsCompiled)
+		RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptDir%\UACAutorun.exe"
+	else
+		RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptDir%\UACAutorun.ahk"
+}
 else
 	RegDelete, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus
 
