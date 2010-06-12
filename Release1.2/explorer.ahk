@@ -330,9 +330,9 @@ if(active && AlignExplorer)
 	}
 	Else
 	{
-		w:=A_ScreenWidth/2
-		h:=A_ScreenHeight/2
-		WinMove, ahk_id %active%,, 0,0,%w%,%h%
+		GetActiveMonitorWorkspaceArea(x,y,w,h,active)
+		w := Round(w/2)
+		WinMove, ahk_id %active%,, %x%,%y%,%w%,%h%
 	}
 }
 if(RecallExplorerPath && ExplorerPath != "")
@@ -359,7 +359,10 @@ if(AlignExplorer && active)
 	if(A_OSVersion="WIN_7")
 		Send #{Right}
 	else
-		WinMove, ahk_id %active2%,, %w%,%h%,%w%,%h%
+	{
+		x += w
+		WinMove, ahk_id %active2%,, %x%,%y%,%w%,%h%
+	}
 }
 Return
 #if
@@ -544,20 +547,22 @@ return
 
 OpenInNewFolder()
 {
-	global MiddleOpenFolder
+	global MiddleOpenFolder, UseTabs
  	if(!MiddleOpenFolder||!WinActive("ahk_group ExplorerGroup")||!IsMouseOverFileList())
  		return false	
 	selected:=GetSelectedFiles(0)
 	SendEvent {LButton}
-	;Sleep 100
+	Sleep 100
 	if(InStr(FileExist(undermouse:=GetSelectedFiles()), "D"))
 		dir:=true
 	if(select!=selected)
-		SelectFiles(selected)
+		SelectFiles(selected,1,0,0)
+	outputdebug selected %undermouse% dir %dir%
 	if(!dir)
 		return false
+	outputdebug MiddleOpenFolder %MiddleOpenFolder%
 	if(MiddleOpenFolder = 1)
-		run explorer.exe %undermouse%
+		run %A_WinDir%\Explorer.exe %undermouse%
 	else if(MiddleOpenFolder = 2 && UseTabs)
 		CreateTab(0,undermouse, 1)
 	else if(MiddleOpenFolder = 3 && UseTabs)

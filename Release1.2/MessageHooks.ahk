@@ -27,7 +27,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 		;outputdebug locationchange updateposition
 		if(UseTabs)
 			UpdatePosition(TabNum,TabWindow)
-		if(HKShowSpaceAndSize)
+		if(HKShowSpaceAndSize && A_OsVersion = "WIN_7")
 			UpdateInfoPosition()
 		return
 	}

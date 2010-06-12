@@ -462,9 +462,9 @@ CreateTab(hwnd,path=-1,Activate=-1)
 			WinGet,visible,style, ahk_id %hwndnew%
 			WinGetPos,x,y,w,h,ahk_id %hwndnew%
 			outputdebug 2nd loop x%x% y%y% w%w% h%h%
-			if(visible & 0x10000000)
+			if(visible & 0x10000000) ;WS_VISIBLE
 			{
-				outputdebug hide
+				outputdebug hide style %visible% title %title%
 				WinHide ahk_id %hwndnew%
 			}
 			Else
@@ -476,6 +476,9 @@ CreateTab(hwnd,path=-1,Activate=-1)
 	DisableMinimizeAnim(0)
 	WinGetPlacement(hwnd,x,y,w,h,state)
 	WinSetPlacement(hwndnew,x,y,w,h,state)
+	if(!Activate)
+		WinHide ahk_id %hwndnew% ;Hide again because WinSetPlacement unhides it, but is required for max/restore state
+	
 	;WinMove ahk_id %hwndnew%,,%x%,%y%,%w%,%h%
 	;if(state = 1)
 	;	WinMaximize ahk_id %hwndnew%
@@ -512,44 +515,7 @@ CreateTab(hwnd,path=-1,Activate=-1)
 	GuiControl, %TabNum%:MoveDraw, TabControl
 }
 
-WinGetPlacement(hwnd, ByRef x="", ByRef y="", ByRef w="", ByRef h="", ByRef state="") 
-{ 
-    VarSetCapacity(wp, 44), NumPut(44, wp) 
-    DllCall("GetWindowPlacement", "uint", hwnd, "uint", &wp) 
-    x := NumGet(wp, 28, "int") 
-    y := NumGet(wp, 32, "int") 
-    w := NumGet(wp, 36, "int") - x 
-    h := NumGet(wp, 40, "int") - y
-	state := NumGet(wp, 8, "UInt")
-	;outputdebug get x%x% y%y% w%w% h%h% state%state%
-}
-WinSetPlacement(hwnd, x="",y="",w="",h="",state="")
-{
-	WinGetPlacement(hwnd, x1, y1, w1, h1, state1)
-	if(x = "")
-		x := x1
-	if(y = "")
-		y := y1
-	if(w = "")
-		w := w1
-	if(h = "")
-		h := h1
-	if(state = "")
-		state := state1
-	outputdebug set x%x% y%y% w%w% h%h% state%state%
-	VarSetCapacity(wp, 44), NumPut(44, wp)
-	if(state = 6)
-		NumPut(7, wp, 8) ;SW_SHOWMINNOACTIVE
-	else if(state = 1)
-		NumPut(4, wp, 8) ;SW_SHOWNOACTIVATE
-	else if(state = 3)
-		NumPut(3, wp, 8) ;SW_SHOWMAXIMIZED and/or SW_MAXIMIZE
-	NumPut(x, wp, 28, "Int")
-    NumPut(y, wp, 32, "Int")
-    NumPut(x+w, wp, 36, "Int")
-    NumPut(y+h, wp, 40, "Int")
-	DllCall("SetWindowPlacement", "uint", hwnd, "uint", &wp) 
-}
+
 ActivateTab(pos)
 {
 	global TabContainerList, SuppressTabEvents

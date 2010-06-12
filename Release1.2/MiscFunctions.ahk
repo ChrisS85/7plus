@@ -166,16 +166,7 @@ IsFullscreen(sWinTitle = "A", UseExcludeList = true, UseIncludeList=true) {
     Local iWinX, iWinY, iWinW, iWinH, iCltX, iCltY, iCltW, iCltH, iMidX, iMidY, iMonitor, c, D, iBestD 
     global FullScreenExclude, FullScreenInclude
     ErrorLevel := False 
-    
-    ;Resolution change would only need to be detected every few seconds or so, but since it doesn't add anything notably to cpu usage, just do it always
-    SysGet, Mon0, MonitorCount 
-    SysGet, iPrimaryMon, MonitorPrimary 
-    Loop %Mon0% { ;Loop through each monitor 
-        SysGet, Mon%A_Index%, Monitor, %A_Index% 
-        Mon%A_Index%MidX := Mon%A_Index%Left + Ceil((Mon%A_Index%Right - Mon%A_Index%Left) / 2) 
-        Mon%A_Index%MidY := Mon%A_Index%Top + Ceil((Mon%A_Index%Top - Mon%A_Index%Bottom) / 2) 
-    } 
-    
+	
     ;Get the active window's dimension 
     hWin := WinExist(sWinTitle) 
     If Not hWin { 
@@ -196,6 +187,15 @@ IsFullscreen(sWinTitle = "A", UseExcludeList = true, UseIncludeList=true) {
     if(UseExcludeList)
     	if c in %FullscreenExclude%
 				return false
+				
+    ;Resolution change would only need to be detected every few seconds or so, but since it doesn't add anything notably to cpu usage, just do it always
+    SysGet, Mon0, MonitorCount 
+    SysGet, iPrimaryMon, MonitorPrimary 
+    Loop %Mon0% { ;Loop through each monitor 
+        SysGet, Mon%A_Index%, Monitor, %A_Index% 
+        Mon%A_Index%MidX := Mon%A_Index%Left + Ceil((Mon%A_Index%Right - Mon%A_Index%Left) / 2) 
+        Mon%A_Index%MidY := Mon%A_Index%Top + Ceil((Mon%A_Index%Top - Mon%A_Index%Bottom) / 2) 
+    }    
 			
     ;Get the window and client area, and style 
     VarSetCapacity(iWinRect, 16), VarSetCapacity(iCltRect, 16) 
@@ -237,6 +237,53 @@ IsFullscreen(sWinTitle = "A", UseExcludeList = true, UseIncludeList=true) {
     } Else Return False 
 }
 
+;Returns the workspace area covered by the active monitor
+GetActiveMonitorWorkspaceArea(ByRef MonLeft, ByRef MonTop, ByRef MonW, ByRef MonH,hWndOrMouseX, MouseY = "")
+{
+	mon := GetActiveMonitor(hWndOrMouseX, MouseY)
+	if(mon>=0)
+	{
+		SysGet, Mon, MonitorWorkArea, %mon%
+		MonW := MonRight - MonLeft
+		MonH := MonBottom - MonTop
+	}
+}
+;Returns the monitor the mouse or the active window is in
+GetActiveMonitor(hWndOrMouseX, MouseY = "")
+{
+	if(MouseY="")
+	{
+		WinGetPos,x,y,w,h,ahk_id %hWndOrMouseX%
+		if(!x && !y && !w && !h)
+		{
+			MsgBox GetActiveMonitor(): invalid window handle!
+			return -1
+		}
+		x := x + Round(w/2)
+		y := y + Round(h/2)
+	}
+	else
+	{
+		x := hWndOrMouseX
+		y := MouseY
+	}
+	;Loop through every monitor and calculate the distance to each monitor 
+	iBestD := 0xFFFFFFFF 
+	SysGet, Mon0, MonitorCount
+	Loop %Mon0% { ;Loop through each monitor 
+        SysGet, Mon%A_Index%, Monitor, %A_Index% 
+        Mon%A_Index%MidX := Mon%A_Index%Left + Ceil((Mon%A_Index%Right - Mon%A_Index%Left) / 2) 
+        Mon%A_Index%MidY := Mon%A_Index%Top + Ceil((Mon%A_Index%Top - Mon%A_Index%Bottom) / 2) 
+    }
+    Loop % Mon0 { 
+      D := Sqrt((x - Mon%A_Index%MidX)**2 + (y - Mon%A_Index%MidY)**2) 
+      If (D < iBestD) { 
+         iBestD := D 
+         iMonitor := A_Index 
+      } 
+   }
+   return iMonitor
+}
 ;Returns the (signed) minimum of the absolute values of x and y 
 absmin(x,y)
 {
@@ -441,7 +488,43 @@ IsInArea(px,py,x,y,w,h)
 {
 	return (px>x&&py>y&&px<x+w&&py<y+h)
 }
-
+WinGetPlacement(hwnd, ByRef x="", ByRef y="", ByRef w="", ByRef h="", ByRef state="") 
+{ 
+    VarSetCapacity(wp, 44), NumPut(44, wp) 
+    DllCall("GetWindowPlacement", "uint", hwnd, "uint", &wp) 
+    x := NumGet(wp, 28, "int") 
+    y := NumGet(wp, 32, "int") 
+    w := NumGet(wp, 36, "int") - x 
+    h := NumGet(wp, 40, "int") - y
+	state := NumGet(wp, 8, "UInt")
+	;outputdebug get x%x% y%y% w%w% h%h% state%state%
+}
+WinSetPlacement(hwnd, x="",y="",w="",h="",state="")
+{
+	WinGetPlacement(hwnd, x1, y1, w1, h1, state1)
+	if(x = "")
+		x := x1
+	if(y = "")
+		y := y1
+	if(w = "")
+		w := w1
+	if(h = "")
+		h := h1
+	if(state = "")
+		state := state1
+	VarSetCapacity(wp, 44), NumPut(44, wp)
+	if(state = 6)
+		NumPut(7, wp, 8) ;SW_SHOWMINNOACTIVE
+	else if(state = 1)
+		NumPut(4, wp, 8) ;SW_SHOWNOACTIVATE
+	else if(state = 3)
+		NumPut(3, wp, 8) ;SW_SHOWMAXIMIZED and/or SW_MAXIMIZE
+	NumPut(x, wp, 28, "Int")
+    NumPut(y, wp, 32, "Int")
+    NumPut(x+w, wp, 36, "Int")
+    NumPut(y+h, wp, 40, "Int")
+	DllCall("SetWindowPlacement", "uint", hwnd, "uint", &wp) 
+}
 ExpandEnvVars(ppath)
 {
 	VarSetCapacity(dest, 2000) 
