@@ -10,6 +10,7 @@ New Functions:
 
 Program related:
 +Switched to new version format, now 1.2.0 is used instead of 1.2
++7plus now stores its settings in %appdata%\7plus\Settings.ini. To use it in portable mode, put a Settings.ini file in the program directory
 
 Bugfixes:
 -Autorun now works on UAC-enabled systems
