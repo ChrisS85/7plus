@@ -1,25 +1,21 @@
+7plus Version 1.2.0
+
 New Functions:
-+SHIFT+Enter: Flatten directory
-+CTRL+I: Invert Selection
-+CAPSLOCK: Click on notification windows
-+Move Windows with ALT+Left mouse button
-+Middle click: Open folder in new window
-+ALT+Mouse Wheel: Minimize/Maximize window under mouse
-+Right Click on minimize button/WIN+SHIFT+Arrow key in taskbar direction: Minimize window to tray
-+Option to hide Slide Windows from taskbar and ALT+TAB
-+Fast Folders and Clipboard Manager context menu entries can now be accessed with 0-9 keys
-+Hold down left mouse button and click right: Go forward
++Tabs for Windows Explorer
++Customizable, context-sensitive hotkeys
++Launch explorer in last used directory
++WIN+E & Explorer active: Align explorer windows left and right
++Make CTRL+Backspace and CTRL+Delete work in all textboxes
++Double click on desktop: Run program
 
 Program related:
-+Autoupdater
-+Hide tray icon
-+New settings GUI
-+Donate button, please donate to support this project ;)
++Switched to new version format, now 1.2.0 is used instead of 1.2
 
 Bugfixes:
--Fixed issues with Fast Folders (Network, "Can't navigate: Wrong window",...). Still no 64bit support for explorer bar though.
--Fixed some issues with Clipboard manager that would make it stop working or not paste text correctly.
--Fixed some issues with Slide Windows.
--Fixed bug which would make explorer go to topmost directory in file tree when a tree item was clicked.
--FTP password now stored encrypted.
--lots of other fixes.
+-Autorun now works on UAC-enabled systems
+-Fixed a bug with Slide Windows, where the window would slide out again if the cursor was at the border of the screen
+-Fixed a bug that caused weird mouse jumping on context menus
+-Explorer should now restart correctly
+-Lots of other smaller fixes
+
+If you like this program and want to support its development, please consider donating!

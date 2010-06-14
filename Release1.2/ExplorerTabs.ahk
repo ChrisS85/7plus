@@ -94,32 +94,32 @@ CloseTab(hwnd,TabContainer=0)
 
 CreateTabWindow()
 {
-global
-local backup
-;Critical
-backup:=SuppressTabEvents
-SuppressTabEvents:=true
-TabNum:=3
-Gui, %TabNum%:+LastFound +ToolWindow -Border -Resize +alwaysontop
-Gui, %TabNum%:Add,Tab2, +Theme -Wrap x0 w2000 h20 HwndTabHWND vTabControl gTabEvent +AltSubmit, %A_Space%
-Gui, %TabNum%:Show , NA x50 y50
-TabWindow := WinExist()
-WinGetPos,x,y,w,h, ahk_id %TabHWND%
-x:=x+500 ;This method is not very reliable, as there might be painting issues outside of the screen!
-y:=y+h-2
-PixelGetColor,TabColor,%x%,%y%,RGB
-Gui, %TabNum%: Color, %TabColor%
-WinSet, TransColor, %TabColor%
-Gui, %TabNum%:-Caption
-SuppressTabEvents:=false
-GuiControl, %TabNum%:MoveDraw, TabControl
-DllCall("InvalidateRect",UInt, TabWindow, UInt, 0, UInt, 1)
-UpdateTabs()
-UpdatePosition(TabNum, TabWindow)
-SuppressTabEvents:=backup
-;Dock(c0, "T x(0,0,24) y(0,0,0) w(1,-135)")
-;Critical, Off
-Return
+	global
+	local backup
+	;Critical
+	backup:=SuppressTabEvents
+	SuppressTabEvents:=true
+	TabNum:=3
+	Gui, %TabNum%:+LastFound +ToolWindow -Border -Resize +alwaysontop
+	Gui, %TabNum%:Add,Tab2, +Theme -Wrap x0 w2000 h20 HwndTabHWND vTabControl gTabEvent +AltSubmit, %A_Space%
+	Gui, %TabNum%:Show , NA x50 y50
+	TabWindow := WinExist()
+	WinGetPos,x,y,w,h, ahk_id %TabHWND%
+	x:=x+500 ;This method is not very reliable, as there might be painting issues outside of the screen!
+	y:=y+h-2
+	PixelGetColor,TabColor,%x%,%y%,RGB
+	Gui, %TabNum%: Color, %TabColor%
+	WinSet, TransColor, %TabColor%
+	Gui, %TabNum%:-Caption
+	SuppressTabEvents:=false
+	GuiControl, %TabNum%:MoveDraw, TabControl
+	DllCall("InvalidateRect",UInt, TabWindow, UInt, 0, UInt, 1)
+	UpdateTabs()
+	UpdatePosition(TabNum, TabWindow)
+	SuppressTabEvents:=backup
+	;Dock(c0, "T x(0,0,24) y(0,0,0) w(1,-135)")
+	;Critical, Off
+	Return
 }
 
 ;Called when a tab is activated

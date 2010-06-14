@@ -305,11 +305,13 @@ AutoUpdate()
 }
 PostUpdate()
 {
-	global CurrentVersion
+	global MajorVersion,MinorVersion,BugfixVersion
 	if(FileExist(A_ScriptDir "\Updater.exe"))
 	{
-		IniRead, Version, %A_ScriptDir%\Version.ini,Version,Version
-		if(CurrentVersion=Version)
+		IniRead, MajorVersion, %A_ScriptDir%\Version.ini,Version,MajorVersion
+		IniRead, MinorVersion, %A_ScriptDir%\Version.ini,Version,MinorVersion
+		IniRead, BugfixVersion, %A_ScriptDir%\Version.ini,Version,BugfixVersion
+		if(MajorVersion=MajorVersion && MinorVersion = MinorVersion && BugfixVersion = BugfixVersion)
 		{
 			if(FileExist(A_ScriptDir "\Changelog.txt"))
 			{
