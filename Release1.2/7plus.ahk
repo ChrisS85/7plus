@@ -14,7 +14,20 @@ SetWinDelay, -1
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability. 
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ;SetFormat, Integer, D
-CurrentVersion:=1.2
+MajorVersion := 1
+MinorVersion := 2
+BugfixVersion := 0
+#include %A_ScriptDir%\Autoexecute.ahk ;include first to avoid issues with autoexecute ending too soon because of labels
+#if !IsFullscreen("A",true,false)
+#h::
+	DetectHiddenWindows, Off
+	if(WinExist("7plus Settings"))
+		WinActivate 7plus Settings
+	else
+		GoSub Settingshandler
+	return
+#if
+#q::Reload
 #Include %A_ScriptDir%
 #include %A_ScriptDir%\lib\binreadwrite.ahk
 #include %A_ScriptDir%\lib\gdip.ahk
@@ -27,7 +40,7 @@ CurrentVersion:=1.2
 #include %A_ScriptDir%\lib\Cursor.ahk
 #include %A_ScriptDir%\lib\Win.ahk
 #include %A_ScriptDir%\lib\Crypt.ahk
-#include %A_ScriptDir%\Autoexecute.ahk
+#include %A_ScriptDir%\lib\Dock.ahk
 #include %A_ScriptDir%\messagehooks.ahk
 #include %A_ScriptDir%\navigate.ahk
 #include %A_ScriptDir%\FolderButtonManager.ahk
@@ -51,14 +64,3 @@ CurrentVersion:=1.2
 #include %A_ScriptDir%\ExplorerTabs.ahk
 #include %A_ScriptDir%\CustomHotkeys.ahk
 #include %A_ScriptDir%\HotkeyGUI.ahk
-#include %A_ScriptDir%\lib\Dock.ahk
-#if !IsFullscreen("A",true,false)
-#h::
-	DetectHiddenWindows, Off
-	if(WinExist("7plus Settings"))
-		WinActivate 7plus Settings
-	else
-		GoSub Settingshandler
-	return
-#if
-~#q::Reload

@@ -23,7 +23,7 @@ GroupAdd, TaskbarDesktopGroup, ahk_group TaskbarGroup
 
 ;Get windows version
 RegRead, vista7, HKLM, SOFTWARE\Microsoft\Windows NT\CurrentVersion, CurrentVersion
-vista7 := vista7 >= 6 
+vista7 := vista7 >= 6
 
 ;initialize gdi+
 pToken := Gdip_Startup()
@@ -243,17 +243,28 @@ ExitApp
 
 AutoUpdate()
 {	
-	global CurrentVersion
+	global MajorVersion,MinorVersion,BugfixVersion
 	if(IsConnected())
 	{
 		random, rand
-		URLDownloadToFile, http://7plus.googlecode.com/files/Version.ini?x=%rand%, %A_ScriptDir%\Version.ini
+		URLDownloadToFile, http://7plus.googlecode.com/files/NewVersion.ini?x=%rand%, %A_ScriptDir%\Version.ini
 		if(!Errorlevel)
 		{
-			IniRead, Version, %A_ScriptDir%\Version.ini, Version,Version
-			if(Version>CurrentVersion)
+			IniRead, tmpMajorVersion, %A_ScriptDir%\Version.ini, Version,MajorVersion
+			IniRead, tmpMinorVersion, %A_ScriptDir%\Version.ini, Version,MinorVersion
+			IniRead, tmpBugfixVersion, %A_ScriptDir%\Version.ini, Version,BugfixVersion
+			if(tmpMajorVersion > MajorVersion)
+				Update := true
+			else if(tmpMajorVersion = MajorVersion && tmpMinorVersion > MinorVersion)
+				Update := true
+			else if(tmpMajorVersion = MajorVersion && tmpMinorVersion = MinorVersion && tmpBugfixVersion > BugfixVersion)
+				Update := true
+			else
+				Update := false
+			if(Update)
 			{
-				MsgBox,4,,A new update is available. Download now?
+				IniRead, UpdateMessage, %A_ScriptDir%\Version.ini, Version,UpdateMessage
+				MsgBox,4,,%UpdateMessage%
 				IfMsgBox Yes
 				{
 					Progress zh0 fs18,Downloading Update, please wait.

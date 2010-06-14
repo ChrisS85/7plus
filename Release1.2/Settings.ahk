@@ -442,7 +442,7 @@ Settings_CreateMisc() {
 }
 Settings_CreateAbout() {
 	global
-	local yIt,x1,x2,x,y
+	local yIt,x1,x2,x,y,version
 	Gui, 1:Add, Tab2, x156 y14 w410 h350 vAboutTab, 
 	AddTab(0, "","SysTabControl3210")
 	yIt:=YBase
@@ -454,7 +454,8 @@ Settings_CreateAbout() {
 		Gui, 1:Add, Picture, w128 h128 y%yIt% x%x2% vLogo, %A_ScriptDir%\128.png
 	
 	Gui, 1:font, s20
-	Gui, 1:Add, Text, y%yIt% x%x1%, 7plus Version %CurrentVersion%
+	version := MajorVersion "." MinorVersion "." BugfixVersion
+	Gui, 1:Add, Text, y%yIt% x%x1%, 7plus Version %version%
 	Gui, 1:font
 	yIt+=hText*3
 	x2:=x1+100

@@ -26,10 +26,21 @@ HoverCheck()
 	return
 }
 
-#if WordDelete && IsControlActive("Edit") && NothingSelected()
+#if WordDelete && IsEditControlActive() && NothingSelected() ;Special checks for edit control to support .NET and native edit control
 ^Backspace::ControlBackspaceFix()
 ^Delete::ControlDeleteFix()
 #if
+
+IsEditControlActive()
+{
+	if(A_OSVersion="WIN_7")
+		ControlGetFocus active, A
+	else
+		active:=XPGetFocussed()
+	if(strStartsWith(active,"edit")||RegexMatch(active,"WindowsForms\d*.EDIT."))
+		return true
+	return false
+}
 NothingSelected()
 {
 	if(A_OSVersion="WIN_7")
