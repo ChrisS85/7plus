@@ -494,7 +494,7 @@ Settings_CreateAbout() {
 	x2:=x1+100
 	Gui, 1:Add, Text, y%yIt% x%x2% cBlue gGPL vURL_GPL, GNU General Public License v3
 	yIt+=hText*2
-	Gui, 1:Add, Text, y%yIt% x%x1% , Credits for lots of code samples and help go out to:`nSean, HotKeyIt, majkinetor, Titan, Lexikos, TheGood, PhiLho, Temp01, Laszlo, jballi`nand the other guys and gals on #ahk and the forums.	
+	Gui, 1:Add, Text, y%yIt% x%x1% , Credits for lots of code samples and help go out to:`nSean, HotKeyIt, majkinetor, Titan, Lexikos, TheGood, PhiLho, Temp01, Laszlo, jballi, Shrinker`nand the other guys and gals on #ahk and the forums.	
 }
 
 ;---------------------------------------------------------------------------------------------------------------
