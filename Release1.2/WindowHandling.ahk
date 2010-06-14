@@ -1,6 +1,8 @@
 ;Check screen borders/corners for Aero Flip 3D and Slide Windows
-hovercheck: 
+hovercheck:
+ListLines, Off
 HoverCheck()
+ListLines, On
 return
 
 HoverCheck()

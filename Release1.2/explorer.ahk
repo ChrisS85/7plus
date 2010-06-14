@@ -840,10 +840,8 @@ searchString=
 )
 Loop, Parse, files, `n,`r  ; Rows are delimited by linefeeds ('r`n). 
 { 
-  if InStr(FileExist(A_LoopField), "D")
-	{
+	if InStr(FileExist(A_LoopField), "D")
 		searchString=%searchString%<include path="%A_LoopField%"/>
-	}
 } 
 searchString.="</scope></query></persistedQuery>"
 Fileappend,%searchString%, %a_scriptdir%\FlatView.search-ms 

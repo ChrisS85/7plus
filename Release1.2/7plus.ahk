@@ -53,7 +53,6 @@ BugfixVersion := 0
 #include %A_ScriptDir%\Taskbar.ahk
 #include %A_ScriptDir%\Misc.ahk
 #include %A_ScriptDir%\debugging.ahk
-#include %A_ScriptDir%\wizard.ahk
 #include %A_ScriptDir%\settings.ahk
 #include %A_ScriptDir%\miscfunctions.ahk
 #include %A_ScriptDir%\Registry.ahk

@@ -110,13 +110,13 @@ TabNum:=3
 Gui, %TabNum%:+LastFound +ToolWindow -Border -Resize -Caption +alwaysontop
 Gui, %TabNum%:Add,Tab2, +Theme -Wrap x0 w2000 h20 HwndTabHWND vTabControl gTabEvent +AltSubmit, %A_Space%
 Gui, %TabNum%:Show , NA x50 y50
+TabWindow := WinExist()
 WinGetPos,x,y,w,h, ahk_id %TabHWND%
 x:=x+500 ;This method is not very reliable, as there might be painting issues outside of the screen!
 y:=y+h-2
 PixelGetColor,TabColor,%x%,%y%,RGB
 Gui, %TabNum%: Color, %TabColor%
 	WinSet, TransColor, %TabColor%
-TabWindow := WinExist()
 SuppressTabEvents:=false
 UpdateTabs()
 UpdatePosition(TabNum, TabWindow)
@@ -329,7 +329,7 @@ UpdatePosition(TabNum, TabWindow)
 		WinGet, style, style, ahk_id %TabWindow%
 		if(style & 0x10000000)
 		{
-			outputdebug hide %class%
+			outputdebug hide %class% id %TabWindow%
 			WinHide ahk_id %TabWindow%
 		}
 	}
@@ -337,7 +337,7 @@ UpdatePosition(TabNum, TabWindow)
 }
 
 /*
- * Recreates Tab GUI
+ * Recreates Tabs
 */
 UpdateTabs()
 {
@@ -503,11 +503,6 @@ CreateTab(hwnd,path=-1,Activate=-1)
 		
 	;AddTabButton(TabContainer, hwndnew)
 	TabContainerList.Print()
-	DetectHiddenWindows, On
-	if(!WinExist("ahk_id " TabWindow))
-	{
-		CreateTabWindow() ;WinExist("A"))
-	}
 	DetectHiddenWindows, Off
 	if(!WinExist("ahk_id " TabWindow))
 		Gui %TabNum%:Show, NA

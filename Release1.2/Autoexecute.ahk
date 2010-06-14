@@ -223,14 +223,7 @@ if(!HidetrayIcon)
 
 ;possibly start wizard
 if (Firstrun=1)
-	GoSub wizardry
-if (Firstrun=1)
-{
-	Tooltip(1, "That's it for now. Have fun!", "Everything Done!","O1 L1 P99 C1 XTrayIcon YTrayIcon I1")
-	SetTimer, ToolTipClose, -5000	
-	FirstRun:=0
-	IniWrite, 0, %A_ScriptDir%\Settings.ini, General, FirstRun
-}
+	SetTimer, wizardry, -500
 Return
 
 ExitSub:
@@ -241,6 +234,25 @@ TabContainerList.CloseAllInactiveTabs()
 GoSub TrayminClose
 ExitApp
 
+;Some first run intro
+wizardry:
+ShowWizard()
+return
+
+ShowWizard()
+{
+	MsgBox, 4,,Welcome to the ultimate windows tweaking experience!`nBefore we begin, would you like to see a list of features?	
+	IfMsgBox Yes
+		run http://code.google.com/p/7plus/wiki/Features
+	MsgBox, 4,,At the beginning, you should configure the settings and activate/deactivate the features to your liking. You can access the settings menu later through the tray icon or by pressing CTRL+H. Do you want to open the settings window now?
+	IfMsgBox Yes
+		ShowSettings()
+	Tooltip(1, "That's it for now. Have fun!", "Everything Done!","O1 L1 P99 C1 XTrayIcon YTrayIcon I1")
+	SetTimer, ToolTipClose, -5000	
+	FirstRun:=0
+	IniWrite, 0, %A_ScriptDir%\Settings.ini, General, FirstRun
+	return
+}
 AutoUpdate()
 {	
 	global MajorVersion,MinorVersion,BugfixVersion

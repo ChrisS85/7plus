@@ -156,7 +156,9 @@ CollisionCheck(key1,filter1,exclude)
 
 ;Monitors the active process name and (de)activates context-sensitive hotkeys
 ToggleHotkeys:
+ListLines, Off
 ToggleHotkeys()
+ListLines, On
 return
 
 ToggleHotkeys()

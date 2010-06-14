@@ -1,5 +1,6 @@
 HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEventTime ){ 
 	global HKShowSpaceAndSize,HKAutoCheck,TabNum,TabWindow,TabContainerList,UseTabs, Vista7
+	ListLines, Off
 	;On dialog popup, check if its an explorer confirmation dialog
 	if(event=0x00008002) ;EVENT_OBJECT_SHOW
 	{
@@ -32,11 +33,13 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 			UpdateInfoPosition()
 		return
 	}
+	ListLines, On
 }
 
 ShellMessage( wParam,lParam, msg) 
 {
 	Critical
+	ListLines, Off
 	global Vista7, ExplorerPath,hwnd1,HKShowSpaceAndSize,BlinkingWindows,wtmwParam,TabContainerList, SuppressTabEvents, UseTabs,PreviousWindow
 	;Traymin
 	If	msg=1028
@@ -156,8 +159,8 @@ ShellMessage( wParam,lParam, msg)
 			}
 		}
 	}
+	ListLines, On
 }
-Return
 /*
 UpdatePosition:
 UpdatePosition()
