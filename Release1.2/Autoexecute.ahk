@@ -21,6 +21,7 @@ GroupAdd, TaskbarGroup, ahk_class DV2ControlHost
 GroupAdd, TaskbarDesktopGroup, ahk_group DesktopGroup
 GroupAdd, TaskbarDesktopGroup, ahk_group TaskbarGroup
 
+CreateTabWindow()
 ;Get windows version
 RegRead, vista7, HKLM, SOFTWARE\Microsoft\Windows NT\CurrentVersion, CurrentVersion
 vista7 := vista7 >= 6
@@ -196,7 +197,6 @@ GoSub TrayminOpen
 ReadHotkeys()
 SetTimer, ToggleHotkeys, 50
 
-CreateTabWindow()
 ;Show tray icon when loading is complete
 Menu, tray, add  ; Creates a separator line.
 Menu, tray, add, Settings, SettingsHandler  ; Creates a new menu item.
@@ -225,7 +225,7 @@ if(!HidetrayIcon)
 if (Firstrun=1)
 	SetTimer, wizardry, -500
 Return
-
+#g::CreateTabWindow()
 ExitSub:
 Gdip_Shutdown(pToken)
 WriteIni()

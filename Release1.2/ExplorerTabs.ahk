@@ -96,18 +96,11 @@ CreateTabWindow()
 {
 global
 local backup
-Critical
-outputdebug CreateTabWindow()
-/*
-run, explorer,,,pid1
-WinWait, ahk_pid %pid1%
-hwnd:=WinExist("ahk_pid " pid1) + 0
-WinHide, ahk_id %hwnd%
-*/
+;Critical
 backup:=SuppressTabEvents
 SuppressTabEvents:=true
 TabNum:=3
-Gui, %TabNum%:+LastFound +ToolWindow -Border -Resize -Caption +alwaysontop
+Gui, %TabNum%:+LastFound +ToolWindow -Border -Resize +alwaysontop
 Gui, %TabNum%:Add,Tab2, +Theme -Wrap x0 w2000 h20 HwndTabHWND vTabControl gTabEvent +AltSubmit, %A_Space%
 Gui, %TabNum%:Show , NA x50 y50
 TabWindow := WinExist()
@@ -116,15 +109,16 @@ x:=x+500 ;This method is not very reliable, as there might be painting issues ou
 y:=y+h-2
 PixelGetColor,TabColor,%x%,%y%,RGB
 Gui, %TabNum%: Color, %TabColor%
-	WinSet, TransColor, %TabColor%
+WinSet, TransColor, %TabColor%
+Gui, %TabNum%:-Caption
 SuppressTabEvents:=false
-UpdateTabs()
-UpdatePosition(TabNum, TabWindow)
 GuiControl, %TabNum%:MoveDraw, TabControl
 DllCall("InvalidateRect",UInt, TabWindow, UInt, 0, UInt, 1)
+UpdateTabs()
+UpdatePosition(TabNum, TabWindow)
 SuppressTabEvents:=backup
 ;Dock(c0, "T x(0,0,24) y(0,0,0) w(1,-135)")
-Critical, Off
+;Critical, Off
 Return
 }
 
@@ -364,7 +358,6 @@ UpdateTabs()
 		if(!strEndsWith(tabs,"||"))
 			tabs:=strStripRight(tabs,"|")
 		GuiControl, %TabNum%:,TabControl,%tabs%
-		Gui, %TabNum%: Color, %TabColor%
 	}
 	SuppressTabEvents:=false
 }
