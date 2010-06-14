@@ -134,8 +134,8 @@ SlideWindow_SlideIn(SlideWindow)
 	RegRead, Animate, HKCU, Control Panel\Desktop\WindowMetrics , MinAnimate
 	outputdebug animate is currently set to %animate%
 	VarSetCapacity(struct, 8, 0)	
-  NumPut(8, struct, 0, "UInt")
-  NumPut(0, struct, 4, "Int")
+	NumPut(8, struct, 0, "UInt")
+	NumPut(0, struct, 4, "Int")
 	DllCall("SystemParametersInfo", "UINT", 0x0049,"UINT", 8,"STR", struct,"UINT", 0x0003) ;SPI_SETANIMATION            0x0049 SPIF_SENDWININICHANGE 0x0002
 	if(SlideWinHide)
 		WinShow ahk_id %hwnd%
@@ -262,7 +262,7 @@ SlideWindowArray_Add(SlideWindowArray, hwnd, dir)
 			else
 			{
 				SlideWindow.SlideOutX:=A_ScreenWidth
-				SlideWindow.SlideInX:=A_ScreenWidth-Width-1
+				SlideWindow.SlideInX:=A_ScreenWidth-Width
 			}
 			SlideWindow.SlideOutY:=y
 			SlideWindow.SlideInY:=y
@@ -277,7 +277,7 @@ SlideWindowArray_Add(SlideWindowArray, hwnd, dir)
 			else
 			{
 				SlideWindow.SlideOutY:=A_ScreenHeight
-				SlideWindow.SlideInY:=A_ScreenHeight-Height-1
+				SlideWindow.SlideInY:=A_ScreenHeight-Height
 			}
 			SlideWindow.SlideOutX:=x
 			SlideWindow.SlideInX:=x

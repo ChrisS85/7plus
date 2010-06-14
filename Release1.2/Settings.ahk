@@ -409,8 +409,10 @@ Settings_CreateMisc() {
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vJoyControl, Use joystick/gamepad as remote control when not in fullscreen (optimized for XBOX360 gamepad)
 	yIt+=checkboxstep
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghClipboardManager vURL_ClipboardManager, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vClipboardManager, WIN + V: Clipboard manager (stores last 10 entries)
-	
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vClipboardManager, WIN + V: Clipboard manager (stores last 10 entries)	
+	yIt+=checkboxstep
+	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWordDelete vURL_WordDelete, ?
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vWordDelete, Make CTRL+Backspace and CTRL+Delete work in all textboxes
 	
 	yIt+=2*checkboxstep
 	y:=yIt+TextBoxTextOffset
@@ -673,126 +675,7 @@ Settings_SetupCustomHotkeys() {
 	CustomHotkeysGlobal:=1
 	CustomHotkeys_ApplyFilter("")
 }
-CustomHotkeysGlobal:
-outputdebug custom hotkeys global clicked
-;save to settings hotkey list, then apply filter in listview
-GuiControl, 1:disable, CustomHotkeysFilter
-GuiControl, 1:disable, CustomHotkeysFilterBrowse
-GuiControl, 1:enable, CustomHotkeysList
-GuiControl, 1:enable, CustomHotkeysAdd
-GuiControl, 1:enable, CustomHotkeysRemove
-GuiControl, 1:enable, CustomHotkeysEditKey
-GuiControl, 1:enable, CustomHotkeysCommand
-GuiControl, 1:enable, CustomHotkeysEditCommand
-GuiControlGet, SelectedHotkeyFilter, 1:, CustomHotkeysFilter
-if(SelectedHotkeyFilter!="")
-	CustomHotkeys_SaveCurrentView()
-CustomHotkeys_ApplyFilter("")
-CustomHotkeysGlobal:=1
-return
 
-CustomHotkeysSpecific:
-GuiControl, 1:enable, CustomHotkeysFilter
-GuiControl, 1:enable, CustomHotkeysFilterBrowse
-CustomHotkeys_SaveCurrentView()
-GuiControlGet, SelectedHotkeyFilter, 1:, CustomHotkeysFilter
-outputdebug specific filter: %SelectedHotkeyFilter%
-LV_Delete()
-if(SelectedHotkeyFilter)
-{
-	CustomHotkeys_ApplyFilter(SelectedHotkeyFilter)
-}
-Else
-{
-	GuiControl, 1:disable, CustomHotkeysList
-	GuiControl, 1:disable, CustomHotkeysAdd
-	GuiControl, 1:disable, CustomHotkeysRemove
-	GuiControl, 1:disable, CustomHotkeysEditKey
-	GuiControl, 1:disable, CustomHotkeysCommand
-	GuiControl, 1:disable, CustomHotkeysEditCommand
-}
-CustomHotkeysGlobal:=0
-return
-
-CustomHotkeysFilterBrowse:
-Gui 1:+OwnDialogs
-FileSelectFile, path , 3, , Select program for program-specific hotkeys, *.exe
-SplitPath,path,path
-if(!Settings_CustomHotkeys_Filters.Contains(path))
-{
-	Settings_CustomHotkeys_Filters.Append(path)
-	CustomHotkeys_SaveCurrentView()
-	GuiControl, 1:, CustomHotkeysFilter, %path%||
-	SelectedHotkeyFilter := path
-	CustomHotkeys_ApplyFilter(path)
-	GuiControl, 1:enable, CustomHotkeysList
-	GuiControl, 1:enable, CustomHotkeysAdd
-	GuiControl, 1:enable, CustomHotkeysRemove
-	GuiControl, 1:enable, CustomHotkeysEditKey
-	GuiControl, 1:enable, CustomHotkeysCommand
-	GuiControl, 1:enable, CustomHotkeysEditCommand
-}
-Return
-
-CustomHotkeysFilter:
-CustomHotkeys_SaveCurrentView()
-PrintHotkeys()
-outputdebug change from %SelectedHotkeyFilter%
-GuiControlGet, SelectedHotkeyFilter, 1:, CustomHotkeysFilter
-outputdebug to %SelectedHotkeyFilter%
-CustomHotkeys_ApplyFilter(SelectedHotkeyFilter)
-PrintHotkeys()
-return
-
-CustomHotkeyHelp:
-MsgBox,0x2000, Custom Hotkeys Help, You can define global hotkeys, aswell as hotkeys that are application-specific. Those are only triggered when the selected program is active. You can also use placeholders in command arguments. Supported placeholders:`n`nAny window:`n${T} : Filepath+Filename extracted from current window title`n`nExplorer:`n${P} : Current path of the active explorer window`n${1}...${n} : n-th selected file, enclosed in " "`n${N} : All selected files, separated by spaces`n`nHint: If you have Autohotkey (or any other scripting language) installed, you can also launch your own scripts from here!
-return
-CustomHotkeys_ApplyFilter(filter) {
-	global
-	outputdebug apply filter %filter%
-	LV_Delete()
-	Loop % Settings_CustomHotkeys.len()
-	{
-		if(Settings_CustomHotkeys[A_Index].filter = filter)
-			LV_Add("",Settings_CustomHotkeys[A_Index].key,Settings_CustomHotkeys[A_Index].command)
-	}
-	LV_Modify(1, "Select")
-}
-CustomHotkeys_SaveCurrentView() {
-	global
-	local count, key, i
-	;GuiControlGet, filter, 1:, CustomHotkeysFilter
-	if(SelectedHotkeyFilter = "" && !CustomHotkeysGlobal) ;Don't save on unfilled dropdownlist
-		return
-	if(CustomHotkeysGlobal)
-		SelectedHotkeyFilter:=""
-	outputdebug save current view filter %filter%
-	i:=1
-	;Delete all previous entries from this filter
-	Loop % Settings_CustomHotkeys.len()
-	{
-		if(Settings_CustomHotkeys[i].filter = SelectedHotkeyFilter)
-		{
-			outputdebug("remove: " Settings_CustomHotkeys[A_Index].key " " Settings_CustomHotkeys[A_Index].command " " Settings_CustomHotkeys[A_Index].filter)
-			key := Settings_CustomHotkeys[i].key
-			outputdebug delete key %key%
-			Settings_CustomHotkeys.Delete(i)
-			continue
-		}
-		i++
-	}
-	;Now add all hotkeys from listview
-	count := LV_GetCount()
-	outputdebug #hotkeys in listview: %count%
-	Loop % count
-	{
-		LV_GetText(key,A_Index,1)
-		LV_GetText(command,A_Index,2)
-		outputdebug add key %key% command %command% filter %filter%
-		if(key!="" && command != "")
-			Settings_CustomHotkeys.Append(Object("key",key,"command",command,"filter",SelectedHotkeyFilter))
-	}
-}
 Settings_SetupFTP() {
 	global
 	;Setup FTP
@@ -816,6 +699,7 @@ Settings_SetupMisc() {
 	GuiControl, 1:,HKPhotoViewer,%HKPhotoViewer%	
 	GuiControl, 1:,JoyControl,%JoyControl%
 	GuiControl, 1:,ClipboardManager,%ClipboardManager%
+	GuiControl, 1:,WordDelete,%WordDelete%
 	GuiControl, 1:,HideTrayIcon,%HideTrayIcon%
 	GuiControl, 1:,AutoUpdate,%AutoUpdate%
 	;Figure out if Autorun is enabled
@@ -1180,6 +1064,128 @@ if(i!=0)
 }
 Return
 
+CustomHotkeysGlobal:
+outputdebug custom hotkeys global clicked
+;save to settings hotkey list, then apply filter in listview
+GuiControl, 1:disable, CustomHotkeysFilter
+GuiControl, 1:disable, CustomHotkeysFilterBrowse
+GuiControl, 1:enable, CustomHotkeysList
+GuiControl, 1:enable, CustomHotkeysAdd
+GuiControl, 1:enable, CustomHotkeysRemove
+GuiControl, 1:enable, CustomHotkeysEditKey
+GuiControl, 1:enable, CustomHotkeysCommand
+GuiControl, 1:enable, CustomHotkeysEditCommand
+GuiControlGet, SelectedHotkeyFilter, 1:, CustomHotkeysFilter
+if(SelectedHotkeyFilter!="")
+	CustomHotkeys_SaveCurrentView()
+CustomHotkeys_ApplyFilter("")
+CustomHotkeysGlobal:=1
+return
+
+CustomHotkeysSpecific:
+GuiControl, 1:enable, CustomHotkeysFilter
+GuiControl, 1:enable, CustomHotkeysFilterBrowse
+CustomHotkeys_SaveCurrentView()
+GuiControlGet, SelectedHotkeyFilter, 1:, CustomHotkeysFilter
+outputdebug specific filter: %SelectedHotkeyFilter%
+LV_Delete()
+if(SelectedHotkeyFilter)
+{
+	CustomHotkeys_ApplyFilter(SelectedHotkeyFilter)
+}
+Else
+{
+	GuiControl, 1:disable, CustomHotkeysList
+	GuiControl, 1:disable, CustomHotkeysAdd
+	GuiControl, 1:disable, CustomHotkeysRemove
+	GuiControl, 1:disable, CustomHotkeysEditKey
+	GuiControl, 1:disable, CustomHotkeysCommand
+	GuiControl, 1:disable, CustomHotkeysEditCommand
+}
+CustomHotkeysGlobal:=0
+return
+
+CustomHotkeysFilterBrowse:
+Gui 1:+OwnDialogs
+FileSelectFile, path , 3, , Select program for program-specific hotkeys, *.exe
+SplitPath,path,path
+if(!Settings_CustomHotkeys_Filters.Contains(path))
+{
+	Settings_CustomHotkeys_Filters.Append(path)
+	CustomHotkeys_SaveCurrentView()
+	GuiControl, 1:, CustomHotkeysFilter, %path%||
+	SelectedHotkeyFilter := path
+	CustomHotkeys_ApplyFilter(path)
+	GuiControl, 1:enable, CustomHotkeysList
+	GuiControl, 1:enable, CustomHotkeysAdd
+	GuiControl, 1:enable, CustomHotkeysRemove
+	GuiControl, 1:enable, CustomHotkeysEditKey
+	GuiControl, 1:enable, CustomHotkeysCommand
+	GuiControl, 1:enable, CustomHotkeysEditCommand
+}
+Return
+
+CustomHotkeysFilter:
+CustomHotkeys_SaveCurrentView()
+PrintHotkeys()
+outputdebug change from %SelectedHotkeyFilter%
+GuiControlGet, SelectedHotkeyFilter, 1:, CustomHotkeysFilter
+outputdebug to %SelectedHotkeyFilter%
+CustomHotkeys_ApplyFilter(SelectedHotkeyFilter)
+PrintHotkeys()
+return
+
+CustomHotkeyHelp:
+MsgBox,0x2000, Custom Hotkeys Help, You can define global hotkeys, aswell as hotkeys that are application-specific. Those are only triggered when the selected program is active. You can also use placeholders in command arguments. Supported placeholders:`n`nAny window:`n${T} : Filepath+Filename extracted from current window title`n`nExplorer:`n${P} : Current path of the active explorer window`n${1}...${n} : n-th selected file, enclosed in " "`n${N} : All selected files, separated by spaces`n`nHint: If you have Autohotkey (or any other scripting language) installed, you can also launch your own scripts from here!
+return
+CustomHotkeys_ApplyFilter(filter) {
+	global
+	outputdebug apply filter %filter%
+	LV_Delete()
+	Loop % Settings_CustomHotkeys.len()
+	{
+		if(Settings_CustomHotkeys[A_Index].filter = filter)
+			LV_Add("",Settings_CustomHotkeys[A_Index].key,Settings_CustomHotkeys[A_Index].command)
+	}
+	LV_Modify(1, "Select")
+}
+
+CustomHotkeys_SaveCurrentView() {
+	global
+	local count, key, i
+	;GuiControlGet, filter, 1:, CustomHotkeysFilter
+	if(SelectedHotkeyFilter = "" && !CustomHotkeysGlobal) ;Don't save on unfilled dropdownlist
+		return
+	if(CustomHotkeysGlobal)
+		SelectedHotkeyFilter:=""
+	outputdebug save current view filter %filter%
+	i:=1
+	;Delete all previous entries from this filter
+	Loop % Settings_CustomHotkeys.len()
+	{
+		if(Settings_CustomHotkeys[i].filter = SelectedHotkeyFilter)
+		{
+			outputdebug("remove: " Settings_CustomHotkeys[A_Index].key " " Settings_CustomHotkeys[A_Index].command " " Settings_CustomHotkeys[A_Index].filter)
+			key := Settings_CustomHotkeys[i].key
+			outputdebug delete key %key%
+			Settings_CustomHotkeys.Delete(i)
+			continue
+		}
+		i++
+	}
+	;Now add all hotkeys from listview
+	count := LV_GetCount()
+	outputdebug #hotkeys in listview: %count%
+	Loop % count
+	{
+		LV_GetText(key,A_Index,1)
+		LV_GetText(command,A_Index,2)
+		outputdebug add key %key% command %command% filter %filter%
+		if(key!="" && command != "")
+			Settings_CustomHotkeys.Append(Object("key",key,"command",command,"filter",SelectedHotkeyFilter))
+	}
+}
+
 FTP:
 GuiControlGet, enabled ,1: ,Use FTP
 GuiControl, 1:enable%enabled%, FTP_Host
@@ -1261,6 +1267,9 @@ run http://www.youtube.com/watch?v=MZiK7E98hOU
 return
 hClipboardManager:
 run http://www.youtube.com/watch?v=Yq8HXOuSEiU
+return
+hWordDelete:
+msgbox not recorded yet
 return
 GPL:
 run http://www.gnu.org/licenses/gpl.html
@@ -1470,6 +1479,10 @@ if(temp!=HKActivateBehavior)
 	MsgBox, 4, Restart Explorer, You need to restart explorer to apply a setting. Do you want to do this now?
 	IfMsgBox Yes
 	{
+		Runwait, taskkill /im explorer.exe /f, , Hide
+		Run, %a_windir%\explorer.exe
+		;Process, close,explorer.exe
+		/*
 		Send {CTRL down}{ESC}{CTRL up}
 		WinWaitActive ahk_class DV2ControlHost
 		Send {Right}
@@ -1482,6 +1495,7 @@ if(temp!=HKActivateBehavior)
 		Send {Enter}
 		Sleep 500
 		Run %a_windir%\explorer.exe
+		*/
 	}
 }
 if(HideTrayIcon)

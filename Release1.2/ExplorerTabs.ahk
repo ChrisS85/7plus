@@ -115,7 +115,7 @@ x:=x+500 ;This method is not very reliable, as there might be painting issues ou
 y:=y+h-2
 PixelGetColor,TabColor,%x%,%y%,RGB
 Gui, %TabNum%: Color, %TabColor%
-WinSet, TransColor, %TabColor%
+	WinSet, TransColor, %TabColor%
 TabWindow := WinExist()
 SuppressTabEvents:=false
 UpdateTabs()
@@ -409,7 +409,6 @@ CreateTab(hwnd,path=-1,Activate=-1)
 	path := path = -1 ? TabStartupPath : path
 	if(path="")
 		path:=GetCurrentFolder(hwnd)
-	
 	SuppressTabEvents:=true
 	DecToHex(hwnd)
 	outputdebug CreateTab(%hwnd%)	
@@ -429,8 +428,11 @@ CreateTab(hwnd,path=-1,Activate=-1)
 		;UpdateTabs()
 	}
 	DetectHiddenWindows, On
-	DisableMinimizeAnim(1)
-	Run %A_WinDir%\explorer.exe %path%
+	DisableMinimizeAnim(1)	
+	;msgbox tab path: %path%
+	;msgbox A_ProgramFiles: %A_ProgramFiles%
+	Run(A_WinDir "\explorer.exe /n,/e," path)
+	;Run, Explore %path%
 	WinWaitNotActive ahk_id %hwnd%
 	WinWaitNotActive ahk_id %TabWindow%	
 	WinWaitNotActive ahk_id %hwnd%
@@ -443,7 +445,7 @@ CreateTab(hwnd,path=-1,Activate=-1)
 		{
 			TabContainerList.active:=hwndnew		;Set it to avoid ExplorerActivated function
 			outputdebug 1st loop %hwndnew% %hwnd%
-			If (hwndnew <> hwnd ) 
+			If (hwndnew <> hwnd )
 			   Break 
 		}
     }

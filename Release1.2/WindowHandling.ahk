@@ -26,6 +26,132 @@ HoverCheck()
 	return
 }
 
+#if WordDelete && IsControlActive("Edit") && NothingSelected()
+^Backspace::ControlBackspaceFix()
+^Delete::ControlDeleteFix()
+#if
+NothingSelected()
+{
+	if(A_OSVersion="WIN_7")
+		ControlGetFocus focussed, A
+	else
+		focussed:=XPGetFocussed()
+	ControlGet, selection, Selected,,%focussed%,A
+	return selection = ""
+}
+ControlBackspaceFix()
+{
+	if(A_OSVersion="WIN_7")
+		ControlGetFocus focussed, A
+	else
+		focussed:=XPGetFocussed()
+	ControlGet, line,CurrentLine,,%focussed%,A
+	ControlGet, col,CurrentCol,,%focussed%,A
+	ControlGet, text, Line,%line%,%focussed%,A
+	SpecialChars := ".,;:""`\/!§$%&/()=#'+-*~€|<>``´{[]}"
+	loop ;Remove spaces and tabs first
+	{
+		char := Substr(text,col-1,1)
+		outputdebug spacecheck %char% %col%
+		if(col>1 && (char = " " || char = "`t"))
+		{
+			col--
+			count++
+		}
+		else
+			break
+	}
+	char := Substr(text,col-1,1)
+	if(InStr(SpecialChars,char))
+		IsSpecial := true
+	outputdebug special %isspecial%
+	Loop
+	{
+		outputdebug loop %char%
+		if(col=1 || char = " ") ;break on line start or when a space is found
+		{
+			if(A_Index = 1)
+				count++ ;Remove line if there were only spaces or at start
+			break
+		}
+		if((IsSpecial && InStr(SpecialChars,char)) || (!IsSpecial && !InStr(SpecialChars,char))) ;break on next word
+		{
+			col--
+			count++
+			char := Substr(text,col-1,1)
+		}
+		else		
+			break
+	}
+	if(count>0)
+		Send {Backspace %count%} ;Send backspace to remove the last %count% letters
+	return
+}
+    
+ControlDeleteFix()
+{
+	if(A_OSVersion="WIN_7")
+		ControlGetFocus focussed, A
+	else
+		focussed:=XPGetFocussed()
+	ControlGet, line,CurrentLine,,%focussed%,A
+	ControlGet, col,CurrentCol,,%focussed%,A
+	ControlGet, text, Line,%line%,%focussed%,A
+	SpecialChars := ".,;:""`\/!§$%&/()=#'+-*~€|<>``´{[]}"
+	length := strLen(text)
+	char := Substr(text,col,1)
+	if(char = "") ;Linebreak(\r\n is removed automagically), only remove if first char
+		CharType := 0
+	else if(char = " " || char = "`t") ;Spaces, break immediately and treat after first loop
+		CharType := 1
+	else if(InStr(SpecialChars,char)) ;Special characters, remove all following of this type
+		CharType := 2
+	else							;alphanumeric characters, remove all following of this type
+		CharType := 3
+	Loop
+	{
+		;outputdebug char %char%
+		if(CharType = 0 && A_Index = 1)
+		{
+			outputdebug line end
+			count++
+			line++
+			col := 1
+			ControlGet, text, Line,%line%,%focussed%,A
+			char := Substr(text,col,1)
+			break
+		}
+		if(CharType = 1) ;Treat spaces later as they are always removed
+			break
+		/*
+		if(char = "`n" || char = "`r" || char = " " || char = "`t") ;break on line end and spaces
+			break
+			*/
+		if(char && ((CharType = 2 && InStr(SpecialChars,char))  || (CharType = 3 && char != " " && char != "`t" && !InStr(SpecialChars,char)))) ;break on next word
+		{
+			col++
+			count++
+			char := Substr(text,col,1)
+		}
+		else
+			break
+	}   
+	loop ;Remove spaces and tabs
+	{
+		outputdebug spacechar %char%
+		if(char = " " || char = "`t")
+		{
+			col++
+			count++
+			char := Substr(text,col,1)
+		}
+		else
+			break
+	}
+	if(count>0)
+		Send {Delete %count%} ;Send backspace to remove the last %count% letters
+	return
+}
 ;Hovering timer for Aero Flip 3D
 hovering: 	
 if (GetKeyState("LButton") || GetKeyState("RButton") || WinActive("ahk_class Flip3D")) 
@@ -272,8 +398,16 @@ If (z=2)
 	MouseGetPos, , , z
 	WinActivate ahk_id %z%
 	WinSet, AlwaysOnTop, toggle, ahk_id %z%
-	if(IsContextMenuActive())
-		SendInput {Escape} ;Escape is needed to suppress the annoying menu on titlebar right click     
+	Loop 50
+	{	
+		Sleep 10
+		if(IsContextMenuActive())
+		{
+			outputdebug found context menu
+			SendInput {Escape} ;Escape is needed to suppress the annoying menu on titlebar right click     
+			break
+		}
+	}
 }
 else if(z=20)
 	CloseKill()  	

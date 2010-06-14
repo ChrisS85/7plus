@@ -534,7 +534,10 @@ ExpandEnvVars(ppath)
 
 IsControlActive(controlclass)
 {
-	ControlGetFocus, active ,A
+	if(A_OSVersion="WIN_7")
+		ControlGetFocus active, A
+	else
+		active:=XPGetFocussed()
 	if(InStr(active, controlclass))
 		return true
 	return false

@@ -1,12 +1,13 @@
 HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEventTime ){ 
-	global HKShowSpaceAndSize,HKAutoCheck,TabNum,TabWindow,TabContainerList,UseTabs
+	global HKShowSpaceAndSize,HKAutoCheck,TabNum,TabWindow,TabContainerList,UseTabs, Vista7
 	;On dialog popup, check if its an explorer confirmation dialog
 	if(event=0x00008002) ;EVENT_OBJECT_SHOW
 	{
-		if(HKAutoCheck)
+		if(HKAutoCheck && Vista7)
 			FixExplorerConfirmationDialogs()
+		return
 	}
-	
+	;outputdebug WinEventHook(%event%, %hwnd%, %idObject%, %idChild%, %dwEventThread%, %dwmsEventTime%)
 	if idObject or idChild
 		return
 	WinGet, style, Style, ahk_id %hwnd%
@@ -24,7 +25,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 	}
 	if(event=0x800B && WinActive("ahk_group ExplorerGroup")) ;EVENT_OBJECT_LOCATIONCHANGE
 	{
-		;outputdebug locationchange updateposition
+		outputdebug locationchange updateposition
 		if(UseTabs)
 			UpdatePosition(TabNum,TabWindow)
 		if(HKShowSpaceAndSize && A_OsVersion = "WIN_7")
@@ -36,7 +37,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 ShellMessage( wParam,lParam, msg) 
 {
 	Critical
-	global Vista7, ExplorerPath,hwnd1,HKShowSpaceAndSize,BlinkingWindows,wtmwParam,TabContainerList, SuppressTabEvents, UseTabs
+	global Vista7, ExplorerPath,hwnd1,HKShowSpaceAndSize,BlinkingWindows,wtmwParam,TabContainerList, SuppressTabEvents, UseTabs,PreviousWindow
 	;Traymin
 	If	msg=1028
 	{
@@ -117,7 +118,11 @@ ShellMessage( wParam,lParam, msg)
 		if(WinActive("ahk_group ExplorerGroup"))
 		{
 			if(UseTabs)
+			{
+				if(WinExist("ahk_id " PreviousWindow " ahk_group ExplorerGroup"))
+					ExplorerDeactivated(PreviousWindow)
 				ExplorerActivated(lParam)
+			}
 			;Explorer info stuff
 			if(A_OSVersion="WIN_7" && HKShowSpaceAndSize)
 				SetTimer, UpdateInfos, 100

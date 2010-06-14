@@ -316,56 +316,60 @@ Backspace::Send !{Up}
 
 ;Function(s) to align explorer windows side by side and to launch explorer with last used directory
 #if (RecallExplorerPath && ExplorerPath != "") || AlignExplorer
-#e::
-active:=WinActive("ahk_group ExplorerGroup")
-if(active && AlignExplorer)
-{
-	WinRestore ahk_id %active%
-	if(A_OSVersion="WIN_7")
-	{
-		WinGetPos, x,y,w,h,ahk_id %active%
-		x++
-		WinMove, ahk_id %active%,, %x%, %y%
-		Send #{Left}
-	}
-	Else
-	{
-		GetActiveMonitorWorkspaceArea(x,y,w,h,active)
-		w := Round(w/2)
-		WinMove, ahk_id %active%,, %x%,%y%,%w%,%h%
-	}
-}
-if(RecallExplorerPath && ExplorerPath != "")
-	run, %A_WinDir%\explorer.exe %ExplorerPath%
-Else
-	run, %A_WinDir%\explorer.exe
-if(AlignExplorer && active)
-{
-	WinWaitNotActive ahk_id %active%	
-	Loop ;Make sure new window is really active
-	{ 
-        Sleep 10 
-        active2 := WinActive("ahk_group ExplorerGroup")
-		if(active2 && active2 != active)
-			   Break 
-    }
-	Loop ;Wait until new window is visible
-	{
-		Sleep 10
-		WinGet,visible,style, ahk_id %active2%
-		if(visible & 0x10000000)
-			break
-	}
-	if(A_OSVersion="WIN_7")
-		Send #{Right}
-	else
-	{
-		x += w
-		WinMove, ahk_id %active2%,, %x%,%y%,%w%,%h%
-	}
-}
-Return
+#e::RunExplorer()
 #if
+RunExplorer()
+{
+	global AlignExplorer, RecallExplorerPath, ExplorerPath
+	active:=WinActive("ahk_group ExplorerGroup")
+	if(active && AlignExplorer)
+	{
+		WinRestore ahk_id %active%
+		if(A_OSVersion="WIN_7")
+		{
+			WinGetPos, x,y,w,h,ahk_id %active%
+			x++
+			WinMove, ahk_id %active%,, %x%, %y%
+			Send #{Left}
+		}
+		Else
+		{
+			GetActiveMonitorWorkspaceArea(x,y,w,h,active)
+			w := Round(w/2)
+			WinMove, ahk_id %active%,, %x%,%y%,%w%,%h%
+		}
+	}
+	if(RecallExplorerPath && ExplorerPath)
+		Run(A_WinDir "\explorer.exe /n,/e," ExplorerPath)
+	Else
+		run, %A_WinDir%\explorer.exe
+	if(AlignExplorer && active)
+	{
+		WinWaitNotActive ahk_id %active%	
+		Loop ;Make sure new window is really active
+		{ 
+			Sleep 10 
+			active2 := WinActive("ahk_group ExplorerGroup")
+			if(active2 && active2 != active)
+				   Break 
+		}
+		Loop ;Wait until new window is visible
+		{
+			Sleep 10
+			WinGet,visible,style, ahk_id %active2%
+			if(visible & 0x10000000)
+				break
+		}
+		if(A_OSVersion="WIN_7")
+			Send #{Right}
+		else
+		{
+			x += w
+			WinMove, ahk_id %active2%,, %x%,%y%,%w%,%h%
+		}
+	}
+	Return
+}
 !v::
 CurrentDesktopFiles:=GetSelectedFiles()
 outputdebug current %CurrentDesktopFiles%
@@ -376,11 +380,11 @@ CurrentDesktopFiles:=GetSelectedFiles()
 outputdebug current: %CurrentDesktopFiles% previous: %PreviousDesktopFiles%
 if(IsDoubleClick() && CurrentDesktopFiles = "")
 {
-	if(DoubleClickDesktop = A_WinDir "\explorer.exe" && RecallExplorerPath)
-		temp := A_WinDir "\explorer.exe " ExplorerPath
+	if(DoubleClickDesktop = A_WinDir "\explorer.exe" && RecallExplorerPath && ExplorerPath)
+		temp := A_WinDir "\explorer.exe /n,/e," ExplorerPath
 	else
 		temp := DoubleClickDesktop
-	run %temp%
+	Run, %temp%
 }
 Return
 #if
@@ -562,7 +566,7 @@ OpenInNewFolder()
 		return false
 	outputdebug MiddleOpenFolder %MiddleOpenFolder%
 	if(MiddleOpenFolder = 1)
-		run %A_WinDir%\Explorer.exe %undermouse%
+		Run(A_WinDir "\explorer.exe /n,/e," undermouse)
 	else if(MiddleOpenFolder = 2 && UseTabs)
 		CreateTab(0,undermouse, 1)
 	else if(MiddleOpenFolder = 3 && UseTabs)

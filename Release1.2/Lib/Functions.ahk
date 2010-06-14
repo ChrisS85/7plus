@@ -146,7 +146,7 @@ RegRead(RootKey, SubKey, ValueName = "") {
 	Return, v
 }
 Run(Target, WorkingDir = "", Mode = "") {
-	Run, %Target%, %WorkingDir%, %Mode%, %v%
+	Run, %Target% , %WorkingDir%, %Mode%, v
 	Return, v	
 }
 SoundGet(ComponentType = "", ControlType = "", DeviceNumber = "") {

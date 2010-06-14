@@ -61,12 +61,9 @@ OnMessage( MsgNum, "ShellMessage" )
 OnMessage(0x202,"WM_LBUTTONUP") ;Will make ToolTip Click possible 
 OnMessage(0x4e,"WM_NOTIFY") ;Will make LinkClick and ToolTipClose possible
  
-if(Vista7)
-{
-	;Register an event hook to catch move and dialog creation messages
-	HookProcAdr := RegisterCallback("HookProc", "F" ) 
-	API_SetWinEventHook(0x8001,0x800B,0,HookProcAdr,0,0,0) ;Make sure not to register unneccessary messages, as this causes cpu load
-}
+;Register an event hook to catch move and dialog creation messages
+HookProcAdr := RegisterCallback("HookProc", "F" ) 
+API_SetWinEventHook(0x8001,0x800B,0,HookProcAdr,0,0,0) ;Make sure not to register unneccessary messages, as this causes cpu load
 DetectHiddenWindows, On
 
 ;FTP Upload script
@@ -141,6 +138,7 @@ IniRead, HKImproveConsole, %A_ScriptDir%\Settings.ini, Misc, HKImproveConsole, 1
 IniRead, HKPhotoViewer, %A_ScriptDir%\Settings.ini, Misc, HKPhotoViewer, 1
 IniRead, ImageExtensions, %A_ScriptDir%\Settings.ini, Misc, ImageExtensions, jpg,png,bmp,gif,tga,tif,ico,jpeg
 IniRead, ClipboardManager, %A_ScriptDir%\Settings.ini, Misc, ClipboardManager, 1
+IniRead, WordDelete, %A_ScriptDir%\Settings.ini, Misc, WordDelete, 1
 
 ;Fullscreen exclusion list
 IniRead, FullscreenExclude, %A_ScriptDir%\Settings.ini, Misc, FullscreenExclude,VLC DirectX,OpWindow,CabinetWClass
@@ -379,6 +377,7 @@ WriteIni()
 	IniWrite, %FullscreenExclude%, %A_ScriptDir%\Settings.ini, Misc, FullscreenExclude
 	IniWrite, %FullscreenInclude%, %A_ScriptDir%\Settings.ini, Misc, FullscreenInclude
 	IniWrite, %ClipboardManager%, %A_ScriptDir%\Settings.ini, Misc, ClipboardManager
+	IniWrite, %WordDelete%, %A_ScriptDir%\Settings.ini, Misc, WordDelete
 	IniWrite, %HideTrayIcon%, %A_ScriptDir%\Settings.ini, Misc, HideTrayIcon
 	IniWrite, %ImageQuality%, %A_ScriptDir%\Settings.ini, Misc, ImageQuality
 	IniWrite, %ImageExtension%, %A_ScriptDir%\Settings.ini, Misc, ImageExtension

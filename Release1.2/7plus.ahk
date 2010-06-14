@@ -61,4 +61,4 @@ CurrentVersion:=1.2
 		GoSub Settingshandler
 	return
 #if
-#y::Reload
+~#q::Reload
