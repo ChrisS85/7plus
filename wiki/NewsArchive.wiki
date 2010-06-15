@@ -1,3 +1,5 @@
+====June 2010====
+  * 2010-06-15: [News20100615 7plus V.1.2.0 released!]
 ====May 2010====
   * 2010-05-04: [News05042010 7plus Hotfix V.1.11 released!]
   * 2010-05-01: [News05012010 7plus V.1.1 released!]
