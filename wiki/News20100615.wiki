@@ -4,7 +4,7 @@ This post is one day late, I didn't manage to write it yesterday anymore, sorry 
 
 The main improvements of this version are tabs for Windows Explorer like in browsers and customizable, context-sensitive hotkeys that you can use to launch programs. You can also use the current explorer path or selected file(s) as arguments, this allows it to integrate many useful programs into explorer or other programs.
 
-There are also some other new features and lots of bugfixes, for a more detailed list, please check out the changelog.
+There are also some other new features and lots of bugfixes, for a more detailed list, please check out the [Changelog1dot2dot0 changelog].
 
 Most users should already have the new version, if they have autoupdate enabled, if you have it disabled, please download it on this page.
 
