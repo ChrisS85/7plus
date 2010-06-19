@@ -520,15 +520,6 @@ key.=GetKeyState("ALT") ? "!" : ""
 key.=GetKeyState("SHIFT") ? "+" : ""
 key.=(GetKeyState("RWIN") || GetKeyState("LWIN")) ? "#" : ""
 Handled:=TaskbuttonClose()
-if !Handled && UseTabs 
-{
-	MouseGetPos,,,window,control
-	if(!Handled && window = TabWindow)
-	{
-		MouseCloseTab()
-		Handled:=true
-	}
-}
 if !Handled
 	Handled:=TitleBarClose()
 if !Handled

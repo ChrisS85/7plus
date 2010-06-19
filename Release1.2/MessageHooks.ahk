@@ -26,7 +26,6 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 	}
 	if(event=0x800B && WinActive("ahk_group ExplorerGroup")) ;EVENT_OBJECT_LOCATIONCHANGE
 	{
-		outputdebug locationchange updateposition
 		if(UseTabs)
 			UpdatePosition(TabNum,TabWindow)
 		if(HKShowSpaceAndSize && A_OsVersion = "WIN_7")

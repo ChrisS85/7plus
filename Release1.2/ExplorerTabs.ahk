@@ -6,8 +6,11 @@
 ^+Tab Up::CycleTabs(hwnd,-1)
 ^w::CloseTab(TabContainerList.active)
 #if
-#t::TabContainerList.Print()
-
+;#t::TabContainerList.Print()
+#if UseTabs && IsMouseOverTabButton()
+LButton::MouseActivateTab()
+MButton::MouseCloseTab()
+#if
 IsTabbedWindow(hwnd)
 {
 	global TabContainerList
@@ -15,34 +18,51 @@ IsTabbedWindow(hwnd)
 		return hwnd
 	return false
 }
+
 IsMouseOverTabButton()
 {
 	global
-	local window,control,TabContainer,MouseHwnd,hwnd,controlhwnd
-	MouseGetPos,,,window, control
-	if(window && window=TabWindow && strStartsWith(control,"Tab"))
+	local window,TabContainer,x,y
+	MouseGetPos,x,y,window
+	if(window && window=TabWindow)
 	{
+		WinGetPos,WinX,WinY,,,ahk_id %TabWindow%
+		;Tab Coords are relative
+		x-=WinX
+		y-=WinY
+		outputdebug correct window x%x% y%y%
 		TabContainer:=TabContainerList.ContainsHWND(TabContainerList.active)
-		ControlGet, MouseHwnd, Hwnd,, %control%, ahk_id %window%
 		if(TabContainer)
 		{
+			outputdebug tab container
 			Loop % TabContainer.tabs.len()
 			{
-				hwnd:=TabContainer.tabs[A_Index]
-				GuiControlGet, controlhwnd,%TabNum%:Hwnd,Tab%hwnd%
-				if(ControlHWND=MouseHWND)
-					return hwnd ;Returns hwnd associated to the tab
+				if(IsInArea(x,y,TabContainer.tabs[A_Index].x,TabContainer.tabs[A_Index].y,TabContainer.tabs[A_Index].width,TabContainer.tabs[A_Index].height))
+					return A_Index
 			}
+			outputdebug not found
 		}
 	}
 	return false
 }
+
+MouseActivateTab()
+{
+	global TabContainerList
+	outputdebug mouseactivatetab
+	TabContainer:=TabContainerList.ContainsHWND(TabContainerList.active)
+	index := IsMouseOverTabButton()
+	if(index && TabContainer && TabContainer.tabs[index].hwnd != TabContainer.active)
+		ActivateTab(index)
+}
 MouseCloseTab()
 {	
-	global TabClose
-	TabClose:=true
-	SetTimer, CheckActiveTabClose,-30 ;Start a timer to see if user tries to close active tab, since it doesn't fire an event
-	Send {LButton}
+	global TabContainerList
+	TabContainer:=TabContainerList.ContainsHWND(TabContainerList.active)
+	index := IsMouseOverTabButton()
+	if(index)
+		CloseTab(TabContainer.tabs[index].hwnd)
+	return index>0
 }
 CheckActiveTabClose:
 if(TabClose)
@@ -80,18 +100,222 @@ CloseTab(hwnd,TabContainer=0)
 		TabContainerList.Delete(TabContainerList.indexOf(TabContainer))
 		TabContainerList.Active:=0
 		Gui %TabNum%:Hide
+		outputdebug hide single tab
 		;Gui %TabNum%:Destroy
 	}
 	Else
-		TabContainer.tabs.Delete(TabContainer.tabs.indexOf(hwnd))			
-	DisableMinimizeAnim(1)
+		TabContainer.tabs.Delete(TabContainer.ContainsHWND(hwnd))
+	WinMove, ahk_id %hwnd%,,-10000,-10000
 	WinClose ahk_id %hwnd%	
-	DisableMinimizeAnim(0)
 	outputdebug update closed
 	NoTabUpdate:=false
 	UpdateTabs()
 }
+DrawTabWindow()
+{
+	global TabContainerList,TabWindow
+	outputdebug drawtabwindow()
+	TabContainerList.print()
+	TabContainer:=TabContainerList.ContainsHWND(TabContainerList.active)
+	if(TabContainer)
+	{
+		WinGetPos x,y,w,h,ahk_id %TabWindow%
+		count:=TabContainer.tabs.len()
+		desiredwidth:=0
+		loop % count
+		{
+			desiredwidth += TabContainerList.TabWidth
+			totalpadding += 2*TabContainerList.hPadding
+		}
+		if(desiredwidth + totalpadding > w)
+		{
+			scale := max((w-totalpadding),0)/desiredwidth
+			Loop % count
+			{
+				TabContainer.tabs[A_Index].width := floor(TabContainerList.TabWidth * scale)
+				CalculateTabText(TabContainer.tabs[A_Index])
+			}
+		}
+		else
+		{
+			Loop % count
+			{
+				TabContainer.tabs[A_Index].width := TabContainerList.TabWidth
+				CalculateTabText(TabContainer.tabs[A_Index])
+			}
+		}
+		CalculateHorizontalTabPositions(TabContainer)
+		outputdebug drawtabwindow x%x% y%y% w%w% h%h%
+		; Create a gdi bitmap with width and height of what we are going to draw into it. This is the entire drawing area for everything
+		hbm := CreateDIBSection(w, h)
 
+		; Get a device context compatible with the screen
+		hdc := CreateCompatibleDC()
+
+		; Select the bitmap into the device context
+		obm := SelectObject(hdc, hbm)
+
+		; Get a pointer to the graphics of the bitmap, for use with drawing functions
+		G := Gdip_GraphicsFromHDC(hdc)
+		
+		Font := TabContainerList.Font
+		FontSize:=TabContainerList.FontSize
+		
+		; Set the smoothing mode to antialias = 4 to make shapes appear smother (only used for vector drawing and filling)
+		Gdip_SetSmoothingMode(G, 4)
+
+		; Create brushes
+		pBrushActive := Gdip_BrushCreateSolid(0xFFFAFAFA)
+		;Create pen for border liens
+		pPenBorder := Gdip_CreatePen(0xFF808080, 1)
+		;Draw all tabs
+		Loop % TabContainer.tabs.len()
+		{
+			tab := TabContainer.tabs[A_Index]
+			outputdebug("draw tab " tab.path)
+			Gdip_SetSmoothingMode(G, 4)
+			; Draw background
+			if(tab.hwnd = TabContainer.active)
+				Gdip_FillRectangle(G, pBrushActive, tab.x, tab.y, tab.width, tab.height)
+			else
+			{
+				pBrushGradient := Gdip_CreateLineBrushFromRect(0,0, tab.width, tab.height, 0xFFF8F8F8, 0x22222222)
+				Gdip_FillRectangle(G, pBrushGradient, tab.x, tab.y, tab.width, tab.height)
+				Gdip_DeleteBrush(pBrushGradient)
+			}
+			Gdip_SetSmoothingMode(G, 1)
+			Gdip_DrawLine(G, pPenBorder, tab.x, tab.y, tab.x+tab.width, tab.y)
+			Gdip_DrawLine(G, pPenBorder, tab.x, tab.y, tab.x, tab.y+tab.height)
+			Gdip_DrawLine(G, pPenBorder, tab.x+tab.width, tab.y, tab.x+tab.width, tab.y+tab.height)
+			
+			Gdip_TextToGraphics(G, tab.drawtext, "x" (tab.x+TabContainerList.hPadding) " y" TabContainerList.vPadding " cff000000 r4 Centre s" FontSize, Font,tab.width - 2*TabContainerList.hPadding,tab.height)
+		}
+		UpdateLayeredWindow(TabWindow, hdc, x, y, w, h)
+		
+		; Delete the brush as it is no longer needed and wastes memory
+		Gdip_DeleteBrush(pBrushActive)
+		Gdip_DeletePen(pPenBorder)
+		; Select the object back into the hdc
+		SelectObject(hdc, obm)
+		
+		; Now the bitmap may be deleted
+		DeleteObject(hbm)
+
+		; Also the device context related to the bitmap may be deleted
+		DeleteDC(hdc)
+
+		; The graphics may now be deleted
+		Gdip_DeleteGraphics(G)
+	}
+}
+TabContainer_Add(TabContainer,hwnd,position="")
+{
+	global TabContainerList
+	outputdebug TabContainer_Add(TabContainer,%hwnd%,%position%)
+	tab := Object("hwnd",hwnd)
+	tab.path := GetCurrentFolder(hwnd)
+	CalculateTabText(tab)
+	tab.y := TabContainerList.InActiveHeightDifference
+	tab.height := TabContainerList.height - TabContainerList.InActiveHeightDifference
+	if(position="")
+	{
+		TabContainer.tabs.append(tab)
+		CalculateHorizontalTabPositions(TabContainer,TabContainer.tabs.len())
+	}
+	else
+	{
+		TabContainer.tabs.insert(position,tab)
+		CalculateHorizontalTabPositions(TabContainer,position)
+	}
+}
+
+CalculateHorizontalTabPositions(TabContainer,start=1)
+{
+	i:=start
+	if(start>1)
+		x:=TabContainer.tabs[start-1].x+TabContainer.tabs[start-1].width
+	else
+		x:=0
+	Loop
+	{
+		if(i>TabContainer.tabs.len())
+			break
+		TabContainer.tabs[i].x:=x
+		x+=TabContainer.tabs[i].width
+		i++
+	}
+}
+CalculateVerticalTabPosition(TabContainer,index)
+{
+	global TabContainerList
+	tab := TabContainer.tabs[index]
+	if(tab)
+	{
+		if(tab.hwnd = TabContainer.active)
+		{
+			tab.y := 0
+			tab.height := TabContainerList.height
+		}
+		else
+		{
+			tab.y := TabContainerList.InActiveHeightDifference
+			tab.height := TabContainerlist.height - TabContainerList.InActiveHeightDifference
+		}
+	}
+}
+CalculateTabText(tab)
+{
+	global TabWindow,TabContainerList
+	WinGetPos x,y,w,h,ahk_id %TabWindow%
+	
+	; Create a gdi bitmap with width and height of what we are going to draw into it. This is the entire drawing area for everything
+	hbm := CreateDIBSection(w, h)
+
+	; Get a device context compatible with the screen
+	hdc := CreateCompatibleDC()
+
+	; Select the bitmap into the device context
+	obm := SelectObject(hdc, hbm)
+
+	; Get a pointer to the graphics of the bitmap, for use with drawing functions
+	G := Gdip_GraphicsFromHDC(hdc)
+	
+	Font := TabContainerList.Font
+	FontSize:=TabContainerList.FontSize
+			
+	;Measure the spaces
+	RectF:=Gdip_TextToGraphics(G, tab.path, " s" FontSize " r4", Font,"","",1)
+	StringSplit, RectF, RectF, |
+	DrawText := tab.path
+	drawcharcount := strlen(tab.path)
+	while(RectF3 > (tab.width-2*TabContainerList.hPadding))
+	{
+		oldcount := drawcharcount
+		drawcharcount := max(min(oldcount-1,floor(strlen(tab.path) * (Tab.Width -2*TabContainerList.hPadding)/ RectF3)),0)
+		if(drawcharcount = 0)
+		{
+			drawtext := ""
+			break
+		}
+		drawtext := SubStr(tab.path,1, drawcharcount) "..."		
+		RectF:=Gdip_TextToGraphics(G, drawtext, " s" FontSize " r4", Font,"","",1)
+		StringSplit, RectF, RectF, |
+	}
+	tab.DrawText := drawtext
+	; Select the object back into the hdc
+	SelectObject(hdc, obm)
+	
+	; Now the bitmap may be deleted
+	DeleteObject(hbm)
+
+	; Also the device context related to the bitmap may be deleted
+	DeleteDC(hdc)
+
+	; The graphics may now be deleted
+	Gdip_DeleteGraphics(G)
+	
+	
+}
 CreateTabWindow()
 {
 	global
@@ -100,10 +324,11 @@ CreateTabWindow()
 	backup:=SuppressTabEvents
 	SuppressTabEvents:=true
 	TabNum:=3
-	Gui, %TabNum%:+LastFound +ToolWindow -Border -Resize +alwaysontop
+	Gui, %TabNum%:+LastFound +ToolWindow -Border -Resize +alwaysontop -Caption +E0x80000	
+	TabWindow := WinExist()
+	/*
 	Gui, %TabNum%:Add,Tab2, +Theme -Wrap x0 w2000 h20 HwndTabHWND vTabControl gTabEvent +AltSubmit, %A_Space%
 	Gui, %TabNum%:Show , NA x50 y50
-	TabWindow := WinExist()
 	WinGetPos,x,y,w,h, ahk_id %TabHWND%
 	x:=x+500 ;This method is not very reliable, as there might be painting issues outside of the screen!
 	y:=y+h-2
@@ -111,9 +336,10 @@ CreateTabWindow()
 	Gui, %TabNum%: Color, %TabColor%
 	WinSet, TransColor, %TabColor%
 	Gui, %TabNum%:-Caption
+	*/
 	SuppressTabEvents:=false
-	GuiControl, %TabNum%:MoveDraw, TabControl
-	DllCall("InvalidateRect",UInt, TabWindow, UInt, 0, UInt, 1)
+	;GuiControl, %TabNum%:MoveDraw, TabControl
+	;DllCall("InvalidateRect",UInt, TabWindow, UInt, 0, UInt, 1)
 	UpdateTabs()
 	UpdatePosition(TabNum, TabWindow)
 	SuppressTabEvents:=backup
@@ -226,7 +452,7 @@ TabContainer_CloseInactiveTabs(TabContainer)
 	DetectHiddenWindows, On
 	loop % TabContainer.tabs.len()
 	{
-		hwnd := TabContainer.tabs[A_Index]
+		hwnd := TabContainer.tabs[A_Index].hwnd
 		if(hwnd!=TabContainer.active)
 			WinClose, ahk_id %hwnd%
 	}
@@ -247,7 +473,7 @@ TabContainer_CloseAllTabs(TabContainer)
 	DetectHiddenWindows, On
 	loop % TabContainer.tabs.len()
 	{
-		hwnd := TabContainer.tabs[A_Index]
+		hwnd := TabContainer.tabs[A_Index].hwnd
 		WinClose, ahk_id %hwnd%
 	}	
 	NoTabUpdate:=false
@@ -289,33 +515,39 @@ UpdatePosition(TabNum, TabWindow)
 		WinGetPlacement(hwnd,x,y,w,h)
 		;Update stored position so we can restore it if a tab is closed		
 		WinGet, state, minmax, ahk_id %hwnd%
-		TabContainer.state := state
-		TabContainer.x := x
-		TabContainer.y := y
-		TabContainer.w := w
-		TabContainer.h := h
-		;Now get current coordinates for tab window placement
-		WinGetPos, x,y,w,h,ahk_id %hwnd%
-		x+=24
-		w-=135
-		h:=30
-		;if(w=25) ;Strange fix for restore from minimize causing too small sizing until next update
-		; 	return
+		changed := wTabContainer.x != x || TabContainer.y != y || TabContainer.w != w || TabContainer.h != h || TabContainer.state != state
+		changedsize := TabContainer.w != w || TabContainer.h != h
+		if(changed)
+		{
+			TabContainer.state := state
+			TabContainer.x := x
+			TabContainer.y := y
+			TabContainer.w := w
+			TabContainer.h := h
+			;Now get current coordinates for tab window placement
+			WinGetPos, x,y,w,h,ahk_id %hwnd%
+			x+=24
+			y+=4
+			w-=135
+			h:=TabContainerList.height			
+			WinMove, ahk_id %TabWindow%,,%x%,%y%,%w%,%h%
+			
+			;Limit drawing rate to make resizing more smoother
+			if(changedsize)
+				SetTimer, DrawTabWindow, -20
 		
-		;y:=max(y,0)
-		if (fid != gid) 				;some newer instance of the function was running, so just return (function was interupted by itself). Without this, older instance will continue with old host window position and clients will jump to older location. This is not so visible with WinMove as it is very fast, but SetWindowPos shows this in full light. 
-			return
-		;DllCall("SetWindowPos", "uint", TabWindow, "uint", explorer, "uint", x, "uint", y, "uint", w, "uint", h, "uint", 19 | 0x4000 | 0x40)
-		;WinSetPlacement(TabWindow,x,y,w,h,1)
-		WinMove, ahk_id %TabWindow%,,%x%,%y%,%w%,%h%
+			if (fid != gid) 				;some newer instance of the function was running, so just return (function was interupted by itself). Without this, older instance will continue with old host window position and clients will jump to older location. This is not so visible with WinMove as it is very fast, but SetWindowPos shows this in full light. 
+				return		
+		}
 		;outputdebug updateposition() tab control: w%w%
-		GuiControl, %TabNum%:Move, TabControl, w%w%
+		;GuiControl, %TabNum%:Move, TabControl, w%w%
 		WinGet, style, style, ahk_id %TabWindow%
 		if(!(style & 0x10000000))
 		{
 			outputdebug show
 			Gui %TabNum%: Show, NA
 		}
+		
 		;WinShow ahk_id %TabWindow%
 	}
 	else if (class && (WinExist("A")!=TabWindow || WinGet("minmax","ahk_id " TabContainerList.active)=-1))
@@ -325,11 +557,14 @@ UpdatePosition(TabNum, TabWindow)
 		{
 			outputdebug hide %class% id %TabWindow%
 			WinHide ahk_id %TabWindow%
+			;DllCall("AnimateWindow",UInt,TabWindow,UInt,0,UInt,0x00010000)
 		}
 	}
 	;SuppressTabEvents:=false
 }
-
+DrawTabWindow:
+DrawTabWindow()
+return
 /*
  * Recreates Tabs
 */
@@ -338,28 +573,34 @@ UpdateTabs()
 	global
 	local TabContainer, hwnd,tabhwnd,folder,tabs
 	Critical
+	outputdebug updatetabs()
 	if(SuppressTabEvents)
 		return
 	if(NoTabUpdate)
 		return
-	SuppressTabEvents:=true
+	outputdebug not suppressed
 	hwnd:=WinActive("ahk_group ExplorerGroup")
 	TabContainer:=TabContainerList.ContainsHWND(hwnd)
 	if(hwnd && TabContainer)
 	{
-		tabs:="|"
 		Loop % TabContainer.tabs.len()
 		{
-			if(TabContainerList.Active = TabContainer.tabs[A_Index])
-				tabs .= GetCurrentFolder(TabContainer.tabs[A_Index],1) "||"
-			else
-				tabs .= GetCurrentFolder(TabContainer.tabs[A_Index],1) "|"
+			path := GetCurrentFolder(TabContainer.tabs[A_Index].hwnd,1)
+			if(path != TabContainer.tabs[A_Index].path)
+			{
+				TabContainer.tabs[A_Index].path := path
+				CalculateTabText(TabContainer.tabs[A_Index])
+			}			
 		}
-		if(!strEndsWith(tabs,"||"))
-			tabs:=strStripRight(tabs,"|")
-		GuiControl, %TabNum%:,TabControl,%tabs%
+		CalculateHorizontalTabPositions(TabContainer)
 	}
 	SuppressTabEvents:=false
+	DrawTabWindow()
+	return
+	/*
+	SuppressTabEvents:=true
+	
+	*/
 }
 
 /*
@@ -413,9 +654,9 @@ CreateTab(hwnd,path=-1,Activate=-1)
 		outputdebug ---------------------
 		TabContainerBase := Object("tabs", Array(), "active", 0, "x", 0, "y", 0, "w", 0, "h", 0,"state",0
 		, "CloseAllTabs", "TabContainer_CloseAllTabs", "CloseInactiveTabs", "TabContainer_CloseInactiveTabs"
-		, "ContainsHWND", "TabContainer_ContainsHWND", "print", "TabContainer_Print")
+		, "ContainsHWND", "TabContainer_ContainsHWND", "print", "TabContainer_Print","add", "TabContainer_Add")
 		TabContainer:=Object("base",TabContainerBase)
-		TabContainer.tabs.append(hwnd)
+		TabContainer.add(hwnd)
 		TabContainer.active:=hwnd
 		TabContainerList.append(TabContainer)
 		;UpdateTabs()
@@ -461,6 +702,7 @@ CreateTab(hwnd,path=-1,Activate=-1)
 			{
 				outputdebug hide style %visible% title %title%
 				WinHide ahk_id %hwndnew%
+				;DllCall("AnimateWindow",UInt,hwndnew,UInt,0,UInt,0x00010000)
 			}
 			Else
 				break
@@ -472,7 +714,8 @@ CreateTab(hwnd,path=-1,Activate=-1)
 	WinGetPlacement(hwnd,x,y,w,h,state)
 	WinSetPlacement(hwndnew,x,y,w,h,state)
 	if(!Activate)
-		WinHide ahk_id %hwndnew% ;Hide again because WinSetPlacement unhides it, but is required for max/restore state
+		WinHide ahk_id %hwndnew%
+		;DllCall("AnimateWindow",UInt,hwndnew,UInt,0,UInt,0x00010000) ;Hide again because WinSetPlacement unhides it, but is required for max/restore state
 	
 	;WinMove ahk_id %hwndnew%,,%x%,%y%,%w%,%h%
 	;if(state = 1)
@@ -487,18 +730,21 @@ CreateTab(hwnd,path=-1,Activate=-1)
 		TabContainerList.active:=hwndnew
 		TabContainer.active:=hwndnew
 		WinHide ahk_id %hwnd%
+		;DllCall("AnimateWindow",UInt,hwnd,UInt,0,UInt,0x00010000)
 		outputdebug hide old tab
 	}
 	if(NewTabPosition=1)
-		TabContainer.tabs.insert(TabContainer.tabs.indexOf(hwnd)+1,hwndnew) ;Add new tab to list
+		TabContainer.add(hwndnew,TabContainer.ContainsHWND(hwnd)+1) ;Add new tab right to the current tab
 	else if(NewTabPosition=2)
-		TabContainer.tabs.append(hwndnew) ;Add new tab to list
+		TabContainer.add(hwndnew) ;Add new tab to end of list
 		
 	;AddTabButton(TabContainer, hwndnew)
 	TabContainerList.Print()
 	DetectHiddenWindows, Off
 	if(!WinExist("ahk_id " TabWindow))
 		Gui %TabNum%:Show, NA
+	CalculateVerticalTabPosition(TabContainer,TabContainer.ContainsHWND(hwnd))
+	CalculateVerticalTabPosition(TabContainer,TabContainer.ContainsHWND(hwndnew))
 	SuppressTabEvents:=false	
 	UpdateTabs()
 	UpdatePosition(TabNum, TabWindow)
@@ -512,10 +758,13 @@ ActivateTab(pos)
 	Critical
 	outputdebug ActivateTab(%pos%)
 	SetWinDelay,-1
+	time1 := A_TickCount
 	if(TabContainer:=TabContainerList.ContainsHWND(TabContainerList.Active))
 	{		
-		hwnd:=TabContainer.tabs[pos]
-		DisableMinimizeAnim(1)
+		time2 := A_TickCount
+		outputdebug("time2 " time2-time1)
+		hwnd:=TabContainer.tabs[pos].hwnd
+		;DisableMinimizeAnim(1)
 		SuppressTabEvents:=true
 		OldTab:=TabContainer.active
 		x:=TabContainer.x
@@ -523,8 +772,15 @@ ActivateTab(pos)
 		w:=TabContainer.w
 		h:=TabContainer.h
 		state:=TabContainer.state
-		WinHide, ahk_id %OldTab%
-		DetectHiddenWindows, On
+		SuppressTabEvents := true
+		
+		;To hide the old tab without showing the hide anim, it is moved outside of the screen first
+		WinMove,ahk_id %OldTab%,,-10000,-10000
+		WinHide,ahk_id %OldTab%
+		SuppressTabEvents := false
+		DetectHiddenWindows, On		
+		time3 := A_TickCount
+		outputdebug("time3 " time3-time2)
 		if(w!=0)
 		{
 			path:=GetCurrentFolder(hwnd)
@@ -535,20 +791,31 @@ ActivateTab(pos)
 			else
 				WinSetPlacement(hwnd,x,y,w,h,1)
 			;WinMove ahk_id %hwnd%,,%x%,%y%,%w%,%h%
-		}
+		}		
+		time4 := A_TickCount
+		outputdebug("time4 " time4-time3)
 		/*
 		if(state = 1)
 			WinMaximize ahk_id %hwnd%
 		else if(state = 0)
 			WinRestore ahk_id %hwnd%
 			*/
+			
 		WinShow, ahk_id %hwnd%
 		WinActivate, ahk_id %hwnd%
 		TabContainer.active:=hwnd
 		TabContainerList.active:=hwnd
 		SuppressTabEvents:=false	
-		DisableMinimizeAnim(0)
+		;DisableMinimizeAnim(0)
+		CalculateVerticalTabPosition(TabContainer,TabContainer.ContainsHWND(hwnd))
+		CalculateVerticalTabPosition(TabContainer,TabContainer.ContainsHWND(OldTab))
+		
+		time5 := A_TickCount
+		outputdebug("time5 " time5-time4)
 		UpdateTabs()
+		
+		time6 := A_TickCount
+		outputdebug("time6 " time6-time5)
 	}
 	Else
 	{
@@ -573,7 +840,12 @@ TabContainerList(p1="N", p2="N", p3="N", p4="N", p5="N", p6="N"){
 TabContainer_ContainsHWND(TabContainer,hwnd)
 {
 	;DecToHex(hwnd)
-	return TabContainer.tabs.IndexOf(hwnd)
+	Loop % TabContainer.tabs.len()
+	{
+		if(TabContainer.tabs[A_Index].hwnd = hwnd)
+			return A_Index
+	}
+	return 0
 }
 TabContainer_Print(TabContainer)
 {
@@ -591,8 +863,8 @@ TabContainer_Print(TabContainer)
 	outputdebug h: %h%
 	Loop % TabContainer.tabs.len()
 	{
-		path:=GetCurrentFolder(TabContainer.tabs[A_Index])
-		hwnd:=TabContainer.tabs[A_Index]
+		path:=GetCurrentFolder(TabContainer.tabs[A_Index].hwnd)
+		hwnd:=TabContainer.tabs[A_Index].hwnd
 		outputdebug %A_Tab%%A_Index% %hwnd%: %path%
 	}
 }

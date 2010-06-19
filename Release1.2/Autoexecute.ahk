@@ -1,12 +1,12 @@
+if(FileExist(A_ScriptDir "\Settings.ini"))
+	IniPath := A_ScriptDir "\Settings.ini"
+Else
+	IniPath := A_AppData "\7plus\Settings.ini"
 ;Start debugger
 IniRead, DebugEnabled, %IniPath%, General, DebugEnabled , 0
 if(DebugEnabled)
 	DebuggingStart()
 
-if(FileExist(A_ScriptDir "\Settings.ini"))
-	IniPath := A_ScriptDir "\Settings.ini"
-Else
-	IniPath := A_AppData "\7plus\Settings.ini"
 
 ;Update checker
 IniRead, AutoUpdate, %IniPath%, Misc, AutoUpdate, 1
@@ -195,7 +195,14 @@ IniRead, TabWindowClose, %IniPath%, Tabs, TabWindowClose, 1
 IniRead, OnTabClose, %IniPath%, Tabs, OnTabClose, 1
 IniRead, MiddleOpenFolder, %IniPath%, Tabs, MiddleOpenFolder, 1
 TabContainerList := TabContainerList()
-
+TabContainerList.Font := "Segoe UI"
+TabContainerList.FontSize := 12
+TabContainerList.hPadding := 4
+TabContainerList.vPadding := 2
+TabContainerList.height := 20
+TabContainerList.TabWidth := 100
+TabContainerList.InActiveHeightDifference := 2
+TabContainerList.MinWidth := 40
 if(Vista7)
 	AcquireExplorerConfirmationDialogStrings()
 	
@@ -232,7 +239,7 @@ if(!HidetrayIcon)
 if (Firstrun=1)
 	SetTimer, wizardry, -500
 Return
-#g::CreateTabWindow()
+
 ExitSub:
 Gdip_Shutdown(pToken)
 WriteIni()

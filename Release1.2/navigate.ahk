@@ -266,7 +266,10 @@ GetSelectedFiles(FullName=1)
 	else if(WinActive("ahk_group DesktopGroup"))
 	{	
 		ControlGet, result, List, Selected Col1, SysListView321, A
-		return result
+		if(result)
+			return  A_Desktop "\" result
+		else
+			return ""
 	}
 }
 

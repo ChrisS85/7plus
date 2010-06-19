@@ -519,6 +519,8 @@ WinSetPlacement(hwnd, x="",y="",w="",h="",state="")
 		NumPut(4, wp, 8) ;SW_SHOWNOACTIVATE
 	else if(state = 3)
 		NumPut(3, wp, 8) ;SW_SHOWMAXIMIZED and/or SW_MAXIMIZE
+	else
+		NumPut(state, wp, 8)
 	NumPut(x, wp, 28, "Int")
     NumPut(y, wp, 32, "Int")
     NumPut(x+w, wp, 36, "Int")

@@ -32,7 +32,6 @@ AddHotkey(key,command,filter="")
 	ct := CustomHotkeys.len()
 	outputdebug new length: %ct%
 }
-#p::PrintHotkeys()
 
 PrintHotkeys()
 {

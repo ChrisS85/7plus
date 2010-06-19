@@ -282,9 +282,9 @@ Settings_CreateDesktopTaskBar() {
 	
 	;Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window2, ?
 	y:=yIt+TextBoxCheckBoxOffset
-	Gui, 1:Add, CheckBox, x%x1% y%y% gDoubleClickDesktop, Double click on desktop: Run	
+	Gui, 1:Add, CheckBox, x%x1% y%y% gDoubleClickDesktop vDoubleClickDesktop, Double click on desktop: Run	
 	x:=xBase+258
-	Gui, 1:Add, Edit, x%x% y%yIt% w%wTBLarge% vDoubleClickDesktop R1
+	Gui, 1:Add, Edit, x%x% y%yIt% w%wTBLarge% vDoubleClickDesktopPath R1
 	y:=yIt+TextBoxButtonOffset
 	x+=wTBLarge+10
 	Gui, 1:Add, Button, x%x% y%y% w%wButton% gDoubleClickDesktopBrowse vDoubleClickDesktopBrowse, ...
@@ -633,8 +633,11 @@ Settings_SetupDesktopTaskBar() {
 	GuiControl, 1:,HKActivateBehavior,%HKActivateBehavior%
 	GuiControl, 1:,HKToggleWallpaper,%HKToggleWallpaper%
 	temp:=(DoubleClickDesktop !=0 && DoubleClickDesktop != "")
-	GuiControl, 1:, Double click on desktop: Run, %temp%
-	GuiControl, 1:, DoubleClickDesktop, %DoubleClickDesktop%
+	GuiControl, 1:, DoubleClickDesktop, %temp%
+	if(temp)
+		GuiControl, 1:, DoubleClickDesktopPath, %DoubleClickDesktop%
+	else
+		GuiControl, 1:, DoubleClickDesktopPath,
 	GoSub DoubleClickDesktop
 }
 Settings_SetupCustomHotkeys() {
@@ -976,8 +979,8 @@ GuiControl, 1:enable%enabled%, SlideWinHide
 return
 
 DoubleClickDesktop:
-GuiControlGet, enabled ,1: ,Double click on desktop: Run
-GuiControl, 1:enable%enabled%, DoubleClickDesktop
+GuiControlGet, enabled ,1: ,DoubleClickDesktop
+GuiControl, 1:enable%enabled%, DoubleClickDesktopPath
 GuiControl, 1:enable%enabled%, DoubleClickDesktopBrowse
 return
 
@@ -1438,7 +1441,8 @@ else
 GuiControlGet, enabled, 1:, DoubleClickDesktop
 if(!enabled)
 	DoubleClickDesktop:=0
-
+else
+	GuiControlGet, DoubleClickDesktop, 1:, DoubleClickDesktopPath
 ;Store custom hotkeys
 CustomHotkeys_SaveCurrentView()
 RemoveAllHotkeys()
