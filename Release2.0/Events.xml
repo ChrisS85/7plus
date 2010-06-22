@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Events>
+  <Event>
+    <ID>1</ID>
+	<Enabled>1</Enabled>
+    <Trigger>
+      <Type>WindowActivated</Type>
+      <WindowMatchType>Program</WindowMatchType>
+	  <Filter>explorer.exe</Filter>
+    </Trigger>
+    <Conditions>
+      <Condition>
+        <Type>WindowActive</Type>
+        <WindowMatchType>class</WindowMatchType>
+        <Filter>CabinetWClass1</Filter>
+      </Condition>
+    </Conditions>
+    <Actions>
+      <Action>
+        <Type>Run</Type>
+        <Command>C:\Windows\System32\cmd.exe</Command>
+		<WaitForFinish>0</WaitForFinish>
+      </Action>
+      <Action>
+        <Type>Message</Type>
+        <Text>CMD started!</Text>
+		<Title>narf</Title>
+		<Timeout>3</Timeout>
+      </Action>
+	</Actions>
+  </Event>
+</Events>

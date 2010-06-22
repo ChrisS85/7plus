@@ -42,6 +42,7 @@ BugfixVersion := 0
 #include %A_ScriptDir%\lib\Crypt.ahk
 #include %A_ScriptDir%\lib\Dock.ahk
 #include %A_ScriptDir%\lib\xpath.ahk
+#include %A_ScriptDir%\Trigger.ahk
 #include %A_ScriptDir%\messagehooks.ahk
 #include %A_ScriptDir%\navigate.ahk
 #include %A_ScriptDir%\FolderButtonManager.ahk
@@ -64,3 +65,12 @@ BugfixVersion := 0
 #include %A_ScriptDir%\ExplorerTabs.ahk
 #include %A_ScriptDir%\CustomHotkeys.ahk
 #include %A_ScriptDir%\HotkeyGUI.ahk
+
+#include %A_ScriptDir%\Triggers\WindowActivated.ahk
+
+#include %A_ScriptDir%\Conditions\WindowActive.ahk
+
+#include %A_ScriptDir%\Actions\Run.ahk
+#include %A_ScriptDir%\Actions\Message.ahk
+
+#include %A_ScriptDir%\Generic\WindowFilter.ahk

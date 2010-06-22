@@ -39,7 +39,7 @@ ShellMessage( wParam,lParam, msg)
 {
 	Critical
 	ListLines, Off
-	global Vista7, ExplorerPath,hwnd1,HKShowSpaceAndSize,BlinkingWindows,wtmwParam,TabContainerList, SuppressTabEvents, UseTabs,PreviousWindow
+	global Vista7, ExplorerPath,hwnd1,HKShowSpaceAndSize,BlinkingWindows,wtmwParam,TabContainerList, SuppressTabEvents, UseTabs,PreviousWindow,TriggerBase
 	;Traymin
 	If	msg=1028
 	{
@@ -102,6 +102,9 @@ ShellMessage( wParam,lParam, msg)
 	;Window Activation
 	if(wParam=4||wParam=32772) ;HSHELL_WINDOWACTIVATED||HSHELL_RUDEAPPACTIVATED
 	{
+		Trigger := Object("base", TriggerBase)
+		Trigger.Type := "WindowActivated"
+		OnTrigger(Trigger)
 		;Blinking windows detection, remove activated windows
 		if(x:=BlinkingWindows.indexOf(lParam))
 			BlinkingWindows.Delete(x)

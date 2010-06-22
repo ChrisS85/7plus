@@ -149,6 +149,10 @@ Run(Target, WorkingDir = "", Mode = "") {
 	Run, %Target% , %WorkingDir%, %Mode%, v
 	Return, v	
 }
+RunWait(Target, WorkingDir = "", Mode = "") {
+	RunWait, %Target%, %WorkingDir%, %Mode%, v
+	Return v
+}
 SoundGet(ComponentType = "", ControlType = "", DeviceNumber = "") {
 	SoundGet, v, %ComponentType%, %ControlType%, %DeviceNumber%
 	Return, v
@@ -231,4 +235,15 @@ WinGetText(WinTitle = "", WinText = "", ExcludeTitle = "", ExcludeText = "") {
 WinGetTitle(WinTitle = "", WinText = "", ExcludeTitle = "", ExcludeText = "") {
 	WinGetTitle, v, %WinTitle%, %WinText%, %ExcludeTitle%, %ExcludeText%
 	Return, v
+}
+;System modal messagebox (Options can't be considered due to msgbox parsing
+MsgBox2(Title, Text, Timeout="")
+{	
+	if(title = "")
+		title := "7plus"
+	Msgbox, 0x1000, %Title%, %Text%, %Timeout%
+}
+MsgBox(Text)
+{
+	MsgBox, %Text%
 }

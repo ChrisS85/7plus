@@ -462,7 +462,11 @@ FindWindow(title,class="",style="",exstyle="",processname="",allowempty=false)
 }
 GetActiveProcessName()
 {
-	WinGet, ProcessName, processname, A
+	return GetProcessName(WinExist("A"))
+}
+GetProcessName(hwnd)
+{
+	WinGet, ProcessName, processname, ahk_id %hwnd%
 	return ProcessName
 }
 GetVisibleWindowAtPoint(x,y,IgnoredWindow)

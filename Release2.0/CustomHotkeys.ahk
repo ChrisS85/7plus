@@ -1,8 +1,8 @@
 ReadHotkeys()
 {
-	global CustomHotkeys,IniPath
+	global CustomHotkeys,ConfigPath
 	CustomHotkeys := Array()
-	IniRead, hotkeys, %IniPath%, CustomHotkeys, CustomHotkeys, %A_Space%
+	IniRead, hotkeys, %ConfigPath%, CustomHotkeys, CustomHotkeys, %A_Space%
 	Loop, Parse, hotkeys ,|, %A_Space%
 	{
 		if(!key)
@@ -91,7 +91,7 @@ RemoveAllHotkeys()
 }
 SaveHotkeys()
 {
-	global CustomHotkeys,IniPath
+	global CustomHotkeys,ConfigPath
 	Loop % CustomHotkeys.len()
 	{
 		if(A_Index=1)
@@ -99,7 +99,7 @@ SaveHotkeys()
 		else
 			HotkeyString .= "|" CustomHotkeys[A_Index].key "|" CustomHotkeys[A_Index].command "|" CustomHotkeys[A_Index].filter
 	}
-	IniWrite, %HotkeyString%, %IniPath%, CustomHotkeys, CustomHotkeys
+	IniWrite, %HotkeyString%, %ConfigPath%, CustomHotkeys, CustomHotkeys
 }
 CollisionCheck(key1,filter1,exclude)
 {
