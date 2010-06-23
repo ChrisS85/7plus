@@ -16,3 +16,8 @@ Trigger_WindowActivated_Matches(Trigger, Filter)
 {
 	return WindowFilter_Matches(Trigger, "A", Filter)
 }
+
+Trigger_WindowActivated_DisplayString(Trigger)
+{
+	return "Window Activated: " WindowFilter_DisplayString(Trigger)
+}

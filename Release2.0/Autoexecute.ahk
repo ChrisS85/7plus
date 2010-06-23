@@ -195,7 +195,10 @@ IniRead, TabWindowClose, %ConfigPath%, Tabs, TabWindowClose, 1
 IniRead, OnTabClose, %ConfigPath%, Tabs, OnTabClose, 1
 IniRead, MiddleOpenFolder, %ConfigPath%, Tabs, MiddleOpenFolder, 1
 TabContainerList := TabContainerList()
-TabContainerList.Font := "Segoe UI"
+if(Vista7)
+	TabContainerList.Font := "Segoe UI"
+Else
+	TabContainerList.Font := "Tahoma"
 TabContainerList.FontSize := 12
 TabContainerList.hPadding := 4
 TabContainerList.vPadding := 2

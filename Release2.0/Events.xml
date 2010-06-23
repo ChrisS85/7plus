@@ -3,6 +3,7 @@
   <Event>
     <ID>1</ID>
 	<Enabled>1</Enabled>
+	<Name>TestEvent</Name>
     <Trigger>
       <Type>WindowActivated</Type>
       <WindowMatchType>Program</WindowMatchType>
@@ -12,7 +13,7 @@
       <Condition>
         <Type>WindowActive</Type>
         <WindowMatchType>class</WindowMatchType>
-        <Filter>CabinetWClass1</Filter>
+        <Filter>CabinetWClass</Filter>
       </Condition>
     </Conditions>
     <Actions>

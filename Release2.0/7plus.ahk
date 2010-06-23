@@ -66,6 +66,7 @@ BugfixVersion := 0
 #include %A_ScriptDir%\CustomHotkeys.ahk
 #include %A_ScriptDir%\HotkeyGUI.ahk
 
+#include %A_ScriptDir%\Triggers\None.ahk
 #include %A_ScriptDir%\Triggers\WindowActivated.ahk
 
 #include %A_ScriptDir%\Conditions\WindowActive.ahk

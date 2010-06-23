@@ -1,52 +1,82 @@
 EventSystem_Startup()
 {
-	global EventEvents
-	EventEvents := Array()
+	global Events
+	Events := Array()
+	Events.HighestID := -1	
+	outputdebug add create event function
+	Events.CreateEvent := "EventSystem_CreateEvent"
+	
 	EventSystem_CreateBaseObjects()
 	
 	ReadEventsFile()
-	Loop % EventEvents.len()
+	Loop % Events.len()
 	{
-		Event := EventEvents[A_Index]	
+		Event := Events[A_Index]	
 		if(Event.Enabled)
 			Event.Enable()
 	}
 }
+
+EventSystem_CreateEvent(Events)
+{
+	global EventBase
+	Events.HighestID := Events.HighestID + 1
+	Event := Object("base",EventBase)
+	Event.ID := Events.HighestID
+	Events.append(Event)
+	return Event
+}
+
 EventSystem_CreateBaseObjects()
 {
 	global
-	EventSystem_Triggers := "WindowActivated"
+	local tmpobject
+	EventSystem_Triggers := "None,WindowActivated"
 	EventSystem_Conditions := "WindowActive"
 	EventSystem_Actions := "Run, Message"
 	
-	EventBase := Object("ID",-1,"Enabled", 1, "Enable", "Event_Enable", "Trigger","","Conditions",Array(),"Actions",Array())
-	
 	Loop, Parse, EventSystem_Triggers, `,,%A_Space%
 	{
-		Trigger_%A_LoopField%_Base := Object( "ReadXML","Trigger_" A_LoopField "_ReadXML", "WriteXML"
-						, "Trigger_" A_LoopField "_WriteXML"
-						, "Enable", "Trigger_" A_LoopField "_Enable"
-						, "Matches", "Trigger_" A_LoopField "_Matches")
+		Trigger_%A_LoopField%_Base := RichObject()
+		tmpobject.Type := A_LoopField
+		tmpobject := Trigger_%A_LoopField%_Base
+		tmpobject.ReadXML := "Trigger_" A_LoopField "_ReadXML"
+		tmpobject.WriteXML := "Trigger_" A_LoopField "_WriteXML"
+		tmpobject.Enable := "Trigger_" A_LoopField "_Enable"
+		tmpobject.Matches := "Trigger_" A_LoopField "_Matches"
+		tmpobject.DisplayString := "Trigger_" A_LoopField "_DisplayString"
 	}
 	Loop, Parse, EventSystem_Conditions, `,,%A_Space%
 	{
-		Condition_%A_LoopField%_Base := Object( "ReadXML","Condition_" A_LoopField "_ReadXML"
-						, "WriteXML", "Condition_" A_LoopField "_WriteXML"
-						, "Evaluate", "Condition_" A_LoopField "_Evaluate")
+		Condition_%A_LoopField%_Base := RichObject()
+		tmpobject := Condition_%A_LoopField%_Base
+		tmpobject.ReadXML := "Condition_" A_LoopField "_ReadXML"
+		tmpobject.WriteXML := "Condition_" A_LoopField "_WriteXML"
+		tmpobject.Evaluate := "Condition_" A_LoopField "_Evaluate"
 	}
 	Loop, Parse, EventSystem_Actions, `,,%A_Space%
 	{
-		Action_%A_LoopField%_Base := Object( "ReadXML","Action_" A_LoopField "_ReadXML"
-						, "WriteXML", "Action_" A_LoopField "_WriteXML"
-						, "Execute", "Action_" A_LoopField "_Execute")
+		Action_%A_LoopField%_Base := RichObject()
+		tmpobject := Action_%A_LoopField%_Base
+		tmpobject.ReadXML := "Action_" A_LoopField "_ReadXML"
+		tmpobject.WriteXML := "Action_" A_LoopField "_WriteXML"
+		tmpobject.Execute := "Action_" A_LoopField "_Execute"
 	}
+	EventBase := RichObject()
+	EventBase.ID := -1
+	EventBase.Name := "New event"
+	EventBase.Enabled := 1
+	EventBase.Enable := "Event_Enable"
+	EventBase.Trigger := Object("base", Trigger_None_Base)
+	EventBase.Conditions := Array()
+	EventBase.Actions := Array()
 }
 EventSystem_End()
 {
 	WriteEventsFile()
 }
 
-CreateEventObject(Category,Type)
+EventSystem_CreateSubEvent(Category,Type)
 {
 	global
 	local tmp
@@ -60,7 +90,7 @@ Event_Enable(Event)
 }
 ReadEventsFile()
 {
-	global ConfigPath, EventEvents, EventBase
+	global ConfigPath, Events, EventBase
 	;Event file is in same dir as settings.ini
 	SplitPath, ConfigPath,,path
 	path .= "\Events.xml"	
@@ -81,13 +111,18 @@ ReadEventsFile()
 		
 		;Event ID
 		Event.ID := xpath(EventFileHandle,"/ID/Text()")
+		if(Event.ID > Events.HighestID)
+			Events.HighestID := Event.ID
+
+		;Event Name
+		Event.Name := xpath(EventFileHandle,"/Name/Text()")
 		
 		;Event state
 		Event.Enabled := xpath(EventFileHandle, "/Enabled/Text()")
 		
 		;Read trigger values		
 		Trigger_type := xpath(TriggerHandle, "/Type/Text()")
-		Event.Trigger := CreateEventObject("Trigger", Trigger_Type)
+		Event.Trigger := EventSystem_CreateSubEvent("Trigger", Trigger_Type)
 		Event.Trigger.ReadXML(TriggerHandle)
 		
 		;Read conditions
@@ -106,7 +141,7 @@ ReadEventsFile()
 			Condition_type := xpath(ConditionFileHandle, "/Type/Text()")
 			
 			;Create new cndition
-			Condition := CreateEventObject("Condition", Condition_type)
+			Condition := EventSystem_CreateSubEvent("Condition", Condition_type)
 			
 			;Read condition values
 			Condition.ReadXML(ConditionFileHandle)
@@ -129,21 +164,20 @@ ReadEventsFile()
 			Action_type := xpath(ActionFileHandle, "/Type/Text()")
 			
 			;Create new action
-			Action := CreateEventObject("Action", Action_type)
+			Action := EventSystem_CreateSubEvent("Action", Action_type)
 			
 			;Read action values
 			Action.ReadXML(ActionFileHandle)
 			
 			Event.Actions.append(Action)
 		}
-		
-		EventEvents.append(Event)
+		Events.append(Event)
 	}
 }
 
 WriteEventsFile()
 {
-	global ConfigPath, EventEvents
+	global ConfigPath, Events
 	;Events file is in same dir as settings.ini
 	SplitPath, ConfigPath,,path
 	path .= "\EventsOut.xml"	;TODO: Save to different file during development
@@ -152,13 +186,16 @@ WriteEventsFile()
 	xpath(EventsFileHandle, "/Events[+1]") 
 	
 	;Write Events entries
-	Loop % EventEvents.len()
+	Loop % Events.len()
 	{
 		i := A_Index
-		Event := EventEvents[i]
+		Event := Events[i]
 		
 		;Write ID
 		xpath(EventsFileHandle, "/Events/Event[+1]/ID[+1]/Text()", Event.ID)
+		
+		;Write name
+		xpath(EventsFileHandle, "/Events/Event[+1]/Name[+1]/Text()", Event.Name)
 		
 		;Write state
 		xpath(EventsFileHandle, "/Events/Event[" i "]/Enabled[+1]/Text()", Event.Enabled)
@@ -195,11 +232,11 @@ WriteEventsFile()
 ;This function is called when a trigger event is received
 OnTrigger(Trigger)
 {
-	global EventEvents
+	global Events
 	;Find matching triggers
-	Loop % EventEvents.len()
+	Loop % Events.len()
 	{
-		Event := EventEvents[A_Index]
+		Event := Events[A_Index]
 		if(Event.Trigger.Matches(Trigger))
 		{
 			;Check conditions

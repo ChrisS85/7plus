@@ -105,3 +105,8 @@ WindowFilter_Matches(WindowFilter, TargetWindow, TriggerFilter = "")
 	}
 	return false
 }
+
+WindowFilter_DisplayString(WindowFilter)
+{
+	return WindowFilter.WindowMatchType " " WindowFilter.Filter
+}

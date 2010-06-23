@@ -179,7 +179,10 @@ DrawTabWindow()
 				Gdip_FillRectangle(G, pBrushActive, tab.x, tab.y, tab.width, tab.height)
 			else
 			{
-				pBrushGradient := Gdip_CreateLineBrushFromRect(0,0, tab.width, tab.height, 0xFFF8F8F8, 0x22222222)
+				if(Vista7)
+					pBrushGradient := Gdip_CreateLineBrushFromRect(0,0, tab.width, tab.height, 0xFFF8F8F8, 0x22222222)
+				else
+					pBrushGradient := Gdip_CreateLineBrushFromRect(0,0, tab.width, tab.height, 0xFFF8F8F8, 0xFFAAAAAA)
 				Gdip_FillRectangle(G, pBrushGradient, tab.x, tab.y, tab.width, tab.height)
 				Gdip_DeleteBrush(pBrushGradient)
 			}

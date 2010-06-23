@@ -6,11 +6,34 @@ return
 ;---------------------------------------------------------------------------------------------------------------
 ; The following functions create the GUI and are only called once at startup
 ;---------------------------------------------------------------------------------------------------------------
+Settings_CreateEvents() {
+	global
+	local yIt,x1,x2,x,y
+	xHelp:=xBase
+	x1:=xHelp+10
+	x2 := x1 + 410
+	yIt:=yBase
+	Gui, 1:Add, Tab2, x156 y14 w410 h350 vEventsTab, 
+	AddTab(0, "","SysTabControl321")
+	Gui, 1:Add, Text, x%x1% y%yIt% R3, You can add events here that are triggered under certain conditions. When triggered,`nthe event can launch a series of actions. This is a very powerful tool to add `nall kinds of features, and many features from 7plus are now implemented with this system.
+	yIt+=50
+	Gui, 1:Add, ListView, x%x1% y%yIt% w400 vGUI_EventsList gGUI_EventsList_SelectionChange Grid -LV0x10 -Multi R17 AltSubmit, ID|Trigger|Name
+	OnMessage(0x100, "WM_KEYDOWN")
+	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Add gGUI_EventsList_Add, Add Event
+	yIt += textboxstep
+	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Remove gGUI_EventsList_Remove, Delete Event
+	yIt += textboxstep
+	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsLisit_Edit gGUI_EventsList_Edit, Edit Event
+	yIt += 208 - textboxstep -4
+	Gui, 1:Add, Button, x%x2% y%yIt% w80 gGUI_EventsLisit_Help, Help
+	yIt += textboxstep + 4
+	y := yIt + TextBoxTextOffset
+}
 Settings_CreateHotkeys() {
 	global
 	local yIt,x1,x2,x
 	Gui, 1:Add, Tab2, x156 y14 w410 h350 vExplorerHotkeysTab, 
-	AddTab(1, "","SysTabControl321") 
+	AddTab(1, "","SysTabControl322") 
 	yIt:=yBase
 	
 	x1:=xHelp+10
@@ -81,7 +104,7 @@ Settings_CreateBehavior() {
 	x2:=xBase+280
 	
 	Gui, 1:Add, Tab2, x156 y14 w410 h350 vExplorerBehaviorTab, 
-	AddTab(0, "","SysTabControl322")
+	AddTab(0, "","SysTabControl323")
 
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghSelectFirstFile vURL_SelectFirstFile, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKSelectFirstFile, Explorer automatically selects the first file when you enter a directory
@@ -133,7 +156,7 @@ Settings_CreateFastFolders() {
 	xHelp:=xBase
 	x1:=xHelp+10
 	Gui, 1:Add, Tab2, x156 y14 w410 h350 vFastFoldersTab
-	AddTab(0, "","SysTabControl323")
+	AddTab(0, "","SysTabControl324")
 	
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders1 vURL_FastFolders1, ?		
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% gFastFolders,Use Fast Folders
@@ -171,7 +194,7 @@ Settings_CreateTabs() {
 	xHelp:=xBase
 	x1:=xHelp+10
 	Gui, 1:Add, Tab2, x156 y14 w410 h350 vExplorerTabsTab
-	AddTab(0, "","SysTabControl324")
+	AddTab(0, "","SysTabControl325")
 	
 	Gui, 1:Add, Text, x%x1% y%yIt% R3, 7plus makes it possible to use tabs in explorer. New tabs are opened with the middle mouse button`nand with CTRL+T, Tabs are cycled by clicking the Tabs or pressing CTRL+(SHIFT)+TAB,`nand closed by middle clicking a tab and with CTRL+W
 	yIt+=CheckboxStep*2.25
@@ -212,7 +235,7 @@ Settings_CreateWindowHandling() {
 	xHelp:=xBase
 	x1:=xHelp+10
 	Gui, 1:Add, Tab2, x156 y14 w410 h350 vWindowHandlingTab, 
-	AddTab(0, "","SysTabControl325")
+	AddTab(0, "","SysTabControl326")
 	yIt:=yBase
 
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar3, ?
@@ -269,7 +292,7 @@ Settings_CreateDesktopTaskBar() {
 	yIt:=yBase
 	y:=yIt+TextBoxCheckBoxOffset
 	Gui, 1:Add, Tab2, x156 y14 w410 h350 vDesktopTaskbarTab, 
-	AddTab(0, "","SysTabControl326")
+	AddTab(0, "","SysTabControl327")
 	y:=yIt+TextBoxCheckBoxOffset
 	Gui, 1:Add, Text, y%y% x%xhelp% cBlue ghTaskbar vURL_Taskbar, ?
 	Gui, 1:Add, Checkbox, x%x1% y%y% gTaskbarLaunch, Double click on empty taskbar: Run
@@ -314,7 +337,7 @@ Settings_CreateCustomHotkeys() {
 	x2 := x1 + 410
 	yIt:=yBase
 	Gui, 1:Add, Tab2, x156 y14 w410 h350 vCustomHotkeysTab, 
-	AddTab(0, "","SysTabControl327")
+	AddTab(0, "","SysTabControl328")
 	Gui, 1:Add, Text, x%x1% y%yIt% R2, You can add custom hotkeys to launch programs here. You should not use hotkeys that are used `nby this program elsewhere, also you should make sure not to overwrite hotkeys used by other programs.
 	yIt+=35
 	Gui, 1:Add, Radio, x%x1% y%yIt% vCustomHotkeysGlobal gCustomHotkeysGlobal, Global hotkeys
@@ -352,7 +375,7 @@ Settings_CreateFTP() {
 	xHelp:=xBase
 	x1:=xHelp+10
 	Gui, 1:Add, Tab2, x156 y14 w410 h350 vFTPTab, 
-	AddTab(0, "","SysTabControl328")
+	AddTab(0, "","SysTabControl329")
 	Gui, 1:Add, Text, x%x1% y%yIt% R4, You can upload selected files from explorer to an FTP server by`npressing CTRL + U. You can also take screenshots (ALT + Insert = fullscreen`,`nWIN + Insert = active window) and directly upload them. WIN + Delete will upload`nimage or text data from clipboard. URL(s) will be copied to the clipboard.
 	yIt:=100
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFTP vURL_FTP, ?
@@ -396,7 +419,7 @@ Settings_CreateMisc() {
 	global
 	local yIt,x1
 	Gui, 1:Add, Tab2, x156 y14 w410 h350 vMiscTab, 
-	AddTab(0, "","SysTabControl329")
+	AddTab(0, "","SysTabControl3210")
 	x1:=xBase+10
 	xhelp:=xBase
 	yIt:=yBase
@@ -444,7 +467,7 @@ Settings_CreateAbout() {
 	global
 	local yIt,x1,x2,x,y,version
 	Gui, 1:Add, Tab2, x156 y14 w410 h350 vAboutTab, 
-	AddTab(0, "","SysTabControl3210")
+	AddTab(0, "","SysTabControl3211")
 	yIt:=YBase
 	x1:=XBase+10
 	x2:=xBase+350
@@ -500,6 +523,28 @@ Settings_CreateAbout() {
 ;---------------------------------------------------------------------------------------------------------------
 ; The following functions set the GUI values and are called each time the GUI is shown
 ;---------------------------------------------------------------------------------------------------------------
+Settings_SetupEvents() {
+	global
+	Settings_Events := Events.DeepCopy()
+	outputdebug("Old Count: " Events.len() "New count: " Settings_Events.len())
+	;Settings_Events.base.base := ArrBase ; This crashes
+	
+enum := Settings_Events._newenum()
+outputdebug new object
+while enum[key,value]
+{
+	outputdebug %key% %value%
+}
+	Gui, ListView, GUI_EventsList
+	LV_Delete()
+	Loop % Settings_Events.len()
+	{
+		LV_Add(A_Index = 1 ? "Select" : "",Settings_Events[A_Index].ID,Settings_Events[A_Index].Trigger.DisplayString(), Settings_Events[A_Index].Name)
+	}
+	GuiControl, 1:enable, GUI_EventsList_Add
+	GuiControl, 1:enable, GUI_EventsList_Remove
+	GuiControl, 1:enable, GUI_EventsList_Edit
+}
 Settings_SetupHotkeys() {
 	global
 	local temp
@@ -679,7 +724,6 @@ Settings_SetupCustomHotkeys() {
 	CustomHotkeysGlobal:=1
 	CustomHotkeys_ApplyFilter("")
 }
-
 Settings_SetupFTP() {
 	global
 	;Setup FTP
@@ -790,7 +834,7 @@ ShowSettings()
 			wTBHuge:=300
 			wButton:=30
 			hCheckbox:=16 
-			TabList = Explorer Hotkeys|Explorer Behavior|Fast Folders|Explorer Tabs|Window Handling|Desktop / Taskbar|Custom Hotkeys|FTP|Misc|About 
+			TabList = Events|Explorer Hotkeys|Explorer Behavior|Fast Folders|Explorer Tabs|Window Handling|Desktop / Taskbar|Custom Hotkeys|FTP|Misc|About 
 			Gui, 1:Add, ListBox, x16 y20 w120 h350 gListbox vMyListBox, %TabList%
 			Gui, 1:Add, GroupBox, x156 y14 w530 h350 vGGroupBox , Explorer Hotkeys  
 			/*
@@ -811,6 +855,7 @@ ShowSettings()
 			Gui, 1:Add, Button, x526 y370 w70 h23 vBtnCancel gOK, OK
 			Gui, 1:Add, Text, x16 y375 vTutLabel, Click on ? to see video tutorial help!
 			Gui, 1:Add, Text, y375 x370 vWait, Applying settings, please wait!
+			Settings_CreateEvents()
 			Settings_CreateHotkeys()
 			Settings_CreateBehavior()
 			Settings_CreateFastFolders()
@@ -824,7 +869,7 @@ ShowSettings()
 			SettingsInitialized := true
 		}
 		GuiControl, 1:Hide, Wait
-		GuiControl, 1:Choose,MyListBox,Explorer Hotkeys
+		GuiControl, 1:Choose,MyListBox,Events
 		GoSub ListBox
 		Gui, 1:Show, x338 y159 h404 w700, 7plus Settings
 		Winwaitactive 7plus Settings		
@@ -832,6 +877,7 @@ ShowSettings()
 		;---------------------------------------------------------------------------------------------------------------
 		; Setup Control Status
 		;---------------------------------------------------------------------------------------------------------------
+		Settings_SetupEvents()
 		Settings_SetupHotkeys()
 		Settings_SetupBehavior()
 		Settings_SetupFastFolders()
@@ -867,6 +913,31 @@ ShowSettings()
 ;---------------------------------------------------------------------------------------------------------------
 ; Control Handlers
 ;---------------------------------------------------------------------------------------------------------------
+GUI_EventsList_SelectionChange:
+Return
+GUI_EventsList_Add:
+GUI_AddEvent()
+Return
+GUI_AddEvent()
+{
+	global Settings_Events, GUI_EventsList
+	Gui, ListView, GUI_EventsList
+	Event := EventSystem_CreateEvent(Settings_Events)
+	LV_Add("", Event.ID, Event.Trigger.DisplayString(), Event.Name)
+}
+GUI_EventsList_Remove:
+GUI_RemoveEvent()
+Return
+GUI_RemoveEvent()
+{
+	i:=LV_GetNext("")
+	
+}
+
+GUI_EventsList_Edit:
+Return
+GUI_EventsLisit_Help:
+Return
 
 txt:
 GuiControlGet, enabled ,1: , Paste text as file
@@ -992,6 +1063,7 @@ if(path!="")
 Return
 
 AddHotkey:
+Gui, ListView, CustomHotkeysList
 LV_Add("Select","","")
 GoSub EditHotkey
 if(key)
@@ -1004,11 +1076,13 @@ if(key="" || path="")
 return
 
 RemoveHotkey:
+Gui, ListView, CustomHotkeysList
 i:=LV_GetNext("")
 LV_Delete(i)
 return
 
 EditHotkey:
+Gui, ListView, CustomHotkeysList
 Critical, Off
 i:=LV_GetNext("")
 key:=HotKeyGui(10,1, "Select Hotkey", 1,"","","",key)
@@ -1027,6 +1101,7 @@ if(path!="")
 return
 
 CustomHotkeysList_SelectionChange:
+Gui, ListView, CustomHotkeysList
 if(A_GuiEvent="I" && InStr(ErrorLevel, "S", true))
 {
 	LV_GetText(CustomHotkeysCommand, A_EventInfo , 2)
@@ -1054,12 +1129,14 @@ WM_KEYDOWN(wParam, lParam)
 {
 	if(A_GUI = 1 && A_GuiControl = "CustomHotkeysList" && wParam = 0x2E) ;Delete key pressed on CustomHotkeysList
 	{
+		Gui, ListView, CustomHotkeysList
 		i:=LV_GetNext("")
 		LV_Delete(i)
 	}
 }
 
 CustomHotkeysCommand_Change:
+Gui, ListView, CustomHotkeysList
 i:=LV_GetNext("")
 if(i!=0)
 {
@@ -1087,6 +1164,7 @@ CustomHotkeysGlobal:=1
 return
 
 CustomHotkeysSpecific:
+Gui, ListView, CustomHotkeysList
 GuiControl, 1:enable, CustomHotkeysFilter
 GuiControl, 1:enable, CustomHotkeysFilterBrowse
 CustomHotkeys_SaveCurrentView()
@@ -1144,7 +1222,7 @@ MsgBox,0x2000, Custom Hotkeys Help, You can define global hotkeys, aswell as hot
 return
 CustomHotkeys_ApplyFilter(filter) {
 	global
-	outputdebug apply filter %filter%
+	Gui, ListView, CustomHotkeysList
 	LV_Delete()
 	Loop % Settings_CustomHotkeys.len()
 	{
@@ -1157,6 +1235,7 @@ CustomHotkeys_ApplyFilter(filter) {
 CustomHotkeys_SaveCurrentView() {
 	global
 	local count, key, i
+	Gui, ListView, CustomHotkeysList
 	;GuiControlGet, filter, 1:, CustomHotkeysFilter
 	if(SelectedHotkeyFilter = "" && !CustomHotkeysGlobal) ;Don't save on unfilled dropdownlist
 		return

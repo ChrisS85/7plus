@@ -1,17 +1,30 @@
 ; Array Lib - temp01 - http://www.autohotkey.com/forum/viewtopic.php?t=49736 
 ; Array is 1-based!!!
 Array(p1="Ņ", p2="Ņ", p3="Ņ", p4="Ņ", p5="Ņ", p6="Ņ"){ 
-   static ArrBase 
-   If !ArrBase 
-      ArrBase := Object("len", "Array_Length", "indexOf", "Array_indexOf", "contains", "Array_Contains","join", "Array_Join" 
-      , "append", "Array_Append", "insert", "Array_Insert", "delete", "Array_Delete" 
-      , "sort", "Array_sort", "reverse", "Array_Reverse", "unique", "Array_Unique" 
-      , "extend", "Array_Extend", "copy", "Array_Copy", "pop", "Array_Pop", "swap", "Array_Swap", "Move", "Array_Move") 
-
-   arr := Object("base", ArrBase) 
-   While (_:=p%A_Index%)!="Ņ" && A_Index<=6 
-      arr[A_Index] := _ 
-   Return arr 
+	global ArrBase 
+	If !ArrBase
+	{
+	  ArrBase := RichObject()
+	  ArrBase.len := "Array_Length"
+	  ArrBase.indexOf := "Array_indexOf"
+	  ArrBase.contains := "Array_Contains"
+	  ArrBase.join := "Array_Join" 
+	  ArrBase.append := "Array_Append"
+	  ArrBase.insert := "Array_Insert"
+	  ArrBase.delete := "Array_Delete" 
+	  ArrBase.sort := "Array_sort"
+	  ArrBase.reverse := "Array_Reverse"
+	  ArrBase.unique := "Array_Unique" 
+	  ArrBase.extend := "Array_Extend"
+	  ;ArrBase.copy := "Array_Copy"
+	  ArrBase.pop := "Array_Pop"
+	  ArrBase.swap := "Array_Swap"
+	  ArrBase.move := "Array_Move"
+	}
+	arr := Object("base", ArrBase) 
+	While (_:=p%A_Index%)!="Ņ" && A_Index<=6 
+	  arr[A_Index] := _ 
+	Return arr
 } 
 
 Array_indexOf(arr, val, opts="", startpos=1){
