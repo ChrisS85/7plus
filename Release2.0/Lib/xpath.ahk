@@ -336,8 +336,8 @@ xpath(ByRef doc, step, set = "") {
 	}
 	
 	;By Fragman: I need to reuse the return as xml!
-	StringReplace, res, res, `,,,All
-	StringReplace, res, res, &#44;,`,,All
+	;StringReplace, res, res, `,,,All
+	;StringReplace, res, res, &#44;,`,,All
 	; remove trailing comma and absolute paths from result before returning:
 	Return, RegExReplace(res, "S)(?<=<)(\/)?(?:(\w+)\/)+(?(1)|:: )", "$1$2")
 }
@@ -362,8 +362,6 @@ xpath_save(ByRef doc, src = "") {
 	xml := RegExReplace(xml, "<([\w:]+)([^>]*)><\/\1>", "<$1$2 />") ; fuse empty nodes
 	;xml := RegExReplace(xml, " (?=(?:\w+:)?\w+=['""])") ; remove prepending whitespace on attributes
 	xml := RegExReplace(xml, "^\s+|\s+$") ; remove start and leading whitespace
-	If InStr(xml, "<?xml") != 1 ; add processor instruction if there isn't any:
-		xml = <?xml version="1.0" encoding="iso-8859-1"?>`n%xml%
 	StringReplace, xml, xml, `r, , All ; normalize linefeeds:
 	StringReplace, xml, xml, `n, `r`n, All
 	sp := "  "
@@ -374,6 +372,7 @@ xpath_save(ByRef doc, src = "") {
 	{
 		If A_LoopField =
 			Continue
+		
 		If (sb := InStr(A_LoopField, "/") == 1)
 			StringTrimRight, s, s, sl
 		sxml = %sxml%`n%s%<%A_LoopField%
@@ -383,9 +382,14 @@ xpath_save(ByRef doc, src = "") {
 			and !InStr(A_LoopField, "/>"))
 			s .= sp
 	}
+	
 	StringTrimLeft, sxml, sxml, 1
 	sxml := RegExReplace(sxml, "(\n(?:" . sp . ")*<((?:\w+:)?\w+\b)[^<]+?)\n(?:"
 		. sp . ")*</\2>", "$1</$2>")
+	
+	If InStr(sxml, "<?xml") != 1 ; add processor instruction if there isn't any:
+		sxml = <?xml version="1.0" encoding="iso-8859-1"?>`n%sxml%
+		
 	If src = ; if save path not specified return the XML document:
 		Return, sxml
 	FileDelete, %src% ; delete existing file

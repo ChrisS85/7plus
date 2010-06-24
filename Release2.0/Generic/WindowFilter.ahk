@@ -110,3 +110,58 @@ WindowFilter_DisplayString(WindowFilter)
 {
 	return WindowFilter.WindowMatchType " " WindowFilter.Filter
 }
+
+
+WindowFilter_GuiShow(WindowFilter, TriggerGUI)
+{
+	outputdebug show gui filter
+	x := TriggerGui.x
+	y := TriggerGui.y
+	y += 4
+	Gui, Add, Text, x%x% y%y% hwndhwndtext1, MatchType:
+	y += 30
+	Gui, Add, Text, x%x% y%y% hwndhwndtext2, Window Filter:
+	x += 70
+	y -= 4
+	w := 200
+	Filter := WindowFilter.Filter
+	Gui, Add, Edit, x%x% y%y% w%w% hwndhwndWindowFilter, %Filter%
+	y -= 30
+	if(WindowFilter.WindowMatchType = "Program")
+		Gui, Add, DropDownList, x%x% y%y% w%w% hwndhwndMatchType, Program||Class|Title|Active|UnderMouse
+	else if(WindowFilter.WindowMatchType = "Class")
+		Gui, Add, DropDownList, x%x% y%y% w%w% hwndhwndMatchType, Program|Class||Title|Active|UnderMouse
+	else if(WindowFilter.WindowMatchType = "Title")
+		Gui, Add, DropDownList, x%x% y%y% w%w% hwndhwndMatchType, Program|Class|Title||Active|UnderMouse
+	else if(WindowFilter.WindowMatchType = "Active")
+		Gui, Add, DropDownList, x%x% y%y% w%w% hwndhwndMatchType, Program||Class|Title|Active||UnderMouse
+	else if(WindowFilter.WindowMatchType = "UnderMouse")
+		Gui, Add, DropDownList, x%x% y%y% w%w% hwndhwndMatchType, Program||Class|Title|Active|UnderMouse||
+	else
+	{
+		MsgBox Wrong Match type specified!
+		Gui, Add, DropDownList, x%x% y%y% w%w% hwndhwndMatchType, Program||Class|Title|Active|UnderMouse
+	}
+	TriggerGUI.Text1 := hwndtext1
+	TriggerGUI.Text2 := hwndtext2
+	TriggerGUI.WindowFilter := hwndWindowFilter
+	TriggerGUI.MatchType := hwndMatchType
+}
+
+WindowFilter_GuiSubmit(WindowFilter, TriggerGUI)
+{
+	outputdebug submit gui filter
+	text1 := TriggerGUI.Text1
+	text2 := TriggerGUI.Text2
+	hwndMatchType := TriggerGUI.MatchType
+	ControlGetText, MatchType, , ahk_id %hwndMatchType%
+	WindowFilter.WindowMatchType := MatchType
+	hwndWindowFilter := TriggerGUI.WindowFilter
+	ControlGetText, Filter, , ahk_id %hwndWindowFilter%
+	WindowFilter.Filter := Filter
+	outputdebug kill %text1%
+	WinKill, ahk_id %text1%
+	WinKill, ahk_id %text2%
+	WinKill, ahk_id %hwndMatchType%
+	WinKill, ahk_id %hwndWindowFilter%
+}

@@ -2,32 +2,52 @@
 <Events>
   <Event>
     <ID>1</ID>
-	<Enabled>1</Enabled>
-	<Name>TestEvent</Name>
+    <Name>Test Event</Name>
+    <Enabled>1</Enabled>
     <Trigger>
       <Type>WindowActivated</Type>
-      <WindowMatchType>Program</WindowMatchType>
-	  <Filter>explorer.exe</Filter>
+      <WindowMatchType>Class</WindowMatchType>
+      <Filter>explorer.exe</Filter>
     </Trigger>
     <Conditions>
       <Condition>
         <Type>WindowActive</Type>
         <WindowMatchType>class</WindowMatchType>
-        <Filter>CabinetWClass</Filter>
+        <Filter>CabinetWClass1</Filter>
       </Condition>
     </Conditions>
     <Actions>
       <Action>
         <Type>Run</Type>
         <Command>C:\Windows\System32\cmd.exe</Command>
-		<WaitForFinish>0</WaitForFinish>
+        <WaitForFinish>0</WaitForFinish>
       </Action>
       <Action>
         <Type>Message</Type>
         <Text>CMD started!</Text>
-		<Title>narf</Title>
-		<Timeout>3</Timeout>
+        <Title>narf</Title>
+        <TimeOut />
       </Action>
-	</Actions>
+    </Actions>
+  </Event>
+  <Event>
+    <ID>3</ID>
+    <Name>New event</Name>
+    <Enabled>1</Enabled>
+    <Trigger>
+      <Type>None</Type>
+    </Trigger>
+    <Conditions />
+    <Actions />
+  </Event>
+  <Event>
+    <ID>4</ID>
+    <Name>New event</Name>
+    <Enabled>1</Enabled>
+    <Trigger>
+      <Type>None</Type>
+    </Trigger>
+    <Conditions />
+    <Actions />
   </Event>
 </Events>

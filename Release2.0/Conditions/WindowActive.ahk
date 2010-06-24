@@ -10,3 +10,7 @@ Condition_WindowActive_Evaluate(Condition)
 {
 	return WindowFilter_Matches(Condition, "A")
 }
+Condition_WindowActive_DisplayString(Condition)
+{
+	return "Window Active: " WindowFilter_DisplayString(Condition)
+}

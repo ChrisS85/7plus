@@ -1,11 +1,8 @@
 EventSystem_Startup()
 {
 	global Events
-	Events := Array()
-	Events.HighestID := -1	
-	outputdebug add create event function
-	Events.CreateEvent := "EventSystem_CreateEvent"
-	
+	EventsBase := object("base",Array(), "HighestID", -1, "CreateEvent", "EventSystem_CreateEvent", "FindID", "Events_FindID")
+	Events := object("base", EventsBase)
 	EventSystem_CreateBaseObjects()
 	
 	ReadEventsFile()
@@ -17,16 +14,24 @@ EventSystem_Startup()
 	}
 }
 
+Events_FindID(Events,ID)
+{
+	Loop % Events.len()
+	{
+		if(Events[A_Index].ID = ID)
+			return A_Index
+	}
+	return 0
+}
 EventSystem_CreateEvent(Events)
 {
 	global EventBase
 	Events.HighestID := Events.HighestID + 1
-	Event := Object("base",EventBase)
+	Event := Object("base",EventBase.DeepCopy())
 	Event.ID := Events.HighestID
 	Events.append(Event)
 	return Event
 }
-
 EventSystem_CreateBaseObjects()
 {
 	global
@@ -34,33 +39,58 @@ EventSystem_CreateBaseObjects()
 	EventSystem_Triggers := "None,WindowActivated"
 	EventSystem_Conditions := "WindowActive"
 	EventSystem_Actions := "Run, Message"
+	Trigger_Categories := object("Window",Array(), "7plus", Array(), "Other", Array())
+	Condition_Categories := object("Window",Array(), "Mouse", Array(), "Other", Array())
+	Action_Categories := object("Window", Array(), "Input", Array(), "7plus",Array(), "Other",Array())
 	
 	Loop, Parse, EventSystem_Triggers, `,,%A_Space%
-	{
-		Trigger_%A_LoopField%_Base := RichObject()
+	{		
+		tmpobject := RichObject()
 		tmpobject.Type := A_LoopField
-		tmpobject := Trigger_%A_LoopField%_Base
 		tmpobject.ReadXML := "Trigger_" A_LoopField "_ReadXML"
 		tmpobject.WriteXML := "Trigger_" A_LoopField "_WriteXML"
 		tmpobject.Enable := "Trigger_" A_LoopField "_Enable"
 		tmpobject.Matches := "Trigger_" A_LoopField "_Matches"
 		tmpobject.DisplayString := "Trigger_" A_LoopField "_DisplayString"
+		tmpobject.GuiShow := "Trigger_" A_LoopField "_GuiShow"
+		tmpobject.GuiSubmit := "Trigger_" A_LoopField "_GuiSubmit"
+		Trigger_%A_LoopField%_Init(tmpobject)
+		Trigger_%A_LoopField%_Base := object("base",tmpobject)
+		;Add type to category
+		Trigger_Categories[tmpobject.Category].append(tmpobject.Type)
+	
+		;Trigger_%A_LoopField%_Base := tmpobject.DeepCopy()
 	}
+	
 	Loop, Parse, EventSystem_Conditions, `,,%A_Space%
-	{
-		Condition_%A_LoopField%_Base := RichObject()
-		tmpobject := Condition_%A_LoopField%_Base
+	{		
+		tmpobject := RichObject()
+		tmpobject.Type := A_LoopField
 		tmpobject.ReadXML := "Condition_" A_LoopField "_ReadXML"
 		tmpobject.WriteXML := "Condition_" A_LoopField "_WriteXML"
 		tmpobject.Evaluate := "Condition_" A_LoopField "_Evaluate"
+		tmpobject.DisplayString := "Condition_" A_LoopField "_DisplayString"
+		tmpobject.GuiShow := "Condition_" A_LoopField "_GuiShow"
+		tmpobject.GuiSubmit := "Condition_" A_LoopField "_GuiSubmit"
+		Condition_%A_LoopField%_Init(tmpobject)
+		Condition_%A_LoopField%_Base := object("base",tmpobject) ;.DeepCopy()
+		;Add type to category
+		Condition_Categories[tmpobject.Category].append(tmpobject.Type)
 	}
 	Loop, Parse, EventSystem_Actions, `,,%A_Space%
 	{
-		Action_%A_LoopField%_Base := RichObject()
-		tmpobject := Action_%A_LoopField%_Base
+		tmpobject := RichObject()
+		tmpobject.Type := A_LoopField
 		tmpobject.ReadXML := "Action_" A_LoopField "_ReadXML"
 		tmpobject.WriteXML := "Action_" A_LoopField "_WriteXML"
 		tmpobject.Execute := "Action_" A_LoopField "_Execute"
+		tmpobject.DisplayString := "Action_" A_LoopField "_DisplayString"
+		tmpobject.GuiShow := "Action_" A_LoopField "_GuiShow"
+		tmpobject.GuiSubmit := "Action_" A_LoopField "_GuiSubmit"
+		Action_%A_LoopField%_Init(tmpobject)
+		Action_%A_LoopField%_Base := object("base", tmpobject) ;.DeepCopy()
+		;Add type to category
+		Action_Categories[tmpobject.Category].append(tmpobject.Type)
 	}
 	EventBase := RichObject()
 	EventBase.ID := -1
@@ -80,8 +110,10 @@ EventSystem_CreateSubEvent(Category,Type)
 {
 	global
 	local tmp
-	tmp = %Category%_%Type%_Base
-	return Object("base", %tmp%, "Type", Type)
+	outputdebug("CreateSubEvent:" Category " " Type)
+	tmp := %Category%_%Type%_Base
+	outputdebug("object: " isobject(tmp) "type")
+	return tmp.DeepCopy() ;Object("base", %tmp%, "Type", Type)
 }
 Event_Enable(Event)
 {
@@ -102,12 +134,13 @@ ReadEventsFile()
 		EventFileHandle:=xpath(EventsFileHandle, "/Events/Event[" i "]/*")
 		if(!EventFileHandle)
 			break
+		outputdebug read event
 		xpath_load(EventFileHandle)
 		TriggerHandle :=  xpath(EventFileHandle, "/Trigger/*")
 		xpath_load(TriggerHandle)
 		
 		;Create new Event
-		Event := Object("base",EventBase)
+		Event := Object("base",EventBase.DeepCopy())
 		
 		;Event ID
 		Event.ID := xpath(EventFileHandle,"/ID/Text()")
@@ -180,11 +213,9 @@ WriteEventsFile()
 	global ConfigPath, Events
 	;Events file is in same dir as settings.ini
 	SplitPath, ConfigPath,,path
-	path .= "\EventsOut.xml"	;TODO: Save to different file during development
-	
+	path .= "\Events.xml"	;TODO: Save to different file during development
 	;Create Events node
 	xpath(EventsFileHandle, "/Events[+1]") 
-	
 	;Write Events entries
 	Loop % Events.len()
 	{
@@ -195,7 +226,7 @@ WriteEventsFile()
 		xpath(EventsFileHandle, "/Events/Event[+1]/ID[+1]/Text()", Event.ID)
 		
 		;Write name
-		xpath(EventsFileHandle, "/Events/Event[+1]/Name[+1]/Text()", Event.Name)
+		xpath(EventsFileHandle, "/Events/Event[" i "]/Name[+1]/Text()", Event.Name)
 		
 		;Write state
 		xpath(EventsFileHandle, "/Events/Event[" i "]/Enabled[+1]/Text()", Event.Enabled)

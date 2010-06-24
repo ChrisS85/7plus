@@ -16,3 +16,7 @@ Action_Run_Execute(Action)
 	else
 		Run(Action.Command)
 }
+Action_Run_DisplayString(Action)
+{
+	return "Run " Action.Command
+}

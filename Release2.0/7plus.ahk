@@ -43,6 +43,7 @@ BugfixVersion := 0
 #include %A_ScriptDir%\lib\Dock.ahk
 #include %A_ScriptDir%\lib\xpath.ahk
 #include %A_ScriptDir%\Trigger.ahk
+#include %A_ScriptDir%\EditEventGUI.ahk
 #include %A_ScriptDir%\messagehooks.ahk
 #include %A_ScriptDir%\navigate.ahk
 #include %A_ScriptDir%\FolderButtonManager.ahk

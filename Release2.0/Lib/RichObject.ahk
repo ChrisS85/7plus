@@ -1,22 +1,20 @@
+;; objDeepCopy(ast, reserved=0) 
 objDeepCopy(ast, reserved=0) 
 { 
   if !reserved 
    reserved := object("copied" . &ast, 1)  ; to keep track of unique objects within top object 
   if !isobject(ast) 
-	copy := richObject() 
-
-   outputdebug("len" ast.len())
+   return ast 
+  copy := object("base", ast.base) 
   enum := ast._newenum() 
   while enum[key, value] 
-{ 
-	outputdebug loop %key% %value%
-  if reserved["copied" . &value] 
-    continue  ; don't copy repeat objects (circular references) 
-  copy._Insert(key, objDeepCopy(value, reserved)) 
-} 
+  { 
+    if reserved["copied" . &value] 
+      continue  ; don't copy repeat objects (circular references) 
+    copy._Insert(key, objDeepCopy(value, reserved)) 
+  } 
   return copy 
-} 
-
+}
 objPrint(ast, reserved=0) 
 { 
   if !isobject(ast) 

@@ -14,3 +14,7 @@ Action_Message_Execute(Action)
 {
 	MsgBox2(Action.Title, Action.Text, Action.Timeout)
 } 
+Action_Message_DisplayString(Action)
+{
+	return "Message " Action.Text
+}

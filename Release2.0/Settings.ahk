@@ -17,7 +17,7 @@ Settings_CreateEvents() {
 	AddTab(0, "","SysTabControl321")
 	Gui, 1:Add, Text, x%x1% y%yIt% R3, You can add events here that are triggered under certain conditions. When triggered,`nthe event can launch a series of actions. This is a very powerful tool to add `nall kinds of features, and many features from 7plus are now implemented with this system.
 	yIt+=50
-	Gui, 1:Add, ListView, x%x1% y%yIt% w400 vGUI_EventsList gGUI_EventsList_SelectionChange Grid -LV0x10 -Multi R17 AltSubmit, ID|Trigger|Name
+	Gui, 1:Add, ListView, x%x1% y%yIt% w400 h256 vGUI_EventsList gGUI_EventsList_SelectionChange Grid -LV0x10 -Multi AltSubmit, ID|Trigger|Name
 	OnMessage(0x100, "WM_KEYDOWN")
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Add gGUI_EventsList_Add, Add Event
 	yIt += textboxstep
@@ -525,16 +525,8 @@ Settings_CreateAbout() {
 ;---------------------------------------------------------------------------------------------------------------
 Settings_SetupEvents() {
 	global
-	Settings_Events := Events.DeepCopy()
-	outputdebug("Old Count: " Events.len() "New count: " Settings_Events.len())
-	;Settings_Events.base.base := ArrBase ; This crashes
-	
-enum := Settings_Events._newenum()
-outputdebug new object
-while enum[key,value]
-{
-	outputdebug %key% %value%
-}
+	if(!Settings_Events)
+		Settings_Events := Events.DeepCopy()	
 	Gui, ListView, GUI_EventsList
 	LV_Delete()
 	Loop % Settings_Events.len()
@@ -923,22 +915,63 @@ GUI_AddEvent()
 	global Settings_Events, GUI_EventsList
 	Gui, ListView, GUI_EventsList
 	Event := EventSystem_CreateEvent(Settings_Events)
-	LV_Add("", Event.ID, Event.Trigger.DisplayString(), Event.Name)
+	LV_Add("Select", Event.ID, Event.Trigger.DisplayString(), Event.Name)
 }
 GUI_EventsList_Remove:
 GUI_RemoveEvent()
 Return
 GUI_RemoveEvent()
 {
+	global Settings_Events
+	Gui, ListView, GUI_EventsList
 	i:=LV_GetNext("")
-	
+	LV_GetText(id,i)
+	pos := Settings_Events.FindID(id)
+	if(pos>0)
+		Settings_Events.Delete(pos)
+	LV_Delete(i)
 }
 
 GUI_EventsList_Edit:
-Return
+GUI_EventsList_Edit()
+return
+
+GUI_EventsList_Edit()
+{	
+	global Settings_Events
+	Critical Off
+	Gui, ListView, GUI_EventsList
+	i:=LV_GetNext("")
+	LV_GetText(id,i)
+	pos := Settings_Events.FindID(id)
+	event:=GUI_EditEvent(Settings_Events[pos].DeepCopy())
+	if(event)
+	{
+		Settings_Events[pos] := event ;overwrite edited event
+		Settings_SetupEvents() ;Refresh listview
+	}
+	Return
+}
+
 GUI_EventsLisit_Help:
 Return
-
+GUI_SaveEvents()
+{
+	global Events, Settings_Events
+	outputdebug saveevents
+	Loop % Events.len()
+	{
+		outputdebug first loop
+		Events[A_Index].Trigger.Disable()
+	}
+	outputdebug deepcopy start
+	Events := Settings_Events.DeepCopy()
+	Loop % Events.len()
+	{
+		outputdebug second loop
+		Events[A_Index].Trigger.Enable()
+	}
+}
 txt:
 GuiControlGet, enabled ,1: , Paste text as file
 GuiControl, 1:enable%enabled%,TxtName
@@ -1133,6 +1166,8 @@ WM_KEYDOWN(wParam, lParam)
 		i:=LV_GetNext("")
 		LV_Delete(i)
 	}
+	if(A_GUI = 1 && A_GuiControl = "GUI_EventsList" && wParam = 0x2E) ;Delete key pressed on CustomHotkeysList
+		GUI_RemoveEvent()		
 }
 
 CustomHotkeysCommand_Change:
@@ -1434,6 +1469,8 @@ temp:=FTP_Password
 ;Store variables which can be stored directly
 Gui 1:Submit
 
+GUI_SaveEvents()
+Settings_Events := ""
 if(JoyControl)
 	JoystickStart()
 else
@@ -1600,6 +1637,7 @@ Cancel:
 GuiClose:
 SettingsActive:=False
 Settings_CustomHotkeys := ""
+Settings_Events := ""
 Gui 1:Cancel
 Return
 
