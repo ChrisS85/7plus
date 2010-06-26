@@ -89,7 +89,6 @@ IsMouseOverTaskbar()
 
 IsMouseOverFreeTaskListSpace()
 {
-	Critical
 	global result,IsRunning
 	SetWinDelay 0
 	SetKeyDelay 0

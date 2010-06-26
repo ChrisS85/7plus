@@ -5,7 +5,7 @@ objDeepCopy(ast, reserved=0)
    reserved := object("copied" . &ast, 1)  ; to keep track of unique objects within top object 
   if !isobject(ast) 
    return ast 
-  copy := object("base", ast.base) 
+  copy := object("base", objDeepCopy(ast.base))
   enum := ast._newenum() 
   while enum[key, value] 
   { 

@@ -70,6 +70,7 @@ WindowFilter_Get(WindowFilter)
 ;Generic Window Filter match function. Filter is optional, it is used to check if the trigger is correct if used on a trigger window filter
 WindowFilter_Matches(WindowFilter, TargetWindow, TriggerFilter = "")
 {
+	class := Wingetclass("ahk_id " TargetWindow)
 	if(!TriggerFilter || WindowFilter.type = TriggerFilter.type)
 	{
 		if(TargetWindow = "A")
@@ -114,7 +115,6 @@ WindowFilter_DisplayString(WindowFilter)
 
 WindowFilter_GuiShow(WindowFilter, TriggerGUI)
 {
-	outputdebug show gui filter
 	x := TriggerGui.x
 	y := TriggerGui.y
 	y += 4
@@ -150,7 +150,6 @@ WindowFilter_GuiShow(WindowFilter, TriggerGUI)
 
 WindowFilter_GuiSubmit(WindowFilter, TriggerGUI)
 {
-	outputdebug submit gui filter
 	text1 := TriggerGUI.Text1
 	text2 := TriggerGUI.Text2
 	hwndMatchType := TriggerGUI.MatchType
@@ -164,4 +163,9 @@ WindowFilter_GuiSubmit(WindowFilter, TriggerGUI)
 	WinKill, ahk_id %text2%
 	WinKill, ahk_id %hwndMatchType%
 	WinKill, ahk_id %hwndWindowFilter%
+}
+
+WindowFilter_Init(WindowFilter)
+{
+	WindowFilter.WindowMatchType := "Program"
 }

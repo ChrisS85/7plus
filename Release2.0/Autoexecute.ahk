@@ -213,7 +213,6 @@ GoSub TrayminOpen
 
 ReadHotkeys()
 SetTimer, ToggleHotkeys, 50
-EventSystem_Startup()
 ;Show tray icon when loading is complete
 Menu, tray, add  ; Creates a separator line.
 Menu, tray, add, Settings, SettingsHandler  ; Creates a new menu item.
@@ -241,6 +240,10 @@ if(!HidetrayIcon)
 ;possibly start wizard
 if (Firstrun=1)
 	SetTimer, wizardry, -500
+
+;put it at the end because this will be the main loop of the program
+EventSystem_Startup()
+
 Return
 
 ExitSub:

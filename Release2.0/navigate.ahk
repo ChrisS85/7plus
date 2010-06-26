@@ -15,8 +15,10 @@ Shell_GoBack(hWnd=0)
 				break
 		}
 		Window.GoBack()
+		Critical, Off
 		return
 	}
+	Critical, Off
 }
 Shell_GoForward(hWnd=0)
 {
@@ -33,15 +35,17 @@ Shell_GoForward(hWnd=0)
 				break
 		}
 		Window.GoForward()
+		Critical, Off
 		return
 	}
+	Critical, Off
 }
 
 ShellNavigate(sPath, hWnd=0) 
 { 
 	Critical
 	If   hWnd||(hWnd:=WinExist("ahk_class CabinetWClass"))||(hWnd:=WinExist("ahk_class ExploreWClass")) 
-  {
+	{
 		sa := Com_CreateObject("Shell.Application")
 		wins := sa.Windows
 		loop % wins.count
@@ -51,11 +55,13 @@ ShellNavigate(sPath, hWnd=0)
 			if(window.Hwnd=hWnd)
 				break
 		}
-    DllCall("shell32\SHParseDisplayName", "Uint", COM_Unicode4Ansi(wPath,sPath) , "Uint", 0, "UintP", pidl, "Uint", 0, "Uint", 0)
-    VarSetCapacity(sa,24,0), NumPut(DllCall("shell32\ILGetSize","Uint",pidl), NumPut(pidl, NumPut(1, NumPut(1,sa)),4)) 
+		DllCall("shell32\SHParseDisplayName", "Uint", COM_Unicode4Ansi(wPath,sPath) , "Uint", 0, "UintP", pidl, "Uint", 0, "Uint", 0)
+		VarSetCapacity(sa,24,0), NumPut(DllCall("shell32\ILGetSize","Uint",pidl), NumPut(pidl, NumPut(1, NumPut(1,sa)),4)) 
 		Window.Navigate2(COM_Parameter(0x2011,&sa))
+		Critical, Off
 		return
-  }
+	}
+	Critical, Off
 }
 
 RefreshExplorer() 
@@ -63,7 +69,7 @@ RefreshExplorer()
 	Critical
 	hwnd:=WinExist("A")
 	If (WinActive("ahk_group ExplorerGroup"))
-  {
+	{
 		sa := Com_CreateObject("Shell.Application")
 		wins := sa.Windows
 		loop % wins.count
@@ -74,9 +80,10 @@ RefreshExplorer()
 					break
 		}
 		Window.Refresh()		
-  }
-  else if(IsDialog())
-  	Send {F5}
+	}
+	else if(IsDialog())
+		Send {F5}
+	Critical, Off
 }
 	
 /*
@@ -312,28 +319,29 @@ SelectFiles(sSelect,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)
 {
 	Critical
 	If   hWnd||(hWnd:=WinActive("ahk_class CabinetWClass"))||(hWnd:=WinActive("ahk_class ExploreWClass")) 
-  {
-      sa := Com_CreateObject("Shell.Application")		
-			;Find hwnd window
-			wins := sa.Windows
-			loop % wins.count
-			{
-			window:=wins.Item(A_Index-1)
-			If Not InStr( window.FullName, "steam.exe" ) ; ensure pwb isn't IE
-				if(window.Hwnd=hWnd)
-					break
-			}
+	{
+		sa := Com_CreateObject("Shell.Application")		
+		;Find hwnd window
+		wins := sa.Windows
+		loop % wins.count
+		{
+		window:=wins.Item(A_Index-1)
+		If Not InStr( window.FullName, "steam.exe" ) ; ensure pwb isn't IE
+			if(window.Hwnd=hWnd)
+				break
+		}
 	    doc:=window.Document  		
-			value:=!Deselect
-			value1:=!Deselect+focus*16+MakeVisible*8
-			if(!Deselect)
-				value1+=clear*4
-      Loop, Parse, sSelect, `n 
-			{
-				If  A_LoopField <>
-					COM_Invoke(doc,"SelectItem",doc.Folder.ParseName(A_LoopField),(A_Index=1 ? value1 : value)) ;http://msdn.microsoft.com/en-us/library/bb774047(VS.85).aspx					
-			}
-   } 
+		value:=!Deselect
+		value1:=!Deselect+focus*16+MakeVisible*8
+		if(!Deselect)
+			value1+=clear*4
+		Loop, Parse, sSelect, `n 
+		{
+			If  A_LoopField <>
+				COM_Invoke(doc,"SelectItem",doc.Folder.ParseName(A_LoopField),(A_Index=1 ? value1 : value)) ;http://msdn.microsoft.com/en-us/library/bb774047(VS.85).aspx					
+		}
+	} 
+	Critical, Off
 }
 
 InvertSelection()
@@ -358,7 +366,7 @@ ShellFolder(hWnd=0,returntype=0)
 { 
 	Critical
 	If   hWnd||(hWnd:=WinActive("ahk_class CabinetWClass"))||(hWnd:=WinActive("ahk_class ExploreWClass")) 
-  {
+	{
 		sa := Com_CreateObject("Shell.Application")
 		
 		;Find hwnd window
@@ -370,28 +378,28 @@ ShellFolder(hWnd=0,returntype=0)
 				if(window.Hwnd=hWnd)
 					break
 		}
-    doc:=window.Document
-    sFolder   := doc.Folder.Self.path
-	sDisplay := doc.Folder.Self.name
-    ;Don't get focussed item and selected files unless requested, because it will cause a COM error when called during/shortly after explorer path change sometimes
-    if (returntype=2)
-    {
-    	sFocus :=doc.FocusedItem.Path
-	    SplitPath, sFocus , sFocus
-    }
-    if(returntype=3 || returntype=4)
-    {
-	    loop % doc.SelectedItems.Count
-	    {
-	    	path :=doc.selectedItems.item(A_Index-1).Path "`n" ;= (returntype=3 ? sFolder "\" COM_Invoke(doc.SelectedItems, "Item", A_Index-1).Name "`n" : COM_Invoke(doc.SelectedItems, "Item", A_Index-1).Name "`n")
-	    	if(returntype=4)
-	    		SplitPath, path , path
-	    	sSelect.=path
-	    }
-	    StringReplace, sSelect, sSelect, \\ , \, 1 
-	  }
-	  ;Remove last `n
-    StringTrimRight, sSelect, sSelect, 1
+		doc:=window.Document
+		sFolder   := doc.Folder.Self.path
+		sDisplay := doc.Folder.Self.name
+		;Don't get focussed item and selected files unless requested, because it will cause a COM error when called during/shortly after explorer path change sometimes
+		if (returntype=2)
+		{
+			sFocus :=doc.FocusedItem.Path
+			SplitPath, sFocus , sFocus
+		}
+		if(returntype=3 || returntype=4)
+		{
+			loop % doc.SelectedItems.Count
+			{
+				path :=doc.selectedItems.item(A_Index-1).Path "`n" ;= (returntype=3 ? sFolder "\" COM_Invoke(doc.SelectedItems, "Item", A_Index-1).Name "`n" : COM_Invoke(doc.SelectedItems, "Item", A_Index-1).Name "`n")
+				if(returntype=4)
+					SplitPath, path , path
+				sSelect.=path
+			}
+			StringReplace, sSelect, sSelect, \\ , \, 1 
+		}
+		;Remove last `n
+		StringTrimRight, sSelect, sSelect, 1
 		if (returntype=1)
 			Return   sFolder
 		else if (returntype=2)
@@ -402,7 +410,7 @@ ShellFolder(hWnd=0,returntype=0)
 			Return 	 sSelect
 		else if (returntype=5)
 			Return sDisplay
-  }
+	}
 }
 
 IsWinrarExtractionDialog()

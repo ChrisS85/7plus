@@ -4,6 +4,7 @@ GUI_EditEvent(e,GoToLabel="")
 	global Trigger_Categories
 	if(GoToLabel = "")
 	{
+		outputdebug set event
 		Event := e
 		result := ""
 		TriggerGUI := ""
@@ -108,13 +109,12 @@ GUI_EditEvent(e,GoToLabel="")
 			IfWinNotExist ahk_id %EditEvent_hWnd% 
 				break
 		}
-		
+		Gui, 1:Default
 		return result	
 	}
 	else if(GoToLabel = "EditEventOK")
 	{		
 		Event.Trigger.GuiSubmit(TriggerGUI)
-		outputdebug(Event.Trigger.WindowMatchType)
 		Gui, Submit, NoHide
 		result := Event
 		Gui, 1:-Disabled
@@ -152,7 +152,6 @@ GUI_EditEvent(e,GoToLabel="")
 	}
 	else if(GoToLabel = "FillCategories")
 	{
-		outputdebug("Fill categories, selected event: " Event.Trigger.type)
 		enum := Trigger_Categories._newEnum()
 		while enum[key,value]
 		{
@@ -167,14 +166,11 @@ GUI_EditEvent(e,GoToLabel="")
 	else if(GoToLabel = "EditEventTriggerCategory")
 	{
 		GuiControlGet, EditEventTriggerCategory
-		outputdebug Category changed to %EditEventTriggerCategory%
 		;TriggerGUI contains all control hwnds for the trigger-specific part of the gui
 		if(TriggerGUI)
 		{
-			if(TriggerGUI.Type = EditEventTriggerCategory) ;selecting same item, ignore
+			if(Event.Trigger.Category = EditEventTriggerCategory) ;selecting same item, ignore
 				return
-			Gui, Tab, Trigger
-			Event.Trigger.GuiSubmit(TriggerGUI)
 		}
 		category := Trigger_Categories[EditEventTriggerCategory]
 		GuiControl,,EditEventTriggerType,|
@@ -182,20 +178,16 @@ GUI_EditEvent(e,GoToLabel="")
 		Loop % category.len()
 		{
 			type := category[A_Index]
-			outputdebug loop %type%
 			if(Event.Trigger.type = type)
 			{
 				GuiControl,,EditEventTriggerType,%type%||
 				found := true
-				outputdebug found trigger
 			}
 			else
-				GuiControl,,EditEventTriggerType,%type%
-			
+				GuiControl,,EditEventTriggerType,%type%			
 		}
 		if(!found)
 		{
-			outputdebug didn't find trigger
 			;Select first event, and create a trigger of that type (latter should maybe be done in selection label EditEventTriggerType)
 			GuiControl, Choose, EditEventTriggerType, 1
 		}	
@@ -205,9 +197,19 @@ GUI_EditEvent(e,GoToLabel="")
 	else if(GoToLabel = "EditEventTriggerType")
 	{
 		GuiControlGet, type,,EditEventTriggerType
+		GuiControlGet, category,,EditEventTriggerCategory
 		;At startup, TriggerGUI isn't set, and so the original trigger doesn't get overriden
 		if(TriggerGUI)
+		{
+			;TriggerGUI contains all control hwnds for the trigger-specific part of the gui
+			if(Event.Trigger.Type = type && Event.Trigger.Category = category) ;selecting same item, ignore
+				return
+			t := Event.Trigger.Type
+			c := Event.Trigger.Category
+			Gui, Tab, Trigger
+			Event.Trigger.GuiSubmit(TriggerGUI)
 			Event.Trigger := EventSystem_CreateSubEvent("Trigger",type)
+		}
 		;Show trigger-specific part of the gui and store hwnds in TriggerGUI
 		TriggerGUI := object("Type", type)
 		TriggerGUI.x := 38
@@ -218,32 +220,97 @@ GUI_EditEvent(e,GoToLabel="")
 		Event.Trigger.GuiShow(TriggerGUI)
 		return
 	}
+	else if(GoToLabel = "EditEventConditions")
+	{
+		Gui, ListView, EditEventConditions
+		if(A_GuiEvent="I" && InStr(ErrorLevel, "S", true))
+		{
+			GuiControl, enable, EditEvent_EditCondition
+			GuiControl, enable, EditEvent_RemoveCondition
+		}
+		else if(A_GuiEvent="I" && InStr(ErrorLevel, "s", true))
+		{
+			GuiControl, disable, EditEvent_EditCondition
+			GuiControl, disable, EditEvent_RemoveCondition
+		}
+		else if(A_GuiEvent="DoubleClick")
+			GUI_EditEvent("","EditEvent_EditCondition")
+		return
+	}
 	else if(GoToLabel = "EditEvent_EditCondition")
 	{
+		Gui, ListView, EditEvent_EditCondition
+		i:=LV_GetNext("")
+		Critical, Off
+		condition:=GUI_EditSubEvent(Event.Conditions[i].DeepCopy(),0)
+		if(condition)
+		{
+			Event.Conditions[i] := condition ;overwrite edited condition
+			GUI_EditEvent("","UpdateConditions") ;Refresh listview
+		}
 		return
 	}
 	else if(GoToLabel = "EditEvent_RemoveCondition")
 	{
+		Gui, ListView, EditEvent_EditCondition
+		i:=LV_GetNext("")
+		Event.Conditions.Delete(i)
+		LV_Delete(i)
 		return
 	}
 	else if(GoToLabel = "EditEvent_AddCondition")
 	{
+		Gui, ListView, EditEvent_EditCondition
+		Condition := EventSystem_CreateSubEvent("Condition","WindowActive")
+		Event.Conditions.append(Condition)
+		LV_Add("Select", Condition.DisplayString())
 		return
 	}
 	else if(GoToLabel = "EditEventActions")
 	{
+		Gui, ListView, EditEventActions
+		if(A_GuiEvent="I" && InStr(ErrorLevel, "S", true))
+		{
+			GuiControl, enable, EditEvent_EditAction
+			GuiControl, enable, EditEvent_RemoveAction
+		}
+		else if(A_GuiEvent="I" && InStr(ErrorLevel, "s", true))
+		{
+			GuiControl, disable, EditEvent_EditAction
+			GuiControl, disable, EditEvent_RemoveAction
+		}
+		else if(A_GuiEvent="DoubleClick")
+			GUI_EditEvent("","EditEvent_EditAction")
 		return
 	}
 	else if(GoToLabel = "EditEvent_EditAction")
 	{
+		Gui, ListView, EditEvent_EditAction
+		i:=LV_GetNext("")
+		Critical, Off
+		action:=GUI_EditSubEvent(Event.Actions[i].DeepCopy(),1)
+		if(action)
+		{
+			outputdebug("Store " Event.Actions[i].WaitForFinish)
+			Event.Actions[i] := action ;overwrite edited action
+			GUI_EditEvent("","UpdateActions") ;Refresh listview
+		}
 		return
 	}
 	else if(GoToLabel = "EditEvent_RemoveAction")
 	{
+		Gui, ListView, EditEvent_EditAction
+		i:=LV_GetNext("")
+		Event.Actions.Delete(i)
+		LV_Delete(i)
 		return
 	}
 	else if(GoToLabel = "EditEvent_AddAction")
 	{
+		Gui, ListView, EditEvent_EditAction
+		Action := EventSystem_CreateSubEvent("Action","Run")
+		Event.Actions.append(Action)
+		LV_Add("Select", Action.DisplayString())
 		return
 	}
 } 

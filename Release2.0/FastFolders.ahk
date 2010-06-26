@@ -64,6 +64,7 @@ ClearStoredFolder(ByRef FF, ByRef FFTitle)
 			}
 		}
 	}
+	Critical, Off
 }
 UpdateStoredFolder(ByRef FF, ByRef FFTitle)
 {
@@ -105,6 +106,7 @@ AddAllButtons(FolderBand,PlacesBar)
 			}				
 		}
 	}
+	Critical, Off
 }
 ;Callback function for determining if a specific registry key was created by 7plus
 IsFastFolderButton(Command,Title,Tooltip)

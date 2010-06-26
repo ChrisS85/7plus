@@ -44,7 +44,10 @@ ShellMessage( wParam,lParam, msg)
 	If	msg=1028
 	{
 		If	wParam=1028
+		{
+			Critical, Off
 			Return
+		}
 		Else If lParam=0x205 ; RButton 
 		{ 
 			wtmwParam := wParam
@@ -55,6 +58,12 @@ ShellMessage( wParam,lParam, msg)
 	}
 	Else If	(wParam=1||wParam=2)
 	{
+		Trigger := Object("base", TriggerBase)
+		Trigger.Type := wParam = 1 ? "WindowCreated" : "WindowClosed"
+		class:=WinGetClass("ahk_Id " lParam)
+		outputdebug(Trigger.Type " triggered! class:" class)
+		Trigger.Window := lParam
+		OnTrigger(Trigger)
 		WinTraymin(lParam,wParam)
 	}
 	; Execute a command based on wParam and lParam 
@@ -104,7 +113,9 @@ ShellMessage( wParam,lParam, msg)
 	{
 		Trigger := Object("base", TriggerBase)
 		Trigger.Type := "WindowActivated"
+		outputdebug pre trigger
 		OnTrigger(Trigger)
+		outputdebug post trigger
 		;Blinking windows detection, remove activated windows
 		if(x:=BlinkingWindows.indexOf(lParam))
 			BlinkingWindows.Delete(x)
@@ -162,6 +173,7 @@ ShellMessage( wParam,lParam, msg)
 		}
 	}
 	ListLines, On
+	Critical, Off
 }
 /*
 UpdatePosition:
@@ -174,7 +186,8 @@ WM_LBUTTONUP(wParam,lParam,msg,hWnd){
 
 WM_NOTIFY(wParam, lParam, msg, hWnd){ 
 	Critical
-  ToolTip("",lParam,"") 
+	ToolTip("",lParam,"") 
+	Critical, Off
 } 
 ToolTip: 
 link:=ErrorLevel 

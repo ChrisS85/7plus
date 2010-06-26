@@ -906,6 +906,19 @@ ShowSettings()
 ; Control Handlers
 ;---------------------------------------------------------------------------------------------------------------
 GUI_EventsList_SelectionChange:
+Gui, ListView, GUI_EventsList
+if(A_GuiEvent="I" && InStr(ErrorLevel, "S", true))
+{
+	GuiControl, 1:enable, GUI_EventsLisit_Edit
+	GuiControl, 1:enable, GUI_EventsList_Remove
+}
+else if(A_GuiEvent="I" && InStr(ErrorLevel, "s", true))
+{
+	GuiControl, 1:disable, GUI_EventsLisit_Edit
+	GuiControl, 1:disable, GUI_EventsList_Remove
+}
+else if(A_GuiEvent="DoubleClick")
+	GUI_EventsList_Edit()
 Return
 GUI_EventsList_Add:
 GUI_AddEvent()
@@ -914,7 +927,7 @@ GUI_AddEvent()
 {
 	global Settings_Events, GUI_EventsList
 	Gui, ListView, GUI_EventsList
-	Event := EventSystem_CreateEvent(Settings_Events)
+	Event := EventSystem_CreateEvent(Settings_Events) ;Event is added to Settings_Events here
 	LV_Add("Select", Event.ID, Event.Trigger.DisplayString(), Event.Name)
 }
 GUI_EventsList_Remove:

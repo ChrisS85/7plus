@@ -55,6 +55,7 @@ ClipboardManagerMenu()
 			Menu, ClipboardMenu, add, %x%, ClipboardHandler%i%
 	}
 	Menu, ClipboardMenu, Show
+	Critical, Off
 }
 
 ;Need separate handlers because menu index doesn't have to match array index

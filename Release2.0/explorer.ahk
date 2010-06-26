@@ -780,6 +780,7 @@ outputdebug wheelup
 MouseGetPos, MouseX, MouseY
 hw_m_target := DllCall( "WindowFromPoint", "int", MouseX, "int", MouseY )
 SendMessage, 0x20A, 120 << 16, ( MouseY << 16 )|MouseX,, ahk_id %hw_m_target%
+Critical, Off
 return 
 
 WheelDown:: 
@@ -787,6 +788,7 @@ Critical
 MouseGetPos, MouseX, MouseY 
 hw_m_target := DllCall( "WindowFromPoint", "int", MouseX, "int", MouseY ) 
 SendMessage, 0x20A, -120 << 16, ( MouseY << 16 )|MouseX,, ahk_id %hw_m_target% 
+Critical, Off
 return
 #if
 

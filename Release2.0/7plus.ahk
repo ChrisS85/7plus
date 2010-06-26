@@ -2,6 +2,7 @@
 #NoTrayIcon ;Added later
 #InstallMouseHook
 #InstallKeyBdHook
+#MaxThreads 255
 #IfTimeout 150ms ;Might soften up mouse hook timeout problem
 #MaxHotkeysPerInterval 1000 ;Required for mouse wheel
 SetBatchLines -1
@@ -44,6 +45,7 @@ BugfixVersion := 0
 #include %A_ScriptDir%\lib\xpath.ahk
 #include %A_ScriptDir%\Trigger.ahk
 #include %A_ScriptDir%\EditEventGUI.ahk
+#include %A_ScriptDir%\EditSubEventGUI.ahk
 #include %A_ScriptDir%\messagehooks.ahk
 #include %A_ScriptDir%\navigate.ahk
 #include %A_ScriptDir%\FolderButtonManager.ahk
@@ -69,6 +71,9 @@ BugfixVersion := 0
 
 #include %A_ScriptDir%\Triggers\None.ahk
 #include %A_ScriptDir%\Triggers\WindowActivated.ahk
+#include %A_ScriptDir%\Triggers\WindowClosed.ahk
+#include %A_ScriptDir%\Triggers\WindowCreated.ahk
+#include %A_ScriptDir%\Triggers\Hotkey.ahk
 
 #include %A_ScriptDir%\Conditions\WindowActive.ahk
 

@@ -1,17 +1,20 @@
 EventSystem_Startup()
 {
-	global Events
+	global Events, EventSchedule
 	EventsBase := object("base",Array(), "HighestID", -1, "CreateEvent", "EventSystem_CreateEvent", "FindID", "Events_FindID")
 	Events := object("base", EventsBase)
 	EventSystem_CreateBaseObjects()
 	
 	ReadEventsFile()
+	outputdebug(Events.len())
+	EventSchedule := Array()
 	Loop % Events.len()
 	{
 		Event := Events[A_Index]	
 		if(Event.Enabled)
 			Event.Enable()
-	}
+	}	
+	EventScheduler()
 }
 
 Events_FindID(Events,ID)
@@ -27,7 +30,7 @@ EventSystem_CreateEvent(Events)
 {
 	global EventBase
 	Events.HighestID := Events.HighestID + 1
-	Event := Object("base",EventBase.DeepCopy())
+	Event := Object("base",EventBase.DeepCopy()) ;Need to use base to make functions work
 	Event.ID := Events.HighestID
 	Events.append(Event)
 	return Event
@@ -36,12 +39,12 @@ EventSystem_CreateBaseObjects()
 {
 	global
 	local tmpobject
-	EventSystem_Triggers := "None,WindowActivated"
+	EventSystem_Triggers := "None,WindowActivated, WindowClosed, WindowCreated, Hotkey"
 	EventSystem_Conditions := "WindowActive"
 	EventSystem_Actions := "Run, Message"
-	Trigger_Categories := object("Window",Array(), "7plus", Array(), "Other", Array())
-	Condition_Categories := object("Window",Array(), "Mouse", Array(), "Other", Array())
-	Action_Categories := object("Window", Array(), "Input", Array(), "7plus",Array(), "Other",Array())
+	Trigger_Categories := object("Window", Array(), "Hotkeys", Array(), "7plus", Array(), "Other", Array())
+	Condition_Categories := object("Window", Array(), "Mouse", Array(), "Other", Array())
+	Action_Categories := object("Window", Array(), "Input", Array(), "System", Array(), "7plus", Array(), "Other", Array())
 	
 	Loop, Parse, EventSystem_Triggers, `,,%A_Space%
 	{		
@@ -97,7 +100,7 @@ EventSystem_CreateBaseObjects()
 	EventBase.Name := "New event"
 	EventBase.Enabled := 1
 	EventBase.Enable := "Event_Enable"
-	EventBase.Trigger := Object("base", Trigger_None_Base)
+	EventBase.Trigger := EventSystem_CreateSubEvent("Trigger", "None")
 	EventBase.Conditions := Array()
 	EventBase.Actions := Array()
 }
@@ -207,7 +210,9 @@ ReadEventsFile()
 		Events.append(Event)
 	}
 }
-
+#n::
+EventSchedule[2].Actions[1].GuiNum := ""
+return
 WriteEventsFile()
 {
 	global ConfigPath, Events
@@ -260,36 +265,78 @@ WriteEventsFile()
 	return
 }
 
-;This function is called when a trigger event is received
+;This function is called when a trigger event is received. Trigger contains information about 
 OnTrigger(Trigger)
 {
-	global Events
+	global Events,EventSchedule
 	;Find matching triggers
 	Loop % Events.len()
 	{
 		Event := Events[A_Index]
-		if(Event.Trigger.Matches(Trigger))
+		if(Event.Trigger.Type = Trigger.Type && Event.Trigger.Matches(Trigger))
 		{
+			EventSchedule.append(Event.DeepCopy())
+		}
+	}
+}
+
+EventScheduler()
+{
+	global Events, EventSchedule
+	Critical, Off
+	loop
+	{
+		EventPos := 1
+		len := EventSchedule.len()
+		Loop % EventSchedule.len()
+		{			
+			Event := EventSchedule[EventPos]
 			;Check conditions
-			Success := true
+			Success := 1
+			ConditionPos := 1
 			Loop % Event.Conditions.len()
 			{
-				Condition := Event.Conditions[A_Index]
-				if( !Condition.Evaluate() )
+				result := Event.Conditions[ConditionPos].Evaluate()
+				if( result = -1) ;Not decided yet, check later
 				{
-					Success := false
+					Success := -1
 					break
 				}
+				else if(result = 0) ;Condition did not match
+				{
+					Success := 0
+					break
+				}
+				else if(result = 1) ;This condition was fulfilled, remove it from conditions
+				{
+					Event.Conditions.Delete(ConditionPos)
+					continue
+				}
+				ConditionPos++
 			}
-			;if conditions are fulfilled, execute all actions
-			if(Success)
+			
+			if(Success = 0) ;Condition was not fulfilled, remove this event
+			{
+				EventSchedule.Delete(EventPos)
+				continue
+			}
+			else if(Success = 1) ;if conditions are fulfilled, execute all actions
 			{
 				Loop % Event.Actions.len()
 				{
-					Action := Event.Actions[A_Index]
-					Action.Execute()
+					result := Event.Actions[1].Execute()
+					if(result = -1) ;Action needs more time to finish, check back in next main loop
+						break
+					Event.Actions.Delete(1)
 				}
 			}
-		}
+			if(Event.Actions.len() = 0) ;No more actions in this event, consider it processed and remove it from queue
+			{
+				EventSchedule.Delete(EventPos)
+				continue
+			}
+			EventPos++
+		}			
+		Sleep 20
 	}
 }

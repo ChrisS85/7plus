@@ -439,7 +439,6 @@ ExplorerDestroyed(hwnd)
 }
 TabContainerList_CloseAllInactiveTabs(TabContainerList)
 {
-	Critical
 	len := TabContainerList.len()
 	loop %len% ;Fixed length for delete loop
 	{
@@ -450,7 +449,6 @@ TabContainerList_CloseAllInactiveTabs(TabContainerList)
 TabContainer_CloseInactiveTabs(TabContainer)
 {
 	global TabContainerList
-	Critical
 	TabContainerList.Delete(TabContainerList.indexOf(TabContainer))
 	DetectHiddenWindows, On
 	loop % TabContainer.tabs.len()
@@ -463,7 +461,6 @@ TabContainer_CloseInactiveTabs(TabContainer)
 TabContainer_CloseAllTabs(TabContainer)
 {
 	global TabContainerList
-	Critical
 	NoTabUpdate:=true
 	SuppressTabEvents:=true
 	outputdebug close all tabs
@@ -635,13 +632,13 @@ CycleTabs(hwnd,dir)
 CreateTab(hwnd,path=-1,Activate=-1)
 {
 	global TabContainerList, TabContainerBase, SuppressTabEvents, TabNum, TabWindow,TabControl,TabStartupPath,ActivateTab,NewTabPosition
-	Critical
 	hwnd:=hwnd ? hwnd : WinActive("ahk_group ExplorerGroup")
 	if(!hwnd)
 	{
 		Msgbox CreateTab(): No active tab!
 		Return
 	}
+	Critical
 	Activate := Activate = -1 ? ActivateTab : Activate
 	path := path = -1 ? TabStartupPath : path
 	if(path="")
@@ -752,13 +749,13 @@ CreateTab(hwnd,path=-1,Activate=-1)
 	UpdateTabs()
 	UpdatePosition(TabNum, TabWindow)
 	GuiControl, %TabNum%:MoveDraw, TabControl
+	Critical, Off
 }
 
 
 ActivateTab(pos)
 {
 	global TabContainerList, SuppressTabEvents
-	Critical
 	outputdebug ActivateTab(%pos%)
 	SetWinDelay,-1
 	time1 := A_TickCount

@@ -1,6 +1,7 @@
 Trigger_WindowActivated_Init(Trigger)
 {
 	Trigger.Category := "Window"
+	WindowFilter_Init(Trigger)
 }
 Trigger_WindowActivated_ReadXML(Trigger, TriggerFileHandle)
 {	

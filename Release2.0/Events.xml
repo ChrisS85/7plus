@@ -2,18 +2,17 @@
 <Events>
   <Event>
     <ID>1</ID>
-    <Name>Test Event</Name>
+    <Name>TestEvent</Name>
     <Enabled>1</Enabled>
     <Trigger>
-      <Type>WindowActivated</Type>
-      <WindowMatchType>Class</WindowMatchType>
-      <Filter>explorer.exe</Filter>
+      <Type>Hotkey</Type>
+      <Key>#B</Key>
     </Trigger>
     <Conditions>
       <Condition>
         <Type>WindowActive</Type>
-        <WindowMatchType>class</WindowMatchType>
-        <Filter>CabinetWClass1</Filter>
+        <WindowMatchType>Class</WindowMatchType>
+        <Filter>CabinetWClass</Filter>
       </Condition>
     </Conditions>
     <Actions>
@@ -24,30 +23,10 @@
       </Action>
       <Action>
         <Type>Message</Type>
-        <Text>CMD started!</Text>
+        <Text>Oh noes!</Text>
         <Title>narf</Title>
         <TimeOut />
       </Action>
     </Actions>
-  </Event>
-  <Event>
-    <ID>3</ID>
-    <Name>New event</Name>
-    <Enabled>1</Enabled>
-    <Trigger>
-      <Type>None</Type>
-    </Trigger>
-    <Conditions />
-    <Actions />
-  </Event>
-  <Event>
-    <ID>4</ID>
-    <Name>New event</Name>
-    <Enabled>1</Enabled>
-    <Trigger>
-      <Type>None</Type>
-    </Trigger>
-    <Conditions />
-    <Actions />
   </Event>
 </Events>
