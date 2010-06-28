@@ -8,12 +8,29 @@ Action_Run_WriteXML(Action, ByRef ActionFileHandle, Path)
 	xpath(ActionFileHandle, Path "Command[+1]/Text()", Action.Command)
 	xpath(ActionFileHandle, Path "WaitForFinish[+1]/Text()", Action.WaitForFinish)
 }
-Action_Run_Execute(Action)
+Action_Run_Execute(Action, Event)
 {
-	if(Action.WaitForFinish)
-		RunWait(Action.Command)
+	if(!Action.Pid)
+	{
+		command := Event.ExpandPlaceholders(Action.Command)
+		if(Action.WaitForFinish)
+		{
+			Action.Pid := Run(command)
+			if(Action.Pid) ;If retrieved properly
+				return -1
+			MsgBox Waiting for %command% failed!
+			return 0
+		}
+		else
+			Run(command)
+	}
 	else
-		Run(Action.Command)
+	{
+		pid := Action.Pid
+		Process, Exist, %pid%
+		if(ErrorLevel)
+			return -1
+	}
 }
 Action_Run_DisplayString(Action)
 {

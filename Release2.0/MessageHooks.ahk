@@ -39,7 +39,7 @@ ShellMessage( wParam,lParam, msg)
 {
 	Critical
 	ListLines, Off
-	global Vista7, ExplorerPath,hwnd1,HKShowSpaceAndSize,BlinkingWindows,wtmwParam,TabContainerList, SuppressTabEvents, UseTabs,PreviousWindow,TriggerBase
+	global ExplorerPath, HKShowSpaceAndSize, BlinkingWindows, wtmwParam, SuppressTabEvents, UseTabs, PreviousWindow, PreviousExplorerPath
 	;Traymin
 	If	msg=1028
 	{
@@ -58,8 +58,8 @@ ShellMessage( wParam,lParam, msg)
 	}
 	Else If	(wParam=1||wParam=2)
 	{
-		Trigger := Object("base", TriggerBase)
-		Trigger.Type := wParam = 1 ? "WindowCreated" : "WindowClosed"
+		
+		Trigger := wParam = 1 ? EventSystem_CreateSubEvent("Trigger","WindowCreated") : EventSystem_CreateSubEvent("Trigger","WindowClosed")
 		class:=WinGetClass("ahk_Id " lParam)
 		outputdebug(Trigger.Type " triggered! class:" class)
 		Trigger.Window := lParam
@@ -158,7 +158,10 @@ ShellMessage( wParam,lParam, msg)
 			{
 				outputdebug Explorer path changed from %ExplorerPath% to %newpath%
 				ExplorerPathChanged(ExplorerPath, newpath)
-				ExplorerPath:=newpath
+				PreviousExplorerPath := ExplorerPath
+				ExplorerPath := newpath
+				Trigger := EventSystem_CreateSubEvent("Trigger","ExplorerPathChanged")
+				OnTrigger(Trigger)
 				if(UseTabs && !SuppressTabEvents && hwnd:=WinActive("ahk_group ExplorerGroup"))
 				{
 					UpdateTabs()

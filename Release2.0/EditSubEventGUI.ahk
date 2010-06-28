@@ -1,6 +1,6 @@
 GUI_EditSubEvent(se, ia=0, GoToLabel="")
 {
-	static SubEvent, IsAction, result, SubEventGUI, EditSubEventCategory, EditSubEventType
+	static SubEvent, IsAction, result, SubEventGUI, EditSubEventCategory, EditSubEventType, EditSubEventNegate
 	global Condition_Categories, Action_Categories
 	if(GoToLabel = "")
 	{
@@ -25,7 +25,15 @@ GUI_EditSubEvent(se, ia=0, GoToLabel="")
 		if(IsAction)
 			Gui, Add, Text, x%x% y%y%, Here you can define what this action does.
 		else
+		{
 			Gui, Add, Text, x%x% y%y%, Here you can define the condition.
+			y += 20
+			if(SubEvent.Negate)
+				Gui, Add, Checkbox, x%x% y%y% Checked vEditSubEventNegate, Negate Condition
+			else
+				Gui, Add, Checkbox, x%x% y%y% vEditSubEventNegate, Negate Condition
+			y += 10
+		}
 			
 		y += 20 + 4
 		Gui, Add, Text, x%x% y%y%, Category:
@@ -67,6 +75,8 @@ GUI_EditSubEvent(se, ia=0, GoToLabel="")
 	{		
 		SubEvent.GuiSubmit(SubEventGUI)
 		Gui, Submit, NoHide
+		if(!IsAction)
+			SubEvent.Negate := EditSubEventNegate
 		result := SubEvent
 		Gui, 4:-Disabled
 		Gui, Destroy
@@ -148,7 +158,10 @@ GUI_EditSubEvent(se, ia=0, GoToLabel="")
 		;Show sub-specific part of the gui and store hwnds in SubEventGUI
 		SubEventGUI := object("Type", type)
 		SubEventGUI.x := 38
-		SubEventGUI.y := 148
+		if(!IsAction)
+			SubEventGUI.y := 178
+		else
+			SubEventGUI.y := 148
 		SubEventGUI.w := width - 74
 		SubEventGUI.h := height - 168 - 28 
 		SubEvent.GuiShow(SubEventGUI)

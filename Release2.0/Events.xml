@@ -1,31 +1,23 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Events>
   <Event>
-    <ID>1</ID>
-    <Name>TestEvent</Name>
+    <ID>2</ID>
+    <Name>New event</Name>
     <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>0</OneInstance>
     <Trigger>
       <Type>Hotkey</Type>
-      <Key>#B</Key>
+      <Key>^Left</Key>
     </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>WindowActive</Type>
-        <WindowMatchType>Class</WindowMatchType>
-        <Filter>CabinetWClass</Filter>
-      </Condition>
-    </Conditions>
+    <Conditions />
     <Actions>
       <Action>
-        <Type>Run</Type>
-        <Command>C:\Windows\System32\cmd.exe</Command>
-        <WaitForFinish>0</WaitForFinish>
-      </Action>
-      <Action>
-        <Type>Message</Type>
-        <Text>Oh noes!</Text>
-        <Title>narf</Title>
-        <TimeOut />
+        <Type>SetDirectory</Type>
+        <Path>C:</Path>
+        <WindowMatchType>Active</WindowMatchType>
+        <Filter />
       </Action>
     </Actions>
   </Event>

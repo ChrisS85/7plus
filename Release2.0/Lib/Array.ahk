@@ -130,7 +130,7 @@ Array_Length(arr){
 }
 
 Array_Swap(arr,i,j){
-	if(arr.len()<i||arr.len()<j)
+	if(arr.len()<i||arr.len()<j||i<1||j<1)
 		return 0
 	x:=arr[i]
 	arr[i]:=arr[j]

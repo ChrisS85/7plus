@@ -1,10 +1,9 @@
 GUI_EditEvent(e,GoToLabel="")
 {
-	static Event, result, TriggerGUI, EditEventTab, EditEventTriggerCategory, EditEventTriggerType, EditEventConditions, EditEvent_EditCondition, EditEvent_RemoveCondition, EditEvent_AddCondition, EditEventActions, EditEvent_EditAction, EditEvent_RemoveAction, EditEvent_AddAction
+	static Event, result, TriggerGUI, EditEventTab, EditEventTriggerCategory, EditEventTriggerType, EditEventConditions, EditEvent_EditCondition, EditEvent_RemoveCondition, EditEvent_AddCondition, EditEventActions, EditEvent_EditAction, EditEvent_RemoveAction, EditEvent_AddAction, EditEvent_Condition_MoveDown, EditEvent_Condition_MoveUp, EditEvent_Action_MoveUp, EditEvent_Action_MoveDown, EditEvent_Name, EditEvent_DisableAfterUse, EditEvent_DeleteAfterUse, EditEvent_OneInstance
 	global Trigger_Categories
 	if(GoToLabel = "")
 	{
-		outputdebug set event
 		Event := e
 		result := ""
 		TriggerGUI := ""
@@ -53,7 +52,7 @@ GUI_EditEvent(e,GoToLabel="")
 		y := 60
 		w := width -54 - 100
 		h := height - 28 - 88
-		Gui, Add, ListView, x%x% y%y% w%w% h%h% vEditEventConditions gEditEventConditions Grid -LV0x10 -Multi AltSubmit, Conditions
+		Gui, Add, ListView, x%x% y%y% w%w% h%h% vEditEventConditions gEditEventConditions Grid -LV0x10 NoSortHdr -Multi AltSubmit, Conditions
 		
 		x += w + 10
 		w := 90
@@ -63,6 +62,10 @@ GUI_EditEvent(e,GoToLabel="")
 		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_RemoveCondition gEditEvent_RemoveCondition, Delete Condition
 		y += 30
 		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_EditCondition gEditEvent_EditCondition, Edit Condition
+		y += 30*2
+		Gui, Add, Button, x%x% y%y% w%w% vEditEvent_Condition_MoveUp gEditEvent_Condition_MoveUp, Move Up
+		y += 30
+		Gui, Add, Button, x%x% y%y% w%w% vEditEvent_Condition_MoveDown gEditEvent_Condition_MoveDown, Move Down
 		
 		
 		Gui, Tab, Actions
@@ -72,7 +75,7 @@ GUI_EditEvent(e,GoToLabel="")
 		y := 60
 		w := width -54 - 100
 		h := height - 28 - 88
-		Gui, Add, ListView, x%x% y%y% w%w% h%h% vEditEventActions gEditEventActions Grid -LV0x10 -Multi AltSubmit, Actions
+		Gui, Add, ListView, x%x% y%y% w%w% h%h% vEditEventActions gEditEventActions Grid -LV0x10 NoSortHdr -Multi AltSubmit, Actions
 		
 		x += w + 10
 		w := 90
@@ -82,7 +85,39 @@ GUI_EditEvent(e,GoToLabel="")
 		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_RemoveAction gEditEvent_RemoveAction, Delete Action
 		y += 30
 		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_EditAction gEditEvent_EditAction, Edit Action
+		y += 30*2
+		Gui, Add, Button, x%x% y%y% w%w% vEditEvent_Action_MoveUp gEditEvent_Action_MoveUp, Move Up
+		y += 30
+		Gui, Add, Button, x%x% y%y% w%w% vEditEvent_Action_MoveDown gEditEvent_Action_MoveDown, Move Down
 		
+		Gui, Tab, Options
+		x := 28
+		y := 52
+		Gui, Add, Text, x%x% y%y%, Event Name:
+		x += 70
+		y -= 4
+		w := 200
+		name := Event.Name
+		Gui, Add, Edit, x%x% y%y% w%w% vEditEvent_Name, %name%
+		x := 28
+		y += 30
+		if(Event.DisableAfterUse)
+			Gui, Add, Checkbox, x%x% y%y% w%w% vEditEvent_DisableAfterUse Checked, Disable after use
+		else
+			Gui, Add, Checkbox, x%x% y%y% w%w% vEditEvent_DisableAfterUse, Disable after use
+			
+		y += 30
+		if(Event.DeleteAfterUse)
+			Gui, Add, Checkbox, x%x% y%y% w%w% vEditEvent_DeleteAfterUse Checked, Delete after use
+		else
+			Gui, Add, Checkbox, x%x% y%y% w%w% vEditEvent_DeleteAfterUse, Delete after use
+		
+		y += 30
+		if(Event.OneInstance)
+			Gui, Add, Checkbox, x%x% y%y% vEditEvent_OneInstance Checked, Disallow this event from being run in parallel
+		else
+			Gui, Add, Checkbox, x%x% y%y% vEditEvent_OneInstance, Disallow this event from being run in parallel
+			
 		gosub FillCategories
 		gosub UpdateConditions
 		gosub UpdateActions
@@ -116,6 +151,10 @@ GUI_EditEvent(e,GoToLabel="")
 	{		
 		Event.Trigger.GuiSubmit(TriggerGUI)
 		Gui, Submit, NoHide
+		Event.Name := EditEvent_Name
+		Event.DisableAfterUse := EditEvent_DisableAfterUse
+		Event.DeleteAfterUse := EditEvent_DeleteAfterUse
+		Event.OneInstance := EditEvent_OneInstance
 		result := Event
 		Gui, 1:-Disabled
 		Gui, Destroy
@@ -133,21 +172,25 @@ GUI_EditEvent(e,GoToLabel="")
 	else if(GoToLabel = "UpdateConditions")
 	{
 		Gui, ListView, EditEventConditions
+		i:=LV_GetNext("")
 		LV_Delete()
 		Loop % Event.Conditions.len()
 		{
-			LV_Add(A_Index = 1 ? "Select" : "", Event.Conditions[A_Index].DisplayString())
+			LV_Add(A_Index = i ? "Select" : "", Event.Conditions[A_Index].DisplayString())
 		}
+		GuiControl, focus, EditEventConditions
 		return
 	}
 	else if(GoToLabel = "UpdateActions")
 	{		
 		Gui, ListView, EditEventActions
+		i:=LV_GetNext("")
 		LV_Delete()
 		Loop % Event.Actions.len()
 		{
-			LV_Add(A_Index = 1 ? "Select" : "", Event.Actions[A_Index].DisplayString())
+			LV_Add(A_Index = i ? "Select" : "", Event.Actions[A_Index].DisplayString())
 		}
+		GuiControl, focus, EditEventActions
 		return
 	}
 	else if(GoToLabel = "FillCategories")
@@ -227,11 +270,22 @@ GUI_EditEvent(e,GoToLabel="")
 		{
 			GuiControl, enable, EditEvent_EditCondition
 			GuiControl, enable, EditEvent_RemoveCondition
+			i:=LV_GetNext("")
+			if(i>1)
+				GuiControl, enable, EditEvent_Condition_MoveUp
+			else
+				GuiControl, disable, EditEvent_Condition_MoveUp
+			if(i<LV_GetCount())
+				GuiControl, enable, EditEvent_Condition_MoveDown
+			else
+				GuiControl, disable, EditEvent_Condition_MoveDown
 		}
 		else if(A_GuiEvent="I" && InStr(ErrorLevel, "s", true))
 		{
 			GuiControl, disable, EditEvent_EditCondition
 			GuiControl, disable, EditEvent_RemoveCondition
+			GuiControl, disable, EditEvent_Condition_MoveDown
+			GuiControl, disable, EditEvent_Condition_MoveUp
 		}
 		else if(A_GuiEvent="DoubleClick")
 			GUI_EditEvent("","EditEvent_EditCondition")
@@ -240,6 +294,8 @@ GUI_EditEvent(e,GoToLabel="")
 	else if(GoToLabel = "EditEvent_EditCondition")
 	{
 		Gui, ListView, EditEvent_EditCondition
+		if(LV_GetCount("Selected") != 1)
+			return
 		i:=LV_GetNext("")
 		Critical, Off
 		condition:=GUI_EditSubEvent(Event.Conditions[i].DeepCopy(),0)
@@ -264,7 +320,24 @@ GUI_EditEvent(e,GoToLabel="")
 		Condition := EventSystem_CreateSubEvent("Condition","WindowActive")
 		Event.Conditions.append(Condition)
 		LV_Add("Select", Condition.DisplayString())
+		GUI_EditEvent("","EditEvent_EditCondition")
 		return
+	}
+	else if(GoToLabel = "EditEvent_Condition_MoveDown")
+	{
+		Gui, ListView, EditEvent_EditCondition
+		i:=LV_GetNext("")
+		Event.Conditions.swap(i,i+1)
+		LV_Modify(i+1,"Select")
+		GUI_EditEvent("","UpdateConditions") ;Refresh listview
+	}
+	else if(GoToLabel = "EditEvent_Condition_MoveUp")
+	{
+		Gui, ListView, EditEvent_EditCondition
+		i:=LV_GetNext("")
+		Event.Conditions.swap(i,i-1)
+		LV_Modify(i-1,"Select")
+		GUI_EditEvent("","UpdateConditions") ;Refresh listview
 	}
 	else if(GoToLabel = "EditEventActions")
 	{
@@ -272,12 +345,23 @@ GUI_EditEvent(e,GoToLabel="")
 		if(A_GuiEvent="I" && InStr(ErrorLevel, "S", true))
 		{
 			GuiControl, enable, EditEvent_EditAction
-			GuiControl, enable, EditEvent_RemoveAction
+			GuiControl, enable, EditEvent_RemoveAction		
+			i:=LV_GetNext("")
+			if(i>1)
+				GuiControl, enable, EditEvent_Action_MoveUp
+			else
+				GuiControl, disable, EditEvent_Action_MoveUp
+			if(i<LV_GetCount())
+				GuiControl, enable, EditEvent_Action_MoveDown
+			else
+				GuiControl, disable, EditEvent_Action_MoveDown
 		}
 		else if(A_GuiEvent="I" && InStr(ErrorLevel, "s", true))
 		{
 			GuiControl, disable, EditEvent_EditAction
 			GuiControl, disable, EditEvent_RemoveAction
+			GuiControl, disable, EditEvent_Action_MoveDown
+			GuiControl, disable, EditEvent_Action_MoveUp
 		}
 		else if(A_GuiEvent="DoubleClick")
 			GUI_EditEvent("","EditEvent_EditAction")
@@ -286,6 +370,8 @@ GUI_EditEvent(e,GoToLabel="")
 	else if(GoToLabel = "EditEvent_EditAction")
 	{
 		Gui, ListView, EditEvent_EditAction
+		if(LV_GetCount("Selected") != 1)
+			return
 		i:=LV_GetNext("")
 		Critical, Off
 		action:=GUI_EditSubEvent(Event.Actions[i].DeepCopy(),1)
@@ -311,7 +397,24 @@ GUI_EditEvent(e,GoToLabel="")
 		Action := EventSystem_CreateSubEvent("Action","Run")
 		Event.Actions.append(Action)
 		LV_Add("Select", Action.DisplayString())
+		GUI_EditEvent("","EditEvent_EditAction")
 		return
+	}
+	else if(GoToLabel = "EditEvent_Action_MoveDown")
+	{
+		Gui, ListView, EditEvent_EditAction
+		i:=LV_GetNext("")
+		Event.Actions.swap(i,i+1)
+		LV_Modify(i+1,"Select")
+		GUI_EditEvent("","UpdateActions") ;Refresh listview
+	}
+	else if(GoToLabel = "EditEvent_Action_MoveUp")
+	{
+		Gui, ListView, EditEvent_EditAction
+		i:=LV_GetNext("")
+		Event.Actions.swap(i,i-1)
+		LV_Modify(i-1,"Select")
+		GUI_EditEvent("","UpdateActions") ;Refresh listview
 	}
 } 
 EditEventOK:
@@ -357,6 +460,12 @@ return
 EditEvent_AddCondition:
 GUI_EditEvent("","EditEvent_AddCondition")
 return
+EditEvent_Condition_MoveUp:
+GUI_EditEvent("","EditEvent_Condition_MoveUp")
+return
+EditEvent_Condition_MoveDown:
+GUI_EditEvent("","EditEvent_Condition_MoveDown")
+return
 EditEventActions:
 GUI_EditEvent("","EditEventActions")
 return
@@ -368,4 +477,10 @@ GUI_EditEvent("","EditEvent_RemoveAction")
 return
 EditEvent_AddAction:
 GUI_EditEvent("","EditEvent_AddAction")
+return
+EditEvent_Action_MoveUp:
+GUI_EditEvent("","EditEvent_Action_MoveUp")
+return
+EditEvent_Action_MoveDown:
+GUI_EditEvent("","EditEvent_Action_MoveDown")
 return

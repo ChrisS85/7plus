@@ -46,6 +46,7 @@ BugfixVersion := 0
 #include %A_ScriptDir%\Trigger.ahk
 #include %A_ScriptDir%\EditEventGUI.ahk
 #include %A_ScriptDir%\EditSubEventGUI.ahk
+#include %A_ScriptDir%\Placeholders.ahk
 #include %A_ScriptDir%\messagehooks.ahk
 #include %A_ScriptDir%\navigate.ahk
 #include %A_ScriptDir%\FolderButtonManager.ahk
@@ -74,10 +75,21 @@ BugfixVersion := 0
 #include %A_ScriptDir%\Triggers\WindowClosed.ahk
 #include %A_ScriptDir%\Triggers\WindowCreated.ahk
 #include %A_ScriptDir%\Triggers\Hotkey.ahk
+#include %A_ScriptDir%\Triggers\7plusStart.ahk
+#include %A_ScriptDir%\Triggers\ExplorerPathChanged.ahk
 
 #include %A_ScriptDir%\Conditions\WindowActive.ahk
+#include %A_ScriptDir%\Conditions\WindowExists.ahk
+#include %A_ScriptDir%\Conditions\MouseOver.ahk
 
 #include %A_ScriptDir%\Actions\Run.ahk
 #include %A_ScriptDir%\Actions\Message.ahk
+#include %A_ScriptDir%\Actions\SendKeys.ahk
+#include %A_ScriptDir%\Actions\SetDirectory.ahk
+#include %A_ScriptDir%\Actions\ShutDown.ahk
+#include %A_ScriptDir%\Actions\WindowActivate.ahk
+#include %A_ScriptDir%\Actions\WindowClose.ahk
+#include %A_ScriptDir%\Actions\WindowHide.ahk
+#include %A_ScriptDir%\Actions\WindowShow.ahk
 
 #include %A_ScriptDir%\Generic\WindowFilter.ahk

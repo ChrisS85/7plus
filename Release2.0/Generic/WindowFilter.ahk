@@ -13,6 +13,7 @@ WindowFilter_WriteXML(WindowFilterObject, ByRef WindowFilterFileHandle, Path)
 ;Get a matching window handle from a WindowFilter object
 WindowFilter_Get(WindowFilter)
 {
+	DetectHiddenWindows, On
 	if(WindowFilter.WindowMatchType = "Program")
 	{
 		d = `n  ; string separator
@@ -142,16 +143,17 @@ WindowFilter_GuiShow(WindowFilter, TriggerGUI)
 		MsgBox Wrong Match type specified!
 		Gui, Add, DropDownList, x%x% y%y% w%w% hwndhwndMatchType, Program||Class|Title|Active|UnderMouse
 	}
-	TriggerGUI.Text1 := hwndtext1
-	TriggerGUI.Text2 := hwndtext2
+	TriggerGUI.FilterText1 := hwndtext1
+	TriggerGUI.FilterText2 := hwndtext2
 	TriggerGUI.WindowFilter := hwndWindowFilter
 	TriggerGUI.MatchType := hwndMatchType
 }
 
 WindowFilter_GuiSubmit(WindowFilter, TriggerGUI)
 {
-	text1 := TriggerGUI.Text1
-	text2 := TriggerGUI.Text2
+	outputdebug submit
+	text1 := TriggerGUI.FilterText1
+	text2 := TriggerGUI.FilterText2
 	hwndMatchType := TriggerGUI.MatchType
 	ControlGetText, MatchType, , ahk_id %hwndMatchType%
 	WindowFilter.WindowMatchType := MatchType
@@ -168,4 +170,5 @@ WindowFilter_GuiSubmit(WindowFilter, TriggerGUI)
 WindowFilter_Init(WindowFilter)
 {
 	WindowFilter.WindowMatchType := "Program"
+	WindowFilter.Filter := ""
 }

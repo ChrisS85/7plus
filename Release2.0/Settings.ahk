@@ -17,15 +17,19 @@ Settings_CreateEvents() {
 	AddTab(0, "","SysTabControl321")
 	Gui, 1:Add, Text, x%x1% y%yIt% R3, You can add events here that are triggered under certain conditions. When triggered,`nthe event can launch a series of actions. This is a very powerful tool to add `nall kinds of features, and many features from 7plus are now implemented with this system.
 	yIt+=50
-	Gui, 1:Add, ListView, x%x1% y%yIt% w400 h256 vGUI_EventsList gGUI_EventsList_SelectionChange Grid -LV0x10 -Multi AltSubmit, ID|Trigger|Name
+	Gui, 1:Add, ListView, x%x1% y%yIt% w400 h256 vGUI_EventsList gGUI_EventsList_SelectionChange Grid -LV0x10 -Multi AltSubmit Checked, Enabled|ID|Trigger|Name
 	OnMessage(0x100, "WM_KEYDOWN")
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Add gGUI_EventsList_Add, Add Event
 	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Remove gGUI_EventsList_Remove, Delete Event
 	yIt += textboxstep
-	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsLisit_Edit gGUI_EventsList_Edit, Edit Event
+	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Edit gGUI_EventsList_Edit, Edit Event
+	yIt += textboxstep*2
+	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_MoveUp gGUI_EventsList_MoveUp, Move Up
+	yIt += textboxstep
+	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_MoveDown gGUI_EventsList_MoveDown, Move Down
 	yIt += 208 - textboxstep -4
-	Gui, 1:Add, Button, x%x2% y%yIt% w80 gGUI_EventsLisit_Help, Help
+	Gui, 1:Add, Button, x%x2% y%yIt% w80 gGUI_EventsList_Help, Help
 	yIt += textboxstep + 4
 	y := yIt + TextBoxTextOffset
 }
@@ -525,14 +529,21 @@ Settings_CreateAbout() {
 ;---------------------------------------------------------------------------------------------------------------
 Settings_SetupEvents() {
 	global
-	if(!Settings_Events)
-		Settings_Events := Events.DeepCopy()	
+	outputdebug lala
 	Gui, ListView, GUI_EventsList
+	i := LV_GetNext("")
+	if(!Settings_Events)
+	{
+		Settings_Events := Events.DeepCopy()	
+		i := 1
+	}
 	LV_Delete()
 	Loop % Settings_Events.len()
 	{
-		LV_Add(A_Index = 1 ? "Select" : "",Settings_Events[A_Index].ID,Settings_Events[A_Index].Trigger.DisplayString(), Settings_Events[A_Index].Name)
+		LV_Add((A_Index = i ? "Select" : "") (Settings_Events[A_Index].Enabled ? " Check": " "), "", Settings_Events[A_Index].ID,Settings_Events[A_Index].Trigger.DisplayString(), Settings_Events[A_Index].Name)
 	}
+	LV_ModifyCol(3, "AutoHdr")
+	GuiControl, 1:focus, Gui_EventsList
 	GuiControl, 1:enable, GUI_EventsList_Add
 	GuiControl, 1:enable, GUI_EventsList_Remove
 	GuiControl, 1:enable, GUI_EventsList_Edit
@@ -909,13 +920,24 @@ GUI_EventsList_SelectionChange:
 Gui, ListView, GUI_EventsList
 if(A_GuiEvent="I" && InStr(ErrorLevel, "S", true))
 {
-	GuiControl, 1:enable, GUI_EventsLisit_Edit
+	GuiControl, 1:enable, GUI_EventsList_Edit
 	GuiControl, 1:enable, GUI_EventsList_Remove
+	i:=LV_GetNext("")
+	if(i>1)
+		GuiControl, 1:enable, GUI_EventsList_MoveUp
+	else
+		GuiControl, 1:disable, GUI_EventsList_MoveUp
+	if(i<LV_GetCount())
+		GuiControl, 1:enable, GUI_EventsList_MoveDown
+	else
+		GuiControl, 1:disable, GUI_EventsList_MoveDown
 }
 else if(A_GuiEvent="I" && InStr(ErrorLevel, "s", true))
 {
-	GuiControl, 1:disable, GUI_EventsLisit_Edit
+	GuiControl, 1:disable, GUI_EventsList_Edit
 	GuiControl, 1:disable, GUI_EventsList_Remove
+	GuiControl, 1:disable, GUI_EventsList_MoveUp
+	GuiControl, 1:disable, GUI_EventsList_MoveDown
 }
 else if(A_GuiEvent="DoubleClick")
 	GUI_EventsList_Edit()
@@ -928,7 +950,8 @@ GUI_AddEvent()
 	global Settings_Events, GUI_EventsList
 	Gui, ListView, GUI_EventsList
 	Event := EventSystem_CreateEvent(Settings_Events) ;Event is added to Settings_Events here
-	LV_Add("Select", Event.ID, Event.Trigger.DisplayString(), Event.Name)
+	LV_Add("Select", "", Event.ID, Event.Trigger.DisplayString(), Event.Name)
+	GUI_EventsList_Edit()
 }
 GUI_EventsList_Remove:
 GUI_RemoveEvent()
@@ -954,10 +977,13 @@ GUI_EventsList_Edit()
 	global Settings_Events
 	Critical Off
 	Gui, ListView, GUI_EventsList
+	if(LV_GetCount("Selected") != 1)
+		return
 	i:=LV_GetNext("")
-	LV_GetText(id,i)
+	LV_GetText(id,i,2)
 	pos := Settings_Events.FindID(id)
 	event:=GUI_EditEvent(Settings_Events[pos].DeepCopy())
+	event.Enabled := LV_GetNext(pos-1, "Checked") = pos ? 1 : 0 ;Update enabled state of this event
 	if(event)
 	{
 		Settings_Events[pos] := event ;overwrite edited event
@@ -966,7 +992,22 @@ GUI_EventsList_Edit()
 	Return
 }
 
-GUI_EventsLisit_Help:
+GUI_EventsList_MoveUp:
+GUI_EventsList_Move(-1)
+return
+GUI_EventsList_MoveDown:
+GUI_EventsList_Move(1)
+return
+GUI_EventsList_Move(direction)
+{
+	global Settings_Events
+	Gui, ListView, GUI_EventsList
+	i:=LV_GetNext("")
+	Settings_Events.swap(i,i+direction)
+	LV_Modify(i+direction,"Select")
+	Settings_SetupEvents()
+}
+GUI_EventsList_Help:
 Return
 GUI_SaveEvents()
 {
@@ -976,6 +1017,15 @@ GUI_SaveEvents()
 	{
 		outputdebug first loop
 		Events[A_Index].Trigger.Disable()
+	}
+	Gui, ListView, GUI_EventsList
+	count := LV_GetCount()
+	Loop % count
+	{
+		Checked := LV_GetNext(A_Index-1, "Checked") = A_Index ? 1 : 0
+		outputdebug row %A_Index% enabled : %Checked%
+		LV_GetText(id,A_Index,2)
+		Settings_Events[Settings_Events.FindID(id)].Enabled := Checked
 	}
 	outputdebug deepcopy start
 	Events := Settings_Events.DeepCopy()
@@ -1180,7 +1230,11 @@ WM_KEYDOWN(wParam, lParam)
 		LV_Delete(i)
 	}
 	if(A_GUI = 1 && A_GuiControl = "GUI_EventsList" && wParam = 0x2E) ;Delete key pressed on CustomHotkeysList
-		GUI_RemoveEvent()		
+		GUI_RemoveEvent()
+	if(A_GUI = 4 && A_GuiControl = "EditEventConditions" && wParam = 0x2E)
+		GUI_EditEvent("","EditEvent_RemoveCondition")
+	if(A_GUI = 4 && A_GuiControl = "EditEventActions" && wParam = 0x2E)
+		GUI_EditEvent("","EditEvent_RemoveAction")
 }
 
 CustomHotkeysCommand_Change:
@@ -1640,6 +1694,7 @@ if(HideTrayIcon)
 }
 else
 	Menu, Tray, Icon
+RefreshHotkeyArrays()
 WriteIni()
 SettingsActive:=False
 Gui 1:Cancel

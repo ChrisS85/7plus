@@ -13,7 +13,9 @@ EventSystem_Startup()
 		Event := Events[A_Index]	
 		if(Event.Enabled)
 			Event.Enable()
-	}	
+	}
+	Trigger := EventSystem_CreateSubEvent("Trigger","7plusStart")
+	OnTrigger(Trigger)
 	EventScheduler()
 }
 
@@ -39,12 +41,12 @@ EventSystem_CreateBaseObjects()
 {
 	global
 	local tmpobject
-	EventSystem_Triggers := "None,WindowActivated, WindowClosed, WindowCreated, Hotkey"
-	EventSystem_Conditions := "WindowActive"
-	EventSystem_Actions := "Run, Message"
-	Trigger_Categories := object("Window", Array(), "Hotkeys", Array(), "7plus", Array(), "Other", Array())
+	EventSystem_Triggers := "None,WindowActivated, WindowClosed, WindowCreated, Hotkey,7plusStart,ExplorerPathChanged"
+	EventSystem_Conditions := "WindowActive,WindowExists,MouseOver"
+	EventSystem_Actions := "Run, Message,SendKeys,SetDirectory,Shutdown,WindowActivate,WindowClose,WindowHide,WindowShow"
+	Trigger_Categories := object("Explorer", Array(), "Window", Array(), "Hotkeys", Array(), "7plus", Array(), "Other", Array())
 	Condition_Categories := object("Window", Array(), "Mouse", Array(), "Other", Array())
-	Action_Categories := object("Window", Array(), "Input", Array(), "System", Array(), "7plus", Array(), "Other", Array())
+	Action_Categories := object("Explorer", Array(), "Window", Array(), "Input", Array(), "System", Array(), "7plus", Array(), "Other", Array())
 	
 	Loop, Parse, EventSystem_Triggers, `,,%A_Space%
 	{		
@@ -57,8 +59,10 @@ EventSystem_CreateBaseObjects()
 		tmpobject.DisplayString := "Trigger_" A_LoopField "_DisplayString"
 		tmpobject.GuiShow := "Trigger_" A_LoopField "_GuiShow"
 		tmpobject.GuiSubmit := "Trigger_" A_LoopField "_GuiSubmit"
+		tmpobject.Init := "Trigger_" A_LoopField "_Init"
+		tmpobject.Delete := "Trigger_" A_LoopField "_Delete"
 		Trigger_%A_LoopField%_Init(tmpobject)
-		Trigger_%A_LoopField%_Base := object("base",tmpobject)
+		Trigger_%A_LoopField%_Base := object("base",tmpobject)		
 		;Add type to category
 		Trigger_Categories[tmpobject.Category].append(tmpobject.Type)
 	
@@ -100,6 +104,8 @@ EventSystem_CreateBaseObjects()
 	EventBase.Name := "New event"
 	EventBase.Enabled := 1
 	EventBase.Enable := "Event_Enable"
+	EventBase.ExpandPlaceHolders := "Event_ExpandPlaceholders"
+	EventBase.PlaceHolders := Array()
 	EventBase.Trigger := EventSystem_CreateSubEvent("Trigger", "None")
 	EventBase.Conditions := Array()
 	EventBase.Actions := Array()
@@ -113,9 +119,7 @@ EventSystem_CreateSubEvent(Category,Type)
 {
 	global
 	local tmp
-	outputdebug("CreateSubEvent:" Category " " Type)
 	tmp := %Category%_%Type%_Base
-	outputdebug("object: " isobject(tmp) "type")
 	return tmp.DeepCopy() ;Object("base", %tmp%, "Type", Type)
 }
 Event_Enable(Event)
@@ -156,6 +160,15 @@ ReadEventsFile()
 		;Event state
 		Event.Enabled := xpath(EventFileHandle, "/Enabled/Text()")
 		
+		;Disable after use
+		Event.DisableAfterUse := xpath(EventFileHandle, "/DisableAfterUse/Text()")
+		
+		;Delete after use
+		Event.DeleteAfterUse := xpath(EventFileHandle, "/DeleteAfterUse/Text()")
+		
+		;One Instance
+		Event.OneInstance := xpath(EventFileHandle, "/OneInstance/Text()")
+		
 		;Read trigger values		
 		Trigger_type := xpath(TriggerHandle, "/Type/Text()")
 		Event.Trigger := EventSystem_CreateSubEvent("Trigger", Trigger_Type)
@@ -178,6 +191,9 @@ ReadEventsFile()
 			
 			;Create new cndition
 			Condition := EventSystem_CreateSubEvent("Condition", Condition_type)
+			
+			;Read Negation
+			Condition.Negate := xpath(ConditionFileHandle, "/Negate/Text()")
 			
 			;Read condition values
 			Condition.ReadXML(ConditionFileHandle)
@@ -207,12 +223,10 @@ ReadEventsFile()
 			
 			Event.Actions.append(Action)
 		}
+		Event.Trigger.Init()
 		Events.append(Event)
 	}
 }
-#n::
-EventSchedule[2].Actions[1].GuiNum := ""
-return
 WriteEventsFile()
 {
 	global ConfigPath, Events
@@ -236,6 +250,15 @@ WriteEventsFile()
 		;Write state
 		xpath(EventsFileHandle, "/Events/Event[" i "]/Enabled[+1]/Text()", Event.Enabled)
 		
+		;Disable after use
+		xpath(EventsFileHandle, "/Events/Event[" i "]/DisableAfterUse[+1]/Text()", Event.DisableAfterUse)
+		
+		;Delete after use
+		xpath(EventsFileHandle, "/Events/Event[" i "]/DeleteAfterUse[+1]/Text()", Event.DeleteAfterUse)
+		
+		;One Instance
+		xpath(EventsFileHandle, "/Events/Event[" i "]/OneInstance[+1]/Text()", Event.OneInstance)
+		
 		;Write Trigger
 		xpath(EventsFileHandle, "/Events/Event[" i "]/Trigger[+1]/Type[+1]/Text()", Event.Trigger.Type)
 		Event.Trigger.WriteXML(EventsFileHandle, "/Events/Event[" i "]/Trigger/")
@@ -246,7 +269,13 @@ WriteEventsFile()
 		{
 			j := A_Index
 			Condition := Event.Conditions[j]
+			
+			;Write condition type
 			xpath(EventsFileHandle, "/Events/Event[" i "]/Conditions/Condition[+1]/Type[+1]/Text()", Condition.Type)
+			
+			;Write Negation
+			xpath(EventsFileHandle, "/Events/Event[" i "]/Conditions/Condition[" j "]/Negate[+1]/Text()", Condition.Negate)
+			
 			Condition.WriteXML(EventsFileHandle, "/Events/Event[" i "]/Conditions/Condition[" j "]/")
 		}
 		
@@ -275,7 +304,22 @@ OnTrigger(Trigger)
 		Event := Events[A_Index]
 		if(Event.Trigger.Type = Trigger.Type && Event.Trigger.Matches(Trigger))
 		{
-			EventSchedule.append(Event.DeepCopy())
+			running := false
+			if(Event.OneInstance)
+			{
+				outputdebug one instance
+				Loop % EventSchedule.len()
+				{
+					if(EventSchedule[A_Index].ID = Event.ID)
+					{
+						outputdebug found running event
+						running := true
+						break
+					}
+				}
+			}
+			if(!running)
+				EventSchedule.append(Event.DeepCopy())
 		}
 	}
 }
@@ -292,29 +336,35 @@ EventScheduler()
 		{			
 			Event := EventSchedule[EventPos]
 			;Check conditions
-			Success := 1
+			Success := Event.Enabled
 			ConditionPos := 1
-			Loop % Event.Conditions.len()
+			if(Success)
 			{
-				result := Event.Conditions[ConditionPos].Evaluate()
-				if( result = -1) ;Not decided yet, check later
+				Loop % Event.Conditions.len()
 				{
-					Success := -1
-					break
+					result := Event.Conditions[ConditionPos].Evaluate()
+					if( result = -1) ;Not decided yet, check later
+					{
+						Success := -1
+						break
+					}
+					else if(Event.Conditions[ConditionPos].Negate) ;Result is 0 or 1 before, now invert it
+					{
+						result := 1 - result
+					}
+					if(result = 0) ;Condition did not match
+					{
+						Success := 0
+						break
+					}
+					else if(result = 1) ;This condition was fulfilled, remove it from conditions
+					{
+						Event.Conditions.Delete(ConditionPos)
+						continue
+					}
+					ConditionPos++
 				}
-				else if(result = 0) ;Condition did not match
-				{
-					Success := 0
-					break
-				}
-				else if(result = 1) ;This condition was fulfilled, remove it from conditions
-				{
-					Event.Conditions.Delete(ConditionPos)
-					continue
-				}
-				ConditionPos++
 			}
-			
 			if(Success = 0) ;Condition was not fulfilled, remove this event
 			{
 				EventSchedule.Delete(EventPos)
@@ -324,7 +374,7 @@ EventScheduler()
 			{
 				Loop % Event.Actions.len()
 				{
-					result := Event.Actions[1].Execute()
+					result := Event.Actions[1].Execute(Event)
 					if(result = -1) ;Action needs more time to finish, check back in next main loop
 						break
 					Event.Actions.Delete(1)
@@ -333,6 +383,13 @@ EventScheduler()
 			if(Event.Actions.len() = 0) ;No more actions in this event, consider it processed and remove it from queue
 			{
 				EventSchedule.Delete(EventPos)
+				if(Event.DisableAfterUse)
+					Events[Events.FindID(Event.ID)].Enabled := false
+				if(Event.DeleteAfterUse)
+				{
+					Events[Events.FindID(Event.ID)].Delete()
+					Events.Delete(Events.FindID(Event.ID))
+				}
 				continue
 			}
 			EventPos++

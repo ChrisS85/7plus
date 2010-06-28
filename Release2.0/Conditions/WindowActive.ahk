@@ -1,6 +1,7 @@
 Condition_WindowActive_Init(Condition)
 {
 	Condition.Category := "Window"
+	WindowFilter_Init(Condition)
 }
 Condition_WindowActive_ReadXML(Condition, ConditionFileHandle)
 {
