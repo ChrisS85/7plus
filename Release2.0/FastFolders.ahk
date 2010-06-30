@@ -66,10 +66,13 @@ ClearStoredFolder(ByRef FF, ByRef FFTitle)
 	}
 	Critical, Off
 }
-UpdateStoredFolder(ByRef FF, ByRef FFTitle)
+UpdateStoredFolder(ByRef FF, ByRef FFTitle, Folder="")
 {
 	;Update values of FF and FFTitle, then refresh fast folders
-	FF:=GetCurrentFolder()
+	if(Folder)
+		FF := Folder
+	else
+		FF:=GetCurrentFolder()
 	title:=FF	
 	if(strStartsWith(title,"::") && WinActive("ahk_group ExplorerGroup"))
 		WinGetTitle,title,A

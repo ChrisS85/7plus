@@ -2,7 +2,6 @@
 
 Shell_GoBack(hWnd=0)
 {
-	Critical
 	If   hWnd||(hWnd:=WinExist("ahk_class CabinetWClass"))||(hWnd:=WinExist("ahk_class ExploreWClass")) 
 	{
 		sa := Com_CreateObject("Shell.Application")
@@ -15,14 +14,11 @@ Shell_GoBack(hWnd=0)
 				break
 		}
 		Window.GoBack()
-		Critical, Off
 		return
 	}
-	Critical, Off
 }
 Shell_GoForward(hWnd=0)
 {
-	Critical
 	If   hWnd||(hWnd:=WinExist("ahk_class CabinetWClass"))||(hWnd:=WinExist("ahk_class ExploreWClass")) 
 	{
 		sa := Com_CreateObject("Shell.Application")
@@ -35,38 +31,32 @@ Shell_GoForward(hWnd=0)
 				break
 		}
 		Window.GoForward()
-		Critical, Off
 		return
 	}
-	Critical, Off
 }
 
 ShellNavigate(sPath, hWnd=0) 
-{ 
-	Critical
+{
 	If   hWnd||(hWnd:=WinExist("ahk_class CabinetWClass"))||(hWnd:=WinExist("ahk_class ExploreWClass")) 
 	{
 		sa := Com_CreateObject("Shell.Application")
 		wins := sa.Windows
 		loop % wins.count
 		{
-		window:=wins.Item(A_Index-1)
-		If Not InStr( window.FullName, "steam.exe" ) ; ensure pwb isn't IE
-			if(window.Hwnd=hWnd)
-				break
+			window:=wins.Item(A_Index-1)
+			If Not InStr( window.FullName, "steam.exe" ) ; ensure pwb isn't IE
+				if(window.Hwnd=hWnd)
+					break
 		}
 		DllCall("shell32\SHParseDisplayName", "Uint", COM_Unicode4Ansi(wPath,sPath) , "Uint", 0, "UintP", pidl, "Uint", 0, "Uint", 0)
 		VarSetCapacity(sa,24,0), NumPut(DllCall("shell32\ILGetSize","Uint",pidl), NumPut(pidl, NumPut(1, NumPut(1,sa)),4)) 
 		Window.Navigate2(COM_Parameter(0x2011,&sa))
-		Critical, Off
 		return
 	}
-	Critical, Off
 }
 
 RefreshExplorer() 
 { 
-	Critical
 	hwnd:=WinExist("A")
 	If (WinActive("ahk_group ExplorerGroup"))
 	{
@@ -83,7 +73,6 @@ RefreshExplorer()
 	}
 	else if(IsDialog())
 		Send {F5}
-	Critical, Off
 }
 	
 /*
@@ -132,7 +121,7 @@ SetDirectory(sPath)
 {
 	sPath:=ExpandEnvVars(sPath)
 	if(strEndsWith(sPath,":"))
-		sPath .="\"s
+		sPath .="\"
 	If (WinActive("ahk_group ExplorerGroup"))
 	{
 		;Folders || Namespace || FTP || Saved search || network computers
@@ -317,7 +306,6 @@ GetCurrentFolder(hwnd=0, DisplayName=0)
 
 SelectFiles(sSelect,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)
 {
-	Critical
 	If   hWnd||(hWnd:=WinActive("ahk_class CabinetWClass"))||(hWnd:=WinActive("ahk_class ExploreWClass")) 
 	{
 		sa := Com_CreateObject("Shell.Application")		
@@ -340,8 +328,7 @@ SelectFiles(sSelect,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)
 			If  A_LoopField <>
 				COM_Invoke(doc,"SelectItem",doc.Folder.ParseName(A_LoopField),(A_Index=1 ? value1 : value)) ;http://msdn.microsoft.com/en-us/library/bb774047(VS.85).aspx					
 		}
-	} 
-	Critical, Off
+	}
 }
 
 InvertSelection()
@@ -364,7 +351,6 @@ InvertSelection()
 
 ShellFolder(hWnd=0,returntype=0) 
 { 
-	Critical
 	If   hWnd||(hWnd:=WinActive("ahk_class CabinetWClass"))||(hWnd:=WinActive("ahk_class ExploreWClass")) 
 	{
 		sa := Com_CreateObject("Shell.Application")

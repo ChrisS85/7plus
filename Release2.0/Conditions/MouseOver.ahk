@@ -12,12 +12,6 @@ Condition_MouseOver_ReadXML(Condition, ConditionFileHandle)
 		WindowFilter_ReadXML(Condition, ConditionFileHandle)
 	}
 }
-Condition_MouseOver_WriteXML(Condition, ByRef ConditionFileHandle, Path)
-{
-	xpath(ConditionFileHandle, Path "MouseOverType[+1]/Text()", Condition.MouseOverType)
-	if(Condition.MouseOverType = "Window")
-		WindowFilter_WriteXML(Condition, ConditionFileHandle, Path)
-}
 Condition_MouseOver_Evaluate(Condition)
 {
 	if(Condition.MouseOverType = "Window")
@@ -49,67 +43,46 @@ Condition_MouseOver_DisplayString(Condition)
 
 Condition_MouseOver_GuiShow(Condition, ConditionGUI,GoToLabel="")
 {
-	static sConditionGUI, sCondition, hwndMouseOverType
+	static sConditionGUI, sCondition, PreviousSelection
 	if(GoToLabel = "")
 	{
 		sConditionGUI := ConditionGUI
 		sCondition := Condition
+		PreviousSelection := ""
+		SubEventGUI_Add(Condition, ConditionGUI, "DropDownList", "MouseOverType", "Window|Titlebar|MinimizeButton|MaximizeButton|CloseButton", "MouseOver_SelectionChange", "Mouse Over:")
 		x := ConditionGUI.x
 		y := ConditionGUI.y
-		y += 4
-		Gui, Add, Text, x%x% y%y% hwndhwndText1, Mouse over:
-		x += 70
-		y -= 4
 		w := 200
-		outputdebug("type " Condition.MouseOverType)
-		if(Condition.MouseOverType = "Window")
-		{
-			Gui, Add, DropDownList, x%x% y%y% w%w% hwndhwndMouseOverType gMouseOver_SelectionChange, Window||Titlebar|MinimizeButton|MaximizeButton|CloseButton
-			ConditionGUI.y := ConditionGUI.y + 30
-			WindowFilter_GuiShow(sCondition, sConditionGUI)
-		}
-		else if(Condition.MouseOverType = "Titlebar")
-			Gui, Add, DropDownList, x%x% y%y% w%w% hwndhwndMouseOverType gMouseOver_SelectionChange, Window|Titlebar||MinimizeButton|MaximizeButton|CloseButton
-		else if(Condition.MouseOverType = "MinimizeButton")
-			Gui, Add, DropDownList, x%x% y%y% w%w% hwndhwndMouseOverType gMouseOver_SelectionChange, Window|Titlebar|MinimizeButton||MaximizeButton|CloseButton
-		else if(Condition.MouseOverType = "MaximizeButton")
-			Gui, Add, DropDownList, x%x% y%y% w%w% hwndhwndMouseOverType gMouseOver_SelectionChange, Window|Titlebar|MinimizeButton|MaximizeButton||CloseButton
-		else if(Condition.MouseOverType = "CloseButton")
-			Gui, Add, DropDownList, x%x% y%y% w%w% hwndhwndMouseOverType gMouseOver_SelectionChange, Window|Titlebar||MinimizeButton|MaximizeButton|CloseButton||
-		if(Condition.MouseOverType != "Window")
-			ConditionGUI.y := ConditionGUI.y + 30
-		ConditionGUI.MouseOverType := hwndMouseOverType
-		ConditionGUI.Text1 := hwndText1
+		Condition_MouseOver_GuiShow("", "","MouseOver_SelectionChange")
 	}
 	else if(GoToLabel = "MouseOver_SelectionChange")
 	{
-		hwndMouseOverType := sConditionGUI.MouseOverType
-		ControlGetText, MouseOverType, , ahk_id %hwndMouseOverType%
+		DropDown_MouseOverType := sConditionGUI.DropDown_MouseOverType
+		ControlGetText, MouseOverType, , ahk_id %DropDown_MouseOverType%
+		outputdebug selected %MouseOverType%
 		if(MouseOverType = "Window")
 		{
-			WindowFilter_Init(sCondition)
-			WindowFilter_GuiShow(sCondition, sConditionGUI)
+			if(MouseOverType != PreviousSelection)
+			{
+				WindowFilter_Init(sCondition)
+				WindowFilter_GuiShow(sCondition, sConditionGUI)
+			}
 		}
 		else
 		{
 			WindowFilter_GuiSubmit(sCondition, sConditionGUI)
+			if(PreviousSelection = "Window")
+				sConditionGUI.y := sConditionGUI.y - 60
 		}
+		PreviousSelection := MouseOverType
 	}
 }
 MouseOver_SelectionChange:
 Condition_MouseOver_GuiShow("", "","MouseOver_SelectionChange")
 return
 
+;Using WindowFilter_GUISubmit is not required, as it does the same basically
 Condition_MouseOver_GuiSubmit(Condition, ConditionGUI)
 {	
-	hwndMouseOverType := ConditionGUI.MouseOverType
-	ControlGetText, MouseOverType, , ahk_id %hwndMouseOverType%
-	Condition.MouseOverType := MouseOverType
-	if(MouseOverType := "Window")
-	{
-		WindowFilter_GuiSubmit(Condition, ConditionGUI)
-	}
-	Text1 := ConditionGUI.Text1
-	WinKill, ahk_id %hwndMouseOverType%
-	WinKill, ahk_id %Text1%
+	SubEventGUI_GUISubmit(Condition, ConditionGUI)
 } 

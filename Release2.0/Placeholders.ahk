@@ -13,46 +13,136 @@ Event_ExpandPlaceHolders(Event,text)
 ExpandGlobalPlaceholders(text)
 {
 	global ExplorerPath,PreviousExplorerPath
-	text := StringReplace(text, "%ProgramFiles%", A_ProgramFiles, 1)
-	text := StringReplace(text, "%Windir%", A_WinDir, 1)
-	text := StringReplace(text, "%Temp%", A_Temp, 1)
-	text := StringReplace(text, "%AppData%", A_AppData, 1)
-	text := StringReplace(text, "%Desktop%", A_Desktop, 1)
-	text := StringReplace(text, "%MyDocuments%", A_MyDocuments, 1)
-	text := StringReplace(text, "${Clip}", Clipboard, 1)
-	text := StringReplace(text, "${A}", WinExist("A"), 1)
-	MouseGetPos,x,y,UnderMouse
-	text := StringReplace(text, "${U}", UnderMouse, 1)
-	text := StringReplace(text, "${MX}", x, 1)
-	text := StringReplace(text, "${MX}", y, 1)
-	while(RegExMatch(text, "\$\{DateTime[^}]+}", match))
+	len := strLen(text)
+	pos := 1
+	Loop % len
 	{
-		match := SubStr(SubStr(match,11),1,-1)
-		FormatTime, match ,, %match%
-		text := RegExReplace(text, "\$\{DateTime[^}]+}", match,"",1)
-	}
-	;Extract filename from active window title
-	RegExMatch(WinGetTitle("A"),"([a-zA-Z]:\\[^/:\*\?<>\|]+\.\w{2,6})|(\\\\[^/:\*\?<>\|]+\.\w{2,6})",titlepath)
-	StringReplace, text, text, ${T}, "%titlepath%"
-	If(WinActive("ahk_group ExplorerGroup")) ;Supported placeholders: ${P} - Current Path, ${Sel\d+} - selectedfile[i], ${N} - All selected files separated by spaces
-	{
-		StringReplace, text, text, ${P}, "%ExplorerPath%"		
-		StringReplace, text, text, ${PP}, "%PreviousExplorerPath%"
-		if(InStr(text,"${Sel"))
+		2chars := SubStr(text, pos, 2)
+		if(2chars = "${")
 		{
-			files:=GetSelectedFiles()
-			Loop, Parse, files, `n, %A_Space%
+			end := InStr(text, "}",0,pos + 2)
+			if(end)
 			{
-				StringReplace, text, text, ${Sel%A_Index%}, "%A_LoopField%"
+				placeholder := SubStr(text, pos + 2, end - (pos + 2))
+				expanded := ExpandPlaceholder(placeholder)
+				text := SubStr(text, 1, pos - 1) expanded SubStr(text, end + 1)
+				pos += strLen(expanded)
+				continue
 			}
-			text := RegExReplace(text, "\$\{Sel\d+}") ;remove placeholders for no selected files
-			files2 := ""
-			Loop, Parse, files, `n
-				files2 .= """" A_LoopField """ "
-			files2 := strTrimRight(files2," ")
-			
-			StringReplace, text, text, ${SelN}, %files2%
 		}
+		char := SubStr(text, pos, 1)
+		if(char = "%")
+		{
+			end := InStr(text, "%",0,pos + 1)
+			if(end)
+			{
+				placeholder := SubStr(text, pos + 1, end - (pos + 1))
+				expanded := ExpandPlaceholder(placeholder)
+				text := SubStr(text, 1, pos - 1) expanded SubStr(text, end + 1)
+				pos += strLen(expanded)
+				continue
+			}
+		}
+		pos++
 	}
 	return text
+}
+ExpandPlaceholder(Placeholder)
+{
+	global ExplorerPath, PreviousExplorerPath
+	if(Placeholder = "ProgramFiles")
+		return A_ProgramFiles
+	else if(Placeholder = "Windir")
+		return A_WinDir
+	else if(Placeholder = "Temp")
+		return A_Temp
+	else if(Placeholder = "AppData")
+		return A_AppData
+	else if(Placeholder = "Desktop")
+		return A_Desktop
+	else if(Placeholder = "MyDocuments")
+		return A_MyDocuments
+	else if(Placeholder = "Clip")
+		return ReadClipboardText()
+	else if(Placeholder = "A")
+		return WinExist("A")
+	else if(Placeholder = "U" || strStartsWith(Placeholder,"M")) ;Mouse submenu
+	{
+		if(strlen(Placeholder > 1) && InStr(Placeholder, "A"))
+			CoordMode, Mouse, Relative
+		MouseGetPos,x,y,UnderMouse
+		if(strlen(Placeholder > 1) && InStr(Placeholder, "U"))
+		{
+			WinGetPos, wx, wy, , ,ahk_id %UnderMouse%
+			x -= wx
+			y -= wy
+		}
+		if(Placeholder = "U")
+			return UnderMouse
+		else if(InStr(Placeholder, "X"))
+			return x
+		else if(InStr(Placeholder, "Y"))
+			return y
+	}
+	else if(strStartsWith(Placeholder, "DateTime"))
+	{
+		Placeholder := SubStr(Placeholder, 9)
+		FormatTime, Placeholder ,, %Placeholder%
+		return Placeholder
+	}
+	else if(Placeholder = "T")
+	{
+		;Extract filename from active window title
+		RegExMatch(WinGetTitle("A"),"([a-zA-Z]:\\[^/:\*\?<>\|]+\.\w{2,6})|(\\\\[^/:\*\?<>\|]+\.\w{2,6})",titlepath)
+		return titlepath
+	}
+	else if(Placeholder = "P")
+		return ExplorerPath
+	else if(Placeholder = "T")
+		return PreviousExplorerPath
+	else if(strStartsWith(Placeholder, "Sel") && WinActive("ahk_group ExplorerGroup"))
+	{
+		files:=GetSelectedFiles()
+		RegExMatch(Placeholder,"Sel\d+",number)
+		array := Array()
+		if(number)
+		{
+			number := SubStr(number, 4)
+			StringSplit, files, files, `n
+			if(files0 >= number)
+				array.append(files%number%)
+		}
+		else if(strStartsWith(Placeholder, "SelN"))
+			Loop, Parse, files, `n, %A_Space%
+			{
+				array.append(A_LoopField)
+			}
+		if(array.len() = 0)
+			return ""
+		Placeholder := SubStr(Placeholder, 4+max(strLen(number), 1))
+		quote := InStr(Placeholder, "Q")
+		Filename := InStr(Placeholder, "NE")
+		FilenameNoExt := !Filename && InStr(Placeholder, "N")
+		Extension := !Filename && InStr(Placeholder, "E")
+		FilePath := InStr(Placeholder, "D")
+		NewLine := InStr(Placeholder, "M")
+		output := ""
+		Loop % array.len()
+		{
+			file := array[A_Index]
+			SplitPath, file, name, path, ext, namenoext
+			if(Filename)
+				file := name
+			else if(FilenameNoExt)
+				file := namenoext
+			else if(Extension)
+				file := ext
+			else if(FilePath)
+				file := path
+			if(quote)
+				file := """" file """"
+			output .= file (NewLine ? "`n" : " ")
+		}
+		return SubStr(output,1,-1)
+	}
 }

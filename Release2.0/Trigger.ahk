@@ -34,6 +34,7 @@ EventSystem_CreateEvent(Events)
 	Events.HighestID := Events.HighestID + 1
 	Event := Object("base",EventBase.DeepCopy()) ;Need to use base to make functions work
 	Event.ID := Events.HighestID
+	Event.Enabled := true
 	Events.append(Event)
 	return Event
 }
@@ -42,11 +43,11 @@ EventSystem_CreateBaseObjects()
 	global
 	local tmpobject
 	EventSystem_Triggers := "None,WindowActivated, WindowClosed, WindowCreated, Hotkey,7plusStart,ExplorerPathChanged"
-	EventSystem_Conditions := "WindowActive,WindowExists,MouseOver"
-	EventSystem_Actions := "Run, Message,SendKeys,SetDirectory,Shutdown,WindowActivate,WindowClose,WindowHide,WindowShow"
+	EventSystem_Conditions := "MouseOver,IsRenaming,WindowActive,WindowExists"
+	EventSystem_Actions := "Clipboard,Clipmenu,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,Message,MinimizeToTray,NewFile,NewFolder,Run,SendKeys,SetDirectory,Shutdown,WindowActivate,WindowClose,WindowHide,WindowShow"
 	Trigger_Categories := object("Explorer", Array(), "Window", Array(), "Hotkeys", Array(), "7plus", Array(), "Other", Array())
-	Condition_Categories := object("Window", Array(), "Mouse", Array(), "Other", Array())
-	Action_Categories := object("Explorer", Array(), "Window", Array(), "Input", Array(), "System", Array(), "7plus", Array(), "Other", Array())
+	Condition_Categories := object("Explorer", Array(), "Mouse", Array(), "Other", Array(), "Window", Array())
+	Action_Categories := object("Explorer", Array(), "FastFolders", Array(), "Window", Array(), "Input", Array(), "System", Array(), "7plus", Array(), "Other", Array())
 	
 	Loop, Parse, EventSystem_Triggers, `,,%A_Space%
 	{		
@@ -141,7 +142,6 @@ ReadEventsFile()
 		EventFileHandle:=xpath(EventsFileHandle, "/Events/Event[" i "]/*")
 		if(!EventFileHandle)
 			break
-		outputdebug read event
 		xpath_load(EventFileHandle)
 		TriggerHandle :=  xpath(EventFileHandle, "/Trigger/*")
 		xpath_load(TriggerHandle)
@@ -156,6 +156,8 @@ ReadEventsFile()
 
 		;Event Name
 		Event.Name := xpath(EventFileHandle,"/Name/Text()")
+		Event.Name := StringReplace(Event.Name,"&lt;","<",1)
+		Event.Name := StringReplace(Event.Name,"&gt;",">",1)
 		
 		;Event state
 		Event.Enabled := xpath(EventFileHandle, "/Enabled/Text()")
@@ -173,6 +175,13 @@ ReadEventsFile()
 		Trigger_type := xpath(TriggerHandle, "/Type/Text()")
 		Event.Trigger := EventSystem_CreateSubEvent("Trigger", Trigger_Type)
 		Event.Trigger.ReadXML(TriggerHandle)
+		
+		enum := Event.Trigger._newEnum()
+		while enum[key,value]
+		{			
+			Event.Trigger[key] := StringReplace(Event.Trigger[key],"&lt;","<",1)
+			Event.Trigger[key] := StringReplace(Event.Trigger[key],"&gt;",">",1)
+		}
 		
 		;Read conditions
 		Loop
@@ -198,6 +207,13 @@ ReadEventsFile()
 			;Read condition values
 			Condition.ReadXML(ConditionFileHandle)
 			
+			enum := Condition._newEnum()
+			while enum[key,value]
+			{			
+				Condition[key] := StringReplace(Condition[key],"&lt;","<",1)
+				Condition[key] := StringReplace(Condition[key],"&gt;",">",1)
+			}
+			
 			Event.Conditions.append(Condition)
 		}
 		
@@ -220,6 +236,13 @@ ReadEventsFile()
 			
 			;Read action values
 			Action.ReadXML(ActionFileHandle)
+			
+			enum := Action._newEnum()
+			while enum[key,value]
+			{			
+				Action[key] := StringReplace(Action[key],"&lt;","<",1)
+				Action[key] := StringReplace(Action[key],"&gt;",">",1)
+			}
 			
 			Event.Actions.append(Action)
 		}
@@ -244,8 +267,10 @@ WriteEventsFile()
 		;Write ID
 		xpath(EventsFileHandle, "/Events/Event[+1]/ID[+1]/Text()", Event.ID)
 		
-		;Write name
-		xpath(EventsFileHandle, "/Events/Event[" i "]/Name[+1]/Text()", Event.Name)
+		;Write name		
+		Name := StringReplace(Event.Name,"<","&lt;",1)
+		Name := StringReplace(Name,">","&gt;",1)
+		xpath(EventsFileHandle, "/Events/Event[" i "]/Name[+1]/Text()", Name)
 		
 		;Write state
 		xpath(EventsFileHandle, "/Events/Event[" i "]/Enabled[+1]/Text()", Event.Enabled)
@@ -259,9 +284,20 @@ WriteEventsFile()
 		;One Instance
 		xpath(EventsFileHandle, "/Events/Event[" i "]/OneInstance[+1]/Text()", Event.OneInstance)
 		
-		;Write Trigger
+		;Write Trigger type, since it's stored in base object, and isn't iterated below
 		xpath(EventsFileHandle, "/Events/Event[" i "]/Trigger[+1]/Type[+1]/Text()", Event.Trigger.Type)
-		Event.Trigger.WriteXML(EventsFileHandle, "/Events/Event[" i "]/Trigger/")
+		
+		enum := Event.Trigger._newEnum()
+		while enum[key,value]
+		{
+			if(key = "Category" || strStartsWith(key, "tmp"))
+				continue				
+			escaped := StringReplace(value,"<","&lt;",1)
+			escaped := StringReplace(escaped,">","&gt;",1)
+			xpath(EventsFileHandle, "/Events/Event[" i "]/Trigger/" key "[+1]/Text()", escaped)
+		}
+		;Since some triggers might have to do special preprocessing, lets allow them to overwrite the values read above
+		;Event.Trigger.WriteXML(EventsFileHandle, "/Events/Event[" i "]/Trigger/")
 		
 		;Write Conditions
 		xpath(EventsFileHandle, "/Events/Event[" i "]/Conditions[+1]")
@@ -270,13 +306,21 @@ WriteEventsFile()
 			j := A_Index
 			Condition := Event.Conditions[j]
 			
-			;Write condition type
+			;Write condition type, since it's stored in base object, and isn't iterated below
 			xpath(EventsFileHandle, "/Events/Event[" i "]/Conditions/Condition[+1]/Type[+1]/Text()", Condition.Type)
 			
-			;Write Negation
-			xpath(EventsFileHandle, "/Events/Event[" i "]/Conditions/Condition[" j "]/Negate[+1]/Text()", Condition.Negate)
-			
-			Condition.WriteXML(EventsFileHandle, "/Events/Event[" i "]/Conditions/Condition[" j "]/")
+			enum := Condition._newEnum()
+			while enum[key,value]
+			{
+				if(key = "Category" || strStartsWith(key, "tmp"))
+					continue
+						
+				escaped := StringReplace(value,"<","&lt;",1)
+				escaped := StringReplace(escaped,">","&gt;",1)
+				xpath(EventsFileHandle, "/Events/Event[" i "]/Conditions/Condition[" j "]/" key "[+1]/Text()", escaped)
+			}
+			;Since some triggers might have to do special preprocessing, lets allow them to overwrite the values read above
+			;Condition.WriteXML(EventsFileHandle, "/Events/Event[" i "]/Conditions/Condition[" j "]/")
 		}
 		
 		;Write Actions
@@ -285,8 +329,21 @@ WriteEventsFile()
 		{
 			j := A_Index
 			Action := Event.Actions[j]
+			
+			;Write action type, since it's stored in base object, and isn't iterated below
 			xpath(EventsFileHandle, "/Events/Event[" i "]/Actions/Action[+1]/Type[+1]/Text()", Action.Type)
-			Action.WriteXML(EventsFileHandle, "/Events/Event[" i "]/Actions/Action[" j "]/")
+			
+			enum := Action._newEnum()
+			while enum[key,value]
+			{
+				if(key = "Category" || strStartsWith(key, "tmp"))
+					continue
+				
+				escaped := StringReplace(value,"<","&lt;",1)
+				escaped := StringReplace(escaped,">","&gt;",1)
+				xpath(EventsFileHandle, "/Events/Event[" i "]/Actions/Action[" j "]/" key "[+1]/Text()", escaped)
+			}
+			;Action.WriteXML(EventsFileHandle, "/Events/Event[" i "]/Actions/Action[" j "]/")
 		}
 	}
 	;Save File
@@ -307,12 +364,10 @@ OnTrigger(Trigger)
 			running := false
 			if(Event.OneInstance)
 			{
-				outputdebug one instance
 				Loop % EventSchedule.len()
 				{
 					if(EventSchedule[A_Index].ID = Event.ID)
 					{
-						outputdebug found running event
 						running := true
 						break
 					}

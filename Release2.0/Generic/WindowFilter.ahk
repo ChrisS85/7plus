@@ -1,14 +1,13 @@
 ;Generic Window Filter
+WindowFilter_Init(WindowFilter)
+{
+	WindowFilter.WindowMatchType := "Program"
+	WindowFilter.Filter := ""
+}
 WindowFilter_ReadXML(WindowFilterObject, WindowFilterFileHandle)
 {
 	WindowFilterObject.WindowMatchType := xpath(WindowFilterFileHandle, "/WindowMatchType/Text()")
 	WindowFilterObject.Filter := xpath(WindowFilterFileHandle, "/Filter/Text()")
-}
-
-WindowFilter_WriteXML(WindowFilterObject, ByRef WindowFilterFileHandle, Path)
-{
-	xpath(WindowFilterFileHandle, Path "WindowMatchType[+1]/Text()", WindowFilterObject.WindowMatchType)
-	xpath(WindowFilterFileHandle, Path "Filter[+1]/Text()", WindowFilterObject.Filter)
 }
 ;Get a matching window handle from a WindowFilter object
 WindowFilter_Get(WindowFilter)
@@ -116,59 +115,26 @@ WindowFilter_DisplayString(WindowFilter)
 
 WindowFilter_GuiShow(WindowFilter, TriggerGUI)
 {
-	x := TriggerGui.x
-	y := TriggerGui.y
-	y += 4
-	Gui, Add, Text, x%x% y%y% hwndhwndtext1, MatchType:
-	y += 30
-	Gui, Add, Text, x%x% y%y% hwndhwndtext2, Window Filter:
-	x += 70
-	y -= 4
-	w := 200
-	Filter := WindowFilter.Filter
-	Gui, Add, Edit, x%x% y%y% w%w% hwndhwndWindowFilter, %Filter%
-	y -= 30
-	if(WindowFilter.WindowMatchType = "Program")
-		Gui, Add, DropDownList, x%x% y%y% w%w% hwndhwndMatchType, Program||Class|Title|Active|UnderMouse
-	else if(WindowFilter.WindowMatchType = "Class")
-		Gui, Add, DropDownList, x%x% y%y% w%w% hwndhwndMatchType, Program|Class||Title|Active|UnderMouse
-	else if(WindowFilter.WindowMatchType = "Title")
-		Gui, Add, DropDownList, x%x% y%y% w%w% hwndhwndMatchType, Program|Class|Title||Active|UnderMouse
-	else if(WindowFilter.WindowMatchType = "Active")
-		Gui, Add, DropDownList, x%x% y%y% w%w% hwndhwndMatchType, Program||Class|Title|Active||UnderMouse
-	else if(WindowFilter.WindowMatchType = "UnderMouse")
-		Gui, Add, DropDownList, x%x% y%y% w%w% hwndhwndMatchType, Program||Class|Title|Active|UnderMouse||
-	else
-	{
-		MsgBox Wrong Match type specified!
-		Gui, Add, DropDownList, x%x% y%y% w%w% hwndhwndMatchType, Program||Class|Title|Active|UnderMouse
-	}
-	TriggerGUI.FilterText1 := hwndtext1
-	TriggerGUI.FilterText2 := hwndtext2
-	TriggerGUI.WindowFilter := hwndWindowFilter
-	TriggerGUI.MatchType := hwndMatchType
+	SubEventGUI_Add(WindowFilter, TriggerGUI, "DropDownList", "WindowMatchType", "Program|Class|Title|Active|UnderMouse", "", "Match Type:")
+	SubEventGUI_Add(WindowFilter, TriggerGUI, "Edit", "Filter", "", "", "Window Filter:")
 }
 
+;Window filter uses own GUISubmit function, so it can be executed without storing its ancestor's values
 WindowFilter_GuiSubmit(WindowFilter, TriggerGUI)
 {
-	outputdebug submit
-	text1 := TriggerGUI.FilterText1
-	text2 := TriggerGUI.FilterText2
-	hwndMatchType := TriggerGUI.MatchType
-	ControlGetText, MatchType, , ahk_id %hwndMatchType%
+	Desc_WindowMatchType := TriggerGUI.Desc_WindowMatchType
+	Desc_Filter := TriggerGUI.Desc_Filter
+	DropDown_WindowMatchType := TriggerGUI.DropDown_WindowMatchType
+	Edit_Filter := TriggerGUI.Edit_Filter
+	
+	ControlGetText, MatchType, , ahk_id %DropDown_WindowMatchType%
 	WindowFilter.WindowMatchType := MatchType
-	hwndWindowFilter := TriggerGUI.WindowFilter
-	ControlGetText, Filter, , ahk_id %hwndWindowFilter%
+	
+	ControlGetText, Filter, , ahk_id %Edit_Filter%
 	WindowFilter.Filter := Filter
-	outputdebug kill %text1%
-	WinKill, ahk_id %text1%
-	WinKill, ahk_id %text2%
-	WinKill, ahk_id %hwndMatchType%
-	WinKill, ahk_id %hwndWindowFilter%
-}
-
-WindowFilter_Init(WindowFilter)
-{
-	WindowFilter.WindowMatchType := "Program"
-	WindowFilter.Filter := ""
+	
+	WinKill, ahk_id %Desc_WindowMatchType%
+	WinKill, ahk_id %Desc_Filter%
+	WinKill, ahk_id %DropDown_WindowMatchType%
+	WinKill, ahk_id %Edit_Filter%
 }

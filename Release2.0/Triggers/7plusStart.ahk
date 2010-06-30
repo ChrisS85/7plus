@@ -5,9 +5,6 @@ Trigger_7plusStart_Init(Trigger)
 Trigger_7plusStart_ReadXML(Trigger, TriggerFileHandle)
 {
 }
-Trigger_7plusStart_WriteXML(Trigger, ByRef TriggerFileHandle, Path)
-{	
-}
 Trigger_7plusStart_Enable(Trigger)
 {
 }

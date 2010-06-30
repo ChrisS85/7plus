@@ -950,7 +950,7 @@ GUI_AddEvent()
 	global Settings_Events, GUI_EventsList
 	Gui, ListView, GUI_EventsList
 	Event := EventSystem_CreateEvent(Settings_Events) ;Event is added to Settings_Events here
-	LV_Add("Select", "", Event.ID, Event.Trigger.DisplayString(), Event.Name)
+	LV_Add("Select Check", "", Event.ID, Event.Trigger.DisplayString(), Event.Name)
 	GUI_EventsList_Edit()
 }
 GUI_EventsList_Remove:
@@ -961,7 +961,7 @@ GUI_RemoveEvent()
 	global Settings_Events
 	Gui, ListView, GUI_EventsList
 	i:=LV_GetNext("")
-	LV_GetText(id,i)
+	LV_GetText(id,i,2)
 	pos := Settings_Events.FindID(id)
 	if(pos>0)
 		Settings_Events.Delete(pos)

@@ -8,12 +8,6 @@ Action_Message_ReadXML(Action, ActionFileHandle)
 	Action.Title := xpath(ActionFileHandle, "/Title/Text()")
 	Action.Timeout := xpath(ActionFileHandle, "/Timeout/Text()")
 }
-Action_Message_WriteXML(Action, ByRef ActionFileHandle, Path)
-{
-	xpath(ActionFileHandle, Path "Text[+1]/Text()", Action.Text)
-	xpath(ActionFileHandle, Path "Title[+1]/Text()", Action.Title)
-	xpath(ActionFileHandle, Path "TimeOut[+1]/Text()", Action.Timeout)
-}
 Action_Message_Execute(Action,Event)
 {
 	global EventSchedule
@@ -55,57 +49,32 @@ Action_Message_DisplayString(Action)
 	return "Message " Action.Text
 }
 
-Action_Message_GuiShow(Action, ActionGUI)
+Action_Message_GuiShow(Action, ActionGUI, GoToLabel = "")
 {
-	x := ActionGui.x
-	y := ActionGui.y
-	y += 4
-	Gui, Add, Text, x%x% y%y% hwndhwndtext1, Text:
-	y += 30
-	Gui, Add, Text, x%x% y%y% hwndhwndtext2, Window Title:
-	y += 30
-	Gui, Add, Text, x%x% y%y% hwndhwndtext3, Timeout:
-	x += 70
-	y -= 64
-	w := 200
-	text := Action.Text
-	title := Action.Title
-	timeout := Action.Timeout
-	Gui, Add, Edit, x%x% y%y% w%w% hwndhwndText, %text%
-	y += 30
-	Gui, Add, Edit, x%x% y%y% w%w% hwndhwndTitle, %title%
-	y += 30
-	Gui, Add, Edit, x%x% y%y% w%w% hwndhwndTimeout, %timeout%
-	
-	ActionGUI.Text1 := hwndtext1
-	ActionGUI.Text2 := hwndtext2
-	ActionGUI.Text3 := hwndtext3
-	ActionGUI.Text := hwndText
-	ActionGUI.Title := hwndTitle
-	ActionGUI.Timeout := hwndTimeout
+	static sActionGUI
+	if(GoToLabel = "")
+	{
+		sActionGUI := ActionGUI
+		SubEventGUI_Add(Action, ActionGUI, "Edit", "Text", "", "", "Text:", "Placeholders", "Action_Message_Text_Placeholders")
+		SubEventGUI_Add(Action, ActionGUI, "Edit", "Title", "", "", "Window Title:", "Placeholders", "Action_Message_Title_Placeholders")
+		SubEventGUI_Add(Action, ActionGUI, "Edit", "Timeout", "", "", "Timeout:")
+	}
+	else if(GoToLabel = "Text_Placeholders")
+		SubEventGUI_Placeholders(sActionGUI, "Text")
+	else if(GoToLabel = "Title_Placeholders")
+		SubEventGUI_Placeholders(sActionGUI, "Title")
 }
+Action_Message_Text_Placeholders:
+Action_Message_GuiShow("", "", "Text_Placeholders")
+return
+
+Action_Message_Title_Placeholders:
+Action_Message_GuiShow("", "", "Title_Placeholders")
+return
+
 Action_Message_GuiSubmit(Action, ActionGUI)
 {
-	text1 := ActionGUI.Text1
-	text2 := ActionGUI.Text2
-	text3 := ActionGUI.Text3
-	hwndText := ActionGUI.Text
-	hwndTitle := ActionGUI.Title
-	hwndTimeout := ActionGUI.Timeout
-	
-	ControlGetText, Text, , ahk_id %hwndText%
-	Action.Text := Text
-	ControlGetText, Title, , ahk_id %hwndTitle%
-	Action.Title := Title
-	ControlGetText, Timeout, , ahk_id %hwndTimeout%
-	Action.Timeout := Timeout
-	
-	WinKill, ahk_id %text1%
-	WinKill, ahk_id %text2%
-	WinKill, ahk_id %text3%
-	WinKill, ahk_id %hwndText%
-	WinKill, ahk_id %hwndTitle%
-	WinKill, ahk_id %hwndTimeout%
+	SubEventGUI_GUISubmit(Action, ActionGUI)
 }
 
 ;Non blocking message box (can wait for closing in event system though)

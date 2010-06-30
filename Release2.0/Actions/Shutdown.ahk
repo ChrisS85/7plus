@@ -1,12 +1,13 @@
+Action_Shutdown_Init(Action)
+{
+	Action.Category := "System"
+	Action.ShutDownSelection := "Shutdown"
+	Action.ForceClose := 0
+}
 Action_Shutdown_ReadXML(Action, ActionFileHandle)
 {
 	Action.ShutdownSelection := xpath(ActionFileHandle, "/ShutdownSelection/Text()")
 	Action.ForceClose := xpath(ActionFileHandle, "/ForceClose/Text()")
-}
-Action_Shutdown_WriteXML(Action, ByRef ActionFileHandle, Path)
-{
-	xpath(ActionFileHandle, Path "ShutdownSelection[+1]/Text()", Action.ShutdownSelection)
-	xpath(ActionFileHandle, Path "ForceClose[+1]/Text()", Action.ForceClose)
 }
 Action_Shutdown_Execute(Action)
 {
@@ -37,57 +38,13 @@ Action_Shutdown_DisplayString(Action)
 {
 	return Action.ShutdownSelection
 }
-
-Action_Shutdown_Init(Action)
-{
-	Action.Category := "System"
-	Action.ShutDownSelection := "Shutdown"
-}
-
 Action_Shutdown_GuiShow(Action, ActionGUI)
 {
-	x := ActionGui.x
-	y := ActionGui.y
-	y += 4
-	Gui, Add, Text, x%x% y%y% hwndhwndtext1, Selection:
-	
-	x += 50
-	y -= 4
-	
-	if(Action.ShutdownSelection = "LogOff")
-		Gui, Add, DropDownList, x%x% y%y% hwndhwndSelection, LogOff||ShutDown|Reboot|Hibernate|Standby
-	else if(Action.ShutdownSelection = "Shutdown")
-		Gui, Add, DropDownList, x%x% y%y% hwndhwndSelection, LogOff|ShutDown||Reboot|Hibernate|Standby
-	else if(Action.ShutdownSelection = "Reboot")
-		Gui, Add, DropDownList, x%x% y%y% hwndhwndSelection, LogOff|ShutDown|Reboot||Hibernate|Standby
-	else if(Action.ShutdownSelection = "Hibernate")
-		Gui, Add, DropDownList, x%x% y%y% hwndhwndSelection, LogOff||ShutDown|Reboot|Hibernate||Standby
-	else if(Action.ShutdownSelection = "Standby")
-		Gui, Add, DropDownList, x%x% y%y% hwndhwndSelection, LogOff||ShutDown|Reboot|Hibernate|Standby||
-	
-	x -= 50
-	y += 30
-	
-	if(Action.ForceClose)
-		Gui, Add, Checkbox, x%x% y%y% w200 hwndhwndForceClose Checked, Force-close applications
-	else
-		Gui, Add, Checkbox, x%x% y%y% w200 hwndhwndForceClose, Force-close applications
-	
-	ActionGUI.Text1 := hwndtext1
-	ActionGUI.Selection := hwndSelection
-	ActionGUI.ForceClose := hwndForceClose
+	SubEventGUI_Add(Action, ActionGUI, "DropDownList", "ShutdownSelection", "LogOff|ShutDown|Reboot|Hibernate|Standby", "", "Selection:")
+	SubEventGUI_Add(Action, ActionGUI, "Checkbox", "ForceClose", "Force-close applications", "", "")
 }
 
 Action_Shutdown_GuiSubmit(Action, ActionGUI)
 {
-	text1 := ActionGUI.Text1
-	hwndSelection := ActionGUI.Selection
-	hwndForceClose := ActionGUI.ForceClose
-	ControlGetText, Selection, , ahk_id %hwndSelection%
-	Action.ShutdownSelection := Selection
-	ControlGet, ForceClose, Checked, , ,ahk_id %hwndForceClose%
-	Action.ForceClose := ForceClose
-	WinKill, ahk_id %text1%
-	WinKill, ahk_id %hwndSelection%
-	WinKill, ahk_id %hwndForceClose%
+	SubEventGUI_GUISubmit(Action, ActionGUI)
 }

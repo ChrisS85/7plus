@@ -415,21 +415,17 @@ UnQuote(string)
 SplitByExtension(ByRef files, ByRef SplitFiles,extensions)
 {
 	;Init string incase it wasn't resetted before or so
-	Splitfiles:=""
+	SplitFiles := Array()
+	newFiles := Array()
 	Loop, Parse, files, `n,`r  ; Rows are delimited by linefeeds ('r`n). 
 	{ 
 		SplitPath, A_LoopField , , , OutExtension
-	  if (InStr(extensions, OutExtension)&&OutExtension!="")
-	  {
-	  	Splitfiles .= A_LoopField "`n"
-	  }
-	  else
-	  {
-	  	newFiles .= A_LoopField "`n"
-	  }
-	} 
-	files:=strTrimRight(newFiles,"`n")
-	SplitFiles:=strTrimRight(SplitFiles,"`n")
+		if (InStr(extensions, OutExtension) && OutExtension != "")
+			SplitFiles.append(A_LoopField)
+		else
+			newFiles.append(A_LoopField)
+	}
+	files := newFiles
 	return
 }
 
@@ -594,13 +590,24 @@ ExtractInteger(ByRef pSource, pOffset = 0, pIsSigned = false, pSize = 4)
 
 RemoveLineFeedsAndSurroundWithDoubleQuotes(files)
 {
-	result:=""
-	Loop, Parse, files, `n,`r  ; Rows are delimited by linefeeds ('r`n). 
-   { 
-      if !InStr(FileExist(A_LoopField), "D")
-   			result=%result% "%A_LoopField%"
-   } 
-   return result
+	if(isobject(files))
+	{
+		result := Array()
+		Loop % files.len()
+			if !InStr(FileExist(files[A_Index]), "D")
+				result.append("""" files[A_Index] """")
+		return result
+	}
+	else
+	{
+		result:=""
+		Loop, Parse, files, `n,`r  ; Rows are delimited by linefeeds ('r`n). 
+		{ 
+			if !InStr(FileExist(A_LoopField), "D")
+				result=%result% "%A_LoopField%"
+		} 
+		return result
+	}
 }
 
 ;get data starting from pointer up to 0 char

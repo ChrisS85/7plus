@@ -635,7 +635,7 @@ CreateNewFolder()
 	if(A_OSVersion="WIN_VISTA")
 		TextTranslated:=TranslateMUI(shell32muipath,16859) ;"New Folder"
 	else
-  	TextTranslated:=TranslateMUI("shell32.dll",30320) ;"New Folder"
+		TextTranslated:=TranslateMUI("shell32.dll",30320) ;"New Folder"
 	path:=GetCurrentFolder()
 	Testpath := path "\" TextTranslated
 	i:=1 ;Find free filename
@@ -674,32 +674,37 @@ EditSelectedFiles()
 	SplitByExtension(files, splitfiles, ImageExtensions)
 	files:=RemoveLineFeedsAndSurroundWithDoubleQuotes(files)
 	splitfiles:=RemoveLineFeedsAndSurroundWithDoubleQuotes(splitfiles)
+	outputdebug(files[1])
 	x:=ExpandEnvVars(TextEditor)
 	y:=ExpandEnvVars(ImageEditor)
-	if (files && !FileExist(x) && x && splitfiles && !FileExist(y) && y)
+	if (files.len() > 0 && !FileExist(x) && x && splitfiles.len() > 0 && !FileExist(y) && y)
 	{
 		ToolTip(1, "You need to enter a valid path in <a>Settings</a> for text and image editors!", "Invalid Paths","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
 		SetTimer, ToolTipClose, -10000
 		TooltipShowSettings:=true
 	}
-	else if(files && !FileExist(x) && x)
+	else if(files.len() > 0 && !FileExist(x) && x)
 	{
 		ToolTip(1, "You need to enter a valid path in <a>Settings</a> for text editor!", "Invalid Path","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
 		SetTimer, ToolTipClose, -10000
 		TooltipShowSettings:=true
 	}
-	else if(splitfiles && !FileExist(y) && y)
+	else if(splitfiles.len() > 0 && !FileExist(y) && y)
 	{
 		ToolTip(1, "You need to enter a valid path in <a>Settings</a> for image editor!", "Invalid Path","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
 		SetTimer, ToolTipClose, -10000
 		TooltipShowSettings:=true
 	}
-	if ((files && FileExist(x))||(splitfiles && FileExist(y)))
+	if ((files.len() > 0 && FileExist(x))||(splitfiles.len() > 0 && FileExist(y)))
 	{
-		if (files!="")
-			run %x% %files%
-		if (splitfiles!="")
-			run %y% %splitfiles%
+		Loop % files.len()
+			textfiles .= files[A_Index]
+		if (textfiles != "")
+			run %x% %textfiles%
+		Loop % splitfiles.len()
+			imagefiles .= splitfiles[A_Index]
+		if (imagefiles!="")
+			run %y% %imagefiles%
 	}
 	else
 		SendInput {F3}
@@ -776,7 +781,7 @@ return
 #if ScrollUnderMouse && (IsWindowUnderCursor("CabinetWClass")||IsWindowUnderCursor("ExploreWClass")) && !IsRenaming()
 WheelUp:: 
 Critical 
-outputdebug wheelup
+CoordMode, Mouse, Screen
 MouseGetPos, MouseX, MouseY
 hw_m_target := DllCall( "WindowFromPoint", "int", MouseX, "int", MouseY )
 SendMessage, 0x20A, 120 << 16, ( MouseY << 16 )|MouseX,, ahk_id %hw_m_target%
@@ -785,6 +790,7 @@ return
 
 WheelDown:: 
 Critical 
+CoordMode, Mouse, Screen
 MouseGetPos, MouseX, MouseY 
 hw_m_target := DllCall( "WindowFromPoint", "int", MouseX, "int", MouseY ) 
 SendMessage, 0x20A, -120 << 16, ( MouseY << 16 )|MouseX,, ahk_id %hw_m_target% 
@@ -893,9 +899,12 @@ UpdateInfos()
 {
 	global freetext, selectedfiles1, currentfolder1, newstring, freestring
 	if(WinActive("ahk_group ExplorerGroup") && !IsContextMenuActive())
-	{
-		path:=GetCurrentFolder()
+	{		
 		files:=GetSelectedFiles()
+	return
+		path:=GetCurrentFolder()
+		
+		
 		if(files=selectedfiles1 && path=currentfolder1)
 			return
 		selectedfiles1:=files
@@ -911,6 +920,7 @@ UpdateInfos()
 			totalsize+=size
 			count++
 		}
+		
 		DriveSpaceFree, free, %Path%
 		freeunit:=6
 		totalunit:=0

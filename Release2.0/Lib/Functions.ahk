@@ -188,7 +188,7 @@ StringMid(ByRef InputVar, StartChar, Count , L = "") {
 	StringMid, v, InputVar, %StartChar%, %Count%, %L%
 	Return, v
 }
-StringReplace(ByRef InputVar, SearchText, ReplaceText = "", All = "") {
+StringReplace(InputVar, SearchText, ReplaceText = "", All = "") {
 	StringReplace, v, InputVar, %SearchText%, %ReplaceText%, %All%
 	Return, v
 }

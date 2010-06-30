@@ -9,7 +9,7 @@ GUI_EditEvent(e,GoToLabel="")
 		TriggerGUI := ""
 		Gui, 1:+Disabled
 		Gui, 4:Default
-		Gui, +LabelEditEvent +Owner1 +ToolWindow
+		Gui, +LabelEditEvent +Owner1 +ToolWindow +OwnDialogs
 		width := 500
 		height := 500
 		;Gui, 4:Add, Button, ,OK
@@ -148,7 +148,7 @@ GUI_EditEvent(e,GoToLabel="")
 		return result	
 	}
 	else if(GoToLabel = "EditEventOK")
-	{		
+	{
 		Event.Trigger.GuiSubmit(TriggerGUI)
 		Gui, Submit, NoHide
 		Event.Name := EditEvent_Name

@@ -44,10 +44,7 @@ ShellMessage( wParam,lParam, msg)
 	If	msg=1028
 	{
 		If	wParam=1028
-		{
-			Critical, Off
 			Return
-		}
 		Else If lParam=0x205 ; RButton 
 		{ 
 			wtmwParam := wParam
@@ -57,14 +54,13 @@ ShellMessage( wParam,lParam, msg)
 			WinTraymin(wParam,3)
 	}
 	Else If	(wParam=1||wParam=2)
-	{
-		
+	{		
+		WinTraymin(lParam,wParam)
 		Trigger := wParam = 1 ? EventSystem_CreateSubEvent("Trigger","WindowCreated") : EventSystem_CreateSubEvent("Trigger","WindowClosed")
 		class:=WinGetClass("ahk_Id " lParam)
 		outputdebug(Trigger.Type " triggered! class:" class)
 		Trigger.Window := lParam
 		OnTrigger(Trigger)
-		WinTraymin(lParam,wParam)
 	}
 	; Execute a command based on wParam and lParam 
 	
@@ -142,7 +138,6 @@ ShellMessage( wParam,lParam, msg)
 			;Explorer info stuff
 			if(A_OSVersion="WIN_7" && HKShowSpaceAndSize)
 				SetTimer, UpdateInfos, 100
-			
 		}
 		Else if(UseTabs)
 			ExplorerDeactivated(lParam)

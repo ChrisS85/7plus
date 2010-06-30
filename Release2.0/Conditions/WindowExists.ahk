@@ -7,10 +7,6 @@ Condition_WindowExists_ReadXML(Condition, ConditionFileHandle)
 {
 	WindowFilter_ReadXML(Condition, ConditionFileHandle)
 }
-Condition_WindowExists_WriteXML(Condition, ByRef ConditionFileHandle, Path)
-{
-	WindowFilter_WriteXML(Condition, ConditionFileHandle, Path)
-}
 Condition_WindowExists_Evaluate(Condition)
 {
 	if(Condition.WindowMatchType = "Program")

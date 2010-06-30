@@ -8,18 +8,8 @@ Trigger_WindowCreated_ReadXML(Trigger, TriggerFileHandle)
 	WindowFilter_ReadXML(Trigger, TriggerFileHandle)
 }
 
-Trigger_WindowCreated_WriteXML(Trigger, ByRef TriggerFileHandle, Path)
-{
-	WindowFilter_WriteXML(Trigger, TriggerFileHandle, Path)
-}
-
-Trigger_WindowCreated_Enable(Trigger)
-{
-}
-
 Trigger_WindowCreated_Matches(Trigger, Filter)
 {
-	outputdebug Trigger_WindowCreated_Matches
 	return WindowFilter_Matches(Trigger, Trigger.Window, Filter)
 }
 

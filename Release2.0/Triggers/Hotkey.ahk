@@ -102,17 +102,7 @@ RefreshHotkeyArrays()
 Trigger_Hotkey_ReadXML(Trigger, TriggerFileHandle)
 {
 	Key := xpath(TriggerFileHandle, "/Key/Text()")
-	StringReplace, Key, Key, &lt;,<
-	StringReplace, Key, Key, &gt;,>
 	Trigger.Key := Key
-}
-
-Trigger_Hotkey_WriteXML(Trigger, ByRef TriggerFileHandle, Path)
-{	
-	Key := Trigger.Key
-	StringReplace, Key, Key, <,&lt;
-	StringReplace, Key, Key, >,&gt;
-	xpath(TriggerFileHandle, Path "Key[+1]/Text()", Key)
 }
 
 Trigger_Hotkey_Enable(Trigger)
@@ -153,29 +143,16 @@ Trigger_Hotkey_GuiShow(Trigger, TriggerGUI, GoToLabel = "")
 	if(GoToLabel = "")
 	{
 		sTriggerGUI := TriggerGUI
-		x := TriggerGui.x
-		y := TriggerGui.y
-		y += 4
-		Gui, Add, Text, x%x% y%y% hwndhwndtext1, Hotkey:
-		x += 50
-		key := Trigger.Key
-		Gui, Add, Text, x%x% y%y% w200 hwndhwndtext2, %key%
-		x += 210
-		y -= 4
-		w := 100	
-		Gui, Add, Button, x%x% y%y% w%w% hwndhwndButton gEditHotkeyTrigger, Edit Hotkey
-		
-		TriggerGUI.Text1 := hwndtext1
-		TriggerGUI.Text2 := hwndtext2
-		TriggerGUI.Button:= hwndButton
+		SubEventGUI_Add(Trigger, TriggerGUI, "Text", "Hotkey", Trigger.Key, "", "Hotkey:")
+		SubEventGUI_Add(Trigger, TriggerGUI, "Button", "Edit", "Edit Hotkey", "EditHotkeyTrigger", "")
 	}
 	else if(GoToLabel = "EditHotkey")
 	{
 		key:=HotKeyGui("",4, "Select Hotkey", 0,"","","","")
 		if(key)
 		{
-			hwndHotkey := sTriggerGUI.Text2
-			ControlSetText, , %key%, ahk_id %hwndHotkey%
+			Text_Hotkey := sTriggerGUI.Text_Hotkey
+			ControlSetText, , %key%, ahk_id %Text_Hotkey%
 		}
 	}
 }
@@ -185,12 +162,12 @@ return
 
 Trigger_Hotkey_GuiSubmit(Trigger, TriggerGUI)
 {
-	text1 := TriggerGUI.Text1
-	text2 := TriggerGUI.Text2
-	hwndButton := TriggerGUI.Button
-	ControlGetText, key, , ahk_id %text2%
+	Desc_Hotkey := TriggerGUI.Desc_Hotkey
+	Text_Hotkey := TriggerGUI.Text_Hotkey
+	Button_Edit := TriggerGUI.Button_Edit
+	ControlGetText, key, , ahk_id %Text_Hotkey%
 	Trigger.Key := key
-	WinKill, ahk_id %text1%
-	WinKill, ahk_id %text2%
-	WinKill, ahk_id %hwndButton%
+	WinKill, ahk_id %Desc_Hotkey%
+	WinKill, ahk_id %Text_Hotkey%
+	WinKill, ahk_id %Button_Edit%
 } 

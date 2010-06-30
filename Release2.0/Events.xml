@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Events>
   <Event>
-    <ID>2</ID>
+    <ID>0</ID>
     <Name>New event</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
@@ -9,15 +9,20 @@
     <OneInstance>0</OneInstance>
     <Trigger>
       <Type>Hotkey</Type>
-      <Key>^Left</Key>
+      <Key>MButton</Key>
     </Trigger>
-    <Conditions />
+    <Conditions>
+      <Condition>
+        <Type>MouseOver</Type>
+        <MouseOverType>MinimizeButton</MouseOverType>
+        <Negate>0</Negate>
+      </Condition>
+    </Conditions>
     <Actions>
       <Action>
-        <Type>SetDirectory</Type>
-        <Path>C:</Path>
-        <WindowMatchType>Active</WindowMatchType>
+        <Type>MinimizeToTray</Type>
         <Filter />
+        <WindowMatchType>UnderMouse</WindowMatchType>
       </Action>
     </Actions>
   </Event>

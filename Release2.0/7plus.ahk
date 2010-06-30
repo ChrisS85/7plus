@@ -36,6 +36,7 @@ BugfixVersion := 0
 #include %A_ScriptDir%\lib\com.ahk
 #include %A_ScriptDir%\lib\FTPLib.ahk
 #include %A_ScriptDir%\lib\Array.ahk
+#include %A_ScriptDir%\lib\RichObject.ahk
 #include %A_ScriptDir%\lib\RemoteBuf.ahk
 #include %A_ScriptDir%\lib\Taskbutton.ahk
 #include %A_ScriptDir%\lib\Cursor.ahk
@@ -47,6 +48,7 @@ BugfixVersion := 0
 #include %A_ScriptDir%\EditEventGUI.ahk
 #include %A_ScriptDir%\EditSubEventGUI.ahk
 #include %A_ScriptDir%\Placeholders.ahk
+#include %A_ScriptDir%\SubEventGUIBuilder.ahk
 #include %A_ScriptDir%\messagehooks.ahk
 #include %A_ScriptDir%\navigate.ahk
 #include %A_ScriptDir%\FolderButtonManager.ahk
@@ -78,12 +80,21 @@ BugfixVersion := 0
 #include %A_ScriptDir%\Triggers\7plusStart.ahk
 #include %A_ScriptDir%\Triggers\ExplorerPathChanged.ahk
 
+#include %A_ScriptDir%\Conditions\IsRenaming.ahk
+#include %A_ScriptDir%\Conditions\MouseOver.ahk
 #include %A_ScriptDir%\Conditions\WindowActive.ahk
 #include %A_ScriptDir%\Conditions\WindowExists.ahk
-#include %A_ScriptDir%\Conditions\MouseOver.ahk
 
-#include %A_ScriptDir%\Actions\Run.ahk
+#include %A_ScriptDir%\Actions\Clipboard.ahk
+#include %A_ScriptDir%\Actions\Clipmenu.ahk
+#include %A_ScriptDir%\Actions\FastFoldersMenu.ahk
+#include %A_ScriptDir%\Actions\FastFoldersRecall.ahk
+#include %A_ScriptDir%\Actions\FastFoldersStore.ahk
 #include %A_ScriptDir%\Actions\Message.ahk
+#include %A_ScriptDir%\Actions\MinimizeToTray.ahk
+#include %A_ScriptDir%\Actions\NewFile.ahk
+#include %A_ScriptDir%\Actions\NewFolder.ahk
+#include %A_ScriptDir%\Actions\Run.ahk
 #include %A_ScriptDir%\Actions\SendKeys.ahk
 #include %A_ScriptDir%\Actions\SetDirectory.ahk
 #include %A_ScriptDir%\Actions\ShutDown.ahk

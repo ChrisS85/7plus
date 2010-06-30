@@ -68,6 +68,8 @@ WinTraymin(hWnd = "", nFlags = "")
 {
 	Local	h, ni, fi, uid, pid, hProc, sClass
 	Static	nMsg, nIcons:=0
+	DetectHiddenWindows, On
+	outputdebug WinTraymin(%hwnd%,%nFlags%)
 	nMsg ? "" : OnMessage(nMsg:=1028,"ShellMessage")
 	NumPut(hAHK,NumPut(VarSetCapacity(ni,444,0),ni))
 	If Not	nFlags

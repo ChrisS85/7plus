@@ -5,9 +5,6 @@ Trigger_ExplorerPathChanged_Init(Trigger)
 Trigger_ExplorerPathChanged_ReadXML(Trigger, TriggerFileHandle)
 {
 }
-Trigger_ExplorerPathChanged_WriteXML(Trigger, ByRef TriggerFileHandle, Path)
-{	
-}
 Trigger_ExplorerPathChanged_Enable(Trigger)
 {
 }
