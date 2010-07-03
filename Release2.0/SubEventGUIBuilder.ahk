@@ -64,6 +64,14 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 		SubEventGUI["DropDown_" name] := DropDown_%name%
 		y += 30
 	}
+	else if(type = "Time")
+	{
+		text := SubEvent[name]
+		outputdebug time %text%
+		Gui, Add, DateTime, x%x% y%y% hwndTime_%name% Choose20100101%text%, Time
+		y += 30
+		SubEventGUI["Time_" name] := Time_%name%
+	}
 	if(Button1Text != "")
 	{				
 		x += 210
@@ -87,12 +95,10 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 }
 SubEventGUI_GUISubmit(SubEvent, SubEventGUI)
 {
-	outputdebug sub guisubmit
 	;Loop over all controls added to SubEventGUI, and store their results and delete them
 	enum := SubEventGUI._newEnum()
 	while enum[key,value]
 	{
-		outputdebug loop %key% %value%
 		if(strStartsWith(key, "Desc_") || strStartsWith(key, "Text_") || strStartsWith(key, "Button"))
 		{
 			WinKill, ahk_id %value%
@@ -118,6 +124,15 @@ SubEventGUI_GUISubmit(SubEvent, SubEventGUI)
 			name := SubStr(key, 10)
 			ControlGetText, text, , ahk_id %value%
 			outputdebug save %name% %text%
+			SubEvent[name] := text
+			WinKill, ahk_id %value%
+		}
+		else if(strStartsWith(key, "Time_"))
+		{
+			name := SubStr(key, 6)
+			ControlGetText, text, , ahk_id %value%
+			StringReplace, text, text, :,,All
+			outputdebug store %text% in %name%
 			SubEvent[name] := text
 			WinKill, ahk_id %value%
 		}

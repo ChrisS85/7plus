@@ -72,13 +72,14 @@ BugfixVersion := 0
 #include %A_ScriptDir%\CustomHotkeys.ahk
 #include %A_ScriptDir%\HotkeyGUI.ahk
 
+#include %A_ScriptDir%\Triggers\ExplorerPathChanged.ahk
+#include %A_ScriptDir%\Triggers\Hotkey.ahk
 #include %A_ScriptDir%\Triggers\None.ahk
+#include %A_ScriptDir%\Triggers\Timer.ahk
 #include %A_ScriptDir%\Triggers\WindowActivated.ahk
 #include %A_ScriptDir%\Triggers\WindowClosed.ahk
 #include %A_ScriptDir%\Triggers\WindowCreated.ahk
-#include %A_ScriptDir%\Triggers\Hotkey.ahk
 #include %A_ScriptDir%\Triggers\7plusStart.ahk
-#include %A_ScriptDir%\Triggers\ExplorerPathChanged.ahk
 
 #include %A_ScriptDir%\Conditions\IsRenaming.ahk
 #include %A_ScriptDir%\Conditions\MouseOver.ahk

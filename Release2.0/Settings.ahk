@@ -1012,28 +1012,25 @@ Return
 GUI_SaveEvents()
 {
 	global Events, Settings_Events
-	outputdebug saveevents
 	Loop % Events.len()
-	{
-		outputdebug first loop
-		Events[A_Index].Trigger.Disable()
-	}
+		Events[A_Index].Trigger.Disable(Events[A_Index])
 	Gui, ListView, GUI_EventsList
 	count := LV_GetCount()
 	Loop % count
 	{
 		Checked := LV_GetNext(A_Index-1, "Checked") = A_Index ? 1 : 0
-		outputdebug row %A_Index% enabled : %Checked%
 		LV_GetText(id,A_Index,2)
 		Settings_Events[Settings_Events.FindID(id)].Enabled := Checked
+		if(!Settings_Events[Settings_Events.FindID(id)]) ;separate destroy routine instead of simple disable is needed for removed events because of hotkey/timer discrepancy
+			Events[Events.FindID(id)].Destroy()
 	}
-	outputdebug deepcopy start
 	Events := Settings_Events.DeepCopy()
+	;Gui, +OwnDialogs
 	Loop % Events.len()
-	{
-		outputdebug second loop
-		Events[A_Index].Trigger.Enable()
-	}
+		if(Events[A_Index].Enabled)
+			Events[A_Index].Enable()
+		else
+			Events[A_Index].Disable()
 }
 txt:
 GuiControlGet, enabled ,1: , Paste text as file

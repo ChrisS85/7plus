@@ -241,6 +241,7 @@ if(!HidetrayIcon)
 if (Firstrun=1)
 	SetTimer, wizardry, -500
 
+SetTimer, TriggerTimer, 1000
 ;put it at the end because this will be the main loop of the program
 EventSystem_Startup()
 

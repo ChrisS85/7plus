@@ -35,11 +35,14 @@ SplitCommand(fullcmd, ByRef cmd, ByRef args)
 	o v0.81 by majkinetor.
 	o Licenced under BSD <http://creativecommons.org/licenses/BSD/> 
 */
-GetFreeGuiNum(){
-	loop, 99  {
-		Gui %A_Index%:+LastFoundExist
+GetFreeGuiNum(start){
+	loop {
+		Gui %start%:+LastFoundExist
 		IfWinNotExist
-			return A_Index
+			return start
+		start++
+		if(start = 100)
+			return 0
 	}
 	return 0
 }

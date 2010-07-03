@@ -1,8 +1,6 @@
 Trigger_Hotkey_Init(Trigger)
 {
 	Trigger.Category := "Hotkeys"
-	outputdebug(" enable " Trigger.key)
-	Trigger.Enable() ; Hotkeys are enabled/disabled dynamically all the time, but they need to be initialized once at first
 	SetTimer, RefreshHotkeyState, 200 ;Should be quick enough I suppose
 }
 HotkeyTrigger:
@@ -29,7 +27,7 @@ RefreshHotkeyState()
 		Loop % array.len()
 		{
 			Event := array[A_Index]
-			enable := Event.Enabled
+			enable := Event.Enabled ; Enabled state is checked here separately opposed to triggering
 			ConditionPos := 1
 			if(enable)
 			{
@@ -76,9 +74,8 @@ RefreshHotkeyState()
 			}
 		}
 		key := "$" key ;Add $ so key can not be triggered through script to prevent loops
-		if(AnyEnabled)
-			Hotkey, %key%, HotkeyTrigger, On
-		else
+		Hotkey, %key%, HotkeyTrigger, On ;Activate first so it exists
+		if(!AnyEnabled)
 			Hotkey, %key%, Off
 	}
 }
@@ -101,8 +98,7 @@ RefreshHotkeyArrays()
 }
 Trigger_Hotkey_ReadXML(Trigger, TriggerFileHandle)
 {
-	Key := xpath(TriggerFileHandle, "/Key/Text()")
-	Trigger.Key := Key
+	Trigger.Key := xpath(TriggerFileHandle, "/Key/Text()")
 }
 
 Trigger_Hotkey_Enable(Trigger)

@@ -1,28 +1,46 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Events>
   <Event>
-    <ID>0</ID>
-    <Name>New event</Name>
+    <ID>1</ID>
+    <Name>Pizza Timer</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
     <OneInstance>0</OneInstance>
     <Trigger>
-      <Type>Hotkey</Type>
-      <Key>MButton</Key>
+      <Type>Timer</Type>
+      <Restart>0</Restart>
+      <ShowProgress>1</ShowProgress>
+      <Time>60000</Time>
     </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>MouseOver</Type>
-        <MouseOverType>MinimizeButton</MouseOverType>
-        <Negate>0</Negate>
-      </Condition>
-    </Conditions>
+    <Conditions />
     <Actions>
       <Action>
-        <Type>MinimizeToTray</Type>
-        <Filter />
-        <WindowMatchType>UnderMouse</WindowMatchType>
+        <Type>Message</Type>
+        <Text>pizza!</Text>
+        <Timeout />
+        <Title />
+      </Action>
+    </Actions>
+  </Event>
+  <Event>
+    <ID>2</ID>
+    <Name>Pizza Timer</Name>
+    <Enabled>0</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>0</OneInstance>
+    <Trigger>
+      <Type>Timer</Type>
+      <Restart>1</Restart>
+      <ShowProgress>0</ShowProgress>
+      <Time>1000</Time>
+    </Trigger>
+    <Conditions />
+    <Actions>
+      <Action>
+        <Type>SendKeys</Type>
+        <Keys>${MX}{Enter}</Keys>
       </Action>
     </Actions>
   </Event>

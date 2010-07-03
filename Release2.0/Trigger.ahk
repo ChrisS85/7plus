@@ -42,10 +42,10 @@ EventSystem_CreateBaseObjects()
 {
 	global
 	local tmpobject
-	EventSystem_Triggers := "None,WindowActivated, WindowClosed, WindowCreated, Hotkey,7plusStart,ExplorerPathChanged"
+	EventSystem_Triggers := "ExplorerPathChanged,Hotkey,None,Timer,WindowActivated, WindowClosed, WindowCreated,7plusStart"
 	EventSystem_Conditions := "MouseOver,IsRenaming,WindowActive,WindowExists"
 	EventSystem_Actions := "Clipboard,Clipmenu,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,Message,MinimizeToTray,NewFile,NewFolder,Run,SendKeys,SetDirectory,Shutdown,WindowActivate,WindowClose,WindowHide,WindowShow"
-	Trigger_Categories := object("Explorer", Array(), "Window", Array(), "Hotkeys", Array(), "7plus", Array(), "Other", Array())
+	Trigger_Categories := object("Explorer", Array(), "Hotkeys", Array(), "Other", Array(), "System", Array(), "Window", Array(), "7plus", Array())
 	Condition_Categories := object("Explorer", Array(), "Mouse", Array(), "Other", Array(), "Window", Array())
 	Action_Categories := object("Explorer", Array(), "FastFolders", Array(), "Window", Array(), "Input", Array(), "System", Array(), "7plus", Array(), "Other", Array())
 	
@@ -56,6 +56,7 @@ EventSystem_CreateBaseObjects()
 		tmpobject.ReadXML := "Trigger_" A_LoopField "_ReadXML"
 		tmpobject.WriteXML := "Trigger_" A_LoopField "_WriteXML"
 		tmpobject.Enable := "Trigger_" A_LoopField "_Enable"
+		tmpobject.Disable := "Trigger_" A_LoopField "_Disable"
 		tmpobject.Matches := "Trigger_" A_LoopField "_Matches"
 		tmpobject.DisplayString := "Trigger_" A_LoopField "_DisplayString"
 		tmpobject.GuiShow := "Trigger_" A_LoopField "_GuiShow"
@@ -105,6 +106,7 @@ EventSystem_CreateBaseObjects()
 	EventBase.Name := "New event"
 	EventBase.Enabled := 1
 	EventBase.Enable := "Event_Enable"
+	EventBase.Disable := "Event_Disable"
 	EventBase.ExpandPlaceHolders := "Event_ExpandPlaceholders"
 	EventBase.PlaceHolders := Array()
 	EventBase.Trigger := EventSystem_CreateSubEvent("Trigger", "None")
@@ -126,7 +128,12 @@ EventSystem_CreateSubEvent(Category,Type)
 Event_Enable(Event)
 {
 	Event.Enabled := true
-	Event.Trigger.Enable()
+	Event.Trigger.Enable(Event)
+}
+Event_Disable(Event)
+{
+	Event.Enabled := false
+	Event.Trigger.Disable(Event)
 }
 ReadEventsFile()
 {
@@ -246,7 +253,6 @@ ReadEventsFile()
 			
 			Event.Actions.append(Action)
 		}
-		Event.Trigger.Init()
 		Events.append(Event)
 	}
 }
@@ -359,7 +365,8 @@ OnTrigger(Trigger)
 	Loop % Events.len()
 	{
 		Event := Events[A_Index]
-		if(Event.Trigger.Type = Trigger.Type && Event.Trigger.Matches(Trigger))
+		outputdebug("ontrigger " Trigger.Type Event.Trigger.Type Event.Enabled)
+		if(Event.Trigger.Type = Trigger.Type && Event.Enabled && Event.Trigger.Matches(Trigger, Event))
 		{
 			running := false
 			if(Event.OneInstance)
@@ -391,7 +398,7 @@ EventScheduler()
 		{			
 			Event := EventSchedule[EventPos]
 			;Check conditions
-			Success := Event.Enabled
+			Success := 1 ;Always enabled here, as enabled state is checked on triggering already
 			ConditionPos := 1
 			if(Success)
 			{
