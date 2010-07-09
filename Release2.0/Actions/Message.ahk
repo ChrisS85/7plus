@@ -33,7 +33,7 @@ Action_Message_Execute(Action,Event)
 		;outputdebug %A_IsCritical%
 		If(WinExist("ahk_id " Msgbox_hwnd)) ;Box not closed yet, need more processing time
 		{
-			if(Action.Timeout > 0 && A_TickCount - Action.Time > Action.Timeout)
+			if(Action.Timeout * 1000 > 0 && A_TickCount - Action.Time > Action.Timeout * 1000)
 			{
 				Gui, %GuiNum%:Destroy 
 				return 0

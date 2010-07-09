@@ -529,11 +529,15 @@ Settings_CreateAbout() {
 ;---------------------------------------------------------------------------------------------------------------
 Settings_SetupEvents() {
 	global
-	outputdebug lala
+	outputdebug setupevents
+	Gui, 1:Default
 	Gui, ListView, GUI_EventsList
 	i := LV_GetNext("")
 	if(!Settings_Events)
 	{
+		Loop % Events.len()
+			Events[A_Index].Trigger.PrepareCopy(Events[A_Index])		
+		
 		Settings_Events := Events.DeepCopy()	
 		i := 1
 	}
@@ -939,6 +943,17 @@ else if(A_GuiEvent="I" && InStr(ErrorLevel, "s", true))
 	GuiControl, 1:disable, GUI_EventsList_MoveUp
 	GuiControl, 1:disable, GUI_EventsList_MoveDown
 }
+if(A_GuiEvent = "I" && InStr(ErrorLevel, "c")) ;Catch both check and uncheck
+{
+	;Update enabled state from listview
+	count := LV_GetCount()
+	Loop % count
+	{
+		Checked := LV_GetNext(A_Index-1, "Checked") = A_Index ? 1 : 0
+		LV_GetText(id,A_Index,2)
+		Settings_Events[Settings_Events.FindID(id)].Enabled := Checked		
+	}
+}
 else if(A_GuiEvent="DoubleClick")
 	GUI_EventsList_Edit()
 Return
@@ -950,6 +965,7 @@ GUI_AddEvent()
 	global Settings_Events, GUI_EventsList
 	Gui, ListView, GUI_EventsList
 	Event := EventSystem_CreateEvent(Settings_Events) ;Event is added to Settings_Events here
+	outputdebug add event to listview
 	LV_Add("Select Check", "", Event.ID, Event.Trigger.DisplayString(), Event.Name)
 	GUI_EventsList_Edit()
 }
@@ -983,9 +999,9 @@ GUI_EventsList_Edit()
 	LV_GetText(id,i,2)
 	pos := Settings_Events.FindID(id)
 	event:=GUI_EditEvent(Settings_Events[pos].DeepCopy())
-	event.Enabled := LV_GetNext(pos-1, "Checked") = pos ? 1 : 0 ;Update enabled state of this event
 	if(event)
-	{
+	{		
+		event.Enabled := LV_GetNext(pos-1, "Checked") = pos ? 1 : 0 ;Update enabled state of this event
 		Settings_Events[pos] := event ;overwrite edited event
 		Settings_SetupEvents() ;Refresh listview
 	}
@@ -1012,20 +1028,27 @@ Return
 GUI_SaveEvents()
 {
 	global Events, Settings_Events
+	;Disable all events first (without setting enabled to false, so triggers can decide what they want to do themselves)
 	Loop % Events.len()
 		Events[A_Index].Trigger.Disable(Events[A_Index])
+	
 	Gui, ListView, GUI_EventsList
-	count := LV_GetCount()
-	Loop % count
+	
+	;Remove deleted events and refresh the copies to consider recent changes (such as timer state)
+	Loop % Events.len()
 	{
-		Checked := LV_GetNext(A_Index-1, "Checked") = A_Index ? 1 : 0
-		LV_GetText(id,A_Index,2)
-		Settings_Events[Settings_Events.FindID(id)].Enabled := Checked
-		if(!Settings_Events[Settings_Events.FindID(id)]) ;separate destroy routine instead of simple disable is needed for removed events because of hotkey/timer discrepancy
-			Events[Events.FindID(id)].Destroy()
+		if(!Settings_Events[Settings_Events.FindID(Events[A_Index].id)]) ;separate destroy routine instead of simple disable is needed for removed events because of hotkey/timer discrepancy
+		{
+			Events[A_Index].Delete()
+			continue
+		}
+		Events[A_Index].Trigger.PrepareReplacement(Events[A_Index], Settings_Events[Settings_Events.FindID(Events[A_Index].id)])
 	}
+	
+	;Replace the original events with the copies
 	Events := Settings_Events.DeepCopy()
-	;Gui, +OwnDialogs
+	
+	;Update enabled state
 	Loop % Events.len()
 		if(Events[A_Index].Enabled)
 			Events[A_Index].Enable()

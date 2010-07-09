@@ -1773,7 +1773,7 @@ Gdip_TextToGraphics(pGraphics, Text, Options, Font="Arial", Width="", Height="",
 	Height := Height1 ? Height2 ? IHeight*(Height1/100) : Height1 : IHeight
 	if !PassBrush
 		Colour := "0x" (Colour2 ? Colour2 : "ff000000")
-	Rendering := ((Rendering1 >= 0) && (Rendering1 <= 4)) ? Rendering1 : 4
+	Rendering := ((Rendering1 >= 0) && (Rendering1 <= 5)) ? Rendering1 : 5
 	Size := (Size1 > 0) ? Size2 ? IHeight*(Size1/100) : Size1 : 12
 
 	hFamily := Gdip_FontFamilyCreate(Font)

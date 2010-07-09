@@ -263,7 +263,11 @@ GetSelectedFiles(FullName=1)
 	{	
 		ControlGet, result, List, Selected Col1, SysListView321, A
 		if(result)
-			return  A_Desktop "\" result
+		{
+			Loop, Parse, result, `n  ; Rows are delimited by linefeeds (`n).
+				result2 .= "`n" A_Desktop "\" A_LoopField
+			return SubStr(result2,2)
+		}
 		else
 			return ""
 	}

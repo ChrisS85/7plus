@@ -3,7 +3,7 @@
   <Event>
     <ID>1</ID>
     <Name>Pizza Timer</Name>
-    <Enabled>1</Enabled>
+    <Enabled>0</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
     <OneInstance>0</OneInstance>
@@ -11,7 +11,7 @@
       <Type>Timer</Type>
       <Restart>0</Restart>
       <ShowProgress>1</ShowProgress>
-      <Time>60000</Time>
+      <Time>30000</Time>
     </Trigger>
     <Conditions />
     <Actions>
@@ -32,15 +32,110 @@
     <OneInstance>0</OneInstance>
     <Trigger>
       <Type>Timer</Type>
-      <Restart>1</Restart>
-      <ShowProgress>0</ShowProgress>
-      <Time>1000</Time>
+      <Restart>0</Restart>
+      <ShowProgress>1</ShowProgress>
+      <Time>20000</Time>
     </Trigger>
     <Conditions />
     <Actions>
       <Action>
         <Type>SendKeys</Type>
         <Keys>${MX}{Enter}</Keys>
+      </Action>
+    </Actions>
+  </Event>
+  <Event>
+    <ID>3</ID>
+    <Name>New event</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>0</OneInstance>
+    <Trigger>
+      <Type>Hotkey</Type>
+      <Key>^+P</Key>
+    </Trigger>
+    <Conditions />
+    <Actions>
+      <Action>
+        <Type>ControlEvent</Type>
+        <Action>Trigger Event</Action>
+        <EventID>4</EventID>
+      </Action>
+    </Actions>
+  </Event>
+  <Event>
+    <ID>4</ID>
+    <Name>New event</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>0</OneInstance>
+    <Trigger>
+      <Type>Hotkey</Type>
+      <Key>#A</Key>
+    </Trigger>
+    <Conditions />
+    <Actions>
+      <Action>
+        <Type>Message</Type>
+        <Text>test</Text>
+        <Timeout />
+        <Title />
+      </Action>
+    </Actions>
+  </Event>
+  <Event>
+    <ID>5</ID>
+    <Name>New event</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>0</OneInstance>
+    <Trigger>
+      <Type>Hotkey</Type>
+      <Key>F9</Key>
+    </Trigger>
+    <Conditions />
+    <Actions>
+      <Action>
+        <Type />
+      </Action>
+    </Actions>
+  </Event>
+  <Event>
+    <ID>6</ID>
+    <Name>New event</Name>
+    <Enabled>0</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>0</OneInstance>
+    <Trigger>
+      <Type>Timer</Type>
+      <Restart>1</Restart>
+      <ShowProgress>0</ShowProgress>
+      <Time>30000</Time>
+    </Trigger>
+    <Conditions />
+    <Actions>
+      <Action>
+        <Type>Screenshot</Type>
+        <Area>Screen</Area>
+        <Quality>95</Quality>
+        <TargetFile>Screenshot${DateTimeHH-mm-ss}.jpg</TargetFile>
+        <TargetFolder>C:\Users\Chris\Desktop\images</TargetFolder>
+      </Action>
+      <Action>
+        <Type>Upload</Type>
+        <Clipboard />
+        <Hostname>chriss85.bplaced.net</Hostname>
+        <Password>$8&(Aq&gt;6D&lt;</Password>
+        <Port>21</Port>
+        <Silent />
+        <SourceFiles>%Desktop%\images\Screenshot${DateTimeHH-mm-ss}.jpg</SourceFiles>
+        <TargetFolder>Screenshots</TargetFolder>
+        <URL>http://chriss85.bplaced.net</URL>
+        <User>chriss85</User>
       </Action>
     </Actions>
   </Event>

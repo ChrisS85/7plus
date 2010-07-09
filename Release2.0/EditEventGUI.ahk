@@ -4,10 +4,15 @@ GUI_EditEvent(e,GoToLabel="")
 	global Trigger_Categories
 	if(GoToLabel = "")
 	{
+		;Don't show more than once
+		if(Event)
+			return ""
 		Event := e
 		result := ""
 		TriggerGUI := ""
-		Gui, 1:+Disabled
+		Gui 1:+LastFoundExist
+		IfWinExist		
+			Gui, 1:+Disabled
 		Gui, 4:Default
 		Gui, +LabelEditEvent +Owner1 +ToolWindow +OwnDialogs
 		width := 500
@@ -121,18 +126,6 @@ GUI_EditEvent(e,GoToLabel="")
 		gosub FillCategories
 		gosub UpdateConditions
 		gosub UpdateActions
-		/*
-		OnMessage(0x100, "WM_KEYDOWN")
-		Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Add gGUI_EventsList_Add, Add Event
-		yIt += textboxstep
-		Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Remove gGUI_EventsList_Remove, Delete Event
-		yIt += textboxstep
-		Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsLisit_Edit gGUI_EventsList_Edit, Edit Event
-		yIt += 208 - textboxstep -4
-		Gui, 1:Add, Button, x%x2% y%yIt% w80 gGUI_EventsLisit_Help, Help
-		yIt += textboxstep + 4
-		y := yIt + TextBoxTextOffset
-		*/
 		Gui, Show, w%width% h%height%, Edit Event
 		
 		Gui, +LastFound
@@ -144,7 +137,10 @@ GUI_EditEvent(e,GoToLabel="")
 			IfWinNotExist ahk_id %EditEvent_hWnd% 
 				break
 		}
-		Gui, 1:Default
+		Event := ""
+		Gui 1:+LastFoundExist
+		IfWinExist
+			Gui, 1:Default
 		return result	
 	}
 	else if(GoToLabel = "EditEventOK")
@@ -156,16 +152,22 @@ GUI_EditEvent(e,GoToLabel="")
 		Event.DeleteAfterUse := EditEvent_DeleteAfterUse
 		Event.OneInstance := EditEvent_OneInstance
 		result := Event
-		Gui, 1:-Disabled
+		Gui 1:+LastFoundExist
+		IfWinExist		
+			Gui, 1:-Disabled
 		Gui, Destroy
 		return
 	}
 	else if(GoToLabel = "EditEventClose")
 	{
-		Gui, 1:-Disabled
+		Gui 1:+LastFoundExist
+		IfWinExist		
+			Gui, 1:-Disabled
 		Gui, Cancel
 		Gui, destroy
-		Gui, 1:Default
+		Gui 1:+LastFoundExist
+		IfWinExist		
+			Gui, 1:Default
 		result := ""
 		return
 	}

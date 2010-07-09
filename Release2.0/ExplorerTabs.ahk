@@ -190,8 +190,9 @@ DrawTabWindow()
 			Gdip_DrawLine(G, pPenBorder, tab.x, tab.y, tab.x+tab.width, tab.y)
 			Gdip_DrawLine(G, pPenBorder, tab.x, tab.y, tab.x, tab.y+tab.height)
 			Gdip_DrawLine(G, pPenBorder, tab.x+tab.width, tab.y, tab.x+tab.width, tab.y+tab.height)
+			Gdip_SetSmoothingMode(G, 4)
 			
-			Gdip_TextToGraphics(G, tab.drawtext, "x" (tab.x+TabContainerList.hPadding) " y" TabContainerList.vPadding " cff000000 r4 Centre s" FontSize, Font,tab.width - 2*TabContainerList.hPadding,tab.height)
+			Gdip_TextToGraphics(G, tab.drawtext, "x" (tab.x+TabContainerList.hPadding) " y" TabContainerList.vPadding " cff000000 r5 Centre s" FontSize, Font,tab.width - 2*TabContainerList.hPadding,tab.height)
 		}
 		UpdateLayeredWindow(TabWindow, hdc, x, y, w, h)
 		

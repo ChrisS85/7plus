@@ -107,7 +107,12 @@ Trigger_Hotkey_Enable(Trigger)
 	key := "$" key ;Add $ so key can not be triggered through script to prevent loops
 	Hotkey, %key%, HotkeyTrigger, On
 }
-
+Trigger_Hotkey_Disable(Trigger)
+{
+	key := Trigger.Key
+	key := "$" key ;Add $ so key can not be triggered through script to prevent loops
+	Hotkey, %key%, Off
+}
 ;When hotkey is deleted, it needs to be removed from hotkeyarrays
 Trigger_Hotkey_Delete(Trigger)
 {

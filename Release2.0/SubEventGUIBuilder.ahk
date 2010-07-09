@@ -1,6 +1,7 @@
 ;Adds a row of controls to a SubEvent GUI. Control handles are stored in SubEventGUI, and can be stored back and have the controls delete by SubEventGUI_GUISubmit
 SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description="", Button1Text="", Button1gLabel = "", Button2Text="", Button2gLabel = "")
 {
+	global Settings_Events
 	x := SubEventGUI.x
 	y := SubEventGUI.y
 	w := 200
@@ -28,10 +29,12 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 	{
 		if(SubEvent[name] = 1)
 			Gui, Add, Checkbox, x%x% y%y% hwndCheck_%name% Checked, %text%
-		else if(SubEvent[name] = 0)
-			Gui, Add, Checkbox, x%x% y%y% hwndCheck_%name%, %text%
 		else
-			Msgbox SubEventGUI_Add(%type%,%name%, %text%, %description%) has wrong checkbox value!
+		{
+			Gui, Add, Checkbox, x%x% y%y% hwndCheck_%name%, %text%
+			if(SubEvent[name] != 0)
+				Msgbox SubEventGUI_Add(%type%,%name%, %text%, %description%) has wrong checkbox value!
+		}
 		y += 30
 		SubEventGUI["Check_" name] := Check_%name%
 	}
@@ -39,7 +42,9 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 	{
 		y += 1
 		text := SubEvent[name]
-		Gui, Add, Edit, x%x% y%y% w%w% hwndEdit_%name%, %text%
+		options = x%x% y%y% w%w% hwndEdit_%name% -Multi R1
+		options .= InStr(name, "password") ? " Password" : ""
+		Gui, Add, Edit, %options% , %text%
 		y -= 1
 		y += 30
 		SubEventGUI["Edit_" name] := Edit_%name%
@@ -52,9 +57,26 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 	}
 	else if(type = "DropDownList")
 	{
+		;Select event dropdownlist
+		if(strStartsWith(text, "TriggerType:"))
+		{
+			Triggertype := SubStr(text, 13)
+			text := ""
+			Loop % Settings_Events.len()
+			{
+				if(!TriggerType || Settings_Events[A_Index].Trigger.Type = TriggerType)
+					text .= Settings_Events[A_Index].ID ": " Settings_Events[A_Index].Name "|"
+			}
+		}
 		;Construct options
 		Loop, Parse, text, |
-			text1 .= A_LoopField (A_LoopField = SubEvent[name] ? "||" : "|")
+		{
+			if(A_LoopField)
+				if(InStr(A_LoopField, ": "))
+					text1 .= A_LoopField (SubStr(A_LoopField, 1, InStr(A_LoopField, ": ") - 1) = SubEvent[name] ? "||" : "|")
+				else
+					text1 .= A_LoopField (A_LoopField = SubEvent[name] ? "||" : "|")
+		}
 		if(!strEndsWith(text1,"||"))
 			text1 := SubStr(text1, 1, -1)
 		options = x%x% y%y% w%w% hwndDropDown_%name%
@@ -123,6 +145,8 @@ SubEventGUI_GUISubmit(SubEvent, SubEventGUI)
 		{
 			name := SubStr(key, 10)
 			ControlGetText, text, , ahk_id %value%
+			if(InStr(text, ": "))
+				text := SubStr(text, 1, InStr(text, ": ") - 1)
 			outputdebug save %name% %text%
 			SubEvent[name] := text
 			WinKill, ahk_id %value%
@@ -139,7 +163,7 @@ SubEventGUI_GUISubmit(SubEvent, SubEventGUI)
 	}
 }
 
-SubEventGUI_Browse(SubEventGUI,name,Title="Select Folder",Options=0)
+SubEventGUI_Browse(SubEventGUI, name, Title="Select Folder",Options=0, Quote=0)
 {
 	Gui +OwnDialogs
 	path:=COM_CreateObject("Shell.Application").BrowseForFolder(0, Title, Options).Self.Path
@@ -150,16 +174,16 @@ SubEventGUI_Browse(SubEventGUI,name,Title="Select Folder",Options=0)
 		{
 			if(InStr(key,"_" name) && !InStr(key, "Button1_") && !InStr(key, "Button2_") && !InStr(key, "Desc_"))
 			{
+				if(Quote)
+					path := Quote(path)
 				ControlSetText, , %path%, ahk_id %value%
 				break
 			}
 		}
 	}
 }
-SubEventGUI_SelectFile(SubEventGUI, name, Title = "", Filter = "")
+SubEventGUI_SelectFile(SubEventGUI, name, Title = "Select File", Filter = "", Quote=0)
 {
-	if(Title = "")
-		Title := "Select File"
 	Gui +OwnDialogs
 	FileSelectFile, path , 3, , %Title%, %Filter%
 	if(path != "")
@@ -167,10 +191,11 @@ SubEventGUI_SelectFile(SubEventGUI, name, Title = "", Filter = "")
 		enum := SubEventGUI._newEnum()
 		while enum[key,value]
 		{
-			outputdebug key %key% name %name%
 			if(InStr(key,"_" name) && !InStr(key, "Button1_") && !InStr(key, "Button2_") && !InStr(key, "Desc_"))
 			{
-				ControlSetText, , "%path%", ahk_id %value%
+				if(Quote)
+					path := Quote(path)
+				ControlSetText, , %path%, ahk_id %value%
 				break
 			}
 		}

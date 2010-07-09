@@ -11,7 +11,7 @@ Action_Shutdown_ReadXML(Action, ActionFileHandle)
 }
 Action_Shutdown_Execute(Action)
 {
-	if(Action.ShutdownSelection = "Logoff")
+	if(Action.ShutdownSelection = "LogOff")
 		code := 0
 	else if(Action.ShutdownSelection = "Shutdown")
 		code := 1 + 8
@@ -40,7 +40,7 @@ Action_Shutdown_DisplayString(Action)
 }
 Action_Shutdown_GuiShow(Action, ActionGUI)
 {
-	SubEventGUI_Add(Action, ActionGUI, "DropDownList", "ShutdownSelection", "LogOff|ShutDown|Reboot|Hibernate|Standby", "", "Selection:")
+	SubEventGUI_Add(Action, ActionGUI, "DropDownList", "ShutdownSelection", "LogOff|Shutdown|Reboot|Hibernate|Standby", "", "Selection:")
 	SubEventGUI_Add(Action, ActionGUI, "Checkbox", "ForceClose", "Force-close applications", "", "")
 }
 

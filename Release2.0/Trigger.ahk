@@ -1,12 +1,11 @@
 EventSystem_Startup()
 {
 	global Events, EventSchedule
-	EventsBase := object("base",Array(), "HighestID", -1, "CreateEvent", "EventSystem_CreateEvent", "FindID", "Events_FindID")
+	EventsBase := object("base",Array(), "HighestID", -1, "CreateEvent", "EventSystem_CreateEvent", "FindID", "Events_FindID", "Add", "Events_Add", "Remove", "Events_Remove")
 	Events := object("base", EventsBase)
 	EventSystem_CreateBaseObjects()
 	
 	ReadEventsFile()
-	outputdebug(Events.len())
 	EventSchedule := Array()
 	Loop % Events.len()
 	{
@@ -22,32 +21,72 @@ EventSystem_Startup()
 Events_FindID(Events,ID)
 {
 	Loop % Events.len()
-	{
 		if(Events[A_Index].ID = ID)
 			return A_Index
-	}
 	return 0
 }
-EventSystem_CreateEvent(Events)
+
+;Enabled state needs to be set through this function, to allow syncing with settings window
+Event_SetEnabled(Event,Value) 
 {
-	global EventBase
-	Events.HighestID := Events.HighestID + 1
-	Event := Object("base",EventBase.DeepCopy()) ;Need to use base to make functions work
-	Event.ID := Events.HighestID
-	Event.Enabled := true
+	global Events, Settings_Events
+	Event.Enabled := Value
+	if(Settings_Events && Events[Events.FindID(Event.ID)]) ;if settings are open and updating a regular event, update its counterpart in settings_events
+	{	
+		Settings_Events[Settings_Events.FindID(Event.ID)].Enabled := Value
+		Settings_SetupEvents()
+	}
+}
+
+;This function needs to be used to add events, to allow syncing with settings window
+Events_Add(Events, Event) 
+{
+	global Settings_Events
+	outputdebug addEvent()
 	Events.append(Event)
+	if(Settings_Events && Events != Settings_Events)
+	{
+		outputdebug add event to settings
+		Settings_Events.append(Event.DeepCopy())
+		Settings_SetupEvents()
+	}
+}
+
+;This function needs to be used to remove events, to allow syncing with settings window
+Events_Remove(Events, Event) 
+{
+	global Settings_Events
+	Events.Delete(Events.FindID(Event.ID))
+	Events[Events.FindID(Event.ID)].Delete()
+	if(Settings_Events && Events != Settings_Events)
+	{
+		Settings_Events.Delete(Settings_Events.FindID(Event.ID))
+		Settings_SetupEvents()
+	}
+}
+
+EventSystem_CreateEvent(lEvents)
+{
+	global EventBase, Events, Settings_Events
+	outputdebug createevent()
+	HighestID := max(Events.HighestID, Settings_Events.HighestID) + 1 ;Make sure highest ID is used from both event arrays
+	lEvents.HighestID := HighestID
+	Event := Object("base",EventBase.DeepCopy()) ;Need to use base to make functions work
+	Event.ID := HighestID
+	lEvents.Add(Event)
+	Event.SetEnabled(true)
 	return Event
 }
 EventSystem_CreateBaseObjects()
 {
 	global
 	local tmpobject
-	EventSystem_Triggers := "ExplorerPathChanged,Hotkey,None,Timer,WindowActivated, WindowClosed, WindowCreated,7plusStart"
+	EventSystem_Triggers := "ExplorerPathChanged,Hotkey,Timer,Trigger,WindowActivated, WindowClosed, WindowCreated,7plusStart"
 	EventSystem_Conditions := "MouseOver,IsRenaming,WindowActive,WindowExists"
-	EventSystem_Actions := "Clipboard,Clipmenu,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,Message,MinimizeToTray,NewFile,NewFolder,Run,SendKeys,SetDirectory,Shutdown,WindowActivate,WindowClose,WindowHide,WindowShow"
+	EventSystem_Actions := "Clipboard,Clipmenu,ControlEvent,Copy,Delete,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,Message,MinimizeToTray,Move,NewFile,NewFolder,PlaySound,Run,Screenshot,SendKeys,SetDirectory,Shutdown,Upload,WindowActivate,WindowClose,WindowHide,WindowShow"
 	Trigger_Categories := object("Explorer", Array(), "Hotkeys", Array(), "Other", Array(), "System", Array(), "Window", Array(), "7plus", Array())
 	Condition_Categories := object("Explorer", Array(), "Mouse", Array(), "Other", Array(), "Window", Array())
-	Action_Categories := object("Explorer", Array(), "FastFolders", Array(), "Window", Array(), "Input", Array(), "System", Array(), "7plus", Array(), "Other", Array())
+	Action_Categories := object("Explorer", Array(), "FastFolders", Array(), "File", Array(), "Window", Array(), "Input", Array(), "System", Array(), "7plus", Array(), "Other", Array())
 	
 	Loop, Parse, EventSystem_Triggers, `,,%A_Space%
 	{		
@@ -63,6 +102,8 @@ EventSystem_CreateBaseObjects()
 		tmpobject.GuiSubmit := "Trigger_" A_LoopField "_GuiSubmit"
 		tmpobject.Init := "Trigger_" A_LoopField "_Init"
 		tmpobject.Delete := "Trigger_" A_LoopField "_Delete"
+		tmpobject.PrepareCopy := "Trigger_" A_LoopField "_PrepareCopy"
+		tmpobject.PrepareReplacement := "Trigger_" A_LoopField "_PrepareReplacement"
 		Trigger_%A_LoopField%_Init(tmpobject)
 		Trigger_%A_LoopField%_Base := object("base",tmpobject)		
 		;Add type to category
@@ -107,11 +148,17 @@ EventSystem_CreateBaseObjects()
 	EventBase.Enabled := 1
 	EventBase.Enable := "Event_Enable"
 	EventBase.Disable := "Event_Disable"
+	EventBase.Delete := "Event_Delete"
 	EventBase.ExpandPlaceHolders := "Event_ExpandPlaceholders"
+	EventBase.SetEnabled := "Event_SetEnabled"
 	EventBase.PlaceHolders := Array()
 	EventBase.Trigger := EventSystem_CreateSubEvent("Trigger", "None")
 	EventBase.Conditions := Array()
 	EventBase.Actions := Array()
+}
+Event_Delete(Event)
+{
+	Event.Trigger.Delete(Event)
 }
 EventSystem_End()
 {
@@ -127,12 +174,12 @@ EventSystem_CreateSubEvent(Category,Type)
 }
 Event_Enable(Event)
 {
-	Event.Enabled := true
+	Event.SetEnabled(true)
 	Event.Trigger.Enable(Event)
 }
 Event_Disable(Event)
 {
-	Event.Enabled := false
+	Event.SetEnabled(false)
 	Event.Trigger.Disable(Event)
 }
 ReadEventsFile()
@@ -365,8 +412,7 @@ OnTrigger(Trigger)
 	Loop % Events.len()
 	{
 		Event := Events[A_Index]
-		outputdebug("ontrigger " Trigger.Type Event.Trigger.Type Event.Enabled)
-		if(Event.Trigger.Type = Trigger.Type && Event.Enabled && Event.Trigger.Matches(Trigger, Event))
+		if(Event.Enabled && (Event.Trigger.Type = Trigger.Type && Event.Trigger.Matches(Trigger, Event)) || (Trigger.Type = "Trigger" && Event.ID = Trigger.TargetID))
 		{
 			running := false
 			if(Event.OneInstance)
@@ -446,11 +492,11 @@ EventScheduler()
 			{
 				EventSchedule.Delete(EventPos)
 				if(Event.DisableAfterUse)
-					Events[Events.FindID(Event.ID)].Enabled := false
+					Events[Events.FindID(Event.ID)].SetEnabled(false)
 				if(Event.DeleteAfterUse)
 				{
 					Events[Events.FindID(Event.ID)].Delete()
-					Events.Delete(Events.FindID(Event.ID))
+					Events.Remove(Events[Events.FindID(Event.ID)])
 				}
 				continue
 			}

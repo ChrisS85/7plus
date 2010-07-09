@@ -46,7 +46,7 @@ Action_Run_GuiShow(Action, ActionGUI, GoToLabel = "")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "WaitForFinish", "Wait for finish", "", "")
 	}
 	else if(GoToLabel = "Browse")
-		SubEventGUI_SelectFile(sActionGUI, "Command")
+		SubEventGUI_SelectFile(sActionGUI, "Command", "Select File", "", 1)
 	else if(GoToLabel = "Placeholders")
 		SubEventGUI_Placeholders(sActionGUI, "Command")
 }

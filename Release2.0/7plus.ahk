@@ -74,7 +74,7 @@ BugfixVersion := 0
 
 #include %A_ScriptDir%\Triggers\ExplorerPathChanged.ahk
 #include %A_ScriptDir%\Triggers\Hotkey.ahk
-#include %A_ScriptDir%\Triggers\None.ahk
+#include %A_ScriptDir%\Triggers\Trigger.ahk
 #include %A_ScriptDir%\Triggers\Timer.ahk
 #include %A_ScriptDir%\Triggers\WindowActivated.ahk
 #include %A_ScriptDir%\Triggers\WindowClosed.ahk
@@ -88,14 +88,21 @@ BugfixVersion := 0
 
 #include %A_ScriptDir%\Actions\Clipboard.ahk
 #include %A_ScriptDir%\Actions\Clipmenu.ahk
+#include %A_ScriptDir%\Actions\ControlEvent.ahk
 #include %A_ScriptDir%\Actions\FastFoldersMenu.ahk
 #include %A_ScriptDir%\Actions\FastFoldersRecall.ahk
 #include %A_ScriptDir%\Actions\FastFoldersStore.ahk
+#include %A_ScriptDir%\Actions\FileCopy.ahk
+#include %A_ScriptDir%\Actions\FileDelete.ahk
+#include %A_ScriptDir%\Actions\FileMove.ahk
+#include %A_ScriptDir%\Actions\FTPUpload.ahk
 #include %A_ScriptDir%\Actions\Message.ahk
 #include %A_ScriptDir%\Actions\MinimizeToTray.ahk
 #include %A_ScriptDir%\Actions\NewFile.ahk
 #include %A_ScriptDir%\Actions\NewFolder.ahk
+#include %A_ScriptDir%\Actions\PlaySound.ahk
 #include %A_ScriptDir%\Actions\Run.ahk
+#include %A_ScriptDir%\Actions\Screenshot.ahk
 #include %A_ScriptDir%\Actions\SendKeys.ahk
 #include %A_ScriptDir%\Actions\SetDirectory.ahk
 #include %A_ScriptDir%\Actions\ShutDown.ahk
@@ -105,3 +112,4 @@ BugfixVersion := 0
 #include %A_ScriptDir%\Actions\WindowShow.ahk
 
 #include %A_ScriptDir%\Generic\WindowFilter.ahk
+#include %A_ScriptDir%\Generic\FileOperation.ahk

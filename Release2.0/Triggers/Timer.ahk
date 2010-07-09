@@ -3,14 +3,13 @@ Trigger_Timer_Init(Trigger)
 	Trigger.Category := "System"
 	Trigger.ShowProgress := 0
 	Trigger.Restart := 0
-	outputdebug("Init" Trigger.showprogress)
+	Menu, tray, Add, Add timer, AddTimer
 }
 Trigger_Timer_ReadXML(Trigger, TriggerFileHandle)
 {	
 	Trigger.Time := xpath(TriggerFileHandle, "/Time/Text()")
 	Trigger.ShowProgress := xpath(TriggerFileHandle, "/ShowProgress/Text()")
 	Trigger.Restart := xpath(TriggerFileHandle, "/Restart/Text()")
-	outputdebug("read" Trigger.Showprogress)
 }
 
 Trigger_Timer_Enable(Trigger, Event)
@@ -20,15 +19,12 @@ Trigger_Timer_Enable(Trigger, Event)
 	if(Trigger.ShowProgress)
 	{
 		x := Trigger.tmpGUINum
-		outputdebug x %x%
 		MainText := Event.Name
 		if(!Trigger.tmpGUINum)
 		{
-			outputdebug enable
 			GUINum := GetFreeGuiNum(10)
 			if(GUINum)
 			{
-				outputdebug guinum found
 				Trigger.tmpGUINum := GUINum
 				Gui, %GUINum%:Add, Text, w200,%MainText%
 				Gui, %GUINum%:Add, Progress, hwndProgress w200 -Smooth, 100
@@ -43,12 +39,29 @@ Trigger_Timer_Enable(Trigger, Event)
 				Trigger.tmpText := Text
 				Trigger.tmpStartPause := StartPause
 				Trigger.tmpStop := Stop
-				Trigger.tmpReset := Reset
+				Trigger.tmpResetHandle := Reset
 				;Progress, %GUINum%:M P100  ,Time left: , %MainText%, %Title%
 				SetTimer, UpdateTimerProgress, 1000
 			}
 		}
 	}
+}
+Trigger_Timer_PrepareCopy(Timer,Event)
+{
+	Event.Trigger.tmpState := Event.Enabled
+}
+Trigger_Timer_PrepareReplacement(Timer, Original, Copy)
+{
+	Copy.Trigger.tmpIsPaused := Original.Trigger.tmpIsPaused
+	Copy.Trigger.tmpStart := Original.Trigger.tmpStart
+	Copy.Trigger.tmpStartNice := Original.Trigger.tmpStartNice
+	Copy.Trigger.tmpProgress := Original.Trigger.tmpProgress
+	Copy.Trigger.tmpText := Original.Trigger.tmpText
+	Copy.Trigger.tmpStartPause := Original.Trigger.tmpStartPause
+	Copy.Trigger.tmpStop := Original.Trigger.tmpStop
+	Copy.Trigger.tmpResetHandle := Original.Trigger.tmpResetHandle
+	Copy.Trigger.tmpGUINum := Original.Trigger.tmpGUINum
+	Copy.Trigger.tmpReset := Original.Trigger.tmpReset
 }
 Timer_StartPause:
 Trigger_Timer_StartPause(TimerEventFromGUINumber(A_GUI).Trigger)
@@ -59,6 +72,23 @@ return
 Timer_Reset:
 Trigger_Timer_Reset(TimerEventFromGUINumber(A_GUI).Trigger)
 return
+AddTimer:
+AddTimer()
+return
+AddTimer()
+{
+	global Events, Settings_Events
+	Event := EventSystem_CreateEvent("")
+	Event.Trigger := EventSystem_CreateSubEvent("Trigger", "Timer")
+	Event := GUI_EditEvent(Event)
+	if(Event)
+	{
+		Events.HighestID := max(Events.HighestID, Settings_Events.HighestID) + 1
+		Event.ID := Events.HighestID
+		Events.Add(Event)
+		Event.Enable()
+	}
+}
 TimerEventFromGUINumber(number)
 {
 	global Events
@@ -111,7 +141,7 @@ Trigger_Timer_Pause(Trigger)
 }
 Trigger_Timer_Stop(Event)
 {
-	Event.enabled := false
+	Event.SetEnabled(false)
 	Event.Trigger.Disable(Event)
 }
 Trigger_Timer_Reset(Trigger)
@@ -128,6 +158,7 @@ Trigger_Timer_Disable(Trigger, Event)
 		return
 	Trigger.tmpStart := ""
 	Trigger.tmpStartNice := ""
+	Trigger.tmpIsPaused := 0
 	if(Trigger.ShowProgress)
 	{
 		GUINum := Trigger.tmpGUINum
@@ -137,10 +168,12 @@ Trigger_Timer_Disable(Trigger, Event)
 			Trigger.tmpProgress := ""
 			Trigger.tmpText := ""
 			GUI, %GUINum%:Destroy
-			outputdebug disable
-			;Progress, %GUINum%:Off
 		}
 	}
+}
+Trigger_Timer_Delete(Trigger, Event)
+{
+	Event.Disable()
 }
 UpdateTimerProgress:
 UpdateTimerProgress()
@@ -157,19 +190,15 @@ UpdateTimerProgress()
 			{
 				GUINum := timer.tmpGUINum
 				progress := Round(100 - (A_TickCount - timer.tmpStart)/timer.Time * 100)
-				hours := Floor((timer.Time - (A_TickCount - timer.tmpStart)) / 1000 / 3600)
-				minutes := Floor(((timer.Time - (A_TickCount - timer.tmpStart)) / 1000 - hours * 3600)/60)
-				seconds := Floor(((timer.Time - (A_TickCount - timer.tmpStart)) / 1000 - hours * 3600 - minutes * 60))
+				hours := max(Floor((timer.Time - (A_TickCount - timer.tmpStart)) / 1000 / 3600),0)
+				minutes := max(Floor(((timer.Time - (A_TickCount - timer.tmpStart)) / 1000 - hours * 3600)/60),0)
+				seconds := max(Floor(((timer.Time - (A_TickCount - timer.tmpStart)) / 1000 - hours * 3600 - minutes * 60))+1,0)
 				Time := "Time left: " (strLen(hours) = 1 ? "0" hours : hours) ":" (strLen(minutes) = 1 ? "0" minutes : minutes) ":" (strLen(seconds) = 1 ? "0" seconds : seconds)
 				hwndProgress := timer.tmpProgress
 				SendMessage, 0x402, progress,0,, ahk_id %hwndProgress%
 				hwndtext := timer.tmpText
 				ControlSetText,,%Time%, ahk_id %hwndtext%
 				timer.tmpReset := 0
-				outputdebug update %hwndprogress% %progress% pos %errorlevel%
-				;SendMessage, 0x00E3, 1, 0, , ahk_id %hwndProgress%		
-				outputdebug range %errorlevel%
-				;Progress, %GUINum%:%progress%, %Time%, %MainText%, Timer
 			}
 		}
 	 }
@@ -179,10 +208,13 @@ Trigger_Timer_Matches(Trigger, Filter, Event)
 	if(Trigger.tmpStart && !Trigger.tmpIsPaused && A_TickCount > (Trigger.tmpStart + Trigger.Time))
 	{
 		if(Trigger.Restart)
+		{
+			Trigger.tmpStart := 0
 			Trigger.Enable(Event)
+		}
 		else
 		{
-			Event.Enabled := 0
+			Event.SetEnabled(false)
 			Event.Trigger.Disable(Event)
 		}
 		return true
@@ -192,7 +224,6 @@ Trigger_Timer_Matches(Trigger, Filter, Event)
 
 Trigger_Timer_DisplayString(Trigger)
 {
-	outputdebug("Trigger time in ms:" Trigger.time)
 	hours := Floor(Trigger.Time / 1000 / 3600)
 	minutes := Floor((Trigger.Time / 1000 - hours * 3600)/60)
 	seconds := Floor((Trigger.Time / 1000 - hours * 3600 - minutes * 60))
@@ -215,11 +246,9 @@ Trigger_Timer_GuiShow(Trigger, TriggerGUI)
 Trigger_Timer_GuiSubmit(Trigger, TriggerGUI)
 {
 	SubEventGUI_GuiSubmit(Trigger, TriggerGUI)
-	outputdebug("time " trigger.tmptime)
 	hours := SubStr(Trigger.tmptime, 1, 2)
 	minutes := SubStr(Trigger.tmptime, 3, 2)
 	seconds := SubStr(Trigger.tmptime, 5, 2)
-	outputdebug %hours%:%minutes%:%seconds%
 	Trigger.Time := (hours * 3600 + minutes * 60 + seconds) * 1000
 } 
 

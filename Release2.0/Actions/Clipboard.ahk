@@ -1,20 +1,3 @@
-Action_Clipboard_ReadXML(Action, ActionFileHandle)
-{
-	Action.InsertType := xpath(ActionFileHandle, "/InsertType/Text()")
-	Action.Content := xpath(ActionFileHandle, "/Content/Text()")
-	Action.Clear := xpath(ActionFileHandle, "/Clear/Text()")
-	Action.Cut := xpath(ActionFileHandle, "/Cut/Text()")
-	Action.Append := xpath(ActionFileHandle, "/Append/Text()")
-}
-Action_Clipboard_WriteXML(Action, ByRef ActionFileHandle, Path)
-{
-	xpath(ActionFileHandle, Path "InsertType[+1]/Text()", Action.InsertType)
-	xpath(ActionFileHandle, Path "Content[+1]/Text()", Action.Content)
-	xpath(ActionFileHandle, Path "Cut[+1]/Text()", Action.Cut)
-	xpath(ActionFileHandle, Path "Clear[+1]/Text()", Action.Clear)
-	xpath(ActionFileHandle, Path "Append[+1]/Text()", Action.Append)
-}
-
 Action_Clipboard_Init(Action)
 {
 	Action.Category := "System"
@@ -23,6 +6,15 @@ Action_Clipboard_Init(Action)
 	Action.Clear := 1
 	Action.Cut := 0
 	Action.Append := 0
+}
+
+Action_Clipboard_ReadXML(Action, ActionFileHandle)
+{
+	Action.InsertType := xpath(ActionFileHandle, "/InsertType/Text()")
+	Action.Content := xpath(ActionFileHandle, "/Content/Text()")
+	Action.Clear := xpath(ActionFileHandle, "/Clear/Text()")
+	Action.Cut := xpath(ActionFileHandle, "/Cut/Text()")
+	Action.Append := xpath(ActionFileHandle, "/Append/Text()")
 }
 
 Action_Clipboard_Execute(Action, Event)
@@ -71,7 +63,7 @@ Action_Clipboard_GuiShow(Action, ActionGUI, GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
 		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "InsertType", "Text|File|FileContent", "", "Write:")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Content", "", "", "Content:","Browse", "Action_Clipboard_Browse", "Placeholders", "Action_Clipboard_Placeholders")
+		SubEventGUI_Add(Action, ActionGUI, "Edit", "Content", "", "", "Content:", "Browse", "Action_Clipboard_Browse", "Placeholders", "Action_Clipboard_Placeholders")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Clear", "Clear Clipboard first (might be neccessary)", "", "")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Append", "Append to clipboard (not for images)", "", "")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Cut", "Cut files instead of copy (only for files)", "", "")

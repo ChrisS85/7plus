@@ -278,7 +278,6 @@ AcquireExplorerConfirmationDialogStrings()
 
 #if HKMouseGestures && GetKeyState("RButton") && (WinActive("ahk_group ExplorerGroup")||IsDialog()) && IsMouseOverFileList()
 LButton::
-  outputdebug go back
 	SuppressRButtonUp:=true
 	;Send !{Left}
 	Shell_GoBack()
@@ -799,7 +798,7 @@ return
 #if
 
 #if HKInvertSelection && WinActive("ahk_group ExplorerGroup")
-^i::InvertSelection()
+^i UP::InvertSelection()
 #if
 ;Flat View
 #if HKFlattenDirectory && Vista7 && WinActive("ahk_group ExplorerGroup")
