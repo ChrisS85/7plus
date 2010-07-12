@@ -11,12 +11,12 @@ Action_Message_ReadXML(Action, ActionFileHandle)
 Action_Message_Execute(Action,Event)
 {
 	global EventSchedule
-	if(!Action.GuiNum)
+	if(!Action.tmpGuiNum)
 	{
 		result := CustomMsgBox(Event.ExpandPlaceHolders(Action.Title), Event.ExpandPlaceHolders(Action.Text))
 		if(result) ;
 		{
-			Action.GuiNum := result
+			Action.tmpGuiNum := result
 			Action.Time := A_TickCount
 			return -1
 		}
@@ -25,7 +25,7 @@ Action_Message_Execute(Action,Event)
 	}
 	else
 	{
-		GuiNum := Action.GuiNum
+		GuiNum := Action.tmpGuiNum
 		;outputdebug waiting for messagebox close %guinum%
 		Gui,%GuiNum%:+LastFound 
 		WinGet, Msgbox_hwnd,ID
@@ -104,7 +104,7 @@ CustomMsgBox(Title,Message)
 	}
 
 	Gui,%l_GUI%:Destroy 
-	Gui,%l_GUI%:Add,Text,,%Message% 
+	Gui,%l_GUI%:Add,Text,,%Message%
 
 	Gui,%l_GUI%:Add,Button,% "Default y+10 w75 gCustomMsgboxOK xp+" (TextW / 2) - 38 ,OK 
 

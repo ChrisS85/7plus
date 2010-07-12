@@ -369,10 +369,6 @@ RunExplorer()
 	}
 	Return
 }
-!v::
-CurrentDesktopFiles:=GetSelectedFiles()
-outputdebug current %CurrentDesktopFiles%
-return
 #if (Vista7 && IsWindowUnderCursor("WorkerW")) || (!Vista7 && IsWindowUnderCursor("ProgMan"))
 ~LButton::
 CurrentDesktopFiles:=GetSelectedFiles()

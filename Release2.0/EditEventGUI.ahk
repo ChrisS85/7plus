@@ -319,7 +319,7 @@ GUI_EditEvent(e,GoToLabel="")
 	else if(GoToLabel = "EditEvent_AddCondition")
 	{
 		Gui, ListView, EditEvent_EditCondition
-		Condition := EventSystem_CreateSubEvent("Condition","WindowActive")
+		Condition := EventSystem_CreateSubEvent("Condition","If")
 		Event.Conditions.append(Condition)
 		LV_Add("Select", Condition.DisplayString())
 		GUI_EditEvent("","EditEvent_EditCondition")

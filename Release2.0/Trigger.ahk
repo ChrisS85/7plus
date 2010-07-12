@@ -5,7 +5,7 @@ EventSystem_Startup()
 	Events := object("base", EventsBase)
 	EventSystem_CreateBaseObjects()
 	
-	ReadEventsFile()
+	ReadMainEventsFile()
 	EventSchedule := Array()
 	Loop % Events.len()
 	{
@@ -82,8 +82,8 @@ EventSystem_CreateBaseObjects()
 	global
 	local tmpobject
 	EventSystem_Triggers := "ExplorerPathChanged,Hotkey,Timer,Trigger,WindowActivated, WindowClosed, WindowCreated,7plusStart"
-	EventSystem_Conditions := "MouseOver,IsRenaming,WindowActive,WindowExists"
-	EventSystem_Actions := "Clipboard,Clipmenu,ControlEvent,Copy,Delete,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,Message,MinimizeToTray,Move,NewFile,NewFolder,PlaySound,Run,Screenshot,SendKeys,SetDirectory,Shutdown,Upload,WindowActivate,WindowClose,WindowHide,WindowShow"
+	EventSystem_Conditions := "MouseOver,If,IsRenaming,WindowActive,WindowExists"
+	EventSystem_Actions := "Clipboard,Clipmenu,ControlEvent,Copy,Delete,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,Input,Message,MinimizeToTray,Move,NewFile,NewFolder,PlaySound,Run,Screenshot,SendKeys,SetDirectory,Shutdown,Upload,WindowActivate,WindowClose,WindowHide,WindowShow"
 	Trigger_Categories := object("Explorer", Array(), "Hotkeys", Array(), "Other", Array(), "System", Array(), "Window", Array(), "7plus", Array())
 	Condition_Categories := object("Explorer", Array(), "Mouse", Array(), "Other", Array(), "Window", Array())
 	Action_Categories := object("Explorer", Array(), "FastFolders", Array(), "File", Array(), "Window", Array(), "Input", Array(), "System", Array(), "7plus", Array(), "Other", Array())
@@ -92,15 +92,14 @@ EventSystem_CreateBaseObjects()
 	{		
 		tmpobject := RichObject()
 		tmpobject.Type := A_LoopField
+		tmpobject.Init := "Trigger_" A_LoopField "_Init"
 		tmpobject.ReadXML := "Trigger_" A_LoopField "_ReadXML"
-		tmpobject.WriteXML := "Trigger_" A_LoopField "_WriteXML"
 		tmpobject.Enable := "Trigger_" A_LoopField "_Enable"
 		tmpobject.Disable := "Trigger_" A_LoopField "_Disable"
 		tmpobject.Matches := "Trigger_" A_LoopField "_Matches"
 		tmpobject.DisplayString := "Trigger_" A_LoopField "_DisplayString"
 		tmpobject.GuiShow := "Trigger_" A_LoopField "_GuiShow"
 		tmpobject.GuiSubmit := "Trigger_" A_LoopField "_GuiSubmit"
-		tmpobject.Init := "Trigger_" A_LoopField "_Init"
 		tmpobject.Delete := "Trigger_" A_LoopField "_Delete"
 		tmpobject.PrepareCopy := "Trigger_" A_LoopField "_PrepareCopy"
 		tmpobject.PrepareReplacement := "Trigger_" A_LoopField "_PrepareReplacement"
@@ -116,8 +115,8 @@ EventSystem_CreateBaseObjects()
 	{		
 		tmpobject := RichObject()
 		tmpobject.Type := A_LoopField
+		tmpobject.Init := "Condition_" A_LoopField "_Init"
 		tmpobject.ReadXML := "Condition_" A_LoopField "_ReadXML"
-		tmpobject.WriteXML := "Condition_" A_LoopField "_WriteXML"
 		tmpobject.Evaluate := "Condition_" A_LoopField "_Evaluate"
 		tmpobject.DisplayString := "Condition_" A_LoopField "_DisplayString"
 		tmpobject.GuiShow := "Condition_" A_LoopField "_GuiShow"
@@ -131,8 +130,8 @@ EventSystem_CreateBaseObjects()
 	{
 		tmpobject := RichObject()
 		tmpobject.Type := A_LoopField
+		tmpobject.Init := "Action_" A_LoopField "_Init"
 		tmpobject.ReadXML := "Action_" A_LoopField "_ReadXML"
-		tmpobject.WriteXML := "Action_" A_LoopField "_WriteXML"
 		tmpobject.Execute := "Action_" A_LoopField "_Execute"
 		tmpobject.DisplayString := "Action_" A_LoopField "_DisplayString"
 		tmpobject.GuiShow := "Action_" A_LoopField "_GuiShow"
@@ -151,8 +150,8 @@ EventSystem_CreateBaseObjects()
 	EventBase.Delete := "Event_Delete"
 	EventBase.ExpandPlaceHolders := "Event_ExpandPlaceholders"
 	EventBase.SetEnabled := "Event_SetEnabled"
-	EventBase.PlaceHolders := Array()
-	EventBase.Trigger := EventSystem_CreateSubEvent("Trigger", "None")
+	EventBase.PlaceHolders := object()
+	EventBase.Trigger := EventSystem_CreateSubEvent("Trigger", "Hotkey")
 	EventBase.Conditions := Array()
 	EventBase.Actions := Array()
 }
@@ -162,33 +161,57 @@ Event_Delete(Event)
 }
 EventSystem_End()
 {
-	WriteEventsFile()
+	WriteMainEventsFile()
 }
 
 EventSystem_CreateSubEvent(Category,Type)
 {
 	global
 	local tmp
+	outputdebug createsubevent %type%
 	tmp := %Category%_%Type%_Base
-	return tmp.DeepCopy() ;Object("base", %tmp%, "Type", Type)
+	copy := tmp.DeepCopy()
+	copy.Init()
+	return copy ;Object("base", %tmp%, "Type", Type)
 }
 Event_Enable(Event)
 {
 	Event.SetEnabled(true)
 	Event.Trigger.Enable(Event)
 }
+
 Event_Disable(Event)
 {
 	Event.SetEnabled(false)
 	Event.Trigger.Disable(Event)
 }
-ReadEventsFile()
+
+ReadMainEventsFile()
 {
-	global ConfigPath, Events, EventBase
+	global ConfigPath, Events
 	;Event file is in same dir as settings.ini
 	SplitPath, ConfigPath,,path
 	path .= "\Events.xml"	
-	xpath_load(EventsFileHandle, path)   
+	ReadEvents := ReadEventsFile(Events, path)
+}	
+
+WriteMainEventsFile()
+{
+	global ConfigPath, Events
+	;Events file is in same dir as settings.ini
+	SplitPath, ConfigPath,,path
+	path .= "\Events.xml"	;TODO: Save to different file during development
+	WriteEventsFile(Events, path)
+}
+
+ReadEventsFile(Events, path)
+{
+	global EventBase
+	xpath_load(EventsFileHandle, path)
+	count := Events.len()
+	lowestID := 999999999999
+	HighestID := Events.HighestID
+	outputdebug highest id is originally %HighestID%
 	Loop
 	{
 		i := A_Index
@@ -205,9 +228,8 @@ ReadEventsFile()
 		
 		;Event ID
 		Event.ID := xpath(EventFileHandle,"/ID/Text()")
-		if(Event.ID > Events.HighestID)
-			Events.HighestID := Event.ID
-
+		if(Event.ID < lowestID)
+			lowestID := Event.ID
 		;Event Name
 		Event.Name := xpath(EventFileHandle,"/Name/Text()")
 		Event.Name := StringReplace(Event.Name,"&lt;","<",1)
@@ -302,13 +324,57 @@ ReadEventsFile()
 		}
 		Events.append(Event)
 	}
+	;fix IDs from import
+	pos := count + 1
+	outputdebug loop from %pos%
+	count := Events.len()
+	outputdebug to %count%
+	Loop
+	{
+		if(pos > count)
+			break
+		Event := Events[pos]
+		offset := (highestID - lowestID) + 1
+		outputdebug add offset %offset%
+		outputdebug("old id " Event.ID)
+		Event.ID := Event.ID + offset
+		outputdebug("new id " Event.ID)
+		if(Event.ID > Events.HighestID)
+			Events.HighestID := Event.ID
+		outputdebug("Highest id is now " Events.HighestID)
+		;Now adjust Event ID references
+		enum := Event.Trigger._newEnum()
+		while enum[k,v]
+		{
+			if(strEndsWith(k, "ID"))
+				Event.Trigger[k] += offset
+		}
+		Loop % Event.Conditions.len()
+		{
+			enum := Event.Conditions[A_Index]._newEnum()
+			c := A_Index
+			while enum[k,v]
+			{
+				if(strEndsWith(k, "ID"))
+					Event.Conditions[c][k] += offset
+			}
+		}
+		Loop % Event.Actions.len()
+		{
+			enum := Event.Actions[A_Index]._newEnum()
+			a := A_Index
+			while enum[k,v]
+			{
+				if(strEndsWith(k, "ID"))
+					Event.Actions[a][k] += offset
+			}
+		}
+		pos++
+	}
+	return Events
 }
-WriteEventsFile()
+WriteEventsFile(Events, path)
 {
-	global ConfigPath, Events
-	;Events file is in same dir as settings.ini
-	SplitPath, ConfigPath,,path
-	path .= "\Events.xml"	;TODO: Save to different file during development
 	;Create Events node
 	xpath(EventsFileHandle, "/Events[+1]") 
 	;Write Events entries
@@ -450,7 +516,7 @@ EventScheduler()
 			{
 				Loop % Event.Conditions.len()
 				{
-					result := Event.Conditions[ConditionPos].Evaluate()
+					result := Event.Conditions[ConditionPos].Evaluate(Event)
 					if( result = -1) ;Not decided yet, check later
 					{
 						Success := -1
@@ -483,9 +549,15 @@ EventScheduler()
 				Loop % Event.Actions.len()
 				{
 					result := Event.Actions[1].Execute(Event)
-					if(result = -1) ;Action needs more time to finish, check back in next main loop
+					if(result = 0) ;Action was cancelled, stop all further actions
+					{
+						Event.Actions := Array()
 						break
-					Event.Actions.Delete(1)
+					}
+					else if(result = -1) ;Action needs more time to finish, check back in next main loop
+						break
+					else
+						Event.Actions.Delete(1)
 				}
 			}
 			if(Event.Actions.len() = 0) ;No more actions in this event, consider it processed and remove it from queue

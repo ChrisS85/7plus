@@ -1,120 +1,64 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Events>
   <Event>
+    <ID>0</ID>
+    <Name>Upload window screenshot</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>1</OneInstance>
+    <Trigger>
+      <Type>Hotkey</Type>
+      <Key>!PrintScreen</Key>
+    </Trigger>
+    <Conditions />
+    <Actions>
+      <Action>
+        <Type>Screenshot</Type>
+        <Area>Window</Area>
+        <Quality>95</Quality>
+        <TargetFile>Screenshot.jpg</TargetFile>
+        <TargetFolder>%Temp%</TargetFolder>
+      </Action>
+      <Action>
+        <Type>Input</Type>
+        <Cancel>1</Cancel>
+        <Text>Enter image filename:</Text>
+        <Title>Enter filename</Title>
+      </Action>
+      <Action>
+        <Type>Upload</Type>
+        <Clipboard>1</Clipboard>
+        <Hostname>chriss85.bplaced.net</Hostname>
+        <Password>$8&(Aq&gt;6D&lt;</Password>
+        <Port>21</Port>
+        <Silent>0</Silent>
+        <SourceFiles>%temp%\Screenshot.jpg</SourceFiles>
+        <TargetFile>${Input}</TargetFile>
+        <TargetFolder />
+        <URL>http://chriss85.bplaced.net</URL>
+        <User>chriss85</User>
+      </Action>
+      <Action>
+        <Type>Delete</Type>
+        <Overwrite>0</Overwrite>
+        <Silent>1</Silent>
+        <SourceFile>%temp%\Screenshot.jpg</SourceFile>
+        <TargetFile />
+        <TargetPath />
+      </Action>
+    </Actions>
+  </Event>
+  <Event>
     <ID>1</ID>
-    <Name>Pizza Timer</Name>
-    <Enabled>0</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Timer</Type>
-      <Restart>0</Restart>
-      <ShowProgress>1</ShowProgress>
-      <Time>30000</Time>
-    </Trigger>
-    <Conditions />
-    <Actions>
-      <Action>
-        <Type>Message</Type>
-        <Text>pizza!</Text>
-        <Timeout />
-        <Title />
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>2</ID>
-    <Name>Pizza Timer</Name>
-    <Enabled>0</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Timer</Type>
-      <Restart>0</Restart>
-      <ShowProgress>1</ShowProgress>
-      <Time>20000</Time>
-    </Trigger>
-    <Conditions />
-    <Actions>
-      <Action>
-        <Type>SendKeys</Type>
-        <Keys>${MX}{Enter}</Keys>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>3</ID>
-    <Name>New event</Name>
+    <Name>Upload screenshot</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
+    <OneInstance>1</OneInstance>
     <Trigger>
       <Type>Hotkey</Type>
-      <Key>^+P</Key>
-    </Trigger>
-    <Conditions />
-    <Actions>
-      <Action>
-        <Type>ControlEvent</Type>
-        <Action>Trigger Event</Action>
-        <EventID>4</EventID>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>4</ID>
-    <Name>New event</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>#A</Key>
-    </Trigger>
-    <Conditions />
-    <Actions>
-      <Action>
-        <Type>Message</Type>
-        <Text>test</Text>
-        <Timeout />
-        <Title />
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>5</ID>
-    <Name>New event</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>F9</Key>
-    </Trigger>
-    <Conditions />
-    <Actions>
-      <Action>
-        <Type />
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>6</ID>
-    <Name>New event</Name>
-    <Enabled>0</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Timer</Type>
-      <Restart>1</Restart>
-      <ShowProgress>0</ShowProgress>
-      <Time>30000</Time>
+      <Key>PrintScreen</Key>
     </Trigger>
     <Conditions />
     <Actions>
@@ -122,18 +66,72 @@
         <Type>Screenshot</Type>
         <Area>Screen</Area>
         <Quality>95</Quality>
-        <TargetFile>Screenshot${DateTimeHH-mm-ss}.jpg</TargetFile>
-        <TargetFolder>C:\Users\Chris\Desktop\images</TargetFolder>
+        <TargetFile>Screenshot.jpg</TargetFile>
+        <TargetFolder>%Temp%</TargetFolder>
+      </Action>
+      <Action>
+        <Type>Input</Type>
+        <Cancel>1</Cancel>
+        <Text>Enter image filename:</Text>
+        <Title>Enter filename</Title>
       </Action>
       <Action>
         <Type>Upload</Type>
-        <Clipboard />
+        <Clipboard>1</Clipboard>
         <Hostname>chriss85.bplaced.net</Hostname>
         <Password>$8&(Aq&gt;6D&lt;</Password>
         <Port>21</Port>
-        <Silent />
-        <SourceFiles>%Desktop%\images\Screenshot${DateTimeHH-mm-ss}.jpg</SourceFiles>
-        <TargetFolder>Screenshots</TargetFolder>
+        <Silent>0</Silent>
+        <SourceFiles>%temp%\Screenshot.jpg</SourceFiles>
+        <TargetFile>${Input}</TargetFile>
+        <TargetFolder />
+        <URL>http://chriss85.bplaced.net</URL>
+        <User>chriss85</User>
+      </Action>
+      <Action>
+        <Type>Delete</Type>
+        <Overwrite>0</Overwrite>
+        <Silent>1</Silent>
+        <SourceFile>%temp%\Screenshot.jpg</SourceFile>
+        <TargetFile />
+        <TargetPath />
+      </Action>
+    </Actions>
+  </Event>
+  <Event>
+    <ID>2</ID>
+    <Name>Upload selected files</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>1</OneInstance>
+    <Trigger>
+      <Type>Hotkey</Type>
+      <Key>^H</Key>
+    </Trigger>
+    <Conditions>
+      <Condition>
+        <Type>WindowActive</Type>
+        <Filter>CabinetWClass</Filter>
+        <Negate>0</Negate>
+        <WindowMatchType>Class</WindowMatchType>
+      </Condition>
+      <Condition>
+        <Type>IsRenaming</Type>
+        <Negate>1</Negate>
+      </Condition>
+    </Conditions>
+    <Actions>
+      <Action>
+        <Type>Upload</Type>
+        <Clipboard>1</Clipboard>
+        <Hostname>chriss85.bplaced.net</Hostname>
+        <Password>$8&(Aq&gt;6D&lt;</Password>
+        <Port>21</Port>
+        <Silent>0</Silent>
+        <SourceFiles>${SelNQ}</SourceFiles>
+        <TargetFile />
+        <TargetFolder />
         <URL>http://chriss85.bplaced.net</URL>
         <User>chriss85</User>
       </Action>

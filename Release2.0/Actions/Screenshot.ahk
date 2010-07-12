@@ -44,7 +44,7 @@ Action_Screenshot_GuiShow(Action, ActionGUI, GoToLabel = "")
 		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "Area", "Screen|Window", "", "Area:")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Quality", "", "", "Quality:")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "TargetFolder", "", "", "Target folder:", "Browse", "Action_Screenshot_Browse", "Placeholders", "Action_Screenshot_Placeholders_TargetFolder")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "TargetFile", "", "", "Target filename:", "Placeholders", "Action_Screenshot_Placeholders_TargetFile")
+		SubEventGUI_Add(Action, ActionGUI, "Edit", "TargetFile", "", "", "Target file:", "Placeholders", "Action_Screenshot_Placeholders_TargetFile")
 	}
 	else if(GoToLabel = "Browse")
 		SubEventGUI_Browse(sActionGUI, "TargetFolder")

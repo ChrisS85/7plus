@@ -17,7 +17,7 @@ Settings_CreateEvents() {
 	AddTab(0, "","SysTabControl321")
 	Gui, 1:Add, Text, x%x1% y%yIt% R3, You can add events here that are triggered under certain conditions. When triggered,`nthe event can launch a series of actions. This is a very powerful tool to add `nall kinds of features, and many features from 7plus are now implemented with this system.
 	yIt+=50
-	Gui, 1:Add, ListView, x%x1% y%yIt% w400 h256 vGUI_EventsList gGUI_EventsList_SelectionChange Grid -LV0x10 -Multi AltSubmit Checked, Enabled|ID|Trigger|Name
+	Gui, 1:Add, ListView, x%x1% y%yIt% w400 h262 vGUI_EventsList gGUI_EventsList_SelectionChange Grid -LV0x10 AltSubmit Checked, Enabled|ID|Trigger|Name
 	OnMessage(0x100, "WM_KEYDOWN")
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Add gGUI_EventsList_Add, Add Event
 	yIt += textboxstep
@@ -28,7 +28,11 @@ Settings_CreateEvents() {
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_MoveUp gGUI_EventsList_MoveUp, Move Up
 	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_MoveDown gGUI_EventsList_MoveDown, Move Down
-	yIt += 208 - textboxstep -4
+	yIt += textboxstep*2
+	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Import gGUI_EventsList_Import, Import
+	yIt += textboxstep
+	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Export gGUI_EventsList_Export, Export
+	yIt += 208 - textboxstep * 4 -4
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 gGUI_EventsList_Help, Help
 	yIt += textboxstep + 4
 	y := yIt + TextBoxTextOffset
@@ -535,15 +539,18 @@ Settings_SetupEvents() {
 	i := LV_GetNext("")
 	if(!Settings_Events)
 	{
+		outputdebug create events backup
 		Loop % Events.len()
 			Events[A_Index].Trigger.PrepareCopy(Events[A_Index])		
 		
 		Settings_Events := Events.DeepCopy()	
 		i := 1
 	}
+	outputdebug clear listview
 	LV_Delete()
 	Loop % Settings_Events.len()
 	{
+		outputdebug add event
 		LV_Add((A_Index = i ? "Select" : "") (Settings_Events[A_Index].Enabled ? " Check": " "), "", Settings_Events[A_Index].ID,Settings_Events[A_Index].Trigger.DisplayString(), Settings_Events[A_Index].Name)
 	}
 	LV_ModifyCol(3, "AutoHdr")
@@ -923,25 +930,54 @@ ShowSettings()
 GUI_EventsList_SelectionChange:
 Gui, ListView, GUI_EventsList
 if(A_GuiEvent="I" && InStr(ErrorLevel, "S", true))
-{
-	GuiControl, 1:enable, GUI_EventsList_Edit
+{	
 	GuiControl, 1:enable, GUI_EventsList_Remove
-	i:=LV_GetNext("")
-	if(i>1)
-		GuiControl, 1:enable, GUI_EventsList_MoveUp
-	else
+	GuiControl, 1:enable, GUI_EventsList_Export
+	count := LV_GetCount("Selected")
+	if(count = 1)
+	{
+		GuiControl, 1:enable, GUI_EventsList_Edit
+		i:=LV_GetNext("")
+		if(i>1)
+			GuiControl, 1:enable, GUI_EventsList_MoveUp
+		else
+			GuiControl, 1:disable, GUI_EventsList_MoveUp
+		if(i<LV_GetCount())
+			GuiControl, 1:enable, GUI_EventsList_MoveDown
+		else
+			GuiControl, 1:disable, GUI_EventsList_MoveDown
+	}		
+	if(count > 1)
+	{
+		GuiControl, 1:disable, GUI_EventsList_Edit
 		GuiControl, 1:disable, GUI_EventsList_MoveUp
-	if(i<LV_GetCount())
-		GuiControl, 1:enable, GUI_EventsList_MoveDown
-	else
 		GuiControl, 1:disable, GUI_EventsList_MoveDown
+	}
 }
 else if(A_GuiEvent="I" && InStr(ErrorLevel, "s", true))
 {
-	GuiControl, 1:disable, GUI_EventsList_Edit
-	GuiControl, 1:disable, GUI_EventsList_Remove
-	GuiControl, 1:disable, GUI_EventsList_MoveUp
-	GuiControl, 1:disable, GUI_EventsList_MoveDown
+	count := LV_GetCount("Selected")
+	if(count = 0)
+	{
+		GuiControl, 1:disable, GUI_EventsList_Edit
+		GuiControl, 1:disable, GUI_EventsList_Remove
+		GuiControl, 1:disable, GUI_EventsList_MoveUp
+		GuiControl, 1:disable, GUI_EventsList_MoveDown
+		GuiControl, 1:disable, GUI_EventsList_Export
+	}
+	else if(count = 1)
+	{
+		GuiControl, 1:enable, GUI_EventsList_Edit
+		i:=LV_GetNext("")
+		if(i>1)
+			GuiControl, 1:enable, GUI_EventsList_MoveUp
+		else
+			GuiControl, 1:disable, GUI_EventsList_MoveUp
+		if(i<LV_GetCount())
+			GuiControl, 1:enable, GUI_EventsList_MoveDown
+		else
+			GuiControl, 1:disable, GUI_EventsList_MoveDown
+	}
 }
 if(A_GuiEvent = "I" && InStr(ErrorLevel, "c")) ;Catch both check and uncheck
 {
@@ -966,6 +1002,7 @@ GUI_AddEvent()
 	Gui, ListView, GUI_EventsList
 	Event := EventSystem_CreateEvent(Settings_Events) ;Event is added to Settings_Events here
 	outputdebug add event to listview
+	LV_Modify(LV_GetNext(""), "-Select")
 	LV_Add("Select Check", "", Event.ID, Event.Trigger.DisplayString(), Event.Name)
 	GUI_EventsList_Edit()
 }
@@ -976,12 +1013,26 @@ GUI_RemoveEvent()
 {
 	global Settings_Events
 	Gui, ListView, GUI_EventsList
-	i:=LV_GetNext("")
-	LV_GetText(id,i,2)
-	pos := Settings_Events.FindID(id)
-	if(pos>0)
-		Settings_Events.Delete(pos)
-	LV_Delete(i)
+	count := LV_GetCount()
+	ListPos := 1
+	Loop % count
+	{
+		if(LV_GetNext(ListPos-1) = ListPos)
+		{
+			LV_GetText(id,ListPos,2)			
+			pos := Settings_Events.FindID(id)
+			Settings_Events.Delete(pos)			
+			LV_Delete(ListPos)
+			continue
+		}
+		ListPos++
+	}
+	count :=  LV_GetCount()
+	if(count)
+	{
+		ListPos := min(max(ListPos, 1), count)
+		LV_Modify(ListPos, "Select")
+	}
 }
 
 GUI_EventsList_Edit:
@@ -998,6 +1049,7 @@ GUI_EventsList_Edit()
 	i:=LV_GetNext("")
 	LV_GetText(id,i,2)
 	pos := Settings_Events.FindID(id)
+	outputdebug pos %pos%
 	event:=GUI_EditEvent(Settings_Events[pos].DeepCopy())
 	if(event)
 	{		
@@ -1022,6 +1074,44 @@ GUI_EventsList_Move(direction)
 	Settings_Events.swap(i,i+direction)
 	LV_Modify(i+direction,"Select")
 	Settings_SetupEvents()
+}
+
+GUI_EventsList_Import:
+GUI_EventsList_Import()
+return
+GUI_EventsList_Export:
+GUI_EventsList_Export()
+return
+GUI_EventsList_Import()
+{
+	global Settings_Events
+	FileSelectFile, file, 3, , Import Events file, Event files (*.xml)
+	if(file)
+		Events := ReadEventsFile(Settings_Events, file)
+	Settings_SetupEvents()
+}
+GUI_EventsList_Export()
+{
+	global Settings_Events
+	Gui, ListView, GUI_EventsList
+	count := LV_GetCount("Selected")
+	if(count > 0)
+	{
+		FileSelectFile, file, S19, , Export Events file, Event files (*.xml)
+		if(file)
+		{
+			Events := Array()
+			Loop % Settings_Events.len()
+			{
+				if(LV_GetNext(A_Index - 1) = A_Index)
+				{
+					LV_GetText(id,A_Index,2)
+					Events.append(Settings_Events[Settings_Events.FindID(id)])
+				}
+			}
+			WriteEventsFile(Events, file)
+		}
+	}
 }
 GUI_EventsList_Help:
 Return

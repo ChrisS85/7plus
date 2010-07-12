@@ -255,17 +255,21 @@ SubEventGUI_Placeholders(SubEventGUI, name, ClickedMenu="")
 		Menu, Placeholders_FilePaths, add, `%Temp`% - Temp Directory, PlaceholderHandler
 		
 		Menu, Placeholders_Mouse, add, ${U} - Handle of window under mouse, PlaceholderHandler
-		Menu, Placeholders_Mouse, add, ${MX} - Mouse X Coordinate, PlaceholderHandler
-		Menu, Placeholders_Mouse, add, ${MY} - Mouse Y Coordinate, PlaceholderHandler		
-		Menu, Placeholders_Mouse, add, ${MXA} - Mouse X Coordinate`, relative to active window, PlaceholderHandler
-		Menu, Placeholders_Mouse, add, ${MYA} - Mouse Y Coordinate`, relative to active window, PlaceholderHandler		
-		Menu, Placeholders_Mouse, add, ${MXU} - Mouse X Coordinate`, relative to window under mouse, PlaceholderHandler
-		Menu, Placeholders_Mouse, add, ${MYU} - Mouse Y Coordinate`, relative to window under mouse, PlaceholderHandler
+		Menu, Placeholders_Mouse, add, ${MX} - Mouse X coordinate, PlaceholderHandler
+		Menu, Placeholders_Mouse, add, ${MY} - Mouse Y coordinate, PlaceholderHandler		
+		Menu, Placeholders_Mouse, add, ${MXA} - Mouse X coordinate`, relative to active window, PlaceholderHandler
+		Menu, Placeholders_Mouse, add, ${MYA} - Mouse Y coordinate`, relative to active window, PlaceholderHandler		
+		Menu, Placeholders_Mouse, add, ${MXU} - Mouse X coordinate`, relative to window under mouse, PlaceholderHandler
+		Menu, Placeholders_Mouse, add, ${MYU} - Mouse Y coordinate`, relative to window under mouse, PlaceholderHandler
 		
-		Menu, Placeholders_System, add, ${Clip} - Clipboard Contents, PlaceholderHandler
+		Menu, Placeholders_System, add, ${Clip} - Clipboard contents, PlaceholderHandler
+		Menu, Placeholders_System, add, ${Input} - Result of input action, PlaceholderHandler
 		
-		Menu, Placeholders_Windows, add, ${A} - Active Window Handle, PlaceholderHandler
-		Menu, Placeholders_Windows, add, ${T} - File Path in active window title, PlaceholderHandler
+		Menu, Placeholders_Windows, add, ${A} - Active window handle, PlaceholderHandler
+		Menu, Placeholders_Windows, add, ${Class} - Active window class, PlaceholderHandler
+		Menu, Placeholders_Windows, add, ${Title} - Active window title, PlaceholderHandler
+		Menu, Placeholders_Windows, add, ${Control} - Focussed control ClassNN, PlaceholderHandler
+		Menu, Placeholders_Windows, add, ${PT} - File Path in active window title, PlaceholderHandler
 		
 		Menu, Placeholders, Show
 	}

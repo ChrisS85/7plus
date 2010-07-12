@@ -34,7 +34,7 @@ RefreshHotkeyState()
 				Loop % Event.Conditions.len()
 				{
 					Condition := Event.Conditions[ConditionPos]
-					result := Condition.Evaluate()
+					result := Condition.Evaluate(Event)
 					if(result = -1)
 					{
 						Msgbox % Condition.DisplayString() ": Hotkey Conditions must not block! This means that conditions which take a while to evaluate, such as conditions that query input from the user, must not be used. This condition is deleted."

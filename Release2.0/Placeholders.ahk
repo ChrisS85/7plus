@@ -1,11 +1,12 @@
 Event_ExpandPlaceHolders(Event,text)
 {
 	outputdebug expand %text%
-	Loop % Event.Placeholders.len()
+	;Expand dynamic placeholders (for example ${Input} defined by input action)
+	enum := Event.Placeholders._newEnum()
+	while enum[key,value]
 	{
-		Placeholder := Event.Placeholders[A_Index].Placeholder
-		if(InStr(text,Placeholder))
-			text := StringReplace(text, Placeholder, Event.Placeholders[A_Index].value)
+		if(InStr(text,"${" key "}"))
+			text := StringReplace(text, "${" key "}", value, 1)
 	}
 	return ExpandGlobalPlaceHolders(text)
 }
@@ -49,7 +50,7 @@ ExpandGlobalPlaceholders(text)
 }
 ExpandPlaceholder(Placeholder)
 {
-	global ExplorerPath, PreviousExplorerPath
+	global Vista7, ExplorerPath, PreviousExplorerPath
 	if(Placeholder = "ProgramFiles")
 		return A_ProgramFiles
 	else if(Placeholder = "Windir")
@@ -66,6 +67,18 @@ ExpandPlaceholder(Placeholder)
 		return ReadClipboardText()
 	else if(Placeholder = "A")
 		return WinExist("A")
+	else if(Placeholder = "Class")
+		return WinGetClass("A")
+	else if(Placeholder = "Title")
+		return WinGetTitle("A")
+	else if(Placeholder = "Control")
+	{
+		if(Vista7)
+			ControlGetFocus focussed, A
+		else
+			focussed:=XPGetFocussed()
+		return focussed
+	}
 	else if(Placeholder = "U" || strStartsWith(Placeholder,"M")) ;Mouse submenu
 	{
 		if(strlen(Placeholder > 1) && InStr(Placeholder, "A"))
@@ -90,7 +103,7 @@ ExpandPlaceholder(Placeholder)
 		FormatTime, Placeholder ,, %Placeholder%
 		return Placeholder
 	}
-	else if(Placeholder = "T")
+	else if(Placeholder = "PT")
 	{
 		;Extract filename from active window title
 		RegExMatch(WinGetTitle("A"),"([a-zA-Z]:\\[^/:\*\?<>\|]+\.\w{2,6})|(\\\\[^/:\*\?<>\|]+\.\w{2,6})",titlepath)

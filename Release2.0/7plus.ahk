@@ -81,6 +81,7 @@ BugfixVersion := 0
 #include %A_ScriptDir%\Triggers\WindowCreated.ahk
 #include %A_ScriptDir%\Triggers\7plusStart.ahk
 
+#include %A_ScriptDir%\Conditions\If.ahk
 #include %A_ScriptDir%\Conditions\IsRenaming.ahk
 #include %A_ScriptDir%\Conditions\MouseOver.ahk
 #include %A_ScriptDir%\Conditions\WindowActive.ahk
@@ -96,6 +97,7 @@ BugfixVersion := 0
 #include %A_ScriptDir%\Actions\FileDelete.ahk
 #include %A_ScriptDir%\Actions\FileMove.ahk
 #include %A_ScriptDir%\Actions\FTPUpload.ahk
+#include %A_ScriptDir%\Actions\Input.ahk
 #include %A_ScriptDir%\Actions\Message.ahk
 #include %A_ScriptDir%\Actions\MinimizeToTray.ahk
 #include %A_ScriptDir%\Actions\NewFile.ahk
