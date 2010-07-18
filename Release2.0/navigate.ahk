@@ -35,6 +35,15 @@ Shell_GoForward(hWnd=0)
 	}
 }
 
+Shell_GoUpward()
+{
+	global Vista7
+	path := GetCurrentFolder()
+	if (Vista7 && !strEndsWith(path,".search-ms"))
+		Send !{Up}
+	else
+		Send {Backspace}
+}
 ShellNavigate(sPath, hWnd=0) 
 {
 	If   hWnd||(hWnd:=WinExist("ahk_class CabinetWClass"))||(hWnd:=WinExist("ahk_class ExploreWClass")) 

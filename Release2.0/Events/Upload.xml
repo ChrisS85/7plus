@@ -2,30 +2,6 @@
 <Events>
   <Event>
     <ID>0</ID>
-    <Name>New event</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Timer</Type>
-      <Restart>1</Restart>
-      <ShowProgress>0</ShowProgress>
-      <Time>10000</Time>
-    </Trigger>
-    <Conditions />
-    <Actions>
-      <Action>
-        <Type>Write</Type>
-        <Append>0</Append>
-        <Content>${P}</Content>
-        <Quality>95</Quality>
-        <Target>C:\Program Files\Autohotkey\test.txt</Target>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>1</ID>
     <Name>Upload window screenshot</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
@@ -74,7 +50,7 @@
     </Actions>
   </Event>
   <Event>
-    <ID>2</ID>
+    <ID>1</ID>
     <Name>Upload screenshot</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
@@ -123,7 +99,7 @@
     </Actions>
   </Event>
   <Event>
-    <ID>3</ID>
+    <ID>2</ID>
     <Name>Upload selected files</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
@@ -159,103 +135,6 @@
         <TargetFolder />
         <URL>http://chriss85.bplaced.net</URL>
         <User>chriss85</User>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>4</ID>
-    <Name>--&gt; Go upwards</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>ExplorerDoubleClickSpace</Type>
-    </Trigger>
-    <Conditions />
-    <Actions>
-      <Action>
-        <Type>SetDirectory</Type>
-        <Filter />
-        <Path>Upward</Path>
-        <WindowMatchType>Active</WindowMatchType>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>5</ID>
-    <Name>Close window under mouse</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>MButton</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>MouseOver</Type>
-        <Filter />
-        <MouseOverType>Titlebar</MouseOverType>
-        <Negate>0</Negate>
-        <WindowMatchType>Program</WindowMatchType>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>WindowClose</Type>
-        <Filter />
-        <WindowMatchType>UnderMouse</WindowMatchType>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>6</ID>
-    <Name>Minimize to tray</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>RButton</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>MouseOver</Type>
-        <Filter />
-        <MouseOverType>MinimizeButton</MouseOverType>
-        <Negate>0</Negate>
-        <WindowMatchType>Program</WindowMatchType>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>MinimizeToTray</Type>
-        <Filter />
-        <WindowMatchType>UnderMouse</WindowMatchType>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>7</ID>
-    <Name>Activate notification/flashing/previous window</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>CapsLock</Key>
-    </Trigger>
-    <Conditions />
-    <Actions>
-      <Action>
-        <Type>FlashingWindows</Type>
-        <FlashingWindows>1</FlashingWindows>
-        <Notifications>1</Notifications>
-        <ToggleWindows>1</ToggleWindows>
       </Action>
     </Actions>
   </Event>

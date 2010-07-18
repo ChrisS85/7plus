@@ -1,7 +1,6 @@
 ;Called when clipboard changes, used for "Paste text/image as file" functionality and for clipboard manager
 ;To use the clipboard without triggering these features, set MuteClipboardList:=true before writing to clipboard
 OnClipboardChange:
-outputdebug clipboardchange mute %MuteClipboardList% to %clipboard% 
 if(MuteClipboardList)
 	return
 if(WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup")|| IsDialog())
@@ -9,7 +8,6 @@ if(WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup")||
 text:=ReadClipboardText()
 if(text)
 	ClipboardList.Push(text)
-outputdebug clipboardchange end
 return
 
 ;Stack Push function for clipboard manager stack
@@ -44,7 +42,6 @@ ClipboardManagerMenu()
 		i:=A_Index ;ClipboardList.len()-A_Index+1
 		
 		x:=ClipboardList[i]
-		outputdebug a %i% %x%
 		StringReplace,x,x,`r,,All
 		StringReplace,x,x,`n,[NEWLINE],All
 		y:="`t"

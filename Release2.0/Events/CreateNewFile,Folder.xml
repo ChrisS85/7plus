@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Events>
+  <Event>
+    <ID>8</ID>
+    <Name>Create new textfile</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>0</OneInstance>
+    <Trigger>
+      <Type>Hotkey</Type>
+      <Key>F7</Key>
+    </Trigger>
+    <Conditions>
+      <Condition>
+        <Type>If</Type>
+        <Compare>CabinetWClass ExploreWClass</Compare>
+        <Negate>0</Negate>
+        <Operator>contains</Operator>
+        <With>${Class}</With>
+      </Condition>
+      <Condition>
+        <Type>IsRenaming</Type>
+        <Negate>1</Negate>
+      </Condition>
+    </Conditions>
+    <Actions>
+      <Action>
+        <Type>NewFile</Type>
+        <Filename>Neues Textdokument.txt</Filename>
+        <Rename>1</Rename>
+      </Action>
+    </Actions>
+  </Event>
+  <Event>
+    <ID>9</ID>
+    <Name>Create new folder</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>0</OneInstance>
+    <Trigger>
+      <Type>Hotkey</Type>
+      <Key>F8</Key>
+    </Trigger>
+    <Conditions>
+      <Condition>
+        <Type>If</Type>
+        <Compare>CabinetWClass ExploreWClass</Compare>
+        <Negate>0</Negate>
+        <Operator>contains</Operator>
+        <With>${Class}</With>
+      </Condition>
+      <Condition>
+        <Type>IsRenaming</Type>
+        <Negate>1</Negate>
+      </Condition>
+    </Conditions>
+    <Actions>
+      <Action>
+        <Type>NewFolder</Type>
+        <FolderName>Neuer Ordner</FolderName>
+        <Rename>1</Rename>
+      </Action>
+    </Actions>
+  </Event>
+</Events>

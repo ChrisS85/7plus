@@ -1,8 +1,3 @@
-;Call this to show settings dialog
-SettingsHandler:
-ShowSettings()
-return
-
 ;---------------------------------------------------------------------------------------------------------------
 ; The following functions create the GUI and are only called once at startup
 ;---------------------------------------------------------------------------------------------------------------
@@ -16,23 +11,28 @@ Settings_CreateEvents() {
 	Gui, 1:Add, Tab2, x156 y14 w410 h350 vEventsTab, 
 	AddTab(0, "","SysTabControl321")
 	Gui, 1:Add, Text, x%x1% y%yIt% R3, You can add events here that are triggered under certain conditions. When triggered,`nthe event can launch a series of actions. This is a very powerful tool to add `nall kinds of features, and many features from 7plus are now implemented with this system.
-	yIt+=50
-	Gui, 1:Add, ListView, x%x1% y%yIt% w400 h262 vGUI_EventsList gGUI_EventsList_SelectionChange Grid -LV0x10 AltSubmit Checked, Enabled|ID|Trigger|Name
+	yIt+=54
+	Gui, 1:Add, Text, x%x1% y%yIt%, Event filter:
+	yIt-=4
+	Gui, 1:Add, Edit, x+10 y%yIt% w338 hwndEventFilter gEventFilterChange R1 
+	yIt += textboxstep
+	Gui, 1:Add, ListView, x%x1% y%yIt% w400 h232 vGUI_EventsList gGUI_EventsList_SelectionChange Grid -LV0x10 AltSubmit Checked, Enabled|ID|Trigger|Name
 	OnMessage(0x100, "WM_KEYDOWN")
+	OnMessage(0x101, "WM_KEYUP")
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Add gGUI_EventsList_Add, Add Event
 	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Remove gGUI_EventsList_Remove, Delete Event
 	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Edit gGUI_EventsList_Edit, Edit Event
-	yIt += textboxstep*2
+	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_MoveUp gGUI_EventsList_MoveUp, Move Up
 	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_MoveDown gGUI_EventsList_MoveDown, Move Down
-	yIt += textboxstep*2
+	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Import gGUI_EventsList_Import, Import
 	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Export gGUI_EventsList_Export, Export
-	yIt += 208 - textboxstep * 4 -4
+	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 gGUI_EventsList_Help, Help
 	yIt += textboxstep + 4
 	y := yIt + TextBoxTextOffset
@@ -525,7 +525,7 @@ Settings_CreateAbout() {
 	x2:=x1+100
 	Gui, 1:Add, Text, y%yIt% x%x2% cBlue gGPL vURL_GPL, GNU General Public License v3
 	yIt+=hText*2
-	Gui, 1:Add, Text, y%yIt% x%x1% , Credits for lots of code samples and help go out to:`nSean, HotKeyIt, majkinetor, Titan, Lexikos, TheGood, PhiLho, Temp01, Laszlo, jballi, Shrinker`nand the other guys and gals on #ahk and the forums.	
+	Gui, 1:Add, Text, y%yIt% x%x1% , Credits for lots of code samples and help go out to:`nSean, HotKeyIt, majkinetor, Titan, Lexikos, tic, TheGood, PhiLho, Temp01, Laszlo, jballi, Shrinker`nand the other guys and gals on #ahk and the forums.	
 }
 
 ;---------------------------------------------------------------------------------------------------------------
@@ -545,19 +545,33 @@ Settings_SetupEvents() {
 		
 		Settings_Events := Events.DeepCopy()	
 		i := 1
+		ControlSetText, ,, ahk_id %EventFilter%
 	}
 	outputdebug clear listview
-	LV_Delete()
-	Loop % Settings_Events.len()
-	{
-		outputdebug add event
-		LV_Add((A_Index = i ? "Select" : "") (Settings_Events[A_Index].Enabled ? " Check": " "), "", Settings_Events[A_Index].ID,Settings_Events[A_Index].Trigger.DisplayString(), Settings_Events[A_Index].Name)
-	}
+	FillEventsList(i)
 	LV_ModifyCol(3, "AutoHdr")
 	GuiControl, 1:focus, Gui_EventsList
 	GuiControl, 1:enable, GUI_EventsList_Add
 	GuiControl, 1:enable, GUI_EventsList_Remove
 	GuiControl, 1:enable, GUI_EventsList_Edit
+}
+FillEventsList(SelectedIndex=0)
+{
+	global EventFilter, Settings_Events
+	LV_Delete()
+	ControlGetText, filter,,ahk_id %EventFilter%
+	count := 0
+	Loop % Settings_Events.len()
+	{
+		id := Settings_Events[A_Index].ID
+		DisplayString := Settings_Events[A_Index].Trigger.DisplayString()
+		Name := Settings_Events[A_Index].Name
+		if(!filter || InStr(id, filter) || InStr(DisplayString, Filter) || InStr(Name, filter))
+		{
+			LV_Add((A_Index = SelectedIndex || (!SelectedIndex && count = 0) ? "Select" : "") (Settings_Events[A_Index].Enabled ? " Check": " "), "", id, DisplayString, name)
+			count++
+		}
+	}
 }
 Settings_SetupHotkeys() {
 	global
@@ -782,38 +796,10 @@ AddTab(IconNumber, TabName, TabControl) {
 	 NumPut(IconNumber - 1, TCITEM ,20) ; iImage: -1 to convert to zero-based.
    SendMessage, 0x1307, 999, &TCITEM, %TabControl%  ; 0x1307 is TCM_INSERTITEM
 }
-listbox:
-GuiControlGet,selected,1:,MyListBox
-outputdebug listbox %selected%
-Loop, Parse, TabList, |
-{
-	StringReplace, stripped, A_LoopField, %A_Space% , , 1
-	StringReplace, stripped, stripped, / , , 1
-	stripped .= "Tab"
-	If (selected = A_LoopField)
-	{
-		outputdebug show %stripped%
-		GuiControl, 1:Show, %stripped%
-		GuiControl, 1:Text, GGroupBox, %A_LoopField%
-		test:=stripped
-	}
-	else 
-	{
-		outputdebug hide %stripped%
-		GuiControl, 1:Hide, %stripped%
-	}
-}
-GuiControl, 1:MoveDraw, MyListBox
-GuiControl, 1:Movedraw, GGroupbox
-GuiControl, 1:Movedraw, %test%
-GuiControl, 1:MoveDraw, BtnOK
-GuiControl, 1:MoveDraw, BtnCancel
-GuiControl, 1:MoveDraw, TutLabel
-GuiControl, 1:MoveDraw, Wait
-return
-
+SettingsHandler:
 ShowSettings()
-{
+return
+ShowSettings() {
 	global
 	local x,y,yIt,x1,x2
 	Critical, Off
@@ -927,16 +913,87 @@ ShowSettings()
 ;---------------------------------------------------------------------------------------------------------------
 ; Control Handlers
 ;---------------------------------------------------------------------------------------------------------------
-GUI_EventsList_SelectionChange:
-Gui, ListView, GUI_EventsList
-if(A_GuiEvent="I" && InStr(ErrorLevel, "S", true))
-{	
-	GuiControl, 1:enable, GUI_EventsList_Remove
-	GuiControl, 1:enable, GUI_EventsList_Export
-	count := LV_GetCount("Selected")
-	if(count = 1)
+listbox:
+GuiControlGet,selected,1:,MyListBox
+outputdebug listbox %selected%
+Loop, Parse, TabList, |
+{
+	StringReplace, stripped, A_LoopField, %A_Space% , , 1
+	StringReplace, stripped, stripped, / , , 1
+	stripped .= "Tab"
+	If (selected = A_LoopField)
 	{
-		GuiControl, 1:enable, GUI_EventsList_Edit
+		outputdebug show %stripped%
+		GuiControl, 1:Show, %stripped%
+		GuiControl, 1:Text, GGroupBox, %A_LoopField%
+		test:=stripped
+	}
+	else 
+	{
+		outputdebug hide %stripped%
+		GuiControl, 1:Hide, %stripped%
+	}
+}
+GuiControl, 1:MoveDraw, MyListBox
+GuiControl, 1:Movedraw, GGroupbox
+GuiControl, 1:Movedraw, %test%
+GuiControl, 1:MoveDraw, BtnOK
+GuiControl, 1:MoveDraw, BtnCancel
+GuiControl, 1:MoveDraw, TutLabel
+GuiControl, 1:MoveDraw, Wait
+return
+EventFilterChange:
+FillEventsList()
+return
+GUI_EventsList_SelectionChange:
+GUI_EventsList_Update()
+return
+GUI_EventsList_Update()
+{
+	global
+	local filter, count, i, checked
+	Gui, ListView, GUI_EventsList
+	ControlGetText, filter,, ahk_id %EventFilter%
+	count := LV_GetCount("Selected")
+	if(A_GuiEvent="I" && InStr(ErrorLevel, "S", true))
+	{	
+		GuiControl, 1:enable, GUI_EventsList_Remove
+		GuiControl, 1:enable, GUI_EventsList_Export
+		if(count = 1)
+			GuiControl, 1:enable, GUI_EventsList_Edit
+		if(count > 1)
+		{
+			GuiControl, 1:disable, GUI_EventsList_Edit
+			GuiControl, 1:disable, GUI_EventsList_MoveUp
+			GuiControl, 1:disable, GUI_EventsList_MoveDown
+		}
+	}
+	else if(A_GuiEvent="I" && InStr(ErrorLevel, "s", true))
+	{
+		if(count = 0)
+		{
+			GuiControl, 1:disable, GUI_EventsList_Edit
+			GuiControl, 1:disable, GUI_EventsList_Remove
+			GuiControl, 1:disable, GUI_EventsList_Export
+		}
+		else if(count = 1)
+			GuiControl, 1:enable, GUI_EventsList_Edit
+	}
+	if(A_GuiEvent = "I" && InStr(ErrorLevel, "c")) ;Catch both check and uncheck
+	{
+		;Update enabled state from listview
+		count := LV_GetCount()
+		Loop % count
+		{
+			Checked := LV_GetNext(A_Index-1, "Checked") = A_Index ? 1 : 0
+			LV_GetText(id,A_Index,2)
+			Settings_Events[Settings_Events.FindID(id)].Enabled := Checked		
+		}
+	}
+	else if(A_GuiEvent="DoubleClick")
+		GUI_EventsList_Edit()
+	if(count = 1 && !filter)
+	{
 		i:=LV_GetNext("")
 		if(i>1)
 			GuiControl, 1:enable, GUI_EventsList_MoveUp
@@ -947,52 +1004,13 @@ if(A_GuiEvent="I" && InStr(ErrorLevel, "S", true))
 		else
 			GuiControl, 1:disable, GUI_EventsList_MoveDown
 	}		
-	if(count > 1)
-	{
-		GuiControl, 1:disable, GUI_EventsList_Edit
-		GuiControl, 1:disable, GUI_EventsList_MoveUp
+	else
+	{		
 		GuiControl, 1:disable, GUI_EventsList_MoveDown
-	}
-}
-else if(A_GuiEvent="I" && InStr(ErrorLevel, "s", true))
-{
-	count := LV_GetCount("Selected")
-	if(count = 0)
-	{
-		GuiControl, 1:disable, GUI_EventsList_Edit
-		GuiControl, 1:disable, GUI_EventsList_Remove
 		GuiControl, 1:disable, GUI_EventsList_MoveUp
-		GuiControl, 1:disable, GUI_EventsList_MoveDown
-		GuiControl, 1:disable, GUI_EventsList_Export
 	}
-	else if(count = 1)
-	{
-		GuiControl, 1:enable, GUI_EventsList_Edit
-		i:=LV_GetNext("")
-		if(i>1)
-			GuiControl, 1:enable, GUI_EventsList_MoveUp
-		else
-			GuiControl, 1:disable, GUI_EventsList_MoveUp
-		if(i<LV_GetCount())
-			GuiControl, 1:enable, GUI_EventsList_MoveDown
-		else
-			GuiControl, 1:disable, GUI_EventsList_MoveDown
-	}
+	Return
 }
-if(A_GuiEvent = "I" && InStr(ErrorLevel, "c")) ;Catch both check and uncheck
-{
-	;Update enabled state from listview
-	count := LV_GetCount()
-	Loop % count
-	{
-		Checked := LV_GetNext(A_Index-1, "Checked") = A_Index ? 1 : 0
-		LV_GetText(id,A_Index,2)
-		Settings_Events[Settings_Events.FindID(id)].Enabled := Checked		
-	}
-}
-else if(A_GuiEvent="DoubleClick")
-	GUI_EventsList_Edit()
-Return
 GUI_EventsList_Add:
 GUI_AddEvent()
 Return
@@ -1120,9 +1138,7 @@ GUI_SaveEvents()
 	global Events, Settings_Events
 	;Disable all events first (without setting enabled to false, so triggers can decide what they want to do themselves)
 	Loop % Events.len()
-		Events[A_Index].Trigger.Disable(Events[A_Index])
-	
-	Gui, ListView, GUI_EventsList
+		Events[A_Index].Trigger.Disable(Events[A_Index])	
 	
 	;Remove deleted events and refresh the copies to consider recent changes (such as timer state)
 	Loop % Events.len()
@@ -1265,7 +1281,7 @@ DoubleClickDesktopBrowse:
 Gui 1:+OwnDialogs
 FileSelectFile, path , 3, , Select file to execute, *.exe
 if(path!="")
-	GuiControl, 1:,DoubleClickDesktop,%path%
+	GuiControl, 1:,DoubleClickDesktopPath,%path%
 Return
 
 AddHotkey:
@@ -1333,18 +1349,52 @@ Return
 
 WM_KEYDOWN(wParam, lParam)
 {
+	global EventFilter
 	if(A_GUI = 1 && A_GuiControl = "CustomHotkeysList" && wParam = 0x2E) ;Delete key pressed on CustomHotkeysList
 	{
 		Gui, ListView, CustomHotkeysList
 		i:=LV_GetNext("")
 		LV_Delete(i)
 	}
+	
 	if(A_GUI = 1 && A_GuiControl = "GUI_EventsList" && wParam = 0x2E) ;Delete key pressed on CustomHotkeysList
 		GUI_RemoveEvent()
+	else if(A_GUI = 1 && A_GuiControl = "GUI_EventsList")
+	{		
+		send := true
+		if(wParam = 17 || (wParam > 32 && wParam < 41)) ;CTRL, arrow keys, home, end, page up/down
+			send := false
+		if(GetKeyState("Control", "P")) ;Don't send when CTRL is down
+			send := false
+		if(send)
+		{
+			outputdebug send keydown %wparam% to %EventFilter%
+			PostMessage, 0x100, %wParam%, %lParam%,,ahk_id %EventFilter%
+			return true
+		}
+	}
 	if(A_GUI = 4 && A_GuiControl = "EditEventConditions" && wParam = 0x2E)
 		GUI_EditEvent("","EditEvent_RemoveCondition")
 	if(A_GUI = 4 && A_GuiControl = "EditEventActions" && wParam = 0x2E)
 		GUI_EditEvent("","EditEvent_RemoveAction")
+}
+WM_KEYUP(wParam, lParam)
+{
+	global EventFilter
+	if(A_GUI = 1 && A_GuiControl = "GUI_EventsList")
+	{
+		send := true
+		if(wParam = 17 || (wParam > 32 && wParam < 41)) ;CTRL, arrow keys, home, end, page up/down
+			send := false
+		if(GetKeyState("Control", "P")) ;Don't send when CTRL is down
+			send := false
+		if(send)
+		{
+			outputdebug send keyup %wparam% to %EventFilter%
+			PostMessage, 0x101, %wParam%, %lParam%,,ahk_id %EventFilter%
+			return true
+		}
+	}
 }
 
 CustomHotkeysCommand_Change:
@@ -1804,7 +1854,7 @@ if(HideTrayIcon)
 }
 else
 	Menu, Tray, Icon
-RefreshHotkeyArrays()
+;RefreshHotkeyArrays()
 WriteIni()
 SettingsActive:=False
 Gui 1:Cancel

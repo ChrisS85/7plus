@@ -1,100 +1,78 @@
 Trigger_Hotkey_Init(Trigger)
 {
 	Trigger.Category := "Hotkeys"
-	SetTimer, RefreshHotkeyState, 200 ;Should be quick enough I suppose
+	;SetTimer, RefreshHotkeyState, 200 ;Should be quick enough I suppose
 }
+#if Trigger := HotkeyShouldFire(A_ThisHotkey)
 HotkeyTrigger:
+outputdebug, % "key: " A_ThisHotkey ", Event key: " Trigger.key
 HotkeyTrigger(A_ThisHotkey)
 return
+#if
 HotkeyTrigger(key)
 {
+	if(!key)
+		return
+	outputdebug trigger %key%
 	Trigger := EventSystem_CreateSubEvent("Trigger", "Hotkey")	
 	Trigger.Key := StringReplace(key,"$") ;Remove $ because it is not stored
 	OnTrigger(Trigger)
 }
-RefreshHotkeyState:
-RefreshHotkeyState()
-return
-RefreshHotkeyState()
+HotkeyShouldFire(key)
 {
-	global HotkeyArrays, EventSchedule
-	if(!isObject(HotkeyArrays)) ;First run
-		RefreshHotkeyArrays()
-	enum := HotkeyArrays._newEnum()
-	while enum[key,array]
-	{		
-		AnyEnabled := false
-		Loop % array.len()
+	global Events, EventSchedule
+	outputdebug HotkeyShouldFire(%key%)
+	len := Events.len()
+	Loop % len
+	{
+		Event := Events[A_Index]
+		if(!enable := Event.Enabled)
+			continue
+		
+		;outputdebug, % Event.Trigger.Type ", " Event.Trigger.key ", " Event.Trigger.key
+		if(Event.Trigger.Type != "Hotkey" || Event.Trigger.Key != key)
+			continue
+		outputdebug, % key
+		ConditionPos := 1
+		count := Event.Conditions.len()
+		Loop % count
 		{
-			Event := array[A_Index]
-			enable := Event.Enabled ; Enabled state is checked here separately opposed to triggering
-			ConditionPos := 1
-			if(enable)
+			Condition := Event.Conditions[ConditionPos]
+			enable := Condition.Evaluate(Event)
+			if(enable = -1)
 			{
-				Loop % Event.Conditions.len()
-				{
-					Condition := Event.Conditions[ConditionPos]
-					result := Condition.Evaluate(Event)
-					if(result = -1)
-					{
-						Msgbox % Condition.DisplayString() ": Hotkey Conditions must not block! This means that conditions which take a while to evaluate, such as conditions that query input from the user, must not be used. This condition is deleted."
-						Event.Conditions.Delete(A_Index)
-						continue
-					}
-					else if(Condition.Negate)
-						result := 1 - result
-					
-					if(result = 0)
-					{
-						enable := false
-						break
-					}
-					ConditionPos++
-				}
-			}
-			;Don't swallow hotkey if event only allows one instance and it is already running
-			if(enable)
-			{
-				if(Event.OneInstance)
-				{
-					Loop % EventSchedule.len()
-					{
-						if(EventSchedule[A_Index].ID = Event.ID)
-						{
-							enable := false
-							break
-						}
-					}
-				}
-			}
-			if(enable)
-			{
-				AnyEnabled := true
+				Msgbox % Condition.DisplayString() ": Hotkey Conditions must not block! This means that conditions which take a while to evaluate, such as conditions that query input from the user, must not be used. This condition is deleted."
+				Event.Conditions.Delete(A_Index)
+				enable := false
 				break
 			}
+			else if(Condition.Negate)
+				enable := 1 - enable
+			
+			if(enable = 0)
+				break
+			ConditionPos++
 		}
-		key := "$" key ;Add $ so key can not be triggered through script to prevent loops
-		Hotkey, %key%, HotkeyTrigger, On ;Activate first so it exists
-		if(!AnyEnabled)
-			Hotkey, %key%, Off
-	}
-}
-;This function updates the hotkey events stored separately for quicker state check
-RefreshHotkeyArrays()
-{
-	global HotkeyArrays, Events
-	HotkeyArrays := object()
-	Loop % Events.len()
-	{
-		if(Events[A_Index].Trigger.Type = "Hotkey")
+		if(!enable)
+			continue
+		;Don't swallow hotkey if event only allows one instance and it is already running
+		if(Event.OneInstance)
 		{
-			Event := Events[A_Index]
-			if(!isObject(HotkeyArrays[Event.Trigger.Key]))
-				HotkeyArrays[Event.Trigger.Key] := Array(Event)
-			else
-				HotkeyArrays[Event.Trigger.Key].append(Event)
+			Loop % EventSchedule.len()
+			{
+				if(EventSchedule[A_Index].ID = Event.ID)
+				{
+					enable := false
+					break
+				}
+			}
+		}
+		if(enable)
+		{
+			return Event.Trigger
 		}
 	}
+	return
 }
 Trigger_Hotkey_ReadXML(Trigger, TriggerFileHandle)
 {
@@ -105,27 +83,21 @@ Trigger_Hotkey_Enable(Trigger)
 {
 	key := Trigger.Key
 	key := "$" key ;Add $ so key can not be triggered through script to prevent loops
+	Hotkey, If, Trigger := HotkeyShouldFire(A_ThisHotkey)
 	Hotkey, %key%, HotkeyTrigger, On
+	Hotkey, If
 }
 Trigger_Hotkey_Disable(Trigger)
 {
 	key := Trigger.Key
 	key := "$" key ;Add $ so key can not be triggered through script to prevent loops
+	Hotkey, If, Trigger := HotkeyShouldFire(A_ThisHotkey)
 	Hotkey, %key%, Off
+	Hotkey, If
 }
 ;When hotkey is deleted, it needs to be removed from hotkeyarrays
 Trigger_Hotkey_Delete(Trigger)
 {
-	global HotkeyArrays
-	array := HotkeyArrays[Trigger.key]
-	Loop % array.len()
-	{		
-		if(array[A_Index].Trigger.Key = Trigger.Key)
-		{
-			array.Delete(A_Index)
-			break
-		}
-	}
 }
 
 Trigger_Hotkey_Matches(Trigger, Filter)
@@ -135,9 +107,21 @@ Trigger_Hotkey_Matches(Trigger, Filter)
 
 Trigger_Hotkey_DisplayString(Trigger)
 {
-	return "Hotkey " Trigger.Key
+	return "Key " FormatHotkey(Trigger.Key)
 }
 
+FormatHotkey(key)
+{
+	formatted .= InStr(key, "*") > 0 ? "Any Modifier key + " : ""
+	formatted .= InStr(key, "#") > 0 ? "WIN + " : ""
+	formatted .= InStr(key, "^") > 0 ? "CONTROL + " : ""
+	formatted .= InStr(key, "!") > 0 ? "ALT + " : ""
+	formatted .= InStr(key, "+") > 0 ? "SHIFT + " : ""
+	formatted .= RegExReplace(key, "[\*\+\^#><!~]*")
+	formatted .= InStr(key, "<") > 0 ? ", left modifier keys only" :""
+	formatted .= InStr(key, ">") > 0 ? ", right modifier keys only" :""
+	return formatted
+}
 Trigger_Hotkey_GuiShow(Trigger, TriggerGUI, GoToLabel = "")
 {
 	static sTriggerGUI

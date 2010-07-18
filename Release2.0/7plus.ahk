@@ -25,7 +25,7 @@ BugfixVersion := 0
 	if(WinExist("7plus Settings"))
 		WinActivate 7plus Settings
 	else
-		GoSub Settingshandler
+		ShowSettings()
 	return
 #if
 #q::Reload
@@ -72,7 +72,10 @@ BugfixVersion := 0
 #include %A_ScriptDir%\CustomHotkeys.ahk
 #include %A_ScriptDir%\HotkeyGUI.ahk
 
+#include %A_ScriptDir%\Triggers\DoubleClickDesktop.ahk
+#include %A_ScriptDir%\Triggers\DoubleClickTaskbar.ahk
 #include %A_ScriptDir%\Triggers\ExplorerPathChanged.ahk
+#include %A_ScriptDir%\Triggers\ExplorerDoubleClickSpace.ahk
 #include %A_ScriptDir%\Triggers\Hotkey.ahk
 #include %A_ScriptDir%\Triggers\Trigger.ahk
 #include %A_ScriptDir%\Triggers\Timer.ahk
@@ -82,20 +85,25 @@ BugfixVersion := 0
 #include %A_ScriptDir%\Triggers\7plusStart.ahk
 
 #include %A_ScriptDir%\Conditions\If.ahk
+#include %A_ScriptDir%\Conditions\IsFullScreen.ahk
 #include %A_ScriptDir%\Conditions\IsRenaming.ahk
 #include %A_ScriptDir%\Conditions\MouseOver.ahk
 #include %A_ScriptDir%\Conditions\WindowActive.ahk
 #include %A_ScriptDir%\Conditions\WindowExists.ahk
 
+#include %A_ScriptDir%\Actions\Autoupdate.ahk
 #include %A_ScriptDir%\Actions\Clipboard.ahk
 #include %A_ScriptDir%\Actions\Clipmenu.ahk
 #include %A_ScriptDir%\Actions\ControlEvent.ahk
+#include %A_ScriptDir%\Actions\Exit7plus.ahk
 #include %A_ScriptDir%\Actions\FastFoldersMenu.ahk
 #include %A_ScriptDir%\Actions\FastFoldersRecall.ahk
 #include %A_ScriptDir%\Actions\FastFoldersStore.ahk
 #include %A_ScriptDir%\Actions\FileCopy.ahk
 #include %A_ScriptDir%\Actions\FileDelete.ahk
 #include %A_ScriptDir%\Actions\FileMove.ahk
+#include %A_ScriptDir%\Actions\FileWrite.ahk
+#include %A_ScriptDir%\Actions\FlashingWindows.ahk
 #include %A_ScriptDir%\Actions\FTPUpload.ahk
 #include %A_ScriptDir%\Actions\Input.ahk
 #include %A_ScriptDir%\Actions\Message.ahk
@@ -103,10 +111,12 @@ BugfixVersion := 0
 #include %A_ScriptDir%\Actions\NewFile.ahk
 #include %A_ScriptDir%\Actions\NewFolder.ahk
 #include %A_ScriptDir%\Actions\PlaySound.ahk
+#include %A_ScriptDir%\Actions\Restart7plus.ahk
 #include %A_ScriptDir%\Actions\Run.ahk
 #include %A_ScriptDir%\Actions\Screenshot.ahk
 #include %A_ScriptDir%\Actions\SendKeys.ahk
 #include %A_ScriptDir%\Actions\SetDirectory.ahk
+#include %A_ScriptDir%\Actions\ShowSettings.ahk
 #include %A_ScriptDir%\Actions\ShutDown.ahk
 #include %A_ScriptDir%\Actions\WindowActivate.ahk
 #include %A_ScriptDir%\Actions\WindowClose.ahk

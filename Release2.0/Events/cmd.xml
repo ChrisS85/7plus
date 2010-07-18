@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Events>
+  <Event>
+    <ID>48</ID>
+    <Name>Run cmd in current directory</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>0</OneInstance>
+    <Trigger>
+      <Type>Hotkey</Type>
+      <Key>#C</Key>
+    </Trigger>
+    <Conditions>
+      <Condition>
+        <Type>If</Type>
+        <Compare>CabinetWClass ExploreWClass</Compare>
+        <Negate>0</Negate>
+        <Operator>contains</Operator>
+        <With>${Class}</With>
+      </Condition>
+    </Conditions>
+    <Actions>
+      <Action>
+        <Type>Run</Type>
+        <Command>cmd.exe</Command>
+        <WaitForFinish>0</WaitForFinish>
+        <WorkingDirectory>${P}</WorkingDirectory>
+      </Action>
+    </Actions>
+  </Event>
+</Events>

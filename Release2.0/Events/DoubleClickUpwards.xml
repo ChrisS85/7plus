@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Events>
+  <Event>
+    <ID>3</ID>
+    <Name>--&gt; Go upwards</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>0</OneInstance>
+    <Trigger>
+      <Type>ExplorerDoubleClickSpace</Type>
+    </Trigger>
+    <Conditions />
+    <Actions>
+      <Action>
+        <Type>SetDirectory</Type>
+        <Filter />
+        <Path>Upward</Path>
+        <WindowMatchType>Active</WindowMatchType>
+      </Action>
+    </Actions>
+  </Event>
+</Events>

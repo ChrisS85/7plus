@@ -81,9 +81,9 @@ EventSystem_CreateBaseObjects()
 {
 	global
 	local tmpobject
-	EventSystem_Triggers := "ExplorerPathChanged,Hotkey,Timer,Trigger,WindowActivated, WindowClosed, WindowCreated,7plusStart"
-	EventSystem_Conditions := "MouseOver,If,IsRenaming,WindowActive,WindowExists"
-	EventSystem_Actions := "Clipboard,Clipmenu,ControlEvent,Copy,Delete,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,Input,Message,MinimizeToTray,Move,NewFile,NewFolder,PlaySound,Run,Screenshot,SendKeys,SetDirectory,Shutdown,Upload,WindowActivate,WindowClose,WindowHide,WindowShow"
+	EventSystem_Triggers := "DoubleClickDesktop,DoubleClickTaskbar,ExplorerDoubleClickSpace,ExplorerPathChanged,Hotkey,Timer,Trigger,WindowActivated, WindowClosed, WindowCreated,7plusStart"
+	EventSystem_Conditions := "MouseOver,If,IsFullScreen,IsRenaming,WindowActive,WindowExists"
+	EventSystem_Actions := "AutoUpdate,Clipboard,Clipmenu,ControlEvent,Copy,Delete,Exit7plus,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FlashingWindows,Input,Message,MinimizeToTray,Move,NewFile,NewFolder,PlaySound,Restart7plus,Run,Screenshot,SendKeys,SetDirectory,ShowSettings,Shutdown,Upload,WindowActivate,WindowClose,WindowHide,WindowShow,Write"
 	Trigger_Categories := object("Explorer", Array(), "Hotkeys", Array(), "Other", Array(), "System", Array(), "Window", Array(), "7plus", Array())
 	Condition_Categories := object("Explorer", Array(), "Mouse", Array(), "Other", Array(), "Window", Array())
 	Action_Categories := object("Explorer", Array(), "FastFolders", Array(), "File", Array(), "Window", Array(), "Input", Array(), "System", Array(), "7plus", Array(), "Other", Array())
@@ -168,7 +168,6 @@ EventSystem_CreateSubEvent(Category,Type)
 {
 	global
 	local tmp
-	outputdebug createsubevent %type%
 	tmp := %Category%_%Type%_Base
 	copy := tmp.DeepCopy()
 	copy.Init()
@@ -574,6 +573,6 @@ EventScheduler()
 			}
 			EventPos++
 		}			
-		Sleep 20
+		Sleep 100
 	}
 }

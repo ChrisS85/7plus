@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Events>
+  <Event>
+    <ID>11</ID>
+    <Name>Append file(s) to clipboard</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>0</OneInstance>
+    <Trigger>
+      <Type>Hotkey</Type>
+      <Key>+C</Key>
+    </Trigger>
+    <Conditions>
+      <Condition>
+        <Type>If</Type>
+        <Compare>CabinetWClass ExploreWClass</Compare>
+        <Negate>0</Negate>
+        <Operator>contains</Operator>
+        <With>${Class}</With>
+      </Condition>
+      <Condition>
+        <Type>IsRenaming</Type>
+        <Negate>1</Negate>
+      </Condition>
+    </Conditions>
+    <Actions>
+      <Action>
+        <Type>Clipboard</Type>
+        <Append>1</Append>
+        <Clear>0</Clear>
+        <Content>${SelNQ}</Content>
+        <Cut>0</Cut>
+        <InsertType>File</InsertType>
+      </Action>
+    </Actions>
+  </Event>
+  <Event>
+    <ID>12</ID>
+    <Name>Append file(s) to clipboard, Cut</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>0</OneInstance>
+    <Trigger>
+      <Type>Hotkey</Type>
+      <Key>+X</Key>
+    </Trigger>
+    <Conditions>
+      <Condition>
+        <Type>If</Type>
+        <Compare>CabinetWClass ExploreWClass</Compare>
+        <Negate>0</Negate>
+        <Operator>contains</Operator>
+        <With>${Class}</With>
+      </Condition>
+      <Condition>
+        <Type>IsRenaming</Type>
+        <Negate>1</Negate>
+      </Condition>
+    </Conditions>
+    <Actions>
+      <Action>
+        <Type>Clipboard</Type>
+        <Append>1</Append>
+        <Clear>0</Clear>
+        <Content>${SelNQ}</Content>
+        <Cut>1</Cut>
+        <InsertType>File</InsertType>
+      </Action>
+    </Actions>
+  </Event>
+</Events>

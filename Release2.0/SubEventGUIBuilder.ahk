@@ -182,10 +182,10 @@ SubEventGUI_Browse(SubEventGUI, name, Title="Select Folder",Options=0, Quote=0)
 		}
 	}
 }
-SubEventGUI_SelectFile(SubEventGUI, name, Title = "Select File", Filter = "", Quote=0)
+SubEventGUI_SelectFile(SubEventGUI, name, Title = "Select File", Filter = "", Quote=0, options = 3)
 {
 	Gui +OwnDialogs
-	FileSelectFile, path , 3, , %Title%, %Filter%
+	FileSelectFile, path , %options%, , %Title%, %Filter%
 	if(path != "")
 	{
 		enum := SubEventGUI._newEnum()

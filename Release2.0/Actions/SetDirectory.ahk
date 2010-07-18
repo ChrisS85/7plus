@@ -18,6 +18,8 @@ Action_SetDirectory_Execute(Action, Event)
 		Shell_GoBack(hwnd)
 	else if(Path = "Forward")
 		Shell_GoForward(hwnd)
+	else if(Path = "Upward")
+		Shell_GoUpward()
 	else
 		ShellNavigate(Path,hwnd)
 	return 1
@@ -33,7 +35,7 @@ Action_SetDirectory_GuiShow(Action, ActionGUI, GoToLabel = "")
 	if(GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
-		SubEventGUI_Add(Action, ActionGUI, "Text", "Hint", "You may also enter ""Back"" and ""Forward"" here.", "", "")
+		SubEventGUI_Add(Action, ActionGUI, "Text", "Hint", "You may also enter ""Back"",""Forward"" and ""Upward"" here.")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Path", "", "", "Path:","Browse", "Action_SetDirectory_Browse", "Placeholders", "Action_SetDirectory_Placeholders")
 	}
 	else if(GoToLabel = "Browse")

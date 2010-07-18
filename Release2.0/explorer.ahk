@@ -375,37 +375,34 @@ CurrentDesktopFiles:=GetSelectedFiles()
 outputdebug current: %CurrentDesktopFiles% previous: %PreviousDesktopFiles%
 if(IsDoubleClick() && CurrentDesktopFiles = "")
 {
+	Trigger := EventSystem_CreateSubEvent("Trigger","DoubleClickDesktop")
+	OnTrigger(Trigger)
 	if(DoubleClickDesktop = A_WinDir "\explorer.exe" && RecallExplorerPath && ExplorerPath)
 		temp := A_WinDir "\explorer.exe /n,/e," ExplorerPath
 	else
 		temp := DoubleClickDesktop
-	Run, %temp%
+	if(temp)
+		Run, %temp%
 }
 Return
 #if
 ;Double click upwards is buggy in filedialogs, so only explorer for now until someone comes up with non-intrusive getpath, getselectedfiles functionsunrel
-#if HKDoubleClickUpwards && WinActive("ahk_group ExplorerGroup") && IsMouseOverFileList() && GetKeyState("RButton")!=1
+#if WinActive("ahk_group ExplorerGroup") && IsMouseOverFileList() && GetKeyState("RButton")!=1
 ;LButton on empty space in explorer -> go upwards
 ~LButton::		
-outputdebug left clicked on explorer or file dialog window	
 CoordMode,Mouse,Relative
 ;wait until button is released again
 KeyWait, LButton
-OutputDebug, lbutton released
 ;Time for a doubleclick in windows
 WaitTime:=DllCall("GetDoubleClickTime")/1000
-OutputDebug, double click time=%Waittime%
 MouseGetPos, Click1X, Click1Y
 ;This check is needed so that we don't send CTRL+C in a textfield control, which would disrupt the text entering process
 ;Make sure only filelist is focussed
 if(!IsRenaming()&&InFileList())
 {
 	path:=GetCurrentFolder()
-	OutputDebug first click path: %path%
 	files:=GetSelectedFiles()
-	OutputDebug first click selected files: %files%
 	;if more time than a double click time has passed, consider this a new series of double clicks
-	OutputDebug("Time difference: " A_tickCount-time1)
 	if(A_TickCount-time1>WaitTime*1000)
 	{
 		time1:=A_TickCount
@@ -414,11 +411,9 @@ if(!IsRenaming()&&InFileList())
 	else
 	{			
 		;if less time has passed, the previous double click was cancelled for some reason and we need to check its dir too to see directory changes
-		OutputDebug("Second click after first has returned for some reason, old path:" path1 "current path:" path)
 		time1:=A_TickCount
 		if(path!=path1)
 		{
-			OutputDebug("Directory changed from " path1 " to " path)
 			time1:=0
 			return
 		}					
@@ -426,39 +421,32 @@ if(!IsRenaming()&&InFileList())
 	;this check is required so that it's possible to count any double click and not every second. If at this place a file is selected, 
 	;it would swallow the second click otherwise and won't be able to count it in a double clickwait for anotherat this plac
 	if (files!="")
-	{ 
-		OutputDebug("preexpected return becuse file was selected")
-		;
 		return
-	}
-	OutputDebug( "start waiting for second click")
 	;wait for second click
 	KeyWait, LButton, D T%WaitTime% 
 	If(errorlevel=0)
-	{		  
-		OutputDebug("second click")
+	{
 		MouseGetPos, Click2X, Click2Y
 		if(abs(Click1X-Click2X)**2+abs(Click1Y-Click2Y)**2>16) ;Max 4 pixels between clicks
 			return
 	
 		path1:=GetCurrentFolder()
-		OutputDebug("path after second click: " path1)
 		if(path = path1) 
 		{	
-			OutputDebug("paths identical")
 			if(InFileList()&&IsMouseOverFileList()) 
 			{			
-				OutputDebug("still correct focus")
 				;check if no files selected after second click either
 				files:=GetSelectedFiles()
-				OutputDebug("selected files after second click:" files)
 				if (!files)
 				{
-					OutputDebug("go upwards")
+					Trigger := EventSystem_CreateSubEvent("Trigger","ExplorerDoubleClickSpace")
+					OnTrigger(Trigger)
+					/*
 					if (Vista7 && !strEndsWith(path1,".search-ms"))
 						Send !{Up}
 					else
 						Send {Backspace}
+					*/
 					time1:=0
 				}
 			}	
@@ -473,6 +461,8 @@ Return
 LButton::
 if(IsDoubleClick() && IsMouseOverFreeTaskListSpace())
 {
+	Trigger := EventSystem_CreateSubEvent("Trigger", "DoubleClickTaskbar")
+	OnTrigger(Trigger)
 	SplitCommand(TaskbarLaunchPath, cmd, args)
 	cmd:=ExpandEnvVars(cmd)
 	if(FileExist(cmd))

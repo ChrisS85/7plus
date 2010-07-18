@@ -104,7 +104,7 @@ SaveHotkeys()
 CollisionCheck(key1,filter1,exclude)
 {
 	global CustomHotkeys
-	7PlusHotkeys := "#h,#y,#v,#e,*!c,+c,+x,^i,+Enter,^t,^Tab,^+Tab,^w,^Numpad0,^Numpad1,^Numpad2,^Numpad3,^Numpad4,^Numpad5,^Numpad6,^Numpad7,^Numpad8,^Numpad9,!Numpad0,!Numpad1,!Numpad2,!Numpad3,!Numpad4,!Numpad5,!Numpad6,!Numpad7,!Numpad8,!Numpad9,^u,!Insert,#Insert,#Delete,#c,#+Left,#+Up,#+Right,#+Down,!WheelDown,!WheelUp,^v,!F4,!F5,!LButton"
+	7PlusHotkeys := "#h,#y,#e,^i,+Enter,^t,^Tab,^+Tab,^w,!Numpad0,!Numpad1,!Numpad2,!Numpad3,!Numpad4,!Numpad5,!Numpad6,!Numpad7,!Numpad8,!Numpad9,#Delete,#+Left,#+Up,#+Right,#+Down,!WheelDown,!WheelUp,^v,!F4,!F5,!LButton"
 	if(key1 = exclude) 
 		return false
 	key1_Win := InStr(key1, "#") > 0

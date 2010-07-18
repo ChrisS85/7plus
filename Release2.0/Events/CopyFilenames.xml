@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Events>
+  <Event>
+    <ID>4</ID>
+    <Name>Copy filenames to clipboard</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>1</OneInstance>
+    <Trigger>
+      <Type>Hotkey</Type>
+      <Key>!C</Key>
+    </Trigger>
+    <Conditions>
+      <Condition>
+        <Type>If</Type>
+        <Compare>CabinetWClass ExploreWClass</Compare>
+        <Negate>0</Negate>
+        <Operator>contains</Operator>
+        <With>${Class}</With>
+      </Condition>
+    </Conditions>
+    <Actions>
+      <Action>
+        <Type>Clipboard</Type>
+        <Append>0</Append>
+        <Clear>1</Clear>
+        <Content>${SelNNEM}</Content>
+        <Cut>0</Cut>
+        <InsertType>Text</InsertType>
+      </Action>
+    </Actions>
+  </Event>
+  <Event>
+    <ID>5</ID>
+    <Name>Copy full filepaths to clipboard</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>1</OneInstance>
+    <Trigger>
+      <Type>Hotkey</Type>
+      <Key>^!C</Key>
+    </Trigger>
+    <Conditions>
+      <Condition>
+        <Type>If</Type>
+        <Compare>CabinetWClass ExploreWClass</Compare>
+        <Negate>0</Negate>
+        <Operator>contains</Operator>
+        <With>${Class}</With>
+      </Condition>
+    </Conditions>
+    <Actions>
+      <Action>
+        <Type>Clipboard</Type>
+        <Append>0</Append>
+        <Clear>1</Clear>
+        <Content>${SelNM}</Content>
+        <Cut>0</Cut>
+        <InsertType>Text</InsertType>
+      </Action>
+    </Actions>
+  </Event>
+  <Event>
+    <ID>6</ID>
+    <Name>Append filenames to clipboard</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>1</OneInstance>
+    <Trigger>
+      <Type>Hotkey</Type>
+      <Key>+!C</Key>
+    </Trigger>
+    <Conditions>
+      <Condition>
+        <Type>If</Type>
+        <Compare>CabinetWClass ExploreWClass</Compare>
+        <Negate>0</Negate>
+        <Operator>contains</Operator>
+        <With>${Class}</With>
+      </Condition>
+    </Conditions>
+    <Actions>
+      <Action>
+        <Type>Clipboard</Type>
+        <Append>1</Append>
+        <Clear>1</Clear>
+        <Content>${SelNNEM}</Content>
+        <Cut>0</Cut>
+        <InsertType>Text</InsertType>
+      </Action>
+    </Actions>
+  </Event>
+  <Event>
+    <ID>7</ID>
+    <Name>Copy full filepaths</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>1</OneInstance>
+    <Trigger>
+      <Type>Hotkey</Type>
+      <Key>^+!C</Key>
+    </Trigger>
+    <Conditions>
+      <Condition>
+        <Type>If</Type>
+        <Compare>CabinetWClass ExploreWClass</Compare>
+        <Negate>0</Negate>
+        <Operator>contains</Operator>
+        <With>${Class}</With>
+      </Condition>
+    </Conditions>
+    <Actions>
+      <Action>
+        <Type>Clipboard</Type>
+        <Append>1</Append>
+        <Clear>1</Clear>
+        <Content>${SelNM}</Content>
+        <Cut>0</Cut>
+        <InsertType>Text</InsertType>
+      </Action>
+    </Actions>
+  </Event>
+</Events>

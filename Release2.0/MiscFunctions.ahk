@@ -176,7 +176,7 @@ IsFullscreen(sWinTitle = "A", UseExcludeList = true, UseIncludeList=true) {
     If Not hWin { 
         ErrorLevel := True 
         Return False 
-    } 
+    }
     
     ;Make sure it's not desktop 
     WinGetClass, c, ahk_id %hWin% 

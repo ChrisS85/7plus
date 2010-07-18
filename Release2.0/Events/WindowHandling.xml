@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Events>
+  <Event>
+    <ID>45</ID>
+    <Name>Close window under mouse</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>0</OneInstance>
+    <Trigger>
+      <Type>Hotkey</Type>
+      <Key>MButton</Key>
+    </Trigger>
+    <Conditions>
+      <Condition>
+        <Type>MouseOver</Type>
+        <Filter />
+        <MouseOverType>Titlebar</MouseOverType>
+        <Negate>0</Negate>
+        <WindowMatchType>Program</WindowMatchType>
+      </Condition>
+    </Conditions>
+    <Actions>
+      <Action>
+        <Type>WindowClose</Type>
+        <Filter />
+        <WindowMatchType>UnderMouse</WindowMatchType>
+      </Action>
+    </Actions>
+  </Event>
+  <Event>
+    <ID>46</ID>
+    <Name>Minimize to tray</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>0</OneInstance>
+    <Trigger>
+      <Type>Hotkey</Type>
+      <Key>RButton</Key>
+    </Trigger>
+    <Conditions>
+      <Condition>
+        <Type>MouseOver</Type>
+        <Filter />
+        <MouseOverType>MinimizeButton</MouseOverType>
+        <Negate>0</Negate>
+        <WindowMatchType>Program</WindowMatchType>
+      </Condition>
+    </Conditions>
+    <Actions>
+      <Action>
+        <Type>MinimizeToTray</Type>
+        <Filter />
+        <WindowMatchType>UnderMouse</WindowMatchType>
+      </Action>
+    </Actions>
+  </Event>
+  <Event>
+    <ID>47</ID>
+    <Name>Activate notification/flashing/previous window</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>0</OneInstance>
+    <Trigger>
+      <Type>Hotkey</Type>
+      <Key>CapsLock</Key>
+    </Trigger>
+    <Conditions />
+    <Actions>
+      <Action>
+        <Type>FlashingWindows</Type>
+        <FlashingWindows>1</FlashingWindows>
+        <Notifications>1</Notifications>
+        <ToggleWindows>1</ToggleWindows>
+      </Action>
+    </Actions>
+  </Event>
+</Events>

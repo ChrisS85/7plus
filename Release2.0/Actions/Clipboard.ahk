@@ -22,7 +22,10 @@ Action_Clipboard_Execute(Action, Event)
 	global ImageExtensions
 	Content := Event.ExpandPlaceholders(Action.Content)
 	if(Action.InsertType = "Text")
-		Clipboard := Content
+	{
+		text := ReadClipboardText()
+		Clipboard := (Action.Append ? text "`r`n": "") Content
+	}
 	else if(Action.InsertType = "File")
 	{
 		if(Action.Append)

@@ -331,13 +331,12 @@ Capslock::FlashWindows()
 FlashWindows()
 { 
 	global BlinkingWindows,HKToggleWindows,PreviousWindow
-	outputdebug capslock!	
+	CoordMode, Mouse, Screen
 	if(z:=FindWindow("","",0x16CF0000,0x00000188,"trillian.exe")) ;Trillian isn't needed usually, but if tabs are used, clicking the window is preferred
 	{
 		WinGetPos x,y,w,h,ahk_id %z%
 		x+=w/2
 		y+=5
-		outputdebug click trillian %x% %y%
 		MouseGetPos,mx,my
 		ControlClick,, ahk_id %z%
 		MouseMove %mx%,%my%,0
@@ -350,7 +349,6 @@ FlashWindows()
 	else if(z:=FindWindow("","OpWindow", 0x96000000, 0x88))
 	{
 		WinGetPos x,y,w,h,ahk_id %z%
-		outputdebug click opera
 		MouseGetPos,mx,my
 		ControlClick,,ahk_id %z% ;for some reason clicking the notification window isn't enough, so we manually activate opera window
 		MouseMove %mx%,%my%,0
@@ -362,7 +360,6 @@ FlashWindows()
 		WinGetPos x,y,w,h,ahk_id %z%
 		x+=w/2
 		y+=h/2
-		outputdebug click firefox/thunderbird %x% %y% %w% %h%
 		MouseGetPos,mx,my
 		ControlClick,,ahk_id %z%
 		MouseMove %mx%,%my%,0
@@ -372,7 +369,6 @@ FlashWindows()
 		WinGetPos x,y,w,h,ahk_id %z%
 		x+=w/2
 		y+=h/2
-		outputdebug click steam %x% %y%
 		MouseGetPos,mx,my
 		Click %x% %y%
 		MouseMove %mx%,%my%,0
@@ -382,7 +378,6 @@ FlashWindows()
 		WinGetPos x,y,w,h,ahk_id %z%
 		x+=w/2
 		y+=h/2
-		outputdebug click skype %x% %y%
 		MouseGetPos,mx,my
 		Click %x% %y%
 		MouseMove %mx%,%my%,0
