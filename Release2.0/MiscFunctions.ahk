@@ -362,7 +362,7 @@ strTrimLeft(string,trim)
 {
 	len:=strLen(trim)
 	while(strStartsWith(string,trim))
-	{					
+	{
 		StringTrimLeft, string, string, %len% 
 	}
 	return string
@@ -611,6 +611,74 @@ RemoveLineFeedsAndSurroundWithDoubleQuotes(files)
 		} 
 		return result
 	}
+}
+/*
+To be parsed:
+
+file a
+file b
+
+"file a"
+"file b"
+
+"file a" "file b"
+
+"file a"|"file b"
+
+file a|file b
+
+*/
+ToArray(SourceFiles, ByRef Separator = "", ByRef wasQuoted = 0)
+{
+	files := Array()
+	pos := 1
+	Loop
+	{
+		if(pos > strlen(SourceFiles))
+			break
+			
+		char := SubStr(SourceFiles, pos, 1)
+		if(char = """" || wasQuoted) ;Quoted paths
+		{
+			file := SubStr(SourceFiles, InStr(SourceFiles, """", 0, pos) + 1, InStr(SourceFiles, """", 0, pos + 1) - pos - 1)
+			if(!wasQuoted)
+			{
+				wasQuoted := 1
+				Separator := SubStr(SourceFiles, InStr(SourceFiles, """", 0, pos + 1) + 1, InStr(SourceFiles, """", 0, InStr(SourceFiles, """", 0, pos + 1) + 1) - InStr(SourceFiles, """", 0, pos + 1) - 1)
+			}
+			if(file)
+			{
+				files.append(file)
+				pos += strlen(file) + 3
+				continue
+			}
+			else
+				Msgbox Invalid source format
+		}
+		else
+		{
+			file := SubStr(SourceFiles, pos, max(InStr(SourceFiles, Separator, 0, pos + 1) - pos, 0)) ;| separator
+			if(!file)
+				file := SubStr(SourceFiles, pos) ;no quotes or separators, single file
+			if(file)
+			{
+				files.append(file)
+				pos += strlen(file) + strlen(Separator)
+				continue
+			}
+			else
+				Msgbox Invalid source format
+		}
+		pos++ ;Shouldn't happen
+	}
+	return files
+}
+
+ArrayToList(array, separator = "`n", quote = 0)
+{
+	Loop % array.len()
+		result .= (A_Index != 1 ? separator : "") (quote ? """" : "") array[A_Index] (quote ? """" : "")
+	return result
 }
 
 ;get data starting from pointer up to 0 char

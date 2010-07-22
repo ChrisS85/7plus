@@ -14,7 +14,6 @@ Action_Write_ReadXML(Action, ActionFileHandle)
 
 Action_Write_Execute(Action, Event)
 {
-	global ImageExtensions
 	Target := Event.ExpandPlaceholders(Action.Target)
 	if(InStr(Action.Content, "${clip}") && WriteClipboardImageToFile(Target,Action.Quality))
 		return

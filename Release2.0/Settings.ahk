@@ -952,10 +952,11 @@ GUI_EventsList_Update()
 {
 	global
 	local filter, count, i, checked
+	ListEvent := Errorlevel
 	Gui, ListView, GUI_EventsList
 	ControlGetText, filter,, ahk_id %EventFilter%
 	count := LV_GetCount("Selected")
-	if(A_GuiEvent="I" && InStr(ErrorLevel, "S", true))
+	if(A_GuiEvent="I" && InStr(ListEvent, "S", true))
 	{	
 		GuiControl, 1:enable, GUI_EventsList_Remove
 		GuiControl, 1:enable, GUI_EventsList_Export
@@ -968,7 +969,7 @@ GUI_EventsList_Update()
 			GuiControl, 1:disable, GUI_EventsList_MoveDown
 		}
 	}
-	else if(A_GuiEvent="I" && InStr(ErrorLevel, "s", true))
+	else if(A_GuiEvent="I" && InStr(ListEvent, "s", true))
 	{
 		if(count = 0)
 		{
@@ -979,7 +980,7 @@ GUI_EventsList_Update()
 		else if(count = 1)
 			GuiControl, 1:enable, GUI_EventsList_Edit
 	}
-	if(A_GuiEvent = "I" && InStr(ErrorLevel, "c")) ;Catch both check and uncheck
+	if(A_GuiEvent = "I" && InStr(ListEvent, "c")) ;Catch both check and uncheck
 	{
 		;Update enabled state from listview
 		count := LV_GetCount()
@@ -987,7 +988,7 @@ GUI_EventsList_Update()
 		{
 			Checked := LV_GetNext(A_Index-1, "Checked") = A_Index ? 1 : 0
 			LV_GetText(id,A_Index,2)
-			Settings_Events[Settings_Events.FindID(id)].Enabled := Checked		
+			Settings_Events[Settings_Events.FindID(id)].Enabled := Checked
 		}
 	}
 	else if(A_GuiEvent="DoubleClick")
@@ -1156,10 +1157,12 @@ GUI_SaveEvents()
 	
 	;Update enabled state
 	Loop % Events.len()
+	{
 		if(Events[A_Index].Enabled)
 			Events[A_Index].Enable()
 		else
 			Events[A_Index].Disable()
+	}
 }
 txt:
 GuiControlGet, enabled ,1: , Paste text as file

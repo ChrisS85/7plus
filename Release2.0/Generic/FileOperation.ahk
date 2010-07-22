@@ -16,7 +16,7 @@ Action_FileOperation_ReadXML(Action, ActionFileHandle)
 
 Action_FileOperation_DisplayString(Action)
 {
-	return Action.Type " " Action.SourceFile (Action.TargetPath || Action.TargetFile ? " to " : " ") Action.TargetPath (Action.TargetFile && Action.TargetPath ? "\" : "") Action.TargetFile
+	return Action.Type " " Action.So urceFile (Action.TargetPath || Action.TargetFile ? " to " : " ") Action.TargetPath (Action.TargetFile && Action.TargetPath ? "\" : "") Action.TargetFile
 }
 
 Action_FileOperation_GuiShow(Action, ActionGUI, GoToLabel = "")
@@ -57,71 +57,14 @@ return
 Action_FileOperation_Placeholders_TargetName:
 Action_FileOperation_GuiShow("", "", "PlaceholdersTargetName")
 return
-/*
-To be parsed:
 
-file a
-file b
-
-"file a"
-"file b"
-
-"file a" "file b"
-
-"file a"|"file b"
-
-file a|file b
-
-*/
-PathsToArray(SourceFiles)
-{
-	files := Array()
-	pos := 1
-	Loop
-	{
-		if(pos > strlen(SourceFiles))
-			break
-			
-		char := SubStr(SourceFiles, pos, 1)
-		if(char = """") ;Quoted paths
-		{
-			file := SubStr(SourceFiles, pos + 1, InStr(SourceFiles, """", 0, pos + 1) - pos - 1)
-			if(file)
-			{
-				files.append(file)
-				pos += strlen(file) + 3
-				continue
-			}
-			else
-				Msgbox File Operation: Invalid source file format
-		}
-		else
-		{
-			file := SubStr(SourceFiles, pos, max(InStr(SourceFiles, "|", 0, pos + 1) - pos, 0)) ;| separator
-			if(!file)
-				file := SubStr(SourceFiles, pos, max(InStr(SourceFiles, "`n", 0, pos + 1) - pos, 0)) ;New line separator
-			if(!file)
-				file := SubStr(SourceFiles, pos) ;no quotes or separators, single file
-			if(file)
-			{
-				files.append(file)
-				pos += strlen(file) + 1
-				continue
-			}
-			else
-				Msgbox File Operation: Invalid source file format
-		}
-		pos++ ;Shouldn't happen
-	}
-	return files
-}
 Action_FileOperation_ProcessPaths(Action, Event, ByRef Sources, ByRef Targets, ByRef Flags)
 {
 	SourceFiles := Event.ExpandPlaceholders(Action.SourceFile)
 	TargetPath := Event.ExpandPlaceholders(Action.TargetPath)
 	TargetFile := Event.ExpandPlaceholders(Action.TargetFile)
 	SplitPath, TargetFile, , , TargetExtension, TargetFilenameNoExt
-	files := PathsToArray(SourceFiles)
+	files := ToArray(SourceFiles)
 	targets := Array()
 	Loop % files.len()
 	{

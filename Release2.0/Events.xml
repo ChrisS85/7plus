@@ -2,260 +2,78 @@
 <Events>
   <Event>
     <ID>0</ID>
-    <Name>New event</Name>
+    <Name>Remove always on top on maximized window</Name>
     <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>0</OneInstance>
+    <Trigger>
+      <Type>WindowStateChange</Type>
+      <Event>Window maximized</Event>
+      <Filter />
+      <WindowMatchType>Class</WindowMatchType>
+    </Trigger>
+    <Conditions>
+      <Condition>
+        <Type>KeyIsDown</Type>
+        <Key>Alt</Key>
+        <Negate>0</Negate>
+        <Physical>1</Physical>
+        <Toggle>0</Toggle>
+      </Condition>
+    </Conditions>
+    <Actions>
+      <Action>
+        <Type>Message</Type>
+        <Text>test</Text>
+        <Timeout />
+        <Title />
+      </Action>
+    </Actions>
+  </Event>
+  <Event>
+    <ID>1</ID>
+    <Name>New event</Name>
+    <Enabled>0</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
     <OneInstance>0</OneInstance>
     <Trigger>
       <Type>Timer</Type>
       <Restart>1</Restart>
-      <ShowProgress>0</ShowProgress>
-      <Time>10000</Time>
+      <ShowProgress>1</ShowProgress>
+      <Time>70000</Time>
     </Trigger>
     <Conditions />
-    <Actions>
-      <Action>
-        <Type>Write</Type>
-        <Append>0</Append>
-        <Content>${P}</Content>
-        <Quality>95</Quality>
-        <Target>C:\Program Files\Autohotkey\test.txt</Target>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>1</ID>
-    <Name>Upload window screenshot</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>1</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>#Insert</Key>
-    </Trigger>
-    <Conditions />
-    <Actions>
-      <Action>
-        <Type>Screenshot</Type>
-        <Area>Window</Area>
-        <Quality>95</Quality>
-        <TargetFile>Screenshot.jpg</TargetFile>
-        <TargetFolder>%Temp%</TargetFolder>
-      </Action>
-      <Action>
-        <Type>Input</Type>
-        <Cancel>1</Cancel>
-        <Text>Enter image filename:</Text>
-        <Title>Enter filename</Title>
-      </Action>
-      <Action>
-        <Type>Upload</Type>
-        <Clipboard>1</Clipboard>
-        <Hostname>chriss85.bplaced.net</Hostname>
-        <Password>$8&(Aq&gt;6D&lt;</Password>
-        <Port>21</Port>
-        <Silent>0</Silent>
-        <SourceFiles>%temp%\Screenshot.jpg</SourceFiles>
-        <TargetFile>${Input}</TargetFile>
-        <TargetFolder />
-        <URL>http://chriss85.bplaced.net</URL>
-        <User>chriss85</User>
-      </Action>
-      <Action>
-        <Type>Delete</Type>
-        <Overwrite>0</Overwrite>
-        <Silent>1</Silent>
-        <SourceFile>%temp%\Screenshot.jpg</SourceFile>
-        <TargetFile />
-        <TargetPath />
-      </Action>
-    </Actions>
+    <Actions />
   </Event>
   <Event>
     <ID>2</ID>
-    <Name>Upload screenshot</Name>
+    <Name>New event</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>1</OneInstance>
+    <OneInstance>0</OneInstance>
     <Trigger>
       <Type>Hotkey</Type>
-      <Key>!Insert</Key>
+      <Key>F10</Key>
     </Trigger>
     <Conditions />
     <Actions>
       <Action>
-        <Type>Screenshot</Type>
-        <Area>Screen</Area>
-        <Quality>95</Quality>
-        <TargetFile>Screenshot.jpg</TargetFile>
-        <TargetFolder>%Temp%</TargetFolder>
+        <Type>FilterList</Type>
+        <Action>Keep list entries from</Action>
+        <ExitOnEmptyList>1</ExitOnEmptyList>
+        <Filter>7plus.exe</Filter>
+        <List>${SelNNEQ}</List>
+        <Operator>that are equal to</Operator>
+        <Separator />
       </Action>
       <Action>
-        <Type>Input</Type>
-        <Cancel>1</Cancel>
-        <Text>Enter image filename:</Text>
-        <Title>Enter filename</Title>
-      </Action>
-      <Action>
-        <Type>Upload</Type>
-        <Clipboard>1</Clipboard>
-        <Hostname>chriss85.bplaced.net</Hostname>
-        <Password>$8&(Aq&gt;6D&lt;</Password>
-        <Port>21</Port>
-        <Silent>0</Silent>
-        <SourceFiles>%temp%\Screenshot.jpg</SourceFiles>
-        <TargetFile>${Input}</TargetFile>
-        <TargetFolder />
-        <URL>http://chriss85.bplaced.net</URL>
-        <User>chriss85</User>
-      </Action>
-      <Action>
-        <Type>Delete</Type>
-        <Overwrite>0</Overwrite>
-        <Silent>1</Silent>
-        <SourceFile>%temp%\Screenshot.jpg</SourceFile>
-        <TargetFile />
-        <TargetPath />
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>3</ID>
-    <Name>Upload selected files</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>1</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>^U</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>CabinetWClass ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>Upload</Type>
-        <Clipboard>1</Clipboard>
-        <Hostname>chriss85.bplaced.net</Hostname>
-        <Password>$8&(Aq&gt;6D&lt;</Password>
-        <Port>21</Port>
-        <Silent>0</Silent>
-        <SourceFiles>${SelNQ}</SourceFiles>
-        <TargetFile />
-        <TargetFolder />
-        <URL>http://chriss85.bplaced.net</URL>
-        <User>chriss85</User>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>4</ID>
-    <Name>--&gt; Go upwards</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>ExplorerDoubleClickSpace</Type>
-    </Trigger>
-    <Conditions />
-    <Actions>
-      <Action>
-        <Type>SetDirectory</Type>
-        <Filter />
-        <Path>Upward</Path>
-        <WindowMatchType>Active</WindowMatchType>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>5</ID>
-    <Name>Close window under mouse</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>MButton</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>MouseOver</Type>
-        <Filter />
-        <MouseOverType>Titlebar</MouseOverType>
-        <Negate>0</Negate>
-        <WindowMatchType>Program</WindowMatchType>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>WindowClose</Type>
-        <Filter />
-        <WindowMatchType>UnderMouse</WindowMatchType>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>6</ID>
-    <Name>Minimize to tray</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>RButton</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>MouseOver</Type>
-        <Filter />
-        <MouseOverType>MinimizeButton</MouseOverType>
-        <Negate>0</Negate>
-        <WindowMatchType>Program</WindowMatchType>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>MinimizeToTray</Type>
-        <Filter />
-        <WindowMatchType>UnderMouse</WindowMatchType>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>7</ID>
-    <Name>Activate notification/flashing/previous window</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>CapsLock</Key>
-    </Trigger>
-    <Conditions />
-    <Actions>
-      <Action>
-        <Type>FlashingWindows</Type>
-        <FlashingWindows>1</FlashingWindows>
-        <Notifications>1</Notifications>
-        <ToggleWindows>1</ToggleWindows>
+        <Type>Message</Type>
+        <Text>files:${FilteredList}</Text>
+        <Timeout />
+        <Title />
       </Action>
     </Actions>
   </Event>

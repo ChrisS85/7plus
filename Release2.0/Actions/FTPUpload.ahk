@@ -48,7 +48,7 @@ Action_Upload_Execute(Action, Event)
 	TargetFolder := Event.ExpandPlaceholders(Action.TargetFolder)
 	TargetFile := Event.ExpandPlaceholders(Action.TargetFile)
 	outputdebug targetfile %targetfile%
-	files := PathsToArray(SourceFiles)
+	files := ToArray(SourceFiles)
 	;Process target filenames
 	targets := Array()
 	Loop % files.len()

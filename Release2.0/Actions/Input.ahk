@@ -85,7 +85,7 @@ UserInputBox(Action, Title, Text, Cancel)
 		Gui, %GuiNum%:Add, Button, x+10 w80 gInputBox_Cancel, Cancel
 	}
 	Gui,%GuiNum%:-MinimizeBox -MaximizeBox +LabelInputbox +AlwaysOnTop
-	Gui,%GuiNum%:Show,,%Title% 
+	Gui,%GuiNum%:Show,,%Title%
 	Action.tmpEdit := Edit
 	Action.tmpGuiNum := GuiNum
 	;return Gui number to indicate that the Input box is still open

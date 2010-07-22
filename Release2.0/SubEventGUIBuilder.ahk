@@ -18,7 +18,13 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 		y += 4
 		if(description = "") ;No description, more space for text
 			w += 100
-		Gui, Add, Text, x%x% y%y% w%w% hwndText_%name%, %text%
+		if(!Button1Text)
+		{
+			w += 60
+			if(!Button2Text)
+				w += 60
+		}
+		Gui, Add, Text, x%x% y%y% w%w% hwndText_%name% r1, %text%
 		SubEventGUI["Text_" name] := Text_%name%
 		if(description = "")
 			w -= 100
@@ -51,7 +57,7 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 	}
 	else if(type = "Button")
 	{
-		Gui, Add, Button, x%x% y%y% w%w% hwndButton_%name% g%gLabel%, %text%
+		Gui, Add, Button, x%x% y%y% w%w% hwndButton_%name% g%gLabel% r1 -Wrap, %text%
 		y += 30
 		SubEventGUI["Button_" name] := Button_%name%
 	}
@@ -99,14 +105,17 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 		x += 210
 		y := SubEventGUI.y
 		w := 50
-		Gui, Add, Button, x%x% y%y% w%w% hwndButton1_%name% g%Button1gLabel%, %Button1Text%
+		if(Button2Text != "")
+			Gui, Add, Button, x%x% y%y% w%w% hwndButton1_%name% g%Button1gLabel% r1 -Wrap, %Button1Text%
+		else
+			Gui, Add, Button, x%x% y%y% hwndButton1_%name% g%Button1gLabel% r1 -Wrap, %Button1Text%
 		y += 30
 		SubEventGUI["Button1_" name] := Button1_%name%
 		if(Button2Text != "")
 		{		
 			x += 60
 			y := SubEventGUI.y
-			Gui, Add, Button, x%x% y%y% w%w% hwndButton2_%name% g%Button2gLabel%, %Button2Text%
+			Gui, Add, Button, x%x% y%y% w%w% hwndButton2_%name% g%Button2gLabel% r1 -Wrap, %Button2Text%
 			y += 30
 			SubEventGUI["Button2_" name] := Button2_%name%
 		}
@@ -263,7 +272,8 @@ SubEventGUI_Placeholders(SubEventGUI, name, ClickedMenu="")
 		Menu, Placeholders_Mouse, add, ${MYU} - Mouse Y coordinate`, relative to window under mouse, PlaceholderHandler
 		
 		Menu, Placeholders_System, add, ${Clip} - Clipboard contents, PlaceholderHandler
-		Menu, Placeholders_System, add, ${Input} - Result of input action, PlaceholderHandler
+		Menu, Placeholders_System, add, ${Input} - Result of previous input action, PlaceholderHandler
+		Menu, Placeholders_System, add, ${MessageResult} - Result of previous SendMessage action (Send only!), PlaceholderHandler
 		
 		Menu, Placeholders_Windows, add, ${A} - Active window handle, PlaceholderHandler
 		Menu, Placeholders_Windows, add, ${Class} - Active window class, PlaceholderHandler

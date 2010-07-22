@@ -81,9 +81,9 @@ EventSystem_CreateBaseObjects()
 {
 	global
 	local tmpobject
-	EventSystem_Triggers := "DoubleClickDesktop,DoubleClickTaskbar,ExplorerDoubleClickSpace,ExplorerPathChanged,Hotkey,Timer,Trigger,WindowActivated, WindowClosed, WindowCreated,7plusStart"
-	EventSystem_Conditions := "MouseOver,If,IsFullScreen,IsRenaming,WindowActive,WindowExists"
-	EventSystem_Actions := "AutoUpdate,Clipboard,Clipmenu,ControlEvent,Copy,Delete,Exit7plus,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FlashingWindows,Input,Message,MinimizeToTray,Move,NewFile,NewFolder,PlaySound,Restart7plus,Run,Screenshot,SendKeys,SetDirectory,ShowSettings,Shutdown,Upload,WindowActivate,WindowClose,WindowHide,WindowShow,Write"
+	EventSystem_Triggers := "DoubleClickDesktop,DoubleClickTaskbar,ExplorerDoubleClickSpace,ExplorerPathChanged,Hotkey,Timer,Trigger,WindowActivated, WindowClosed, WindowCreated,WindowStateChange,7plusStart"
+	EventSystem_Conditions := "MouseOver,If,IsFullScreen,KeyIsDown,IsRenaming,WindowActive,WindowExists"
+	EventSystem_Actions := "AutoUpdate,Clipboard,Clipmenu,ControlEvent,ControlTimer,Copy,Delete,Exit7plus,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FilterList,FlashingWindows,FocusControl,SetWindowTitle, Input,Message,MinimizeToTray,Move,NewFile,NewFolder,PlaySound,Restart7plus,Run,Screenshot,SendKeys,SendMessage,SetDirectory,ShowSettings,Shutdown,Tooltip,Upload,Volume,WindowActivate,WindowClose,WindowHide,WindowMove,WindowResize,WindowShow,WindowState,Write"
 	Trigger_Categories := object("Explorer", Array(), "Hotkeys", Array(), "Other", Array(), "System", Array(), "Window", Array(), "7plus", Array())
 	Condition_Categories := object("Explorer", Array(), "Mouse", Array(), "Other", Array(), "Window", Array())
 	Action_Categories := object("Explorer", Array(), "FastFolders", Array(), "File", Array(), "Window", Array(), "Input", Array(), "System", Array(), "7plus", Array(), "Other", Array())

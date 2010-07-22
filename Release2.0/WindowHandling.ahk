@@ -453,6 +453,7 @@ EWD_StartDrag()
 {
 	global
 	local EWD_WinState
+	CoordMode, Mouse, Screen
 	MouseGetPos, EWD_MouseStartX, EWD_MouseStartY, EWD_MouseWin
 	WinGetPos, EWD_OriginalPosX, EWD_OriginalPosY,,, ahk_id %EWD_MouseWin%
 	WinGet, EWD_WinState, MinMax, ahk_id %EWD_MouseWin% 
@@ -483,7 +484,7 @@ EWD_WatchMouse()
 	
 	; Otherwise, reposition the window to match the change in mouse coordinates
 	; caused by the user having dragged the mouse:
-	CoordMode, Mouse
+	CoordMode, Mouse, Screen
 	MouseGetPos, EWD_MouseX, EWD_MouseY
 	WinGetPos, EWD_WinX, EWD_WinY,,, ahk_id %EWD_MouseWin%
 	SetWinDelay, -1   ; Makes the below move faster/smoother.

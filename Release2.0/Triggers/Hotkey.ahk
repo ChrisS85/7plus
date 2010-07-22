@@ -3,8 +3,10 @@ Trigger_Hotkey_Init(Trigger)
 	Trigger.Category := "Hotkeys"
 	;SetTimer, RefreshHotkeyState, 200 ;Should be quick enough I suppose
 }
-#if Trigger := HotkeyShouldFire(A_ThisHotkey)
+#if true || IsObject(Trigger := HotkeyShouldFire(A_ThisHotkey))
 HotkeyTrigger:
+if(!IsObject(Trigger := HotkeyShouldFire(A_ThisHotkey)))
+	return
 outputdebug, % "key: " A_ThisHotkey ", Event key: " Trigger.key
 HotkeyTrigger(A_ThisHotkey)
 return
@@ -22,6 +24,7 @@ HotkeyShouldFire(key)
 {
 	global Events, EventSchedule
 	outputdebug HotkeyShouldFire(%key%)
+	key := StringReplace(key,"$")
 	len := Events.len()
 	Loop % len
 	{

@@ -882,14 +882,12 @@ UpdateInfos()
 return
 UpdateInfos()
 {
-	global freetext, selectedfiles1, currentfolder1, newstring, freestring
+	global freetext, newstring, freestring
+	static selectedfiles1, currentfolder1
 	if(WinActive("ahk_group ExplorerGroup") && !IsContextMenuActive())
 	{		
 		files:=GetSelectedFiles()
-	return
-		path:=GetCurrentFolder()
-		
-		
+		path:=GetCurrentFolder()		
 		if(files=selectedfiles1 && path=currentfolder1)
 			return
 		selectedfiles1:=files
@@ -952,7 +950,7 @@ UpdateInfos()
 		else if(totalunit=6)
 			totalunit=MB
 		else if(totalunit=9)
-			totalunit=GBq
+			totalunit=GB
 		else if(totalunit=12)
 			totalunit=TB
 		if(free)

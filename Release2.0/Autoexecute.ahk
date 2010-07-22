@@ -36,6 +36,7 @@ pToken := Gdip_Startup()
 OnExit, ExitSub
 
 ;Disable COM error notifications that pop up sometimes when opening/closing explorer
+COM_Init()
 COM_Error(0)
 
 ;On first run, wizard is used to setup values
@@ -68,6 +69,8 @@ OnMessage(0x4e,"WM_NOTIFY") ;Will make LinkClick and ToolTipClose possible
 ;Register an event hook to catch move and dialog creation messages
 HookProcAdr := RegisterCallback("HookProc", "F" ) 
 API_SetWinEventHook(0x8001,0x800B,0,HookProcAdr,0,0,0) ;Make sure not to register unneccessary messages, as this causes cpu load
+API_SetWinEventHook(0x0016,0x0016,0,HookProcAdr,0,0,0)
+API_SetWinEventHook(0x000E,0x000E,0,HookProcAdr,0,0,0)
 DetectHiddenWindows, On
 
 ;FTP Upload script

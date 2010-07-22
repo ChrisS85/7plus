@@ -13,7 +13,19 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 		return
 	WinGet, style, Style, ahk_id %hwnd%
 	if (style & 0x40000000)					;RETURN if hwnd is child window, for some reason idChild may be 0 for some children ?!?! ( I hate ms )
-		return
+		return	
+	if(event=0x0016) ;EVENT_SYSTEM_MINIMIZEEND
+	{
+		Trigger := EventSystem_CreateSubEvent("Trigger","WindowStateChange")
+		Trigger.Window := hwnd
+		Trigger.Event := "Window minimized"
+		OnTrigger(Trigger)
+	}
+	if(event = 0x000E)
+	{
+		class := WinGetClass("ahk_id " hwnd)
+		outputdebug dragdropstart %class%
+	}
 	if(event=0x8001 && UseTabs) ;EVENT_OBJECT_DESTROY
 	{
 		DecToHex(hwnd)
@@ -24,8 +36,27 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 		}
 		return
 	}
+	if(event=0x800B) ;EVENT_OBJECT_LOCATIONCHANGE
+	{
+		WinGet, state, minmax, ahk_id %hwnd%
+		if(state = 1)
+		{
+			Trigger := EventSystem_CreateSubEvent("Trigger","WindowStateChange")
+			Trigger.Window := hwnd
+			Trigger.Event := "Window maximized"
+			OnTrigger(Trigger)
+		}
+	}
 	if(event=0x800B && WinActive("ahk_group ExplorerGroup")) ;EVENT_OBJECT_LOCATIONCHANGE
 	{
+		WinGet, state, minmax, ahk_id %hwnd%
+		if(state = 1)
+		{
+			Trigger := EventSystem_CreateSubEvent("Trigger","WindowStateChange")
+			Trigger.Window := hwnd
+			Trigger.Event := "Window maximized"
+			OnTrigger(Trigger)
+		}
 		if(UseTabs)
 			UpdatePosition(TabNum,TabWindow)
 		if(HKShowSpaceAndSize && A_OsVersion = "WIN_7")
@@ -46,7 +77,7 @@ ShellMessage( wParam,lParam, msg)
 		If	wParam=1028
 			Return
 		Else If lParam=0x205 ; RButton 
-		{ 
+		{
 			wtmwParam := wParam
 			Menu, wtmMenu, Show 
 		}

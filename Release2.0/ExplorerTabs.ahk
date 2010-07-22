@@ -23,6 +23,7 @@ IsMouseOverTabButton()
 {
 	global
 	local window,TabContainer,x,y
+	CoordMode, Mouse, Screen
 	MouseGetPos,x,y,window
 	if(window && window=TabWindow)
 	{
@@ -49,7 +50,6 @@ IsMouseOverTabButton()
 MouseActivateTab()
 {
 	global TabContainerList
-	outputdebug mouseactivatetab
 	TabContainer:=TabContainerList.ContainsHWND(TabContainerList.active)
 	index := IsMouseOverTabButton()
 	if(index && TabContainer && TabContainer.tabs[index].hwnd != TabContainer.active)

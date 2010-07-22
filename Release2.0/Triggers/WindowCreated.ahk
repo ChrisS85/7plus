@@ -10,7 +10,7 @@ Trigger_WindowCreated_ReadXML(Trigger, TriggerFileHandle)
 
 Trigger_WindowCreated_Matches(Trigger, Filter)
 {
-	return WindowFilter_Matches(Trigger, Trigger.Window, Filter)
+	return WindowFilter_Matches(Trigger, Filter.Window, Filter)
 }
 
 Trigger_WindowCreated_DisplayString(Trigger)

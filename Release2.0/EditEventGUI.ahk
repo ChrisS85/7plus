@@ -101,11 +101,12 @@ GUI_EditEvent(e,GoToLabel="")
 		Gui, Add, Text, x%x% y%y%, Event Name:
 		x += 70
 		y -= 4
-		w := 200
+		w := 300
 		name := Event.Name
-		Gui, Add, Edit, x%x% y%y% w%w% vEditEvent_Name, %name%
+		Gui, Add, Edit, x%x% y%y% w%w% r1 vEditEvent_Name, %name%
 		x := 28
 		y += 30
+		w := 200
 		if(Event.DisableAfterUse)
 			Gui, Add, Checkbox, x%x% y%y% w%w% vEditEvent_DisableAfterUse Checked, Disable after use
 		else

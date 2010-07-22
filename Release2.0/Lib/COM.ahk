@@ -46,7 +46,7 @@ COM_QueryService(ppv, SID, IID = "")
 {
 	If	DllCall(NumGet(NumGet(1*ppv:=COM_Unwrap(ppv))), "Uint", ppv, "Uint", COM_GUID4String(IID_IServiceProvider,"{6D5140C1-7436-11CE-8034-00AA006009FA}"), "UintP", psp)=0
 	&&	DllCall(NumGet(NumGet(1*psp)+12), "Uint", psp, "Uint", COM_GUID4String(SID,SID), "Uint", IID ? COM_GUID4String(IID,IID):&SID, "UintP", ppv:=0)+DllCall(NumGet(NumGet(1*psp)+8), "Uint", psp)*0=0
-	Return	ppv
+	Return	COM_Enwrap(ppv)
 }
 
 COM_FindConnectionPoint(pdp, DIID)
@@ -79,7 +79,7 @@ COM_Enumerate(penum, ByRef Result, ByRef vt = "")
 {
 	VarSetCapacity(varResult,16,0)
 	If (0 =	hr:=DllCall(NumGet(NumGet(1*penum:=COM_Unwrap(penum))+12), "Uint", penum, "Uint", 1, "Uint", &varResult, "UintP", 0))
-	Result:=(vt:=NumGet(varResult,0,"Ushort"))=9||vt=13?COM_Enwrap(NumGet(varResult,8),vt):vt=8||vt<0x1000&&COM_VariantChangeType(&varResult,&varResult)=0?COM_Ansi4Unicode(bstr:=NumGet(varResult,8)) . COM_SysFreeString(bstr):NumGet(varResult,8)
+	Result:=(vt:=NumGet(varResult,0,"Ushort"))=9||vt=13?COM_Enwrap(NumGet(varResult,8),vt):vt=8||vt<0x1000&&COM_VariantChangeType(&varResult,&varResult)=0?COM_Ansi4Unicode(NumGet(varResult,8)) . COM_VariantClear(&varResult):NumGet(varResult,8)
 	Return	hr
 }
 
@@ -126,15 +126,15 @@ COM_Invoke(pdsp,name="",prm0="vT_NoNe",prm1="vT_NoNe",prm2="vT_NoNe",prm3="vT_No
 	Else If	prm%A_LoopField% is integer
 		NumPut(SubStr(prm%A_LoopField%,1,1)="+"?9:prm%A_LoopField%=="-0"?(prm%A_LoopField%:=0x80020004)*0+10:3,NumPut(prm%A_LoopField%,varg,168-16*A_Index),-12)
 	Else If	IsObject(prm%A_LoopField%)
-		typ:=prm%A_LoopField%["typ_"],prm:=prm%A_LoopField%["prm_"],typ+0==""?(NumPut(COM_Unicode4Ansi(_nam_%A_LoopField%,typ),namg,84-4*mParams++),typ:=prm%A_LoopField%["nam_"]+0==""?prm+0==""||InStr(prm,".")?8:3:prm%A_LoopField%["nam_"]):"",NumPut(typ==8?COM_Unicode4Ansi(prm%A_LoopField%,prm):prm,NumPut(typ,varg,160-16*A_Index),4)
-	Else	NumPut(COM_Unicode4Ansi(prm%A_LoopField%,prm%A_LoopField%),NumPut(8,varg,160-16*A_Index),4)
+		typ:=prm%A_LoopField%["typ_"],prm:=prm%A_LoopField%["prm_"],typ+0==""?(NumPut(COM_SysString(_nam_%A_LoopField%,typ),namg,84-4*mParams++),typ:=prm%A_LoopField%["nam_"]+0==""?prm+0==""||InStr(prm,".")?8:3:prm%A_LoopField%["nam_"]):"",NumPut(typ==8?COM_SysString(prm%A_LoopField%,prm):prm,NumPut(typ,varg,160-16*A_Index),4)
+	Else	NumPut(COM_SysString(prm%A_LoopField%,prm%A_LoopField%),NumPut(8,varg,160-16*A_Index),4)
 	If	nParams
 		SubStr(name,0)="="?(name:=SubStr(name,1,-1),nvk:=12,NumPut(-3,namg,4)):"",NumPut(nvk==12?1:mParams,NumPut(nParams,NumPut(&namg+4,NumPut(&varg+160-16*nParams,varResult,16))))
 	Global	COM_HR, COM_LR:=""
-	If	(COM_HR:=DllCall(NumGet(NumGet(1*pdsp)+20),"Uint",pdsp,"Uint",&varResult+64,"Uint",NumPut(COM_Unicode4Ansi(wname,name),namg,84-4*mParams)-4,"Uint",1+mParams,"Uint",1024,"Uint",&namg,"Uint"))=0&&(COM_HR:=DllCall(NumGet(NumGet(1*pdsp)+24),"Uint",pdsp,"int",NumGet(namg),"Uint",&varResult+64,"Uint",1024,"Ushort",nvk,"Uint",&varResult+16,"Uint",&varResult,"Uint",&varResult+32,"Uint",0,"Uint"))!=0&&nParams&&nvk<4&&NumPut(-3,namg,4)&&(COM_LR:=DllCall(NumGet(NumGet(1*pdsp)+24),"Uint",pdsp,"int",NumGet(namg),"Uint",&varResult+64,"Uint",1024,"Ushort",12,"Uint",NumPut(1,varResult,28)-16,"Uint",0,"Uint",0,"Uint",0,"Uint"))=0
+	If	(COM_HR:=DllCall(NumGet(NumGet(1*pdsp)+20),"Uint",pdsp,"Uint",&varResult+64,"Uint",NumPut(COM_SysString(wname,name),namg,84-4*mParams)-4,"Uint",1+mParams,"Uint",1024,"Uint",&namg,"Uint"))=0&&(COM_HR:=DllCall(NumGet(NumGet(1*pdsp)+24),"Uint",pdsp,"int",NumGet(namg),"Uint",&varResult+64,"Uint",1024,"Ushort",nvk,"Uint",&varResult+16,"Uint",&varResult,"Uint",&varResult+32,"Uint",0,"Uint"))!=0&&nParams&&nvk<4&&NumPut(-3,namg,4)&&(COM_LR:=DllCall(NumGet(NumGet(1*pdsp)+24),"Uint",pdsp,"int",NumGet(namg),"Uint",&varResult+64,"Uint",1024,"Ushort",12,"Uint",NumPut(1,varResult,28)-16,"Uint",0,"Uint",0,"Uint",0,"Uint"))=0
 		COM_HR:=0
 	Global	COM_VT:=NumGet(varResult,0,"Ushort")
-	Return	COM_HR=0?COM_VT>1?COM_VT=9||COM_VT=13?COM_Enwrap(NumGet(varResult,8),COM_VT):COM_VT=8||COM_VT<0x1000&&COM_VariantChangeType(&varResult,&varResult)=0?COM_Ansi4Unicode(bstr:=NumGet(varResult,8)) . COM_SysFreeString(bstr):NumGet(varResult,8):"":COM_Error(COM_HR,COM_LR,&varResult+32,name)
+	Return	COM_HR=0?COM_VT>1?COM_VT=9||COM_VT=13?COM_Enwrap(NumGet(varResult,8),COM_VT):COM_VT=8||COM_VT<0x1000&&COM_VariantChangeType(&varResult,&varResult)=0?COM_Ansi4Unicode(NumGet(varResult,8)) . COM_VariantClear(&varResult):NumGet(varResult,8):"":COM_Error(COM_HR,COM_LR,&varResult+32,name)
 }
 
 COM_InvokeSet(pdsp,name,prm0,prm1="vT_NoNe",prm2="vT_NoNe",prm3="vT_NoNe",prm4="vT_NoNe",prm5="vT_NoNe",prm6="vT_NoNe",prm7="vT_NoNe",prm8="vT_NoNe",prm9="vT_NoNe")
@@ -166,7 +166,7 @@ COM_DispGetParam(pDispParams, Position = 0, vt = 8)
 {
 	VarSetCapacity(varResult,16,0)
 	DllCall("oleaut32\DispGetParam", "Uint", pDispParams, "Uint", Position, "Ushort", vt, "Uint", &varResult, "UintP", nArgErr)
-	Return	(vt:=NumGet(varResult,0,"Ushort"))=8?COM_Ansi4Unicode(NumGet(varResult,8)) . COM_SysFreeString(NumGet(varResult,8)):vt=9||vt=13?COM_Enwrap(NumGet(varResult,8),vt):NumGet(varResult,8)
+	Return	(vt:=NumGet(varResult,0,"Ushort"))=8?COM_Ansi4Unicode(NumGet(varResult,8)) . COM_VariantClear(&varResult):vt=9||vt=13?COM_Enwrap(NumGet(varResult,8),vt):NumGet(varResult,8)
 }
 
 COM_DispSetParam(val, pDispParams, Position = 0, vt = 8)
@@ -260,7 +260,7 @@ COM_GetGuidOfName(pdisp, Name)
 	DllCall(NumGet(NumGet(1*pdisp)+16), "Uint", pdisp, "Uint", 0, "Uint", 1024, "UintP", ptinf)
 	DllCall(NumGet(NumGet(1*ptinf)+72), "Uint", ptinf, "UintP", ptlib, "UintP", idx)
 	DllCall(NumGet(NumGet(1*ptinf)+ 8), "Uint", ptinf), ptinf:=0
-	DllCall(NumGet(NumGet(1*ptlib)+44), "Uint", ptlib, "Uint", COM_Unicode4Ansi(Name,Name), "Uint", 0, "UintP", ptinf, "UintP", memID, "UshortP", 1)
+	DllCall(NumGet(NumGet(1*ptlib)+44), "Uint", ptlib, "Uint", COM_SysString(Name,Name), "Uint", 0, "UintP", ptinf, "UintP", memID, "UshortP", 1)
 	DllCall(NumGet(NumGet(1*ptlib)+ 8), "Uint", ptlib)
 	DllCall(NumGet(NumGet(1*ptinf)+12), "Uint", ptinf, "UintP", pattr)
 	GUID := COM_String4GUID(pattr)
@@ -303,15 +303,16 @@ COM_DisconnectObject(psink)
 	Return	COM_Unadvise(NumGet(psink+16),NumGet(psink+20))=0 ? (0,COM_Release(NumGet(psink+16)),COM_Release(NumGet(psink+8)),COM_CoTaskMemFree(psink)):1
 }
 
-COM_CreateObject(CLSID)
+COM_CreateObject(CLSID, IID = "", CLSCTX = 21)
 {
-	Return	COM_Enwrap(COM_CreateInstance(CLSID))
+	ppv :=	COM_CreateInstance(CLSID,IID,CLSCTX)
+	Return	IID=="" ? COM_Enwrap(ppv):ppv
 }
 
 COM_GetObject(Name)
 {
 	COM_Init()
-	If	DllCall("ole32\CoGetObject", "Uint", COM_Unicode4Ansi(Name,Name), "Uint", 0, "Uint", COM_GUID4String(IID_IDispatch,"{00020400-0000-0000-C000-000000000046}"), "UintP", pdisp)=0
+	If	DllCall("ole32\CoGetObject", "Uint", COM_SysString(Name,Name), "Uint", 0, "Uint", COM_GUID4String(IID_IDispatch,"{00020400-0000-0000-C000-000000000046}"), "UintP", pdisp)=0
 	Return	COM_Enwrap(pdisp)
 }
 
@@ -333,7 +334,7 @@ COM_CreateInstance(CLSID, IID = "", CLSCTX = 21)
 COM_GUID4String(ByRef CLSID, String)
 {
 	VarSetCapacity(CLSID,16,0)
-	DllCall("ole32\CLSIDFromString", "Uint", COM_Unicode4Ansi(String,String), "Uint", &CLSID)
+	DllCall("ole32\CLSIDFromString", "Uint", COM_SysString(String,String), "Uint", &CLSID)
 	Return	&CLSID
 }
 
@@ -347,7 +348,7 @@ COM_String4GUID(pGUID)
 COM_CLSID4ProgID(ByRef CLSID, ProgID)
 {
 	VarSetCapacity(CLSID,16,0)
-	DllCall("ole32\CLSIDFromProgID", "Uint", COM_Unicode4Ansi(ProgID,ProgID), "Uint", &CLSID)
+	DllCall("ole32\CLSIDFromProgID", "Uint", COM_SysString(ProgID,ProgID), "Uint", &CLSID)
 	Return	&CLSID
 }
 
@@ -391,7 +392,7 @@ COM_CoTaskMemFree(pv)
 
 COM_SysAllocString(astr)
 {
-	Return	DllCall("oleaut32\SysAllocString", "Uint", COM_Unicode4Ansi(astr,astr))
+	Return	DllCall("oleaut32\SysAllocString", "Uint", COM_SysString(astr,astr))
 }
 
 COM_SysFreeString(bstr)
@@ -406,12 +407,18 @@ COM_SafeArrayDestroy(psar)
 
 COM_VariantClear(pvar)
 {
-	Return	DllCall("oleaut32\VariantClear", "Uint", pvar)
+		DllCall("oleaut32\VariantClear", "Uint", pvar)
 }
 
 COM_VariantChangeType(pvarDst, pvarSrc, vt = 8)
 {
 	Return	DllCall("oleaut32\VariantChangeTypeEx", "Uint", pvarDst, "Uint", pvarSrc, "Uint", 1024, "Ushort", 0, "Ushort", vt)
+}
+
+COM_SysString(ByRef wString, sString)
+{
+	VarSetCapacity(wString,3+2*nLen:=StrLen(sString)+1)
+	Return	NumPut(DllCall("kernel32\MultiByteToWideChar","Uint",0,"Uint",0,"Uint",&sString,"int",nLen,"Uint",&wString+4,"int",nLen,"Uint")*2-2,wString)
 }
 
 COM_AccInit()
@@ -500,7 +507,7 @@ COM_AtlAxGetControl(hWnd, Version = "")
 	Return	COM_Enwrap(COM_QueryInterface(punk)+COM_Release(punk)*0)
 }
 
-COM_AtlAxAttachControl(hWnd, pdsp, Version = "")
+COM_AtlAxAttachControl(pdsp, hWnd, Version = "")
 {
 	If	DllCall("atl" . Version . "\AtlAxAttachControl", "Uint", punk:=COM_QueryInterface(pdsp,0), "Uint", hWnd, "Uint", COM_AtlAxWinInit(Version))+COM_Release(punk)*0=0
 	Return	COM_Enwrap(pdsp)
@@ -508,7 +515,7 @@ COM_AtlAxAttachControl(hWnd, pdsp, Version = "")
 
 COM_AtlAxCreateControl(hWnd, Name, Version = "")
 {
-	If	DllCall("atl" . Version . "\AtlAxCreateControl", "Uint", COM_Unicode4Ansi(Name,Name), "Uint", hWnd, "Uint", 0, "Uint", COM_AtlAxWinInit(Version))=0
+	If	DllCall("atl" . Version . "\AtlAxCreateControl", "Uint", COM_SysString(Name,Name), "Uint", hWnd, "Uint", 0, "Uint", COM_AtlAxWinInit(Version))=0
 	Return	COM_AtlAxGetControl(hWnd,Version)
 }
 
@@ -535,8 +542,10 @@ COM_Ansi4Unicode(pString)
 
 COM_Unicode4Ansi(ByRef wString, sString)
 {
-	VarSetCapacity(wString,3+2*nLen:=1+StrLen(sString))
-	Return	NumPut(DllCall("kernel32\MultiByteToWideChar","Uint",0,"Uint",0,"Uint",&sString,"int",nLen,"Uint",&wString+4,"int",nLen,"Uint")*2-2,wString)
+	nLen:=	DllCall("kernel32\MultiByteToWideChar","Uint",0,"Uint",0,"Uint",&sString,"int",-1,"Uint",0,"int",0,"Uint")
+	VarSetCapacity(wString,nLen*2)
+	If	DllCall("kernel32\MultiByteToWideChar","Uint",0,"Uint",0,"Uint",&sString,"int",-1,"Uint",&wString,"int",nLen)
+	Return	&wString
 }
 
 COM_ScriptControl(sCode, sEval = "", sName = "", Obj = "", bGlobal = "")
@@ -553,7 +562,7 @@ COM_Parameter(typ, prm = "", nam = "")
 COM_Enwrap(obj, vt = 9)
 {
 	Static	base
-	Return	IsObject(obj)?obj:obj+0?Object("prm_",obj,"typ_",vt,"base",base?base:base:=Object("__Delete","COM_Invoke","__Call","COM_Invoke","__Get","COM_Invoke","__Set","COM_InvokeSet")):""
+	Return	IsObject(obj)?obj:Object("prm_",obj,"typ_",vt,"base",base?base:base:=Object("__Delete","COM_Invoke","__Call","COM_Invoke","__Get","COM_Invoke","__Set","COM_InvokeSet","base",Object("__Delete","COM_Term")))
 }
 
 COM_Unwrap(obj)
