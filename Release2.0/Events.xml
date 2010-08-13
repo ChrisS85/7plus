@@ -2,53 +2,167 @@
 <Events>
   <Event>
     <ID>0</ID>
-    <Name>Remove always on top on maximized window</Name>
+    <Name>CMD / Explorer / General: Run cmd in current directory</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
     <OneInstance>0</OneInstance>
     <Trigger>
-      <Type>WindowStateChange</Type>
-      <Event>Window maximized</Event>
-      <Filter />
-      <WindowMatchType>Class</WindowMatchType>
+      <Type>Hotkey</Type>
+      <Key>#C</Key>
     </Trigger>
     <Conditions>
       <Condition>
-        <Type>KeyIsDown</Type>
-        <Key>Alt</Key>
+        <Type>If</Type>
+        <Compare>CabinetWClass ExploreWClass</Compare>
         <Negate>0</Negate>
-        <Physical>1</Physical>
-        <Toggle>0</Toggle>
+        <Operator>contains</Operator>
+        <With>${Class}</With>
       </Condition>
     </Conditions>
     <Actions>
       <Action>
-        <Type>Message</Type>
-        <Text>test</Text>
-        <Timeout />
-        <Title />
+        <Type>Run</Type>
+        <Command>cmd.exe</Command>
+        <WaitForFinish>0</WaitForFinish>
+        <WorkingDirectory>${P}</WorkingDirectory>
       </Action>
     </Actions>
   </Event>
   <Event>
     <ID>1</ID>
-    <Name>New event</Name>
+    <Name>CMD: Close with ALT + F4</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>0</OneInstance>
+    <Trigger>
+      <Type>Hotkey</Type>
+      <Key>!F4</Key>
+    </Trigger>
+    <Conditions>
+      <Condition>
+        <Type>WindowActive</Type>
+        <Negate>0</Negate>
+        <WindowFilter>ConsoleWindowClass</WindowFilter>
+        <WindowMatchType>Class</WindowMatchType>
+      </Condition>
+    </Conditions>
+    <Actions>
+      <Action>
+        <Type>WindowClose</Type>
+        <ForceClose />
+        <WindowFilter />
+        <WindowMatchType>Active</WindowMatchType>
+      </Action>
+    </Actions>
+  </Event>
+  <Event>
+    <ID>2</ID>
+    <Name>CMD: Enable CTRL+V to paste from clipboard</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>0</OneInstance>
+    <Trigger>
+      <Type>Hotkey</Type>
+      <Key>^V</Key>
+    </Trigger>
+    <Conditions>
+      <Condition>
+        <Type>WindowActive</Type>
+        <Negate>0</Negate>
+        <WindowFilter>ConsoleWindowClass</WindowFilter>
+        <WindowMatchType>Class</WindowMatchType>
+      </Condition>
+    </Conditions>
+    <Actions>
+      <Action>
+        <Type>MouseClick</Type>
+        <Button>Right</Button>
+        <Relative>1</Relative>
+        <RestorePosition>1</RestorePosition>
+        <X>40</X>
+        <Y>40</Y>
+      </Action>
+      <Action>
+        <Type>SendKeys</Type>
+        <Keys>{Down 3}{Enter}</Keys>
+      </Action>
+    </Actions>
+  </Event>
+  <Event>
+    <ID>3</ID>
+    <Name>Picture viewer: Rotate image right with R</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>0</OneInstance>
+    <Trigger>
+      <Type>Hotkey</Type>
+      <Key>R</Key>
+    </Trigger>
+    <Conditions>
+      <Condition>
+        <Type>WindowActive</Type>
+        <Negate>0</Negate>
+        <WindowFilter>Photo_Lightweight_Viewer</WindowFilter>
+        <WindowMatchType>Class</WindowMatchType>
+      </Condition>
+    </Conditions>
+    <Actions>
+      <Action>
+        <Type>SendKeys</Type>
+        <Keys>^&#44;</Keys>
+      </Action>
+    </Actions>
+  </Event>
+  <Event>
+    <ID>4</ID>
+    <Name>Picture viewer: Rotate image left with L</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>0</OneInstance>
+    <Trigger>
+      <Type>Hotkey</Type>
+      <Key>L</Key>
+    </Trigger>
+    <Conditions>
+      <Condition>
+        <Type>WindowActive</Type>
+        <Negate>0</Negate>
+        <WindowFilter>Photo_Lightweight_Viewer</WindowFilter>
+        <WindowMatchType>Class</WindowMatchType>
+      </Condition>
+    </Conditions>
+    <Actions>
+      <Action>
+        <Type>SendKeys</Type>
+        <Keys>^&#44;</Keys>
+      </Action>
+    </Actions>
+  </Event>
+  <Event>
+    <ID>5</ID>
+    <Name>Clipboard Manager</Name>
     <Enabled>0</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
     <OneInstance>0</OneInstance>
     <Trigger>
-      <Type>Timer</Type>
-      <Restart>1</Restart>
-      <ShowProgress>1</ShowProgress>
-      <Time>70000</Time>
+      <Type>Hotkey</Type>
+      <Key>#V</Key>
     </Trigger>
     <Conditions />
-    <Actions />
+    <Actions>
+      <Action>
+        <Type>Clipmenu</Type>
+      </Action>
+    </Actions>
   </Event>
   <Event>
-    <ID>2</ID>
+    <ID>6</ID>
     <Name>New event</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
@@ -56,24 +170,31 @@
     <OneInstance>0</OneInstance>
     <Trigger>
       <Type>Hotkey</Type>
-      <Key>F10</Key>
+      <Key>^S</Key>
     </Trigger>
-    <Conditions />
+    <Conditions>
+      <Condition>
+        <Type>WindowActive</Type>
+        <Negate>0</Negate>
+        <WindowFilter>CabinetWClass</WindowFilter>
+        <WindowMatchType>Class</WindowMatchType>
+      </Condition>
+    </Conditions>
     <Actions>
       <Action>
-        <Type>FilterList</Type>
-        <Action>Keep list entries from</Action>
-        <ExitOnEmptyList>1</ExitOnEmptyList>
-        <Filter>7plus.exe</Filter>
-        <List>${SelNNEQ}</List>
-        <Operator>that are equal to</Operator>
-        <Separator />
+        <Type>Input</Type>
+        <Cancel>1</Cancel>
+        <Text>Filter Text</Text>
+        <Title>Select Files</Title>
       </Action>
       <Action>
-        <Type>Message</Type>
-        <Text>files:${FilteredList}</Text>
-        <Timeout />
-        <Title />
+        <Type>SelectFiles</Type>
+        <Clear>1</Clear>
+        <Deselect>0</Deselect>
+        <Filter>${Input}</Filter>
+        <Wildcard>1</Wildcard>
+        <WindowFilter />
+        <WindowMatchType>Active</WindowMatchType>
       </Action>
     </Actions>
   </Event>

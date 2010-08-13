@@ -10,6 +10,7 @@ Action_SendKeys_Execute(Action,Event)
 {
 	keys := Event.ExpandPlaceholders(Action.Keys)
 	Send %keys%
+	return 1
 } 
 Action_SendKeys_DisplayString(Action)
 {

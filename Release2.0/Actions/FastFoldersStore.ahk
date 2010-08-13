@@ -19,6 +19,7 @@ Action_FastFoldersStore_Execute(Action, Event)
 		UpdateStoredFolder(FF%Slot%,FFTitle%Slot%, Folder)
 		return 1
 	}
+	return 1
 } 
 
 Action_FastFoldersStore_DisplayString(Action)

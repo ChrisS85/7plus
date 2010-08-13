@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Events>
   <Event>
-    <ID>23</ID>
-    <Name>Explorer: Double click go upwards</Name>
+    <ID>5</ID>
+    <Name>Clipboard Manager</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
     <OneInstance>0</OneInstance>
     <Trigger>
-      <Type>ExplorerDoubleClickSpace</Type>
+      <Type>Hotkey</Type>
+      <Key>#V</Key>
     </Trigger>
     <Conditions />
     <Actions>
       <Action>
-        <Type>SetDirectory</Type>
-        <Path>Upward</Path>
-        <WindowFilter />
-        <WindowMatchType>Active</WindowMatchType>
+        <Type>Clipmenu</Type>
       </Action>
     </Actions>
   </Event>

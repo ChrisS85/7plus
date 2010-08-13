@@ -57,6 +57,7 @@ Action_WindowResize_Execute(Action,Event)
 		curY -= (HeightValue - curH) / 2
 		
 	WinMove,ahk_id %hwnd%,,%curX%,%curY%,%WidthValue%,%HeightValue%
+	return 1
 }
 Action_WindowResize_DisplayString(Action)
 {

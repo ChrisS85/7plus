@@ -60,8 +60,8 @@ Gui +LastFound
 hAHK := WinExist()
 outputdebug hahk %hahk%
 DllCall( "RegisterShellHookWindow", UInt,hAHK ) 
-MsgNum := DllCall( "RegisterWindowMessage", Str,"SHELLHOOK" ) 
-OnMessage( MsgNum, "ShellMessage" ) 
+ShellHookMsgNum := DllCall( "RegisterWindowMessage", Str,"SHELLHOOK" ) 
+OnMessage( ShellHookMsgNum, "ShellMessage" ) 
 ;Tooltip messages
 OnMessage(0x202,"WM_LBUTTONUP") ;Will make ToolTip Click possible 
 OnMessage(0x4e,"WM_NOTIFY") ;Will make LinkClick and ToolTipClose possible

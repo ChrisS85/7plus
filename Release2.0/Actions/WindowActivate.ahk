@@ -12,6 +12,7 @@ Action_WindowActivate_Execute(Action)
 	hwnd := WindowFilter_Get(Action)
 	if(hwnd != 0)
 		WinActivate ahk_id %hwnd%
+	return 1
 }
 Action_WindowActivate_DisplayString(Action)
 {

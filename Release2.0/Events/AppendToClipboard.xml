@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Events>
   <Event>
-    <ID>11</ID>
-    <Name>Append file(s) to clipboard</Name>
+    <ID>13</ID>
+    <Name>Explorer: Append file(s) to clipboard</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -36,8 +36,8 @@
     </Actions>
   </Event>
   <Event>
-    <ID>12</ID>
-    <Name>Append file(s) to clipboard, Cut</Name>
+    <ID>14</ID>
+    <Name>Explorer: Append file(s) to clipboard: Cut</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>

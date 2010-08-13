@@ -16,6 +16,7 @@ Action_PlaySound_Execute(Action, Event)
 {
 	file := UnQuote(Action.File)
 	SoundPlay, % file
+	return 1
 }
 Action_PlaySound_GuiShow(Action, ActionGUI, GoToLabel = "")
 {	

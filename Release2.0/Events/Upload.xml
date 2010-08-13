@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Events>
   <Event>
-    <ID>0</ID>
-    <Name>Upload window screenshot</Name>
+    <ID>44</ID>
+    <Name>Explorer / FTP: Upload window screenshot</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -50,8 +50,8 @@
     </Actions>
   </Event>
   <Event>
-    <ID>1</ID>
-    <Name>Upload screenshot</Name>
+    <ID>45</ID>
+    <Name>Explorer / FTP: Upload screenshot</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -99,8 +99,8 @@
     </Actions>
   </Event>
   <Event>
-    <ID>2</ID>
-    <Name>Upload selected files</Name>
+    <ID>46</ID>
+    <Name>Explorer / FTP: Upload selected files</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>

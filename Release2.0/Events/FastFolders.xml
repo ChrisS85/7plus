@@ -2,7 +2,7 @@
 <Events>
   <Event>
     <ID>25</ID>
-    <Name>Open FastFolder Slot 0</Name>
+    <Name>Explorer: Open Fast Folders Slot 0</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -33,7 +33,7 @@
   </Event>
   <Event>
     <ID>26</ID>
-    <Name>Open FastFolder Slot 1</Name>
+    <Name>Explorer: Open Fast Folders Slot 1</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -64,7 +64,7 @@
   </Event>
   <Event>
     <ID>27</ID>
-    <Name>Open FastFolder Slot 2</Name>
+    <Name>Explorer: Open Fast Folders Slot 2</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -95,7 +95,7 @@
   </Event>
   <Event>
     <ID>28</ID>
-    <Name>Open FastFolder Slot 3</Name>
+    <Name>Explorer: Open Fast Folders Slot 3</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -126,7 +126,7 @@
   </Event>
   <Event>
     <ID>29</ID>
-    <Name>Open FastFolder Slot 4</Name>
+    <Name>Explorer: Open Fast Folders Slot 4</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -157,7 +157,7 @@
   </Event>
   <Event>
     <ID>30</ID>
-    <Name>Open FastFolder Slot 5</Name>
+    <Name>Explorer: Open Fast Folders Slot 5</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -188,7 +188,7 @@
   </Event>
   <Event>
     <ID>31</ID>
-    <Name>Open FastFolder Slot 6</Name>
+    <Name>Explorer: Open Fast Folders Slot 6</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -219,7 +219,7 @@
   </Event>
   <Event>
     <ID>32</ID>
-    <Name>Open FastFolder Slot 7</Name>
+    <Name>Explorer: Open Fast Folders Slot 7</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -250,7 +250,7 @@
   </Event>
   <Event>
     <ID>33</ID>
-    <Name>Open FastFolder Slot 8</Name>
+    <Name>Explorer: Open Fast Folders Slot 8</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -281,7 +281,7 @@
   </Event>
   <Event>
     <ID>34</ID>
-    <Name>Open FastFolder Slot 9</Name>
+    <Name>Explorer: Open Fast Folders Slot 9</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -312,7 +312,7 @@
   </Event>
   <Event>
     <ID>35</ID>
-    <Name>Save FastFolder Slot 0</Name>
+    <Name>Explorer: Save Fast Folders Slot 0</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -344,7 +344,7 @@
   </Event>
   <Event>
     <ID>36</ID>
-    <Name>Save FastFolder Slot 1</Name>
+    <Name>Explorer: Save Fast Folders Slot 1</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -376,7 +376,7 @@
   </Event>
   <Event>
     <ID>37</ID>
-    <Name>Save FastFolder Slot 2</Name>
+    <Name>Explorer: Save Fast Folders Slot 2</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -408,7 +408,7 @@
   </Event>
   <Event>
     <ID>38</ID>
-    <Name>Save FastFolder Slot 3</Name>
+    <Name>Explorer: Save Fast Folders Slot 3</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -440,7 +440,7 @@
   </Event>
   <Event>
     <ID>39</ID>
-    <Name>Save FastFolder Slot 4</Name>
+    <Name>Explorer: Save Fast Folders Slot 4</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -472,7 +472,7 @@
   </Event>
   <Event>
     <ID>40</ID>
-    <Name>Save FastFolder Slot 5</Name>
+    <Name>Explorer: Save Fast Folders Slot 5</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -504,7 +504,7 @@
   </Event>
   <Event>
     <ID>41</ID>
-    <Name>Save FastFolder Slot 6</Name>
+    <Name>Explorer: Save Fast Folders Slot 6</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -536,7 +536,7 @@
   </Event>
   <Event>
     <ID>42</ID>
-    <Name>Save FastFolder Slot 7</Name>
+    <Name>Explorer: Save Fast Folders Slot 7</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -568,7 +568,7 @@
   </Event>
   <Event>
     <ID>43</ID>
-    <Name>Save FastFolder Slot 8</Name>
+    <Name>Explorer: Save Fast Folders Slot 8</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -600,7 +600,7 @@
   </Event>
   <Event>
     <ID>44</ID>
-    <Name>Save FastFolder Slot 9</Name>
+    <Name>Explorer: Save Fast Folders Slot 9</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>

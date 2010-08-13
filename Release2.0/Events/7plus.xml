@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Events>
+  <Event>
+    <ID>6</ID>
+    <Name>7plus: Show settings window</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>0</OneInstance>
+    <Trigger>
+      <Type>Hotkey</Type>
+      <Key>#H</Key>
+    </Trigger>
+    <Conditions />
+    <Actions>
+      <Action>
+        <Type>ShowSettings</Type>
+      </Action>
+    </Actions>
+  </Event>
+  <Event>
+    <ID>7</ID>
+    <Name>7plus: Restart 7plus</Name>
+    <Enabled>1</Enabled>
+    <DisableAfterUse>0</DisableAfterUse>
+    <DeleteAfterUse>0</DeleteAfterUse>
+    <OneInstance>0</OneInstance>
+    <Trigger>
+      <Type>Hotkey</Type>
+      <Key>#Q</Key>
+    </Trigger>
+    <Conditions />
+    <Actions>
+      <Action>
+        <Type>Restart7plus</Type>
+      </Action>
+    </Actions>
+  </Event>
+</Events>

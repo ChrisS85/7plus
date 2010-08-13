@@ -33,6 +33,7 @@ Action_Run_Execute(Action, Event)
 		if(ErrorLevel)
 			return -1
 	}
+	return 1
 }
 Action_Run_DisplayString(Action)
 {

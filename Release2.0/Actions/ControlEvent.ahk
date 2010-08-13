@@ -16,7 +16,10 @@ Action_ControlEvent_Execute(Action, Event)
 	if(Action.Action = "Enable Event")
 		Events[Events.FindID(Action.EventID)].Enable()
 	else if(Action.Action = "Disable Event")
+	{
+		outputdebug % "disable " Events[Events.FindID(Action.EventID)].ID
 		Events[Events.FindID(Action.EventID)].Disable()
+	}
 	else if(Action.Action = "Toggle Enable/Disable")
 		if(Events[Events.FindID(Action.EventID)].Enabled)
 			Events[Events.FindID(Action.EventID)].Disable()

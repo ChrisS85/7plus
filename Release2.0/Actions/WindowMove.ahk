@@ -38,6 +38,7 @@ Action_WindowMove_Execute(Action,Event)
 	if(Action.CenterY)
 		YValue -= curH / 2
 	WinMove,ahk_id %hwnd%,,%XValue%,%YValue%
+	return 1
 }
 Action_WindowMove_DisplayString(Action)
 {

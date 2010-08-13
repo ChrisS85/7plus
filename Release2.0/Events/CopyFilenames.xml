@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Events>
   <Event>
-    <ID>4</ID>
-    <Name>Copy filenames to clipboard</Name>
+    <ID>17</ID>
+    <Name>Explorer: Copy filenames to clipboard</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -32,8 +32,8 @@
     </Actions>
   </Event>
   <Event>
-    <ID>5</ID>
-    <Name>Copy full filepaths to clipboard</Name>
+    <ID>18</ID>
+    <Name>Explorer: Copy full filepaths to clipboard</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -63,8 +63,8 @@
     </Actions>
   </Event>
   <Event>
-    <ID>6</ID>
-    <Name>Append filenames to clipboard</Name>
+    <ID>19</ID>
+    <Name>Explorer: Append filenames to clipboard</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -94,8 +94,8 @@
     </Actions>
   </Event>
   <Event>
-    <ID>7</ID>
-    <Name>Copy full filepaths</Name>
+    <ID>20</ID>
+    <Name>Explorer: Append full filepaths to clipboard</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>

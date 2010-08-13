@@ -2,12 +2,12 @@
 WindowFilter_Init(WindowFilter)
 {
 	WindowFilter.WindowMatchType := "Program"
-	WindowFilter.Filter := ""
+	WindowFilter.WindowFilter := ""
 }
 WindowFilter_ReadXML(WindowFilterObject, WindowFilterFileHandle)
 {
 	WindowFilterObject.WindowMatchType := xpath(WindowFilterFileHandle, "/WindowMatchType/Text()")
-	WindowFilterObject.Filter := xpath(WindowFilterFileHandle, "/Filter/Text()")
+	WindowFilterObject.WindowFilter := xpath(WindowFilterFileHandle, "/WindowFilter/Text()")
 }
 ;Get a matching window handle from a WindowFilter object
 WindowFilter_Get(WindowFilter)
@@ -47,7 +47,7 @@ WindowFilter_Get(WindowFilter)
 			DllCall("CloseHandle", "UInt", h)  ; close process handle to save memory
 			if (n && e)  ; if image is not null add to list:
 			{
-				if(n = WindowFilter.Filter && hwnd:=WinExist("ahk_pid " id))
+				if(n = WindowFilter.WindowFilter && hwnd:=WinExist("ahk_pid " id))
 					return hwnd
 			}
 		}
@@ -55,9 +55,9 @@ WindowFilter_Get(WindowFilter)
 		return 0
 	}
 	else if(WindowFilter.WindowMatchType = "class")
-		return WinExist("ahk_class " WindowFilter.Filter)
+		return WinExist("ahk_class " WindowFilter.WindowFilter)
 	else if(WindowFilter.WindowMatchType = "title")
-		return WinExist(Window.Filter)
+		return WinExist(Window.WindowFilter)
 	else if(WindowFilter.WindowMatchType = "Active")
 		return WinExist("A")
 	else if(WindowFilter.WindowMatchType = "UnderMouse")
@@ -79,17 +79,17 @@ WindowFilter_Matches(WindowFilter, TargetWindow, TriggerFilter = "")
 			MouseGetPos,,,TargetWindow
 		if(WindowFilter.WindowMatchType = "Program")
 		{
-			if(GetProcessName(TargetWindow) = WindowFilter.Filter)
+			if(GetProcessName(TargetWindow) = WindowFilter.WindowFilter)
 				return true
 		}
 		else if(WindowFilter.WindowMatchType = "Class")
 		{
-			if(WinGetClass("ahk_id " TargetWindow) = WindowFilter.Filter)
+			if(WinGetClass("ahk_id " TargetWindow) = WindowFilter.WindowFilter)
 				return true
 		}
 		else if(WindowFilter.WindowMatchType = "Title")
 		{
-			if(strStartsWith(WinGetTitle("ahk_id " TargetWindow),WindowFilter.Filter))
+			if(strStartsWith(WinGetTitle("ahk_id " TargetWindow),WindowFilter.WindowFilter))
 				return true			
 		}
 		else if(WindowFilter.WindowMatchType = "Active")
@@ -109,32 +109,32 @@ WindowFilter_Matches(WindowFilter, TargetWindow, TriggerFilter = "")
 
 WindowFilter_DisplayString(WindowFilter)
 {
-	return WindowFilter.WindowMatchType " " WindowFilter.Filter
+	return WindowFilter.WindowMatchType " " WindowFilter.WindowFilter
 }
 
 
 WindowFilter_GuiShow(WindowFilter, TriggerGUI)
 {
 	SubEventGUI_Add(WindowFilter, TriggerGUI, "DropDownList", "WindowMatchType", "Program|Class|Title|Active|UnderMouse", "", "Match Type:")
-	SubEventGUI_Add(WindowFilter, TriggerGUI, "Edit", "Filter", "", "", "Window Filter:")
+	SubEventGUI_Add(WindowFilter, TriggerGUI, "Edit", "WindowFilter", "", "", "Window Filter:")
 }
 
 ;Window filter uses own GUISubmit function, so it can be executed without storing its ancestor's values
 WindowFilter_GuiSubmit(WindowFilter, TriggerGUI)
 {
 	Desc_WindowMatchType := TriggerGUI.Desc_WindowMatchType
-	Desc_Filter := TriggerGUI.Desc_Filter
+	Desc_WindowFilter := TriggerGUI.Desc_WindowFilter
 	DropDown_WindowMatchType := TriggerGUI.DropDown_WindowMatchType
-	Edit_Filter := TriggerGUI.Edit_Filter
+	Edit_WindowFilter := TriggerGUI.Edit_WindowFilter
 	
 	ControlGetText, MatchType, , ahk_id %DropDown_WindowMatchType%
 	WindowFilter.WindowMatchType := MatchType
 	
-	ControlGetText, Filter, , ahk_id %Edit_Filter%
-	WindowFilter.Filter := Filter
+	ControlGetText, Filter, , ahk_id %Edit_WindowFilter%
+	WindowFilter.WindowFilter := Filter
 	
 	WinKill, ahk_id %Desc_WindowMatchType%
-	WinKill, ahk_id %Desc_Filter%
+	WinKill, ahk_id %Desc_WindowFilter%
 	WinKill, ahk_id %DropDown_WindowMatchType%
-	WinKill, ahk_id %Edit_Filter%
+	WinKill, ahk_id %Edit_WindowFilter%
 }

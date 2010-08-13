@@ -632,6 +632,7 @@ ToArray(SourceFiles, ByRef Separator = "", ByRef wasQuoted = 0)
 {
 	files := Array()
 	pos := 1
+	wasQuoted := 0
 	Loop
 	{
 		if(pos > strlen(SourceFiles))
@@ -657,7 +658,7 @@ ToArray(SourceFiles, ByRef Separator = "", ByRef wasQuoted = 0)
 		}
 		else
 		{
-			file := SubStr(SourceFiles, pos, max(InStr(SourceFiles, Separator, 0, pos + 1) - pos, 0)) ;| separator
+			file := SubStr(SourceFiles, pos, max(InStr(SourceFiles, Separator, 0, pos + 1) - pos - 1, 0)) ; separator
 			if(!file)
 				file := SubStr(SourceFiles, pos) ;no quotes or separators, single file
 			if(file)

@@ -3,8 +3,9 @@ Trigger_Hotkey_Init(Trigger)
 	Trigger.Category := "Hotkeys"
 	;SetTimer, RefreshHotkeyState, 200 ;Should be quick enough I suppose
 }
-#if true || IsObject(Trigger := HotkeyShouldFire(A_ThisHotkey))
+#if IsObject(Trigger := HotkeyShouldFire(A_ThisHotkey))
 HotkeyTrigger:
+outputdebug execute
 if(!IsObject(Trigger := HotkeyShouldFire(A_ThisHotkey)))
 	return
 outputdebug, % "key: " A_ThisHotkey ", Event key: " Trigger.key
@@ -25,6 +26,7 @@ HotkeyShouldFire(key)
 	global Events, EventSchedule
 	outputdebug HotkeyShouldFire(%key%)
 	key := StringReplace(key,"$")
+	key := StringReplace(key,"~")
 	len := Events.len()
 	Loop % len
 	{
@@ -32,10 +34,9 @@ HotkeyShouldFire(key)
 		if(!enable := Event.Enabled)
 			continue
 		
-		;outputdebug, % Event.Trigger.Type ", " Event.Trigger.key ", " Event.Trigger.key
-		if(Event.Trigger.Type != "Hotkey" || Event.Trigger.Key != key)
+		outputdebug, % Event.Trigger.Type ", " key ", " StringReplace(Event.Trigger.key, "~")
+		if(Event.Trigger.Type != "Hotkey" || StringReplace(Event.Trigger.Key, "~") != key)
 			continue
-		outputdebug, % key
 		ConditionPos := 1
 		count := Event.Conditions.len()
 		Loop % count
@@ -72,10 +73,12 @@ HotkeyShouldFire(key)
 		}
 		if(enable)
 		{
+			outputdebug should trigger
 			return Event.Trigger
 		}
 	}
-	return
+	outputdebug should not
+	return 0
 }
 Trigger_Hotkey_ReadXML(Trigger, TriggerFileHandle)
 {
@@ -86,7 +89,7 @@ Trigger_Hotkey_Enable(Trigger)
 {
 	key := Trigger.Key
 	key := "$" key ;Add $ so key can not be triggered through script to prevent loops
-	Hotkey, If, Trigger := HotkeyShouldFire(A_ThisHotkey)
+	Hotkey, If, IsObject(Trigger := HotkeyShouldFire(A_ThisHotkey))
 	Hotkey, %key%, HotkeyTrigger, On
 	Hotkey, If
 }
@@ -94,7 +97,7 @@ Trigger_Hotkey_Disable(Trigger)
 {
 	key := Trigger.Key
 	key := "$" key ;Add $ so key can not be triggered through script to prevent loops
-	Hotkey, If, Trigger := HotkeyShouldFire(A_ThisHotkey)
+	Hotkey, If, IsObject(Trigger := HotkeyShouldFire(A_ThisHotkey))
 	Hotkey, %key%, Off
 	Hotkey, If
 }
@@ -105,7 +108,7 @@ Trigger_Hotkey_Delete(Trigger)
 
 Trigger_Hotkey_Matches(Trigger, Filter)
 {
-	return Trigger.Key = Filter.Key
+	return StringReplace(Trigger.Key, "~") = StringReplace(Filter.Key, "~")
 }
 
 Trigger_Hotkey_DisplayString(Trigger)

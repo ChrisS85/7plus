@@ -12,6 +12,7 @@ Action_MinimizeToTray_Execute(Action)
 	hwnd := WindowFilter_Get(Action)
 	if(hwnd != 0)
 		WinTraymin(hwnd)
+	return 1
 }
 Action_MinimizeToTray_DisplayString(Action)
 {

@@ -14,6 +14,7 @@ Action_SetWindowTitle_Execute(Action,Event)
 	hwnd := WindowFilter_Get(Action)
 	Title := Event.ExpandPlaceholders(Action.Title)
 	SendMessage, 0xC, 0, "" Title "", , ahk_id %hwnd%
+	return 1
 }
 Action_SetWindowTitle_DisplayString(Action)
 {

@@ -9,6 +9,7 @@ HoverCheck()
 {
 	global HKSlideWindows,Vista7,MouseX,MouseY,AeroFlipTime
 	static lastx,lasty
+	CoordMode, Mouse, Screen
 	MouseGetPos, MouseX,MouseY,win,control
 	WinGetClass, class, ahk_id %win%
 	x:=IsFullscreen("A",false,false)
@@ -246,16 +247,16 @@ MouseMax()
 ;Alt+F5: Kill active window
 #if HKKillWindows
 !F5::
-	CloseKill()
+	CloseKill(WinExist("A"))
 	return
 #if
 
 ;Force kill program on Alt+F5 and on right click close button
-CloseKill()
+CloseKill(hwnd)
 {
-	WinGet, pid, pid, A
-	WinKill A, , 1
-	WinGet, pid1 , pid, A
+	WinGet, pid, pid, ahk_id %hwnd%
+	WinKill ahk_id %hwnd%, , 1
+	WinGet, pid1 , pid, ahk_id %hwnd%
 	if(pid=pid1)
 		Process close, %pid1%
 }
@@ -418,7 +419,10 @@ If (z=2)
 	}
 }
 else if(z=20)
-	CloseKill()  	
+{
+	MouseGetPos, , , z
+	CloseKill(z)  	
+}
 else if(z=8)
 {
 	MouseGetPos, , , z

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Events>
   <Event>
-    <ID>10</ID>
-    <Name>Make backspace go upwards</Name>
+    <ID>15</ID>
+    <Name>Explorer: Make backspace go upwards</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -28,6 +28,7 @@
       <Action>
         <Type>SetDirectory</Type>
         <Path>Upward</Path>
+        <WindowFilter />
         <WindowMatchType>Active</WindowMatchType>
       </Action>
     </Actions>

@@ -81,9 +81,9 @@ EventSystem_CreateBaseObjects()
 {
 	global
 	local tmpobject
-	EventSystem_Triggers := "DoubleClickDesktop,DoubleClickTaskbar,ExplorerDoubleClickSpace,ExplorerPathChanged,Hotkey,Timer,Trigger,WindowActivated, WindowClosed, WindowCreated,WindowStateChange,7plusStart"
-	EventSystem_Conditions := "MouseOver,If,IsFullScreen,KeyIsDown,IsRenaming,WindowActive,WindowExists"
-	EventSystem_Actions := "AutoUpdate,Clipboard,Clipmenu,ControlEvent,ControlTimer,Copy,Delete,Exit7plus,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FilterList,FlashingWindows,FocusControl,SetWindowTitle, Input,Message,MinimizeToTray,Move,NewFile,NewFolder,PlaySound,Restart7plus,Run,Screenshot,SendKeys,SendMessage,SetDirectory,ShowSettings,Shutdown,Tooltip,Upload,Volume,WindowActivate,WindowClose,WindowHide,WindowMove,WindowResize,WindowShow,WindowState,Write"
+	EventSystem_Triggers := "DoubleClickDesktop,DoubleClickTaskbar,ExplorerDoubleClickSpace,ExplorerPathChanged,Hotkey,None,OnMessage,Timer,Trigger,WindowActivated, WindowClosed, WindowCreated,WindowStateChange,7plusStart"
+	EventSystem_Conditions := "MouseOver,If,IsFullScreen,KeyIsDown, IsContextMenuActive, IsRenaming,WindowActive,WindowExists"
+	EventSystem_Actions := "AutoUpdate,Clipboard,Clipmenu,ControlEvent,ControlTimer,Copy,Delete,Exit7plus,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FilterList,FlashingWindows,FocusControl,SetWindowTitle, Input,Message,MinimizeToTray,Move,MouseClick,NewFile,NewFolder,PlaySound,Restart7plus,Run,Screenshot,SelectFiles,SendKeys,SendMessage,SetDirectory,ShowSettings,Shutdown,Tooltip,Upload,Volume,WindowActivate,WindowClose,WindowHide,WindowMove,WindowResize,WindowShow,WindowState,Write"
 	Trigger_Categories := object("Explorer", Array(), "Hotkeys", Array(), "Other", Array(), "System", Array(), "Window", Array(), "7plus", Array())
 	Condition_Categories := object("Explorer", Array(), "Mouse", Array(), "Other", Array(), "Window", Array())
 	Action_Categories := object("Explorer", Array(), "FastFolders", Array(), "File", Array(), "Window", Array(), "Input", Array(), "System", Array(), "7plus", Array(), "Other", Array())
@@ -346,26 +346,30 @@ ReadEventsFile(Events, path)
 		while enum[k,v]
 		{
 			if(strEndsWith(k, "ID"))
-				Event.Trigger[k] += offset
+				Event.Trigger[k] := Event.Trigger[k] + offset
 		}
 		Loop % Event.Conditions.len()
 		{
 			enum := Event.Conditions[A_Index]._newEnum()
-			c := A_Index
+			Condition := Event.Conditions[A_Index]
 			while enum[k,v]
 			{
 				if(strEndsWith(k, "ID"))
-					Event.Conditions[c][k] += offset
+					Condition[k] := Condition[k] + offset
 			}
 		}
 		Loop % Event.Actions.len()
 		{
 			enum := Event.Actions[A_Index]._newEnum()
-			a := A_Index
+			Action := Event.Actions[A_Index]
 			while enum[k,v]
 			{
 				if(strEndsWith(k, "ID"))
-					Event.Actions[a][k] += offset
+				{
+					outputdebug % "fix " k " from " Action[k] " to "
+					Action[k] := Action[k] + offset
+					outputdebug % Action[k]
+				}
 			}
 		}
 		pos++
@@ -477,6 +481,7 @@ OnTrigger(Trigger)
 	Loop % Events.len()
 	{
 		Event := Events[A_Index]
+		;Order of this if condition is important here, because Event.Trigger.Matches() can disable the event for timers
 		if(Event.Enabled && (Event.Trigger.Type = Trigger.Type && Event.Trigger.Matches(Trigger, Event)) || (Trigger.Type = "Trigger" && Event.ID = Trigger.TargetID))
 		{
 			running := false
@@ -491,6 +496,8 @@ OnTrigger(Trigger)
 					}
 				}
 			}
+			outputdebug % "schedule event: " Event.Name
+			
 			if(!running)
 				EventSchedule.append(Event.DeepCopy())
 		}
@@ -508,8 +515,9 @@ EventScheduler()
 		Loop % EventSchedule.len()
 		{			
 			Event := EventSchedule[EventPos]
+			outputdebug % "process event " Event.Name
 			;Check conditions
-			Success := 1 ;Always enabled here, as enabled state is checked on triggering already
+			Success := Events[Events.FindID(Event.ID)].Enabled || Event.Trigger.Type = "Timer" ;Check enabled state again here, because it might have changed since it was appended to queue
 			ConditionPos := 1
 			if(Success)
 			{
@@ -538,6 +546,8 @@ EventScheduler()
 					ConditionPos++
 				}
 			}
+			else
+				outputdebug % "disable " Event.ID " in queue"
 			if(Success = 0) ;Condition was not fulfilled, remove this event
 			{
 				EventSchedule.Delete(EventPos)
@@ -545,8 +555,16 @@ EventScheduler()
 			}
 			else if(Success = 1) ;if conditions are fulfilled, execute all actions
 			{
+				outputdebug conditions fulfilled
 				Loop % Event.Actions.len()
 				{
+					if(!Events[Events.FindID(Event.ID)].Enabled && Event.Trigger.Type != "Timer") ;Check enabled state again here, because it might have changed since in one of the previous actions during waiting
+					{
+						outputdebug % "disable " Event.ID " during execution"
+						Event.Actions := Array()
+						break
+					}
+					outputdebug % "perform " Event.Actions[1].DisplayString()
 					result := Event.Actions[1].Execute(Event)
 					if(result = 0) ;Action was cancelled, stop all further actions
 					{

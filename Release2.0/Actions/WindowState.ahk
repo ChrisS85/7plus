@@ -54,11 +54,12 @@ Action_WindowState_Execute(Action,Event)
 	else if(Action.Action = "Minimize->Normal->Maximize" && state = 0)
 		WinMaximize, ahk_id %hwnd%
 	else if(Action.Action = "Set always on top")
-		WinSet, AlwaysOnTop, On
+		WinSet, AlwaysOnTop, On, ahk_id %hwnd%
 	else if(Action.Action = "Disable always on top")
-		WinSet, AlwaysOnTop, Off
+		WinSet, AlwaysOnTop, Off, ahk_id %hwnd%
 	else if(Action.Action = "Toggle always on top")
-		WinSet, AlwaysOnTop, Toggle
+		WinSet, AlwaysOnTop, Toggle, ahk_id %hwnd%
+	return 1
 }
 Action_WindowState_DisplayString(Action)
 {

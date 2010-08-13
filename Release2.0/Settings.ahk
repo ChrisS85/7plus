@@ -14,7 +14,7 @@ Settings_CreateEvents() {
 	yIt+=54
 	Gui, 1:Add, Text, x%x1% y%yIt%, Event filter:
 	yIt-=4
-	Gui, 1:Add, Edit, x+10 y%yIt% w338 hwndEventFilter gEventFilterChange R1 
+	Gui, 1:Add, ComboBox, x+10 y%yIt% w338 hwndEventFilter gEventFilterChange, Explorer|Window Handling|Fast Folders|FTP|Desktop / Taskbar
 	yIt += textboxstep
 	Gui, 1:Add, ListView, x%x1% y%yIt% w400 h232 vGUI_EventsList gGUI_EventsList_SelectionChange Grid -LV0x10 AltSubmit Checked, Enabled|ID|Trigger|Name
 	OnMessage(0x100, "WM_KEYDOWN")
@@ -69,13 +69,13 @@ Settings_CreateHotkeys() {
 	yIt+=textboxstep
 	
 	x2:=x2-60
+	/*
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghCreateNew vURL_CreateNew, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKCreateNewFile, F7: Create new file
 	yIt+=checkboxstep
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghCreateNew vURL_CreateNew1, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKCreateNewFolder, F8: Create new folder
 	yIt+=checkboxstep	
-	
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghCopyFilenames vURL_CopyFilenames, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKCopyFilenames, ALT + C: Copy Filenames	
 	yIt+=checkboxstep	
@@ -88,15 +88,19 @@ Settings_CreateHotkeys() {
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKProperBackspace, Backspace (Vista/7): Go upwards
 	x:=x2+80
 	yIt+=checkboxstep	
+	
+	*/
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghNavigation vURL_Navigation1, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKMouseGestures, Hold right mouse and click left: Go back, Hold left mouse and click right: Go forward
 	yIt+=checkboxstep	
+	/*
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghNavigation vURL_Navigation2, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKDoubleClickUpwards, Double click on empty space in filelist: Go upwards
 	yIt+=checkboxstep	
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghAppendClipboard vURL_AppendClipboard, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKAppendClipboard, Shift + X / Shift + C: Append files to clipboard instead of replacing (cut/copy)
 	yIt+=checkboxstep	
+	*/
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghExplorer1dot1 vURL_Explorer1dot1, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKInvertSelection, CTRL + I: Invert selection
 
@@ -245,7 +249,7 @@ Settings_CreateWindowHandling() {
 	Gui, 1:Add, Tab2, x156 y14 w410 h350 vWindowHandlingTab, 
 	AddTab(0, "","SysTabControl326")
 	yIt:=yBase
-
+	/*
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar3, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKTitleClose, Middle click on title bar: Close program
 	yIt+=checkboxstep	
@@ -257,6 +261,7 @@ Settings_CreateWindowHandling() {
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window1, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKKillWindows, Alt+F5/Right click on close button: Force-close active window (kill process)
 	yIt+=checkboxstep		
+	*/
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghSlideWindow vURL_SlideWindow, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKSlideWindows gSlideWindow, WIN + SHIFT + Arrow keys: Slide Window function
 	yIt+=checkboxstep	
@@ -266,6 +271,7 @@ Settings_CreateWindowHandling() {
 	yIt+=checkboxstep*2.5
 	Gui, 1:Add, Checkbox, x%x% y%yIt% vSlideWinHide, Hide Slide Windows in taskbar and from ALT + TAB
 	yIt+=checkboxstep
+	/*
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghCapslock vURL_Capslock, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKFlashWindow, Capslock: Activate flashing window (blinking on taskbar, e.g. instant messengers, ...)
 	yIt+=checkboxstep
@@ -282,8 +288,9 @@ Settings_CreateWindowHandling() {
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKTrayMin, Right click minimize button or WIN + SHIFT + Arrow key in taskbar direction: Minimize to tray
 	yIt+=checkboxstep
 	y:=yIt+TextBoxCheckBoxOffset
-	Gui, 1:Add, Text, y%y% x%xhelp% cBlue ghWindow vURL_Window3, ?
-	Gui, 1:Add, Checkbox, x%x1% y%y% gFlip3D, Mouse in upper left corner: Toggle Aero Flip 3D (Vista/7 only)
+	*/
+	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window3, ?
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% gFlip3D, Mouse in upper left corner: Toggle Aero Flip 3D (Vista/7 only)
 	x:=xBase+362
 	y:=yIt+TextBoxTextOffset
 	Gui, 1:Add, Text, x%x% y%y%, Seconds in corner:
@@ -337,6 +344,7 @@ Settings_CreateDesktopTaskBar() {
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKToggleWallpaper, Middle mouse click on desktop: Toggle wallpaper (7 only)
 	yIt+=checkboxstep
 }
+/*
 Settings_CreateCustomHotkeys() {
 	global
 	local yIt,x1,x2,x,y
@@ -376,6 +384,8 @@ Settings_CreateCustomHotkeys() {
 	yIt += textboxstep
 	;Gui, 1:Add, Text, x%x1% y%yIt%, You can use placeholders to create context-sensitive hotkeys. Supported placeholders:`n${P}: Current path in explorer`n${1}...${N}: Selected file(s)`nExample usages are hotkeys to open files with specific programs (diff tools, editors,...)
 }
+*/
+/*
 Settings_CreateFTP() {
 	global
 	local yIt,x1,x,y
@@ -423,25 +433,30 @@ Settings_CreateFTP() {
 	Gui, 1:Add, Text, x%x1% y%y%, URL
 	Gui, 1:Add, Edit, x%x2% y%yIt% w%wTBMedium% R1 vFTP_URL
 }
+*/
 Settings_CreateMisc() {
 	global
 	local yIt,x1
 	Gui, 1:Add, Tab2, x156 y14 w410 h350 vMiscTab, 
-	AddTab(0, "","SysTabControl3210")
+	AddTab(0, "","SysTabControl328")
 	x1:=xBase+10
 	xhelp:=xBase
 	yIt:=yBase
+	/*
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghImproveConsole vURL_ImproveConsole, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKImproveConsole, Open current folder in CMD by pressing WIN + C and enable CTRL + V and Alt + F4 in CMD
 	yIt+=checkboxstep
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKPhotoViewer, Windows picture viewer: Rotate image with R and L
 	yIt+=checkboxstep
+	*/
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghJoyControl vURL_JoyControl, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vJoyControl, Use joystick/gamepad as remote control when not in fullscreen (optimized for XBOX360 gamepad)
 	yIt+=checkboxstep
+	/*
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghClipboardManager vURL_ClipboardManager, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vClipboardManager, WIN + V: Clipboard manager (stores last 10 entries)	
 	yIt+=checkboxstep
+	*/
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWordDelete vURL_WordDelete, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vWordDelete, Make CTRL+Backspace and CTRL+Delete work in all textboxes
 	
@@ -475,7 +490,7 @@ Settings_CreateAbout() {
 	global
 	local yIt,x1,x2,x,y,version
 	Gui, 1:Add, Tab2, x156 y14 w410 h350 vAboutTab, 
-	AddTab(0, "","SysTabControl3211")
+	AddTab(0, "","SysTabControl329")
 	yIt:=YBase
 	x1:=XBase+10
 	x2:=xBase+350
@@ -555,8 +570,7 @@ Settings_SetupEvents() {
 	GuiControl, 1:enable, GUI_EventsList_Remove
 	GuiControl, 1:enable, GUI_EventsList_Edit
 }
-FillEventsList(SelectedIndex=0)
-{
+FillEventsList(SelectedIndex=0){
 	global EventFilter, Settings_Events
 	LV_Delete()
 	ControlGetText, filter,,ahk_id %EventFilter%
@@ -583,9 +597,9 @@ Settings_SetupHotkeys() {
 	GuiControl, 1:,F3: Open selected files in text/image editor,%temp%
 	GoSub Editor
 	
+	/*
 	if(!Vista7)
 		GuiControl, 1:disable, HKProperBackspace
-		
 	GuiControl, 1:,HKCreateNewFile,%HKCreateNewFile%
 	GuiControl, 1:,HKCreateNewFolder,%HKCreateNewFolder%
 	GuiControl, 1:,HKCopyFilenames,%HKCopyFilenames%
@@ -593,6 +607,7 @@ Settings_SetupHotkeys() {
 	GuiControl, 1:,HKDoubleClickUpwards,%HKDoubleClickUpwards%
 	GuiControl, 1:,HKAppendClipboard,%HKAppendClipboard%
 	GuiControl, 1:,HKProperBackspace,%HKProperBackspace%
+	*/
 	GuiControl, 1:,HKMouseGestures,%HKMouseGestures%
 	GuiControl, 1:,HKInvertSelection,%HKInvertSelection%
 	GuiControl, 1:,HKFlattenDirectory,%HKFlattenDirectory%
@@ -659,16 +674,22 @@ Settings_SetupTabs() {
 }
 Settings_SetupWindowHandling() {
 	global
+	/*
 	GuiControl, 1:,HKTitleClose,%HKTitleClose%
 	GuiControl, 1:,HKToggleAlwaysOnTop,%HKToggleAlwaysOnTop%
 	GuiControl, 1:,HKKillWindows,%HKKillWindows%
+	*/
 	GuiControl, 1:,HKSlideWindows,%HKSlideWindows%
 	GuiControl, 1:,SlideWinHide,%SlideWinHide%	
+	/*
 	GuiControl, 1:,HKFlashWindow,%HKFlashWindow%
 	GuiControl, 1:,HKToggleWindows,%HKToggleWindows%
-	GuiControl, 1:,HKAltDrag,%HKAltDrag%	
+	*/
+	GuiControl, 1:,HKAltDrag,%HKAltDrag%
+	/*
 	GuiControl, 1:,HKAltMinMax,%HKAltMinMax%	
 	GuiControl, 1:,HKTrayMin,%HKTrayMin%	
+	*/
 	GuiControl, 1:, AeroFlipTime, %AeroFlipTime%
 	;Setup Aero Flip 3D
 	temp:=(AeroFlipTime>=0)
@@ -692,14 +713,6 @@ Settings_SetupDesktopTaskBar() {
 		GuiControl, 1:disable, HKActivateBehavior
 		GuiControl, 1:disable, HKToggleWallpaper
 	}
-	/*
-	if(!Vista7)
-	{
-		GuiControl, 1:disable, AeroFlipTime
-		GuiControl, 1:disable, Mouse in upper left corner: Toggle Aero Flip 3D (Vista/7 only)
-		GuiControl, 1:disable, Seconds in corner:
-	}
-	*/
 	GuiControl, 1:,HKTaskbarLaunch,%HKTaskbarLaunch%
 	GuiControl, 1:,HKMiddleClose,%HKMiddleClose%
 	RegRead, HKActivateBehavior, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick
@@ -713,6 +726,7 @@ Settings_SetupDesktopTaskBar() {
 		GuiControl, 1:, DoubleClickDesktopPath,
 	GoSub DoubleClickDesktop
 }
+/*
 Settings_SetupCustomHotkeys() {
 	global
 	local filter
@@ -752,6 +766,8 @@ Settings_SetupCustomHotkeys() {
 	CustomHotkeysGlobal:=1
 	CustomHotkeys_ApplyFilter("")
 }
+*/
+/*
 Settings_SetupFTP() {
 	global
 	;Setup FTP
@@ -764,6 +780,7 @@ Settings_SetupFTP() {
 	GuiControl, 1:,Use FTP,%FTP_Enabled%
 	GoSub FTP
 }
+*/
 Settings_SetupMisc() {
 	global
 	local temp, Autorun
@@ -771,10 +788,12 @@ Settings_SetupMisc() {
 	GuiControl, 1:, ImageExtension, %ImageExtension%
 	GuiControl, 1:, FullscreenInclude, %FullscreenInclude%
 	GuiControl, 1:, FullscreenExclude, %FullscreenExclude%
+	/*
 	GuiControl, 1:,HKImproveConsole,%HKImproveConsole%		
 	GuiControl, 1:,HKPhotoViewer,%HKPhotoViewer%	
+	*/
 	GuiControl, 1:,JoyControl,%JoyControl%
-	GuiControl, 1:,ClipboardManager,%ClipboardManager%
+	;GuiControl, 1:,ClipboardManager,%ClipboardManager%
 	GuiControl, 1:,WordDelete,%WordDelete%
 	GuiControl, 1:,HideTrayIcon,%HideTrayIcon%
 	GuiControl, 1:,AutoUpdate,%AutoUpdate%
@@ -834,7 +853,7 @@ ShowSettings() {
 			wTBHuge:=300
 			wButton:=30
 			hCheckbox:=16 
-			TabList = Events|Explorer Hotkeys|Explorer Behavior|Fast Folders|Explorer Tabs|Window Handling|Desktop / Taskbar|Custom Hotkeys|FTP|Misc|About 
+			TabList = Events|Explorer Hotkeys|Explorer Behavior|Fast Folders|Explorer Tabs|Window Handling|Desktop / Taskbar|Misc|About 
 			Gui, 1:Add, ListBox, x16 y20 w120 h350 gListbox vMyListBox, %TabList%
 			Gui, 1:Add, GroupBox, x156 y14 w530 h350 vGGroupBox , Explorer Hotkeys  
 			/*
@@ -862,8 +881,8 @@ ShowSettings() {
 			Settings_CreateTabs()
 			Settings_CreateWindowHandling()
 			Settings_CreateDesktopTaskBar()
-			Settings_CreateCustomHotkeys()
-			Settings_CreateFTP()
+			;Settings_CreateCustomHotkeys()
+			;Settings_CreateFTP()
 			Settings_CreateMisc()
 			Settings_CreateAbout()			
 			SettingsInitialized := true
@@ -884,8 +903,8 @@ ShowSettings() {
 		Settings_SetupTabs()
 		Settings_SetupWindowHandling()
 		Settings_SetupDesktopTaskBar()
-		Settings_SetupCustomHotkeys()
-		Settings_SetupFTP()
+		;Settings_SetupCustomHotkeys()
+		;Settings_SetupFTP()
 		Settings_SetupMisc()
 		Settings_SetupAbout()
 			
@@ -1286,7 +1305,7 @@ FileSelectFile, path , 3, , Select file to execute, *.exe
 if(path!="")
 	GuiControl, 1:,DoubleClickDesktopPath,%path%
 Return
-
+/*
 AddHotkey:
 Gui, ListView, CustomHotkeysList
 LV_Add("Select","","")
@@ -1349,28 +1368,29 @@ else if(A_GuiEvent="I" && InStr(ErrorLevel, "s", true))
 else if(A_GuiEvent="DoubleClick")
 	GoSub EditHotkey
 Return
-
+*/
 WM_KEYDOWN(wParam, lParam)
 {
-	global EventFilter
-	if(A_GUI = 1 && A_GuiControl = "CustomHotkeysList" && wParam = 0x2E) ;Delete key pressed on CustomHotkeysList
+	global EventFilter, SettingsActive
+	if(A_GUI = 1 && SettingsActive)
 	{
-		Gui, ListView, CustomHotkeysList
-		i:=LV_GetNext("")
-		LV_Delete(i)
-	}
-	
-	if(A_GUI = 1 && A_GuiControl = "GUI_EventsList" && wParam = 0x2E) ;Delete key pressed on CustomHotkeysList
-		GUI_RemoveEvent()
-	else if(A_GUI = 1 && A_GuiControl = "GUI_EventsList")
-	{		
-		send := true
-		if(wParam = 17 || (wParam > 32 && wParam < 41)) ;CTRL, arrow keys, home, end, page up/down
-			send := false
-		if(GetKeyState("Control", "P")) ;Don't send when CTRL is down
-			send := false
-		if(send)
+		/*
+		if(A_GuiControl = "CustomHotkeysList" && wParam = 0x2E) ;Delete key pressed on CustomHotkeysList
 		{
+			Gui, ListView, CustomHotkeysList
+			i:=LV_GetNext("")
+			LV_Delete(i)
+		}
+		*/
+		if(A_GuiControl = "GUI_EventsList" && wParam = 0x2E) ;Delete key pressed on CustomHotkeysList
+			GUI_RemoveEvent()
+		else if(A_GuiControl = "GUI_EventsList")
+		{
+			if(wParam = 17 || (wParam > 32 && wParam < 41)) ;CTRL, arrow keys, home, end, page up/down
+				return false
+			if(GetKeyState("Control", "P")) ;Don't send when CTRL is down
+				return false
+				
 			outputdebug send keydown %wparam% to %EventFilter%
 			PostMessage, 0x100, %wParam%, %lParam%,,ahk_id %EventFilter%
 			return true
@@ -1386,20 +1406,17 @@ WM_KEYUP(wParam, lParam)
 	global EventFilter
 	if(A_GUI = 1 && A_GuiControl = "GUI_EventsList")
 	{
-		send := true
 		if(wParam = 17 || (wParam > 32 && wParam < 41)) ;CTRL, arrow keys, home, end, page up/down
-			send := false
+			return false
 		if(GetKeyState("Control", "P")) ;Don't send when CTRL is down
-			send := false
-		if(send)
-		{
-			outputdebug send keyup %wparam% to %EventFilter%
-			PostMessage, 0x101, %wParam%, %lParam%,,ahk_id %EventFilter%
-			return true
-		}
+			return false
+
+		outputdebug send keyup %wparam% to %EventFilter%
+		PostMessage, 0x101, %wParam%, %lParam%,,ahk_id %EventFilter%
+		return true
 	}
 }
-
+/*
 CustomHotkeysCommand_Change:
 Gui, ListView, CustomHotkeysList
 i:=LV_GetNext("")
@@ -1543,7 +1560,7 @@ GuiControl, 1:enable%enabled%, FTP_Port
 GuiControl, 1:enable%enabled%, FTP_Path
 GuiControl, 1:enable%enabled%, FTP_URL
 Return
-
+*/
 ;---------------------------------------------------------------------------------------------------------------
 ; Help Links
 ;---------------------------------------------------------------------------------------------------------------
@@ -1790,6 +1807,7 @@ if(!enabled)
 	DoubleClickDesktop:=0
 else
 	GuiControlGet, DoubleClickDesktop, 1:, DoubleClickDesktopPath
+/*
 ;Store custom hotkeys
 CustomHotkeys_SaveCurrentView()
 RemoveAllHotkeys()
@@ -1798,11 +1816,11 @@ Loop % Settings_CustomHotkeys.len()
 	AddHotkey(Settings_CustomHotkeys[A_Index].key, Settings_CustomHotkeys[A_Index].command, Settings_CustomHotkeys[A_Index].filter)
 }
 Settings_CustomHotkeys := Array()
-
+*/
 ;UnSlide hidden windows
 if(!HKSlideWindows)
 	SlideWindows_Exit()
-
+/*
 ;Store FTP Settings
 GuiControlGet, FTP_Enabled,1: ,Use FTP
 if(FTP_Password!=temp)
@@ -1812,7 +1830,7 @@ if(FTP_Password!=temp)
 	outputdebug after encryption: %ftp_password%
 }
 ValidateFTPVars()
-
+*/
 ;Store Autorun setting
 if(Autorun)
 {
@@ -1867,7 +1885,7 @@ GuiEscape:
 Cancel:
 GuiClose:
 SettingsActive:=False
-Settings_CustomHotkeys := ""
+;Settings_CustomHotkeys := ""
 Settings_Events := ""
 Gui 1:Cancel
 Return

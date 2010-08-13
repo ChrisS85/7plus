@@ -1,36 +1,8 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Events>
   <Event>
-    <ID>45</ID>
-    <Name>Close window under mouse</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>MButton</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>MouseOver</Type>
-        <Filter />
-        <MouseOverType>Titlebar</MouseOverType>
-        <Negate>0</Negate>
-        <WindowMatchType>Program</WindowMatchType>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>WindowClose</Type>
-        <Filter />
-        <WindowMatchType>UnderMouse</WindowMatchType>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>46</ID>
-    <Name>Minimize to tray</Name>
+    <ID>12</ID>
+    <Name>Window Handling: Right click minimize: Minimize to tray</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -42,38 +14,43 @@
     <Conditions>
       <Condition>
         <Type>MouseOver</Type>
-        <Filter />
-        <MouseOverType>MinimizeButton</MouseOverType>
+        <MouseOverType>Titlebar</MouseOverType>
         <Negate>0</Negate>
+        <WindowFilter />
         <WindowMatchType>Program</WindowMatchType>
       </Condition>
     </Conditions>
     <Actions>
       <Action>
-        <Type>MinimizeToTray</Type>
-        <Filter />
+        <Type>WindowState</Type>
+        <Action>Toggle always on top</Action>
+        <WindowFilter />
         <WindowMatchType>UnderMouse</WindowMatchType>
       </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>47</ID>
-    <Name>Activate notification/flashing/previous window</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>CapsLock</Key>
-    </Trigger>
-    <Conditions />
-    <Actions>
       <Action>
-        <Type>FlashingWindows</Type>
-        <FlashingWindows>1</FlashingWindows>
-        <Notifications>1</Notifications>
-        <ToggleWindows>1</ToggleWindows>
+        <Type>ControlEvent</Type>
+        <Action>Enable Event</Action>
+        <EventID>13</EventID>
+      </Action>
+      <Action>
+        <Type>ControlEvent</Type>
+        <Action>Trigger Event</Action>
+        <EventID>13</EventID>
+      </Action>
+      <Action>
+        <Type>ControlEvent</Type>
+        <Action>Enable Event</Action>
+        <EventID>14</EventID>
+      </Action>
+      <Action>
+        <Type>ControlEvent</Type>
+        <Action>Trigger Event</Action>
+        <EventID>14</EventID>
+      </Action>
+      <Action>
+        <Type>ControlTimer</Type>
+        <Action>Start timer</Action>
+        <TimerID>15</TimerID>
       </Action>
     </Actions>
   </Event>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Events>
   <Event>
-    <ID>8</ID>
-    <Name>Create new textfile</Name>
+    <ID>21</ID>
+    <Name>Explorer: Create new textfile</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -33,8 +33,8 @@
     </Actions>
   </Event>
   <Event>
-    <ID>9</ID>
-    <Name>Create new folder</Name>
+    <ID>22</ID>
+    <Name>Explorer: Create new folder</Name>
     <Enabled>1</Enabled>
     <DisableAfterUse>0</DisableAfterUse>
     <DeleteAfterUse>0</DeleteAfterUse>
@@ -59,7 +59,7 @@
     <Actions>
       <Action>
         <Type>NewFolder</Type>
-        <FolderName>Neuer Ordner</FolderName>
+        <FolderName />
         <Rename>1</Rename>
       </Action>
     </Actions>

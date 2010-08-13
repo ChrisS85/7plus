@@ -200,6 +200,8 @@ ShellFileOperation_InterpretReturn(c)
 }
 SetDirectory(sPath)
 {
+	if(!sPath)
+		return
 	sPath:=ExpandEnvVars(sPath)
 	if(strEndsWith(sPath,":"))
 		sPath .="\"
@@ -342,7 +344,22 @@ GetSelectedFiles(FullName=1)
 	}
 	else if(WinActive("ahk_group DesktopGroup"))
 	{	
-		ControlGet, result, List, Selected Col1, SysListView321, A
+		MuteClipboardList := true
+		clipboardbackup := clipboardall
+		outputdebug clearing clipboard
+		clipboard := ""
+		ClipWait, 0.05, 1
+		outputdebug copying files to clipboard
+		Send ^c
+		ClipWait, 0.05, 1
+		result := clipboard
+		clipboard := clipboardbackup
+		OutputDebug, Selected Files: %result%
+		MuteClipboardList:=false
+		return result
+		
+		/*
+		ControlGet, result, List, Selected Col1, SysListView321, A ;This line causes explorer to crash
 		if(result)
 		{
 			Loop, Parse, result, `n  ; Rows are delimited by linefeeds (`n).
@@ -351,6 +368,7 @@ GetSelectedFiles(FullName=1)
 		}
 		else
 			return ""
+		*/
 	}
 }
 
@@ -389,7 +407,7 @@ GetCurrentFolder(hwnd=0, DisplayName=0)
 	return ""
 }
 
-SelectFiles(sSelect,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)
+SelectFiles(Select,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)
 {
 	If   hWnd||(hWnd:=WinActive("ahk_class CabinetWClass"))||(hWnd:=WinActive("ahk_class ExploreWClass")) 
 	{
@@ -398,21 +416,76 @@ SelectFiles(sSelect,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)
 		wins := sa.Windows
 		loop % wins.count
 		{
-		window:=wins.Item(A_Index-1)
-		If Not InStr( window.FullName, "steam.exe" ) ; ensure pwb isn't IE
-			if(window.Hwnd=hWnd)
-				break
+			window:=wins.Item(A_Index-1)
+			If Not InStr( window.FullName, "steam.exe" ) ; ensure pwb isn't IE
+				if(window.Hwnd=hWnd)
+					break
 		}
-	    doc:=window.Document  		
-		value:=!Deselect
-		value1:=!Deselect+focus*16+MakeVisible*8
-		if(!Deselect)
-			value1+=clear*4
-		Loop, Parse, sSelect, `n 
+	    doc:=window.Document
+		value:=!(Deselect = 1)
+		value1:=!(Deselect = 1)+(focus = 1)*16+(MakeVisible = 1)*8
+		count := doc.Folder.Items.Count
+		if(Clear = 1)
 		{
-			If  A_LoopField <>
-				COM_Invoke(doc,"SelectItem",doc.Folder.ParseName(A_LoopField),(A_Index=1 ? value1 : value)) ;http://msdn.microsoft.com/en-us/library/bb774047(VS.85).aspx					
+			if(count > 0)
+			{
+				item := doc.Folder.Items.Item(0)
+				COM_Invoke(doc,"SelectItem",item,4)
+				COM_Invoke(doc,"SelectItem",item,0)
+				;Sleep 10
+			}
 		}
+		if(!IsObject(Select))
+			Select := ToArray(Select)
+		;DllCall("Winmm\timeBeginPeriod", uint, 3)
+    
+
+		items := Array()
+		itemnames := Array()
+		Loop % count
+		{
+			index := A_Index
+			while(true)
+			{
+				item := doc.Folder.Items.Item(index - 1)
+				itemname := item.Name
+				if(itemname != "")
+				{
+					outputdebug itemname %itemname%
+					break
+				}
+				outputdebug no itemname
+				Sleep 10
+			}
+			items.append(item)	
+			itemnames.append(itemname)
+		}
+		Loop % Select.len()
+		{
+			filter := Select[A_Index]
+			If filter <>
+			{
+				If(InStr(filter, "*"))
+				{
+					filter := "\Q" StringReplace(filter, "*", "\E.*\Q", 1) "\E"
+					filter := strTrim(filter,"\Q\E")
+					Loop % items.len()
+					{
+						if(RegexMatch(itemnames[A_Index],"i)" filter))
+						{
+							COM_Invoke(doc,"SelectItem",items[A_Index],index=1 ? value1 : value) ;http://msdn.microsoft.com/en-us/library/bb774047(VS.85).aspx					
+							index++
+							;Sleep 10
+							;DllCall("Sleep", UInt, 10)  ; Must use DllCall instead of the Sleep command.
+						}
+					}
+				}
+				else
+					COM_Invoke(doc,"SelectItem",doc.Folder.ParseName(filter),(A_Index=1 ? value1 : value)) ;http://msdn.microsoft.com/en-us/library/bb774047(VS.85).aspx					
+			}
+		}
+
+	;DllCall("Winmm\timeEndPeriod", UInt, 3)  ; Should be called to restore system to normal.
 	}
 }
 

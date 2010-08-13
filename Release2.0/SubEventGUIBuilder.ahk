@@ -104,7 +104,7 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 	{				
 		x += 210
 		y := SubEventGUI.y
-		w := 50
+		w := 70
 		if(Button2Text != "")
 			Gui, Add, Button, x%x% y%y% w%w% hwndButton1_%name% g%Button1gLabel% r1 -Wrap, %Button1Text%
 		else
@@ -113,7 +113,7 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 		SubEventGUI["Button1_" name] := Button1_%name%
 		if(Button2Text != "")
 		{		
-			x += 60
+			x += 76
 			y := SubEventGUI.y
 			Gui, Add, Button, x%x% y%y% w%w% hwndButton2_%name% g%Button2gLabel% r1 -Wrap, %Button2Text%
 			y += 30
@@ -274,6 +274,8 @@ SubEventGUI_Placeholders(SubEventGUI, name, ClickedMenu="")
 		Menu, Placeholders_System, add, ${Clip} - Clipboard contents, PlaceholderHandler
 		Menu, Placeholders_System, add, ${Input} - Result of previous input action, PlaceholderHandler
 		Menu, Placeholders_System, add, ${MessageResult} - Result of previous SendMessage action (Send only!), PlaceholderHandler
+		Menu, Placeholders_System, add, ${wParam} - wParam value if this condition/action was triggered by OnMessage trigger, PlaceholderHandler
+		Menu, Placeholders_System, add, ${lParam} - lParam value if this condition/action was triggered by OnMessage trigger, PlaceholderHandler
 		
 		Menu, Placeholders_Windows, add, ${A} - Active window handle, PlaceholderHandler
 		Menu, Placeholders_Windows, add, ${Class} - Active window class, PlaceholderHandler

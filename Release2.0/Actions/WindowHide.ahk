@@ -12,6 +12,7 @@ Action_WindowHide_Execute(Action)
 	hwnd := WindowFilter_Get(Action)
 	if(hwnd != 0)
 		WinHide ahk_id %hwnd%
+	return 1
 }
 Action_WindowHide_DisplayString(Action)
 {

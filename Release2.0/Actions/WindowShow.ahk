@@ -12,6 +12,7 @@ Action_WindowShow_Execute(Action)
 	hwnd := WindowFilter_Get(Action)
 	if(hwnd != 0)
 		WinShow ahk_id %hwnd%
+	return 1
 }
 Action_WindowShow_DisplayString(Action)
 {

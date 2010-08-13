@@ -203,6 +203,8 @@ UpdateTimerProgress()
 		}
 	 }
 }
+
+;Called every second to check if time has run out yet
 Trigger_Timer_Matches(Trigger, Filter, Event)
 {
 	if(Trigger.tmpStart && !Trigger.tmpIsPaused && A_TickCount > (Trigger.tmpStart + Trigger.Time))

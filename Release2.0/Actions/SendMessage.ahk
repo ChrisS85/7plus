@@ -56,6 +56,7 @@ Action_SendMessage_Execute(Action,Event)
 			SendMessage, %Message%, "" wParam "", "" lParam "", %TargetControl%, ahk_id %hwnd%
 		Event.Placeholders.MessageResult := ErrorLevel
 	}
+	return 1
 }
 Action_SendMessage_DisplayString(Action)
 {

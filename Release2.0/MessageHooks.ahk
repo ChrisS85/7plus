@@ -71,6 +71,11 @@ ShellMessage( wParam,lParam, msg)
 	Critical
 	ListLines, Off
 	global ExplorerPath, HKShowSpaceAndSize, BlinkingWindows, wtmwParam, SuppressTabEvents, UseTabs, PreviousWindow, PreviousExplorerPath
+	Trigger := EventSystem_CreateSubEvent("Trigger", "OnMessage")
+	Trigger.Message := msg
+	Trigger.wParam := wParam
+	Trigger.lParam := lParam
+	OnTrigger(Trigger)
 	;Traymin
 	If	msg=1028
 	{

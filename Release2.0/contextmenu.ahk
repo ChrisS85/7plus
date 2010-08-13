@@ -1,4 +1,5 @@
 ;Checks if a context menu is active and has focus
+;Need to check if other context menus are active (trillian, browsers,...)
 IsContextMenuActive() 
 { 
 	GuiThreadInfoSize = 48 
@@ -12,7 +13,7 @@ IsContextMenuActive()
 	; GuiThreadInfo contains a DWORD flags at byte 4 
 	; Bit 4 of this flag is set if the thread is in menu mode. GUI_INMENUMODE = 0x4 
 	if (NumGet(GuiThreadInfo, 4) & 0x4) 
-	  return true
+		return true
 	return false
 }
 

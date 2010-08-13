@@ -15,8 +15,8 @@ SetWinDelay, -1
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability. 
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ;SetFormat, Integer, D
-MajorVersion := 1
-MinorVersion := 2
+MajorVersion := 2
+MinorVersion := 0
 BugfixVersion := 0
 #include %A_ScriptDir%\Autoexecute.ahk ;include first to avoid issues with autoexecute ending too soon because of labels
 #if !IsFullscreen("A",true,false)
@@ -79,6 +79,7 @@ BugfixVersion := 0
 #include %A_ScriptDir%\Triggers\ExplorerPathChanged.ahk
 #include %A_ScriptDir%\Triggers\ExplorerDoubleClickSpace.ahk
 #include %A_ScriptDir%\Triggers\Hotkey.ahk
+#include %A_ScriptDir%\Triggers\OnMessage.ahk
 #include %A_ScriptDir%\Triggers\Trigger.ahk
 #include %A_ScriptDir%\Triggers\Timer.ahk
 #include %A_ScriptDir%\Triggers\WindowActivated.ahk
@@ -89,6 +90,7 @@ BugfixVersion := 0
 
 #include %A_ScriptDir%\Conditions\If.ahk
 #include %A_ScriptDir%\Conditions\IsFullScreen.ahk
+#include %A_ScriptDir%\Conditions\IsContextMenuActive.ahk
 #include %A_ScriptDir%\Conditions\IsRenaming.ahk
 #include %A_ScriptDir%\Conditions\KeyIsDown.ahk
 #include %A_ScriptDir%\Conditions\MouseOver.ahk
@@ -115,12 +117,14 @@ BugfixVersion := 0
 #include %A_ScriptDir%\Actions\Input.ahk
 #include %A_ScriptDir%\Actions\Message.ahk
 #include %A_ScriptDir%\Actions\MinimizeToTray.ahk
+#include %A_ScriptDir%\Actions\MouseClick.ahk
 #include %A_ScriptDir%\Actions\NewFile.ahk
 #include %A_ScriptDir%\Actions\NewFolder.ahk
 #include %A_ScriptDir%\Actions\PlaySound.ahk
 #include %A_ScriptDir%\Actions\Restart7plus.ahk
 #include %A_ScriptDir%\Actions\Run.ahk
 #include %A_ScriptDir%\Actions\Screenshot.ahk
+#include %A_ScriptDir%\Actions\SelectFiles.ahk
 #include %A_ScriptDir%\Actions\SendKeys.ahk
 #include %A_ScriptDir%\Actions\SendMessage.ahk
 #include %A_ScriptDir%\Actions\SetDirectory.ahk
