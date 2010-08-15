@@ -1,0 +1,3 @@
+= FastFoldersMenu =
+This action shows a context menu with all [docsGenericFastFolders FastFolders] paths.
+If there are any files selected when the menu was shown and CTRL key is down when an entry gets chosen, the selected files are copied to that folder. Similarly, when Shift is down at that moment, the files are moved to that directory. Otherwise, the active explorer window simply navigates to that directory.
