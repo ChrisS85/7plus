@@ -1,2 +1,0 @@
-= FastFoldersClear =
-This action clears the folder assigned to the [docsGenericFastFolders FastFolders] slot specified here.
