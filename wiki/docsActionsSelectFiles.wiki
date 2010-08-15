@@ -1,5 +1,5 @@
 = SelectFiles =
-This action selects files matching a filter in explorer. The *Filter* is a comma separated list of entries. You may also use wildcards, e.g. "*.jpg,*.png" to select all jpg and png files.
+This action selects files matching a filter in explorer. The *Filter* is a comma-separated list of entries. You may also use wildcards, e.g. "`*`.jpg,`*`.png" to select all jpg and png files.
 There are a few properties:
 || *Parameter* || *Description* ||
 || Clear selection first || If not selected, the matching items will be appended to the current selection.||
