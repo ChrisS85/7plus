@@ -1,0 +1,2 @@
+= WindowClose =
+This action can close other windows. [docsGenericWindowFilter Window filter] controls are used to specify the window to be closed. It is also possible to force-close the window, to make sure it really closes instead of showing confirmation dialogs etc.
