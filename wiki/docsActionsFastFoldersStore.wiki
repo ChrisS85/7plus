@@ -1,0 +1,2 @@
+= FastFoldersStore =
+This action stores the directory specified here in the desired [docsGenericFastFolders FastFolders] slot.
