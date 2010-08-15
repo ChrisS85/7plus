@@ -1,0 +1,3 @@
+= WindowCreated =
+
+This trigger gets activated when a window gets created. You can limit it to specific windows by using the [docsGenericWindowFilter window filter] controls.
