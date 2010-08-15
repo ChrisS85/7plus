@@ -1,6 +1,6 @@
 = FilterList =
 This is an action that is used to remove list items from a list. 
-||* Parameter *||* Description *||
+|| *Parameter* || *Description* ||
 ||Action||Choose wether to remove or keep list entries that match the condition below||
 ||List||The list which is supposed to be filtered. In most cases this is a "${Sel}"-type [docsGenericPlaceholders placeholder]. Simply use the same placeholder further down in the action list to use the filtered list.||
 ||Operator||See [docsConditionsIf If]||
