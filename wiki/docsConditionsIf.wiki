@@ -2,13 +2,13 @@
 This is a very versatile condition that can be used for lots of things. It allows you to compare two values against each other, using various methods explained below:
 
 || *Operator* || *Description* ||
-||equals||Evaluates to true if both values are equal.
-||is greater than||Evaluates to true if first value is greater than second. If one or both of the values are non-numeric, they are compared by alphabetical order.
-||is lower than||Evaluates to true if first value is lower than second. If one or both of the values are non-numeric, they are compared by alphabetical order.
-||contains||Evaluates to true if the first value contains the second value.
-||matches regular expression||Evaluates to true if the first value matches the regular expression specified in second value. To learn more about regular expressions, see [http://www.autohotkey.com/docs/misc/RegEx-QuickRef.htm here].
-||starts with||Evaluates to true if the first value starts with the second value.
-||ends with||Evaluates to true if the first value ends with the second value.
+||equals||Evaluates to true if both values are equal.||
+||is greater than||Evaluates to true if first value is greater than second. If one or both of the values are non-numeric, they are compared by alphabetical order.||
+||is lower than||Evaluates to true if first value is lower than second. If one or both of the values are non-numeric, they are compared by alphabetical order.||
+||contains||Evaluates to true if the first value contains the second value.||
+||matches regular expression||Evaluates to true if the first value matches the regular expression specified in second value. To learn more about regular expressions, see [http://www.autohotkey.com/docs/misc/RegEx-QuickRef.htm here].||
+||starts with||Evaluates to true if the first value starts with the second value.||
+||ends with||Evaluates to true if the first value ends with the second value.||
 
 = Tips =
 
