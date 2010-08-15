@@ -1,0 +1,2 @@
+= WindowExists =
+This condition checks if a specific window exists. Matching windows are determined by [docsGenericWindowFilter window filter] controls.
