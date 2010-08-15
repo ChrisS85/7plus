@@ -1,0 +1,7 @@
+= SetDirectory =
+This action changes the directory of an explorer window. You can use the[docsActionsWindowFilter window filter] controls to select the explorer window. The path is specified in Path, either by directly entering a fixed path or [docsGenericPlaceholders placeholder], or by entering "backward","forward" or "upward" to navigate in that direction.
+
+= Usage examples =
+This can be used to create hotkeys that navigate explorer to specific directories. It is similar to [docsActionsFastFoldersRecall FastFoldersRecall], but it works with any folder and isn't limited to slots.
+
+In 7plus this action is used to go upwards when a double click on empty space in explorer file list is detected.
