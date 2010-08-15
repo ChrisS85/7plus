@@ -1,0 +1,7 @@
+= ControlEvent =
+
+This action is used to control other events. It is possible to trigger other events, and to enable/disable them. You can also toggle between enabled and disabled state.
+
+= Tips =
+
+If an event is supposed to only get triggered through such a trigger action, it is best practice to use a [docsTriggersNone None] trigger, so it does not get triggered under other circumstances.
