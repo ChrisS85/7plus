@@ -16,3 +16,9 @@ This action can upload multiple files on an FTP server, and copy the links to th
 = Usage examples =
   * 7plus uses this to upload selected files from explorer when CTRL+U is pressed (default setting),to take and upload screenshots on Alt/Win +Insert (default setting) and to upload images and text from clipboard on Win+Delete hotkey (default setting).
   * You can also use this to automatically upload file backups to a server on a timed basis by using a [docsTriggersTimer timer] and a ${DateTime} [docsGenericPlaceholders placeholder].
+  * Combining the CTRL+U upload function with an [docsConditionsIf if condition], you can upload to different servers depending on the location of the source files. This could be useful if you do web development and need to upload files from different projects.
+
+= Notes =
+  * To use the built-in FTP features, you need to enter your FTP account data in each of those events.
+  * When you create a new upload action, the FTP data from the previous existing upload action is preselected for convenience.
+  * Passwords are stored encrypted.
