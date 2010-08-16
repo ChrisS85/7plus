@@ -3,7 +3,7 @@ This action can upload multiple files on an FTP server, and copy the links to th
 
 || *Parameter* || *Description* ||
 ||Source file(s)||One or more files to upload. Multiple files need to be quoted and separated by spaces or unquoted and separated by newlines. Use ${SelNQ} or ${SelNM} for selected files in explorer if you need to.||
-||Hostname||The hostname of the ftp server. Do not prepend "ftp://" or similar, just use "hostname.com".||
+||Hostname||The hostname of the ftp server. Do not prepend "`ftp://`" or similar, just use "hostname.com".||
 ||Port||Usually 21.||
 ||Username||FTP username.||
 ||Password||FTP password.||
