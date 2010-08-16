@@ -1,4 +1,4 @@
-= Copy =
+= Move =
 This action moves one or more files to a destination directory.
 
 || *Parameter* || *Description* ||
