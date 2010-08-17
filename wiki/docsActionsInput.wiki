@@ -1,0 +1,8 @@
+= Input =
+This action shows an input dialog box to ask the user for a value.
+You may specify the window title and a text message for the user. Additionally you can also set if a cancel button should be used, that aborts all further actions in this event.
+
+The entered value is then accessed through the ${Input} [docsGenericPlaceholders placeholder]. Keep in mind that the scope of a placeholder is limited to the current event, so events triggered through this event won't be able to see it.
+
+= Usage examples =
+  * 7plus uses this to query for filenames in screenshot upload function, and in CTRL+S file selection filter to let the user enter a filter string.
