@@ -1,0 +1,4 @@
+= WindowHide =
+This action hides a window. It will still be running, but not visible to the user. This is useful for windows you don't want to see, such as update confirmations asking you to reboot.
+Use the [docsGenericWindowFilter WindowFilter controls] to select the window.
+To later unhide a window again, use [docsActionsWindowShow WindowShow].
