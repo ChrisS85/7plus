@@ -1,0 +1,5 @@
+= FocusControl =
+This action sets the keyboard focus to a specific control. It is used mainly for controlling other programs by [docsActionsSendKeys sending keyboard input] to them.
+
+You can use the [docsGenericWindowFilter WindowFilter controls] to select the window on which the focus should be changed, this is the active window in most cases.
+Additionally you need to enter the [docsGenericClassNN ClassNN], the text of the control, or the window handle of the control you want to focus.
