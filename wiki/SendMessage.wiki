@@ -6,5 +6,5 @@ This action sends a message to another program. It's the counterpart to [docsTri
 ||Message||A number identifying the message to be send.||
 ||wParam||A message parameter. Its meaning depends on the message that is sent.||
 ||lParam||A message parameter. Its meaning depends on the message that is sent.||
-||[docsGenericWindowFilter WindowFilter controls||Select the target window with these.||
+||[docsGenericWindowFilter WindowFilter controls]||Select the target window with these.||
 ||Control||You can also send a message to a control in a window. In this case, enter a [docsGenericClassNN ClassNN] or the text of the control here. If this is empty, the message will be send to the whole window.||
