@@ -1,0 +1,6 @@
+  * [docsTriggersDoubleClickTaskbar DoubleClickTaskbar]
+  * [docsTriggersDoubleClickDesktop DoubleClickDesktop]
+  * [docsTriggersExplorerPathChanged ExplorerPathChanged]
+  * [docsTriggersExplorerDoubleClickSpace ExplorerDoubleClickSpace]
+  * [docsTriggers7plusStart 7plusStart]
+  * [docsTriggersHotkey Hotkey]
