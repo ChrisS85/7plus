@@ -1,0 +1,6 @@
+= WindowActivate =
+This action activates a window. Use the [docsGenericWindowFilter WindowFilter controls] to select it.
+
+= Usage examples =
+  * You can use this to assign [docsTriggersHotkey hotkeys] to different programs you use often, so you can quickly activate them.
+  * This is also usable for controlling other programs.
