@@ -5,3 +5,8 @@ Click the categories below to check out the individual triggers, conditions and 
   * [docsTriggersList Triggers]
   * [docsConditionsList Conditions]
   * [docsActionsList Actions]
+
+There are also some more things you should know about events:
+  * [docsGenericPlaceholders Placeholders]
+  * [docsGenericClassNN ClassNN]
+  * [docsExamplesGetClassName How to get window class names]
