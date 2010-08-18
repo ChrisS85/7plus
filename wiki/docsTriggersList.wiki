@@ -1,3 +1,4 @@
+= List of Triggers =
   * [docsTriggersDoubleClickTaskbar DoubleClickTaskbar]
   * [docsTriggersDoubleClickDesktop DoubleClickDesktop]
   * [docsTriggersExplorerPathChanged ExplorerPathChanged]
