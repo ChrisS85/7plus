@@ -2,12 +2,12 @@ Action_Exit7plus_Init(Action)
 {
 	Action.Category := "7plus"
 }
-Action_Exit7plus_ReadXML(Action, ActionFileHandle)
+Action_Exit7plus_ReadXML(Action, XMLAction)
 {
 }
 Action_Exit7plus_Execute(Action, Event)
 {
-	Exit
+	GoSub ExitSub
 	return 1
 } 
 Action_Exit7plus_DisplayString(Action)

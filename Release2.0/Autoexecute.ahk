@@ -55,6 +55,7 @@ temp_txt := A_Temp . "\" . TxtName
 
 CF_HDROP = 0xF ;clipboard identifier of copied file from explorer
 
+
 ;Register a shell hook to get messages when windows get activated, closed etc
 Gui +LastFound
 hAHK := WinExist()
@@ -73,7 +74,8 @@ API_SetWinEventHook(0x0016,0x0016,0,HookProcAdr,0,0,0)
 API_SetWinEventHook(0x000E,0x000E,0,HookProcAdr,0,0,0)
 DetectHiddenWindows, On
 
-;FTP Upload script
+/*
+;FTP Upload
 IniRead, FTP_Enabled, %ConfigPath%, FTP, UseFTP , 1
 IniRead, FTP_Username, %ConfigPath%, FTP, Username , Username
 IniRead, FTP_Password, %ConfigPath%, FTP, EncryptedPassword,%A_Space%
@@ -90,28 +92,34 @@ IniRead, FTP_Path, %ConfigPath%, FTP, Path, %A_Space%
 
 ;strip slashes
 ValidateFTPVars()
+*/
 
 ;Texteditor for opening files per hotkey
 IniRead, TextEditor, %ConfigPath%, Explorer, TextEditor , `%windir`%\notepad.exe
 IniRead, ImageEditor, %ConfigPath%, Explorer, ImageEditor , `%windir`%\system32\mspaint.exe
 
+/*
 IniRead, HKCreateNewFile, %ConfigPath%, Explorer, HKCreateNewFile, 1
 IniRead, HKCreateNewFolder, %ConfigPath%, Explorer, HKCreateNewFolder, 1
 IniRead, HKCopyFilenames, %ConfigPath%, Explorer, HKCopyFilenames, 1
 IniRead, HKCopyPaths, %ConfigPath%, Explorer, HKCopyPaths, 1
 IniRead, HKAppendClipboard, %ConfigPath%, Explorer, HKAppendClipboard, 1
+*/
 
 IniRead, HKFastFolders, %ConfigPath%, Explorer, HKFastFolders, 1
-IniRead, HKFFMenu, %ConfigPath%, Explorer, HKFFMenu, 1
+; IniRead, HKFFMenu, %ConfigPath%, Explorer, HKFFMenu, 1
 IniRead, HKPlacesBar, %ConfigPath%, Explorer, HKPlacesBar, 0
 IniRead, HKCleanFolderBand, %ConfigPath%, Explorer, HKCleanFolderBand, 0
 IniRead, HKFolderBand, %ConfigPath%, Explorer, HKFolderBand, 0
 
+/*
 IniRead, HKProperBackspace, %ConfigPath%, Explorer, HKProperBackspace, 1
+IniRead, HKDoubleClickUpwards, %ConfigPath%, Explorer, HKDoubleClickUpwards, 1
+*/
+
 ;IniRead, HKImprovedWinE, %ConfigPath%, Explorer, HKImprovedWinE, 1
 IniRead, HKSelectFirstFile, %ConfigPath%, Explorer, HKSelectFirstFile, 1
 IniRead, HKImproveEnter, %ConfigPath%, Explorer, HKImproveEnter, 1
-IniRead, HKDoubleClickUpwards, %ConfigPath%, Explorer, HKDoubleClickUpwards, 1
 IniRead, HKShowSpaceAndSize, %ConfigPath%, Explorer, HKShowSpaceAndSize, 1
 IniRead, HKMouseGestures, %ConfigPath%, Explorer, HKMouseGestures, 1
 IniRead, HKAutoCheck, %ConfigPath%, Explorer, HKAutoCheck, 1
@@ -122,19 +130,23 @@ IniRead, HKFlattenDirectory, %ConfigPath%, Explorer, HKFlattenDirectory, 1
 IniRead, RecallExplorerPath, %ConfigPath%, Explorer, RecallExplorerPath, 1
 IniRead, AlignExplorer, %ConfigPath%, Explorer, AlignExplorer, 1
 
-IniRead, HKKillWindows, %ConfigPath%, Windows, HKKillWindows, 1
-IniRead, HKToggleWallpaper, %ConfigPath%, Windows, HKToggleWallpaper, 1
 IniRead, HKMiddleClose, %ConfigPath%, Windows, HKMiddleClose, 1
+/*
+IniRead, HKKillWindows, %ConfigPath%, Windows, HKKillWindows, 1
 IniRead, HKTitleClose, %ConfigPath%, Windows, HKTitleClose, 1
 IniRead, HKToggleAlwaysOnTop, %ConfigPath%, Windows, HKToggleAlwaysOnTop, 1
-IniRead, HKActivateBehavior, %ConfigPath%, Windows, HKActivateBehavior, 1
-IniRead, AeroFlipTime, %ConfigPath%, Windows, AeroFlipTime, 0.2
 IniRead, HKFlashWindow, %ConfigPath%, Windows, HKFlashWindow, 1
 IniRead, HKToggleWindows, %ConfigPath%, Windows, HKToggleWindows, 1
+*/
+IniRead, HKActivateBehavior, %ConfigPath%, Windows, HKActivateBehavior, 1
+IniRead, AeroFlipTime, %ConfigPath%, Windows, AeroFlipTime, 0.2
 IniRead, HKAltDrag, %ConfigPath%, Windows, HKAltDrag, 1
+/*
 IniRead, HKAltMinMax, %ConfigPath%, Windows, HKAltMinMax, 1
 IniRead, HKTrayMin, %ConfigPath%, Windows, HKTrayMin, 1
+*/
 IniRead, DoubleClickDesktop, %ConfigPath%, Windows, DoubleClickDesktop, %A_Windir%\explorer.exe
+IniRead, HKToggleWallpaper, %ConfigPath%, Windows, HKToggleWallpaper, 1
 
 IniRead, HKHoverStart, %ConfigPath%, Windows, HKHoverStart, 1
 ;program to launch on double click on taskbar
@@ -145,10 +157,12 @@ IniRead, HKSlideWindows, %ConfigPath%, Windows, HKSlideWindows , 1
 IniRead, SlideWinHide, %ConfigPath%, Windows, SlideWinHide , 1
 SlideWindows_Startup()
 IniRead, SlideWindowsBorder, %ConfigPath%, Windows, SlideWindowsBorder , 30
+/*
 IniRead, HKImproveConsole, %ConfigPath%, Misc, HKImproveConsole, 1
 IniRead, HKPhotoViewer, %ConfigPath%, Misc, HKPhotoViewer, 1
+*/
 IniRead, ImageExtensions, %ConfigPath%, Misc, ImageExtensions, jpg,png,bmp,gif,tga,tif,ico,jpeg
-IniRead, ClipboardManager, %ConfigPath%, Misc, ClipboardManager, 1
+;IniRead, ClipboardManager, %ConfigPath%, Misc, ClipboardManager, 1
 IniRead, WordDelete, %ConfigPath%, Misc, WordDelete, 1
 
 ;Fullscreen exclusion list
@@ -156,6 +170,8 @@ IniRead, FullscreenExclude, %ConfigPath%, Misc, FullscreenExclude,VLC DirectX,Op
 IniRead, FullscreenInclude, %ConfigPath%, Misc, FullscreenInclude,Project64
 IniRead, ImageQuality, %ConfigPath%, Misc, ImageQuality,100
 IniRead, ImageExtension, %ConfigPath%, Misc, ImageExtension,png
+IniRead, PreviousExplorerPath, %ConfigPath%, Misc, PreviousExplorerPath,C:
+IniRead, ExplorerPath, %ConfigPath%, Misc, ExplorerPath,C:
 
 if((AeroFlipTime>=0&&Vista7)||HKSlideWindows)
 {
@@ -214,8 +230,9 @@ if(Vista7)
 	
 GoSub TrayminOpen
 
-ReadHotkeys()
+/*ReadHotkeys()
 SetTimer, ToggleHotkeys, 50
+*/
 ;Show tray icon when loading is complete
 Menu, tray, add  ; Creates a separator line.
 Menu, tray, add, Settings, SettingsHandler  ; Creates a new menu item.
@@ -244,21 +261,39 @@ if(!HidetrayIcon)
 if (Firstrun=1)
 	SetTimer, wizardry, -500
 
+
+	
 SetTimer, TriggerTimer, 1000
+; SetTimer, AssignHotkeys, -10000
+
+; Hotkey, If, !IsFullScreen()
+; Hotkey, MButton, MButton, On
+; Hotkey, If
 ;put it at the end because this will be the main loop of the program
 EventSystem_Startup()
-
 Return
 
 ExitSub:
-EventSystem_End()
-Gdip_Shutdown(pToken)
-WriteIni()
-SlideWindows_Exit()
-TabContainerList.CloseAllInactiveTabs()
-GoSub TrayminClose
+OnExit()
 ExitApp
 
+OnExit(Reload=0)
+{
+	static ShouldReload
+	if(ShouldReload) ;If set, code below has already been executed by a previous call to this function
+		return
+	EventSystem_End()
+	Gdip_Shutdown(pToken)
+	WriteIni()
+	SlideWindows_Exit()
+	TabContainerList.CloseAllInactiveTabs()
+	GoSub TrayminClose	
+	if(Reload)
+	{
+		ShouldReload := 1
+		reload
+	}
+}
 ;Some first run intro
 wizardry:
 ShowWizard()
@@ -291,14 +326,7 @@ AutoUpdate()
 			IniRead, tmpMajorVersion, %A_ScriptDir%\Version.ini, Version,MajorVersion
 			IniRead, tmpMinorVersion, %A_ScriptDir%\Version.ini, Version,MinorVersion
 			IniRead, tmpBugfixVersion, %A_ScriptDir%\Version.ini, Version,BugfixVersion
-			if(tmpMajorVersion > MajorVersion)
-				Update := true
-			else if(tmpMajorVersion = MajorVersion && tmpMinorVersion > MinorVersion)
-				Update := true
-			else if(tmpMajorVersion = MajorVersion && tmpMinorVersion = MinorVersion && tmpBugfixVersion > BugfixVersion)
-				Update := true
-			else
-				Update := false
+			Update := (CompareVersion(tmpMajorVersion, MajorVersion, tmpMinorVersion, MinorVersion, tmpBugfixVersion, BugfixVersion) = 1)
 			if(Update)
 			{
 				IniRead, UpdateMessage, %A_ScriptDir%\Version.ini, Version,UpdateMessage
@@ -360,7 +388,7 @@ WriteIni()
 		FileCreateDir %path%
 	}
 	IniWrite, %DebugEnabled%, %ConfigPath%, General, DebugEnabled
-	
+	/*
 	IniWrite, %FTP_Enabled%, %ConfigPath%, FTP, UseFTP
 	IniWrite, %FTP_Username%, %ConfigPath%, FTP, Username
 	IniWrite, %FTP_Password%, %ConfigPath%, FTP, EncryptedPassword
@@ -368,27 +396,28 @@ WriteIni()
 	IniWrite, %FTP_PORT%, %ConfigPath%, FTP, Port
 	IniWrite, %FTP_URL%, %ConfigPath%, FTP, URL
 	IniWrite, %FTP_Path%, %ConfigPath%, FTP, Path
-	
+	*/
 	IniWrite, %ImgName%, %ConfigPath%, Explorer, Image
 	IniWrite, %TxtName%, %ConfigPath%, Explorer, Text
 	IniWrite, %TextEditor%, %ConfigPath%, Explorer, TextEditor
 	IniWrite, %ImageEditor%, %ConfigPath%, Explorer, ImageEditor
+	/*
 	IniWrite, %HKCreateNewFile%, %ConfigPath%, Explorer, HKCreateNewFile
 	IniWrite, %HKCreateNewFolder%, %ConfigPath%, Explorer, HKCreateNewFolder
 	IniWrite, %HKCopyFilenames%, %ConfigPath%, Explorer, HKCopyFilenames
 	IniWrite, %HKCopyPaths%, %ConfigPath%, Explorer, HKCopyPaths
 	IniWrite, %HKAppendClipboard%, %ConfigPath%, Explorer, HKAppendClipboard
-	
+	*/
 	IniWrite, %HKFastFolders%, %ConfigPath%, Explorer, HKFastFolders
-	IniWrite, %HKFFMenu%, %ConfigPath%, Explorer, HKFFMenu
+	; IniWrite, %HKFFMenu%, %ConfigPath%, Explorer, HKFFMenu
 	IniWrite, %HKPlacesBar%, %ConfigPath%, Explorer, HKPlacesBar
 	IniWrite, %HKCleanFolderBand%, %ConfigPath%, Explorer, HKCleanFolderBand
 	IniWrite, %HKFolderBand%, %ConfigPath%, Explorer, HKFolderBand	
 	
-	IniWrite, %HKProperBackspace%, %ConfigPath%, Explorer, HKProperBackspace
+	; IniWrite, %HKProperBackspace%, %ConfigPath%, Explorer, HKProperBackspace
 	IniWrite, %HKSelectFirstFile%, %ConfigPath%, Explorer, HKSelectFirstFile
 	IniWrite, %HKImproveEnter%, %ConfigPath%, Explorer, HKImproveEnter
-	IniWrite, %HKDoubleClickUpwards%, %ConfigPath%, Explorer, HKDoubleClickUpwards
+	; IniWrite, %HKDoubleClickUpwards%, %ConfigPath%, Explorer, HKDoubleClickUpwards
 	IniWrite, %HKShowSpaceAndSize%, %ConfigPath%, Explorer, HKShowSpaceAndSize
 	IniWrite, %HKMouseGestures%, %ConfigPath%, Explorer, HKMouseGestures
 	IniWrite, %HKAutoCheck%, %ConfigPath%, Explorer, HKAutoCheck
@@ -407,36 +436,39 @@ WriteIni()
 	IniWrite, %OnTabClose%, %ConfigPath%, Tabs, OnTabClose
 	IniWrite, %MiddleOpenFolder%, %ConfigPath%, Tabs, MiddleOpenFolder
 	
-	IniWrite, %HKToggleAlwaysOnTop%, %ConfigPath%, Windows, HKToggleAlwaysOnTop
+	; IniWrite, %HKToggleAlwaysOnTop%, %ConfigPath%, Windows, HKToggleAlwaysOnTop
 	IniWrite, %HKActivateBehavior%, %ConfigPath%, Windows, HKActivateBehavior
-	IniWrite, %HKKillWindows%, %ConfigPath%, Windows, HKKillWindows
+	; IniWrite, %HKKillWindows%, %ConfigPath%, Windows, HKKillWindows
 	IniWrite, %HKToggleWallpaper%, %ConfigPath%, Windows, HKToggleWallpaper
 	IniWrite, %TaskbarLaunchPath%, %ConfigPath%, Windows, TaskbarLaunchPath
-	IniWrite, %HKTitleClose%, %ConfigPath%, Windows, HKTitleClose
+	; IniWrite, %HKTitleClose%, %ConfigPath%, Windows, HKTitleClose
 	IniWrite, %HKMiddleClose%, %ConfigPath%, Windows, HKMiddleClose
 	IniWrite, %AeroFlipTime%, %ConfigPath%, Windows, AeroFlipTime
 	IniWrite, %HKSlideWindows%, %ConfigPath%, Windows, HKSlideWindows
 	IniWrite, %SlideWinHide%, %ConfigPath%, Windows, SlideWinHide
 	IniWrite, %SlideWindowsBorder%, %ConfigPath%, Windows, SlideWindowsBorder
-	IniWrite, %HKFlashWindow%, %ConfigPath%, Windows, HKFlashWindow
-	IniWrite, %HKToggleWindows%, %ConfigPath%, Windows, HKToggleWindows
+	; IniWrite, %HKFlashWindow%, %ConfigPath%, Windows, HKFlashWindow
+	; IniWrite, %HKToggleWindows%, %ConfigPath%, Windows, HKToggleWindows
 	IniWrite, %HKAltDrag%, %ConfigPath%, Windows, HKAltDrag
-	IniWrite, %HKAltMinMax%, %ConfigPath%, Windows, HKAltMinMax
-	IniWrite, %HKTrayMin%, %ConfigPath%, Windows, HKTrayMin
+	; IniWrite, %HKAltMinMax%, %ConfigPath%, Windows, HKAltMinMax
+	; IniWrite, %HKTrayMin%, %ConfigPath%, Windows, HKTrayMin
 	IniWrite, %DoubleClickDesktop%, %ConfigPath%, Windows, DoubleClickDesktop
 	
-	IniWrite, %HKImproveConsole%, %ConfigPath%, Misc, HKImproveConsole
-	IniWrite, %HKPhotoViewer%, %ConfigPath%, Misc, HKPhotoViewer
+	; IniWrite, %HKImproveConsole%, %ConfigPath%, Misc, HKImproveConsole
+	; IniWrite, %HKPhotoViewer%, %ConfigPath%, Misc, HKPhotoViewer
 	IniWrite, %ImageExtensions%, %ConfigPath%, Misc, ImageExtensions
 	IniWrite, %JoyControl%, %ConfigPath%, Misc, JoyControl
 	IniWrite, %FullscreenExclude%, %ConfigPath%, Misc, FullscreenExclude
 	IniWrite, %FullscreenInclude%, %ConfigPath%, Misc, FullscreenInclude
-	IniWrite, %ClipboardManager%, %ConfigPath%, Misc, ClipboardManager
+	; IniWrite, %ClipboardManager%, %ConfigPath%, Misc, ClipboardManager
 	IniWrite, %WordDelete%, %ConfigPath%, Misc, WordDelete
 	IniWrite, %HideTrayIcon%, %ConfigPath%, Misc, HideTrayIcon
 	IniWrite, %ImageQuality%, %ConfigPath%, Misc, ImageQuality
 	IniWrite, %ImageExtension%, %ConfigPath%, Misc, ImageExtension
 	IniWrite, %AutoUpdate%, %ConfigPath%, Misc, AutoUpdate
+	IniWrite, %ExplorerPath%, %ConfigPath%, Misc, ExplorerPath
+	IniWrite, %PreviousExplorerPath%, %ConfigPath%, Misc, PreviousExplorerPath
+	
 	;FastFolders
 	Loop 10
 	{
@@ -453,5 +485,5 @@ WriteIni()
 		x := RegExReplace(RegExReplace(RegExReplace(x, "``", "````"), "\r?\n", "``r``n"), "%", "``%")
 		IniWrite, %x%, %ConfigPath%, Misc, Clipboard%A_Index%
 	}
-	SaveHotkeys()
+	; SaveHotkeys()
 }

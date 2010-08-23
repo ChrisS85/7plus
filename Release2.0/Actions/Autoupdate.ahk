@@ -2,7 +2,7 @@ Action_AutoUpdate_Init(Action)
 {
 	Action.Category := "7plus"
 }
-Action_AutoUpdate_ReadXML(Action, ActionFileHandle)
+Action_AutoUpdate_ReadXML(Action, XMLAction)
 {
 }
 Action_AutoUpdate_Execute(Action, Event)

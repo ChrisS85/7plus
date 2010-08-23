@@ -1,3 +1,4 @@
+/*
 ;CMD Improvements
 #if HKImproveConsole
 #c::
@@ -15,3 +16,4 @@ return
 r::^.
 l::^,
 #if
+*/

@@ -4,10 +4,10 @@
 	Action.Action := "Enable Event"
 }
 
-Action_ControlEvent_ReadXML(Action, ActionFileHandle)
+Action_ControlEvent_ReadXML(Action, XMLAction)
 {
-	Action.EventID := xpath(ActionFileHandle, "/EventID/Text()")
-	Action.Action := xpath(ActionFileHandle, "/Action/Text()")
+	Action.EventID := XMLAction.EventID
+	Action.Action := XMLAction.Action
 }
 
 Action_ControlEvent_Execute(Action, Event)

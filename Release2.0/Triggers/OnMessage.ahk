@@ -2,9 +2,9 @@ Trigger_OnMessage_Init(Trigger)
 {
 	Trigger.Category := "System"
 }
-Trigger_OnMessage_ReadXML(Trigger, TriggerFileHandle)
+Trigger_OnMessage_ReadXML(Trigger, XMLTrigger)
 {
-	Trigger.Message := xpath(TriggerFileHandle, "/Message/Text()")
+	Trigger.Message := XMLTrigger.Message
 }
 
 Trigger_OnMessage_Enable(Trigger)

@@ -12,7 +12,7 @@ Settings_CreateEvents() {
 	AddTab(0, "","SysTabControl321")
 	Gui, 1:Add, Text, x%x1% y%yIt% R3, You can add events here that are triggered under certain conditions. When triggered,`nthe event can launch a series of actions. This is a very powerful tool to add `nall kinds of features, and many features from 7plus are now implemented with this system.
 	yIt+=54
-	Gui, 1:Add, Text, x%x1% y%yIt%, Event filter:
+	Gui, 1:Add, Text, x%x1% y%yIt%, Event search:
 	yIt-=4
 	Gui, 1:Add, ComboBox, x+10 y%yIt% w338 hwndEventFilter gEventFilterChange, Explorer|Window Handling|Fast Folders|FTP|Desktop / Taskbar
 	yIt += textboxstep
@@ -37,10 +37,10 @@ Settings_CreateEvents() {
 	yIt += textboxstep + 4
 	y := yIt + TextBoxTextOffset
 }
-Settings_CreateHotkeys() {
+Settings_CreateExplorer() {
 	global
 	local yIt,x1,x2,x
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vExplorerHotkeysTab, 
+	Gui, 1:Add, Tab2, x156 y14 w410 h350 vExplorerTab, 
 	AddTab(1, "","SysTabControl322") 
 	yIt:=yBase
 	
@@ -48,6 +48,7 @@ Settings_CreateHotkeys() {
 	x2:=xBase+280
 	x:=xBase+247
 	y:=yIt+TextBoxCheckBoxOffset
+	/*
 	Gui, 1:Add, CheckBox, x%x1% y%y% gEditor, F3: Open selected files in text/image editor
 	Gui, 1:Add, Text, y%y% x%xhelp% cBlue ghOpenEditor vURL_OpenEditor, ?
 	y:=yIt+TextBoxTextOffset
@@ -69,7 +70,6 @@ Settings_CreateHotkeys() {
 	yIt+=textboxstep
 	
 	x2:=x2-60
-	/*
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghCreateNew vURL_CreateNew, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKCreateNewFile, F7: Create new file
 	yIt+=checkboxstep
@@ -103,21 +103,12 @@ Settings_CreateHotkeys() {
 	*/
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghExplorer1dot1 vURL_Explorer1dot1, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKInvertSelection, CTRL + I: Invert selection
-
 	yIt+=checkboxstep
+	
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghExplorer1dot1 vURL_Explorer1dot12, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKFlattenDirectory, SHIFT + Enter: Show selected directories in flat view (Vista/7 only)
-}
-Settings_CreateBehavior() {
-	global
-	local yIt,x1,x,y
-	yIt:=yBase
-	x1:=xHelp+10
-	x2:=xBase+280
+	yIt+=checkboxstep
 	
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vExplorerBehaviorTab, 
-	AddTab(0, "","SysTabControl323")
-
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghSelectFirstFile vURL_SelectFirstFile, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKSelectFirstFile, Explorer automatically selects the first file when you enter a directory
 	yIt+=checkboxstep	
@@ -159,8 +150,22 @@ Settings_CreateBehavior() {
 	y:=yIt
 	Gui, 1:Add, Edit, x%x2% y%y% w%wTBMedium% vImgName R1	
 	yIt+=textboxstep	
+}
+/*
+Settings_CreateBehavior() {
+	global
+	local yIt,x1,x,y
+	yIt:=yBase
+	x1:=xHelp+10
+	x2:=xBase+280
+	
+	Gui, 1:Add, Tab2, x156 y14 w410 h350 vExplorerBehaviorTab, 
+	AddTab(0, "","SysTabControl323")
+
+	
 	
 }
+*/
 Settings_CreateFastFolders() {
 	global
 	local yIt,x1,x,y
@@ -168,15 +173,15 @@ Settings_CreateFastFolders() {
 	xHelp:=xBase
 	x1:=xHelp+10
 	Gui, 1:Add, Tab2, x156 y14 w410 h350 vFastFoldersTab
-	AddTab(0, "","SysTabControl324")
+	AddTab(0, "","SysTabControl323")
 	
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders1 vURL_FastFolders1, ?		
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% gFastFolders,Use Fast Folders
-	yIt+=checkboxstep	
-	x:=x1+xCheckboxTextOffset
-	xhelp+=xCheckboxTextOffset
-	y:=yIt+yCheckboxTextOffset
-	Gui, 1:Add, Text, x%x% y%y% R2, In all kinds of file views you can store a path in one of ten slots by pressing CTRL`nand a numpad number key, and restore it by pressing the numpad number key again
+	; Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders1 vURL_FastFolders1, ?		
+	; Gui, 1:Add, Checkbox, x%x1% y%yIt% gFastFolders,Use Fast Folders
+	; yIt+=checkboxstep	
+	x:=x1 ;+xCheckboxTextOffset
+	; xhelp+=xCheckboxTextOffset
+	y:=yIt ;+yCheckboxTextOffset
+	Gui, 1:Add, Text, x%x% y%y% R2, In explorer and file dialogs you can store a path in one of ten slots by pressing CTRL`nand a numpad number key (default settings), and restore it by pressing the numpad number key again
 	yIt+=checkboxstep*1.5
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders1 vURL_FastFolders11, ?
 	Gui, 1:Add, Checkbox, x%x% y%yIt% vHKFolderBand, Integrate Fast Folders into explorer folder band bar (Vista/7 only)	
@@ -192,12 +197,12 @@ Settings_CreateFastFolders() {
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders2 vURL_FastFolders21, ?
 	Gui, 1:Add, Checkbox, x%x% y%yIt% vHKPlacesBar, Integrate Fast Folders into open/save dialog places bar (First 5 Entries)
 	yIt+=checkboxstep
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders2 vURL_FastFolders22, ?
-	Gui, 1:Add, Checkbox, x%x% y%yIt% vHKFFMenu, Middle mouse button: Show Fast Folders move/copy menu
-	yIt+=checkboxstep
-	y:=yIt+yCheckboxTextOffset
-	x+=xCheckboxTextOffset
-	Gui, 1:Add, Text, x%x% y%y% R3, When clicking with middle mouse button in a supported file view, a menu`nwith the stored Fast Folders will show up. Clicking an entry will move all`nselected files into that directory, holding CTRL while clicking will copy the files.
+	; Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders2 vURL_FastFolders22, ?
+	; Gui, 1:Add, Checkbox, x%x% y%yIt% vHKFFMenu, Middle mouse button: Show Fast Folders move/copy menu
+	; yIt+=checkboxstep
+	; y:=yIt+yCheckboxTextOffset
+	; x+=xCheckboxTextOffset
+	; Gui, 1:Add, Text, x%x% y%y% R3, When clicking with middle mouse button in a supported file view, a menu`nwith the stored Fast Folders will show up. Clicking an entry will move all`nselected files into that directory, holding CTRL while clicking will copy the files.
 }
 Settings_CreateTabs() {
 	global
@@ -206,7 +211,7 @@ Settings_CreateTabs() {
 	xHelp:=xBase
 	x1:=xHelp+10
 	Gui, 1:Add, Tab2, x156 y14 w410 h350 vExplorerTabsTab
-	AddTab(0, "","SysTabControl325")
+	AddTab(0, "","SysTabControl324")
 	
 	Gui, 1:Add, Text, x%x1% y%yIt% R3, 7plus makes it possible to use tabs in explorer. New tabs are opened with the middle mouse button`nand with CTRL+T, Tabs are cycled by clicking the Tabs or pressing CTRL+(SHIFT)+TAB,`nand closed by middle clicking a tab and with CTRL+W
 	yIt+=CheckboxStep*2.25
@@ -241,13 +246,13 @@ Settings_CreateTabs() {
 	Gui, 1:Add, DropDownList, x%x2% y%yIt% w%wTBMedium% vMiddleOpenFolder AltSubmit, window|tab|tab in background
 	yIt+=checkboxstep	
 }
-Settings_CreateWindowHandling() {
+Settings_CreateWindows() {
 	global
 	local yIt,x1,x,y
 	xHelp:=xBase
 	x1:=xHelp+10
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vWindowHandlingTab, 
-	AddTab(0, "","SysTabControl326")
+	Gui, 1:Add, Tab2, x156 y14 w410 h350 vWindowsTab, 
+	AddTab(0, "","SysTabControl325")
 	yIt:=yBase
 	/*
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar3, ?
@@ -298,7 +303,23 @@ Settings_CreateWindowHandling() {
 	Gui, 1:Add, Edit, 		x%x% y%yIt% w%wTBShort% R1 vAeroFlipTime	
 	y:=yIt+TextBoxButtonOffset
 	yIt+=textboxstep
+	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar1, ?
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKMiddleClose, Middle click on taskbuttons: close task
+	yIt+=checkboxstep
+	
+	x:=x1+xCheckboxTextOffset
+	y:=yIt+yCheckBoxTextOffset
+	Gui, 1:Add, Text, x%x% y%y%, Middle click on empty taskbar: Taskbar properties
+	yIt+=checkboxstep	
+	
+	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar2, ?
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKActivateBehavior, Left click on task group button (7 only): cycle through windows	
+	yIt+=checkboxstep	
+	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window2, ?
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKToggleWallpaper, Middle mouse click on desktop: Toggle wallpaper (7 only)
+	yIt+=checkboxstep
 }
+/*
 Settings_CreateDesktopTaskBar() {
 	global
 	local yIt,x1,x,y
@@ -328,22 +349,8 @@ Settings_CreateDesktopTaskBar() {
 	Gui, 1:Add, Button, x%x% y%y% w%wButton% gDoubleClickDesktopBrowse vDoubleClickDesktopBrowse, ...
 	yIt+=textboxstep
 	
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar1, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKMiddleClose, Middle click on taskbuttons: close task
-	yIt+=checkboxstep
-	
-	x:=x1+xCheckboxTextOffset
-	y:=yIt+yCheckBoxTextOffset
-	Gui, 1:Add, Text, x%x% y%y%, Middle click on empty taskbar: Taskbar properties
-	yIt+=checkboxstep	
-	
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar2, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKActivateBehavior, Left click on task group button (7 only): cycle through windows	
-	yIt+=checkboxstep	
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window2, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKToggleWallpaper, Middle mouse click on desktop: Toggle wallpaper (7 only)
-	yIt+=checkboxstep
 }
+*/
 /*
 Settings_CreateCustomHotkeys() {
 	global
@@ -438,7 +445,7 @@ Settings_CreateMisc() {
 	global
 	local yIt,x1
 	Gui, 1:Add, Tab2, x156 y14 w410 h350 vMiscTab, 
-	AddTab(0, "","SysTabControl328")
+	AddTab(0, "","SysTabControl326")
 	x1:=xBase+10
 	xhelp:=xBase
 	yIt:=yBase
@@ -490,7 +497,7 @@ Settings_CreateAbout() {
 	global
 	local yIt,x1,x2,x,y,version
 	Gui, 1:Add, Tab2, x156 y14 w410 h350 vAboutTab, 
-	AddTab(0, "","SysTabControl329")
+	AddTab(0, "","SysTabControl327")
 	yIt:=YBase
 	x1:=XBase+10
 	x2:=xBase+350
@@ -587,17 +594,16 @@ FillEventsList(SelectedIndex=0){
 		}
 	}
 }
-Settings_SetupHotkeys() {
+Settings_SetupExplorer() {
 	global
 	local temp
+	/*
 	;Setup text editor
 	GuiControl, 1:, TextEditor, %TextEditor%
 	GuiControl, 1:, ImageEditor, %ImageEditor%	
 	temp:=(TextEditor!="" || ImageEditor!="")
 	GuiControl, 1:,F3: Open selected files in text/image editor,%temp%
 	GoSub Editor
-	
-	/*
 	if(!Vista7)
 		GuiControl, 1:disable, HKProperBackspace
 	GuiControl, 1:,HKCreateNewFile,%HKCreateNewFile%
@@ -611,10 +617,6 @@ Settings_SetupHotkeys() {
 	GuiControl, 1:,HKMouseGestures,%HKMouseGestures%
 	GuiControl, 1:,HKInvertSelection,%HKInvertSelection%
 	GuiControl, 1:,HKFlattenDirectory,%HKFlattenDirectory%
-}
-Settings_SetupBehavior() {
-	global	
-	local temp
 	if(A_OSVersion!="WIN_7")
 		GuiControl, 1:disable, HKShowSpaceAndSize
 	
@@ -652,7 +654,7 @@ Settings_SetupFastFolders() {
 	GuiControl, 1:,HKFolderBand,%HKFolderBand%
 	GuiControl, 1:,HKCleanFolderBand,%HKCleanFolderBand%
 	GuiControl, 1:,HKPlacesBar,%HKPlacesBar%
-	GuiControl, 1:,HKFFMenu,%HKFFMenu%
+	; GuiControl, 1:,HKFFMenu,%HKFFMenu%
 	GuiControl, 1:,Use Fast Folders,%HKFastFolders%
 	GoSub FastFolders
 }
@@ -672,7 +674,7 @@ Settings_SetupTabs() {
 	local x:=max(MiddleOpenFolder,1)	
 	GuiControl, 1:Choose, MiddleOpenFolder, %x%
 }
-Settings_SetupWindowHandling() {
+Settings_SetupWindows() {
 	global
 	/*
 	GuiControl, 1:,HKTitleClose,%HKTitleClose%
@@ -697,9 +699,20 @@ Settings_SetupWindowHandling() {
 	if(!temp)
 		GuiControl, 1:, AeroFlipTime, 0
 	GoSub Flip3D
+	if(A_OsVersion!="WIN_7")
+	{
+		GuiControl, 1:disable, HKActivateBehavior
+		GuiControl, 1:disable, HKToggleWallpaper
+	}
+	GuiControl, 1:,HKMiddleClose,%HKMiddleClose%
+	RegRead, HKActivateBehavior, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick
+	GuiControl, 1:,HKActivateBehavior,%HKActivateBehavior%
+	GuiControl, 1:,HKToggleWallpaper,%HKToggleWallpaper%
 }
+/*
 Settings_SetupDesktopTaskBar() {
 	global
+	
 	local temp
 	;Setup taskbar launch
 	temp:=(TaskbarLaunchPath!="")
@@ -708,16 +721,11 @@ Settings_SetupDesktopTaskBar() {
 	GoSub TaskbarLaunch
 	
 		
-	if(A_OsVersion!="WIN_7")
-	{
-		GuiControl, 1:disable, HKActivateBehavior
-		GuiControl, 1:disable, HKToggleWallpaper
-	}
 	GuiControl, 1:,HKTaskbarLaunch,%HKTaskbarLaunch%
-	GuiControl, 1:,HKMiddleClose,%HKMiddleClose%
-	RegRead, HKActivateBehavior, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick
-	GuiControl, 1:,HKActivateBehavior,%HKActivateBehavior%
-	GuiControl, 1:,HKToggleWallpaper,%HKToggleWallpaper%
+	
+	
+	
+	
 	temp:=(DoubleClickDesktop !=0 && DoubleClickDesktop != "")
 	GuiControl, 1:, DoubleClickDesktop, %temp%
 	if(temp)
@@ -725,7 +733,9 @@ Settings_SetupDesktopTaskBar() {
 	else
 		GuiControl, 1:, DoubleClickDesktopPath,
 	GoSub DoubleClickDesktop
+	
 }
+*/
 /*
 Settings_SetupCustomHotkeys() {
 	global
@@ -853,7 +863,7 @@ ShowSettings() {
 			wTBHuge:=300
 			wButton:=30
 			hCheckbox:=16 
-			TabList = Events|Explorer Hotkeys|Explorer Behavior|Fast Folders|Explorer Tabs|Window Handling|Desktop / Taskbar|Misc|About 
+			TabList = Events|Explorer|Fast Folders|Explorer Tabs|Windows|Misc|About 
 			Gui, 1:Add, ListBox, x16 y20 w120 h350 gListbox vMyListBox, %TabList%
 			Gui, 1:Add, GroupBox, x156 y14 w530 h350 vGGroupBox , Explorer Hotkeys  
 			/*
@@ -875,12 +885,12 @@ ShowSettings() {
 			Gui, 1:Add, Text, x16 y375 vTutLabel, Click on ? to see video tutorial help!
 			Gui, 1:Add, Text, y375 x370 vWait, Applying settings, please wait!
 			Settings_CreateEvents()
-			Settings_CreateHotkeys()
-			Settings_CreateBehavior()
+			Settings_CreateExplorer()
+			; Settings_CreateBehavior()
 			Settings_CreateFastFolders()
 			Settings_CreateTabs()
-			Settings_CreateWindowHandling()
-			Settings_CreateDesktopTaskBar()
+			Settings_CreateWindows()
+			; Settings_CreateDesktopTaskBar()
 			;Settings_CreateCustomHotkeys()
 			;Settings_CreateFTP()
 			Settings_CreateMisc()
@@ -897,12 +907,12 @@ ShowSettings() {
 		; Setup Control Status
 		;---------------------------------------------------------------------------------------------------------------
 		Settings_SetupEvents()
-		Settings_SetupHotkeys()
-		Settings_SetupBehavior()
+		Settings_SetupExplorer()
+		; Settings_SetupBehavior()
 		Settings_SetupFastFolders()
 		Settings_SetupTabs()
-		Settings_SetupWindowHandling()
-		Settings_SetupDesktopTaskBar()
+		Settings_SetupWindows()
+		; Settings_SetupDesktopTaskBar()
 		;Settings_SetupCustomHotkeys()
 		;Settings_SetupFTP()
 		Settings_SetupMisc()
@@ -1124,8 +1134,10 @@ GUI_EventsList_Import()
 {
 	global Settings_Events
 	FileSelectFile, file, 3, , Import Events file, Event files (*.xml)
+	outputdebug % "pre import length:" settings_events.len()
 	if(file)
-		Events := ReadEventsFile(Settings_Events, file)
+		ReadEventsFile(Settings_Events, file)
+		outputdebug % "post import length:" settings_events.len()
 	Settings_SetupEvents()
 }
 GUI_EventsList_Export()
@@ -1193,6 +1205,7 @@ GuiControlGet, enabled ,1: , Paste image as file
 GuiControl, 1:enable%enabled%,ImgName
 Return
 
+/*
 Editor:
 GuiControlGet, enabled ,1: , F3: Open selected files in text/image editor
 GuiControl, 1:enable%enabled%,TextEditor
@@ -1214,21 +1227,21 @@ FileSelectFile, imagepath , 3, , Select image editor executable, *.exe
 if !ErrorLevel
 	GuiControl, 1:,ImageEditor,%imagepath%
 Return
-
+*/
 FastFolders:
-GuiControlGet, enabled ,1: , Use Fast Folders
-GuiControl, 1:enable%enabled%, HKPlacesBar
-GuiControl, 1:enable%enabled%, HKFFMenu
-if(enabled)
-{
+; GuiControlGet, enabled ,1: , Use Fast Folders
+; GuiControl, 1:enable%enabled%, HKPlacesBar
+; GuiControl, 1:enable%enabled%, HKFFMenu
+; if(enabled)
+; {
 	GuiControl, 1:enable%Vista7%, HKFolderBand
 	GuiControl, 1:enable%Vista7%, HKCleanFolderBand
-}
-else
-{
-	GuiControl, 1:disable, HKFolderBand
-	GuiControl, 1:disable, HKCleanFolderBand
-}
+; }
+; else
+; {
+	; GuiControl, 1:disable, HKFolderBand
+	; GuiControl, 1:disable, HKCleanFolderBand
+; }
 Return
 
 UseTabs:
@@ -1258,7 +1271,7 @@ path:=COM_CreateObject("Shell.Application").BrowseForFolder(0, "Enter Path to ad
 if(path!="")
 	GuiControl, , 1:TabStartupPath,%path%
 return
-
+/*
 TaskbarLaunch:
 GuiControlGet, enabled ,1: , Double click on empty taskbar: Run
 GuiControl, 1:enable%enabled%,TaskbarLaunchPath
@@ -1275,7 +1288,7 @@ if !ErrorLevel
 	GuiControl, 1:,TaskbarLaunchPath,%TaskbarPath%
 }
 Return
-
+*/
 Flip3D:
 GuiControlGet, enabled ,1: ,Mouse in upper left corner: Toggle Aero Flip 3D
 GuiControl, 1:enable%enabled%, AeroFlipTime
@@ -1292,7 +1305,7 @@ SlideWindow:
 GuiControlGet, enabled,1: , HKSlideWindows
 GuiControl, 1:enable%enabled%, SlideWinHide
 return
-
+/*
 DoubleClickDesktop:
 GuiControlGet, enabled ,1: ,DoubleClickDesktop
 GuiControl, 1:enable%enabled%, DoubleClickDesktopPath
@@ -1305,6 +1318,7 @@ FileSelectFile, path , 3, , Select file to execute, *.exe
 if(path!="")
 	GuiControl, 1:,DoubleClickDesktopPath,%path%
 Return
+*/
 /*
 AddHotkey:
 Gui, ListView, CustomHotkeysList
@@ -1386,14 +1400,23 @@ WM_KEYDOWN(wParam, lParam)
 			GUI_RemoveEvent()
 		else if(A_GuiControl = "GUI_EventsList")
 		{
+			send := true
 			if(wParam = 17 || (wParam > 32 && wParam < 41)) ;CTRL, arrow keys, home, end, page up/down
-				return false
+				send := false
 			if(GetKeyState("Control", "P")) ;Don't send when CTRL is down
-				return false
-				
-			outputdebug send keydown %wparam% to %EventFilter%
-			PostMessage, 0x100, %wParam%, %lParam%,,ahk_id %EventFilter%
-			return true
+			{
+				send := false
+				if(GetKeyState("A", "P"))
+					Loop % LV_GetCount()
+						LV_Modify(A_Index, "Select")
+			}
+			
+			if(send)
+			{
+				outputdebug send keydown %wparam% to %EventFilter%
+				PostMessage, 0x100, %wParam%, %lParam%,,ahk_id %EventFilter%
+				return true
+			}
 		}
 	}
 	if(A_GUI = 4 && A_GuiControl = "EditEventConditions" && wParam = 0x2E)
@@ -1665,221 +1688,207 @@ return
 ; OK/Cancel/Close
 ;---------------------------------------------------------------------------------------------------------------
 OK:
-;First process variables which require comparison with previous values
-;Store explorer info settings
-x:=HKShowSpaceAndSize
+ApplySettings()
+return
 
-;Store Fast Folders settings and make everything consistent by backing up and restoring reg keys
-wasActive:=HKFastFolders
-GuiControlGet, active ,1: , Use Fast Folders
-HKFastFolders:=active
-GuiControl, 1:Show, Wait
-GuiControl, 1:MoveDraw, Wait
-changed:=false
-GuiControlGet, active ,1: , HKFolderBand
-if(active && HKFastFolders && (!HKFolderBand || !wasactive))
+ApplySettings()
 {
-	PrepareFolderBand()
-	;changed:=true
-}
-else if(HKFolderBand && ((wasActive && !HKFastFolders) || !active))
-{
-	RestoreFolderBand()
-	changed:=true
-}
+	global
+	local active, enabled, pastename, flip, path, temp
+	;First process variables which require comparison with previous values
+	;Store explorer info settings
+	; x:=HKShowSpaceAndSize
 
-GuiControlGet, active ,1: , HKCleanFolderBand
-if(active && HKFastFolders && (!HKCleanFolderBand || !wasactive))
-{
-	BackupAndRemoveFolderBandButtons()
-}
-else if(HKCleanFolderBand && ((wasActive && !HKFastFolders) || !active))
-{
-	RestoreFolderBandButtons()
-}
+	;Store Fast Folders settings and make everything consistent by backing up and restoring reg keys
+	; wasActive:=HKFastFolders
+	; GuiControlGet, active ,1: , Use Fast Folders
+	; HKFastFolders:=active
+	GuiControl, 1:Show, Wait
+	GuiControl, 1:MoveDraw, Wait
+	GuiControlGet, active ,1: , HKFolderBand
+	if(active && !HKFolderBand)
+		PrepareFolderBand()
+	else if(HKFolderBand && !active)
+		RestoreFolderBand()
+
+	GuiControlGet, active ,1: , HKCleanFolderBand
+	if(active && !HKCleanFolderBand)
+		BackupAndRemoveFolderBandButtons()
+	else if(HKCleanFolderBand && !active)
+		RestoreFolderBandButtons()
+			
+	GuiControlGet, active ,1: , HKPlacesBar
+	if(active && !HKPlacesBar)
+		BackupPlacesBar()
+	else if(HKPlacesBar && !active)
+		RestorePlacesBar()
 		
-GuiControlGet, active ,1: , HKPlacesBar
-if(active && HKFastFolders && (!HKPlacesBar || !wasactive))
-{
-	BackupPlacesBar()
-}
-else if(HKPlacesBar && ((wasActive && !HKFastFolders) || !active))
-{
-	RestorePlacesBar()
-}
-/*
-if(changed)
-	RefreshFastFolders()
-*/
-Autorun:=0 ;?
-temp:=FTP_Password
-;Store variables which can be stored directly
-Gui 1:Submit
+	Autorun:=0 ;?
+	; temp:=FTP_Password
+	;Store variables which can be stored directly
+	Gui 1:Submit
 
-GUI_SaveEvents()
-Settings_Events := ""
-if(JoyControl)
-	JoystickStart()
-else
-	JoystickStop()
-	
-;Store paste text as file filename
-GuiControlGet, txtenabled ,1: , Paste text as file
-GuiControlGet, pastename ,1: , TxtName
-if txtenabled
-{
-	TxtName:=pastename
-	temp_txt:=A_Temp . "\" . TxtName
-}
-else
-{
-	TxtName:=""
-	temp_txt:=""
-}
-
-;Store paste image as file filename
-GuiControlGet, imgenabled ,1: , Paste image as file
-GuiControlGet, pastename ,1: , ImgName
-if imgenabled
-{
-	ImgName:=pastename
-	temp_img:=A_Temp . "\" . ImgName
-}
-else
-{
-	ImgName:=""
-	temp_img:=""
-}
-
-;Store editor filename
-GuiControlGet, editorenabled ,1: , F3: Open selected files in text/image editor
-GuiControlGet, editorpath ,1: , TextEditor
-if editorenabled
-{
-	TextEditor:=editorpath
-}
-else
-{
-	TextEditor:=""
-}
-
-;Store image editor filename
-GuiControlGet, imageeditorpath ,1: , ImageEditor
-if editorenabled
-{
-	ImageEditor:=imageeditorpath
-}
-else
-{
-	ImageEditor:=""
-}
-
-;Store MiddleOpenFolder
-GuiControlGet, enabled, 1: , OpenFolderInNew
-if(!enabled)
-	MiddleOpenFolder:=0
-
-;Store taskbar launch filename
-GuiControlGet, enabled ,1: , Double click on empty taskbar: Run
-GuiControlGet, path ,1: , TaskbarLaunchPath
-if enabled
-{
-	TaskbarLaunchPath:=path
-}
-else
-{
-	TaskbarLaunchPath:=""
-}
-
-;Store Aero Flip time
-GuiControlGet, flip,1:,Mouse in upper left corner: Toggle Aero Flip 3D
-if(flip&&Vista7)
-	SetTimer, hovercheck, 10
-else
-{
-	AeroFlipTime:=-1
-	SetTimer, hovercheck, Off
-}
-
-;Store double click desktop
-GuiControlGet, enabled, 1:, DoubleClickDesktop
-if(!enabled)
-	DoubleClickDesktop:=0
-else
-	GuiControlGet, DoubleClickDesktop, 1:, DoubleClickDesktopPath
-/*
-;Store custom hotkeys
-CustomHotkeys_SaveCurrentView()
-RemoveAllHotkeys()
-Loop % Settings_CustomHotkeys.len()
-{
-	AddHotkey(Settings_CustomHotkeys[A_Index].key, Settings_CustomHotkeys[A_Index].command, Settings_CustomHotkeys[A_Index].filter)
-}
-Settings_CustomHotkeys := Array()
-*/
-;UnSlide hidden windows
-if(!HKSlideWindows)
-	SlideWindows_Exit()
-/*
-;Store FTP Settings
-GuiControlGet, FTP_Enabled,1: ,Use FTP
-if(FTP_Password!=temp)
-{
-	outputdebug ftp password changed from %temp% to %FTP_Password%, encrypt it
-	FTP_Password:=Encrypt(FTP_Password)
-	outputdebug after encryption: %ftp_password%
-}
-ValidateFTPVars()
-*/
-;Store Autorun setting
-if(Autorun)
-{
-	if(A_IsCompiled)
-		RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptDir%\UACAutorun.exe"
+	GUI_SaveEvents()
+	Settings_Events := ""
+	if(JoyControl)
+		JoystickStart()
 	else
-		RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptDir%\UACAutorun.ahk"
-}
-else
-	RegDelete, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus
-
-RegRead, temp, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick
-RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick, %HKActivateBehavior%
-if(temp!=HKActivateBehavior)
-{
-	MsgBox, 4, Restart Explorer, You need to restart explorer to apply a setting. Do you want to do this now?
-	IfMsgBox Yes
+		JoystickStop()
+	;Store paste text as file filename
+	GuiControlGet, enabled ,1: , Paste text as file
+	GuiControlGet, pastename ,1: , TxtName
+	if(enabled)
 	{
-		Runwait, taskkill /im explorer.exe /f, , Hide
-		Run, %a_windir%\explorer.exe
-		;Process, close,explorer.exe
-		/*
-		Send {CTRL down}{ESC}{CTRL up}
-		WinWaitActive ahk_class DV2ControlHost
-		Send {Right}
-		Send {CTRL down}{SHIFT down}{AppsKey}
-		while(!IsContextMenuActive())
-		{
-			Sleep 10
-		}
-		Send {CTRL up}{Shift up}{Up}
-		Send {Enter}
-		Sleep 500
-		Run %a_windir%\explorer.exe
-		*/
+		TxtName:=pastename
+		temp_txt:=A_Temp . "\" . TxtName
 	}
+	else
+	{
+		TxtName:=""
+		temp_txt:=""
+	}
+
+	;Store paste image as file filename
+	GuiControlGet, enabled ,1: , Paste image as file
+	GuiControlGet, pastename ,1: , ImgName
+	if(enabled)
+	{
+		ImgName:=pastename
+		temp_img:=A_Temp . "\" . ImgName
+	}
+	else
+	{
+		ImgName:=""
+		temp_img:=""
+	}
+
+	/*
+	;Store editor filename
+	GuiControlGet, editorenabled ,1: , F3: Open selected files in text/image editor
+	GuiControlGet, editorpath ,1: , TextEditor
+	if editorenabled
+	{
+		TextEditor:=editorpath
+	}
+	else
+	{
+		TextEditor:=""
+	}
+
+	;Store image editor filename
+	GuiControlGet, imageeditorpath ,1: , ImageEditor
+	if editorenabled
+	{
+		ImageEditor:=imageeditorpath
+	}
+	else
+	{
+		ImageEditor:=""
+	}
+	*/
+	;Store MiddleOpenFolder
+	GuiControlGet, enabled, 1: , OpenFolderInNew
+	if(!enabled)
+		MiddleOpenFolder:=0
+
+	;Store taskbar launch filename
+	GuiControlGet, enabled ,1: , Double click on empty taskbar: Run
+	GuiControlGet, path ,1: , TaskbarLaunchPath
+	if(enabled)
+		TaskbarLaunchPath:=path
+	else
+		TaskbarLaunchPath:=""
+
+	;Store Aero Flip time
+	GuiControlGet, flip,1:,Mouse in upper left corner: Toggle Aero Flip 3D
+	if(flip && Vista7)
+		SetTimer, hovercheck, 10
+	else
+	{
+		AeroFlipTime:=-1
+		SetTimer, hovercheck, Off
+	}
+
+	;Store double click desktop
+	GuiControlGet, enabled, 1:, DoubleClickDesktop
+	if(!enabled)
+		DoubleClickDesktop:=0
+	else
+		GuiControlGet, DoubleClickDesktop, 1:, DoubleClickDesktopPath
+	/*
+	;Store custom hotkeys
+	CustomHotkeys_SaveCurrentView()
+	RemoveAllHotkeys()
+	Loop % Settings_CustomHotkeys.len()
+	{
+		AddHotkey(Settings_CustomHotkeys[A_Index].key, Settings_CustomHotkeys[A_Index].command, Settings_CustomHotkeys[A_Index].filter)
+	}
+	Settings_CustomHotkeys := Array()
+	*/
+	;UnSlide hidden windows
+	if(!HKSlideWindows)
+		SlideWindows_Exit()
+	/*
+	;Store FTP Settings
+	GuiControlGet, FTP_Enabled,1: ,Use FTP
+	if(FTP_Password!=temp)
+	{
+		outputdebug ftp password changed from %temp% to %FTP_Password%, encrypt it
+		FTP_Password:=Encrypt(FTP_Password)
+		outputdebug after encryption: %ftp_password%
+	}
+	ValidateFTPVars()
+	*/
+	;Store Autorun setting
+	if(Autorun)
+	{
+		if(A_IsCompiled)
+			RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptDir%\UACAutorun.exe"
+		else
+			RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptDir%\UACAutorun.ahk"
+	}
+	else
+		RegDelete, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus
+
+	RegRead, temp, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick
+	RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick, %HKActivateBehavior%
+	if(temp!=HKActivateBehavior)
+	{
+		MsgBox, 4, Restart Explorer, You need to restart explorer to apply a setting. Do you want to do this now?
+		IfMsgBox Yes
+		{
+			Runwait, taskkill /im explorer.exe /f, , Hide
+			Run, %a_windir%\explorer.exe
+			;Process, close,explorer.exe
+			/*
+			Send {CTRL down}{ESC}{CTRL up}
+			WinWaitActive ahk_class DV2ControlHost
+			Send {Right}
+			Send {CTRL down}{SHIFT down}{AppsKey}
+			while(!IsContextMenuActive())
+			{
+				Sleep 10
+			}
+			Send {CTRL up}{Shift up}{Up}
+			Send {Enter}
+			Sleep 500
+			Run %a_windir%\explorer.exe
+			*/
+		}
+	}
+	if(HideTrayIcon)
+	{
+		MsgBox You have chosen to hide the tray icon. This means that you will only be able to access the settings dialog by pressing WIN + H. Also, the program can only be ended by using the task manager then.
+		Menu, Tray, NoIcon
+	}
+	else
+		Menu, Tray, Icon
+	;RefreshHotkeyArrays()
+	WriteIni()
+	SettingsActive:=False
+	Gui 1:Cancel
+	Return
 }
-if(HideTrayIcon)
-{
-	MsgBox You have chosen to hide the tray icon. This means that you will only be able to access the settings dialog by pressing WIN + H. Also, the program can only be ended by using the task manager then.
-	Menu, Tray, NoIcon
-}
-else
-	Menu, Tray, Icon
-;RefreshHotkeyArrays()
-WriteIni()
-SettingsActive:=False
-Gui 1:Cancel
-Return
 
 GuiEscape:
 Cancel:

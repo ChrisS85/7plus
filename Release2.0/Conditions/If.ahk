@@ -4,11 +4,11 @@
 	Condition.Operator := "equals"
 	Condition.Compare := "${P}"
 }
-Condition_If_ReadXML(Condition, ConditionFileHandle)
+Condition_If_ReadXML(Condition, XMLCondition)
 {
-	Condition.Operator := xpath(ConditionFileHandle, "/Operator/Text()")
-	Condition.Compare := xpath(ConditionFileHandle, "/Compare/Text()")
-	Condition.With:= xpath(ConditionFileHandle, "/With/Text()")
+	Condition.Operator := XMLCondition.Operator
+	Condition.Compare := XMLCondition.Compare
+	Condition.With:= XMLCondition.With
 }
 Condition_If_Evaluate(Condition, Event)
 {

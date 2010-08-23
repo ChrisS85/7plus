@@ -10,8 +10,6 @@
 	{	
 		if(dir!=GetTaskbarDirection())
 			SlideWindowArray.Add(WinExist("A"),dir)
-		Else if(HKTrayMin)
-			WinTrayMin(WinExist("A"))
 	}
 	return
 #+Up::
@@ -22,8 +20,6 @@
 	{	
 		if(dir!=GetTaskbarDirection())
 			SlideWindowArray.Add(WinExist("A"),dir)
-		Else if(HKTrayMin)
-			WinTrayMin(WinExist("A"))
 	}
 	return
 #+Right::
@@ -34,8 +30,6 @@
 	{	
 		if(dir!=GetTaskbarDirection())
 			SlideWindowArray.Add(WinExist("A"),dir)
-		Else if(HKTrayMin)
-			WinTrayMin(WinExist("A"))
 	}
 	return
 #+Down::
@@ -46,8 +40,6 @@
 	{	
 		if(dir!=GetTaskbarDirection())
 			SlideWindowArray.Add(WinExist("A"),dir)
-		Else if(HKTrayMin)
-			WinTrayMin(WinExist("A"))
 	}
 	return
 #if

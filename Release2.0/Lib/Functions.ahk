@@ -236,6 +236,16 @@ WinGetTitle(WinTitle = "", WinText = "", ExcludeTitle = "", ExcludeText = "") {
 	WinGetTitle, v, %WinTitle%, %WinText%, %ExcludeTitle%, %ExcludeText%
 	Return, v
 }
+WinMaximize(Title = "", WinText = "", ExcludeTitle = "", ExcludeText = "") {
+	WinGet, style, style, %WinTitle%, %WinText%, %ExcludeTitle%, %ExcludeText%
+	if(style & 0x10000)
+		WinMaximize, %WinTitle%, %WinText%, %ExcludeTitle%, %ExcludeText%
+}
+WinMinimize(Title = "", WinText = "", ExcludeTitle = "", ExcludeText = "") {
+	WinGet, style, style, %WinTitle%, %WinText%, %ExcludeTitle%, %ExcludeText%
+	if(style & 0x20000)
+		WinMinimize, %WinTitle%, %WinText%, %ExcludeTitle%, %ExcludeText%
+}
 ;System modal messagebox (Options can't be considered due to msgbox parsing
 MsgBox2(Title, Text, Timeout="")
 {	

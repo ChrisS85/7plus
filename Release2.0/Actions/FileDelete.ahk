@@ -3,9 +3,9 @@
 	Action_FileOperation_Init(Action)
 }
 
-Action_Delete_ReadXML(Action, ActionFileHandle)
+Action_Delete_ReadXML(Action, XMLAction)
 {
-	Action_FileOperation_ReadXML(Action, ActionFileHandle)
+	Action_FileOperation_ReadXML(Action, XMLAction)
 }
 
 Action_Delete_Execute(Action, Event)

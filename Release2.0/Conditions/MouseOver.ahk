@@ -4,12 +4,12 @@ Condition_MouseOver_Init(Condition)
 	Condition.MouseOverType := "Window"
 	WindowFilter_Init(Condition)
 }
-Condition_MouseOver_ReadXML(Condition, ConditionFileHandle)
+Condition_MouseOver_ReadXML(Condition, XMLCondition)
 {
-	Condition.MouseOverType := xpath(ConditionFileHandle, "/MouseOverType/Text()")
+	Condition.MouseOverType := XMLCondition.MouseOverType
 	if(Condition.MouseOverType = "Window")
 	{
-		WindowFilter_ReadXML(Condition, ConditionFileHandle)
+		WindowFilter_ReadXML(Condition, XMLCondition)
 	}
 }
 Condition_MouseOver_Evaluate(Condition)

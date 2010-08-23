@@ -1,127 +1,126 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
 <Events>
-  <Event>
-    <ID>17</ID>
-    <Name>Explorer: Copy filenames to clipboard</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>1</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>!C</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>CabinetWClass ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>Clipboard</Type>
-        <Append>0</Append>
-        <Clear>1</Clear>
-        <Content>${SelNNEM}</Content>
-        <Cut>0</Cut>
-        <InsertType>Text</InsertType>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>18</ID>
-    <Name>Explorer: Copy full filepaths to clipboard</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>1</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>^!C</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>CabinetWClass ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>Clipboard</Type>
-        <Append>0</Append>
-        <Clear>1</Clear>
-        <Content>${SelNM}</Content>
-        <Cut>0</Cut>
-        <InsertType>Text</InsertType>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>19</ID>
-    <Name>Explorer: Append filenames to clipboard</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>1</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>+!C</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>CabinetWClass ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>Clipboard</Type>
-        <Append>1</Append>
-        <Clear>1</Clear>
-        <Content>${SelNNEM}</Content>
-        <Cut>0</Cut>
-        <InsertType>Text</InsertType>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>20</ID>
-    <Name>Explorer: Append full filepaths to clipboard</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>1</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>^+!C</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>CabinetWClass ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>Clipboard</Type>
-        <Append>1</Append>
-        <Clear>1</Clear>
-        <Content>${SelNM}</Content>
-        <Cut>0</Cut>
-        <InsertType>Text</InsertType>
-      </Action>
-    </Actions>
-  </Event>
+<Event>
+<ID>140</ID>
+<Name>Explorer: Copy filenames to clipboard</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>1</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!C</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>Clipboard</Type>
+<Append>0</Append>
+<Clear>1</Clear>
+<Content>${SelNNEM}</Content>
+<Cut>0</Cut>
+<InsertType>Text</InsertType>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>141</ID>
+<Name>Explorer: Copy full filepaths to clipboard</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>1</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^!C</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>Clipboard</Type>
+<Append>0</Append>
+<Clear>1</Clear>
+<Content>${SelNM}</Content>
+<Cut>0</Cut>
+<InsertType>Text</InsertType>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>142</ID>
+<Name>Explorer: Append filenames to clipboard</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>1</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>+!C</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>Clipboard</Type>
+<Append>1</Append>
+<Clear>1</Clear>
+<Content>${SelNNEM}</Content>
+<Cut>0</Cut>
+<InsertType>Text</InsertType>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>143</ID>
+<Name>Explorer: Append full filepaths to clipboard</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>1</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^+!C</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>Clipboard</Type>
+<Append>1</Append>
+<Clear>1</Clear>
+<Content>${SelNM}</Content>
+<Cut>0</Cut>
+<InsertType>Text</InsertType>
+</Action>
+</Actions>
+</Event>
 </Events>

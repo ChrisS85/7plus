@@ -4,10 +4,10 @@
 	Condition.UseIncludeList := 1
 	Condition.UseExcludeList := 1
 }
-Condition_IsFullScreen_ReadXML(Condition, ConditionFileHandle)
+Condition_IsFullScreen_ReadXML(Condition, XMLCondition)
 {
-	Condition.UseIncludeList := xpath(ConditionFileHandle, "/UseIncludeList/Text()")
-	Condition.UseExcludeList := xpath(ConditionFileHandle, "/UseExcludeList/Text()")
+	Condition.UseIncludeList := XMLCondition.UseIncludeList
+	Condition.UseExcludeList := XMLCondition.UseExcludeList
 }
 Condition_IsFullScreen_Evaluate(Condition)
 {

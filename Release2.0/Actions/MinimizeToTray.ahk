@@ -3,9 +3,9 @@ Action_MinimizeToTray_Init(Action)
 	WindowFilter_Init(Action)
 	Action.Category := "Window"
 }
-Action_MinimizeToTray_ReadXML(Action, ActionFileHandle)
+Action_MinimizeToTray_ReadXML(Action, XMLAction)
 {
-	WindowFilter_ReadXML(Action, ActionFileHandle)
+	WindowFilter_ReadXML(Action, XMLAction)
 }
 Action_MinimizeToTray_Execute(Action)
 {

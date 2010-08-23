@@ -5,13 +5,13 @@ Action_FileOperation_Init(Action)
 	Action.Overwrite := 0
 }
 
-Action_FileOperation_ReadXML(Action, ActionFileHandle)
+Action_FileOperation_ReadXML(Action, XMLFileOperation)
 {
-	Action.Silent := xpath(ActionFileHandle, "/Silent/Text()")
-	Action.Overwrite := xpath(ActionFileHandle, "/Overwrite/Text()")
-	Action.SourceFile := xpath(ActionFileHandle, "/SourceFile/Text()")
-	Action.TargetPath := xpath(ActionFileHandle, "/TargetPath/Text()")
-	Action.TargetFile := xpath(ActionFileHandle, "/TargetFile/Text()")
+	Action.Silent := XMLFileOperation.Silent
+	Action.Overwrite := XMLFileOperation.Overwrite
+	Action.SourceFile := XMLFileOperation.SourceFile
+	Action.TargetPath := XMLFileOperation.TargetPath
+	Action.TargetFile := XMLFileOperation.TargetFile
 }
 
 Action_FileOperation_DisplayString(Action)

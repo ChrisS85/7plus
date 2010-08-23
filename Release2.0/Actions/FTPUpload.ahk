@@ -28,18 +28,18 @@ Action_Upload_Init(Action)
 	Action.Clipboard := (OtherAction ? OtherAction.Clipboard : 1)
 }
 
-Action_Upload_ReadXML(Action, ActionFileHandle)
+Action_Upload_ReadXML(Action, XMLAction)
 {
-	Action.SourceFiles := xpath(ActionFileHandle, "/SourceFiles/Text()")
-	Action.Hostname := xpath(ActionFileHandle, "/Hostname/Text()")
-	Action.Port := xpath(ActionFileHandle, "/Port/Text()")
-	Action.User := xpath(ActionFileHandle, "/User/Text()")
-	Action.Password := xpath(ActionFileHandle, "/Password/Text()")
-	Action.TargetFolder := xpath(ActionFileHandle, "/TargetFolder/Text()")
-	Action.TargetFile := xpath(ActionFileHandle, "/TargetFile/Text()")
-	Action.URL := xpath(ActionFileHandle, "/URL/Text()")
-	Action.Silent := xpath(ActionFileHandle, "/Silent/Text()")
-	Action.Clipboard := xpath(ActionFileHandle, "/Clipboard/Text()")
+	Action.SourceFiles := XMLAction.SourceFiles
+	Action.Hostname := XMLAction.Hostname
+	Action.Port := XMLAction.Port
+	Action.User := XMLAction.User
+	Action.Password := XMLAction.Password
+	Action.TargetFolder := XMLAction.TargetFolder
+	Action.TargetFile := XMLAction.TargetFile
+	Action.URL := XMLAction.URL
+	Action.Silent := XMLAction.Silent
+	Action.Clipboard := XMLAction.Clipboard
 }
 
 Action_Upload_Execute(Action, Event)
@@ -74,43 +74,46 @@ Action_Upload_Execute(Action, Event)
 				number++
 		targets[pos] := CheckFilenameNoExtension (number > 1 ? " (" number ")" : "") "." CheckExtension
 	}
-	decrypted:=Decrypt(Action.Password)
-	result:=FtpOpen(Action.Hostname, Action.Port, Action.User, decrypted)
-	cliptext=
-	if(result=1)
+	if(files.len() > 0)
 	{
-		FtpCreateDirectory(TargetFolder)
-		Loop % files.len()
+		decrypted:=Decrypt(Action.Password)
+		result:=FtpOpen(Action.Hostname, Action.Port, Action.User, decrypted)
+		cliptext=
+		if(result=1)
 		{
-			FullPath := files[A_Index]
-			result:=FtpPutFile(FullPath, TargetFolder (TargetFolder ? "/" : "") targets[A_Index]) 
-			if(result=0 && !Action.Silent)
+			FtpCreateDirectory(TargetFolder)
+			Loop % files.len()
 			{
-				ToolTip(1, "Couldn't upload " TargetFolder (TargetFolder ? "/" : "") targets[A_Index] " properly. Make sure you have write rights and the path exists", "Couldn't upload file","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
+				FullPath := files[A_Index]
+				result:=FtpPutFile(FullPath, TargetFolder (TargetFolder ? "/" : "") targets[A_Index]) 
+				if(result=0 && !Action.Silent)
+				{
+					ToolTip(1, "Couldn't upload " TargetFolder (TargetFolder ? "/" : "") targets[A_Index] " properly. Make sure you have write rights and the path exists", "Couldn't upload file","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
+					SetTimer, ToolTipClose, -5000
+				}
+				else if(Action.URL && Action.Clipboard)
+					cliptext .= (A_Index = 1 ? "" : "`r`n") Action.URL "/" TargetFolder (TargetFolder ? "/" : "") StringReplace(targets[A_Index], " ", "%20", 1)
+			}
+			FtpClose()
+			if(Action.URL && Action.Clipboard)
+				clipboard:=cliptext
+			if(!Action.Silent)
+			{
+				ToolTip(1, "File uploaded" (Action.URL ? " and links copied to clipboard" : ""), "Transfer finished","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
+				SetTimer, ToolTipClose, -2000
+				SoundBeep
+			}
+			return 1
+		}
+		else
+		{
+			if(!Action.Silent)
+			{
+				ToolTip(1, "Couldn't connect to " Action.Hostname ". Correct host/username/password?", "Connection Error","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
 				SetTimer, ToolTipClose, -5000
 			}
-			else if(Action.URL && Action.Clipboard)
-				cliptext .= (A_Index = 1 ? "" : "`r`n") Action.URL "/" TargetFolder (TargetFolder ? "/" : "") StringReplace(targets[A_Index], " ", "%20", 1)
+			return 0
 		}
-		FtpClose()
-		if(Action.URL && Action.Clipboard)
-			clipboard:=cliptext
-		if(!Action.Silent)
-		{
-			ToolTip(1, "File uploaded" (Action.URL ? " and links copied to clipboard" : ""), "Transfer finished","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
-			SetTimer, ToolTipClose, -2000
-			SoundBeep
-		}
-		return 1
-	}
-	else
-	{
-		if(!Action.Silent)
-		{
-			ToolTip(1, "Couldn't connect to " Action.Hostname ". Correct host/username/password?", "Connection Error","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
-			SetTimer, ToolTipClose, -5000
-		}
-		return 0
 	}
 }
 Action_Upload_DisplayString(Action)

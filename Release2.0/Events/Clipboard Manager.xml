@@ -1,21 +1,20 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
 <Events>
-  <Event>
-    <ID>5</ID>
-    <Name>Clipboard Manager</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>#V</Key>
-    </Trigger>
-    <Conditions />
-    <Actions>
-      <Action>
-        <Type>Clipmenu</Type>
-      </Action>
-    </Actions>
-  </Event>
+<Event>
+<ID>5</ID>
+<Name>Clipboard Manager</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>#V</Key>
+</Trigger>
+<Conditions></Conditions>
+<Actions>
+<Action>
+<Type>Clipmenu</Type>
+</Action>
+</Actions>
+</Event>
 </Events>

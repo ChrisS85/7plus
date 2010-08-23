@@ -2,7 +2,7 @@ Trigger_DoubleClickDesktop_Init(Trigger)
 {
 	Trigger.Category := "Hotkeys"
 }
-Trigger_DoubleClickDesktop_ReadXML(Trigger, TriggerFileHandle)
+Trigger_DoubleClickDesktop_ReadXML(Trigger, XMLTrigger)
 {
 }
 Trigger_DoubleClickDesktop_Enable(Trigger)

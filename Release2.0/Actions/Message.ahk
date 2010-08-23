@@ -2,11 +2,11 @@ Action_Message_Init(Action)
 {
 	Action.Category := "System"
 }	
-Action_Message_ReadXML(Action, ActionFileHandle)
+Action_Message_ReadXML(Action, XMLAction)
 {
-	Action.Text := xpath(ActionFileHandle, "/Text/Text()")
-	Action.Title := xpath(ActionFileHandle, "/Title/Text()")
-	Action.Timeout := xpath(ActionFileHandle, "/Timeout/Text()")
+	Action.Text := XMLAction.Text
+	Action.Title := XMLAction.Title
+	Action.Timeout := XMLAction.Timeout
 }
 Action_Message_Execute(Action,Event)
 {

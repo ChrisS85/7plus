@@ -7,13 +7,13 @@ Action_WindowResize_Init(Action)
 	Action.Width := "100%"
 	Action.Height := "100%"
 }
-Action_WindowResize_ReadXML(Action, ActionFileHandle)
+Action_WindowResize_ReadXML(Action, XMLAction)
 {
-	WindowFilter_ReadXML(Action, ActionFileHandle)
-	Action.Width := xpath(ActionFileHandle, "/Width/Text()")
-	Action.Height := xpath(ActionFileHandle, "/Height/Text()")
-	Action.CenterX := xpath(ActionFileHandle, "/CenterX/Text()")
-	Action.CenterY := xpath(ActionFileHandle, "/CenterY/Text()")
+	WindowFilter_ReadXML(Action, XMLAction)
+	Action.Width := XMLAction.Width
+	Action.Height := XMLAction.Height
+	Action.CenterX := XMLAction.CenterX
+	Action.CenterY := XMLAction.CenterY
 }
 Action_WindowResize_Execute(Action,Event)
 {

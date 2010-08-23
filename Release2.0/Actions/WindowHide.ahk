@@ -3,9 +3,9 @@ Action_WindowHide_Init(Action)
 	WindowFilter_Init(Action)
 	Action.Category := "Window"
 }
-Action_WindowHide_ReadXML(Action, ActionFileHandle)
+Action_WindowHide_ReadXML(Action, XMLAction)
 {
-	WindowFilter_ReadXML(Action, ActionFileHandle)
+	WindowFilter_ReadXML(Action, XMLAction)
 }
 Action_WindowHide_Execute(Action)
 {

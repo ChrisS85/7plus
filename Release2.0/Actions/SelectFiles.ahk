@@ -7,13 +7,13 @@ Action_SelectFiles_Init(Action)
 	Action.Wildcard := 1
 	Action.WindowMatchType := "Active"
 }
-Action_SelectFiles_ReadXML(Action, ActionFileHandle)
+Action_SelectFiles_ReadXML(Action, XMLAction)
 {
-	Action.Filter := xpath(ActionFileHandle, "/Filter/Text()")
-	Action.Clear := xpath(ActionFileHandle, "/Clear/Text()")
-	Action.Deselect := xpath(ActionFileHandle, "/Deselect/Text()")
-	Action.Wildcard := xpath(ActionFileHandle, "/Wildcard/Text()")
-	WindowFilter_ReadXML(Action,ActionFileHandle)
+	Action.Filter := XMLAction.Filter
+	Action.Clear := XMLAction.Clear
+	Action.Deselect := XMLAction.Deselect
+	Action.Wildcard := XMLAction.Wildcard
+	WindowFilter_ReadXML(Action,XMLAction)
 }
 Action_SelectFiles_Execute(Action, Event)
 {

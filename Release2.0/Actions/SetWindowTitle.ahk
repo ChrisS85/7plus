@@ -4,10 +4,10 @@ Action_SetWindowTitle_Init(Action)
 	Action.Category := "System"
 	Action.Title := "7plus rocks!"
 }
-Action_SetWindowTitle_ReadXML(Action, ActionFileHandle)
+Action_SetWindowTitle_ReadXML(Action, XMLAction)
 {
-	WindowFilter_ReadXML(Action, ActionFileHandle)
-	Action.Title := xpath(ActionFileHandle, "/Title/Text()")
+	WindowFilter_ReadXML(Action, XMLAction)
+	Action.Title := XMLAction.Title
 }
 Action_SetWindowTitle_Execute(Action,Event)
 {

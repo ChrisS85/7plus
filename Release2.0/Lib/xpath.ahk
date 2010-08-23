@@ -337,7 +337,7 @@ xpath(ByRef doc, step, set = "") {
 	
 	;By Fragman: I need to reuse the return as xml!
 	;StringReplace, res, res, `,,,All
-	;StringReplace, res, res, &#44;,`,,All
+	StringReplace, res, res, &#44;,`,,All
 	; remove trailing comma and absolute paths from result before returning:
 	Return, RegExReplace(res, "S)(?<=<)(\/)?(?:(\w+)\/)+(?(1)|:: )", "$1$2")
 }
@@ -411,7 +411,7 @@ xpath_save(ByRef doc, src = "") {
 			False if there was an error in loading the document, true otherwise.
 
 */
-xpath_load(ByRef doc, src = "") {
+xpath_load(ByRef doc, src = "", noescape = true) {
 	If src = ; if source is empty assume the out variable is the one to be loaded
 		src = %doc%
 	Else If FileExist(src) ; otherwise read from file (if it exists)
@@ -454,7 +454,8 @@ xpath_load(ByRef doc, src = "") {
 			}
 		}
 	}
-	StringReplace, doc, xml, `,, &#44;, All ; entity escape commas (which are used as array delimiters)
+	if(!noescape)
+		StringReplace, doc, xml, `,, &#44;, All ; entity escape commas (which are used as array delimiters)
 	NumPut(0, doc := " " . doc, 0, "UChar") ; mask variable from text display with nullbyte
 	Return, true ; assume sucessful load by this point
 }

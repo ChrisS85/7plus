@@ -2,7 +2,7 @@ Trigger_DoubleClickTaskbar_Init(Trigger)
 {
 	Trigger.Category := "Hotkeys"
 }
-Trigger_DoubleClickTaskbar_ReadXML(Trigger, TriggerFileHandle)
+Trigger_DoubleClickTaskbar_ReadXML(Trigger, XMLTrigger)
 {
 }
 Trigger_DoubleClickTaskbar_Enable(Trigger)

@@ -1,3 +1,4 @@
+/*
 ;CTRL+U:Upload selected files
 #if FTP_Enabled && (WinActive("ahk_group ExplorerGroup")||WinActive("ahk_group DesktopGroup")||IsDialog())
 ^u::
@@ -36,7 +37,7 @@
 	UploadfromClipboard()
 	return
 #if
-
+*/
 ;Uploads files (separated by newline) to FTP server and copies the links to clipboard
 Upload(Files)
 {
@@ -121,7 +122,7 @@ UploadFromClipboard()
 	}	
 	return
 }
-
+/*
 ;Called on startup and on config change and ensures that FTP variables have correct format
 ValidateFTPVars()
 {
@@ -132,3 +133,4 @@ ValidateFTPVars()
 	FTP_URL:=strTrimRight(FTP_URL,"/") "/"
 	return
 }
+*/

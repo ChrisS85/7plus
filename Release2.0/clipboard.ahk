@@ -25,12 +25,12 @@ Stack_Push(stack,item)
 		stack.Move(x,1)
 	}
 }
-;Win+v:Clipboard manager menu
-#if ClipboardManager && !IsFullscreen()
-#v::
-	ClipboardManagerMenu()
-return
-#if
+; Win+v:Clipboard manager menu
+; #if ClipboardManager && !IsFullscreen()
+; #v::
+	; ClipboardManagerMenu()
+; return
+; #if
 
 ClipboardManagerMenu()
 {
@@ -262,8 +262,9 @@ AppendToClipboard( files, cut=0) {
 	if(DllCall("IsClipboardFormatAvailable", "Uint", 1))
 		DllCall("EmptyClipboard")	
 	DllCall("CloseClipboard")
-	txt:=clipboard (clipboard = "" ? "" : "`r`n") files
+	txt:=clipboard (clipboard = "" ? "" : "`n") files
 	Sort, txt , U
+	outputdebug files: %txt%
 	DllCall("OpenClipboard", "Uint", 0)
 	CopyToClipboard(txt, true, cut)
 	DllCall("CloseClipboard")

@@ -6,20 +6,21 @@ Action_FilterList_Init(Action)
 	Action.Filter := ".exe"
 	Action.Separator := "``n"
 	Action.ExitOnEmptyList := 1
-	Action.Action := "Keep"
+	Action.Action := "Keep list entries from"
 }
-Action_FilterList_ReadXML(Action, ActionFileHandle)
+Action_FilterList_ReadXML(Action, XMLAction)
 {
-	Action.Operator := xpath(ActionFileHandle, "/Operator/Text()")
-	Action.List := xpath(ActionFileHandle, "/List/Text()")
-	Action.Filter := xpath(ActionFileHandle, "/Filter/Text()")
-	Action.Separator := xpath(ActionFileHandle, "/Separator/Text()")
-	Action.ExitOnEmptyList := xpath(ActionFileHandle, "/ExitOnEmptyList/Text()")
-	Action.Action := xpath(ActionFileHandle, "/Action/Text()")
+	Action.Operator := XMLAction.Operator
+	Action.List := XMLAction.List
+	Action.Filter := XMLAction.Filter
+	Action.Separator := XMLAction.Separator
+	Action.ExitOnEmptyList := XMLAction.ExitOnEmptyList
+	Action.Action := XMLAction.Action
 }
 Action_FilterList_Execute(Action,Event)
 {
-	key := SubStr(Action.List, InStr(Action.List, "${") + 2, InStr(Action.List, "}",InStr(Action.List, "${") + 2))
+	key := SubStr(Action.List, InStr(Action.List, "${") + 2, InStr(Action.List, "}",InStr(Action.List, "${") + 2) - InStr(Action.List, "${") - 2)
+	outputdebug key %key%
 	List := Event.ExpandPlaceholders(Action.List)
 	Filter := Event.ExpandPlaceholders(Action.Filter)
 	Filter := StringReplace(Filter, "``n", "`n")
@@ -33,15 +34,16 @@ Action_FilterList_Execute(Action,Event)
 				|| 	Action.Operator = "that are greater than" && array[A_Index] > Filter
 				|| 	Action.Operator = "that are lower than" && array[A_Index] > Filter
 				|| 	Action.Operator = "that contain" && InStr(array[A_Index], Filter) > 0
-				|| 	Action.Operator = "that match regular expression" && RegexMatch(array[A_Index], Filter) > 0
+				|| 	Action.Operator = "that match regular expression" && RegexMatch(array[A_Index], "i)" Filter) > 0
 				|| 	Action.Operator = "that start with" && strStartsWith(array[A_Index], Filter)
 				|| 	Action.Operator = "that end with" && strEndsWith(array[A_Index], Filter))
-		if(	Action.Action = "Keep list entries from" && result
-		||  Action.Action = "Remove list entries from" && !result)
+		if(	(Action.Action = "Keep list entries from" && result)
+		||  (Action.Action = "Remove list entries from" && !result))
 		
 			newarray.append(array[A_Index])
-		outputdebug % "Action: " Action.Operator " result: " result
+		outputdebug % "Action: " Action.Operator " result: " result " len: " newarray.len()
 	}
+	
 	if(Action.ExitOnEmptyList && newarray.len() = 0)
 		return 0
 	newlist := ArrayToList(newarray, Separator, wasQuoted)

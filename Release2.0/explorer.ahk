@@ -308,10 +308,10 @@ Return::
 		Send {Enter}
 	return
 #if
-;Backspace: go up instead of back    
-#if Vista7 && HKProperBackspace && (IsDialog() || WinActive("ahk_group ExplorerGroup")) && !IsRenaming() && (InTree()||InFileList()) && !strEndsWith(GetCurrentFolder(),".search-ms")
-Backspace::Send !{Up}
-#if
+; Backspace: go up instead of back    
+; #if Vista7 && HKProperBackspace && (IsDialog() || WinActive("ahk_group ExplorerGroup")) && !IsRenaming() && (InTree()||InFileList()) && !strEndsWith(GetCurrentFolder(),".search-ms")
+; Backspace::Send !{Up}
+; #if
 
 ;Function(s) to align explorer windows side by side and to launch explorer with last used directory
 #if (RecallExplorerPath && ExplorerPath != "") || AlignExplorer
@@ -387,7 +387,7 @@ if(IsDoubleClick() && CurrentDesktopFiles = "")
 Return
 #if
 ;Double click upwards is buggy in filedialogs, so only explorer for now until someone comes up with non-intrusive getpath, getselectedfiles functionsunrel
-#if WinActive("ahk_group ExplorerGroup") && IsMouseOverFileList() && GetKeyState("RButton")!=1
+#if IsMouseOverFileList() && GetKeyState("RButton")!=1
 ;LButton on empty space in explorer -> go upwards
 ~LButton::		
 CoordMode,Mouse,Relative
@@ -459,20 +459,22 @@ Return
 
 #if IsMouseOverTaskList() ;Can't add the conditions below here right now, because IsDoubleClick seems to fail when called in the #if condition
 LButton::
+outputdebug lbutton
 if(IsDoubleClick() && IsMouseOverFreeTaskListSpace())
 {
+	outputdebug doubleclicktaskbar
 	Trigger := EventSystem_CreateSubEvent("Trigger", "DoubleClickTaskbar")
 	OnTrigger(Trigger)
-	SplitCommand(TaskbarLaunchPath, cmd, args)
-	cmd:=ExpandEnvVars(cmd)
-	if(FileExist(cmd))
-		run, "%cmd%" %args%
-	else if(TaskbarLaunchPath)
-	{
-		ToolTip(1, "You need to enter a valid command in <a>Settings</a> to run when you double click on empty taskbar space!", "Invalid Command","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
-		SetTimer, ToolTipClose, -10000
-		TooltipShowSettings:=true
-	}
+	; SplitCommand(TaskbarLaunchPath, cmd, args)
+	; cmd:=ExpandEnvVars(cmd)
+	; if(FileExist(cmd))
+		; run, "%cmd%" %args%
+	; else if(TaskbarLaunchPath)
+	; {
+		; ToolTip(1, "You need to enter a valid command in <a>Settings</a> to run when you double click on empty taskbar space!", "Invalid Command","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
+		; SetTimer, ToolTipClose, -10000
+		; TooltipShowSettings:=true
+	; }
 }
 /*
 else if (HKActivateBehavior && A_OSVersion="WIN_7")
@@ -499,25 +501,34 @@ IsDoubleClick()
 }
 
 #if !IsFullScreen()
-*MButton::
+^MButton::
++MButton::
+MButton::
 key:=GetKeyState("CTRL") ? "^" : ""
 key.=GetKeyState("ALT") ? "!" : ""
 key.=GetKeyState("SHIFT") ? "+" : ""
 key.=(GetKeyState("RWIN") || GetKeyState("LWIN")) ? "#" : ""
 Handled:=TaskbuttonClose()
-if !Handled
-	Handled:=TitleBarClose()
-if !Handled
+; if !Handled
+	; Handled:=TitleBarClose()
+if(!Handled)
 	Handled:=ToggleWallpaper()
-if !Handled
+if(!Handled)
 	Handled:=OpenInNewFolder()
-if !Handled
-	Handled:=FastFolderMenu()
+; if !Handled
+	; Handled:=FastFolderMenu()
 if (!Handled && Handled:=IsMouseOverTabButton())
 	CloseTab(Handled)
-
-if !Handled
-{	
+	
+; This is not perfect, as hotkeys defined further down in the events list are not considered for catching keys. 
+; A better solution might be to evaluate all matching hotkeys conditions and check if any of it want to hide the key from the system
+if(!Handled && IsObject(Trigger := HotkeyShouldFire(A_ThisHotkey)))
+{
+	HotkeyTrigger(A_ThisHotkey)
+	Handled := !InStr(Trigger.Key, "~")
+}
+if(!Handled)
+{
 	Send %key%{MButton down}
 	KeyWait, MButton
 	Send {MButton up}
@@ -531,7 +542,7 @@ OpenInNewFolder()
  	if(!MiddleOpenFolder||!WinActive("ahk_group ExplorerGroup")||!IsMouseOverFileList())
  		return false	
 	selected:=GetSelectedFiles(0)
-	SendEvent {LButton}
+	Send {LButton}
 	Sleep 100
 	if(InStr(FileExist(undermouse:=GetSelectedFiles()), "D"))
 		dir:=true
@@ -560,10 +571,10 @@ ToggleWallpaper()
 	return true
 }
 
-#if HKCreateNewFile && (WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog()) && !IsRenaming() 
-;F7: Create new text file  
-F7::CreateNewTextFile()	
-#if
+; #if HKCreateNewFile && (WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog()) && !IsRenaming() 
+; F7: Create new text file  
+; F7::CreateNewTextFile()	
+; #if
 CreateNewTextFile()
 {
   global Vista7
@@ -604,14 +615,14 @@ CreateNewTextFile()
 }
 
 ;F8: Create new Folder  
-#if HKCreateNewFolder && !IsRenaming() && (WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog())
-F8::
-if(A_OSVersion="WIN_7")
-  Send ^+n
-else
-  CreateNewFolder()
-return
-#if
+; #if HKCreateNewFolder && !IsRenaming() && (WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog())
+; F8::
+; if(A_OSVersion="WIN_7")
+  ; Send ^+n
+; else
+  ; CreateNewFolder()
+; return
+; #if
 CreateNewFolder()
 {
 	Global shell32muipath
@@ -645,11 +656,12 @@ CreateNewFolder()
 	Send {F2}
 	return
 }
-
+/*
 ;F3: edit selected files
 #if (WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog()) && !IsRenaming() 
 F3::EditSelectedFiles()
 #if
+*/
 EditSelectedFiles()
 {
 	global ImageExtensions,TextEditor,ImageEditor, TooltipShowSettings
@@ -697,9 +709,9 @@ EditSelectedFiles()
 }
 
 ;Alt+C:Copy filenames, CTRL+ALT+C: Copy filepaths
-#if (HKCopyFilenames || HKCopyPaths) && (WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog()) && !IsRenaming() 
-*!c::CopyFilenames()
-#if
+; #if (HKCopyFilenames || HKCopyPaths) && (WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog()) && !IsRenaming() 
+; *!c::CopyFilenames()
+; #if
 CopyFilenames()
 {
 	global HKCopyPaths, HKCopyFilenames,PasteFileClipboardBackup
@@ -741,29 +753,29 @@ CopyFilenames()
 }
 
 ;Shift+C: Append files to clipboard
-#if HKAppendClipboard && (WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog()) && InFileList() && !IsRenaming()
-+c::	
-files := GetSelectedFiles()
-if(!files)
-	files:=GetFocussedFile()
-if(files)
-	AppendToClipboard(files)
-else
-	Send +{c}
-return
-+x::	
-files := GetSelectedFiles()
-if(!files)
-	files:=GetFocussedFile()
-if(files)
-	AppendToClipboard(files,1)
-else
-	Send +{x}
-return
-#if
+; #if HKAppendClipboard && (WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog()) && InFileList() && !IsRenaming()
+; +c::	
+; files := GetSelectedFiles()
+; if(!files)
+	; files:=GetFocussedFile()
+; if(files)
+	; AppendToClipboard(files)
+; else
+	; Send +{c}
+; return
+; +x::	
+; files := GetSelectedFiles()
+; if(!files)
+	; files:=GetFocussedFile()
+; if(files)
+	; AppendToClipboard(files,1)
+; else
+	; Send +{x}
+; return
+; #if
 
 ;Scroll tree list with mouse wheel
-#if ScrollUnderMouse && (IsWindowUnderCursor("CabinetWClass")||IsWindowUnderCursor("ExploreWClass")) && !IsRenaming()
+#if ScrollUnderMouse && ((IsWindowUnderCursor("#32770") && IsDialog()) || IsWindowUnderCursor("CabinetWClass")||IsWindowUnderCursor("ExploreWClass")) && !IsRenaming()
 WheelUp:: 
 Critical 
 CoordMode, Mouse, Screen

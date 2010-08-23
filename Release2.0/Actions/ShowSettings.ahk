@@ -2,7 +2,7 @@ Action_ShowSettings_Init(Action)
 {
 	Action.Category := "7plus"
 }
-Action_ShowSettings_ReadXML(Action, ActionFileHandle)
+Action_ShowSettings_ReadXML(Action, XMLAction)
 {
 }
 Action_ShowSettings_Execute(Action, Event)

@@ -5,18 +5,18 @@ Trigger_Hotkey_Init(Trigger)
 }
 #if IsObject(Trigger := HotkeyShouldFire(A_ThisHotkey))
 HotkeyTrigger:
-outputdebug execute
-if(!IsObject(Trigger := HotkeyShouldFire(A_ThisHotkey)))
-	return
-outputdebug, % "key: " A_ThisHotkey ", Event key: " Trigger.key
 HotkeyTrigger(A_ThisHotkey)
 return
 #if
 HotkeyTrigger(key)
 {
+	global Events
+	;outputdebug, % "key: " A_ThisHotkey ", Event key: " Trigger.key
 	if(!key)
-		return
-	outputdebug trigger %key%
+		return 0
+	if(!IsObject(Trigger := HotkeyShouldFire(A_ThisHotkey)))
+		return 0
+	;outputdebug trigger %key%
 	Trigger := EventSystem_CreateSubEvent("Trigger", "Hotkey")	
 	Trigger.Key := StringReplace(key,"$") ;Remove $ because it is not stored
 	OnTrigger(Trigger)
@@ -24,7 +24,7 @@ HotkeyTrigger(key)
 HotkeyShouldFire(key)
 {
 	global Events, EventSchedule
-	outputdebug HotkeyShouldFire(%key%)
+	;outputdebug HotkeyShouldFire(%key%)
 	key := StringReplace(key,"$")
 	key := StringReplace(key,"~")
 	len := Events.len()
@@ -34,7 +34,7 @@ HotkeyShouldFire(key)
 		if(!enable := Event.Enabled)
 			continue
 		
-		outputdebug, % Event.Trigger.Type ", " key ", " StringReplace(Event.Trigger.key, "~")
+		;outputdebug, % Event.Trigger.Type ", " key ", " StringReplace(Event.Trigger.key, "~")
 		if(Event.Trigger.Type != "Hotkey" || StringReplace(Event.Trigger.Key, "~") != key)
 			continue
 		ConditionPos := 1
@@ -73,16 +73,16 @@ HotkeyShouldFire(key)
 		}
 		if(enable)
 		{
-			outputdebug should trigger
+			;outputdebug should trigger
 			return Event.Trigger
 		}
 	}
-	outputdebug should not
+	; outputdebug should not
 	return 0
 }
-Trigger_Hotkey_ReadXML(Trigger, TriggerFileHandle)
+Trigger_Hotkey_ReadXML(Trigger, XMLTrigger)
 {
-	Trigger.Key := xpath(TriggerFileHandle, "/Key/Text()")
+	Trigger.Key := XMLTrigger.Key
 }
 
 Trigger_Hotkey_Enable(Trigger)
@@ -108,7 +108,7 @@ Trigger_Hotkey_Delete(Trigger)
 
 Trigger_Hotkey_Matches(Trigger, Filter)
 {
-	return StringReplace(Trigger.Key, "~") = StringReplace(Filter.Key, "~")
+	return (StringReplace(Trigger.Key, "~") = StringReplace(Filter.Key, "~"))
 }
 
 Trigger_Hotkey_DisplayString(Trigger)

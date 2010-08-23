@@ -2,7 +2,7 @@ Trigger_ExplorerPathChanged_Init(Trigger)
 {
 	Trigger.Category := "Explorer"
 }
-Trigger_ExplorerPathChanged_ReadXML(Trigger, TriggerFileHandle)
+Trigger_ExplorerPathChanged_ReadXML(Trigger, XMLTrigger)
 {
 }
 Trigger_ExplorerPathChanged_Enable(Trigger)

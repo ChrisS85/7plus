@@ -3,9 +3,9 @@ Action_PlaySound_Init(Action)
 	Action.Category := "System"
 }
 
-Action_PlaySound_ReadXML(Action, ActionFileHandle)
+Action_PlaySound_ReadXML(Action, XMLAction)
 {
-	Action.File := xpath(ActionFileHandle, "/File/Text()")
+	Action.File := XMLAction.File
 }
 
 Action_PlaySound_DisplayString(Action)

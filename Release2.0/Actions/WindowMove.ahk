@@ -5,13 +5,13 @@ Action_WindowMove_Init(Action)
 	Action.CenterX := 0
 	Action.CenterY := 0
 }
-Action_WindowMove_ReadXML(Action, ActionFileHandle)
+Action_WindowMove_ReadXML(Action, XMLAction)
 {
-	WindowFilter_ReadXML(Action, ActionFileHandle)
-	Action.X := xpath(ActionFileHandle, "/X/Text()")
-	Action.Y := xpath(ActionFileHandle, "/Y/Text()")
-	Action.CenterX := xpath(ActionFileHandle, "/CenterX/Text()")
-	Action.CenterY := xpath(ActionFileHandle, "/CenterY/Text()")
+	WindowFilter_ReadXML(Action, XMLAction)
+	Action.X := XMLAction.X
+	Action.Y := XMLAction.Y
+	Action.CenterX := XMLAction.CenterX
+	Action.CenterY := XMLAction.CenterY
 }
 Action_WindowMove_Execute(Action,Event)
 {

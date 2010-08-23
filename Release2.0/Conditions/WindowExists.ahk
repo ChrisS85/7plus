@@ -3,9 +3,9 @@ Condition_WindowExists_Init(Condition)
 	Condition.Category := "Window"
 	WindowFilter_Init(Condition)
 }
-Condition_WindowExists_ReadXML(Condition, ConditionFileHandle)
+Condition_WindowExists_ReadXML(Condition, XMLCondition)
 {
-	WindowFilter_ReadXML(Condition, ConditionFileHandle)
+	WindowFilter_ReadXML(Condition, XMLCondition)
 }
 Condition_WindowExists_Evaluate(Condition)
 {

@@ -4,16 +4,16 @@ DebuggingStart()
 	CoordMode, Mouse, Relative 
 	;Debug view
 	a_scriptPID := DllCall("GetCurrentProcessId")	; get script's PID
-	ifwinexist, DebugView on ; kill it if the debug viewer is running from an older instance
-		{
+	if(WinExist("DebugView on")) ; kill it if the debug viewer is running from an older instance
+	{
 		winactivate, DebugView on
 		Winwaitactive, DebugView on
 		winclose, DebugView on
-		}
+	}
 	run, %A_ScriptDir%\DebugView\Dbgview.exe /f
-	winwait, DebugView on
-	winactivate, DebugView on
-	Winwaitactive, DebugView on
+	winwait, DebugView
+	winactivate, DebugView
+	Winwaitactive, DebugView
 	sendinput, !E{down}{down}{down}{down}{down}{Enter}
 	winwait, DebugView Filter
 	winactivate, DebugView Filter

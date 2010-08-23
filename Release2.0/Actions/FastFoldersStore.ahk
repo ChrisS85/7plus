@@ -3,10 +3,10 @@ Action_FastFoldersStore_Init(Action)
 	Action.Category := "FastFolders"
 }
 
-Action_FastFoldersStore_ReadXML(Action, ActionFileHandle)
+Action_FastFoldersStore_ReadXML(Action, XMLAction)
 {
-	Action.Folder := xpath(ActionFileHandle, "/Folder/Text()")
-	Action.Slot := xpath(ActionFileHandle, "/Slot/Text()")
+	Action.Folder := XMLAction.Folder
+	Action.Slot := XMLAction.Slot
 }
 Action_FastFoldersStore_Execute(Action, Event)
 {

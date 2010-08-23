@@ -3,9 +3,9 @@ Action_WindowShow_Init(Action)
 	WindowFilter_Init(Action)
 	Action.Category := "Window"
 }
-Action_WindowShow_ReadXML(Action, ActionFileHandle)
+Action_WindowShow_ReadXML(Action, XMLAction)
 {
-	WindowFilter_ReadXML(Action, ActionFileHandle)
+	WindowFilter_ReadXML(Action, XMLAction)
 }
 Action_WindowShow_Execute(Action)
 {

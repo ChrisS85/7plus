@@ -3,9 +3,9 @@ Action_FastFoldersRecall_Init(Action)
 	Action.Category := "FastFolders"
 }
 
-Action_FastFoldersRecall_ReadXML(Action, ActionFileHandle)
+Action_FastFoldersRecall_ReadXML(Action, XMLAction)
 {
-	Action.Slot := xpath(ActionFileHandle, "/Slot/Text()")
+	Action.Slot := XMLAction.Slot
 }
 Action_FastFoldersRecall_Execute(Action, Event)
 {

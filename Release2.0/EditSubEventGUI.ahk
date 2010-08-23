@@ -13,10 +13,10 @@ GUI_EditSubEvent(se, ia=0, GoToLabel="")
 		Gui, +LabelEditSubEvent +Owner1 +ToolWindow
 		width := 500
 		height := 500
-		x := Width - 174
+		x := Width - 184
 		y := Height - 34
 		Gui, Add, Button, gEditSubEventOK x%x% y%y% w70 h23, &OK
-		x := Width - 94
+		x := Width - 104
 		Gui, Add, Button, gEditSubEventCancel x%x% y%y% w80 h23, &Cancel
 		
 		x := 28
@@ -45,12 +45,18 @@ GUI_EditSubEvent(se, ia=0, GoToLabel="")
 		x += 70
 		y -= 4
 		Gui, Add, DropDownList, vEditSubEventType gEditSubEventType x%x% y%y% w300
-		y -= 30
+		y -= 1
+		Gui, Add, Button, gSubEventHelp x+10 y%y%, Help
+		y -= 29
 		Gui, Add, DropDownList, vEditSubEventCategory gEditSubEventCategory x%x% y%y% w300
 		x := 28
 		y += 60
 		w := width - 54
-		h := height - 158 - 28 
+		
+		if(IsAction)
+			h := height - 158 - 28 
+		else
+			h := height - 158 - 28 - 20
 		Gui, Add, GroupBox, x%x% y%y% w%w% h%h%, Options
 		
 		gosub FillSubEventCategories
@@ -167,7 +173,20 @@ GUI_EditSubEvent(se, ia=0, GoToLabel="")
 		SubEvent.GuiShow(SubEventGUI)
 		return
 	}
-} 
+	else if(GoToLabel = "SubEventHelp")
+	{
+		GuiControlGet, type,,EditSubEventType
+		if(IsAction)
+			Run http://code.google.com/p/7plus/wiki/docsActions%type%
+		else
+			Run http://code.google.com/p/7plus/wiki/docsConditions%type%
+		return
+	}
+}
+SubEventHelp:
+GUI_EditSubEvent("","","SubEventHelp")
+return
+
 EditSubEventOK:
 GUI_EditSubEvent("","","EditSubEventOK")
 return

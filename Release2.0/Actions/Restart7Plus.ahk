@@ -2,12 +2,12 @@ Action_Restart7plus_Init(Action)
 {
 	Action.Category := "7plus"
 }
-Action_Restart7plus_ReadXML(Action, ActionFileHandle)
+Action_Restart7plus_ReadXML(Action, XMLAction)
 {
 }
 Action_Restart7plus_Execute(Action, Event)
 {
-	reload
+	OnExit(1)
 	return 1
 } 
 Action_Restart7plus_DisplayString(Action)

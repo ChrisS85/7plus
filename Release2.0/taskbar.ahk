@@ -1,5 +1,6 @@
 IsMouseOverStartButton()
 {
+	CoordMode, Mouse, Screen
 	MouseGetPos,,,win
 	WinGetClass,class,ahk_id %win%
 	return class="button"
@@ -25,6 +26,7 @@ GetTaskbarDirection()
 
 IsMouseOverTaskList()
 {
+	CoordMode, Mouse, Screen
 	WinGetPos , X, Y,,, ahk_class Shell_TrayWnd
 	if(A_OSVersion="WIN_7")
 		ControlGetPos , TaskListX, TaskListY, TaskListWidth, TaskListHeight, MSTaskListWClass1, ahk_class Shell_TrayWnd
@@ -44,6 +46,7 @@ IsMouseOverTaskList()
 
 IsMouseOverTray()
 {
+	CoordMode, Mouse, Screen
 	MouseGetPos,x,y
 	ControlGetPos , TrayX, TrayX, TrayWidth, TrayHeight, ToolbarWindow321, ahk_class Shell_TrayWnd
 	z:=GetTaskBarDirection()
@@ -56,10 +59,11 @@ IsMouseOverTray()
 
 IsMouseOverClock()
 {
+	CoordMode, Mouse, Screen
 	MouseGetPos, , , , ControlUnderMouse   
-  outputdebug control under mouse: %ControlUnderMouse%
-  result:=false
-  if(ControlUnderMouse="TrayClockWClass1")
+	outputdebug control under mouse: %ControlUnderMouse%
+	result:=false
+	if(ControlUnderMouse="TrayClockWClass1")
 		result:=true
 	outputdebug IsMouseOverClock()? %result%
 	return result
@@ -67,6 +71,7 @@ IsMouseOverClock()
 
 IsMouseOverShowDesktop()
 {
+	CoordMode, Mouse, Screen
 	MouseGetPos,x,y
 	z:=GetTaskBarDirection()
 	ControlGetPos , ShowDesktopX, ShowDesktopY, ShowDesktopWidth, ShowDesktopHeight, TrayShowDesktopButtonWClass1, ahk_class Shell_TrayWnd
@@ -79,17 +84,19 @@ IsMouseOverShowDesktop()
 
 IsMouseOverTaskbar()
 {
+	CoordMode, Mouse, Screen
 	MouseGetPos, , , WindowUnderMouseID 
-  WinGetClass, winclass , ahk_id %WindowUnderMouseID%
-  result:=false
-  if(winclass="Shell_TrayWnd")
-  	result:=true
+	WinGetClass, winclass , ahk_id %WindowUnderMouseID%
+	result:=false
+	if(winclass="Shell_TrayWnd")
+		result:=true
 	return result
 }
 
 IsMouseOverFreeTaskListSpace()
 {
 	global result,IsRunning
+	CoordMode, Mouse, Screen
 	SetWinDelay 0
 	SetKeyDelay 0
 	SetMouseDelay 0

@@ -19,6 +19,7 @@ MajorVersion := 2
 MinorVersion := 0
 BugfixVersion := 0
 #include %A_ScriptDir%\Autoexecute.ahk ;include first to avoid issues with autoexecute ending too soon because of labels
+/*
 #if !IsFullscreen("A",true,false)
 #h::
 	DetectHiddenWindows, Off
@@ -28,7 +29,8 @@ BugfixVersion := 0
 		ShowSettings()
 	return
 #if
-#q::Reload
+;#q::Reload
+*/
 #Include %A_ScriptDir%
 #include %A_ScriptDir%\lib\Array.ahk
 #include %A_ScriptDir%\lib\binreadwrite.ahk
@@ -61,7 +63,8 @@ BugfixVersion := 0
 #include %A_ScriptDir%\clipboard.ahk
 #include %A_ScriptDir%\FTPUpload.ahk 
 #include %A_ScriptDir%\Taskbar.ahk
-#include %A_ScriptDir%\Misc.ahk
+; #include %A_ScriptDir%\Misc.ahk
+#include %A_ScriptDir%\xml.ahk
 #include %A_ScriptDir%\debugging.ahk
 #include %A_ScriptDir%\settings.ahk
 #include %A_ScriptDir%\miscfunctions.ahk
@@ -89,6 +92,7 @@ BugfixVersion := 0
 #include %A_ScriptDir%\Triggers\7plusStart.ahk
 
 #include %A_ScriptDir%\Conditions\If.ahk
+#include %A_ScriptDir%\Conditions\IsDialog.ahk
 #include %A_ScriptDir%\Conditions\IsFullScreen.ahk
 #include %A_ScriptDir%\Conditions\IsContextMenuActive.ahk
 #include %A_ScriptDir%\Conditions\IsRenaming.ahk
@@ -103,6 +107,7 @@ BugfixVersion := 0
 #include %A_ScriptDir%\Actions\ControlEvent.ahk
 #include %A_ScriptDir%\Actions\ControlTimer.ahk
 #include %A_ScriptDir%\Actions\Exit7plus.ahk
+#include %A_ScriptDir%\Actions\FastFoldersClear.ahk
 #include %A_ScriptDir%\Actions\FastFoldersMenu.ahk
 #include %A_ScriptDir%\Actions\FastFoldersRecall.ahk
 #include %A_ScriptDir%\Actions\FastFoldersStore.ahk
@@ -143,3 +148,11 @@ BugfixVersion := 0
 
 #include %A_ScriptDir%\Generic\WindowFilter.ahk
 #include %A_ScriptDir%\Generic\FileOperation.ahk
+
+
+; AssignHotkeys:
+; outputdebug blah
+; Hotkey, If, !IsFullScreen()
+; Hotkey, MButton, MButton, On
+; Hotkey, If
+; return

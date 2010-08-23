@@ -3,15 +3,16 @@ Action_MouseClick_Init(Action)
 	Action.Category := "Input"
 	Action.RestorePosition := 1
 	Action.Relative := 1
+	Action.Button := "Left"
 }
 
-Action_MouseClick_ReadXML(Action, ActionFileHandle)
+Action_MouseClick_ReadXML(Action, XMLAction)
 {
-	Action.Button := xpath(ActionFileHandle, "/Button/Text()")
-	Action.X := xpath(ActionFileHandle, "/X/Text()")
-	Action.Y := xpath(ActionFileHandle, "/Y/Text()")
-	Action.RestorePosition := xpath(ActionFileHandle, "/RestorePosition/Text()")
-	Action.Relative := xpath(ActionFileHandle, "/Relative/Text()")
+	Action.Button := XMLAction.Button
+	Action.X := XMLAction.X
+	Action.Y := XMLAction.Y
+	Action.RestorePosition := XMLAction.RestorePosition
+	Action.Relative := XMLAction.Relative
 }
 Action_MouseClick_Execute(Action, Event)
 {

@@ -196,13 +196,13 @@ WheelUp::WheelDown
 WheelDown::WheelUp
 #if
 
-;Alt + MouseWheel Min/Max
-#if HKAltMinMax && !MouseMinMaxRunning
-!WheelDown::MouseMin()
-#if
-#if HKAltMinMax && !MouseMinMaxRunning
-!WheelUp::MouseMax()
-#if
+; Alt + MouseWheel Min/Max
+; #if HKAltMinMax && !MouseMinMaxRunning
+; !WheelDown::MouseMin()
+; #if
+; #if HKAltMinMax && !MouseMinMaxRunning
+; !WheelUp::MouseMax()
+; #if
 MouseMin()
 {	
 	global MouseMinMaxRunning
@@ -229,29 +229,29 @@ MouseMax()
 	MouseMinMaxRunning:=false
 }
 
-;ctrl+v in cmd->paste, alt+F4 in cmd->close
-#if HKImproveConsole && WinActive("ahk_class ConsoleWindowClass")
-^v::
-	Coordmode,Mouse,Relative
-	MouseGetPos, MouseX, MouseY
-	Click right 40,40
-	Send {Down 3}
-	send {Enter}
-	MouseMove MouseX,MouseY
-	return
-!F4::
-	WinClose, A
-	return
-#If
+; ctrl+v in cmd->paste, alt+F4 in cmd->close
+; #if HKImproveConsole && WinActive("ahk_class ConsoleWindowClass")
+; ^v::
+	; Coordmode,Mouse,Relative
+	; MouseGetPos, MouseX, MouseY
+	; Click right 40,40
+	; Send {Down 3}
+	; send {Enter}
+	; MouseMove MouseX,MouseY
+	; return
+; !F4::
+	; WinClose, A
+	; return
+; #If
 
-;Alt+F5: Kill active window
-#if HKKillWindows
-!F5::
-	CloseKill(WinExist("A"))
-	return
-#if
+; Alt+F5: Kill active window
+; #if HKKillWindows
+; !F5::
+	; CloseKill(WinExist("A"))
+	; return
+; #if
 
-;Force kill program on Alt+F5 and on right click close button
+; Force kill program on Alt+F5 and on right click close button
 CloseKill(hwnd)
 {
 	WinGet, pid, pid, ahk_id %hwnd%
@@ -261,19 +261,19 @@ CloseKill(hwnd)
 		Process close, %pid1%
 }
 
-;Close on middle click titlebar
-TitleBarClose()
-{
-	global
-	if(!HKTitleClose)
-		return false
-	x:=MouseHittest()
-	if(x=2)
-		WinClose, A
-	else
-		return false
-	return true
-}
+; Close on middle click titlebar
+; TitleBarClose()
+; {
+	; global
+	; if(!HKTitleClose)
+		; return false
+	; x:=MouseHittest()
+	; if(x=2)
+		; WinClose, A
+	; else
+		; return false
+	; return true
+; }
 
 ;Middle click on taskbutton->close task
 TaskButtonClose()
@@ -323,11 +323,11 @@ TaskButtonClose()
 	return false
 }
 
-;Flash Windows activation
-;Current/Previous Window toggle
-#if (HKFlashWindow||HKToggleWindows) && !IsFullscreen()
-Capslock::FlashWindows()
-#if
+; Flash Windows activation
+; Current/Previous Window toggle
+; #if (HKFlashWindow||HKToggleWindows) && !IsFullscreen()
+; Capslock::FlashWindows()
+; #if
 
 FlashWindows()
 { 
@@ -398,39 +398,39 @@ FlashWindows()
 	return
 }
 
-;RButton on title bar -> toggle always on top
-#if ((z:=MouseHittest())=2 && HKToggleAlwaysOnTop) || (z=20 && HKKillWindows)|| (z=8 && HKTrayMin)
-~RButton::
-;If we hit something, we swallow the click, and need that toggle var therefore
-If (z=2)
-{  
-	MouseGetPos, , , z
-	WinActivate ahk_id %z%
-	WinSet, AlwaysOnTop, toggle, ahk_id %z%
-	Loop 50
-	{	
-		Sleep 10
-		if(IsContextMenuActive())
-		{
-			outputdebug found context menu
-			SendInput {Escape} ;Escape is needed to suppress the annoying menu on titlebar right click     
-			break
-		}
-	}
-}
-else if(z=20)
-{
-	MouseGetPos, , , z
-	CloseKill(z)  	
-}
-else if(z=8)
-{
-	MouseGetPos, , , z
-	WinTraymin(z)
-}
+; RButton on title bar -> toggle always on top
+; #if ((z:=MouseHittest())=2 && HKToggleAlwaysOnTop) || (z=20 && HKKillWindows)|| (z=8 && HKTrayMin)
+; ~RButton::
+; If we hit something, we swallow the click, and need that toggle var therefore
+; If (z=2)
+; {  
+	; MouseGetPos, , , z
+	; WinActivate ahk_id %z%
+	; WinSet, AlwaysOnTop, toggle, ahk_id %z%
+	; Loop 50
+	; {	
+		; Sleep 10
+		; if(IsContextMenuActive())
+		; {
+			; outputdebug found context menu
+			; SendInput {Escape} ;Escape is needed to suppress the annoying menu on titlebar right click     
+			; break
+		; }
+	; }
+; }
+; else if(z=20)
+; {
+	; MouseGetPos, , , z
+	; CloseKill(z)  	
+; }
+; else if(z=8)
+; {
+	; MouseGetPos, , , z
+	; WinTraymin(z)
+; }
 	
-Return
-#if
+; Return
+; #if
 
 ; Alt+LButton Window dragging, slightly modified by Fragman
 

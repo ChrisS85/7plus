@@ -1,3 +1,4 @@
+/*
 ReadHotkeys()
 {
 	global CustomHotkeys,ConfigPath
@@ -101,10 +102,11 @@ SaveHotkeys()
 	}
 	IniWrite, %HotkeyString%, %ConfigPath%, CustomHotkeys, CustomHotkeys
 }
+*/
 CollisionCheck(key1,filter1,exclude)
 {
 	global CustomHotkeys
-	7PlusHotkeys := "#e,^i,+Enter,^t,^Tab,^+Tab,^w,!Numpad0,!Numpad1,!Numpad2,!Numpad3,!Numpad4,!Numpad5,!Numpad6,!Numpad7,!Numpad8,!Numpad9,#Delete,#+Left,#+Up,#+Right,#+Down,!LButton"
+	7PlusHotkeys := "#e,^i,+Enter,^t,^Tab,^+Tab,^w,#Delete,#+Left,#+Up,#+Right,#+Down,!LButton"
 	if(key1 = exclude) 
 		return false
 	key1_Win := InStr(key1, "#") > 0
@@ -152,7 +154,7 @@ CollisionCheck(key1,filter1,exclude)
 	}
 	return false
 }
-
+/*
 ;Monitors the active process name and (de)activates context-sensitive hotkeys
 ToggleHotkeys:
 ListLines, Off
@@ -197,12 +199,12 @@ CustomHotkey()
 {
 	global CustomHotkeys
 	outputdebug hotkey label triggered
-	/*
-	Shift := GetKeyState("Shift", "P")
-	Alt := GetKeyState("Alt", "P")
-	Control := GetKeyState("Control", "P")
-	Win := GetKeyState("LWin", "P") || GetKeyState("RWin", "P")
-	*/
+	
+	; Shift := GetKeyState("Shift", "P")
+	; Alt := GetKeyState("Alt", "P")
+	; Control := GetKeyState("Control", "P")
+	; Win := GetKeyState("LWin", "P") || GetKeyState("RWin", "P")
+	
 	name := GetActiveProcessName()
 	;handled := false
 	Loop % CustomHotkeys.len()
@@ -251,55 +253,54 @@ CustomHotkey()
 			;handled := true
 		}
 	}
-	/*
-	if(!handled)
-	{
-		outputdebug %A_ThisHotkey% was not handled, resend it
-		if(InStr(A_ThisHotkey, "+") || (InStr(A_ThisHotkey, "*") && Shift))
-		{
-			outputdebug shift down
-			Send {Blind}{Shift down}
-			SetTimer, WaitForShiftUp, 50
-		}
-		if(InStr(A_ThisHotkey, "!") || (InStr(A_ThisHotkey, "*") && Alt))
-		{
-			outputdebug alt down
-			Send {Blind}{Alt down}
-			SetTimer, WaitForAltUp, 50
-		}
-		if(InStr(A_ThisHotkey, "^") || (InStr(A_ThisHotkey, "*") && Control))
-		{
-			outputdebug control down
-			Send {Blind}{Control down}
-			SetTimer, WaitForControlUp, 50
-		}
-		if(InStr(A_ThisHotkey, "#") || (InStr(A_ThisHotkey, "*") && Win))
-		{
-			outputdebug lwin down
-			Send {Blind}{LWin down}
-			SetTimer, WaitForWinUp, 50
-		}
-		StringReplace, key, A_ThisHotkey, $
-		StringReplace, key, key, *
-		StringReplace, key, key, ^
-		StringReplace, key, key, +
-		StringReplace, key, key, !
-		StringReplace, key, key, #
-		StringReplace, key, key, ~,
-		StringReplace, key, key, <,
-		StringReplace, key, key, >,
-		StringLower, key, key
-		outputdebug %key% down
-		controldown := GetKeyState("Control","P")
-		outputdebug control before f: %controldown%
-		Send {Blind}{%key% Down}
-		controldown := GetKeyState("Control","P")
-		outputdebug control after f: %controldown%
-		KeyWait %key%
-		Send {Blind}{%key% Up}
-		outputdebug %key% up
-	}
-	*/
+	
+	; if(!handled)
+	; {
+		; outputdebug %A_ThisHotkey% was not handled, resend it
+		; if(InStr(A_ThisHotkey, "+") || (InStr(A_ThisHotkey, "*") && Shift))
+		; {
+			; outputdebug shift down
+			; Send {Blind}{Shift down}
+			; SetTimer, WaitForShiftUp, 50
+		; }
+		; if(InStr(A_ThisHotkey, "!") || (InStr(A_ThisHotkey, "*") && Alt))
+		; {
+			; outputdebug alt down
+			; Send {Blind}{Alt down}
+			; SetTimer, WaitForAltUp, 50
+		; }
+		; if(InStr(A_ThisHotkey, "^") || (InStr(A_ThisHotkey, "*") && Control))
+		; {
+			; outputdebug control down
+			; Send {Blind}{Control down}
+			; SetTimer, WaitForControlUp, 50
+		; }
+		; if(InStr(A_ThisHotkey, "#") || (InStr(A_ThisHotkey, "*") && Win))
+		; {
+			; outputdebug lwin down
+			; Send {Blind}{LWin down}
+			; SetTimer, WaitForWinUp, 50
+		; }
+		; StringReplace, key, A_ThisHotkey, $
+		; StringReplace, key, key, *
+		; StringReplace, key, key, ^
+		; StringReplace, key, key, +
+		; StringReplace, key, key, !
+		; StringReplace, key, key, #
+		; StringReplace, key, key, ~,
+		; StringReplace, key, key, <,
+		; StringReplace, key, key, >,
+		; StringLower, key, key
+		; outputdebug %key% down
+		; controldown := GetKeyState("Control","P")
+		; outputdebug control before f: %controldown%
+		; Send {Blind}{%key% Down}
+		; controldown := GetKeyState("Control","P")
+		; outputdebug control after f: %controldown%
+		; KeyWait %key%
+		; Send {Blind}{%key% Up}
+		; outputdebug %key% up
+	; }
 	return
 }
 WaitForShiftUp:
@@ -334,3 +335,4 @@ if(!GetKeyState("LWin", "P") && !GetKeyState("RWin", "P"))
 	SetTimer, WaitForWinUp, Off
 }
 return
+*/

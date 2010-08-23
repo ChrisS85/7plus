@@ -4,11 +4,11 @@
 	Condition.Physical := 1
 	Condition.Toggle := 0
 }
-Condition_KeyIsDown_ReadXML(Condition, ConditionFileHandle)
+Condition_KeyIsDown_ReadXML(Condition, XMLCondition)
 {
-	Condition.Key := xpath(ConditionFileHandle, "/Key/Text()")
-	Condition.Physical := xpath(ConditionFileHandle, "/Physical/Text()")
-	Condition.Toggle := xpath(ConditionFileHandle, "/Toggle/Text()")
+	Condition.Key := XMLCondition.Key
+	Condition.Physical := XMLCondition.Physical
+	Condition.Toggle := XMLCondition.Toggle
 }
 Condition_KeyIsDown_Evaluate(Condition, Event)
 {

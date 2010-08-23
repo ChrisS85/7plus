@@ -3,11 +3,11 @@ Action_Run_Init(Action)
 	Action.Category := "System"
 	Action.WaitForFinish := 0
 }
-Action_Run_ReadXML(Action, ActionFileHandle)
+Action_Run_ReadXML(Action, XMLAction)
 {
-	Action.Command := xpath(ActionFileHandle, "/Command/Text()")
-	Action.WorkingDirectory := xpath(ActionFileHandle, "/WorkingDirectory/Text()")
-	Action.WaitForFinish := xpath(ActionFileHandle, "/WaitForFinish/Text()")
+	Action.Command := XMLAction.Command
+	Action.WorkingDirectory := XMLAction.WorkingDirectory
+	Action.WaitForFinish := XMLAction.WaitForFinish
 }
 Action_Run_Execute(Action, Event)
 {
@@ -46,7 +46,7 @@ Action_Run_GuiShow(Action, ActionGUI, GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Command", "", "", "Command:","Browse", "Action_Run_Browse", "Placeholders", "Action_Run_Placeholders")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "WorkingDirectory", "", "", "Working Directory:","Browse", "Action_Run_Browse_WD", "Placeholders", "Action_Run_Placeholders_WD")
+		SubEventGUI_Add(Action, ActionGUI, "Edit", "WorkingDirectory", "", "", "Working Dir:","Browse", "Action_Run_Browse_WD", "Placeholders", "Action_Run_Placeholders_WD")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "WaitForFinish", "Wait for finish", "", "")
 	}
 	else if(GoToLabel = "Browse")

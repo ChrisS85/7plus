@@ -5,10 +5,10 @@ Action_Volume_Init(Action)
 	Action.Volume := 100
 }
 
-Action_Volume_ReadXML(Action, ActionFileHandle)
+Action_Volume_ReadXML(Action, XMLAction)
 {
-	Action.Action := xpath(ActionFileHandle, "/Action/Text()")
-	Action.Volume := xpath(ActionFileHandle, "/Volume/Text()")
+	Action.Action := XMLAction.Action
+	Action.Volume := XMLAction.Volume
 }
 
 Action_Volume_Execute(Action, Event)

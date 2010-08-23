@@ -4,10 +4,10 @@ Action_WindowClose_Init(Action)
 	Action.Category := "Window"
 	Action.ForceClose := 0
 }
-Action_WindowClose_ReadXML(Action, ActionFileHandle)
+Action_WindowClose_ReadXML(Action, XMLAction)
 {
-	WindowFilter_ReadXML(Action, ActionFileHandle)
-	Action.ForceClose := xpath(TriggerFileHandle, "/ForceClose/Text()")
+	WindowFilter_ReadXML(Action, XMLAction)
+	Action.ForceClose := XMLAction.ForceClose
 }
 Action_WindowClose_Execute(Action)
 {
@@ -32,5 +32,5 @@ Action_WindowClose_GuiShow(Action, ActionGUI)
 }
 Action_WindowClose_GuiSubmit(Action, ActionGUI)
 {
-	WindowFilter_GuiSubmit(Action,ActionGUI)
+	SubEventGUI_GuiSubmit(Action,ActionGUI)
 }

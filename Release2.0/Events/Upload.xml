@@ -1,141 +1,140 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
 <Events>
-  <Event>
-    <ID>44</ID>
-    <Name>Explorer / FTP: Upload window screenshot</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>1</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>#Insert</Key>
-    </Trigger>
-    <Conditions />
-    <Actions>
-      <Action>
-        <Type>Screenshot</Type>
-        <Area>Window</Area>
-        <Quality>95</Quality>
-        <TargetFile>Screenshot.jpg</TargetFile>
-        <TargetFolder>%Temp%</TargetFolder>
-      </Action>
-      <Action>
-        <Type>Input</Type>
-        <Cancel>1</Cancel>
-        <Text>Enter image filename:</Text>
-        <Title>Enter filename</Title>
-      </Action>
-      <Action>
-        <Type>Upload</Type>
-        <Clipboard>1</Clipboard>
-        <Hostname>chriss85.bplaced.net</Hostname>
-        <Password>$8&(Aq&gt;6D&lt;</Password>
-        <Port>21</Port>
-        <Silent>0</Silent>
-        <SourceFiles>%temp%\Screenshot.jpg</SourceFiles>
-        <TargetFile>${Input}</TargetFile>
-        <TargetFolder />
-        <URL>http://chriss85.bplaced.net</URL>
-        <User>chriss85</User>
-      </Action>
-      <Action>
-        <Type>Delete</Type>
-        <Overwrite>0</Overwrite>
-        <Silent>1</Silent>
-        <SourceFile>%temp%\Screenshot.jpg</SourceFile>
-        <TargetFile />
-        <TargetPath />
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>45</ID>
-    <Name>Explorer / FTP: Upload screenshot</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>1</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>!Insert</Key>
-    </Trigger>
-    <Conditions />
-    <Actions>
-      <Action>
-        <Type>Screenshot</Type>
-        <Area>Screen</Area>
-        <Quality>95</Quality>
-        <TargetFile>Screenshot.jpg</TargetFile>
-        <TargetFolder>%Temp%</TargetFolder>
-      </Action>
-      <Action>
-        <Type>Input</Type>
-        <Cancel>1</Cancel>
-        <Text>Enter image filename:</Text>
-        <Title>Enter filename</Title>
-      </Action>
-      <Action>
-        <Type>Upload</Type>
-        <Clipboard>1</Clipboard>
-        <Hostname>chriss85.bplaced.net</Hostname>
-        <Password>$8&(Aq&gt;6D&lt;</Password>
-        <Port>21</Port>
-        <Silent>0</Silent>
-        <SourceFiles>%temp%\Screenshot.jpg</SourceFiles>
-        <TargetFile>${Input}</TargetFile>
-        <TargetFolder />
-        <URL>http://chriss85.bplaced.net</URL>
-        <User>chriss85</User>
-      </Action>
-      <Action>
-        <Type>Delete</Type>
-        <Overwrite>0</Overwrite>
-        <Silent>1</Silent>
-        <SourceFile>%temp%\Screenshot.jpg</SourceFile>
-        <TargetFile />
-        <TargetPath />
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>46</ID>
-    <Name>Explorer / FTP: Upload selected files</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>1</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>^U</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>CabinetWClass ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>Upload</Type>
-        <Clipboard>1</Clipboard>
-        <Hostname>chriss85.bplaced.net</Hostname>
-        <Password>$8&(Aq&gt;6D&lt;</Password>
-        <Port>21</Port>
-        <Silent>0</Silent>
-        <SourceFiles>${SelNQ}</SourceFiles>
-        <TargetFile />
-        <TargetFolder />
-        <URL>http://chriss85.bplaced.net</URL>
-        <User>chriss85</User>
-      </Action>
-    </Actions>
-  </Event>
+<Event>
+<ID>150</ID>
+<Name>FTP: Upload window screenshot</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>1</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>#Insert</Key>
+</Trigger>
+<Conditions></Conditions>
+<Actions>
+<Action>
+<Type>Screenshot</Type>
+<Area>Window</Area>
+<Quality>95</Quality>
+<TargetFile>Screenshot.jpg</TargetFile>
+<TargetFolder>%Temp%</TargetFolder>
+</Action>
+<Action>
+<Type>Input</Type>
+<Cancel>1</Cancel>
+<Text>Enter image filename:</Text>
+<Title>Enter filename</Title>
+</Action>
+<Action>
+<Type>Upload</Type>
+<Clipboard>1</Clipboard>
+<Hostname>Enter Hostname</Hostname>
+<Password></Password>
+<Port>21</Port>
+<Silent>0</Silent>
+<SourceFiles>%temp%\Screenshot.jpg</SourceFiles>
+<TargetFile>${Input}</TargetFile>
+<TargetFolder></TargetFolder>
+<URL>http://urltohost.com</URL>
+<User>Enter Username</User>
+</Action>
+<Action>
+<Type>Delete</Type>
+<Overwrite>0</Overwrite>
+<Silent>1</Silent>
+<SourceFile>%temp%\Screenshot.jpg</SourceFile>
+<TargetFile></TargetFile>
+<TargetPath></TargetPath>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>151</ID>
+<Name>FTP: Upload screenshot</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>1</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!Insert</Key>
+</Trigger>
+<Conditions></Conditions>
+<Actions>
+<Action>
+<Type>Screenshot</Type>
+<Area>Screen</Area>
+<Quality>95</Quality>
+<TargetFile>Screenshot.jpg</TargetFile>
+<TargetFolder>%Temp%</TargetFolder>
+</Action>
+<Action>
+<Type>Input</Type>
+<Cancel>1</Cancel>
+<Text>Enter image filename:</Text>
+<Title>Enter filename</Title>
+</Action>
+<Action>
+<Type>Upload</Type>
+<Clipboard>1</Clipboard>
+<Hostname>Enter Hostname</Hostname>
+<Password></Password>
+<Port>21</Port>
+<Silent>0</Silent>
+<SourceFiles>%temp%\Screenshot.jpg</SourceFiles>
+<TargetFile>${Input}</TargetFile>
+<TargetFolder></TargetFolder>
+<URL>http://urltohost.com</URL>
+<User>Enter Username</User>
+</Action>
+<Action>
+<Type>Delete</Type>
+<Overwrite>0</Overwrite>
+<Silent>1</Silent>
+<SourceFile>%temp%\Screenshot.jpg</SourceFile>
+<TargetFile></TargetFile>
+<TargetPath></TargetPath>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>152</ID>
+<Name>Explorer / FTP: Upload selected files</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>1</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^U</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>Upload</Type>
+<Clipboard>1</Clipboard>
+<Hostname>Enter Hostname</Hostname>
+<Password></Password>
+<Port>21</Port>
+<Silent>0</Silent>
+<SourceFiles>${SelNQ}</SourceFiles>
+<TargetFile></TargetFile>
+<TargetFolder></TargetFolder>
+<URL>http://urltohost.com</URL>
+<User>Enter Username</User>
+</Action>
+</Actions>
+</Event>
 </Events>

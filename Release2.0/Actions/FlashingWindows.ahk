@@ -6,11 +6,11 @@ Action_FlashingWindows_Init(Action)
 	Action.ToggleWindows := 1
 }
 
-Action_FlashingWindows_ReadXML(Action, ActionFileHandle)
+Action_FlashingWindows_ReadXML(Action, XMLAction)
 {
-	Action.Notifications := xpath(ActionFileHandle, "/Notifications/Text()")
-	Action.FlashingWindows := xpath(ActionFileHandle, "/FlashingWindows/Text()")
-	Action.ToggleWindows := xpath(ActionFileHandle, "/ToggleWindows/Text()")
+	Action.Notifications := XMLAction.Notifications
+	Action.FlashingWindows := XMLAction.FlashingWindows
+	Action.ToggleWindows := XMLAction.ToggleWindows
 }
 
 Action_FlashingWindows_Execute(Action, Event)

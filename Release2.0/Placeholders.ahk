@@ -103,10 +103,17 @@ ExpandPlaceholder(Placeholder)
 		FormatTime, Placeholder ,, %Placeholder%
 		return Placeholder
 	}
-	else if(Placeholder = "PT")
+	else if(Placeholder = "TitleFilename")
 	{
 		;Extract filename from active window title
 		RegExMatch(WinGetTitle("A"),"([a-zA-Z]:\\[^/:\*\?<>\|]+\.\w{2,6})|(\\\\[^/:\*\?<>\|]+\.\w{2,6})",titlepath)
+		return titlepath
+	}
+	else if(Placeholder = "TitlePath")
+	{
+		;Extract filename from active window title
+		RegExMatch(WinGetTitle("A"),"([a-zA-Z]:\\[^/:\*\?<>\|]+\.\w{2,6})|(\\\\[^/:\*\?<>\|]+\.\w{2,6})",titlepath)
+		SplitPath, titlepath,,titlepath
 		return titlepath
 	}
 	else if(Placeholder = "P")

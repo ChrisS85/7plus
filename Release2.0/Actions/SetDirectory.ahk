@@ -3,10 +3,10 @@ Action_SetDirectory_Init(Action)
 	Action.Category := "Explorer"
 	Action.WindowMatchType := "Active"
 }
-Action_SetDirectory_ReadXML(Action, ActionFileHandle)
+Action_SetDirectory_ReadXML(Action, XMLAction)
 {
-	Action.Path := xpath(ActionFileHandle, "/Path/Text()")
-	WindowFilter_ReadXML(Action,ActionFileHandle)
+	Action.Path := XMLAction.Path
+	WindowFilter_ReadXML(Action,XMLAction)
 }
 Action_SetDirectory_Execute(Action, Event)
 {

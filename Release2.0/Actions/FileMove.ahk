@@ -3,9 +3,9 @@ Action_Move_Init(Action)
 	Action_FileOperation_Init(Action)
 }
 
-Action_Move_ReadXML(Action, ActionFileHandle)
+Action_Move_ReadXML(Action, XMLAction)
 {
-	Action_FileOperation_ReadXML(Action, ActionFileHandle)
+	Action_FileOperation_ReadXML(Action, XMLAction)
 }
 
 Action_Move_Execute(Action, Event)

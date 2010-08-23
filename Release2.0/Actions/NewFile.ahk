@@ -9,10 +9,18 @@ Action_NewFile_Init(Action)
 	Action.Rename := true
 }
 
-Action_NewFile_ReadXML(Action, ActionFileHandle)
+Action_NewFile_ReadXML(Action, XMLAction)
 {
-	Action.Filename := xpath(ActionFileHandle, "/Filename/Text()")
-	Action.Rename := xpath(ActionFileHandle, "/Rename/Text()")
+	global Vista7
+	Action.Filename := XMLAction.Filename
+	Action.Rename := XMLAction.Rename
+	if(!Action.Filename)
+	{
+		if(Vista7)
+			Action.Filename:=TranslateMUI("notepad.exe",470) ".txt" ;"New Textfile" ".txt"
+		else
+			Action.Filename:=TranslateMUI("shell32.dll",8587) " " TranslateMUI("notepad.exe",469) ".txt" ;"New" "Textfile" ".txt"
+	}
 }
 
 Action_NewFile_Execute(Action, Event)

@@ -42,7 +42,9 @@ GUI_EditEvent(e,GoToLabel="")
 		x += 70
 		y -= 4
 		Gui, Add, DropDownList, vEditEventTriggerType gEditEventTriggerType x%x% y%y% w300
-		y -= 30
+		y -= 1
+		Gui, Add, Button, gTriggerHelp x+10 y%y%, Help
+		y -= 29
 		Gui, Add, DropDownList, vEditEventTriggerCategory gEditEventTriggerCategory x%x% y%y% w300
 		x := 28
 		y += 60
@@ -179,7 +181,7 @@ GUI_EditEvent(e,GoToLabel="")
 		LV_Delete()
 		Loop % Event.Conditions.len()
 		{
-			LV_Add(A_Index = i ? "Select" : "", Event.Conditions[A_Index].DisplayString())
+			LV_Add(A_Index = i ? "Select" : "", (Event.Conditions[A_Index].Negate ? "NOT " : "") Event.Conditions[A_Index].DisplayString())
 		}
 		GuiControl, focus, EditEventConditions
 		return
@@ -419,6 +421,11 @@ GUI_EditEvent(e,GoToLabel="")
 		LV_Modify(i-1,"Select")
 		GUI_EditEvent("","UpdateActions") ;Refresh listview
 	}
+	else if(GoToLabel = "TriggerHelp")
+	{
+		GuiControlGet, type,,EditEventTriggerType
+		Run http://code.google.com/p/7plus/wiki/docsTriggers%type%
+	}
 } 
 EditEventOK:
 GUI_EditEvent("","EditEventOK")
@@ -442,6 +449,8 @@ FillCategories:
 GUI_EditEvent("","FillCategories")
 return
 
+TriggerHelp:
+GUI_EditEvent("","TriggerHelp")
 ;Called when a trigger category gets selected
 EditEventTriggerCategory:
 GUI_EditEvent("","EditEventTriggerCategory")

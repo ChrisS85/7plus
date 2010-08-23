@@ -1,57 +1,352 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
 <Events>
-  <Event>
-    <ID>12</ID>
-    <Name>Window Handling: Right click minimize: Minimize to tray</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>RButton</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>MouseOver</Type>
-        <MouseOverType>Titlebar</MouseOverType>
-        <Negate>0</Negate>
-        <WindowFilter />
-        <WindowMatchType>Program</WindowMatchType>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>WindowState</Type>
-        <Action>Toggle always on top</Action>
-        <WindowFilter />
-        <WindowMatchType>UnderMouse</WindowMatchType>
-      </Action>
-      <Action>
-        <Type>ControlEvent</Type>
-        <Action>Enable Event</Action>
-        <EventID>13</EventID>
-      </Action>
-      <Action>
-        <Type>ControlEvent</Type>
-        <Action>Trigger Event</Action>
-        <EventID>13</EventID>
-      </Action>
-      <Action>
-        <Type>ControlEvent</Type>
-        <Action>Enable Event</Action>
-        <EventID>14</EventID>
-      </Action>
-      <Action>
-        <Type>ControlEvent</Type>
-        <Action>Trigger Event</Action>
-        <EventID>14</EventID>
-      </Action>
-      <Action>
-        <Type>ControlTimer</Type>
-        <Action>Start timer</Action>
-        <TimerID>15</TimerID>
-      </Action>
-    </Actions>
-  </Event>
+<Event>
+<ID>224</ID>
+<Name>Window Handling: Middle click on title: Close window under mouse</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>MButton</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>MouseOver</Type>
+<MouseOverType>Titlebar</MouseOverType>
+<Negate>0</Negate>
+<WindowFilter></WindowFilter>
+<WindowMatchType>Program</WindowMatchType>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>WindowClose</Type>
+<ForceClose></ForceClose>
+<WindowFilter></WindowFilter>
+<WindowMatchType>UnderMouse</WindowMatchType>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>225</ID>
+<Name>Window Handling: Right click on minimize button: Minimize to tray</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>RButton</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>MouseOver</Type>
+<MouseOverType>MinimizeButton</MouseOverType>
+<Negate>0</Negate>
+<WindowFilter></WindowFilter>
+<WindowMatchType>Program</WindowMatchType>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>MinimizeToTray</Type>
+<WindowFilter></WindowFilter>
+<WindowMatchType>UnderMouse</WindowMatchType>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>226</ID>
+<Name>Window Handling: Activate notification/flashing/previous window</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>CapsLock</Key>
+</Trigger>
+<Conditions></Conditions>
+<Actions>
+<Action>
+<Type>FlashingWindows</Type>
+<FlashingWindows>1</FlashingWindows>
+<Notifications>1</Notifications>
+<ToggleWindows>1</ToggleWindows>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>227</ID>
+<Name>Window Handling: Right click on titlebar: Toggle always on top</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>RButton</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>MouseOver</Type>
+<MouseOverType>Titlebar</MouseOverType>
+<Negate>0</Negate>
+<WindowFilter></WindowFilter>
+<WindowMatchType>Program</WindowMatchType>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>WindowState</Type>
+<Action>Toggle always on top</Action>
+<WindowFilter></WindowFilter>
+<WindowMatchType>UnderMouse</WindowMatchType>
+</Action>
+<Action>
+<Type>ControlTimer</Type>
+<Action>Start timer</Action>
+<TimerID>230</TimerID>
+</Action>
+<Action>
+<Type>ControlEvent</Type>
+<Action>Enable Event</Action>
+<EventID>228</EventID>
+</Action>
+<Action>
+<Type>ControlEvent</Type>
+<Action>Enable Event</Action>
+<EventID>229</EventID>
+</Action>
+<Action>
+<Type>ControlEvent</Type>
+<Action>Trigger Event</Action>
+<EventID>228</EventID>
+</Action>
+<Action>
+<Type>ControlEvent</Type>
+<Action>Trigger Event</Action>
+<EventID>229</EventID>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>228</ID>
+<Name>Window Handling: Toggle always on top -&gt; Context menu active</Name>
+<Enabled>0</Enabled>
+<DisableAfterUse>1</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>None</Type>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsContextMenuActive</Type>
+<Negate>0</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>SendKeys</Type>
+<Keys>{Esc}</Keys>
+</Action>
+<Action>
+<Type>ControlEvent</Type>
+<Action>Disable Event</Action>
+<EventID>230</EventID>
+</Action>
+<Action>
+<Type>ControlEvent</Type>
+<Action>Disable Event</Action>
+<EventID>229</EventID>
+</Action>
+<Action>
+<Type>Run</Type>
+<Command></Command>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory></WorkingDirectory>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>229</ID>
+<Name>Window Handling: Toggle always on top -&gt; No context menu active</Name>
+<Enabled>0</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>None</Type>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsContextMenuActive</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>ControlEvent</Type>
+<Action>Trigger Event</Action>
+<EventID>228</EventID>
+</Action>
+<Action>
+<Type>ControlEvent</Type>
+<Action>Trigger Event</Action>
+<EventID>229</EventID>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>230</ID>
+<Name>Window Handling: Toggle always on top -&gt; context menu timeout</Name>
+<Enabled>0</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Timer</Type>
+<Restart>0</Restart>
+<ShowProgress>0</ShowProgress>
+<Time>2000</Time>
+</Trigger>
+<Conditions></Conditions>
+<Actions>
+<Action>
+<Type>ControlEvent</Type>
+<Action>Disable Event</Action>
+<EventID>228</EventID>
+</Action>
+<Action>
+<Type>ControlEvent</Type>
+<Action>Disable Event</Action>
+<EventID>229</EventID>
+</Action>
+<Action>
+<Type>ControlEvent</Type>
+<Action>Disable Event</Action>
+<EventID>230</EventID>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>235</ID>
+<Name>Window Handling: Remove always on top when window gets maximized</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>WindowStateChange</Type>
+<Event>Window maximized</Event>
+<WindowFilter></WindowFilter>
+<WindowMatchType>Active</WindowMatchType>
+</Trigger>
+<Conditions></Conditions>
+<Actions>
+<Action>
+<Type>WindowState</Type>
+<Action>Disable always on top</Action>
+<WindowFilter></WindowFilter>
+<WindowMatchType>Active</WindowMatchType>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>231</ID>
+<Name>Window Handling: Right click on close button: Force-close window</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>RButton</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>MouseOver</Type>
+<MouseOverType>CloseButton</MouseOverType>
+<Negate>0</Negate>
+<WindowFilter></WindowFilter>
+<WindowMatchType>Program</WindowMatchType>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>WindowClose</Type>
+<ForceClose></ForceClose>
+<WindowFilter></WindowFilter>
+<WindowMatchType>UnderMouse</WindowMatchType>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>232</ID>
+<Name>Window Handling: Force-close active program</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!F5</Key>
+</Trigger>
+<Conditions></Conditions>
+<Actions>
+<Action>
+<Type>WindowClose</Type>
+<ForceClose></ForceClose>
+<WindowFilter></WindowFilter>
+<WindowMatchType>Active</WindowMatchType>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>233</ID>
+<Name>Window Handling: Maximize window under mouse</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!WheelUp</Key>
+</Trigger>
+<Conditions></Conditions>
+<Actions>
+<Action>
+<Type>WindowState</Type>
+<Action>Minimize-&gt;Normal-&gt;Maximize</Action>
+<WindowFilter></WindowFilter>
+<WindowMatchType>UnderMouse</WindowMatchType>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>234</ID>
+<Name>Window Handling: Restore / Minimize window under mouse</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>1</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!WheelDown</Key>
+</Trigger>
+<Conditions></Conditions>
+<Actions>
+<Action>
+<Type>WindowState</Type>
+<Action>Maximize-&gt;Normal-&gt;Minimize</Action>
+<WindowFilter></WindowFilter>
+<WindowMatchType>UnderMouse</WindowMatchType>
+</Action>
+</Actions>
+</Event>
 </Events>
+<MajorVersion>2</MajorVersion>
+<MinorVersion>0</MinorVersion>
+<BugfixVersion>0</BugfixVersion>

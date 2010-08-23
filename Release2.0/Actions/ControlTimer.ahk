@@ -4,10 +4,10 @@
 	Action.Action := "Start timer"
 }
 
-Action_ControlTimer_ReadXML(Action, ActionFileHandle)
+Action_ControlTimer_ReadXML(Action, XMLAction)
 {
-	Action.TimerID := xpath(ActionFileHandle, "/TimerID/Text()")
-	Action.Action := xpath(ActionFileHandle, "/Action/Text()")
+	Action.TimerID := XMLAction.TimerID
+	Action.Action := XMLAction.Action
 }
 
 Action_ControlTimer_Execute(Action, Timer)

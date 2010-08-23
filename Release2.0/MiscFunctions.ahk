@@ -628,7 +628,7 @@ file b
 file a|file b
 
 */
-ToArray(SourceFiles, ByRef Separator = "", ByRef wasQuoted = 0)
+ToArray(SourceFiles, ByRef Separator = "`n", ByRef wasQuoted = 0)
 {
 	files := Array()
 	pos := 1
@@ -654,7 +654,7 @@ ToArray(SourceFiles, ByRef Separator = "", ByRef wasQuoted = 0)
 				continue
 			}
 			else
-				Msgbox Invalid source format
+				Msgbox Invalid source format %SourceFiles%
 		}
 		else
 		{
@@ -682,6 +682,20 @@ ArrayToList(array, separator = "`n", quote = 0)
 	return result
 }
 
+;Compares two (already separated) version numbers. Returns 1 if 1st is greater, 0 if equal, -1 if second is greater
+CompareVersion(major1,major2,minor1,minor2,bugfix1,bugfix2)
+{
+	if(major1 > major2)
+		return 1
+	else if(major1 = major2 && minor1 > minor2)
+		return 1
+	else if(major1 = major2 && minor1 = minor2 && bugfix1 > bugfix2)
+		return 1
+	else if(major1 = major2 && minor1 = minor2 && bugfix1 = bugfix2)
+		return 0
+	else
+		return -1
+}
 ;get data starting from pointer up to 0 char
 ExtractData(pointer) { 
 Loop { 

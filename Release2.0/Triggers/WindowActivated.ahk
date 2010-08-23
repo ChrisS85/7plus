@@ -3,9 +3,9 @@ Trigger_WindowActivated_Init(Trigger)
 	Trigger.Category := "Window"
 	WindowFilter_Init(Trigger)
 }
-Trigger_WindowActivated_ReadXML(Trigger, TriggerFileHandle)
+Trigger_WindowActivated_ReadXML(Trigger, XMLTrigger)
 {	
-	WindowFilter_ReadXML(Trigger, TriggerFileHandle)
+	WindowFilter_ReadXML(Trigger, XMLTrigger)
 }
 
 Trigger_WindowActivated_Matches(Trigger, Filter)

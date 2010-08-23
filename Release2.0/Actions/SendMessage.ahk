@@ -8,14 +8,14 @@ Action_SendMessage_Init(Action)
 	Action.lParam := ""
 	Action.MessageMode := "Post"
 }
-Action_SendMessage_ReadXML(Action, ActionFileHandle)
+Action_SendMessage_ReadXML(Action, XMLAction)
 {
-	WindowFilter_ReadXML(Action, ActionFileHandle)
-	Action.TargetControl := xpath(ActionFileHandle, "/TargetControl/Text()")
-	Action.Message := xpath(ActionFileHandle, "/Message/Text()")
-	Action.wParam := xpath(ActionFileHandle, "/wParam/Text()")
-	Action.lParam := xpath(ActionFileHandle, "/lParam/Text()")
-	Action.MessageMode := xpath(ActionFileHandle, "/MessageMode/Text()")
+	WindowFilter_ReadXML(Action, XMLAction)
+	Action.TargetControl := XMLAction.TargetControl
+	Action.Message := XMLAction.Message
+	Action.wParam := XMLAction.wParam
+	Action.lParam := XMLAction.lParam
+	Action.MessageMode := XMLAction.MessageMode
 }
 Action_SendMessage_Execute(Action,Event)
 {

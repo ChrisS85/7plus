@@ -1,633 +1,1852 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
 <Events>
-  <Event>
-    <ID>25</ID>
-    <Name>Explorer: Open Fast Folders Slot 0</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>Numpad0</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>FastFoldersRecall</Type>
-        <Slot>0</Slot>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>26</ID>
-    <Name>Explorer: Open Fast Folders Slot 1</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>Numpad1</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>FastFoldersRecall</Type>
-        <Slot>1</Slot>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>27</ID>
-    <Name>Explorer: Open Fast Folders Slot 2</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>Numpad2</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>FastFoldersRecall</Type>
-        <Slot>2</Slot>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>28</ID>
-    <Name>Explorer: Open Fast Folders Slot 3</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>Numpad3</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>FastFoldersRecall</Type>
-        <Slot>3</Slot>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>29</ID>
-    <Name>Explorer: Open Fast Folders Slot 4</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>Numpad4</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>FastFoldersRecall</Type>
-        <Slot>4</Slot>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>30</ID>
-    <Name>Explorer: Open Fast Folders Slot 5</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>Numpad5</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>FastFoldersRecall</Type>
-        <Slot>5</Slot>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>31</ID>
-    <Name>Explorer: Open Fast Folders Slot 6</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>Numpad6</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>FastFoldersRecall</Type>
-        <Slot>6</Slot>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>32</ID>
-    <Name>Explorer: Open Fast Folders Slot 7</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>Numpad7</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>FastFoldersRecall</Type>
-        <Slot>7</Slot>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>33</ID>
-    <Name>Explorer: Open Fast Folders Slot 8</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>Numpad8</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>FastFoldersRecall</Type>
-        <Slot>8</Slot>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>34</ID>
-    <Name>Explorer: Open Fast Folders Slot 9</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>Numpad9</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>FastFoldersRecall</Type>
-        <Slot>9</Slot>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>35</ID>
-    <Name>Explorer: Save Fast Folders Slot 0</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>^Numpad0</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>FastFoldersStore</Type>
-        <Folder />
-        <Slot>0</Slot>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>36</ID>
-    <Name>Explorer: Save Fast Folders Slot 1</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>^Numpad1</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>FastFoldersStore</Type>
-        <Folder />
-        <Slot>1</Slot>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>37</ID>
-    <Name>Explorer: Save Fast Folders Slot 2</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>^Numpad2</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>FastFoldersStore</Type>
-        <Folder />
-        <Slot>2</Slot>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>38</ID>
-    <Name>Explorer: Save Fast Folders Slot 3</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>^Numpad3</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>FastFoldersStore</Type>
-        <Folder />
-        <Slot>3</Slot>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>39</ID>
-    <Name>Explorer: Save Fast Folders Slot 4</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>^Numpad4</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>FastFoldersStore</Type>
-        <Folder />
-        <Slot>4</Slot>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>40</ID>
-    <Name>Explorer: Save Fast Folders Slot 5</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>^Numpad5</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>FastFoldersStore</Type>
-        <Folder />
-        <Slot>5</Slot>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>41</ID>
-    <Name>Explorer: Save Fast Folders Slot 6</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>^Numpad6</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>FastFoldersStore</Type>
-        <Folder />
-        <Slot>6</Slot>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>42</ID>
-    <Name>Explorer: Save Fast Folders Slot 7</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>^Numpad7</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>FastFoldersStore</Type>
-        <Folder />
-        <Slot>7</Slot>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>43</ID>
-    <Name>Explorer: Save Fast Folders Slot 8</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>^Numpad8</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>FastFoldersStore</Type>
-        <Folder />
-        <Slot>8</Slot>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>44</ID>
-    <Name>Explorer: Save Fast Folders Slot 9</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>^Numpad9</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>FastFoldersStore</Type>
-        <Folder />
-        <Slot>9</Slot>
-      </Action>
-    </Actions>
-  </Event>
+<Event>
+<ID>1</ID>
+<Name>Explorer: Open Fast Folders Slot 0</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>Numpad0</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersRecall</Type>
+<Slot>0</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>2</ID>
+<Name>Explorer / File Dialog: Open Fast Folders Slot 0</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>Numpad0</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersRecall</Type>
+<Slot>0</Slot>
+</Action>
+</Actions>
+</Event>  
+<Event>
+<ID>3</ID>
+<Name>Explorer: Open Fast Folders Slot 1</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>Numpad1</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersRecall</Type>
+<Slot>1</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>4</ID>
+<Name>Explorer / File Dialog: Open Fast Folders Slot 1</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>Numpad1</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersRecall</Type>
+<Slot>1</Slot>
+</Action>
+</Actions>
+</Event>  
+<Event>
+<ID>5</ID>
+<Name>Explorer: Open Fast Folders Slot 2</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>Numpad2</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersRecall</Type>
+<Slot>2</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>6</ID>
+<Name>Explorer / File Dialog: Open Fast Folders Slot 2</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>Numpad2</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersRecall</Type>
+<Slot>2</Slot>
+</Action>
+</Actions>
+</Event>  
+<Event>
+<ID>7</ID>
+<Name>Explorer: Open Fast Folders Slot 3</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>Numpad3</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersRecall</Type>
+<Slot>3</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>8</ID>
+<Name>Explorer / File Dialog: Open Fast Folders Slot 3</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>Numpad3</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersRecall</Type>
+<Slot>3</Slot>
+</Action>
+</Actions>
+</Event>  
+<Event>
+<ID>9</ID>
+<Name>Explorer: Open Fast Folders Slot 4</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>Numpad4</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersRecall</Type>
+<Slot>4</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>10</ID>
+<Name>Explorer / File Dialog: Open Fast Folders Slot 4</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>Numpad4</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersRecall</Type>
+<Slot>4</Slot>
+</Action>
+</Actions>
+</Event>  
+<Event>
+<ID>11</ID>
+<Name>Explorer: Open Fast Folders Slot 5</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>Numpad5</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersRecall</Type>
+<Slot>5</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>12</ID>
+<Name>Explorer / File Dialog: Open Fast Folders Slot 5</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>Numpad5</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersRecall</Type>
+<Slot>5</Slot>
+</Action>
+</Actions>
+</Event>  
+<Event>
+<ID>13</ID>
+<Name>Explorer: Open Fast Folders Slot 6</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>Numpad6</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersRecall</Type>
+<Slot>6</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>14</ID>
+<Name>Explorer / File Dialog: Open Fast Folders Slot 6</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>Numpad6</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersRecall</Type>
+<Slot>6</Slot>
+</Action>
+</Actions>
+</Event>  
+<Event>
+<ID>15</ID>
+<Name>Explorer: Open Fast Folders Slot 7</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>Numpad7</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersRecall</Type>
+<Slot>7</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>16</ID>
+<Name>Explorer / File Dialog: Open Fast Folders Slot 7</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>Numpad7</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersRecall</Type>
+<Slot>7</Slot>
+</Action>
+</Actions>
+</Event>  
+<Event>
+<ID>17</ID>
+<Name>Explorer: Open Fast Folders Slot 8</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>Numpad8</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersRecall</Type>
+<Slot>8</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>18</ID>
+<Name>Explorer / File Dialog: Open Fast Folders Slot 8</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>Numpad8</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersRecall</Type>
+<Slot>8</Slot>
+</Action>
+</Actions>
+</Event>  
+<Event>
+<ID>19</ID>
+<Name>Explorer: Open Fast Folders Slot 9</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>Numpad9</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersRecall</Type>
+<Slot>9</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>20</ID>
+<Name>Explorer / File Dialog: Open Fast Folders Slot 9</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>Numpad9</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersRecall</Type>
+<Slot>9</Slot>
+</Action>
+</Actions>
+</Event>  
+<Event>
+<ID>21</ID>
+<Name>Explorer: Save Fast Folders Slot 0</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^Numpad0</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersStore</Type>
+<Folder></Folder>
+<Slot>0</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>22</ID>
+<Name>Explorer / File Dialog: Save Fast Folders Slot 0</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^Numpad0</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersStore</Type>
+<Folder></Folder>
+<Slot>0</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>23</ID>
+<Name>Explorer: Save Fast Folders Slot 1</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^Numpad1</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersStore</Type>
+<Folder></Folder>
+<Slot>1</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>24</ID>
+<Name>Explorer / File Dialog: Save Fast Folders Slot 1</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^Numpad1</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersStore</Type>
+<Folder></Folder>
+<Slot>1</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>25</ID>
+<Name>Explorer: Save Fast Folders Slot 2</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^Numpad2</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersStore</Type>
+<Folder></Folder>
+<Slot>2</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>26</ID>
+<Name>Explorer / File Dialog: Save Fast Folders Slot 2</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^Numpad2</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersStore</Type>
+<Folder></Folder>
+<Slot>2</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>27</ID>
+<Name>Explorer: Save Fast Folders Slot 3</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^Numpad3</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersStore</Type>
+<Folder></Folder>
+<Slot>3</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>28</ID>
+<Name>Explorer / File Dialog: Save Fast Folders Slot 3</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^Numpad3</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersStore</Type>
+<Folder></Folder>
+<Slot>3</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>29</ID>
+<Name>Explorer: Save Fast Folders Slot 4</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^Numpad4</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersStore</Type>
+<Folder></Folder>
+<Slot>4</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>30</ID>
+<Name>Explorer / File Dialog: Save Fast Folders Slot 4</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^Numpad4</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersStore</Type>
+<Folder></Folder>
+<Slot>4</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>31</ID>
+<Name>Explorer: Save Fast Folders Slot 5</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^Numpad5</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersStore</Type>
+<Folder></Folder>
+<Slot>5</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>32</ID>
+<Name>Explorer / File Dialog: Save Fast Folders Slot 5</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^Numpad5</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersStore</Type>
+<Folder></Folder>
+<Slot>5</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>33</ID>
+<Name>Explorer: Save Fast Folders Slot 6</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^Numpad6</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersStore</Type>
+<Folder></Folder>
+<Slot>6</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>34</ID>
+<Name>Explorer / File Dialog: Save Fast Folders Slot 6</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^Numpad6</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersStore</Type>
+<Folder></Folder>
+<Slot>6</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>35</ID>
+<Name>Explorer: Save Fast Folders Slot 7</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^Numpad7</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersStore</Type>
+<Folder></Folder>
+<Slot>7</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>36</ID>
+<Name>Explorer / File Dialog: Save Fast Folders Slot 7</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^Numpad7</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersStore</Type>
+<Folder></Folder>
+<Slot>7</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>37</ID>
+<Name>Explorer: Save Fast Folders Slot 8</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^Numpad8</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersStore</Type>
+<Folder></Folder>
+<Slot>8</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>38</ID>
+<Name>Explorer / File Dialog: Save Fast Folders Slot 8</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^Numpad8</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersStore</Type>
+<Folder></Folder>
+<Slot>8</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>39</ID>
+<Name>Explorer: Save Fast Folders Slot 9</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^Numpad9</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersStore</Type>
+<Folder></Folder>
+<Slot>9</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>40</ID>
+<Name>Explorer / File Dialog: Save Fast Folders Slot 9</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^Numpad9</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersStore</Type>
+<Folder></Folder>
+<Slot>9</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>41</ID>
+<Name>Explorer: Clear Fast Folder Slot 0</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!Numpad0</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|)</With>
+</Condition>
+<Condition>
+<Type>If</Type>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<With>Edit</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersClear</Type>
+<Slot>0</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>42</ID>
+<Name>Explorer / File Dialog: Clear Fast Folder Slot 0</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!Numpad0</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>If</Type>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<With>Edit</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersClear</Type>
+<Slot>0</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>43</ID>
+<Name>Explorer: Clear Fast Folder Slot 1</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!Numpad1</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|)</With>
+</Condition>
+<Condition>
+<Type>If</Type>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<With>Edit</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersClear</Type>
+<Slot>1</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>44</ID>
+<Name>Explorer / File Dialog: Clear Fast Folder Slot 1</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!Numpad1</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>If</Type>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<With>Edit</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersClear</Type>
+<Slot>1</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>45</ID>
+<Name>Explorer: Clear Fast Folder Slot 2</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!Numpad2</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|)</With>
+</Condition>
+<Condition>
+<Type>If</Type>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<With>Edit</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersClear</Type>
+<Slot>2</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>46</ID>
+<Name>Explorer / File Dialog: Clear Fast Folder Slot 2</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!Numpad2</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>If</Type>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<With>Edit</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersClear</Type>
+<Slot>2</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>47</ID>
+<Name>Explorer: Clear Fast Folder Slot 3</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!Numpad3</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|)</With>
+</Condition>
+<Condition>
+<Type>If</Type>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<With>Edit</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersClear</Type>
+<Slot>3</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>48</ID>
+<Name>Explorer / File Dialog: Clear Fast Folder Slot 3</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!Numpad3</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>If</Type>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<With>Edit</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersClear</Type>
+<Slot>3</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>49</ID>
+<Name>Explorer: Clear Fast Folder Slot 4</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!Numpad4</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|)</With>
+</Condition>
+<Condition>
+<Type>If</Type>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<With>Edit</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersClear</Type>
+<Slot>4</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>50</ID>
+<Name>Explorer / File Dialog: Clear Fast Folder Slot 4</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!Numpad4</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>If</Type>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<With>Edit</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersClear</Type>
+<Slot>4</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>51</ID>
+<Name>Explorer: Clear Fast Folder Slot 5</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!Numpad5</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|)</With>
+</Condition>
+<Condition>
+<Type>If</Type>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<With>Edit</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersClear</Type>
+<Slot>5</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>52</ID>
+<Name>Explorer / File Dialog: Clear Fast Folder Slot 5</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!Numpad5</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>If</Type>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<With>Edit</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersClear</Type>
+<Slot>5</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>53</ID>
+<Name>Explorer: Clear Fast Folder Slot 6</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!Numpad6</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|)</With>
+</Condition>
+<Condition>
+<Type>If</Type>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<With>Edit</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersClear</Type>
+<Slot>6</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>54</ID>
+<Name>Explorer / File Dialog: Clear Fast Folder Slot 6</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!Numpad6</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>If</Type>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<With>Edit</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersClear</Type>
+<Slot>6</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>55</ID>
+<Name>Explorer: Clear Fast Folder Slot 7</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!Numpad7</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|)</With>
+</Condition>
+<Condition>
+<Type>If</Type>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<With>Edit</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersClear</Type>
+<Slot>7</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>56</ID>
+<Name>Explorer / File Dialog: Clear Fast Folder Slot 7</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!Numpad7</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>If</Type>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<With>Edit</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersClear</Type>
+<Slot>7</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>57</ID>
+<Name>Explorer: Clear Fast Folder Slot 8</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!Numpad8</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|)</With>
+</Condition>
+<Condition>
+<Type>If</Type>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<With>Edit</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersClear</Type>
+<Slot>8</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>58</ID>
+<Name>Explorer / File Dialog: Clear Fast Folder Slot 8</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!Numpad8</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>If</Type>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<With>Edit</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersClear</Type>
+<Slot>8</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>59</ID>
+<Name>Explorer: Clear Fast Folder Slot 9</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!Numpad9</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|)</With>
+</Condition>
+<Condition>
+<Type>If</Type>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<With>Edit</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersClear</Type>
+<Slot>9</Slot>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>60</ID>
+<Name>Explorer / File Dialog: Clear Fast Folder Slot 9</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!Numpad9</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+<Condition>
+<Type>If</Type>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<With>Edit</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FastFoldersClear</Type>
+<Slot>9</Slot>
+</Action>
+</Actions>
+</Event>
 </Events>

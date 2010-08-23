@@ -4,10 +4,10 @@ Action_Shutdown_Init(Action)
 	Action.ShutDownSelection := "Shutdown"
 	Action.ForceClose := 0
 }
-Action_Shutdown_ReadXML(Action, ActionFileHandle)
+Action_Shutdown_ReadXML(Action, XMLAction)
 {
-	Action.ShutdownSelection := xpath(ActionFileHandle, "/ShutdownSelection/Text()")
-	Action.ForceClose := xpath(ActionFileHandle, "/ForceClose/Text()")
+	Action.ShutdownSelection := XMLAction.ShutdownSelection
+	Action.ForceClose := XMLAction.ForceClose
 }
 Action_Shutdown_Execute(Action)
 {

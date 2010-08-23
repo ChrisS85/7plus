@@ -1,73 +1,72 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
 <Events>
-  <Event>
-    <ID>13</ID>
-    <Name>Explorer: Append file(s) to clipboard</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>+C</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>CabinetWClass ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>Clipboard</Type>
-        <Append>1</Append>
-        <Clear>0</Clear>
-        <Content>${SelNQ}</Content>
-        <Cut>0</Cut>
-        <InsertType>File</InsertType>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>14</ID>
-    <Name>Explorer: Append file(s) to clipboard: Cut</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>+X</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>CabinetWClass ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-      <Condition>
-        <Type>IsRenaming</Type>
-        <Negate>1</Negate>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>Clipboard</Type>
-        <Append>1</Append>
-        <Clear>0</Clear>
-        <Content>${SelNQ}</Content>
-        <Cut>1</Cut>
-        <InsertType>File</InsertType>
-      </Action>
-    </Actions>
-  </Event>
+<Event>
+<ID>134</ID>
+<Name>Explorer: Append file(s) to clipboard</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>+C</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>Clipboard</Type>
+<Append>1</Append>
+<Clear>0</Clear>
+<Content>${SelNM}</Content>
+<Cut>0</Cut>
+<InsertType>File</InsertType>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>135</ID>
+<Name>Explorer: Append file(s) to clipboard: Cut</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>+X</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>IsRenaming</Type>
+<Negate>1</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>Clipboard</Type>
+<Append>1</Append>
+<Clear>0</Clear>
+<Content>${SelNM}</Content>
+<Cut>1</Cut>
+<InsertType>File</InsertType>
+</Action>
+</Actions>
+</Event>
 </Events>

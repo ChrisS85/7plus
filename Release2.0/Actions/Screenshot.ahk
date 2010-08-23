@@ -5,12 +5,12 @@ Action_Screenshot_Init(Action)
 	Action.Quality := 95
 }
 
-Action_Screenshot_ReadXML(Action, ActionFileHandle)
+Action_Screenshot_ReadXML(Action, XMLAction)
 {
-	Action.Area := xpath(ActionFileHandle, "/Area/Text()")
-	Action.Quality := xpath(ActionFileHandle, "/Quality/Text()")
-	Action.TargetFolder := xpath(ActionFileHandle, "/TargetFolder/Text()")
-	Action.TargetFile := xpath(ActionFileHandle, "/TargetFile/Text()")
+	Action.Area := XMLAction.Area
+	Action.Quality := XMLAction.Quality
+	Action.TargetFolder := XMLAction.TargetFolder
+	Action.TargetFile := XMLAction.TargetFile
 }
 
 Action_Screenshot_Execute(Action, Event)

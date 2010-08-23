@@ -417,7 +417,7 @@ SelectFiles(Select,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)
 		loop % wins.count
 		{
 			window:=wins.Item(A_Index-1)
-			If Not InStr( window.FullName, "steam.exe" ) ; ensure pwb isn't IE
+			If Not InStr( window.FullName, "steam.exe" ) ; ensure pwb isn't steam
 				if(window.Hwnd=hWnd)
 					break
 		}
@@ -432,14 +432,11 @@ SelectFiles(Select,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)
 				item := doc.Folder.Items.Item(0)
 				COM_Invoke(doc,"SelectItem",item,4)
 				COM_Invoke(doc,"SelectItem",item,0)
-				;Sleep 10
 			}
 		}
 		if(!IsObject(Select))
 			Select := ToArray(Select)
-		;DllCall("Winmm\timeBeginPeriod", uint, 3)
-    
-
+			
 		items := Array()
 		itemnames := Array()
 		Loop % count
@@ -475,8 +472,6 @@ SelectFiles(Select,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)
 						{
 							COM_Invoke(doc,"SelectItem",items[A_Index],index=1 ? value1 : value) ;http://msdn.microsoft.com/en-us/library/bb774047(VS.85).aspx					
 							index++
-							;Sleep 10
-							;DllCall("Sleep", UInt, 10)  ; Must use DllCall instead of the Sleep command.
 						}
 					}
 				}
@@ -484,8 +479,6 @@ SelectFiles(Select,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)
 					COM_Invoke(doc,"SelectItem",doc.Folder.ParseName(filter),(A_Index=1 ? value1 : value)) ;http://msdn.microsoft.com/en-us/library/bb774047(VS.85).aspx					
 			}
 		}
-
-	;DllCall("Winmm\timeEndPeriod", UInt, 3)  ; Should be called to restore system to normal.
 	}
 }
 

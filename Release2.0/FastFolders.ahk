@@ -1,3 +1,4 @@
+/*
 FFCondition()
 {
 	global Vista7, HKFastFolders
@@ -42,7 +43,7 @@ Numpad9 UP::SetDirectory(FF9)
 !Numpad8 UP::ClearStoredFolder(FF8,FFTitle8)
 !Numpad9 UP::ClearStoredFolder(FF9,FFTitle9)
 #if
-
+*/
 ClearStoredFolder(ByRef FF, ByRef FFTitle)
 {
 	global
@@ -125,7 +126,7 @@ FastFolderMenu()
 	global
 	Menu, FastFolders, add, 1,FastFolderMenuHandler1
 	Menu, FastFolders, DeleteAll
-	if (HKFastFolders && HKFFMenu && (IsWindowUnderCursor("ExploreWClass")||IsWindowUnderCursor("CabinetWClass")||IsWindowUnderCursor("WorkerW")||IsWindowUnderCursor("Progman")) && !IsRenaming())
+	if ((IsWindowUnderCursor("ExploreWClass")||IsWindowUnderCursor("CabinetWClass")||IsWindowUnderCursor("WorkerW")||IsWindowUnderCursor("Progman")) && !IsRenaming())
 	{
 		win:=WinExist("A")
 		y:=GetSelectedFiles()
@@ -184,27 +185,13 @@ FastFolderMenuClicked(index)
 {
 	global
 	local y:=FF%index%
-	local ctrldown := GetKeyState("CTRL")
-	if(paste)
-	{
-		MuteClipboardList:=true
-		ClipboardBackup:=ClipboardAll
-		Clipboard:=y
-		Send ^v
-		Sleep 20
-		Clipboard:=ClipboardBackup
-		MuteClipboardList:=false
-		outputdebug paste %y% to %paste%
-		paste:=false
-		return
-	}	
 	x:=GetSelectedFiles()
 	StringReplace, x, x, `n , |, A
-	if(x)
+	if(x && (GetKeyState("CTRL") || GetKeyState("Shift")))
 	{	
-		if(ctrldown)
+		if(GetKeyState("CTRL"))
 			ShellFileOperation(0x2, x, y,0,hwnd)   
-		else
+		else if(GetKeyState("Shift"))
 			ShellFileOperation(0x1, x, y,0,hwnd)
 	}
 	else

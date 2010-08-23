@@ -2,7 +2,7 @@ Trigger_7plusStart_Init(Trigger)
 {
 	Trigger.Category := "7plus"
 }
-Trigger_7plusStart_ReadXML(Trigger, TriggerFileHandle)
+Trigger_7plusStart_ReadXML(Trigger, XMLTrigger)
 {
 }
 Trigger_7plusStart_Enable(Trigger)

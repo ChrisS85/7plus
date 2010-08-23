@@ -281,8 +281,8 @@ SubEventGUI_Placeholders(SubEventGUI, name, ClickedMenu="")
 		Menu, Placeholders_Windows, add, ${Class} - Active window class, PlaceholderHandler
 		Menu, Placeholders_Windows, add, ${Title} - Active window title, PlaceholderHandler
 		Menu, Placeholders_Windows, add, ${Control} - Focussed control ClassNN, PlaceholderHandler
-		Menu, Placeholders_Windows, add, ${PT} - File Path in active window title, PlaceholderHandler
-		
+		Menu, Placeholders_Windows, add, ${TitlePath} - Path in active window title, PlaceholderHandler
+		Menu, Placeholders_Windows, add, ${TitleFilename} - Path and filename in active window title, PlaceholderHandler
 		Menu, Placeholders, Show
 	}
 	else

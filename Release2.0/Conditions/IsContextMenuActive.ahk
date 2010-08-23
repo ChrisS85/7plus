@@ -2,7 +2,7 @@ Condition_IsContextMenuActive_Init(Condition)
 {
 	Condition.Category := "Other"
 }
-Condition_IsContextMenuActive_ReadXML(Condition, ConditionFileHandle)
+Condition_IsContextMenuActive_ReadXML(Condition, XMLCondition)
 {
 }
 Condition_IsContextMenuActive_Evaluate(Condition)

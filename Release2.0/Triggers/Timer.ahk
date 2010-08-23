@@ -5,11 +5,11 @@ Trigger_Timer_Init(Trigger)
 	Trigger.Restart := 0
 	Menu, tray, Add, Add timer, AddTimer
 }
-Trigger_Timer_ReadXML(Trigger, TriggerFileHandle)
+Trigger_Timer_ReadXML(Trigger, XMLTrigger)
 {	
-	Trigger.Time := xpath(TriggerFileHandle, "/Time/Text()")
-	Trigger.ShowProgress := xpath(TriggerFileHandle, "/ShowProgress/Text()")
-	Trigger.Restart := xpath(TriggerFileHandle, "/Restart/Text()")
+	Trigger.Time := XMLTrigger.Time
+	Trigger.ShowProgress := XMLTrigger.ShowProgress
+	Trigger.Restart := XMLTrigger.Restart
 }
 
 Trigger_Timer_Enable(Trigger, Event)
@@ -231,7 +231,7 @@ Trigger_Timer_DisplayString(Trigger)
 	seconds := Floor((Trigger.Time / 1000 - hours * 3600 - minutes * 60))
 	start := Trigger.tmpStartNice
 	FormatTime, start, start, Time
-	return "Timer - Trigger in " (strLen(hours) = 1 ? "0" hours : hours) ":" (strLen(minutes) = 1 ? "0" minutes : minutes) ":" (strLen(seconds) = 1 ? "0" seconds : seconds) (Trigger.tmpIsPaused ? ", currently paused" : ", started at " start)
+	return "Timer - Trigger in " (strLen(hours) = 1 ? "0" hours : hours) ":" (strLen(minutes) = 1 ? "0" minutes : minutes) ":" (strLen(seconds) = 1 ? "0" seconds : seconds)
 }
 
 Trigger_Timer_GuiShow(Trigger, TriggerGUI)

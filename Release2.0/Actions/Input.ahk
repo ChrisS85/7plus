@@ -3,11 +3,11 @@ Action_Input_Init(Action)
 	Action.Category := "Input"
 	Action.Cancel := 0
 }	
-Action_Input_ReadXML(Action, ActionFileHandle)
+Action_Input_ReadXML(Action, XMLAction)
 {
-	Action.Text := xpath(ActionFileHandle, "/Text/Text()")
-	Action.Title := xpath(ActionFileHandle, "/Title/Text()")
-	Action.Cancel := xpath(ActionFileHandle, "/Cancel/Text()")
+	Action.Text := XMLAction.Text
+	Action.Title := XMLAction.Title
+	Action.Cancel := XMLAction.Cancel
 }
 Action_Input_Execute(Action,Event)
 {

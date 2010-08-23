@@ -2,7 +2,7 @@ Trigger_ExplorerDoubleClickSpace_Init(Trigger)
 {
 	Trigger.Category := "Explorer"
 }
-Trigger_ExplorerDoubleClickSpace_ReadXML(Trigger, TriggerFileHandle)
+Trigger_ExplorerDoubleClickSpace_ReadXML(Trigger, XMLTrigger)
 {
 }
 Trigger_ExplorerDoubleClickSpace_Enable(Trigger)

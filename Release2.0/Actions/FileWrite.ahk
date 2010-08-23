@@ -4,18 +4,20 @@ Action_Write_Init(Action)
 	Action.Append := 0
 }
 
-Action_Write_ReadXML(Action, ActionFileHandle)
+Action_Write_ReadXML(Action, XMLAction)
 {
-	Action.Content := xpath(ActionFileHandle, "/Content/Text()")
-	Action.Target := xpath(ActionFileHandle, "/Target/Text()")
-	Action.Quality := xpath(ActionFileHandle, "/Quality/Text()")
-	Action.Append := xpath(ActionFileHandle, "/Append/Text()")
+	Action.Content := XMLAction.Content
+	Action.Target := XMLAction.Target
+	Action.Quality := XMLAction.Quality
+	Action.Append := XMLAction.Append
+	Action.ImageExtension := XMLAction.ImageExtension
 }
 
 Action_Write_Execute(Action, Event)
 {
 	Target := Event.ExpandPlaceholders(Action.Target)
-	if(InStr(Action.Content, "${clip}") && WriteClipboardImageToFile(Target,Action.Quality))
+	SplitPath, InputVar ,, OutDir, OutExtension, OutNameNoExt
+	if(InStr(Action.Content, "${clip}") && WriteClipboardImageToFile(OutDir "\" OutNameNoExt "." Action.ImageExtension,Action.Quality))
 		return
 	Content := Event.ExpandPlaceholders(Action.Content)
 	if(!Action.Append)
@@ -41,6 +43,7 @@ Action_Write_GuiShow(Action, ActionGUI, GoToLabel = "")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Content", "", "", "Content:", "Placeholders", "Action_Write_Placeholders_Content")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Target", "", "", "Target:", "Browse", "Action_Write_Browse", "Placeholders", "Action_Write_Placeholders_Target")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Quality", "", "", "Image quality:")
+		SubEventGUI_Add(Action, ActionGUI, "Edit", "ImageExtension", "", "", "Image extension:")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Append", "Append text to file")
 	}
 	else if(GoToLabel = "Placeholders_Content")

@@ -49,14 +49,6 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 	}
 	if(event=0x800B && WinActive("ahk_group ExplorerGroup")) ;EVENT_OBJECT_LOCATIONCHANGE
 	{
-		WinGet, state, minmax, ahk_id %hwnd%
-		if(state = 1)
-		{
-			Trigger := EventSystem_CreateSubEvent("Trigger","WindowStateChange")
-			Trigger.Window := hwnd
-			Trigger.Event := "Window maximized"
-			OnTrigger(Trigger)
-		}
 		if(UseTabs)
 			UpdatePosition(TabNum,TabWindow)
 		if(HKShowSpaceAndSize && A_OsVersion = "WIN_7")
@@ -70,7 +62,7 @@ ShellMessage( wParam,lParam, msg)
 {
 	Critical
 	ListLines, Off
-	global ExplorerPath, HKShowSpaceAndSize, BlinkingWindows, wtmwParam, SuppressTabEvents, UseTabs, PreviousWindow, PreviousExplorerPath
+	global ExplorerPath, HKShowSpaceAndSize, BlinkingWindows, wtmwParam, SuppressTabEvents, UseTabs, PreviousWindow, PreviousExplorerPath,WindowList
 	Trigger := EventSystem_CreateSubEvent("Trigger", "OnMessage")
 	Trigger.Message := msg
 	Trigger.wParam := wParam
@@ -94,7 +86,7 @@ ShellMessage( wParam,lParam, msg)
 		WinTraymin(lParam,wParam)
 		Trigger := wParam = 1 ? EventSystem_CreateSubEvent("Trigger","WindowCreated") : EventSystem_CreateSubEvent("Trigger","WindowClosed")
 		class:=WinGetClass("ahk_Id " lParam)
-		outputdebug(Trigger.Type " triggered! class:" class)
+		outputdebug(Trigger.Type " triggered! class:" class " hwnd: " lParam)
 		Trigger.Window := lParam
 		OnTrigger(Trigger)
 	}
@@ -177,6 +169,16 @@ ShellMessage( wParam,lParam, msg)
 		}
 		Else if(UseTabs)
 			ExplorerDeactivated(lParam)
+		
+		WindowList := Object()
+		WinGet, hwnds, list,,, Program Manager
+		Loop, %hwnds%
+		{
+			hwnd := hwnds%A_Index%
+			WinGetClass, class, ahk_id %hwnd%
+			WinGetTitle, title, ahk_id %hwnd%
+			WindowList[hwnd] := Object("class",class,"title",title)
+		}
 	}
 	;Redraw is fired on Explorer path change
 	else if(wParam=6)

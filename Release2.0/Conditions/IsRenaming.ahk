@@ -2,7 +2,7 @@
 {
 	Condition.Category := "Explorer"
 }
-Condition_IsRenaming_ReadXML(Condition, ConditionFileHandle)
+Condition_IsRenaming_ReadXML(Condition, XMLCondition)
 {
 }
 Condition_IsRenaming_Evaluate(Condition)

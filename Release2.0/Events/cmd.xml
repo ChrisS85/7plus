@@ -1,94 +1,165 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
 <Events>
-  <Event>
-    <ID>0</ID>
-    <Name>CMD / Explorer / General: Run cmd in current directory</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>#C</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>If</Type>
-        <Compare>CabinetWClass ExploreWClass</Compare>
-        <Negate>0</Negate>
-        <Operator>contains</Operator>
-        <With>${Class}</With>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>Run</Type>
-        <Command>cmd.exe</Command>
-        <WaitForFinish>0</WaitForFinish>
-        <WorkingDirectory>${P}</WorkingDirectory>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>1</ID>
-    <Name>CMD: Close with ALT + F4</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>!F4</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>WindowActive</Type>
-        <Negate>0</Negate>
-        <WindowFilter>ConsoleWindowClass</WindowFilter>
-        <WindowMatchType>Class</WindowMatchType>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>WindowClose</Type>
-        <ForceClose />
-        <WindowFilter />
-        <WindowMatchType>Active</WindowMatchType>
-      </Action>
-    </Actions>
-  </Event>
-  <Event>
-    <ID>2</ID>
-    <Name>CMD: Enable CTRL+V to paste from clipboard</Name>
-    <Enabled>1</Enabled>
-    <DisableAfterUse>0</DisableAfterUse>
-    <DeleteAfterUse>0</DeleteAfterUse>
-    <OneInstance>0</OneInstance>
-    <Trigger>
-      <Type>Hotkey</Type>
-      <Key>^V</Key>
-    </Trigger>
-    <Conditions>
-      <Condition>
-        <Type>WindowActive</Type>
-        <Negate>0</Negate>
-        <WindowFilter>ConsoleWindowClass</WindowFilter>
-        <WindowMatchType>Class</WindowMatchType>
-      </Condition>
-    </Conditions>
-    <Actions>
-      <Action>
-        <Type>MouseClick</Type>
-        <Button>Right</Button>
-        <Relative>1</Relative>
-        <RestorePosition>1</RestorePosition>
-        <X>40</X>
-        <Y>40</Y>
-      </Action>
-      <Action>
-        <Type>SendKeys</Type>
-        <Keys>{Down 3}{Enter}</Keys>
-      </Action>
-    </Actions>
-  </Event>
+<Event>
+<ID>137</ID>
+<Name>CMD / Explorer: Run cmd in current directory</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>#C</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>Run</Type>
+<Command>cmd.exe</Command>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory>${P}</WorkingDirectory>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>138</ID>
+<Name>CMD: Run cmd</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>#C</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>1</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>If</Type>
+<Compare>${PT}</Compare>
+<Negate>0</Negate>
+<Operator>equals</Operator>
+<With></With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>Run</Type>
+<Command>cmd.exe</Command>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory>C:</WorkingDirectory>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>139</ID>
+<Name>CMD: Run cmd</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>#C</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>1</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+<Condition>
+<Type>If</Type>
+<Compare>${PT}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<With></With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>Run</Type>
+<Command>cmd.exe</Command>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory>${PT}</WorkingDirectory>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>140</ID>
+<Name>CMD: Close with ALT + F4</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>!F4</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>WindowActive</Type>
+<Negate>0</Negate>
+<WindowFilter>ConsoleWindowClass</WindowFilter>
+<WindowMatchType>Class</WindowMatchType>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>WindowClose</Type>
+<ForceClose></ForceClose>
+<WindowFilter></WindowFilter>
+<WindowMatchType>Active</WindowMatchType>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>141</ID>
+<Name>CMD: Enable CTRL+V to paste from clipboard</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^V</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>WindowActive</Type>
+<Negate>0</Negate>
+<WindowFilter>ConsoleWindowClass</WindowFilter>
+<WindowMatchType>Class</WindowMatchType>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>MouseClick</Type>
+<Button>Right</Button>
+<Relative>1</Relative>
+<RestorePosition>1</RestorePosition>
+<X>40</X>
+<Y>40</Y>
+</Action>
+<Action>
+<Type>SendKeys</Type>
+<Keys>{Down 3}{Enter}</Keys>
+</Action>
+</Actions>
+</Event>
 </Events>

@@ -4,10 +4,10 @@ WindowFilter_Init(WindowFilter)
 	WindowFilter.WindowMatchType := "Program"
 	WindowFilter.WindowFilter := ""
 }
-WindowFilter_ReadXML(WindowFilterObject, WindowFilterFileHandle)
+WindowFilter_ReadXML(WindowFilterObject, XMLWindowFilter)
 {
-	WindowFilterObject.WindowMatchType := xpath(WindowFilterFileHandle, "/WindowMatchType/Text()")
-	WindowFilterObject.WindowFilter := xpath(WindowFilterFileHandle, "/WindowFilter/Text()")
+	WindowFilterObject.WindowMatchType :=XMLWindowFilter.WindowMatchType
+	WindowFilterObject.WindowFilter := XMLWindowFilter.WindowFilter
 }
 ;Get a matching window handle from a WindowFilter object
 WindowFilter_Get(WindowFilter)
@@ -70,12 +70,19 @@ WindowFilter_Get(WindowFilter)
 ;Generic Window Filter match function. Filter is optional, it is used to check if the trigger is correct if used on a trigger window filter
 WindowFilter_Matches(WindowFilter, TargetWindow, TriggerFilter = "")
 {
-	class := Wingetclass("ahk_id " TargetWindow)
+	global WindowList
+	
 	if(!TriggerFilter || WindowFilter.type = TriggerFilter.type)
 	{
 		if(TargetWindow = "A")
 			TargetWindow := WinExist("A")
-		else if(TargetWindow = "UnderMouse")
+		class := WinGetClass("ahk_id " TargetWindow)
+		if(!class)
+			class := WindowList[TargetWindow].class
+		title := WinGetTitle("ahk_id " TargetWindow)
+		if(!title)
+			title := WindowList[TargetWindow].title
+		if(TargetWindow = "UnderMouse")
 			MouseGetPos,,,TargetWindow
 		if(WindowFilter.WindowMatchType = "Program")
 		{
@@ -84,23 +91,24 @@ WindowFilter_Matches(WindowFilter, TargetWindow, TriggerFilter = "")
 		}
 		else if(WindowFilter.WindowMatchType = "Class")
 		{
-			if(WinGetClass("ahk_id " TargetWindow) = WindowFilter.WindowFilter)
+			if(class = WindowFilter.WindowFilter)
 				return true
 		}
 		else if(WindowFilter.WindowMatchType = "Title")
 		{
-			if(strStartsWith(WinGetTitle("ahk_id " TargetWindow),WindowFilter.WindowFilter))
+			if(strStartsWith(title,WindowFilter.WindowFilter))
 				return true			
 		}
 		else if(WindowFilter.WindowMatchType = "Active")
 		{
-			if(WinActive("ahk_id " TargetWindow))
+			
+			if(!TargetWindow || WinActive("ahk_id " TargetWindow))
 				return true
 		}
 		else if(WindowFilter.WindowMatchType = "UnderMouse")
 		{			
 			MouseGetPos,,,UnderMouse
-			if(UnderMouse = TargetWindow)
+			if(!TargetWindow || UnderMouse = TargetWindow)
 				return true
 		}
 	}

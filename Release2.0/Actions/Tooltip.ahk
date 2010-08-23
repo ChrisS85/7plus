@@ -5,12 +5,12 @@ Action_ToolTip_Init(Action)
 	Action.Timeout := 5
 }
 
-Action_ToolTip_ReadXML(Action, ActionFileHandle)
+Action_ToolTip_ReadXML(Action, XMLAction)
 {
-	Action.Text := xpath(ActionFileHandle, "/Text/Text()")
-	Action.Timeout := xpath(ActionFileHandle, "/Timeout/Text()")
-	Action.Title := xpath(ActionFileHandle, "/Title/Text()")
-	Action.TrayToolTip := xpath(ActionFileHandle, "/TrayToolTip/Text()")
+	Action.Text := XMLAction.Text
+	Action.Timeout := XMLAction.Timeout
+	Action.Title := XMLAction.Title
+	Action.TrayToolTip := XMLAction.TrayToolTip
 }
 
 Action_ToolTip_Execute(Action, Event)

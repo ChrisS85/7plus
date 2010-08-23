@@ -2,7 +2,7 @@ Trigger_None_Init(Trigger)
 {
 	Trigger.Category := "Other"
 }
-Trigger_None_ReadXML(Trigger, TriggerFileHandle)
+Trigger_None_ReadXML(Trigger, XMLTrigger)
 {
 }
 
