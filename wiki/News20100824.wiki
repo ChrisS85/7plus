@@ -11,3 +11,4 @@ Every trigger, condition and action type in the new event system is documented i
 Users who don't use autoupdate or haven't used 7plus before can get the newest version [http://code.google.com/p/7plus/downloads/list here].
 
 The changelog can be found [Changelog2dot0dot0 here].
+The documentation for all actions, conditions and triggers is located [EventsOverview here].
