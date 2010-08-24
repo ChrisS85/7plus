@@ -53,6 +53,6 @@ Editing an action:
 
 [http://i34.tinypic.com/344bhna.png http://i34.tinypic.com/344bhna_th.png]
 
-Explorer with additional buttons and size/free disk space display:
+Explorer with tabs, additional buttons and size/free disk space display:
 
 [http://i36.tinypic.com/nv6xed.png http://i36.tinypic.com/nv6xed_th.png]
