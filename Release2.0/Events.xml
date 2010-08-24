@@ -104,6 +104,62 @@
 </Event><Event>
 <Actions>
 <Action>
+<Append>1</Append>
+<Clear>0</Clear>
+<Content>${SelNM}</Content>
+<Cut>0</Cut>
+<InsertType>File</InsertType>
+<Type>Clipboard</Type>
+</Action></Actions>
+<Conditions>
+<Condition>
+<Negate>0</Negate>
+<Type>IsDialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>IsRenaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>4</ID>
+<Name>File Dialog: Append file(s) to clipboard</Name>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>+C</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Append>1</Append>
+<Clear>0</Clear>
+<Content>${SelNM}</Content>
+<Cut>1</Cut>
+<InsertType>File</InsertType>
+<Type>Clipboard</Type>
+</Action></Actions>
+<Conditions>
+<Condition>
+<Negate>0</Negate>
+<Type>IsDialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>IsRenaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>5</ID>
+<Name>File Dialog: Append file(s) to clipboard: Cut</Name>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>+X</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
 <Path>Upward</Path>
 <Type>SetDirectory</Type>
 <WindowFilter></WindowFilter>
@@ -123,8 +179,34 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>4</ID>
+<ID>6</ID>
 <Name>Explorer: Make backspace go upwards</Name>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>Backspace</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Path>Upward</Path>
+<Type>SetDirectory</Type>
+<WindowFilter></WindowFilter>
+<WindowMatchType>Active</WindowMatchType>
+</Action></Actions>
+<Conditions>
+<Condition>
+<Negate>0</Negate>
+<Type>IsDialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>IsRenaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>7</ID>
+<Name>File Dialog: Make backspace go upwards</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Backspace</Key>
@@ -140,7 +222,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>5</ID>
+<ID>8</ID>
 <Name>Clipboard Manager</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -166,7 +248,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>15</ID>
+<ID>9</ID>
 <Name>CMD / Explorer: Run cmd in current directory</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -176,7 +258,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<Command>cmd.exe /k cd /D "C:\"</Command>
+<Command>cmd.exe /k cd /D c:\</Command>
 <Type>Run</Type>
 <WaitForFinish>0</WaitForFinish>
 <WorkingDirectory></WorkingDirectory>
@@ -194,11 +276,14 @@
 <Operator>equals</Operator>
 <Type>If</Type>
 <With></With>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>IsDialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>16</ID>
+<ID>10</ID>
 <Name>CMD: Run cmd</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -226,11 +311,14 @@
 <Operator>equals</Operator>
 <Type>If</Type>
 <With></With>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>IsDialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>17</ID>
+<ID>11</ID>
 <Name>CMD: Run cmd</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -255,7 +343,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>18</ID>
+<ID>13</ID>
 <Name>CMD: Close with ALT + F4</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -285,11 +373,158 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>19</ID>
+<ID>14</ID>
 <Name>CMD: Enable CTRL+V to paste from clipboard</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^V</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Command>cmd.exe /k cd /D "${TitlePath}\"</Command>
+<Type>Run</Type>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory></WorkingDirectory>
+</Action></Actions>
+<Conditions>
+<Condition>
+<Negate>0</Negate>
+<Type>IsDialog</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>222</ID>
+<Name>CMD / File Dialog: Run cmd</Name>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>#C</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Append>0</Append>
+<Clear>1</Clear>
+<Content>${SelNNEM}</Content>
+<Cut>0</Cut>
+<InsertType>Text</InsertType>
+<Type>Clipboard</Type>
+</Action></Actions>
+<Conditions>
+<Condition>
+<Compare>${Control}</Compare>
+<Negate>0</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>DirectUIHWND2</With>
+</Condition><Condition>
+<Negate>0</Negate>
+<Type>IsDialog</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>227</ID>
+<Name>File Dialog: Copy filenames to clipboard</Name>
+<OneInstance>1</OneInstance>
+<Trigger>
+<Key>!C</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Append>0</Append>
+<Clear>1</Clear>
+<Content>${SelNM}</Content>
+<Cut>0</Cut>
+<InsertType>Text</InsertType>
+<Type>Clipboard</Type>
+</Action></Actions>
+<Conditions>
+<Condition>
+<Compare>${Control}</Compare>
+<Negate>0</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>DirectUIHWND2</With>
+</Condition><Condition>
+<Negate>0</Negate>
+<Type>IsDialog</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>228</ID>
+<Name>File Dialog: Copy full filepaths to clipboard</Name>
+<OneInstance>1</OneInstance>
+<Trigger>
+<Key>^!C</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Append>1</Append>
+<Clear>1</Clear>
+<Content>${SelNNEM}</Content>
+<Cut>0</Cut>
+<InsertType>Text</InsertType>
+<Type>Clipboard</Type>
+</Action></Actions>
+<Conditions>
+<Condition>
+<Compare>${Control}</Compare>
+<Negate>0</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>DirectUIHWND2</With>
+</Condition><Condition>
+<Negate>0</Negate>
+<Type>IsDialog</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>229</ID>
+<Name>File Dialog: Append filenames to clipboard</Name>
+<OneInstance>1</OneInstance>
+<Trigger>
+<Key>+!C</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Append>1</Append>
+<Clear>1</Clear>
+<Content>${SelNM}</Content>
+<Cut>0</Cut>
+<InsertType>Text</InsertType>
+<Type>Clipboard</Type>
+</Action></Actions>
+<Conditions>
+<Condition>
+<Compare>${Control}</Compare>
+<Negate>0</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>DirectUIHWND2</With>
+</Condition><Condition>
+<Negate>0</Negate>
+<Type>IsDialog</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>230</ID>
+<Name>File Dialog: Append full filepaths to clipboard</Name>
+<OneInstance>1</OneInstance>
+<Trigger>
+<Key>^+!C</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event><Event>
@@ -313,7 +548,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>20</ID>
+<ID>231</ID>
 <Name>Explorer: Copy filenames to clipboard</Name>
 <OneInstance>1</OneInstance>
 <Trigger>
@@ -341,7 +576,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>21</ID>
+<ID>232</ID>
 <Name>Explorer: Copy full filepaths to clipboard</Name>
 <OneInstance>1</OneInstance>
 <Trigger>
@@ -369,7 +604,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>22</ID>
+<ID>233</ID>
 <Name>Explorer: Append filenames to clipboard</Name>
 <OneInstance>1</OneInstance>
 <Trigger>
@@ -397,7 +632,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>23</ID>
+<ID>234</ID>
 <Name>Explorer: Append full filepaths to clipboard</Name>
 <OneInstance>1</OneInstance>
 <Trigger>
@@ -425,7 +660,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>24</ID>
+<ID>235</ID>
 <Name>Explorer: Create new textfile</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -453,8 +688,58 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>25</ID>
+<ID>236</ID>
 <Name>Explorer: Create new folder</Name>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>F8</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Filename>Neues Textdokument.txt</Filename>
+<Rename>1</Rename>
+<Type>NewFile</Type>
+</Action></Actions>
+<Conditions>
+<Condition>
+<Negate>0</Negate>
+<Type>IsDialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>IsRenaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>237</ID>
+<Name>File Dialog: Create new textfile</Name>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>F7</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<FolderName>Neuer Ordner</FolderName>
+<Rename>1</Rename>
+<Type>NewFolder</Type>
+</Action></Actions>
+<Conditions>
+<Condition>
+<Negate>0</Negate>
+<Type>IsDialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>IsRenaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>238</ID>
+<Name>File Dialog: Create new folder</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>F8</Key>
@@ -473,7 +758,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>26</ID>
+<ID>239</ID>
 <Name>Run explorer</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -492,7 +777,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>27</ID>
+<ID>240</ID>
 <Name>Run task manager</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -511,7 +796,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>28</ID>
+<ID>241</ID>
 <Name>Explorer: Double click go upwards</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -537,7 +822,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>29</ID>
+<ID>242</ID>
 <Name>Explorer: Open Fast Folders Slot 0</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -561,7 +846,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>30</ID>
+<ID>243</ID>
 <Name>Explorer / File Dialog: Open Fast Folders Slot 0</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -588,7 +873,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>31</ID>
+<ID>244</ID>
 <Name>Explorer: Open Fast Folders Slot 1</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -612,7 +897,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>32</ID>
+<ID>245</ID>
 <Name>Explorer / File Dialog: Open Fast Folders Slot 1</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -639,7 +924,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>33</ID>
+<ID>246</ID>
 <Name>Explorer: Open Fast Folders Slot 2</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -663,7 +948,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>34</ID>
+<ID>247</ID>
 <Name>Explorer / File Dialog: Open Fast Folders Slot 2</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -690,7 +975,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>35</ID>
+<ID>248</ID>
 <Name>Explorer: Open Fast Folders Slot 3</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -714,7 +999,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>36</ID>
+<ID>249</ID>
 <Name>Explorer / File Dialog: Open Fast Folders Slot 3</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -741,7 +1026,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>37</ID>
+<ID>250</ID>
 <Name>Explorer: Open Fast Folders Slot 4</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -765,7 +1050,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>38</ID>
+<ID>251</ID>
 <Name>Explorer / File Dialog: Open Fast Folders Slot 4</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -792,7 +1077,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>39</ID>
+<ID>252</ID>
 <Name>Explorer: Open Fast Folders Slot 5</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -816,7 +1101,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>40</ID>
+<ID>253</ID>
 <Name>Explorer / File Dialog: Open Fast Folders Slot 5</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -843,7 +1128,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>41</ID>
+<ID>254</ID>
 <Name>Explorer: Open Fast Folders Slot 6</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -867,7 +1152,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>42</ID>
+<ID>255</ID>
 <Name>Explorer / File Dialog: Open Fast Folders Slot 6</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -894,7 +1179,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>43</ID>
+<ID>256</ID>
 <Name>Explorer: Open Fast Folders Slot 7</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -918,7 +1203,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>44</ID>
+<ID>257</ID>
 <Name>Explorer / File Dialog: Open Fast Folders Slot 7</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -945,7 +1230,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>45</ID>
+<ID>258</ID>
 <Name>Explorer: Open Fast Folders Slot 8</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -969,7 +1254,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>46</ID>
+<ID>259</ID>
 <Name>Explorer / File Dialog: Open Fast Folders Slot 8</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -996,7 +1281,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>47</ID>
+<ID>260</ID>
 <Name>Explorer: Open Fast Folders Slot 9</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -1020,7 +1305,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>48</ID>
+<ID>261</ID>
 <Name>Explorer / File Dialog: Open Fast Folders Slot 9</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -1048,7 +1333,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>49</ID>
+<ID>262</ID>
 <Name>Explorer: Save Fast Folders Slot 0</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -1073,7 +1358,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>50</ID>
+<ID>263</ID>
 <Name>Explorer / File Dialog: Save Fast Folders Slot 0</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -1101,7 +1386,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>51</ID>
+<ID>264</ID>
 <Name>Explorer: Save Fast Folders Slot 1</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -1126,7 +1411,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>52</ID>
+<ID>265</ID>
 <Name>Explorer / File Dialog: Save Fast Folders Slot 1</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -1154,7 +1439,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>53</ID>
+<ID>266</ID>
 <Name>Explorer: Save Fast Folders Slot 2</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -1179,7 +1464,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>54</ID>
+<ID>267</ID>
 <Name>Explorer / File Dialog: Save Fast Folders Slot 2</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -1207,7 +1492,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>55</ID>
+<ID>268</ID>
 <Name>Explorer: Save Fast Folders Slot 3</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -1232,7 +1517,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>56</ID>
+<ID>269</ID>
 <Name>Explorer / File Dialog: Save Fast Folders Slot 3</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -1260,7 +1545,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>57</ID>
+<ID>270</ID>
 <Name>Explorer: Save Fast Folders Slot 4</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -1285,7 +1570,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>58</ID>
+<ID>271</ID>
 <Name>Explorer / File Dialog: Save Fast Folders Slot 4</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -1313,7 +1598,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>59</ID>
+<ID>272</ID>
 <Name>Explorer: Save Fast Folders Slot 5</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -1338,7 +1623,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>60</ID>
+<ID>273</ID>
 <Name>Explorer / File Dialog: Save Fast Folders Slot 5</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -1366,7 +1651,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>61</ID>
+<ID>274</ID>
 <Name>Explorer: Save Fast Folders Slot 6</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -1391,7 +1676,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>62</ID>
+<ID>275</ID>
 <Name>Explorer / File Dialog: Save Fast Folders Slot 6</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -1419,7 +1704,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>63</ID>
+<ID>276</ID>
 <Name>Explorer: Save Fast Folders Slot 7</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -1444,7 +1729,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>64</ID>
+<ID>277</ID>
 <Name>Explorer / File Dialog: Save Fast Folders Slot 7</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -1472,7 +1757,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>65</ID>
+<ID>278</ID>
 <Name>Explorer: Save Fast Folders Slot 8</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -1497,7 +1782,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>66</ID>
+<ID>279</ID>
 <Name>Explorer / File Dialog: Save Fast Folders Slot 8</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -1525,7 +1810,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>67</ID>
+<ID>280</ID>
 <Name>Explorer: Save Fast Folders Slot 9</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -1550,7 +1835,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>68</ID>
+<ID>281</ID>
 <Name>Explorer / File Dialog: Save Fast Folders Slot 9</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -1580,8 +1865,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>69</ID>
-<Name>Explorer: Clear Fast Folder Slot 0</Name>
+<ID>282</ID>
+<Name>Explorer: Clear Fast Folders Slot 0</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad0</Key>
@@ -1607,8 +1892,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>70</ID>
-<Name>Explorer / File Dialog: Clear Fast Folder Slot 0</Name>
+<ID>283</ID>
+<Name>Explorer / File Dialog: Clear Fast Folders Slot 0</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad0</Key>
@@ -1637,8 +1922,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>71</ID>
-<Name>Explorer: Clear Fast Folder Slot 1</Name>
+<ID>284</ID>
+<Name>Explorer: Clear Fast Folders Slot 1</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad1</Key>
@@ -1664,8 +1949,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>72</ID>
-<Name>Explorer / File Dialog: Clear Fast Folder Slot 1</Name>
+<ID>285</ID>
+<Name>Explorer / File Dialog: Clear Fast Folders Slot 1</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad1</Key>
@@ -1694,8 +1979,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>73</ID>
-<Name>Explorer: Clear Fast Folder Slot 2</Name>
+<ID>286</ID>
+<Name>Explorer: Clear Fast Folders Slot 2</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad2</Key>
@@ -1721,8 +2006,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>74</ID>
-<Name>Explorer / File Dialog: Clear Fast Folder Slot 2</Name>
+<ID>287</ID>
+<Name>Explorer / File Dialog: Clear Fast Folders Slot 2</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad2</Key>
@@ -1751,8 +2036,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>75</ID>
-<Name>Explorer: Clear Fast Folder Slot 3</Name>
+<ID>288</ID>
+<Name>Explorer: Clear Fast Folders Slot 3</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad3</Key>
@@ -1778,8 +2063,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>76</ID>
-<Name>Explorer / File Dialog: Clear Fast Folder Slot 3</Name>
+<ID>289</ID>
+<Name>Explorer / File Dialog: Clear Fast Folders Slot 3</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad3</Key>
@@ -1808,8 +2093,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>77</ID>
-<Name>Explorer: Clear Fast Folder Slot 4</Name>
+<ID>290</ID>
+<Name>Explorer: Clear Fast Folders Slot 4</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad4</Key>
@@ -1835,8 +2120,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>78</ID>
-<Name>Explorer / File Dialog: Clear Fast Folder Slot 4</Name>
+<ID>291</ID>
+<Name>Explorer / File Dialog: Clear Fast Folders Slot 4</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad4</Key>
@@ -1865,8 +2150,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>79</ID>
-<Name>Explorer: Clear Fast Folder Slot 5</Name>
+<ID>292</ID>
+<Name>Explorer: Clear Fast Folders Slot 5</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad5</Key>
@@ -1892,8 +2177,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>80</ID>
-<Name>Explorer / File Dialog: Clear Fast Folder Slot 5</Name>
+<ID>293</ID>
+<Name>Explorer / File Dialog: Clear Fast Folders Slot 5</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad5</Key>
@@ -1922,8 +2207,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>81</ID>
-<Name>Explorer: Clear Fast Folder Slot 6</Name>
+<ID>294</ID>
+<Name>Explorer: Clear Fast Folders Slot 6</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad6</Key>
@@ -1949,8 +2234,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>82</ID>
-<Name>Explorer / File Dialog: Clear Fast Folder Slot 6</Name>
+<ID>295</ID>
+<Name>Explorer / File Dialog: Clear Fast Folders Slot 6</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad6</Key>
@@ -1979,8 +2264,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>83</ID>
-<Name>Explorer: Clear Fast Folder Slot 7</Name>
+<ID>296</ID>
+<Name>Explorer: Clear Fast Folders Slot 7</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad7</Key>
@@ -2006,8 +2291,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>84</ID>
-<Name>Explorer / File Dialog: Clear Fast Folder Slot 7</Name>
+<ID>297</ID>
+<Name>Explorer / File Dialog: Clear Fast Folders Slot 7</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad7</Key>
@@ -2036,8 +2321,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>85</ID>
-<Name>Explorer: Clear Fast Folder Slot 8</Name>
+<ID>298</ID>
+<Name>Explorer: Clear Fast Folders Slot 8</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad8</Key>
@@ -2063,8 +2348,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>86</ID>
-<Name>Explorer / File Dialog: Clear Fast Folder Slot 8</Name>
+<ID>299</ID>
+<Name>Explorer / File Dialog: Clear Fast Folders Slot 8</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad8</Key>
@@ -2093,8 +2378,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>87</ID>
-<Name>Explorer: Clear Fast Folder Slot 9</Name>
+<ID>300</ID>
+<Name>Explorer: Clear Fast Folders Slot 9</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad9</Key>
@@ -2120,8 +2405,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>88</ID>
-<Name>Explorer / File Dialog: Clear Fast Folder Slot 9</Name>
+<ID>301</ID>
+<Name>Explorer / File Dialog: Clear Fast Folders Slot 9</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad9</Key>
@@ -2145,7 +2430,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>89</ID>
+<ID>302</ID>
 <Name>Over taskbar: Increase volume</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -2170,7 +2455,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>90</ID>
+<ID>303</ID>
 <Name>Over taskbar: Decrease volume</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -2204,7 +2489,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>91</ID>
+<ID>304</ID>
 <Name>Explorer: Open image files in image editor</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -2238,8 +2523,70 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>92</ID>
+<ID>305</ID>
 <Name>Explorer: Open non-image files in text editor</Name>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>F3</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Action>Keep list entries from</Action>
+<ExitOnEmptyList>1</ExitOnEmptyList>
+<Filter>(.*\.jpg|.*\.bmp|.*\.png|.*\.gif)</Filter>
+<List>${SelNQ}</List>
+<Operator>that match regular expression</Operator>
+<Separator></Separator>
+<Type>FilterList</Type>
+</Action><Action>
+<Command>"C:\Program Files\Paint.NET\PaintDotNet.exe" ${SelNQ}</Command>
+<Type>Run</Type>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory></WorkingDirectory>
+</Action></Actions>
+<Conditions>
+<Condition>
+<Negate>0</Negate>
+<Type>IsDialog</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>306</ID>
+<Name>File Dialog: Open image files in image editor</Name>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>F3</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Action>Remove list entries from</Action>
+<ExitOnEmptyList>1</ExitOnEmptyList>
+<Filter>(.*\.jpg|.*\.bmp|.*\.png|.*\.gif)</Filter>
+<List>${SelNQ}</List>
+<Operator>that match regular expression</Operator>
+<Separator>`n</Separator>
+<Type>FilterList</Type>
+</Action><Action>
+<Command>"C:\Program Files\Notepad++\notepad++.exe" ${SelNQ}</Command>
+<Type>Run</Type>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory></WorkingDirectory>
+</Action></Actions>
+<Conditions>
+<Condition>
+<Negate>0</Negate>
+<Type>IsDialog</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>307</ID>
+<Name>File Dialog: Open non-image files in text editor</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>F3</Key>
@@ -2272,8 +2619,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>93</ID>
-<Name>Select Files</Name>
+<ID>308</ID>
+<Name>Explorer: Select files</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^S</Key>
@@ -2295,7 +2642,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>94</ID>
+<ID>309</ID>
 <Name>Picture viewer: Rotate image right with R</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -2318,7 +2665,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>95</ID>
+<ID>310</ID>
 <Name>Picture viewer: Rotate image left with L</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -2363,7 +2710,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>96</ID>
+<ID>311</ID>
 <Name>FTP: Upload window screenshot</Name>
 <OneInstance>1</OneInstance>
 <Trigger>
@@ -2408,7 +2755,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>97</ID>
+<ID>312</ID>
 <Name>FTP: Upload screenshot</Name>
 <OneInstance>1</OneInstance>
 <Trigger>
@@ -2444,8 +2791,41 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>98</ID>
+<ID>313</ID>
 <Name>Explorer / FTP: Upload selected files</Name>
+<OneInstance>1</OneInstance>
+<Trigger>
+<Key>^U</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Clipboard>1</Clipboard>
+<Hostname>Enter Hostname</Hostname>
+<Password></Password>
+<Port>21</Port>
+<Silent>0</Silent>
+<SourceFiles>${SelNQ}</SourceFiles>
+<TargetFile></TargetFile>
+<TargetFolder></TargetFolder>
+<Type>Upload</Type>
+<URL>http://urltohost.com</URL>
+<User>Enter Username</User>
+</Action></Actions>
+<Conditions>
+<Condition>
+<Negate>0</Negate>
+<Type>IsDialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>IsRenaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>314</ID>
+<Name>File Dialog / FTP: Upload selected files</Name>
 <OneInstance>1</OneInstance>
 <Trigger>
 <Key>^U</Key>
@@ -2470,7 +2850,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>99</ID>
+<ID>315</ID>
 <Name>Window Handling: Middle click on title: Close window under mouse</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -2495,7 +2875,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>100</ID>
+<ID>316</ID>
 <Name>Window Handling: Right click on minimize button: Minimize to tray</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -2515,7 +2895,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>101</ID>
+<ID>317</ID>
 <Name>Window Handling: Activate notification/flashing/previous window</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -2531,23 +2911,23 @@
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action><Action>
 <Action>Start timer</Action>
-<TimerID>105</TimerID>
+<TimerID>321</TimerID>
 <Type>ControlTimer</Type>
 </Action><Action>
 <Action>Enable Event</Action>
-<EventID>103</EventID>
+<EventID>319</EventID>
 <Type>ControlEvent</Type>
 </Action><Action>
 <Action>Enable Event</Action>
-<EventID>104</EventID>
+<EventID>320</EventID>
 <Type>ControlEvent</Type>
 </Action><Action>
 <Action>Trigger Event</Action>
-<EventID>103</EventID>
+<EventID>319</EventID>
 <Type>ControlEvent</Type>
 </Action><Action>
 <Action>Trigger Event</Action>
-<EventID>104</EventID>
+<EventID>320</EventID>
 <Type>ControlEvent</Type>
 </Action></Actions>
 <Conditions>
@@ -2561,7 +2941,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>102</ID>
+<ID>318</ID>
 <Name>Window Handling: Right click on titlebar: Toggle always on top</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -2575,11 +2955,11 @@
 <Type>SendKeys</Type>
 </Action><Action>
 <Action>Disable Event</Action>
-<EventID>105</EventID>
+<EventID>321</EventID>
 <Type>ControlEvent</Type>
 </Action><Action>
 <Action>Disable Event</Action>
-<EventID>104</EventID>
+<EventID>320</EventID>
 <Type>ControlEvent</Type>
 </Action><Action>
 <Command></Command>
@@ -2595,7 +2975,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>1</DisableAfterUse>
 <Enabled>0</Enabled>
-<ID>103</ID>
+<ID>319</ID>
 <Name>Window Handling: Toggle always on top -&gt; Context menu active</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -2605,11 +2985,11 @@
 <Actions>
 <Action>
 <Action>Trigger Event</Action>
-<EventID>103</EventID>
+<EventID>319</EventID>
 <Type>ControlEvent</Type>
 </Action><Action>
 <Action>Trigger Event</Action>
-<EventID>104</EventID>
+<EventID>320</EventID>
 <Type>ControlEvent</Type>
 </Action></Actions>
 <Conditions>
@@ -2620,7 +3000,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
-<ID>104</ID>
+<ID>320</ID>
 <Name>Window Handling: Toggle always on top -&gt; No context menu active</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -2630,15 +3010,15 @@
 <Actions>
 <Action>
 <Action>Disable Event</Action>
-<EventID>103</EventID>
+<EventID>319</EventID>
 <Type>ControlEvent</Type>
 </Action><Action>
 <Action>Disable Event</Action>
-<EventID>104</EventID>
+<EventID>320</EventID>
 <Type>ControlEvent</Type>
 </Action><Action>
 <Action>Disable Event</Action>
-<EventID>105</EventID>
+<EventID>321</EventID>
 <Type>ControlEvent</Type>
 </Action></Actions>
 <Conditions>
@@ -2646,7 +3026,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
-<ID>105</ID>
+<ID>321</ID>
 <Name>Window Handling: Toggle always on top -&gt; context menu timeout</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -2668,7 +3048,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>110</ID>
+<ID>326</ID>
 <Name>Window Handling: Remove always on top when window gets maximized</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -2696,7 +3076,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>106</ID>
+<ID>322</ID>
 <Name>Window Handling: Right click on close button: Force-close window</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -2716,7 +3096,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>107</ID>
+<ID>323</ID>
 <Name>Window Handling: Force-close active program</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -2736,7 +3116,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>108</ID>
+<ID>324</ID>
 <Name>Window Handling: Maximize window under mouse</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -2756,7 +3136,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>109</ID>
+<ID>325</ID>
 <Name>Window Handling: Restore / Minimize window under mouse</Name>
 <OneInstance>1</OneInstance>
 <Trigger>

@@ -1,0 +1,22 @@
+<Events>
+<Event>
+<ID>2</ID>
+<Name>Run explorer</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>DoubleClickDesktop</Type>
+</Trigger>
+<Conditions></Conditions>
+<Actions>
+<Action>
+<Type>Run</Type>
+<Command>"%WinDir%\explorer.exe" /n,/e,${P}</Command>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory></WorkingDirectory>
+</Action>
+</Actions>
+</Event>
+</Events>

@@ -81,6 +81,7 @@ Upload(Files)
 		SetTimer, ToolTipClose, -5000
 	}
 }
+
 ;Uploads text/image from clipboard and puts links in clipboard
 UploadFromClipboard()
 {

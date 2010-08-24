@@ -62,7 +62,7 @@ MouseCloseTab()
 	index := IsMouseOverTabButton()
 	if(index)
 		CloseTab(TabContainer.tabs[index].hwnd)
-	return index>0
+	return index > 0
 }
 CheckActiveTabClose:
 if(TabClose)

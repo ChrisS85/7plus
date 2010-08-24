@@ -1201,7 +1201,7 @@
 </Event>
 <Event>
 <ID>41</ID>
-<Name>Explorer: Clear Fast Folder Slot 0</Name>
+<Name>Explorer: Clear Fast Folders Slot 0</Name>
 <Enabled>1</Enabled>
 <DisableAfterUse>0</DisableAfterUse>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -1235,7 +1235,7 @@
 </Event>
 <Event>
 <ID>42</ID>
-<Name>Explorer / File Dialog: Clear Fast Folder Slot 0</Name>
+<Name>Explorer / File Dialog: Clear Fast Folders Slot 0</Name>
 <Enabled>1</Enabled>
 <DisableAfterUse>0</DisableAfterUse>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -1266,7 +1266,7 @@
 </Event>
 <Event>
 <ID>43</ID>
-<Name>Explorer: Clear Fast Folder Slot 1</Name>
+<Name>Explorer: Clear Fast Folders Slot 1</Name>
 <Enabled>1</Enabled>
 <DisableAfterUse>0</DisableAfterUse>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -1300,7 +1300,7 @@
 </Event>
 <Event>
 <ID>44</ID>
-<Name>Explorer / File Dialog: Clear Fast Folder Slot 1</Name>
+<Name>Explorer / File Dialog: Clear Fast Folders Slot 1</Name>
 <Enabled>1</Enabled>
 <DisableAfterUse>0</DisableAfterUse>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -1331,7 +1331,7 @@
 </Event>
 <Event>
 <ID>45</ID>
-<Name>Explorer: Clear Fast Folder Slot 2</Name>
+<Name>Explorer: Clear Fast Folders Slot 2</Name>
 <Enabled>1</Enabled>
 <DisableAfterUse>0</DisableAfterUse>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -1365,7 +1365,7 @@
 </Event>
 <Event>
 <ID>46</ID>
-<Name>Explorer / File Dialog: Clear Fast Folder Slot 2</Name>
+<Name>Explorer / File Dialog: Clear Fast Folders Slot 2</Name>
 <Enabled>1</Enabled>
 <DisableAfterUse>0</DisableAfterUse>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -1396,7 +1396,7 @@
 </Event>
 <Event>
 <ID>47</ID>
-<Name>Explorer: Clear Fast Folder Slot 3</Name>
+<Name>Explorer: Clear Fast Folders Slot 3</Name>
 <Enabled>1</Enabled>
 <DisableAfterUse>0</DisableAfterUse>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -1430,7 +1430,7 @@
 </Event>
 <Event>
 <ID>48</ID>
-<Name>Explorer / File Dialog: Clear Fast Folder Slot 3</Name>
+<Name>Explorer / File Dialog: Clear Fast Folders Slot 3</Name>
 <Enabled>1</Enabled>
 <DisableAfterUse>0</DisableAfterUse>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -1461,7 +1461,7 @@
 </Event>
 <Event>
 <ID>49</ID>
-<Name>Explorer: Clear Fast Folder Slot 4</Name>
+<Name>Explorer: Clear Fast Folders Slot 4</Name>
 <Enabled>1</Enabled>
 <DisableAfterUse>0</DisableAfterUse>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -1495,7 +1495,7 @@
 </Event>
 <Event>
 <ID>50</ID>
-<Name>Explorer / File Dialog: Clear Fast Folder Slot 4</Name>
+<Name>Explorer / File Dialog: Clear Fast Folders Slot 4</Name>
 <Enabled>1</Enabled>
 <DisableAfterUse>0</DisableAfterUse>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -1526,7 +1526,7 @@
 </Event>
 <Event>
 <ID>51</ID>
-<Name>Explorer: Clear Fast Folder Slot 5</Name>
+<Name>Explorer: Clear Fast Folders Slot 5</Name>
 <Enabled>1</Enabled>
 <DisableAfterUse>0</DisableAfterUse>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -1560,7 +1560,7 @@
 </Event>
 <Event>
 <ID>52</ID>
-<Name>Explorer / File Dialog: Clear Fast Folder Slot 5</Name>
+<Name>Explorer / File Dialog: Clear Fast Folders Slot 5</Name>
 <Enabled>1</Enabled>
 <DisableAfterUse>0</DisableAfterUse>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -1591,7 +1591,7 @@
 </Event>
 <Event>
 <ID>53</ID>
-<Name>Explorer: Clear Fast Folder Slot 6</Name>
+<Name>Explorer: Clear Fast Folders Slot 6</Name>
 <Enabled>1</Enabled>
 <DisableAfterUse>0</DisableAfterUse>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -1625,7 +1625,7 @@
 </Event>
 <Event>
 <ID>54</ID>
-<Name>Explorer / File Dialog: Clear Fast Folder Slot 6</Name>
+<Name>Explorer / File Dialog: Clear Fast Folders Slot 6</Name>
 <Enabled>1</Enabled>
 <DisableAfterUse>0</DisableAfterUse>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -1656,7 +1656,7 @@
 </Event>
 <Event>
 <ID>55</ID>
-<Name>Explorer: Clear Fast Folder Slot 7</Name>
+<Name>Explorer: Clear Fast Folders Slot 7</Name>
 <Enabled>1</Enabled>
 <DisableAfterUse>0</DisableAfterUse>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -1690,7 +1690,7 @@
 </Event>
 <Event>
 <ID>56</ID>
-<Name>Explorer / File Dialog: Clear Fast Folder Slot 7</Name>
+<Name>Explorer / File Dialog: Clear Fast Folders Slot 7</Name>
 <Enabled>1</Enabled>
 <DisableAfterUse>0</DisableAfterUse>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -1721,7 +1721,7 @@
 </Event>
 <Event>
 <ID>57</ID>
-<Name>Explorer: Clear Fast Folder Slot 8</Name>
+<Name>Explorer: Clear Fast Folders Slot 8</Name>
 <Enabled>1</Enabled>
 <DisableAfterUse>0</DisableAfterUse>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -1755,7 +1755,7 @@
 </Event>
 <Event>
 <ID>58</ID>
-<Name>Explorer / File Dialog: Clear Fast Folder Slot 8</Name>
+<Name>Explorer / File Dialog: Clear Fast Folders Slot 8</Name>
 <Enabled>1</Enabled>
 <DisableAfterUse>0</DisableAfterUse>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -1786,7 +1786,7 @@
 </Event>
 <Event>
 <ID>59</ID>
-<Name>Explorer: Clear Fast Folder Slot 9</Name>
+<Name>Explorer: Clear Fast Folders Slot 9</Name>
 <Enabled>1</Enabled>
 <DisableAfterUse>0</DisableAfterUse>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -1820,7 +1820,7 @@
 </Event>
 <Event>
 <ID>60</ID>
-<Name>Explorer / File Dialog: Clear Fast Folder Slot 9</Name>
+<Name>Explorer / File Dialog: Clear Fast Folders Slot 9</Name>
 <Enabled>1</Enabled>
 <DisableAfterUse>0</DisableAfterUse>
 <DeleteAfterUse>0</DeleteAfterUse>

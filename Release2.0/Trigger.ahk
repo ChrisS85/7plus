@@ -29,9 +29,9 @@ Events_FindID(Events,ID)
 ;Enabled state needs to be set through this function, to allow syncing with settings window
 Event_SetEnabled(Event,Value) 
 {
-	global Events, Settings_Events
+	global Events, Settings_Events, SettingsActive
 	Event.Enabled := Value
-	if(Settings_Events && Events[Events.FindID(Event.ID)]) ;if settings are open and updating a regular event, update its counterpart in settings_events
+	if(SettingsActive && Settings_Events && Events[Events.FindID(Event.ID)]) ;if settings are open and updating a regular event, update its counterpart in settings_events
 	{	
 		Settings_Events[Settings_Events.FindID(Event.ID)].Enabled := Value
 		Settings_SetupEvents()
@@ -459,7 +459,7 @@ WriteEventsFile(Events, path)
 			}
 		}
 	}
-	XML_Save(xmlObject, "Events.xml")
+	XML_Save(xmlObject, Path)
 	return
 }
 

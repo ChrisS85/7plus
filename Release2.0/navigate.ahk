@@ -399,10 +399,10 @@ GetCurrentFolder(hwnd=0, DisplayName=0)
 	}
 	If (WinActive("ahk_group DesktopGroup"))
 		return %A_Desktop%
-	else if((x:=IsDialog())=1) ;No Support for old dialogs for now
+	else if((IsDialog())=1) ;No Support for old dialogs for now
 	{
 		ControlGetText, text , ToolBarWindow322, A
-		return SubStr(text,InStr(text," "))
+		return strTrim(SubStr(text,InStr(text," ")), " ")
 	}
 	return ""
 }

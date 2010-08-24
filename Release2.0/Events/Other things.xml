@@ -1,0 +1,40 @@
+<Events>
+<Event>
+<ID>149</ID>
+<Name>Explorer: Select files</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>^S</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>Input</Type>
+<Cancel>1</Cancel>
+<Text>Filter Text</Text>
+<Title>Select Files</Title>
+</Action>
+<Action>
+<Type>SelectFiles</Type>
+<Clear>1</Clear>
+<Deselect>0</Deselect>
+<Filter>${Input}</Filter>
+<Wildcard>1</Wildcard>
+<WindowFilter></WindowFilter>
+<WindowMatchType>Active</WindowMatchType>
+</Action>
+</Actions>
+</Event>
+</Events>

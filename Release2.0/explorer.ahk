@@ -257,7 +257,7 @@ AcquireExplorerConfirmationDialogStrings()
 			found:=true
 			break
 		}
-	}	
+	}
 	if(found)
 	{
 		global ExplorerConfirmationDialogTitle1:=TranslateMUI(shell32MUIpath,16705)
@@ -387,7 +387,7 @@ if(IsDoubleClick() && CurrentDesktopFiles = "")
 Return
 #if
 ;Double click upwards is buggy in filedialogs, so only explorer for now until someone comes up with non-intrusive getpath, getselectedfiles functionsunrel
-#if IsMouseOverFileList() && GetKeyState("RButton")!=1
+#if !IsDialog() && IsMouseOverFileList() && GetKeyState("RButton")!=1
 ;LButton on empty space in explorer -> go upwards
 ~LButton::		
 CoordMode,Mouse,Relative
@@ -518,7 +518,7 @@ if(!Handled)
 ; if !Handled
 	; Handled:=FastFolderMenu()
 if (!Handled && Handled:=IsMouseOverTabButton())
-	CloseTab(Handled)
+	MouseCloseTab()
 	
 ; This is not perfect, as hotkeys defined further down in the events list are not considered for catching keys. 
 ; A better solution might be to evaluate all matching hotkeys conditions and check if any of it want to hide the key from the system
@@ -848,9 +848,8 @@ return
 CreateInfoGui()
 {
 	global FreeSpace, SelectedFileSize,shell32MUIpath,freetext
-	outputdebug creategui
 	gui, 2: font, s9, Segoe UI 
-	Gui, 2: Add, Text, x60 y0 w60 h12 vFreeSpace, %A_Space%
+	Gui, 2: Add, Text, x60 y0 w70 h12 vFreeSpace, %A_Space%
 	Gui, 2: Add, Text, x0 y0 w60 h12 vSelectedFileSize, %A_Space%
 	Gui, 2: -Caption  +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs
 	Gui, 2: Color, FFFFFF
@@ -874,7 +873,7 @@ ShouldShowInfo()
 	WinGetPos , X, Y, Width, Height,A
 	WinGetClass,class
 	x1:= GetVisibleWindowAtPoint(X+Width-370,Y+Height-26,class) 
-	x2:= GetVisibleWindowAtPoint(X+Width-370+131,Y+Height-26,class) 
+	x2:= GetVisibleWindowAtPoint(X+Width-370+141,Y+Height-26,class) 
 	y1:=GetVisibleWindowAtPoint(X+Width-370+131,Y+Height-26+18,class)				;window border doesn't seem to count to window?
 	y2:=GetVisibleWindowAtPoint(X+Width-370+131,Y+Height-26+18,class) 
 	list:="ExplorerWClass,CabinetWClass"
@@ -1035,7 +1034,7 @@ UpdateInfoPosition()
 	{
 		WinGetPos , X, Y, Width, Height, A
 		ControlGetPos , , cY, , cHeight, msctls_statusbar321, A
-		InfoX:=X+Width-380
+		InfoX:=X+Width-370
 		InfoY:=Y+cY+cHeight/2-6 ;+Height-26
 		if(Width>540)
 			Gui, 2:Show, AutoSize NA x%InfoX% y%InfoY%

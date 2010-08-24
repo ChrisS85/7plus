@@ -1,0 +1,22 @@
+<Events>
+<Event>
+<ID>7</ID>
+<Name>Run task manager</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>DoubleClickTaskbar</Type>
+</Trigger>
+<Conditions></Conditions>
+<Actions>
+<Action>
+<Type>Run</Type>
+<Command>taskmgr</Command>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory></WorkingDirectory>
+</Action>
+</Actions>
+</Event>
+</Events>

@@ -120,7 +120,7 @@ ExpandPlaceholder(Placeholder)
 		return ExplorerPath
 	else if(Placeholder = "T")
 		return PreviousExplorerPath
-	else if(strStartsWith(Placeholder, "Sel") && WinActive("ahk_group ExplorerGroup"))
+	else if(strStartsWith(Placeholder, "Sel") && (WinActive("ahk_group ExplorerGroup") || IsDialog()))
 	{
 		files:=GetSelectedFiles()
 		RegExMatch(Placeholder,"Sel\d+",number)

@@ -14,7 +14,7 @@ Settings_CreateEvents() {
 	yIt+=54
 	Gui, 1:Add, Text, x%x1% y%yIt%, Event search:
 	yIt-=4
-	Gui, 1:Add, ComboBox, x+10 y%yIt% w338 hwndEventFilter gEventFilterChange, Explorer|Window Handling|Fast Folders|FTP|Desktop / Taskbar
+	Gui, 1:Add, ComboBox, x+10 y%yIt% w338 hwndEventFilter gEventFilterChange, 7plus|Clipboard|CMD|Explorer|Fast Folders|File Dialog|FTP|Picture Viewer|Window Handling
 	yIt += textboxstep
 	Gui, 1:Add, ListView, x%x1% y%yIt% w400 h232 vGUI_EventsList gGUI_EventsList_SelectionChange Grid -LV0x10 AltSubmit Checked, Enabled|ID|Trigger|Name
 	OnMessage(0x100, "WM_KEYDOWN")
@@ -1101,7 +1101,7 @@ GUI_EventsList_Edit()
 	event:=GUI_EditEvent(Settings_Events[pos].DeepCopy())
 	if(event)
 	{		
-		event.Enabled := LV_GetNext(pos-1, "Checked") = pos ? 1 : 0 ;Update enabled state of this event
+		;event.Enabled := LV_GetNext(pos-1, "Checked") = pos ? 1 : 0 ;Update enabled state of this event
 		Settings_Events[pos] := event ;overwrite edited event
 		Settings_SetupEvents() ;Refresh listview
 	}
@@ -1728,6 +1728,7 @@ ApplySettings()
 	;Store variables which can be stored directly
 	Gui 1:Submit
 
+	SettingsActive:=False
 	GUI_SaveEvents()
 	Settings_Events := ""
 	if(JoyControl)
@@ -1885,7 +1886,6 @@ ApplySettings()
 		Menu, Tray, Icon
 	;RefreshHotkeyArrays()
 	WriteIni()
-	SettingsActive:=False
 	Gui 1:Cancel
 	Return
 }

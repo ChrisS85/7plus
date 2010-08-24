@@ -1,0 +1,148 @@
+<Events>
+<Event>
+<ID>1</ID>
+<Name>Explorer: Open image files in image editor</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>F3</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FilterList</Type>
+<Action>Keep list entries from</Action>
+<ExitOnEmptyList>1</ExitOnEmptyList>
+<Filter>(.*\.jpg|.*\.bmp|.*\.png|.*\.gif)</Filter>
+<List>${SelNQ}</List>
+<Operator>that match regular expression</Operator>
+<Separator></Separator>
+</Action>
+<Action>
+<Type>Run</Type>
+<Command>"C:\Program Files\Paint.NET\PaintDotNet.exe" ${SelNQ}</Command>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory></WorkingDirectory>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>2</ID>
+<Name>Explorer: Open non-image files in text editor</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>F3</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>If</Type>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FilterList</Type>
+<Action>Remove list entries from</Action>
+<ExitOnEmptyList>1</ExitOnEmptyList>
+<Filter>(.*\.jpg|.*\.bmp|.*\.png|.*\.gif)</Filter>
+<List>${SelNQ}</List>
+<Operator>that match regular expression</Operator>
+<Separator>`n</Separator>
+</Action>
+<Action>
+<Type>Run</Type>
+<Command>"C:\Program Files\Notepad++\notepad++.exe" ${SelNQ}</Command>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory></WorkingDirectory>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>3</ID>
+<Name>File Dialog: Open image files in image editor</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>F3</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FilterList</Type>
+<Action>Keep list entries from</Action>
+<ExitOnEmptyList>1</ExitOnEmptyList>
+<Filter>(.*\.jpg|.*\.bmp|.*\.png|.*\.gif)</Filter>
+<List>${SelNQ}</List>
+<Operator>that match regular expression</Operator>
+<Separator></Separator>
+</Action>
+<Action>
+<Type>Run</Type>
+<Command>"C:\Program Files\Paint.NET\PaintDotNet.exe" ${SelNQ}</Command>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory></WorkingDirectory>
+</Action>
+</Actions>
+</Event>
+<Event>
+<ID>4</ID>
+<Name>File Dialog: Open non-image files in text editor</Name>
+<Enabled>1</Enabled>
+<DisableAfterUse>0</DisableAfterUse>
+<DeleteAfterUse>0</DeleteAfterUse>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Hotkey</Type>
+<Key>F3</Key>
+</Trigger>
+<Conditions>
+<Condition>
+<Type>IsDialog</Type>
+<Negate>0</Negate>
+</Condition>
+</Conditions>
+<Actions>
+<Action>
+<Type>FilterList</Type>
+<Action>Remove list entries from</Action>
+<ExitOnEmptyList>1</ExitOnEmptyList>
+<Filter>(.*\.jpg|.*\.bmp|.*\.png|.*\.gif)</Filter>
+<List>${SelNQ}</List>
+<Operator>that match regular expression</Operator>
+<Separator>`n</Separator>
+</Action>
+<Action>
+<Type>Run</Type>
+<Command>"C:\Program Files\Notepad++\notepad++.exe" ${SelNQ}</Command>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory></WorkingDirectory>
+</Action>
+</Actions>
+</Event>
+</Events>

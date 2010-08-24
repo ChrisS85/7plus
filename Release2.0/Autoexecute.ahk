@@ -1,7 +1,15 @@
 if(FileExist(A_ScriptDir "\Settings.ini"))
 	ConfigPath := A_ScriptDir "\Settings.ini"
 Else
+{
 	ConfigPath := A_AppData "\7plus\Settings.ini"
+	if(!FileExist(A_AppData "\7plus\Events.xml") && FileExist(A_ScriptDir "\Settings.ini")) ; make sure sample events.xml is in appdata directory
+	{
+		FileCopy, %A_ScriptDir%\Settings.ini, %A_AppData%\7plus\Events.xml
+		if(FileExist(%A_AppData%\7plus\Events.xml))
+			FileDelete, %A_ScriptDir%\Settings.ini
+	}
+}
 ;Start debugger
 IniRead, DebugEnabled, %ConfigPath%, General, DebugEnabled , 0
 if(DebugEnabled)
@@ -95,8 +103,8 @@ ValidateFTPVars()
 */
 
 ;Texteditor for opening files per hotkey
-IniRead, TextEditor, %ConfigPath%, Explorer, TextEditor , `%windir`%\notepad.exe
-IniRead, ImageEditor, %ConfigPath%, Explorer, ImageEditor , `%windir`%\system32\mspaint.exe
+; IniRead, TextEditor, %ConfigPath%, Explorer, TextEditor , `%windir`%\notepad.exe
+; IniRead, ImageEditor, %ConfigPath%, Explorer, ImageEditor , `%windir`%\system32\mspaint.exe
 
 /*
 IniRead, HKCreateNewFile, %ConfigPath%, Explorer, HKCreateNewFile, 1
@@ -203,8 +211,6 @@ Loop 8
     IniRead, FFTitle%z%, %ConfigPath%, FastFolders, FolderTitle%z%, %A_Space%
 }
 
-if(A_OSVersion="WIN_7")
-	CreateInfoGui()
 
 IniRead, UseTabs, %ConfigPath%, Tabs, UseTabs, 1
 IniRead, NewTabPosition, %ConfigPath%, Tabs, NewTabPosition, 1
@@ -225,8 +231,12 @@ TabContainerList.height := 20
 TabContainerList.TabWidth := 100
 TabContainerList.InActiveHeightDifference := 2
 TabContainerList.MinWidth := 40
+
 if(Vista7)
 	AcquireExplorerConfirmationDialogStrings()
+	
+if(A_OSVersion="WIN_7")
+	CreateInfoGui()
 	
 GoSub TrayminOpen
 
@@ -399,8 +409,8 @@ WriteIni()
 	*/
 	IniWrite, %ImgName%, %ConfigPath%, Explorer, Image
 	IniWrite, %TxtName%, %ConfigPath%, Explorer, Text
-	IniWrite, %TextEditor%, %ConfigPath%, Explorer, TextEditor
-	IniWrite, %ImageEditor%, %ConfigPath%, Explorer, ImageEditor
+	; IniWrite, %TextEditor%, %ConfigPath%, Explorer, TextEditor
+	; IniWrite, %ImageEditor%, %ConfigPath%, Explorer, ImageEditor
 	/*
 	IniWrite, %HKCreateNewFile%, %ConfigPath%, Explorer, HKCreateNewFile
 	IniWrite, %HKCreateNewFolder%, %ConfigPath%, Explorer, HKCreateNewFolder
@@ -408,7 +418,7 @@ WriteIni()
 	IniWrite, %HKCopyPaths%, %ConfigPath%, Explorer, HKCopyPaths
 	IniWrite, %HKAppendClipboard%, %ConfigPath%, Explorer, HKAppendClipboard
 	*/
-	IniWrite, %HKFastFolders%, %ConfigPath%, Explorer, HKFastFolders
+	; IniWrite, %HKFastFolders%, %ConfigPath%, Explorer, HKFastFolders
 	; IniWrite, %HKFFMenu%, %ConfigPath%, Explorer, HKFFMenu
 	IniWrite, %HKPlacesBar%, %ConfigPath%, Explorer, HKPlacesBar
 	IniWrite, %HKCleanFolderBand%, %ConfigPath%, Explorer, HKCleanFolderBand
@@ -440,7 +450,7 @@ WriteIni()
 	IniWrite, %HKActivateBehavior%, %ConfigPath%, Windows, HKActivateBehavior
 	; IniWrite, %HKKillWindows%, %ConfigPath%, Windows, HKKillWindows
 	IniWrite, %HKToggleWallpaper%, %ConfigPath%, Windows, HKToggleWallpaper
-	IniWrite, %TaskbarLaunchPath%, %ConfigPath%, Windows, TaskbarLaunchPath
+	; IniWrite, %TaskbarLaunchPath%, %ConfigPath%, Windows, TaskbarLaunchPath
 	; IniWrite, %HKTitleClose%, %ConfigPath%, Windows, HKTitleClose
 	IniWrite, %HKMiddleClose%, %ConfigPath%, Windows, HKMiddleClose
 	IniWrite, %AeroFlipTime%, %ConfigPath%, Windows, AeroFlipTime
@@ -452,7 +462,7 @@ WriteIni()
 	IniWrite, %HKAltDrag%, %ConfigPath%, Windows, HKAltDrag
 	; IniWrite, %HKAltMinMax%, %ConfigPath%, Windows, HKAltMinMax
 	; IniWrite, %HKTrayMin%, %ConfigPath%, Windows, HKTrayMin
-	IniWrite, %DoubleClickDesktop%, %ConfigPath%, Windows, DoubleClickDesktop
+	; IniWrite, %DoubleClickDesktop%, %ConfigPath%, Windows, DoubleClickDesktop
 	
 	; IniWrite, %HKImproveConsole%, %ConfigPath%, Misc, HKImproveConsole
 	; IniWrite, %HKPhotoViewer%, %ConfigPath%, Misc, HKPhotoViewer

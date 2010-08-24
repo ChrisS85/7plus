@@ -16,7 +16,7 @@ Action_FileOperation_ReadXML(Action, XMLFileOperation)
 
 Action_FileOperation_DisplayString(Action)
 {
-	return Action.Type " " Action.So urceFile (Action.TargetPath || Action.TargetFile ? " to " : " ") Action.TargetPath (Action.TargetFile && Action.TargetPath ? "\" : "") Action.TargetFile
+	return Action.Type " " Action.SourceFile (Action.TargetPath || Action.TargetFile ? " to " : " ") Action.TargetPath (Action.TargetFile && Action.TargetPath ? "\" : "") Action.TargetFile
 }
 
 Action_FileOperation_GuiShow(Action, ActionGUI, GoToLabel = "")

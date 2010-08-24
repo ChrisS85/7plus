@@ -46,7 +46,8 @@ Action_NewFile_Execute(Action, Event)
 		i++
 		Testpath:=path "\" filename " (" i ")." extension
 	}
-	FileAppend , %A_Space%, %TestPath%	;Create file and then select it and rename it
+	FileAppend, %A_Space%, %TestPath%	;Create file and then select it and rename it
+	outputdebug % "Testpath" Testpath " exist: " FileExist(TestPath)
 	if(!FileExist(TestPath))
 	{
 		ToolTip(1, "Could not create a new file here. Make sure you have the correct permissions!", "Could not create new file!","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")

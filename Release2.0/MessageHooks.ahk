@@ -58,7 +58,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 	ListLines, On
 }
 
-ShellMessage( wParam,lParam, msg) 
+ShellMessage( wParam,lParam, msg)
 {
 	Critical
 	ListLines, Off
@@ -148,7 +148,7 @@ ShellMessage( wParam,lParam, msg)
 		outputdebug activate %class% %lParam%
 		;If we change from another program to explorer/desktop/dialog
 		if(WinActive("ahk_group ExplorerGroup")||WinActive("ahk_group DesktopGroup")||IsDialog())
-		{			
+		{
 			if(!WinActive("ahk_group DesktopGroup")) ;By doing this, recall explorer path works also when double clicking desktop to launch explorer
 				ExplorerPath:=GetCurrentFolder()
 				
@@ -196,15 +196,7 @@ ShellMessage( wParam,lParam, msg)
 				Trigger := EventSystem_CreateSubEvent("Trigger","ExplorerPathChanged")
 				OnTrigger(Trigger)
 				if(UseTabs && !SuppressTabEvents && hwnd:=WinActive("ahk_group ExplorerGroup"))
-				{
 					UpdateTabs()
-					/*
-					SplitPath,newpath, name
-					if(!name)
-						name:=newpath
-					GuiControl, %TabNum%:,Tab%hwnd%,%name%
-					*/
-				}
 			}
 		}
 	}
