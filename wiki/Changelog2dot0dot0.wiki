@@ -9,7 +9,7 @@ New Functions:
   * Tabs are now drawn directly instead of using a tab control.
 
 Bugfixes:
--Custom explorer tab-drawing gets rid of the nasty bug showing a grey bar sometimes.
--Lots of other smaller fixes
+  * Custom explorer tab-drawing gets rid of the nasty bug showing a grey bar sometimes.
+  * Lots of other smaller fixes
 
 If you like this program and want to support its development, please consider donating!
