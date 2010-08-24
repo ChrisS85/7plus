@@ -8,12 +8,7 @@ New Functions:
 +CTRL + S: Select files by entering a filter string.
 +Tabs are now drawn directly instead of using a tab control.
 
-Program related:
-+Switched to new version format, now 1.2.0 is used instead of 1.2
-+7plus now stores its settings in %appdata%\7plus\Settings.ini. To use it in portable mode, put a Settings.ini file in the program directory
-
 Bugfixes:
--Autorun now works on UAC-enabled systems
 -Custom explorer tab-drawing gets rid of the nasty bug showing a grey bar sometimes.
 -Lots of other smaller fixes
 
