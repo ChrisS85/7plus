@@ -35,9 +35,7 @@ For a full list of features, see the [http://code.google.com/p/7plus/wiki/Featur
 =Screenshots=
 Settings dialog:
 
-[http://img580.imageshack.us/i/explorer.png/ http://img580.imageshack.us/img580/6258/explorer.th.png][http://img684.imageshack.us/i/behavior.png/ http://img684.imageshack.us/img684/2615/behavior.th.png][http://img188.imageshack.us/i/fastfolders.png/ http://img188.imageshack.us/img188/309/fastfolders.th.png][http://img227.imageshack.us/i/windowhandling1.png/ http://img227.imageshack.us/img227/4776/windowhandling1.th.png]
-
-[http://img6.imageshack.us/i/windowhandling2.png/ http://img6.imageshack.us/img6/1920/windowhandling2.th.png][http://img97.imageshack.us/i/ftpz.png/ http://img97.imageshack.us/img97/3871/ftpz.th.png][http://img46.imageshack.us/i/miscsm.png/ http://img46.imageshack.us/img46/959/miscsm.th.png][http://img690.imageshack.us/i/aboutmw.png/ http://img690.imageshack.us/img690/4595/aboutmw.th.png]
+[http://i37.tinypic.com/jgp8wk.png http://i37.tinypic.com/jgp8wk_th.png]
 
 Explorer with additional buttons and size/free disk space display:
 
