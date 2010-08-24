@@ -1,14 +1,14 @@
 =Description=
 7plus is a project which aspires to make working with Windows as comfortable as possible. The feature set it adds to Windows ranges from interface extensions to the explorer to highly specialized solutions for all common tasks, with the goal to reduce the work load for the user. This feature-rich system, powered by Autohotkey, provides very powerful configuration capabilities to suit the needs you have and those that you have but not know of yet!
 
-Here is a small compilation of use cases where 7plus can greatly enhance your workflow*:
+Here is a small compilation of use cases where 7plus can greatly enhance your workflow`*`:*
   * doubleclick on the desktop to create a folder
   * upload any file from the explorer to an FTP server
   * use tabs in Windows Explorer!
   * use hotkeys to launch programs
   * navigate to folders using hotkeys or buttons in the explorer bar!
-
-[*]: Assuming the fitting configuration settings suited for you.
+*
+[`*`]: Assuming those examples fit your workflow. You can just as well make 7plus do something completely different.
 
 ==To everyone who notices that something else doesn't work when 7plus runs: Make sure there is no interference with other programs, such as keyboard or mouse drivers, or other tweaking utitlities!==
 =News=
