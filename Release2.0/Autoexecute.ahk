@@ -3,11 +3,11 @@ if(FileExist(A_ScriptDir "\Settings.ini"))
 Else
 {
 	ConfigPath := A_AppData "\7plus\Settings.ini"
-	if(!FileExist(A_AppData "\7plus\Events.xml") && FileExist(A_ScriptDir "\Settings.ini")) ; make sure sample events.xml is in appdata directory
+	if(!FileExist(A_AppData "\7plus\Events.xml") && FileExist(A_ScriptDir "\Events.xml")) ; make sure sample events.xml is in appdata directory
 	{
 		FileCopy, %A_ScriptDir%\Settings.ini, %A_AppData%\7plus\Events.xml
 		if(FileExist(%A_AppData%\7plus\Events.xml))
-			FileDelete, %A_ScriptDir%\Settings.ini
+			FileDelete, %A_ScriptDir%\Events.xml
 	}
 }
 ;Start debugger
