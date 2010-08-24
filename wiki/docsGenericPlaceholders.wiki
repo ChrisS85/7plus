@@ -34,4 +34,5 @@ Below is a list of placeholders in 7plus. Some actions also define custom placeh
 ||${Class}||Active window class||
 ||${Title}||Active window title||
 ||${Control}||Focussed control [docsGenericClassNN ClassNN]||
-||${PT}||File Path in active window title||
+||${TitlePath}||Path in active window title||
+||${TitleFilename}||Path and filename in active window title||
