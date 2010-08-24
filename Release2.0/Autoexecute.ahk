@@ -372,10 +372,10 @@ PostUpdate()
 	global MajorVersion,MinorVersion,BugfixVersion
 	if(FileExist(A_ScriptDir "\Updater.exe"))
 	{
-		IniRead, MajorVersion, %A_ScriptDir%\Version.ini,Version,MajorVersion
-		IniRead, MinorVersion, %A_ScriptDir%\Version.ini,Version,MinorVersion
-		IniRead, BugfixVersion, %A_ScriptDir%\Version.ini,Version,BugfixVersion
-		if(MajorVersion=MajorVersion && MinorVersion = MinorVersion && BugfixVersion = BugfixVersion)
+		IniRead, tmpMajorVersion, %A_ScriptDir%\Version.ini,Version,MajorVersion
+		IniRead, tmpMinorVersion, %A_ScriptDir%\Version.ini,Version,MinorVersion
+		IniRead, tmpBugfixVersion, %A_ScriptDir%\Version.ini,Version,BugfixVersion
+		if(tmpMajorVersion=MajorVersion && tmpMinorVersion = MinorVersion && tmpBugfixVersion = BugfixVersion)
 		{
 			if(FileExist(A_ScriptDir "\Changelog.txt"))
 			{

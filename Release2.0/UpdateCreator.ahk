@@ -18,7 +18,7 @@ FolderLoop()
 	{
 		if A_LoopFileName contains UpdateCreator
 			continue
-		if A_LoopFileName contains Update
+		if A_LoopFileName contains Update AND NOT A_LoopFileName contains AutoUpdate
 			continue
 		if A_LoopFileName contains .ini
 			continue
