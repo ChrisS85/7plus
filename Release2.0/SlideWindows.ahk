@@ -408,7 +408,7 @@ SlideWindows_CheckWindowState()
 	;Now see if a window has been moved
 	Loop % SlideWindowArray.len()
 	{
-		SlideWindow:=SlideWindowArray[A_INDEX]
+		SlideWindow:=SlideWindowArray[A_Index]
 		hwnd:=SlideWindow.hwnd
 		if(SlideWindow.SlideState=1)
 		{

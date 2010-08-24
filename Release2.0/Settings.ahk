@@ -489,7 +489,7 @@ Settings_CreateMisc() {
 	yIt+=checkboxstep
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vAutorun, Autorun 7plus on windows startup
 	yIt+=checkboxstep
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHideTrayIcon, Hide Tray Icon (press WIN + H to show settings!)
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHideTrayIcon, Hide Tray Icon (press WIN + H (default settings) to show settings!)
 	yIt+=checkboxstep
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vAutoUpdate, Automatically look for updates on startup
 }
@@ -1879,7 +1879,7 @@ ApplySettings()
 	}
 	if(HideTrayIcon)
 	{
-		MsgBox You have chosen to hide the tray icon. This means that you will only be able to access the settings dialog by pressing WIN + H. Also, the program can only be ended by using the task manager then.
+		MsgBox You have chosen to hide the tray icon. This means that you will only be able to access the settings dialog by pressing WIN + H (Default settings). Also, the program can only be ended by using the task manager then.
 		Menu, Tray, NoIcon
 	}
 	else
