@@ -20,7 +20,7 @@ Here is a small compilation of use cases where 7plus can greatly enhance your wo
 
 =Features=
 As of version 2.0.0, 7plus allows nearly all features to be fully customized. You can change the hotkeys and other parameters defining a feature and you can also *create your own features!*
-7plus now uses an events system, that is based on triggers, conditions and actions. When a trigger (e.g. a hotkey) is activated, 7plus checks if the associated conditions (such as a specific window being active) are fulfilled, and if they are, it runs a series of actions (like sending keys, selecting files, etc..). Nearly all previous features of 7plus are now implemented using this system!
+7plus now uses an events system that is based on triggers, conditions and actions. When a trigger (e.g. a hotkey) is activated, 7plus checks if the associated conditions (such as a specific window being active) are fulfilled, and if they are it runs a series of actions (like sending keys, selecting files, etc..). Nearly all previous features of 7plus are now implemented using this system!
 
 Here are some of the most important features:
 
