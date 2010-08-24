@@ -1,12 +1,12 @@
-7plus Version 1.2.0
+7plus Version 2.0.0
 
 New Functions:
-+Tabs for Windows Explorer
-+Customizable, context-sensitive hotkeys
-+Launch explorer in last used directory
-+WIN+E & Explorer active: Align explorer windows left and right
-+Make CTRL+Backspace and CTRL+Delete work in all textboxes
-+Double click on desktop: Run program
++Whole new event-based system in which nearly all features are implemented now. CHECK IT OUT!
++As a result of this, nearly all hotkeys are now customizable.
++This also means that you can create your own functions now!
++Adjust volume with mouse wheel over taskbar.
++CTRL + S: Select files by entering a filter string.
++Tabs are now drawn directly instead of using a tab control.
 
 Program related:
 +Switched to new version format, now 1.2.0 is used instead of 1.2
@@ -14,9 +14,7 @@ Program related:
 
 Bugfixes:
 -Autorun now works on UAC-enabled systems
--Fixed a bug with Slide Windows, where the window would slide out again if the cursor was at the border of the screen
--Fixed a bug that caused weird mouse jumping on context menus
--Explorer should now restart correctly
+-Custom explorer tab-drawing gets rid of the nasty bug showing a grey bar sometimes.
 -Lots of other smaller fixes
 
 If you like this program and want to support its development, please consider donating!
