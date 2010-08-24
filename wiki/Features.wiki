@@ -15,6 +15,7 @@ Watch the videos to see how it works!
   * Execute files which are only focussed but not selected with Enter [http://www.youtube.com/watch?v=Bih7HEtpk0A (Video)]
   * Automatically select first file when you enter a directory [http://www.youtube.com/watch?v=Bih7HEtpk0A (Video)]
   * Hold down right mouse button and click left to go back [http://www.youtube.com/watch?v=RZOdgDl2ujU (Video)]
+  * CTRL+S: Select files by entering a file filter such as ".jpg"
 
 ==== Windows 7/Vista specific ====
   * Show favorite folders in the explorer folder band bar like Web Browser favorite bars [http://www.youtube.com/watch?v=dTIGxue6WCY (Video)]
@@ -30,6 +31,7 @@ Watch the videos to see how it works!
   * Activate blinking windows and toggle between current and previous window with Capslock [http://www.youtube.com/watch?v=im088NYiSvw (Video)]
   * Close programs by middle clicking the title bar [http://www.youtube.com/watch?v=JJ-kqjRY910 (Video)]
   * Kill programs by pressing ALT+F5 or right clicking the close button [http://www.youtube.com/watch?v=JJ-kqjRY910 (Video)]
+  * Adjust audio volume with mouse wheel up/down over taskbar
 
 ==== Windows 7/Vista specific ====
   * Activate Aero Flip 3D by moving the mouse to the top left corner of the screen 
