@@ -1,5 +1,6 @@
 = 7plus Version 2.1.0 changelog =
 _This file is temporary and will be changed in the future_
+
 New Functions:
   * Accessor window which serves as a versatile way to access all kinds of things with the keyboard
   * Accessor plugins:
