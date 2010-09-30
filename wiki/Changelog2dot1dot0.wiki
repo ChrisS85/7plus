@@ -19,6 +19,7 @@ New Functions:
 
 Bugfixes:
   * Bug about nonexistent hotkey in settings was fixed.
+  * Events, conditions and actions are now removed again if "Add event/condition/action" was used and cancel was pressed.
   * Default settings file accidently contained a translated version of "New textfile" string in previous version.
   * And some others not worth noting
 
