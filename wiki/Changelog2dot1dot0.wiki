@@ -1,0 +1,24 @@
+= 7plus Version 2.1.0 changelog =
+_This file is temporary and will be changed in the future_
+New Functions:
+  * Accessor window which serves as a versatile way to access all kinds of things with the keyboard
+  * Accessor plugins:
+    * Window Switcher: Activates windows, shows cpu load/always on top state, allows closing the window/process and setting always on top state
+    * Program Launcher: Runs programs by typing their names, similar to programs like Launchy or Exekutor. Automatically indexes the running programs so indexing of program files or windows directory should be unnecessary.
+    * File System Viewer: Browse the file system and execute or open files/folders. Supports autocompletion
+    * Uninstaller: Uninstall programs or remove them from uninstall list
+    * Google Search: Quickly search for something using Google
+    * Calculator: Use Google calculator for quick calculations and unit conversions
+    * Weather: Quickly access Google Weather
+    * Notes: Take notes
+    * FastFolders: Access to FastFolders from anywhere
+    * Notepad++ Tab Switcher: Activates Notepad++ and shows a specific tab. Uses smart prediction similar to Notepad++ FileSwitcher plugin.
+  * Events are now categorized. Old users may need to store their custom events prior to upgrade.
+  * New ViewMode action for controlling the visibility of hidden files and file extensions in explorer.
+
+Bugfixes:
+  * Bug about nonexistent hotkey in settings was fixed.
+  * Default settings file accidently contained a translated version of "New textfile" string in previous version.
+  * And some others not worth noting
+
+If you like this program and want to support its development, please consider donating!
