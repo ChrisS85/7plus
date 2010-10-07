@@ -10,7 +10,6 @@ Action_Message_ReadXML(Action, XMLAction)
 }
 Action_Message_Execute(Action,Event)
 {
-	global EventSchedule
 	if(!Action.tmpGuiNum)
 	{
 		result := CustomMsgBox(Event.ExpandPlaceHolders(Action.Title), Event.ExpandPlaceHolders(Action.Text))

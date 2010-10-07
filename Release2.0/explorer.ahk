@@ -377,12 +377,6 @@ if(IsDoubleClick() && CurrentDesktopFiles = "")
 {
 	Trigger := EventSystem_CreateSubEvent("Trigger","DoubleClickDesktop")
 	OnTrigger(Trigger)
-	if(DoubleClickDesktop = A_WinDir "\explorer.exe" && RecallExplorerPath && ExplorerPath)
-		temp := A_WinDir "\explorer.exe /n,/e," ExplorerPath
-	else
-		temp := DoubleClickDesktop
-	if(temp)
-		Run, %temp%
 }
 Return
 #if
@@ -775,7 +769,7 @@ CopyFilenames()
 ; #if
 
 ;Scroll tree list with mouse wheel
-#if ScrollUnderMouse && ((IsWindowUnderCursor("#32770") && IsDialog()) || IsWindowUnderCursor("CabinetWClass")||IsWindowUnderCursor("ExploreWClass")) && !IsRenaming()
+#if (ScrollUnderMouse && ((IsWindowUnderCursor("#32770") && IsDialog()) || IsWindowUnderCursor("CabinetWClass")||IsWindowUnderCursor("ExploreWClass")) && !IsRenaming())||(Accessor.GUINum && WinActive(Accessor.WindowTitle))
 WheelUp:: 
 Critical 
 CoordMode, Mouse, Screen

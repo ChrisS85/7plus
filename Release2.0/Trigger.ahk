@@ -1,7 +1,7 @@
 EventSystem_Startup()
 {
 	global Events, EventSchedule
-	EventsBase := object("base",Array(), "HighestID", -1, "CreateEvent", "EventSystem_CreateEvent", "FindID", "Events_FindID", "Add", "Events_Add", "Remove", "Events_Remove")
+	EventsBase := object("base", Array(), "Categories", Array(), "HighestID", -1, "CreateEvent", "EventSystem_CreateEvent", "FindID", "Events_FindID", "Add", "Events_Add", "Remove", "Events_Remove")
 	Events := object("base", EventsBase)
 	EventSystem_CreateBaseObjects()
 	
@@ -15,6 +15,13 @@ EventSystem_Startup()
 	}
 	Trigger := EventSystem_CreateSubEvent("Trigger","7plusStart")
 	OnTrigger(Trigger)
+	if(1 = "-id")
+	{
+		Trigger := EventSystem_CreateSubEvent("Trigger", "ExplorerButton")
+		ID = %2%
+		Trigger.ID := ID
+		OnTrigger(Trigger)
+	}
 	EventScheduler()
 }
 
@@ -56,8 +63,9 @@ Events_Add(Events, Event)
 Events_Remove(Events, Event) 
 {
 	global Settings_Events
-	Events.Delete(Events.FindID(Event.ID))
+	outputdebug yes do it!
 	Events[Events.FindID(Event.ID)].Delete()
+	Events.Delete(Events.FindID(Event.ID))
 	if(Settings_Events && Events != Settings_Events)
 	{
 		Settings_Events.Delete(Settings_Events.FindID(Event.ID))
@@ -81,9 +89,9 @@ EventSystem_CreateBaseObjects()
 {
 	global
 	local tmpobject
-	EventSystem_Triggers := "DoubleClickDesktop,DoubleClickTaskbar,ExplorerDoubleClickSpace,ExplorerPathChanged,Hotkey,None,OnMessage,Timer,Trigger,WindowActivated, WindowClosed, WindowCreated,WindowStateChange,7plusStart"
+	EventSystem_Triggers := "DoubleClickDesktop,DoubleClickTaskbar,ExplorerButton,ExplorerDoubleClickSpace,ExplorerPathChanged,Hotkey,None,OnMessage,Timer,Trigger,WindowActivated, WindowClosed, WindowCreated,WindowStateChange,7plusStart"
 	EventSystem_Conditions := "MouseOver,If,IsContextMenuActive,IsDialog,IsFullScreen,KeyIsDown,IsRenaming,WindowActive,WindowExists"
-	EventSystem_Actions := "AutoUpdate,Clipboard,Clipmenu,ControlEvent,ControlTimer,Copy,Delete,Exit7plus,FastFoldersClear,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FilterList,FlashingWindows,FocusControl,SetWindowTitle, Input,Message,MinimizeToTray,Move,MouseClick,NewFile,NewFolder,PlaySound,Restart7plus,Run,Screenshot,SelectFiles,SendKeys,SendMessage,SetDirectory,ShowSettings,Shutdown,Tooltip,Upload,Volume,WindowActivate,WindowClose,WindowHide,WindowMove,WindowResize,WindowShow,WindowState,Write"
+	EventSystem_Actions := "Accessor,AutoUpdate,Clipboard,Clipmenu,ControlEvent,ControlTimer,Copy,Delete,Exit7plus,FastFoldersClear,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FilterList,FlashingWindows,FocusControl,SetWindowTitle, Input,Message,MinimizeToTray,Move,MouseClick,NewFile,NewFolder,PlaySound,Restart7plus,Run,Screenshot,SelectFiles,SendKeys,SendMessage,SetDirectory,ShowSettings,Shutdown,Tooltip,Upload,ViewMode,Volume,WindowActivate,WindowClose,WindowHide,WindowMove,WindowResize,WindowShow,WindowState,Write"
 	Trigger_Categories := object("Explorer", Array(), "Hotkeys", Array(), "Other", Array(), "System", Array(), "Window", Array(), "7plus", Array())
 	Condition_Categories := object("Explorer", Array(), "Mouse", Array(), "Other", Array(), "Window", Array())
 	Action_Categories := object("Explorer", Array(), "FastFolders", Array(), "File", Array(), "Window", Array(), "Input", Array(), "System", Array(), "7plus", Array(), "Other", Array())
@@ -103,6 +111,7 @@ EventSystem_CreateBaseObjects()
 		tmpobject.Delete := "Trigger_" A_LoopField "_Delete"
 		tmpobject.PrepareCopy := "Trigger_" A_LoopField "_PrepareCopy"
 		tmpobject.PrepareReplacement := "Trigger_" A_LoopField "_PrepareReplacement"
+		tmpobject.OnExit := "Trigger_" A_LoopField "_OnExit"
 		Trigger_%A_LoopField%_Init(tmpobject)
 		Trigger_%A_LoopField%_Base := object("base",tmpobject)		
 		;Add type to category
@@ -136,6 +145,7 @@ EventSystem_CreateBaseObjects()
 		tmpobject.DisplayString := "Action_" A_LoopField "_DisplayString"
 		tmpobject.GuiShow := "Action_" A_LoopField "_GuiShow"
 		tmpobject.GuiSubmit := "Action_" A_LoopField "_GuiSubmit"
+		tmpobject.OnExit := "Action_" A_LoopField "_OnExit"
 		Action_%A_LoopField%_Init(tmpobject)
 		Action_%A_LoopField%_Base := object("base", tmpobject) ;.DeepCopy()
 		;Add type to category
@@ -144,6 +154,7 @@ EventSystem_CreateBaseObjects()
 	EventBase := RichObject()
 	EventBase.ID := -1
 	EventBase.Name := "New event"
+	EventBase.Category := "Uncategorized"
 	EventBase.Enabled := 1
 	EventBase.Enable := "Event_Enable"
 	EventBase.Disable := "Event_Disable"
@@ -161,7 +172,15 @@ Event_Delete(Event)
 }
 EventSystem_End()
 {
+	global Events
 	WriteMainEventsFile()
+	Loop % Events.len()
+	{
+		Event := Events[A_Index]
+		Event.Trigger.OnExit()
+		Loop % Event.Actions.len()
+			Event.Actions[A_Index].OnExit()
+	}
 }
 
 EventSystem_CreateSubEvent(Category,Type)
@@ -241,6 +260,12 @@ ReadEventsFile(Events, path)
 		;Event Name
 		Event.Name := XMLEvent.Name
 		
+		;Event Category
+		Event.Category := XMLEvent.Category ? XMLEvent.Category : "Uncategorized"
+		
+		if(!Events.Categories.indexOf(Event.Category))
+			Events.Categories.append(Event.Category)
+			
 		;Event state
 		Event.Enabled := XMLEvent.Enabled
 		
@@ -386,6 +411,9 @@ WriteEventsFile(Events, path)
 		;Write name
 		xmlEvent.Name := Event.Name
 		
+		;Write category
+		xmlEvent.Category := Event.Category
+		
 		;Write state
 		xmlEvent.Enabled := Event.Enabled
 		
@@ -505,9 +533,9 @@ EventScheduler()
 		Loop % EventSchedule.len()
 		{			
 			Event := EventSchedule[EventPos]
-			outputdebug % "process event " Event.Name
+			; outputdebug % "process event " Event.Name
 			;Check conditions
-			Success := Events[Events.FindID(Event.ID)].Enabled || Event.Trigger.Type = "Timer" ;Check enabled state again here, because it might have changed since it was appended to queue
+			Success := (!Events.FindID(Event.ID) && Event.Enabled) || Events[Events.FindID(Event.ID)].Enabled || Event.Trigger.Type = "Timer" ;Check enabled state again here, because it might have changed since it was appended to queue
 			ConditionPos := 1
 			if(Success)
 			{
@@ -545,16 +573,16 @@ EventScheduler()
 			}
 			else if(Success = 1) ;if conditions are fulfilled, execute all actions
 			{
-				outputdebug conditions fulfilled
+				; outputdebug conditions fulfilled
 				Loop % Event.Actions.len()
 				{
-					if(!Events[Events.FindID(Event.ID)].Enabled && Event.Trigger.Type != "Timer") ;Check enabled state again here, because it might have changed since in one of the previous actions during waiting
+					if(Events.FindID(Event.ID) && !Events[Events.FindID(Event.ID)].Enabled && Event.Trigger.Type != "Timer") ;Check enabled state again here, because it might have changed since in one of the previous actions during waiting
 					{
 						outputdebug % "disable " Event.ID " during execution"
 						Event.Actions := Array()
 						break
 					}
-					outputdebug % "perform " Event.Actions[1].DisplayString()
+					; outputdebug % "perform " Event.Actions[1].DisplayString()
 					result := Event.Actions[1].Execute(Event)
 					if(result = 0) ;Action was cancelled, stop all further actions
 					{
@@ -570,9 +598,9 @@ EventScheduler()
 			if(Event.Actions.len() = 0) ;No more actions in this event, consider it processed and remove it from queue
 			{
 				EventSchedule.Delete(EventPos)
-				if(Event.DisableAfterUse)
+				if(Event.DisableAfterUse && Events.FindID(Event.ID))
 					Events[Events.FindID(Event.ID)].SetEnabled(false)
-				if(Event.DeleteAfterUse)
+				if(Event.DeleteAfterUse && Events.FindID(Event.ID))
 				{
 					Events[Events.FindID(Event.ID)].Delete()
 					Events.Remove(Events[Events.FindID(Event.ID)])

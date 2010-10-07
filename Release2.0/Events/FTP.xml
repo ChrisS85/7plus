@@ -1,0 +1,168 @@
+<BugfixVersion>0</BugfixVersion>
+<Events>
+<Event>
+<Actions>
+<Action>
+<Area>Window</Area>
+<Quality>95</Quality>
+<TargetFile>Screenshot.jpg</TargetFile>
+<TargetFolder>%Temp%</TargetFolder>
+<Type>Screenshot</Type>
+</Action><Action>
+<Cancel>1</Cancel>
+<Text>Enter image filename:</Text>
+<Title>Enter filename</Title>
+<Type>Input</Type>
+</Action><Action>
+<Clipboard>1</Clipboard>
+<Hostname>Enter Hostname</Hostname>
+<Password></Password>
+<Port>21</Port>
+<Silent>0</Silent>
+<SourceFiles>%temp%\Screenshot.jpg</SourceFiles>
+<TargetFile>${Input}</TargetFile>
+<TargetFolder></TargetFolder>
+<Type>Upload</Type>
+<URL>http://urltohost.com</URL>
+<User>Enter Username</User>
+</Action><Action>
+<Overwrite>0</Overwrite>
+<Silent>1</Silent>
+<SourceFile>%temp%\Screenshot.jpg</SourceFile>
+<TargetFile></TargetFile>
+<TargetPath></TargetPath>
+<Type>Delete</Type>
+</Action></Actions>
+<Category>FTP</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>308</ID>
+<Name>Upload screenshot of active window</Name>
+<OneInstance>1</OneInstance>
+<Trigger>
+<Key>#Insert</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Area>Screen</Area>
+<Quality>95</Quality>
+<TargetFile>Screenshot.jpg</TargetFile>
+<TargetFolder>%Temp%</TargetFolder>
+<Type>Screenshot</Type>
+</Action><Action>
+<Cancel>1</Cancel>
+<Text>Enter image filename:</Text>
+<Title>Enter filename</Title>
+<Type>Input</Type>
+</Action><Action>
+<Clipboard>1</Clipboard>
+<Hostname>Enter Hostname</Hostname>
+<Password></Password>
+<Port>21</Port>
+<Silent>0</Silent>
+<SourceFiles>%temp%\Screenshot.jpg</SourceFiles>
+<TargetFile>${Input}</TargetFile>
+<TargetFolder></TargetFolder>
+<Type>Upload</Type>
+<URL>http://urltohost.com</URL>
+<User>Enter Username</User>
+</Action><Action>
+<Overwrite>0</Overwrite>
+<Silent>1</Silent>
+<SourceFile>%temp%\Screenshot.jpg</SourceFile>
+<TargetFile></TargetFile>
+<TargetPath></TargetPath>
+<Type>Delete</Type>
+</Action></Actions>
+<Category>FTP</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>309</ID>
+<Name>Upload screenshot</Name>
+<OneInstance>1</OneInstance>
+<Trigger>
+<Key>!Insert</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Clipboard>1</Clipboard>
+<Hostname>Enter Hostname</Hostname>
+<Password></Password>
+<Port>21</Port>
+<Silent>0</Silent>
+<SourceFiles>${SelNQ}</SourceFiles>
+<TargetFile></TargetFile>
+<TargetFolder></TargetFolder>
+<Type>Upload</Type>
+<URL>http://urltohost.com</URL>
+<User>Enter Username</User>
+</Action></Actions>
+<Category>FTP</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>IsRenaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>310</ID>
+<Name>Explorer: Upload selected files</Name>
+<OneInstance>1</OneInstance>
+<Trigger>
+<Key>^U</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Clipboard>1</Clipboard>
+<Hostname>Enter Hostname</Hostname>
+<Password></Password>
+<Port>21</Port>
+<Silent>0</Silent>
+<SourceFiles>${SelNQ}</SourceFiles>
+<TargetFile></TargetFile>
+<TargetFolder></TargetFolder>
+<Type>Upload</Type>
+<URL>http://urltohost.com</URL>
+<User>Enter Username</User>
+</Action></Actions>
+<Category>FTP</Category>
+<Conditions>
+<Condition>
+<Negate>0</Negate>
+<Type>IsDialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>IsRenaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>311</ID>
+<Name>File Dialog: Upload selected files</Name>
+<OneInstance>1</OneInstance>
+<Trigger>
+<Key>^U</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event></Events>
+<MajorVersion>2</MajorVersion>
+<MinorVersion>0</MinorVersion>

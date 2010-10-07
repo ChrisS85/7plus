@@ -44,68 +44,67 @@ Numpad9 UP::SetDirectory(FF9)
 !Numpad9 UP::ClearStoredFolder(FF9,FFTitle9)
 #if
 */
-ClearStoredFolder(ByRef FF, ByRef FFTitle)
+ClearStoredFolder(Slot)
 {
 	global
 	Critical
 	local pos, name
-	FF:=""
-	FFTitle:=""
+	Slot+=1
+	FastFolders[Slot].Path := ""
+	FastFolders[Slot].Title := ""
 	if (HKFolderBand)
 	{
-		RemoveAllButtons(IsFastFolderButton)
+		RemoveAllButtons("IsFastFolderButton")
 		loop 10
 		{
 			pos:=A_Index-1
-			if FF%pos%
-			{			
-				if(!name)
-					name:=path
-				AddButton("",FF%pos%,,pos ":" FFTitle%pos%)
-			}
+			if(FastFolders[A_Index].Path)
+				AddButton("",FastFolders[A_Index].Path,,pos ":" FastFolders[A_Index].Title)
 		}
 	}
 	Critical, Off
 }
-UpdateStoredFolder(ByRef FF, ByRef FFTitle, Folder="")
+UpdateStoredFolder(Slot, Folder="")
 {
-	;Update values of FF and FFTitle, then refresh fast folders
+	global FastFolders
+	Slot+=1
 	if(Folder)
-		FF := Folder
+		FastFolders[Slot].Path := Folder
 	else
-		FF:=GetCurrentFolder()
-	title:=FF	
+		FastFolders[Slot].Path:=GetCurrentFolder()
+	title:=FastFolders[Slot].Path	
 	if(strStartsWith(title,"::") && WinActive("ahk_group ExplorerGroup"))
 		WinGetTitle,title,A
-		
-	SplitPath, title , FFTitle
-	if(!FFTitle)
-		FFtitle:=title
+	
+	SplitPath, title , split
+	FastFolders[Slot].Title := split
+	if(!FastFolders[Slot].Title)
+		FastFolders[Slot].Title:=title
 	RefreshFastFolders()	
 }
 
 RefreshFastFolders()
 {
 	global
-	if (HKFolderBand)
-		RemoveAllButtons(IsFastFolderButton)
+	if(HKFolderBand)
+		RemoveAllButtons("IsFastFolderButton")
 	AddAllButtons(HKFolderBand,HKPlacesBar)
 }
 AddAllButtons(FolderBand,PlacesBar)
 {
-	global	
+	global
 	local pos, value
 	Critical
 	loop 10
 	{
 		pos:=A_Index-1
-		if FF%pos%
+		if(FastFolders[A_Index].Path)
 		{				
 			if (FolderBand)		
-				AddButton("",FF%pos%,,pos ":" FFTitle%pos%)
+				AddButton("",FastFolders[A_Index].Path,,pos ":" FastFolders[A_Index].Title)
 			if(pos<=4 && PlacesBar)	;Also update placesbar
 			{
-				value:=FF%pos%
+				value:=FastFolders[A_Index].Path
 				RegWrite, REG_SZ,HKCU,Software\Microsoft\Windows\CurrentVersion\Policies\comdlg32\Placesbar, Place%pos%,%value%
 			}				
 		}
@@ -133,9 +132,9 @@ FastFolderMenu()
 		loop 10
 		{
 			i:=A_INDEX-1
-			if(FF%i%)
+			if(FastFolders[A_Index].Path)
 			{
-				x:=FFTitle%i%
+				x:=FastFolders[A_Index].Title
 				if(x && (!strStartsWith(x,"ftp://")||!y))
 				{
 					x := "&" i ": " x
@@ -184,7 +183,7 @@ return
 FastFolderMenuClicked(index)
 {
 	global
-	local y:=FF%index%
+	local y:=FastFolders[index].Path
 	x:=GetSelectedFiles()
 	StringReplace, x, x, `n , |, A
 	if(x && (GetKeyState("CTRL") || GetKeyState("Shift")))

@@ -1,7 +1,7 @@
 GUI_EditEvent(e,GoToLabel="")
 {
-	static Event, result, TriggerGUI, EditEventTab, EditEventTriggerCategory, EditEventTriggerType, EditEventConditions, EditEvent_EditCondition, EditEvent_RemoveCondition, EditEvent_AddCondition, EditEventActions, EditEvent_EditAction, EditEvent_RemoveAction, EditEvent_AddAction, EditEvent_Condition_MoveDown, EditEvent_Condition_MoveUp, EditEvent_Action_MoveUp, EditEvent_Action_MoveDown, EditEvent_Name, EditEvent_DisableAfterUse, EditEvent_DeleteAfterUse, EditEvent_OneInstance
-	global Trigger_Categories
+	static Event, result, TriggerGUI, EditEventTab, EditEventTriggerCategory, EditEventTriggerType, EditEventConditions, EditEvent_EditCondition, EditEvent_RemoveCondition, EditEvent_AddCondition, EditEventActions, EditEvent_EditAction, EditEvent_RemoveAction, EditEvent_AddAction, EditEvent_Condition_MoveDown, EditEvent_Condition_MoveUp, EditEvent_Action_MoveUp, EditEvent_Action_MoveDown, EditEvent_Name, EditEvent_DisableAfterUse, EditEvent_DeleteAfterUse, EditEvent_OneInstance, EditEvent_Category
+	global Trigger_Categories, Settings_Events
 	if(GoToLabel = "")
 	{
 		;Don't show more than once
@@ -101,11 +101,27 @@ GUI_EditEvent(e,GoToLabel="")
 		x := 28
 		y := 52
 		Gui, Add, Text, x%x% y%y%, Event Name:
-		x += 70
+		x += 80
 		y -= 4
 		w := 300
 		name := Event.Name
 		Gui, Add, Edit, x%x% y%y% w%w% r1 vEditEvent_Name, %name%
+		x := 28
+		y += 30
+		Gui, Add, Text, x%x% y%y%, Event Category:
+		x += 80
+		y -= 4
+		w := 300
+		Category := Event.Category
+		outputdebug category %category%
+		Categories := "|" ArrayToList(Settings_Events.Categories, "|") "|"
+		outputdebug Categories %Categories%
+		StringReplace, Categories, Categories, |%Category%|, |%Category%||
+		Categories := strTrimLeft(Categories, "|")
+		if(!strEndsWith(Categories, "||"))
+			Categories := strTrimRight(Categories, "|")
+		outputdebug Categories %Categories%
+		Gui, Add, ComboBox, x%x% y%y% w%w% vEditEvent_Category, %Categories%
 		x := 28
 		y += 30
 		w := 200
@@ -151,6 +167,10 @@ GUI_EditEvent(e,GoToLabel="")
 		Event.Trigger.GuiSubmit(TriggerGUI)
 		Gui, Submit, NoHide
 		Event.Name := EditEvent_Name
+		StringReplace, EditEvent_Category, EditEvent_Category, |,%A_Space%
+		if(EditEvent_Category = "Events")
+			EditEvent_Category := "Events1"
+		Event.Category := EditEvent_Category
 		Event.DisableAfterUse := EditEvent_DisableAfterUse
 		Event.DeleteAfterUse := EditEvent_DeleteAfterUse
 		Event.OneInstance := EditEvent_OneInstance
@@ -306,9 +326,12 @@ GUI_EditEvent(e,GoToLabel="")
 		condition:=GUI_EditSubEvent(Event.Conditions[i].DeepCopy(),0)
 		if(condition)
 		{
+			condition.tmpTemporary := false
 			Event.Conditions[i] := condition ;overwrite edited condition
 			GUI_EditEvent("","UpdateConditions") ;Refresh listview
 		}
+		else if(Event.Conditions[i].tmpTemporary)
+			GUI_EditEvent("","EditEvent_RemoveCondition")
 		return
 	}
 	else if(GoToLabel = "EditEvent_RemoveCondition")
@@ -323,6 +346,7 @@ GUI_EditEvent(e,GoToLabel="")
 	{
 		Gui, ListView, EditEvent_EditCondition
 		Condition := EventSystem_CreateSubEvent("Condition","If")
+		Condition.tmpTemporary := true
 		Event.Conditions.append(Condition)
 		LV_Add("Select", Condition.DisplayString())
 		GUI_EditEvent("","EditEvent_EditCondition")
@@ -383,9 +407,12 @@ GUI_EditEvent(e,GoToLabel="")
 		if(action)
 		{
 			outputdebug("Store " Event.Actions[i].WaitForFinish)
+			action.tmpTemporary := false
 			Event.Actions[i] := action ;overwrite edited action
 			GUI_EditEvent("","UpdateActions") ;Refresh listview
 		}
+		else if(Event.Actions[i].tmpTemporary)
+			GUI_EditEvent("","EditEvent_RemoveAction") 
 		return
 	}
 	else if(GoToLabel = "EditEvent_RemoveAction")
@@ -400,6 +427,7 @@ GUI_EditEvent(e,GoToLabel="")
 	{
 		Gui, ListView, EditEvent_EditAction
 		Action := EventSystem_CreateSubEvent("Action","Run")
+		Action.tmpTemporary := true
 		Event.Actions.append(Action)
 		LV_Add("Select", Action.DisplayString())
 		GUI_EditEvent("","EditEvent_EditAction")

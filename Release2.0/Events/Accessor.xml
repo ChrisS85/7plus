@@ -3,19 +3,25 @@
 <Event>
 <Actions>
 <Action>
-<Type>Clipmenu</Type>
+<FlashingWindows>1</FlashingWindows>
+<Type>Accessor</Type>
 </Action></Actions>
-<Category>Clipboard</Category>
+<Category>Accessor</Category>
 <Conditions>
-</Conditions>
+<Condition>
+<Negate>1</Negate>
+<Type>IsFullScreen</Type>
+<UseExcludeList>1</UseExcludeList>
+<UseIncludeList>1</UseIncludeList>
+</Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>9</ID>
-<Name>Clipboard Manager</Name>
+<ID>2</ID>
+<Name>Show Accessor</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Key>#V</Key>
+<Key>!Space</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event></Events>

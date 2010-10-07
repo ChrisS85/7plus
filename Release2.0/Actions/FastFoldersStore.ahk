@@ -15,10 +15,7 @@ Action_FastFoldersStore_Execute(Action, Event)
 	Slot := Action.Slot
 	Folder := Event.ExpandPlaceholders(Action.Folder)
 	if(Slot >= 0 && Slot <= 9)
-	{
-		UpdateStoredFolder(FF%Slot%,FFTitle%Slot%, Folder)
-		return 1
-	}
+		UpdateStoredFolder(Slot, Folder)
 	return 1
 } 
 

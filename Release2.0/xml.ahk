@@ -11,14 +11,14 @@
 xml := XML_Write("", "Node1", "value")
 node2:= XML_Write("", "key", "value")
 node2:=XML_Write(node2, "key2", "value")
-xml:=XML_Write(xml,"Node2", "`n" node2)
-msgbox % xml
+xml:=XML_Write(xml,"Node2", "`r`n" node2)
+outputdebug % xml
 obj := XML_Read(xml)
 exitapp
 
 XML_Write(xml, name, value)
 {
-	return xml "<" name ">" value "</" name ">`n"
+	return xml "<" name ">" value "</" name ">`r`n"
 }
 
 XML_Save(xmlObject, path, xml = "", level = 0)
@@ -32,7 +32,7 @@ XML_Save(xmlObject, path, xml = "", level = 0)
 			{
 				if(IsObject(v[A_Index]))
 				{
-					xml .= "<" k ">`n" 
+					xml .= "<" k ">`r`n" 
 					xml := XML_Save(v[A_Index], "", xml, level + 1)
 					xml .= "</" k ">"
 				}
@@ -40,14 +40,14 @@ XML_Save(xmlObject, path, xml = "", level = 0)
 				{
 					value := StringReplace(v,"<","&lt;",1)
 					value := StringReplace(value,">","&gt;",1)
-					xml .= "<" k ">" value "</" k ">`n"
+					xml .= "<" k ">" value "</" k ">`r`n"
 				}
 			}
 			continue
 		}
 		else if(IsObject(v))
 		{
-			xml .= "<" k ">`n"
+			xml .= "<" k ">`r`n"
 			xml := XML_Save(v, "", xml, level + 1) 
 			xml .= "</" k ">"
 		}
@@ -57,7 +57,7 @@ XML_Save(xmlObject, path, xml = "", level = 0)
 			value := StringReplace(value,">","&gt;",1)
 			xml .= "<" k ">" value "</" k ">"
 		}
-		xml .= "`n"
+		xml .= "`r`n"
 		
 	}
 	if(path)
@@ -69,13 +69,17 @@ XML_Save(xmlObject, path, xml = "", level = 0)
 }
 XML_Read(xml,node = 0)
 {
+	global A
 	if(node = 0)
 		node := Object()
-	xml := strTrimLeft(xml,"`n")
-	xml := strTrimLeft(xml,"`r`n")
+	xml := strTrim(xml,"`r`n")
+	xml := strTrim(xml,"`n")
+	if(A)
+	outputdebug xml:`n%xml%
 	if(!strstartswith(xml,"<"))
 	{
-		; outputdebug % "string starts with " substr(xml,1,1)
+		if(A)
+			outputdebug % "string starts with " substr(xml,1,1)
 		return ""
 	}
 	start := 1
@@ -83,10 +87,12 @@ XML_Read(xml,node = 0)
 	{
 		len := InStr(xml,">", 0, start + 1) - start - 1
 		key := SubStr(xml,start + 1,InStr(xml,">", 0, start + 1) - start - 1)
-		; outputdebug read key %key%
+		if (A)
+			outputdebug read key %key%
 		if(strEndsWith(key,"/"))
 		{
-			; outputdebug single key without value
+			if (A)
+				outputdebug single key without value
 			start += strlen(key) + 3
 			continue
 		}
@@ -114,31 +120,36 @@ XML_Read(xml,node = 0)
 			}
 		}
 		value := SubStr(xml,start,end - start - 2 - strlen(key) - 1)
-		value := strTrimLeft(value,"`n")
 		value := strTrimLeft(value,"`r`n")
-		; outputdebug value: %value%
+		value := strTrimLeft(value,"`n")
+		if (A)
+			outputdebug value: `n%value%end
 		if(value = "")
 		{
-			; outputdebug empty value
+			if (A)
+				outputdebug empty value
 			start := InStr(xml, "<",0,end)
 			continue
 		}
 		
 		if(InStr(value, "<"))
 		{
-			; outputdebug xml value %key%
+			if (A)
+				outputdebug xml value %key%
 			subnode := Object()
 			value := XML_Read(value, subnode)
 		}
 		else
 		{
-			; outputdebug normal value %key%
+			if (A)
+				outputdebug normal value %key%
 			value := StringReplace(value, "&gt;",">",1)
 			value := StringReplace(value, "&lt;","<",1)
 		}
 		if(node.HasKey(key) && node[key].len() < 0) ;Key already exists and is not an array, make it one and append things
 		{
-			; outputdebug turn %key% into array
+			if (A)
+				outputdebug turn %key% into array
 			array := Array()
 			array.append(node[key])
 			array.append(value)
@@ -147,16 +158,19 @@ XML_Read(xml,node = 0)
 		else if(node.HasKey(key) && node[key].len() > 0) ;Key already exists and is an array, just append the new key
 		{
 			node[key].append(value)
-			; outputdebug % "append " key " to array, new len " node[key].len()
+			if (A)
+				outputdebug % "append " key " to array, new len " node[key].len()
 		}
 		else
 		{
-			; outputdebug set key %key%
+			if (A)
+				outputdebug set key %key%
 			node[key] := value
 		}	
 		start := InStr(xml, "<",0,end)
 	}
-	; outputdebug % "key " key " len " node.len()
+	if (A)
+		outputdebug % "key " key " len " node.len()
 	return node
 }
 

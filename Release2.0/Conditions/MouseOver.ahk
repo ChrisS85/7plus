@@ -8,9 +8,7 @@ Condition_MouseOver_ReadXML(Condition, XMLCondition)
 {
 	Condition.MouseOverType := XMLCondition.MouseOverType
 	if(Condition.MouseOverType = "Window")
-	{
 		WindowFilter_ReadXML(Condition, XMLCondition)
-	}
 }
 Condition_MouseOver_Evaluate(Condition)
 {
@@ -64,7 +62,8 @@ Condition_MouseOver_GuiShow(Condition, ConditionGUI,GoToLabel="")
 		{
 			if(MouseOverType != PreviousSelection)
 			{
-				WindowFilter_Init(sCondition)
+				if(PreviousSelection)
+					WindowFilter_Init(sCondition)
 				WindowFilter_GuiShow(sCondition, sConditionGUI)
 			}
 		}

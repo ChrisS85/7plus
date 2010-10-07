@@ -7,6 +7,7 @@ Array(p1="Ņ", p2="Ņ", p3="Ņ", p4="Ņ", p5="Ņ", p6="Ņ"){
 	  ArrBase := RichObject()
 	  ArrBase.len := "Array_Length"
 	  ArrBase.indexOf := "Array_indexOf"
+	  ArrBase.indexOfSubItem := "Array_indexOfSubItem"
 	  ArrBase.contains := "Array_Contains"
 	  ArrBase.join := "Array_Join" 
 	  ArrBase.append := "Array_Append"
@@ -41,6 +42,29 @@ Array_indexOf(arr, val, opts="", startpos=1){
 	Loop % arr.len()
 		If(A_Index>=startpos)
 			If(match := InStr(arr[A_Index], val, C)) and (P or StrLen(arr[A_Index])=StrLen(val))
+				If A
+					matches.append(A_Index)
+				Else
+					Return A_Index
+	If A
+	  Return matches
+	Else
+	  Return 0
+}
+Array_indexOfSubItem(arr, subitem, val, opts="", startpos=1){
+	if(val is object)
+	{
+		enum := arr._newEnum()
+		while enum[ k, v ]
+		  If ( k >= startpos && IsObject(v) && v[subitem] = val )
+			 Return, k
+	}
+	P := !!InStr(opts, "P"), C := !!InStr(opts, "C")
+	If A := !!InStr(opts, "A")
+		matches := Array()
+	Loop % arr.len()
+		If(A_Index>=startpos)
+			If(match := IsObject(arr[A_Index]) ? InStr(arr[A_Index][subitem], val, C) : "") and (P or StrLen(arr[A_Index][subitem])=StrLen(val))
 				If A
 					matches.append(A_Index)
 				Else

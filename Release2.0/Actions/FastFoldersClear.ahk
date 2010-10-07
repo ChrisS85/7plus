@@ -13,7 +13,7 @@ Action_FastFoldersClear_Execute(Action, Event)
 	local Slot
 	Slot := Action.Slot
 	if(Slot >= 0 && Slot <= 9 )
-		ClearStoredFolder(FF%Slot%,FFTitle%Slot%)
+		ClearStoredFolder(Slot)
 	return 1
 } 
 

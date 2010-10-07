@@ -41,8 +41,7 @@ RemoveAllButtons(function="")
 		;go into number folder
 		Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected, 2, 0
 		{
-			numberfolder:=A_LoopRegName
-			
+			numberfolder:=A_LoopRegName			
 			
 			;Custom skip function code
 			;go into clsid folder
@@ -63,12 +62,9 @@ RemoveAllButtons(function="")
 			if(skip) 
 				continue
 			;Custom skip function code
-			key:="SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\" regkey "\TasksItemsSelected\" numberfolder
 			RegRead, ahk, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%, AHK			
 			if(ahk)
-			{
 				RegDelete, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%
-			}
 		}
 		Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected, 2, 0
 		{
@@ -85,7 +81,7 @@ RemoveAllButtons(function="")
 				RegRead, cmd, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%numberfolder%\%A_LoopRegName%\shell\InvokeTask\command
 				
 				if(IsFunc(function))
-					if(%function%(cmd,title,value))
+					if(!%function%(cmd,title,value))
 					{
 						skip:=true
 						break
@@ -102,10 +98,10 @@ RemoveAllButtons(function="")
 		}
 	}
 }
-;Removes a button. Command can either be a real command (with arguments) or a path. 
-RemoveButton(Command)
+;Removes a button. Command can either be a real command (with arguments), a path or a function with three arguments (command, key, param) which identifies the proper key
+RemoveButton(Command, param="")
 {
-	if( InStr(Command,"\",0,strlen(Command)))
+	if(!IsFunc(Command) && InStr(Command,"\",0,strlen(Command)))
 		StringTrimRight, Command, Command,1
 	;go into view folders (clsid)
 	Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes, 2, 0
@@ -128,7 +124,8 @@ RemoveButton(Command)
 				Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%, 2, 0
 				{
 					RegRead, value, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%\%A_LoopRegName%, InfoTip
-					if value = %Command%
+					outputdebug value %value%
+					if((!IsFunc(Command) && value = Command) || (IsFunc(Command) && %Command%(value, "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\" regkey "\TasksItemsSelected\" numberfolder "\" A_LoopRegName "\shell\InvokeTask\command", param)))
 					{					
 						RegDelete, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%
 						found:=numberfolder
@@ -152,7 +149,7 @@ RemoveButton(Command)
 			}		
 		}
 		if(found=-1) {
-			msgbox Button not found!
+			outputdebug Button not found!
 			break
 		}			
 		found:=-1
@@ -172,7 +169,7 @@ RemoveButton(Command)
 				Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%numberfolder%, 2, 0
 				{
 					RegRead, value, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%numberfolder%\%A_LoopRegName%, InfoTip
-					if value = %Command%
+					if((!IsFunc(Command) && value = Command) || (IsFunc(Command) && %Command%(value, "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\" regkey "\TasksNoItemsSelected\" numberfolder "\" A_LoopRegName "\shell\InvokeTask\command", param)))
 					{											
 						RegDelete, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%numberfolder%						
 						found:=numberfolder
@@ -196,14 +193,14 @@ RemoveButton(Command)
 			}		
 		}
 		if(found=-1) {
-			msgbox Button not found!
+			outputdebug Button not found!
 			break
 		}
 	}
 }
 
 ;Adds a button. You may specify a command (and possibly an argument) or a path, and a name which should be used.
-AddButton(Command,path,Args="",Name="")
+AddButton(Command,path,Args="",Name="", Tooltip="",AddTo = "Both")
 {
 	outputdebug addbutton command %command% path %path% args %args% name %name%
 	ahk_path:=A_ScriptDir "\ChangeLocation.exe"
@@ -235,45 +232,86 @@ AddButton(Command,path,Args="",Name="")
 		Command="%ahk_path%" "%path%"	
 		description:=path	
 	}		
-		
+	if(!command && !path && args) ;args only, use start 7plus with -id param
+	{
+		Command := """" (A_IsCompiled ? A_ScriptPath : A_AhkPath """ """ A_ScriptFullPath) """ -id " args
+		description := Tooltip
+	}
+	outputdebug add name %name%
 	SomeCLSID:="{" . uuid(false) . "}"
 	;go into view folders (clsid)
 	Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes, 2, 0
 	{
-		;figure out first free key number
-		iterations:=0
-		regkey:=A_LoopRegName
-		Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected, 2, 0
+		if(AddTo = "Both" || AddTo = "Selected")
 		{
-			iterations++
+			;figure out first free key number
+			iterations:=0
+			regkey:=A_LoopRegName
+			Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected, 2, 0
+			{
+				iterations++
+			}
+			
+			;Marker for easier recognition of ahk-added entries
+			RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%iterations%, AHK, 1
+			;Write reg keys
+			RegWrite, REG_EXPAND_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%iterations%\%SomeCLSID%, Icon, %icon%
+			RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%iterations%\%SomeCLSID%, InfoTip, %description%
+			RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%iterations%\%SomeCLSID%, Title, %name%
+			RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%iterations%\%SomeCLSID%\shell\InvokeTask\command, , %command%
 		}
-		
-		;Marker for easier recognition of ahk-added entries
-		RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%iterations%, AHK, 1
-		;Write reg keys
-		RegWrite, REG_EXPAND_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%iterations%\%SomeCLSID%, Icon, %icon%
-		RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%iterations%\%SomeCLSID%, InfoTip, %description%
-		RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%iterations%\%SomeCLSID%, Title, %name%
-		RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%iterations%\%SomeCLSID%\shell\InvokeTask\command, , %command%
-		
-		;Now the same for TasksNoItemsSelected
-		iterations:=0
-		;figure out first free key number
-		Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected, 2, 0
+		if(AddTo = "Both" || AddTo = "NoSelected")
 		{
-			iterations++
+			;Now the same for TasksNoItemsSelected
+			iterations:=0
+			;figure out first free key number
+			Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected, 2, 0
+			{
+				iterations++
+			}
+			
+			;Marker for easier recognition of ahk-added entries
+			RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%iterations%, AHK, 1
+			;Write reg keys
+			RegWrite, REG_EXPAND_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%iterations%\%SomeCLSID%, Icon, %icon%
+			RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%iterations%\%SomeCLSID%, InfoTip, %description%
+			RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%iterations%\%SomeCLSID%, Title, %name%
+			RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%iterations%\%SomeCLSID%\shell\InvokeTask\command, , %command%
 		}
-		
-		;Marker for easier recognition of ahk-added entries
-		RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%iterations%, AHK, 1
-		;Write reg keys
-		RegWrite, REG_EXPAND_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%iterations%\%SomeCLSID%, Icon, %icon%
-		RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%iterations%\%SomeCLSID%, InfoTip, %description%
-		RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%iterations%\%SomeCLSID%, Title, %name%
-		RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%iterations%\%SomeCLSID%\shell\InvokeTask\command, , %command%
 	}
 }
-
+FindButton(function, param)
+{
+	outputdebug find button %function% %param%
+	if(!IsFunc(function))
+		return false
+	outputdebug isfunction
+	;go into view folders (clsid)
+	Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes, 2, 0
+	{
+		regkey:=A_LoopRegName
+		maxnumber:=-1
+		;loop through selected item number folders (loop goes backwards)
+		Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected, 2, 0
+		{
+			numberfolder:=A_LoopRegName
+			RegRead, ahk, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%, AHK
+			if(ahk)
+			{
+				outputdebug ahk SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%
+				;go into clsid folder
+				Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%, 2, 0
+				{
+					RegRead, value, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%\%A_LoopRegName%\shell\InvokeTask\command
+					outputdebug value %value%
+					if(%function%(value, "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\" regkey "\TasksItemsSelected\" numberfolder "\" A_LoopRegName "\shell\InvokeTask\command", param))
+						return true
+				}
+			}
+		}
+	}
+	return false
+}
 uuid(c = false) { ; v1.1 - by Titan 
    static n = 0, l, i 
    f := A_FormatInteger, t := A_Now, s := "-" 

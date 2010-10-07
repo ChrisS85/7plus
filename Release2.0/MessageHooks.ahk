@@ -62,12 +62,13 @@ ShellMessage( wParam,lParam, msg)
 {
 	Critical
 	ListLines, Off
-	global ExplorerPath, HKShowSpaceAndSize, BlinkingWindows, wtmwParam, SuppressTabEvents, UseTabs, PreviousWindow, PreviousExplorerPath,WindowList
+	global ExplorerPath, HKShowSpaceAndSize, BlinkingWindows, wtmwParam, SuppressTabEvents, UseTabs, PreviousWindow, PreviousExplorerPath,WindowList,Accessor
 	Trigger := EventSystem_CreateSubEvent("Trigger", "OnMessage")
 	Trigger.Message := msg
 	Trigger.wParam := wParam
 	Trigger.lParam := lParam
 	OnTrigger(Trigger)
+	outputdebug shellmessage %wparam%
 	;Traymin
 	If	msg=1028
 	{
@@ -137,15 +138,15 @@ ShellMessage( wParam,lParam, msg)
 	{
 		Trigger := Object("base", TriggerBase)
 		Trigger.Type := "WindowActivated"
-		outputdebug pre trigger
 		OnTrigger(Trigger)
-		outputdebug post trigger
 		;Blinking windows detection, remove activated windows
 		if(x:=BlinkingWindows.indexOf(lParam))
 			BlinkingWindows.Delete(x)
 		DecToHex(lParam)
 		class:=WinGetClass("ahk_id " lParam)
-		outputdebug activate %class% %lParam%
+		outputdebug blup
+		if(Accessor.GUINum && WinGetTitle("A") != Accessor.WindowTitle)
+			AccessorClose()
 		;If we change from another program to explorer/desktop/dialog
 		if(WinActive("ahk_group ExplorerGroup")||WinActive("ahk_group DesktopGroup")||IsDialog())
 		{

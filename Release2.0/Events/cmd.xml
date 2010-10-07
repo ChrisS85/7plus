@@ -3,37 +3,12 @@
 <Event>
 <Actions>
 <Action>
-<Command>cmd.exe /k cd /D "${P}\"</Command>
-<Type>Run</Type>
-<WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
-</Action></Actions>
-<Conditions>
-<Condition>
-<Compare>${Class}</Compare>
-<Negate>0</Negate>
-<Operator>matches regular expression</Operator>
-<Type>If</Type>
-<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<ID>9</ID>
-<Name>CMD / Explorer: Run cmd in current directory</Name>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>#C</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
 <Command>cmd.exe /k cd /D c:\</Command>
 <Type>Run</Type>
 <WaitForFinish>0</WaitForFinish>
 <WorkingDirectory></WorkingDirectory>
 </Action></Actions>
+<Category>CMD</Category>
 <Conditions>
 <Condition>
 <Compare>${Class}</Compare>
@@ -54,8 +29,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>10</ID>
-<Name>CMD: Run cmd</Name>
+<ID>11</ID>
+<Name>Run cmd</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>#C</Key>
@@ -69,6 +44,7 @@
 <WaitForFinish>0</WaitForFinish>
 <WorkingDirectory></WorkingDirectory>
 </Action></Actions>
+<Category>CMD</Category>
 <Conditions>
 <Condition>
 <Compare>${Class}</Compare>
@@ -89,8 +65,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>11</ID>
-<Name>CMD: Run cmd</Name>
+<ID>12</ID>
+<Name>Run cmd</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>#C</Key>
@@ -104,6 +80,7 @@
 <WindowFilter></WindowFilter>
 <WindowMatchType>Active</WindowMatchType>
 </Action></Actions>
+<Category>CMD</Category>
 <Conditions>
 <Condition>
 <Negate>0</Negate>
@@ -114,8 +91,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>13</ID>
-<Name>CMD: Close with ALT + F4</Name>
+<ID>14</ID>
+<Name>Close with ALT + F4</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!F4</Key>
@@ -134,6 +111,7 @@
 <Keys>{Down 3}{Enter}</Keys>
 <Type>SendKeys</Type>
 </Action></Actions>
+<Category>CMD</Category>
 <Conditions>
 <Condition>
 <Negate>0</Negate>
@@ -144,8 +122,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>14</ID>
-<Name>CMD: Enable CTRL+V to paste from clipboard</Name>
+<ID>15</ID>
+<Name>Enable CTRL+V to paste from clipboard</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^V</Key>
@@ -159,6 +137,7 @@
 <WaitForFinish>0</WaitForFinish>
 <WorkingDirectory></WorkingDirectory>
 </Action></Actions>
+<Category>CMD</Category>
 <Conditions>
 <Condition>
 <Negate>0</Negate>
@@ -167,8 +146,8 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>222</ID>
-<Name>CMD / File Dialog: Run cmd</Name>
+<ID>223</ID>
+<Name>Run CMD in current directory</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>#C</Key>

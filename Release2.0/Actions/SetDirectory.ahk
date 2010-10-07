@@ -35,7 +35,7 @@ Action_SetDirectory_GuiShow(Action, ActionGUI, GoToLabel = "")
 	if(GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
-		SubEventGUI_Add(Action, ActionGUI, "Text", "Hint", "You may also enter ""Back"",""Forward"" and ""Upward"" here.")
+		SubEventGUI_Add(Action, ActionGUI, "Text", "tmpHint", "You may also enter ""Back"",""Forward"" and ""Upward"" here.")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Path", "", "", "Path:","Browse", "Action_SetDirectory_Browse", "Placeholders", "Action_SetDirectory_Placeholders")
 		WindowFilter_GuiShow(Action, ActionGUI)
 	}

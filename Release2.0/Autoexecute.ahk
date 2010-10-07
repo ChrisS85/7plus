@@ -1,3 +1,8 @@
+if 1 = -id
+	CommunicateWithRunningInstance()
+
+FileCreateDir %A_Temp%\7plus
+
 if(FileExist(A_ScriptDir "\Settings.ini"))
 	ConfigPath := A_ScriptDir "\Settings.ini"
 Else
@@ -14,8 +19,7 @@ Else
 IniRead, DebugEnabled, %ConfigPath%, General, DebugEnabled , 0
 if(DebugEnabled)
 	DebuggingStart()
-
-
+	
 ;Update checker
 IniRead, AutoUpdate, %ConfigPath%, Misc, AutoUpdate, 1
 if(AutoUpdate)
@@ -67,6 +71,7 @@ CF_HDROP = 0xF ;clipboard identifier of copied file from explorer
 ;Register a shell hook to get messages when windows get activated, closed etc
 Gui +LastFound
 hAHK := WinExist()
+FileAppend, %hAHK%, %A_Temp%\7plus\hwnd.txt
 outputdebug hahk %hahk%
 DllCall( "RegisterShellHookWindow", UInt,hAHK ) 
 ShellHookMsgNum := DllCall( "RegisterWindowMessage", Str,"SHELLHOOK" ) 
@@ -114,7 +119,7 @@ IniRead, HKCopyPaths, %ConfigPath%, Explorer, HKCopyPaths, 1
 IniRead, HKAppendClipboard, %ConfigPath%, Explorer, HKAppendClipboard, 1
 */
 
-IniRead, HKFastFolders, %ConfigPath%, Explorer, HKFastFolders, 1
+; IniRead, HKFastFolders, %ConfigPath%, Explorer, HKFastFolders, 1
 ; IniRead, HKFFMenu, %ConfigPath%, Explorer, HKFFMenu, 1
 IniRead, HKPlacesBar, %ConfigPath%, Explorer, HKPlacesBar, 0
 IniRead, HKCleanFolderBand, %ConfigPath%, Explorer, HKCleanFolderBand, 0
@@ -153,7 +158,7 @@ IniRead, HKAltDrag, %ConfigPath%, Windows, HKAltDrag, 1
 IniRead, HKAltMinMax, %ConfigPath%, Windows, HKAltMinMax, 1
 IniRead, HKTrayMin, %ConfigPath%, Windows, HKTrayMin, 1
 */
-IniRead, DoubleClickDesktop, %ConfigPath%, Windows, DoubleClickDesktop, %A_Windir%\explorer.exe
+; IniRead, DoubleClickDesktop, %ConfigPath%, Windows, DoubleClickDesktop, %A_Windir%\explorer.exe
 IniRead, HKToggleWallpaper, %ConfigPath%, Windows, HKToggleWallpaper, 1
 
 IniRead, HKHoverStart, %ConfigPath%, Windows, HKHoverStart, 1
@@ -199,16 +204,23 @@ Loop 10
 	if(x!="Error")
 		ClipboardList.Append(x)
 }
-IniRead, FF0, %ConfigPath%, FastFolders, Folder0, ::{20D04FE0-3AEA-1069-A2D8-08002B30309D}
-IniRead, FFTitle0, %ConfigPath%, FastFolders, FolderTitle0, Computer
-IniRead, FF1, %ConfigPath%, FastFolders, Folder1, C:\
-IniRead, FFTitle1, %ConfigPath%, FastFolders, FolderTitle1, C:\
-;FastFolders
-Loop 8
+FastFolders := Array()
+Loop 10
 {
-    z:=A_Index+1
-    IniRead, FF%z%, %ConfigPath%, FastFolders, Folder%z%, %A_Space%
-    IniRead, FFTitle%z%, %ConfigPath%, FastFolders, FolderTitle%z%, %A_Space%
+	z := A_Index - 1
+	if(z = 0)
+	{
+		IniRead, x, %ConfigPath%, FastFolders, Folder%z%, ::{20D04FE0-3AEA-1069-A2D8-08002B30309D}
+		IniRead, y, %ConfigPath%, FastFolders, FolderTitle%z%, Computer
+	}
+	else if(z=1)
+	{
+		IniRead, x, %ConfigPath%, FastFolders, Folder%z%, C:\
+		IniRead, y, %ConfigPath%, FastFolders, FolderTitle%z%, C:\
+	}
+    IniRead, x, %ConfigPath%, FastFolders, Folder%z%, %A_Space%
+    IniRead, y, %ConfigPath%, FastFolders, FolderTitle%z%, %A_Space%
+	FastFolders.append(Object("Path", x, "Title", y))
 }
 
 
@@ -303,6 +315,7 @@ OnExit(Reload=0)
 		ShouldReload := 1
 		reload
 	}
+	FileRemoveDir, %A_Temp%\7plus, 1
 }
 ;Some first run intro
 wizardry:
@@ -483,8 +496,8 @@ WriteIni()
 	Loop 10
 	{
 	    x:=A_Index-1
-	    y:=FF%x%
-	    z:=FFTitle%x%
+	    y:=FastFolders[A_Index].Path
+	    z:=FastFolders[A_Index].Title
 	    IniWrite, %y%, %ConfigPath%, FastFolders, Folder%x%
 	    IniWrite, %z%, %ConfigPath%, FastFolders, FolderTitle%x%
 	}
@@ -496,4 +509,17 @@ WriteIni()
 		IniWrite, %x%, %ConfigPath%, Misc, Clipboard%A_Index%
 	}
 	; SaveHotkeys()
+}
+CommunicateWithRunningInstance()
+{
+	global
+	local Count
+	DetectHiddenWindows, On	
+	FileRead, hwnd, %A_Temp%\7plus\hwnd.txt
+	if(WinExist("ahk_id " hwnd))
+	{
+		SendMessage, 55555, %2%, 0, ,ahk_id %hwnd%
+		ExitApp
+	}
+	DetectHiddenWindows, Off
 }

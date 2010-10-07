@@ -10,12 +10,26 @@ Event_ExpandPlaceHolders(Event,text)
 	}
 	return ExpandGlobalPlaceHolders(text)
 }
-
+ExpandPathPlaceholders(text)
+{
+	outputdebug expand %text%
+	StringReplace, text, text, `%ProgramFiles`%, %A_ProgramFiles%, All
+	StringReplace, text, text, `%Windir`%, %A_Windir%, All
+	StringReplace, text, text, `%Temp`%, %A_Temp%, All
+	StringReplace, text, text, `%AppData`%, %A_AppData%, All
+	StringReplace, text, text, `%Desktop`%, %A_Desktop%, All
+	StringReplace, text, text, `%MyDocuments`%, %A_MyDocuments%, All
+	StringReplace, text, text, `%StartMenu`%, %A_StartMenu%, All
+	StringReplace, text, text, `%StartMenuCommon`%, %A_StartMenuCommon%, All
+	outputdebug expanded %text%
+	return text
+}
 ExpandGlobalPlaceholders(text)
 {
 	global ExplorerPath,PreviousExplorerPath
+	text := ExpandPathPlaceholders(text)
 	len := strLen(text)
-	pos := 1
+	pos := 1	
 	Loop % len
 	{
 		2chars := SubStr(text, pos, 2)
@@ -31,19 +45,6 @@ ExpandGlobalPlaceholders(text)
 				continue
 			}
 		}
-		char := SubStr(text, pos, 1)
-		if(char = "%")
-		{
-			end := InStr(text, "%",0,pos + 1)
-			if(end)
-			{
-				placeholder := SubStr(text, pos + 1, end - (pos + 1))
-				expanded := ExpandPlaceholder(placeholder)
-				text := SubStr(text, 1, pos - 1) expanded SubStr(text, end + 1)
-				pos += strLen(expanded)
-				continue
-			}
-		}
 		pos++
 	}
 	return text
@@ -51,19 +52,7 @@ ExpandGlobalPlaceholders(text)
 ExpandPlaceholder(Placeholder)
 {
 	global Vista7, ExplorerPath, PreviousExplorerPath
-	if(Placeholder = "ProgramFiles")
-		return A_ProgramFiles
-	else if(Placeholder = "Windir")
-		return A_WinDir
-	else if(Placeholder = "Temp")
-		return A_Temp
-	else if(Placeholder = "AppData")
-		return A_AppData
-	else if(Placeholder = "Desktop")
-		return A_Desktop
-	else if(Placeholder = "MyDocuments")
-		return A_MyDocuments
-	else if(Placeholder = "Clip")
+	if(Placeholder = "Clip")
 		return ReadClipboardText()
 	else if(Placeholder = "A")
 		return WinExist("A")

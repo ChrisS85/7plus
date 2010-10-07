@@ -1,4 +1,4 @@
-#Persistent 
+#SingleInstance off
 #NoTrayIcon ;Added later
 #InstallMouseHook
 #InstallKeyBdHook
@@ -18,6 +18,9 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 MajorVersion := 2
 MinorVersion := 0
 BugfixVersion := 0
+; ProgramLauncher := Object("List",Array())
+; ProgramLauncher.List.append(Object("Name","CMD","Command",A_Windir "\System32\CMD.exe"))
+; ProgramLauncher.List.append(Object("Name","explorer","Command",A_Windir "\Explorer.exe"))
 #include %A_ScriptDir%\Autoexecute.ahk ;include first to avoid issues with autoexecute ending too soon because of labels
 /*
 #if !IsFullscreen("A",true,false)
@@ -44,9 +47,22 @@ BugfixVersion := 0
 #include %A_ScriptDir%\lib\RemoteBuf.ahk
 #include %A_ScriptDir%\lib\RichObject.ahk
 #include %A_ScriptDir%\lib\Taskbutton.ahk
+#include %A_ScriptDir%\lib\unhtml.ahk
 #include %A_ScriptDir%\lib\VA.ahk
 #include %A_ScriptDir%\lib\Win.ahk
 #include %A_ScriptDir%\lib\xpath.ahk
+
+#include %A_ScriptDir%\Accessor\Accessor.ahk
+#include %A_ScriptDir%\Accessor\Calc.ahk
+#include %A_ScriptDir%\Accessor\FastFolders.ahk
+#include %A_ScriptDir%\Accessor\FileSystem.ahk
+#include %A_ScriptDir%\Accessor\Google.ahk
+#include %A_ScriptDir%\Accessor\Notepad++.ahk
+#include %A_ScriptDir%\Accessor\Notes.ahk
+#include %A_ScriptDir%\Accessor\ProgramLauncher.ahk
+#include %A_ScriptDir%\Accessor\WindowSwitcher.ahk
+#include %A_ScriptDir%\Accessor\Uninstall.ahk
+#include %A_ScriptDir%\Accessor\Weather.ahk
 
 #include %A_ScriptDir%\Trigger.ahk
 #include %A_ScriptDir%\EditEventGUI.ahk
@@ -79,6 +95,7 @@ BugfixVersion := 0
 
 #include %A_ScriptDir%\Triggers\DoubleClickDesktop.ahk
 #include %A_ScriptDir%\Triggers\DoubleClickTaskbar.ahk
+#include %A_ScriptDir%\Triggers\ExplorerButton.ahk
 #include %A_ScriptDir%\Triggers\ExplorerPathChanged.ahk
 #include %A_ScriptDir%\Triggers\ExplorerDoubleClickSpace.ahk
 #include %A_ScriptDir%\Triggers\Hotkey.ahk
@@ -101,6 +118,7 @@ BugfixVersion := 0
 #include %A_ScriptDir%\Conditions\WindowActive.ahk
 #include %A_ScriptDir%\Conditions\WindowExists.ahk
 
+#include %A_ScriptDir%\Actions\Accessor.ahk
 #include %A_ScriptDir%\Actions\Autoupdate.ahk
 #include %A_ScriptDir%\Actions\Clipboard.ahk
 #include %A_ScriptDir%\Actions\Clipmenu.ahk
@@ -137,6 +155,7 @@ BugfixVersion := 0
 #include %A_ScriptDir%\Actions\ShowSettings.ahk
 #include %A_ScriptDir%\Actions\ShutDown.ahk
 #include %A_ScriptDir%\Actions\Tooltip.ahk
+#include %A_ScriptDir%\Actions\ViewMode.ahk
 #include %A_ScriptDir%\Actions\Volume.ahk
 #include %A_ScriptDir%\Actions\WindowActivate.ahk
 #include %A_ScriptDir%\Actions\WindowClose.ahk

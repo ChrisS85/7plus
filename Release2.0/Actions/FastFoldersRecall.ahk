@@ -13,7 +13,7 @@ Action_FastFoldersRecall_Execute(Action, Event)
 	local Slot
 	Slot := Action.Slot
 	if(Slot >= 0 && Slot <= 9 )
-		SetDirectory(FF%Slot%)
+		SetDirectory(FastFolders[Slot+1].Path)
 	return 1
 } 
 

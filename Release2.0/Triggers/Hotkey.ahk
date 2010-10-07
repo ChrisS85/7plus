@@ -97,7 +97,8 @@ Trigger_Hotkey_Disable(Trigger)
 {
 	key := Trigger.Key
 	key := "$" key ;Add $ so key can not be triggered through script to prevent loops
-	Hotkey, If, IsObject(Trigger := HotkeyShouldFire(A_ThisHotkey))
+	Hotkey, If, IsObject(Trigger := HotkeyShouldFire(A_ThisHotkey))	
+	Hotkey, %key%, HotkeyTrigger, On ;Do this to make sure it exists
 	Hotkey, %key%, Off
 	Hotkey, If
 }

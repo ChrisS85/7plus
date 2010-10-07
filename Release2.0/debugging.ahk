@@ -22,6 +22,7 @@ DebuggingStart()
 	mouseclick, left, 125, 85,,0
 	MouseMove, x,y,0
 	send, [%a_scriptPID%*{Enter}
+	send, !M{Down}{Enter}
 	Coordmode, Mouse, Screen
 }
 

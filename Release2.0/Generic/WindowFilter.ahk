@@ -71,42 +71,32 @@ WindowFilter_Get(WindowFilter)
 WindowFilter_Matches(WindowFilter, TargetWindow, TriggerFilter = "")
 {
 	global WindowList
-	
 	if(!TriggerFilter || WindowFilter.type = TriggerFilter.type)
 	{
 		if(TargetWindow = "A")
-			TargetWindow := WinExist("A")
+			TargetWindow := WinExist("A")		
+		if(TargetWindow = "UnderMouse")
+			MouseGetPos,,,TargetWindow
 		class := WinGetClass("ahk_id " TargetWindow)
 		if(!class)
 			class := WindowList[TargetWindow].class
 		title := WinGetTitle("ahk_id " TargetWindow)
 		if(!title)
 			title := WindowList[TargetWindow].title
-		if(TargetWindow = "UnderMouse")
-			MouseGetPos,,,TargetWindow
 		if(WindowFilter.WindowMatchType = "Program")
-		{
 			if(GetProcessName(TargetWindow) = WindowFilter.WindowFilter)
 				return true
-		}
 		else if(WindowFilter.WindowMatchType = "Class")
-		{
 			if(class = WindowFilter.WindowFilter)
 				return true
-		}
 		else if(WindowFilter.WindowMatchType = "Title")
-		{
 			if(strStartsWith(title,WindowFilter.WindowFilter))
-				return true			
-		}
-		else if(WindowFilter.WindowMatchType = "Active")
-		{
-			
+				return true
+		else if(WindowFilter.WindowMatchType = "Active")			
 			if(!TargetWindow || WinActive("ahk_id " TargetWindow))
 				return true
-		}
 		else if(WindowFilter.WindowMatchType = "UnderMouse")
-		{			
+		{
 			MouseGetPos,,,UnderMouse
 			if(!TargetWindow || UnderMouse = TargetWindow)
 				return true

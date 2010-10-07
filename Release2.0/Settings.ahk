@@ -6,17 +6,17 @@ Settings_CreateEvents() {
 	local yIt,x1,x2,x,y
 	xHelp:=xBase
 	x1:=xHelp+10
-	x2 := x1 + 410
+	x2 := x1 + 460
 	yIt:=yBase
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vEventsTab, 
+	Gui, 1:Add, Tab2, x176 y14 w460 h350 vEventsTab, 
 	AddTab(0, "","SysTabControl321")
 	Gui, 1:Add, Text, x%x1% y%yIt% R3, You can add events here that are triggered under certain conditions. When triggered,`nthe event can launch a series of actions. This is a very powerful tool to add `nall kinds of features, and many features from 7plus are now implemented with this system.
 	yIt+=54
 	Gui, 1:Add, Text, x%x1% y%yIt%, Event search:
 	yIt-=4
-	Gui, 1:Add, ComboBox, x+10 y%yIt% w338 hwndEventFilter gEventFilterChange, 7plus|Clipboard|CMD|Explorer|Fast Folders|File Dialog|FTP|Picture Viewer|Window Handling
+	Gui, 1:Add, ComboBox, x+10 y%yIt% w375 hwndEventFilter gEventFilterChange, 7plus|Clipboard|CMD|Explorer|Fast Folders|File Dialog|FTP|Picture Viewer|Window Handling
 	yIt += textboxstep
-	Gui, 1:Add, ListView, x%x1% y%yIt% w400 h232 vGUI_EventsList gGUI_EventsList_SelectionChange Grid -LV0x10 AltSubmit Checked, Enabled|ID|Trigger|Name
+	Gui, 1:Add, ListView, x%x1% y%yIt% w450 h232 vGUI_EventsList gGUI_EventsList_SelectionChange Grid -LV0x10 AltSubmit Checked, Enabled|ID|Trigger|Name
 	OnMessage(0x100, "WM_KEYDOWN")
 	OnMessage(0x101, "WM_KEYUP")
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Add gGUI_EventsList_Add, Add Event
@@ -24,11 +24,7 @@ Settings_CreateEvents() {
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Remove gGUI_EventsList_Remove, Delete Event
 	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Edit gGUI_EventsList_Edit, Edit Event
-	yIt += textboxstep
-	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_MoveUp gGUI_EventsList_MoveUp, Move Up
-	yIt += textboxstep
-	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_MoveDown gGUI_EventsList_MoveDown, Move Down
-	yIt += textboxstep
+	yIt += textboxstep * 3
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Import gGUI_EventsList_Import, Import
 	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Export gGUI_EventsList_Export, Export
@@ -37,11 +33,32 @@ Settings_CreateEvents() {
 	yIt += textboxstep + 4
 	y := yIt + TextBoxTextOffset
 }
+Settings_CreateAccessor() {
+	global
+	local yIt,x1,x2,x,y
+	xHelp:=xBase
+	x1:=xHelp+10
+	x2 := x1 + 460
+	yIt:=yBase
+	Gui, 1:Add, Tab2, x176 y14 w460 h350 vAccessorPluginsTab, 
+	AddTab(0, "","SysTabControl322")
+	Gui, 1:Add, ListView, x%x1% y%yIt% w450 h232 vGUI_AccessorPluginsList gGUI_AccessorPluginsList_Events Grid -LV0x10 AltSubmit Checked, Enabled|ID|Name
+	OnMessage(0x100, "WM_KEYDOWN")
+	OnMessage(0x101, "WM_KEYUP")
+	LV_ModifyCol(1, "Auto")
+    LV_ModifyCol(2, 0)
+	LV_ModifyCol(3, "AutoHdr")
+	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_AccessorSettings gGUI_AccessorSettings, Plugin Settings
+	yIt += textboxstep
+	Gui, 1:Add, Button, x%x2% y%yIt% w80 gGUI_Accessor_Help, Help
+	yIt += textboxstep + 4
+	y := yIt + TextBoxTextOffset
+}
 Settings_CreateExplorer() {
 	global
 	local yIt,x1,x2,x
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vExplorerTab, 
-	AddTab(1, "","SysTabControl322") 
+	Gui, 1:Add, Tab2, x176 y14 w460 h350 vExplorerTab, 
+	AddTab(1, "","SysTabControl323") 
 	yIt:=yBase
 	
 	x1:=xHelp+10
@@ -151,29 +168,14 @@ Settings_CreateExplorer() {
 	Gui, 1:Add, Edit, x%x2% y%y% w%wTBMedium% vImgName R1	
 	yIt+=textboxstep	
 }
-/*
-Settings_CreateBehavior() {
-	global
-	local yIt,x1,x,y
-	yIt:=yBase
-	x1:=xHelp+10
-	x2:=xBase+280
-	
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vExplorerBehaviorTab, 
-	AddTab(0, "","SysTabControl323")
-
-	
-	
-}
-*/
 Settings_CreateFastFolders() {
 	global
 	local yIt,x1,x,y
 	yIt:=yBase
 	xHelp:=xBase
 	x1:=xHelp+10
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vFastFoldersTab
-	AddTab(0, "","SysTabControl323")
+	Gui, 1:Add, Tab2, x176 y14 w460 h350 vFastFoldersTab
+	AddTab(0, "","SysTabControl324")
 	
 	; Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders1 vURL_FastFolders1, ?		
 	; Gui, 1:Add, Checkbox, x%x1% y%yIt% gFastFolders,Use Fast Folders
@@ -210,8 +212,8 @@ Settings_CreateTabs() {
 	yIt:=yBase
 	xHelp:=xBase
 	x1:=xHelp+10
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vExplorerTabsTab
-	AddTab(0, "","SysTabControl324")
+	Gui, 1:Add, Tab2, x176 y14 w460 h350 vExplorerTabsTab
+	AddTab(0, "","SysTabControl325")
 	
 	Gui, 1:Add, Text, x%x1% y%yIt% R3, 7plus makes it possible to use tabs in explorer. New tabs are opened with the middle mouse button`nand with CTRL+T, Tabs are cycled by clicking the Tabs or pressing CTRL+(SHIFT)+TAB,`nand closed by middle clicking a tab and with CTRL+W
 	yIt+=CheckboxStep*2.25
@@ -251,8 +253,8 @@ Settings_CreateWindows() {
 	local yIt,x1,x,y
 	xHelp:=xBase
 	x1:=xHelp+10
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vWindowsTab, 
-	AddTab(0, "","SysTabControl325")
+	Gui, 1:Add, Tab2, x176 y14 w460 h350 vWindowsTab, 
+	AddTab(0, "","SysTabControl326")
 	yIt:=yBase
 	/*
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar3, ?
@@ -319,151 +321,17 @@ Settings_CreateWindows() {
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKToggleWallpaper, Middle mouse click on desktop: Toggle wallpaper (7 only)
 	yIt+=checkboxstep
 }
-/*
-Settings_CreateDesktopTaskBar() {
-	global
-	local yIt,x1,x,y
-	xHelp:=xBase
-	x1:=xHelp+10
-	yIt:=yBase
-	y:=yIt+TextBoxCheckBoxOffset
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vDesktopTaskbarTab, 
-	AddTab(0, "","SysTabControl327")
-	y:=yIt+TextBoxCheckBoxOffset
-	Gui, 1:Add, Text, y%y% x%xhelp% cBlue ghTaskbar vURL_Taskbar, ?
-	Gui, 1:Add, Checkbox, x%x1% y%y% gTaskbarLaunch, Double click on empty taskbar: Run
-	x:=xBase+258
-	Gui, 1:Add, Edit, x%x% y%yIt% w%wTBLarge% R1 vTaskbarLaunchPath
-	y:=yIt+TextBoxButtonOffset
-	x:=x+wTBLarge+10
-	Gui, 1:Add, Button, x%x% y%y% w%wButton% gTaskbarLaunchBrowse vTaskbarLaunchPathBrowse, ...
-	yIt+=textboxstep
-	
-	;Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window2, ?
-	y:=yIt+TextBoxCheckBoxOffset
-	Gui, 1:Add, CheckBox, x%x1% y%y% gDoubleClickDesktop vDoubleClickDesktop, Double click on desktop: Run	
-	x:=xBase+258
-	Gui, 1:Add, Edit, x%x% y%yIt% w%wTBLarge% vDoubleClickDesktopPath R1
-	y:=yIt+TextBoxButtonOffset
-	x+=wTBLarge+10
-	Gui, 1:Add, Button, x%x% y%y% w%wButton% gDoubleClickDesktopBrowse vDoubleClickDesktopBrowse, ...
-	yIt+=textboxstep
-	
-}
-*/
-/*
-Settings_CreateCustomHotkeys() {
-	global
-	local yIt,x1,x2,x,y
-	xHelp:=xBase
-	x1:=xHelp+10
-	x2 := x1 + 410
-	yIt:=yBase
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vCustomHotkeysTab, 
-	AddTab(0, "","SysTabControl328")
-	Gui, 1:Add, Text, x%x1% y%yIt% R2, You can add custom hotkeys to launch programs here. You should not use hotkeys that are used `nby this program elsewhere, also you should make sure not to overwrite hotkeys used by other programs.
-	yIt+=35
-	Gui, 1:Add, Radio, x%x1% y%yIt% vCustomHotkeysGlobal gCustomHotkeysGlobal, Global hotkeys
-	yIt+=checkboxstep
-	y := yIt + TextBoxCheckBoxOffset
-	Gui, 1:Add, Radio, x%x1% y%y% vCustomHotkeysSpecific gCustomHotkeysSpecific, program-specific hotkeys
-	x := x1 + 150
-	Gui, 1:Add, DropDownList, x%x% y%yIt% w250 vCustomHotkeysFilter gCustomHotkeysFilter
-	y := yIt + TextBoxButtonOffset
-	Gui, 1:Add, Button, x%x2% y%yIt% w80 vCustomHotkeysFilterBrowse gCustomHotkeysFilterBrowse, Browse
-	yIt += textboxstep
-	Gui, 1:Add, ListView, x%x1% y%yIt% w400 vCustomHotkeysList gCustomHotkeysList_SelectionChange Grid -LV0x10 -Multi R10 AltSubmit, Hotkey|Command
-	OnMessage(0x100, "WM_KEYDOWN")
-	Gui, 1:Add, Button, x%x2% y%yIt% w80 vCustomHotkeysAdd gAddHotkey, Add Hotkey
-	yIt += textboxstep
-	Gui, 1:Add, Button, x%x2% y%yIt% w80 vCustomHotkeysRemove gRemoveHotkey, Delete Hotkey
-	yIt += textboxstep
-	Gui, 1:Add, Button, x%x2% y%yIt% w80 vCustomHotkeysEditKey gEditHotkey, Edit Hotkey	
-	yIt += 150 - textboxstep -4
-	Gui, 1:Add, Button, x%x2% y%yIt% w80 gCustomHotkeyHelp, Help
-	yIt += textboxstep + 4
-	y := yIt + TextBoxTextOffset
-	Gui, 1:Add, Text, x%x1% y%y%, Command:
-	x:=x1+54
-	Gui, 1:Add, Edit, x%x% y%yIt% w348 vCustomHotkeysCommand gCustomHotkeysCommand_Change
-	y := yIt + TextBoxButtonOffset
-	Gui, 1:Add, Button, x%x2% y%yIt% w80 vCustomHotkeysEditCommand gEditCommand, Browse
-	yIt += textboxstep
-	;Gui, 1:Add, Text, x%x1% y%yIt%, You can use placeholders to create context-sensitive hotkeys. Supported placeholders:`n${P}: Current path in explorer`n${1}...${N}: Selected file(s)`nExample usages are hotkeys to open files with specific programs (diff tools, editors,...)
-}
-*/
-/*
-Settings_CreateFTP() {
-	global
-	local yIt,x1,x,y
-	yIt:=yBase
-	xHelp:=xBase
-	x1:=xHelp+10
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vFTPTab, 
-	AddTab(0, "","SysTabControl329")
-	Gui, 1:Add, Text, x%x1% y%yIt% R4, You can upload selected files from explorer to an FTP server by`npressing CTRL + U. You can also take screenshots (ALT + Insert = fullscreen`,`nWIN + Insert = active window) and directly upload them. WIN + Delete will upload`nimage or text data from clipboard. URL(s) will be copied to the clipboard.
-	yIt:=100
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFTP vURL_FTP, ?
-	Gui, 1:Add, CheckBox, x%x1% y%yIt% gFTP, Use FTP
-	yIt+=checkboxstep	
-	x1:=xHelp+xCheckBoxTextOffset+10
-	x2:=xHelp+122
-	y:=yIt+TextBoxTextOffset
-	Gui, 1:Add, Text, x%x1% y%y%, Hostname
-	Gui, 1:Add, Edit, x%x2% y%yIt% w%wTBMedium% R1 vFTP_Host
-	yIt+=TextBoxStep	
-	
-	y:=yIt+TextBoxTextOffset
-	Gui, 1:Add, Text, x%x1% y%y%, Port
-	Gui, 1:Add, Edit, x%x2% y%yIt% w%wTBShort% R1 vFTP_PORT Number
-	yIt+=TextBoxStep
-	
-	y:=yIt+TextBoxTextOffset
-	Gui, 1:Add, Text, x%x1% y%y%, Username
-	Gui, 1:Add, Edit, x%x2% y%yIt% w%wTBMedium% R1 vFTP_Username
-	yIt+=TextBoxStep	
-	
-	y:=yIt+TextBoxTextOffset
-	Gui, 1:Add, Text, x%x1% y%y%, Password
-	Gui, 1:Add, Edit, x%x2% y%yIt% w%wTBMedium% R1 vFTP_Password Password
-	yIt+=TextBoxStep	
-	
-	y:=yIt+TextBoxTextOffset
-	Gui, 1:Add, Text, x%x1% y%y%, Remote Folder
-	Gui, 1:Add, Edit, x%x2% y%yIt% w%wTBMedium% R1 vFTP_Path
-	yIt+=TextBoxStep
-	
-	Gui, 1:Add, Text, x%x1% y%yIt%, URL under which the files can be accessed through HTTP
-	yIt+=checkboxstep
-	
-	y:=yIt+TextBoxTextOffset
-	Gui, 1:Add, Text, x%x1% y%y%, URL
-	Gui, 1:Add, Edit, x%x2% y%yIt% w%wTBMedium% R1 vFTP_URL
-}
-*/
 Settings_CreateMisc() {
 	global
 	local yIt,x1
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vMiscTab, 
-	AddTab(0, "","SysTabControl326")
+	Gui, 1:Add, Tab2, x176 y14 w460 h350 vMiscTab, 
+	AddTab(0, "","SysTabControl327")
 	x1:=xBase+10
 	xhelp:=xBase
 	yIt:=yBase
-	/*
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghImproveConsole vURL_ImproveConsole, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKImproveConsole, Open current folder in CMD by pressing WIN + C and enable CTRL + V and Alt + F4 in CMD
-	yIt+=checkboxstep
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKPhotoViewer, Windows picture viewer: Rotate image with R and L
-	yIt+=checkboxstep
-	*/
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghJoyControl vURL_JoyControl, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vJoyControl, Use joystick/gamepad as remote control when not in fullscreen (optimized for XBOX360 gamepad)
 	yIt+=checkboxstep
-	/*
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghClipboardManager vURL_ClipboardManager, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vClipboardManager, WIN + V: Clipboard manager (stores last 10 entries)	
-	yIt+=checkboxstep
-	*/
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWordDelete vURL_WordDelete, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vWordDelete, Make CTRL+Backspace and CTRL+Delete work in all textboxes
 	
@@ -496,8 +364,8 @@ Settings_CreateMisc() {
 Settings_CreateAbout() {
 	global
 	local yIt,x1,x2,x,y,version
-	Gui, 1:Add, Tab2, x156 y14 w410 h350 vAboutTab, 
-	AddTab(0, "","SysTabControl327")
+	Gui, 1:Add, Tab2, x176 y14 w460 h350 vAboutTab, 
+	AddTab(0, "","SysTabControl328")
 	yIt:=YBase
 	x1:=XBase+10
 	x2:=xBase+350
@@ -555,13 +423,11 @@ Settings_CreateAbout() {
 ;---------------------------------------------------------------------------------------------------------------
 Settings_SetupEvents() {
 	global
-	outputdebug setupevents
+	outputdebug setupevents()
 	Gui, 1:Default
 	Gui, ListView, GUI_EventsList
-	i := LV_GetNext("")
 	if(!Settings_Events)
 	{
-		outputdebug create events backup
 		Loop % Events.len()
 			Events[A_Index].Trigger.PrepareCopy(Events[A_Index])		
 		
@@ -569,17 +435,27 @@ Settings_SetupEvents() {
 		i := 1
 		ControlSetText, ,, ahk_id %EventFilter%
 	}
-	outputdebug clear listview
-	FillEventsList(i)
+	RecreateTreeView()
 	LV_ModifyCol(3, "AutoHdr")
 	GuiControl, 1:focus, Gui_EventsList
 	GuiControl, 1:enable, GUI_EventsList_Add
 	GuiControl, 1:enable, GUI_EventsList_Remove
 	GuiControl, 1:enable, GUI_EventsList_Edit
 }
-FillEventsList(SelectedIndex=0){
-	global EventFilter, Settings_Events
+FillEventsList(){
+	global EventFilter, Settings_Events	
+	outputdebug filleventslist()
+	Gui, 1:Default
+	Gui, ListView, GUI_EventsList
+	i := LV_GetNext("")
+	if(i)
+		LV_GetText(SelectedID,i,2)
 	LV_Delete()
+	selected := TV_GetSelection()
+	TV_GetText(Category, selected)
+	parent := TV_GetParent(selected)
+	if(!parent)
+		Category := ""
 	ControlGetText, filter,,ahk_id %EventFilter%
 	count := 0
 	Loop % Settings_Events.len()
@@ -587,12 +463,59 @@ FillEventsList(SelectedIndex=0){
 		id := Settings_Events[A_Index].ID
 		DisplayString := Settings_Events[A_Index].Trigger.DisplayString()
 		Name := Settings_Events[A_Index].Name
-		if(!filter || InStr(id, filter) || InStr(DisplayString, Filter) || InStr(Name, filter))
+		scroll := false
+		if((!filter || InStr(id, filter) || InStr(DisplayString, Filter) || InStr(Name, filter)) && (filter || !Category || Category = Settings_Events[A_Index].Category))
 		{
-			LV_Add((A_Index = SelectedIndex || (!SelectedIndex && count = 0) ? "Select" : "") (Settings_Events[A_Index].Enabled ? " Check": " "), "", id, DisplayString, name)
+			LV_Add(((SelectedID != "" && id = SelectedID  && (scroll := 1)) || (SelectedID = "" && count = 0) ? "Select Focus" : "") (Settings_Events[A_Index].Enabled ? " Check": " "), "", id, DisplayString, name)
+			if(scroll)
+				LV_Modify(A_Index, "Vis")
 			count++
 		}
 	}
+}
+RecreateTreeView()
+{
+	global Settings_Events, SettingsTabList, SuppressTreeViewMessages
+	outputdebug recreatetreeview()
+	Gui, 1:Default
+	Gui, ListView, GUI_EventsList
+	Gui, TreeView, SettingsTreeView
+	i := LV_GetNext("")
+	LV_GetText(id,i,2)
+	selected := TV_GetSelection()
+	TV_GetText(Category, selected)
+	SuppressTreeViewMessages := true
+	TV_Delete()
+	EventsTreeViewEntry := TV_Add("All Events", "", "Expand" (Category = "All Events" ? " Select Vis" : ""))
+	Loop % Settings_Events.Categories.len()
+		TV_Add(Settings_Events.Categories[A_Index], EventsTreeViewEntry, "Sort" (Category = Settings_Events.Categories[A_Index] ? " Select Vis" : ""))
+	Loop, Parse, SettingsTabList, |
+		TV_Add(A_LoopField)
+	FillEventsList()
+	SuppressTreeViewMessages := false
+	ControlFocus, SysTreeView321
+}
+Settings_SetupAccessor() {
+	global AccessorPlugins, Settings_AccessorPlugins
+	Critical
+	outputdebug Settings_SetupAccessor()
+	Gui, 1:Default
+	Gui, ListView, GUI_AccessorPluginsList
+	Settings_AccessorPlugins := Array()
+	outputdebug % "setupaccessor count " accessorplugins.len()
+	LV_Delete()
+	Loop % AccessorPlugins.len()
+	{
+		PluginCopy := RichObject()
+		PluginCopy.Enabled := AccessorPlugins[A_Index].Enabled
+		; PluginCopy.Keyword := AccessorPlugins[A_Index].Keyword
+		PluginCopy.Type := AccessorPlugins[A_Index].Type
+		PluginCopy.Settings := AccessorPlugins[A_Index].Settings.DeepCopy()
+		Settings_AccessorPlugins.append(PluginCopy)
+		outputdebug % "type " Settings_AccessorPlugins[A_Index].Type " enabled: " Settings_AccessorPlugins[A_Index].Enabled
+		LV_Add(Settings_AccessorPlugins[A_Index].Enabled ? "Check" : "", "", A_Index, Settings_AccessorPlugins[A_Index].Type)
+	}
+	Critical, Off
 }
 Settings_SetupExplorer() {
 	global
@@ -676,22 +599,9 @@ Settings_SetupTabs() {
 }
 Settings_SetupWindows() {
 	global
-	/*
-	GuiControl, 1:,HKTitleClose,%HKTitleClose%
-	GuiControl, 1:,HKToggleAlwaysOnTop,%HKToggleAlwaysOnTop%
-	GuiControl, 1:,HKKillWindows,%HKKillWindows%
-	*/
 	GuiControl, 1:,HKSlideWindows,%HKSlideWindows%
 	GuiControl, 1:,SlideWinHide,%SlideWinHide%	
-	/*
-	GuiControl, 1:,HKFlashWindow,%HKFlashWindow%
-	GuiControl, 1:,HKToggleWindows,%HKToggleWindows%
-	*/
 	GuiControl, 1:,HKAltDrag,%HKAltDrag%
-	/*
-	GuiControl, 1:,HKAltMinMax,%HKAltMinMax%	
-	GuiControl, 1:,HKTrayMin,%HKTrayMin%	
-	*/
 	GuiControl, 1:, AeroFlipTime, %AeroFlipTime%
 	;Setup Aero Flip 3D
 	temp:=(AeroFlipTime>=0)
@@ -709,88 +619,6 @@ Settings_SetupWindows() {
 	GuiControl, 1:,HKActivateBehavior,%HKActivateBehavior%
 	GuiControl, 1:,HKToggleWallpaper,%HKToggleWallpaper%
 }
-/*
-Settings_SetupDesktopTaskBar() {
-	global
-	
-	local temp
-	;Setup taskbar launch
-	temp:=(TaskbarLaunchPath!="")
-	GuiControl, 1:,Double click on empty taskbar: Run,%temp%
-	GuiControl, 1:, TaskbarLaunchPath, %TaskbarLaunchPath%
-	GoSub TaskbarLaunch
-	
-		
-	GuiControl, 1:,HKTaskbarLaunch,%HKTaskbarLaunch%
-	
-	
-	
-	
-	temp:=(DoubleClickDesktop !=0 && DoubleClickDesktop != "")
-	GuiControl, 1:, DoubleClickDesktop, %temp%
-	if(temp)
-		GuiControl, 1:, DoubleClickDesktopPath, %DoubleClickDesktop%
-	else
-		GuiControl, 1:, DoubleClickDesktopPath,
-	GoSub DoubleClickDesktop
-	
-}
-*/
-/*
-Settings_SetupCustomHotkeys() {
-	global
-	local filter
-	Settings_CustomHotkeys := Array()
-	Settings_CustomHotkeys_Filters := Array()
-	GuiControl, 1:, CustomHotkeysFilter,|
-	Loop % CustomHotkeys.len()
-	{
-		Settings_CustomHotkeys.Append(Object("key", CustomHotkeys[A_Index].key, "command", CustomHotkeys[A_Index].command, "filter", CustomHotkeys[A_Index].filter))
-		outputdebug("hotkeys: " CustomHotkeys[A_Index].key " " CustomHotkeys[A_Index].command " " CustomHotkeys[A_Index].filter " settings: " Settings_CustomHotkeys.key " " Settings_CustomHotkeys.command " " Settings_CustomHotkeys.filter)
-		filter := CustomHotkeys[A_Index].filter
-		if(filter && !Settings_CustomHotkeys_Filters.Contains(filter))
-		{
-			outputdebug new filter %filter%
-			if(Settings_CustomHotkeys_Filters.len() = 0)
-			{
-				GuiControl, 1:, CustomHotkeysFilter, %filter%||
-				SelectedHotkeyFilter := filter
-			}
-			else
-				GuiControl, 1:, CustomHotkeysFilter, %filter%
-			Settings_CustomHotkeys_Filters.Append(filter)
-		}
-	}
-	GuiControl, 1:, CustomHotkeysFilter
-	GuiControl, 1:, CustomHotkeysGlobal, 1
-	;GoSub CustomHotkeysGlobal
-	
-	GuiControl, 1:disable, CustomHotkeysFilter
-	GuiControl, 1:disable, CustomHotkeysFilterBrowse
-	GuiControl, 1:enable, CustomHotkeysList
-	GuiControl, 1:enable, CustomHotkeysAdd
-	GuiControl, 1:enable, CustomHotkeysRemove
-	GuiControl, 1:enable, CustomHotkeysEditKey
-	GuiControl, 1:enable, CustomHotkeysCommand
-	GuiControl, 1:enable, CustomHotkeysEditCommand
-	CustomHotkeysGlobal:=1
-	CustomHotkeys_ApplyFilter("")
-}
-*/
-/*
-Settings_SetupFTP() {
-	global
-	;Setup FTP
-	GuiControl, 1:, FTP_Host, %FTP_Host%
-	GuiControl, 1:, FTP_PORT, %FTP_PORT%
-	GuiControl, 1:, FTP_Username, %FTP_Username%
-	GuiControl, 1:, FTP_Password, %FTP_Password%
-	GuiControl, 1:, FTP_Path, %FTP_Path%
-	GuiControl, 1:, FTP_URL, %FTP_URL%
-	GuiControl, 1:,Use FTP,%FTP_Enabled%
-	GoSub FTP
-}
-*/
 Settings_SetupMisc() {
 	global
 	local temp, Autorun
@@ -853,7 +681,7 @@ ShowSettings() {
 			hText:=16
 			yIt:=yBase
 			y:=yIt
-			xBase:=170
+			xBase:=190
 			xHelp:=xBase
 			x1:=xHelp+10
 			x2:=xBase+280
@@ -863,9 +691,17 @@ ShowSettings() {
 			wTBHuge:=300
 			wButton:=30
 			hCheckbox:=16 
-			TabList = Events|Explorer|Fast Folders|Explorer Tabs|Windows|Misc|About 
-			Gui, 1:Add, ListBox, x16 y20 w120 h350 gListbox vMyListBox, %TabList%
-			Gui, 1:Add, GroupBox, x156 y14 w530 h350 vGGroupBox , Explorer Hotkeys  
+			
+			SettingsTabList := "Accessor Plugins|Explorer|Fast Folders|Explorer Tabs|Windows|Misc|About"
+			; Gui, 1:Add, ListBox, x16 y20 w120 h350 gListbox vMyListBox, %TabList%
+			Gui, 1:Add, TreeView, x16 y20 w140 h350 gSettingsTreeView vSettingsTreeView -HScroll
+			EventsTreeViewEntry := TV_Add("All Events", "", "Expand")
+			Loop % Events.Categories.len()
+				TV_Add(Events.Categories[A_Index], EventsTreeViewEntry, "Sort")
+			Loop, Parse, SettingsTabList, |
+				TV_Add(A_LoopField)
+			
+			Gui, 1:Add, GroupBox, x176 y14 w580 h350 vGGroupBox , Events
 			/*
 			Gui, 1:Add, Treeview, x0 y0 w120 h540 vTree gTree -Lines -Buttons -HScroll
 			
@@ -880,11 +716,12 @@ ShowSettings() {
 			TV_Misc:=TV_Add("Misc","","Expand")
 			TV_About:=TV_Add("About","","Expand")
 			*/
-			Gui, 1:Add, Button, x606 y370 w80 h23 vBtnOK gCancel, Cancel
-			Gui, 1:Add, Button, x526 y370 w70 h23 vBtnCancel gOK, OK
+			Gui, 1:Add, Button, x660 y370 w80 h23 vBtnOK gCancel, Cancel
+			Gui, 1:Add, Button, x582 y370 w70 h23 vBtnCancel gOK, OK
 			Gui, 1:Add, Text, x16 y375 vTutLabel, Click on ? to see video tutorial help!
 			Gui, 1:Add, Text, y375 x370 vWait, Applying settings, please wait!
 			Settings_CreateEvents()
+			Settings_CreateAccessor()
 			Settings_CreateExplorer()
 			; Settings_CreateBehavior()
 			Settings_CreateFastFolders()
@@ -898,15 +735,16 @@ ShowSettings() {
 			SettingsInitialized := true
 		}
 		GuiControl, 1:Hide, Wait
-		GuiControl, 1:Choose,MyListBox,Events
-		GoSub ListBox
-		Gui, 1:Show, x338 y159 h404 w700, 7plus Settings
+		GuiControl, 1:Choose,SettingsTreeView,Events
+		GoSub SettingsTreeView
+		Gui, 1:Show, x338 y159 h404 w780, 7plus Settings
 		Winwaitactive 7plus Settings		
 				
 		;---------------------------------------------------------------------------------------------------------------
 		; Setup Control Status
 		;---------------------------------------------------------------------------------------------------------------
 		Settings_SetupEvents()
+		Settings_SetupAccessor()
 		Settings_SetupExplorer()
 		; Settings_SetupBehavior()
 		Settings_SetupFastFolders()
@@ -933,8 +771,7 @@ ShowSettings() {
 
 		; Call "HandleMessage" when script receives WM_MOUSEMOVE message 
 		WM_MOUSEMOVE = 0x200 
-		OnMessage(WM_MOUSEMOVE, "HandleMessage")
-	  
+		OnMessage(WM_MOUSEMOVE, "HandleMessage")	  
 	}
 	Return
 }
@@ -942,35 +779,68 @@ ShowSettings() {
 ;---------------------------------------------------------------------------------------------------------------
 ; Control Handlers
 ;---------------------------------------------------------------------------------------------------------------
-listbox:
-GuiControlGet,selected,1:,MyListBox
-outputdebug listbox %selected%
-Loop, Parse, TabList, |
-{
-	StringReplace, stripped, A_LoopField, %A_Space% , , 1
-	StringReplace, stripped, stripped, / , , 1
-	stripped .= "Tab"
-	If (selected = A_LoopField)
-	{
-		outputdebug show %stripped%
-		GuiControl, 1:Show, %stripped%
-		GuiControl, 1:Text, GGroupBox, %A_LoopField%
-		test:=stripped
-	}
-	else 
-	{
-		outputdebug hide %stripped%
-		GuiControl, 1:Hide, %stripped%
-	}
-}
-GuiControl, 1:MoveDraw, MyListBox
-GuiControl, 1:Movedraw, GGroupbox
-GuiControl, 1:Movedraw, %test%
-GuiControl, 1:MoveDraw, BtnOK
-GuiControl, 1:MoveDraw, BtnCancel
-GuiControl, 1:MoveDraw, TutLabel
-GuiControl, 1:MoveDraw, Wait
+
+SettingsTreeView:
+SettingsTreeViewEvents()
 return
+
+SettingsTreeViewEvents()
+{
+	global SettingsTabList,SuppressTreeViewMessages
+	if(SuppressTreeViewMessages)
+		return
+	selected := TV_GetSelection()
+	TV_GetText(SelectedName, selected)
+	parent := TV_GetParent(selected)
+	if(parent)
+		TV_GetText(ParentName, parent)
+	Loop, Parse, SettingsTabList, |
+	{
+		StringReplace, stripped, A_LoopField, %A_Space% , , 1
+		StringReplace, stripped, stripped, / , , 1
+		stripped .= "Tab"
+			outputdebug hide %stripped%
+			GuiControl, 1:Hide, %stripped%
+	}
+	if(ParentName = "All Events" || SelectedName = "All Events")
+	{
+		outputdebug events tab
+		GuiControl, 1:Show, EventsTab
+		GuiControl, 1:Text, GGroupBox, %SelectedName%
+		FillEventsList()
+	}
+	else
+	{
+		outputdebug regular tab
+		GuiControl, 1:Hide, EventsTab
+		Loop, Parse, SettingsTabList, |
+		{
+			StringReplace, stripped, A_LoopField, %A_Space% , , 1
+			StringReplace, stripped, stripped, / , , 1
+			stripped .= "Tab"
+			If (SelectedName = A_LoopField)
+			{
+				outputdebug show %stripped%
+				GuiControl, 1:Show, %stripped%
+				GuiControl, 1:Text, GGroupBox, %A_LoopField%
+				test:=stripped
+				break
+			}
+		}
+	}
+	
+	GuiControl, 1:MoveDraw, SettingsTreeView
+	GuiControl, 1:Movedraw, GGroupbox
+	if(test)
+		GuiControl, 1:Movedraw, %test%
+	else
+		GuiControl, 1:Movedraw, EventsTab
+	GuiControl, 1:MoveDraw, BtnOK
+	GuiControl, 1:MoveDraw, BtnCancel
+	GuiControl, 1:MoveDraw, TutLabel
+	GuiControl, 1:MoveDraw, Wait
+	return
+}
 EventFilterChange:
 FillEventsList()
 return
@@ -980,7 +850,8 @@ return
 GUI_EventsList_Update()
 {
 	global
-	local filter, count, i, checked
+	local filter, count, i, checked, ListEvent
+	outputdebug GUI_EventsList_Update()
 	ListEvent := Errorlevel
 	Gui, ListView, GUI_EventsList
 	ControlGetText, filter,, ahk_id %EventFilter%
@@ -994,8 +865,6 @@ GUI_EventsList_Update()
 		if(count > 1)
 		{
 			GuiControl, 1:disable, GUI_EventsList_Edit
-			GuiControl, 1:disable, GUI_EventsList_MoveUp
-			GuiControl, 1:disable, GUI_EventsList_MoveDown
 		}
 	}
 	else if(A_GuiEvent="I" && InStr(ListEvent, "s", true))
@@ -1022,23 +891,6 @@ GUI_EventsList_Update()
 	}
 	else if(A_GuiEvent="DoubleClick")
 		GUI_EventsList_Edit()
-	if(count = 1 && !filter)
-	{
-		i:=LV_GetNext("")
-		if(i>1)
-			GuiControl, 1:enable, GUI_EventsList_MoveUp
-		else
-			GuiControl, 1:disable, GUI_EventsList_MoveUp
-		if(i<LV_GetCount())
-			GuiControl, 1:enable, GUI_EventsList_MoveDown
-		else
-			GuiControl, 1:disable, GUI_EventsList_MoveDown
-	}		
-	else
-	{		
-		GuiControl, 1:disable, GUI_EventsList_MoveDown
-		GuiControl, 1:disable, GUI_EventsList_MoveUp
-	}
 	Return
 }
 GUI_EventsList_Add:
@@ -1051,8 +903,14 @@ GUI_AddEvent()
 	Event := EventSystem_CreateEvent(Settings_Events) ;Event is added to Settings_Events here
 	outputdebug add event to listview
 	LV_Modify(LV_GetNext(""), "-Select")
-	LV_Add("Select Check", "", Event.ID, Event.Trigger.DisplayString(), Event.Name)
-	GUI_EventsList_Edit()
+	LV_Add("Select Check", "", Event.ID, Event.Trigger.DisplayString(), Event.Name)	
+	selected := TV_GetSelection()
+	TV_GetText(Category,selected)
+	if(Category = "All Events")
+		Category := "Uncategorized"
+	Event.Category := Category
+	outputdebug % "new category " event.category
+	GUI_EventsList_Edit(1)
 }
 GUI_EventsList_Remove:
 GUI_RemoveEvent()
@@ -1069,7 +927,8 @@ GUI_RemoveEvent()
 		{
 			LV_GetText(id,ListPos,2)			
 			pos := Settings_Events.FindID(id)
-			Settings_Events.Delete(pos)			
+			Category := Settings_Events[pos].Category
+			Settings_Events.Delete(pos)		
 			LV_Delete(ListPos)
 			continue
 		}
@@ -1081,15 +940,19 @@ GUI_RemoveEvent()
 		ListPos := min(max(ListPos, 1), count)
 		LV_Modify(ListPos, "Select")
 	}
+	else if(Category)
+	{
+		Settings_Events.Categories.Delete(Settings_Events.Categories.indexOf(Category))
+		RecreateTreeView()
+	}
 }
-
 GUI_EventsList_Edit:
 GUI_EventsList_Edit()
 return
 
-GUI_EventsList_Edit()
+GUI_EventsList_Edit(Add = 0)
 {	
-	global Settings_Events
+	global Settings_Events, EventFilter
 	Critical Off
 	Gui, ListView, GUI_EventsList
 	if(LV_GetCount("Selected") != 1)
@@ -1100,28 +963,18 @@ GUI_EventsList_Edit()
 	outputdebug pos %pos%
 	event:=GUI_EditEvent(Settings_Events[pos].DeepCopy())
 	if(event)
-	{		
+	{
 		;event.Enabled := LV_GetNext(pos-1, "Checked") = pos ? 1 : 0 ;Update enabled state of this event
+		ControlSetText,,, ahk_id %EventFilter%
 		Settings_Events[pos] := event ;overwrite edited event
+		outputdebug % " category " event.Category
+		if(!Settings_Events.Categories.indexOf(event.Category))
+			Settings_Events.Categories.append(event.Category)
 		Settings_SetupEvents() ;Refresh listview
 	}
+	else if(Add)
+		GUI_RemoveEvent()
 	Return
-}
-
-GUI_EventsList_MoveUp:
-GUI_EventsList_Move(-1)
-return
-GUI_EventsList_MoveDown:
-GUI_EventsList_Move(1)
-return
-GUI_EventsList_Move(direction)
-{
-	global Settings_Events
-	Gui, ListView, GUI_EventsList
-	i:=LV_GetNext("")
-	Settings_Events.swap(i,i+direction)
-	LV_Modify(i+direction,"Select")
-	Settings_SetupEvents()
 }
 
 GUI_EventsList_Import:
@@ -1177,7 +1030,8 @@ GUI_SaveEvents()
 	{
 		if(!Settings_Events[Settings_Events.FindID(Events[A_Index].id)]) ;separate destroy routine instead of simple disable is needed for removed events because of hotkey/timer discrepancy
 		{
-			Events[A_Index].Delete()
+			outputdebug % "remove " Events[A_Index].Name
+			Events.Remove(Events[A_Index])
 			continue
 		}
 		Events[A_Index].Trigger.PrepareReplacement(Events[A_Index], Settings_Events[Settings_Events.FindID(Events[A_Index].id)])
@@ -1193,6 +1047,72 @@ GUI_SaveEvents()
 			Events[A_Index].Enable()
 		else
 			Events[A_Index].Disable()
+	}
+}
+
+GUI_Accessor_Help:
+return
+GUI_AccessorSettings:
+ShowAccessorSettings()
+return
+ShowAccessorSettings()
+{
+	global Settings_AccessorPlugins
+	Gui, ListView, GUI_AccessorPluginsList
+	if(LV_GetCount("Selected") != 1)
+		return
+	i:=LV_GetNext("")
+	LV_GetText(pos,i,2)
+	outputdebug % "type 1 " Settings_AccessorPlugins[pos].type
+	PluginSettings:=GUI_EditAccessorPlugin(Settings_AccessorPlugins[pos].DeepCopy())
+	; outputdebug % "type 3" PluginSettings.keyword
+	if(PluginSettings)
+		Settings_AccessorPlugins[pos] := PluginSettings
+}
+GUI_AccessorPluginsList_Events:
+GUI_AccessorPluginsList_Events()
+return
+GUI_AccessorPluginsList_Events()
+{
+	global
+	local count, ListEvent
+	outputdebug GUI_AccessorPluginsList_Events()
+	ListEvent := Errorlevel
+	Gui, ListView, GUI_AccessorPluginsList
+	if(A_GuiEvent="I" && InStr(ListEvent, "S", true))
+		GuiControl, 1:enable, GUI_AccessorSettings
+	else if(A_GuiEvent="I" && InStr(ListEvent, "s", true))
+		GuiControl, 1:Disable, GUI_AccessorSettings
+	if(A_GuiEvent = "I" && InStr(ListEvent, "c")) ;Catch both check and uncheck
+	{
+		;Update enabled state from listview
+		count := LV_GetCount()
+		Loop % count
+		{
+			Checked := LV_GetNext(A_Index-1, "Checked") = A_Index ? 1 : 0
+			LV_GetText(id,A_Index,2)
+			Settings_AccessorPlugins[id].Enabled := Checked
+			outputdebug % Settings_AccessorPlugins[id].Type "enabled " checked
+		}
+	}
+	else if(A_GuiEvent="DoubleClick")
+		ShowAccessorSettings()
+	Return
+}
+return
+GUI_SaveAccessorSettings()
+{
+	global AccessorPlugins, Settings_AccessorPlugins	
+	outputdebug save accessor settings
+	;Remove deleted events and refresh the copies to consider recent changes (such as timer state)
+	Loop % AccessorPlugins.len()
+	{
+		Plugin := AccessorPlugins[A_Index]
+		Settings_Plugin := Settings_AccessorPlugins[A_Index]
+		Plugin.Enabled := Settings_Plugin.Enabled
+		; Plugin.Keyword := Settings_Plugin.Keyword
+		Plugin.Settings := Settings_Plugin.Settings.DeepCopy()
+		outputdebug % Plugin.Type " save enabled " Plugin.Enabled
 	}
 }
 txt:
@@ -1439,151 +1359,7 @@ WM_KEYUP(wParam, lParam)
 		return true
 	}
 }
-/*
-CustomHotkeysCommand_Change:
-Gui, ListView, CustomHotkeysList
-i:=LV_GetNext("")
-if(i!=0)
-{
-	GuiControlGet, CustomHotkeysCommand ,1: , %CustomHotkeysCommand%
-	LV_Modify(i,"Col2",CustomHotkeysCommand)
-}
-Return
 
-CustomHotkeysGlobal:
-outputdebug custom hotkeys global clicked
-;save to settings hotkey list, then apply filter in listview
-GuiControl, 1:disable, CustomHotkeysFilter
-GuiControl, 1:disable, CustomHotkeysFilterBrowse
-GuiControl, 1:enable, CustomHotkeysList
-GuiControl, 1:enable, CustomHotkeysAdd
-GuiControl, 1:enable, CustomHotkeysRemove
-GuiControl, 1:enable, CustomHotkeysEditKey
-GuiControl, 1:enable, CustomHotkeysCommand
-GuiControl, 1:enable, CustomHotkeysEditCommand
-GuiControlGet, SelectedHotkeyFilter, 1:, CustomHotkeysFilter
-if(SelectedHotkeyFilter!="")
-	CustomHotkeys_SaveCurrentView()
-CustomHotkeys_ApplyFilter("")
-CustomHotkeysGlobal:=1
-return
-
-CustomHotkeysSpecific:
-Gui, ListView, CustomHotkeysList
-GuiControl, 1:enable, CustomHotkeysFilter
-GuiControl, 1:enable, CustomHotkeysFilterBrowse
-CustomHotkeys_SaveCurrentView()
-GuiControlGet, SelectedHotkeyFilter, 1:, CustomHotkeysFilter
-outputdebug specific filter: %SelectedHotkeyFilter%
-LV_Delete()
-if(SelectedHotkeyFilter)
-{
-	CustomHotkeys_ApplyFilter(SelectedHotkeyFilter)
-}
-Else
-{
-	GuiControl, 1:disable, CustomHotkeysList
-	GuiControl, 1:disable, CustomHotkeysAdd
-	GuiControl, 1:disable, CustomHotkeysRemove
-	GuiControl, 1:disable, CustomHotkeysEditKey
-	GuiControl, 1:disable, CustomHotkeysCommand
-	GuiControl, 1:disable, CustomHotkeysEditCommand
-}
-CustomHotkeysGlobal:=0
-return
-
-CustomHotkeysFilterBrowse:
-Gui 1:+OwnDialogs
-FileSelectFile, path , 3, , Select program for program-specific hotkeys, *.exe
-SplitPath,path,path
-if(!Settings_CustomHotkeys_Filters.Contains(path))
-{
-	Settings_CustomHotkeys_Filters.Append(path)
-	CustomHotkeys_SaveCurrentView()
-	GuiControl, 1:, CustomHotkeysFilter, %path%||
-	SelectedHotkeyFilter := path
-	CustomHotkeys_ApplyFilter(path)
-	GuiControl, 1:enable, CustomHotkeysList
-	GuiControl, 1:enable, CustomHotkeysAdd
-	GuiControl, 1:enable, CustomHotkeysRemove
-	GuiControl, 1:enable, CustomHotkeysEditKey
-	GuiControl, 1:enable, CustomHotkeysCommand
-	GuiControl, 1:enable, CustomHotkeysEditCommand
-}
-Return
-
-CustomHotkeysFilter:
-CustomHotkeys_SaveCurrentView()
-PrintHotkeys()
-outputdebug change from %SelectedHotkeyFilter%
-GuiControlGet, SelectedHotkeyFilter, 1:, CustomHotkeysFilter
-outputdebug to %SelectedHotkeyFilter%
-CustomHotkeys_ApplyFilter(SelectedHotkeyFilter)
-PrintHotkeys()
-return
-
-CustomHotkeyHelp:
-MsgBox,0x2000, Custom Hotkeys Help, You can define global hotkeys, aswell as hotkeys that are application-specific. Those are only triggered when the selected program is active. You can also use placeholders in command arguments. Supported placeholders:`n`nAny window:`n${T} : Filepath+Filename extracted from current window title`n`nExplorer:`n${P} : Current path of the active explorer window`n${1}...${n} : n-th selected file, enclosed in " "`n${N} : All selected files, separated by spaces`n`nHint: If you have Autohotkey (or any other scripting language) installed, you can also launch your own scripts from here!
-return
-CustomHotkeys_ApplyFilter(filter) {
-	global
-	Gui, ListView, CustomHotkeysList
-	LV_Delete()
-	Loop % Settings_CustomHotkeys.len()
-	{
-		if(Settings_CustomHotkeys[A_Index].filter = filter)
-			LV_Add("",Settings_CustomHotkeys[A_Index].key,Settings_CustomHotkeys[A_Index].command)
-	}
-	LV_Modify(1, "Select")
-}
-
-CustomHotkeys_SaveCurrentView() {
-	global
-	local count, key, i
-	Gui, ListView, CustomHotkeysList
-	;GuiControlGet, filter, 1:, CustomHotkeysFilter
-	if(SelectedHotkeyFilter = "" && !CustomHotkeysGlobal) ;Don't save on unfilled dropdownlist
-		return
-	if(CustomHotkeysGlobal)
-		SelectedHotkeyFilter:=""
-	outputdebug save current view filter %filter%
-	i:=1
-	;Delete all previous entries from this filter
-	Loop % Settings_CustomHotkeys.len()
-	{
-		if(Settings_CustomHotkeys[i].filter = SelectedHotkeyFilter)
-		{
-			outputdebug("remove: " Settings_CustomHotkeys[A_Index].key " " Settings_CustomHotkeys[A_Index].command " " Settings_CustomHotkeys[A_Index].filter)
-			key := Settings_CustomHotkeys[i].key
-			outputdebug delete key %key%
-			Settings_CustomHotkeys.Delete(i)
-			continue
-		}
-		i++
-	}
-	;Now add all hotkeys from listview
-	count := LV_GetCount()
-	outputdebug #hotkeys in listview: %count%
-	Loop % count
-	{
-		LV_GetText(key,A_Index,1)
-		LV_GetText(command,A_Index,2)
-		outputdebug add key %key% command %command% filter %filter%
-		if(key!="" && command != "")
-			Settings_CustomHotkeys.Append(Object("key",key,"command",command,"filter",SelectedHotkeyFilter))
-	}
-}
-
-FTP:
-GuiControlGet, enabled ,1: ,Use FTP
-GuiControl, 1:enable%enabled%, FTP_Host
-GuiControl, 1:enable%enabled%, FTP_Username
-GuiControl, 1:enable%enabled%, FTP_Password
-GuiControl, 1:enable%enabled%, FTP_Port
-GuiControl, 1:enable%enabled%, FTP_Path
-GuiControl, 1:enable%enabled%, FTP_URL
-Return
-*/
 ;---------------------------------------------------------------------------------------------------------------
 ; Help Links
 ;---------------------------------------------------------------------------------------------------------------
@@ -1731,6 +1507,8 @@ ApplySettings()
 	SettingsActive:=False
 	GUI_SaveEvents()
 	Settings_Events := ""
+	GUI_SaveAccessorSettings()
+	Settings_AccessorPlugins := ""
 	if(JoyControl)
 		JoystickStart()
 	else
@@ -1816,30 +1594,7 @@ ApplySettings()
 		DoubleClickDesktop:=0
 	else
 		GuiControlGet, DoubleClickDesktop, 1:, DoubleClickDesktopPath
-	/*
-	;Store custom hotkeys
-	CustomHotkeys_SaveCurrentView()
-	RemoveAllHotkeys()
-	Loop % Settings_CustomHotkeys.len()
-	{
-		AddHotkey(Settings_CustomHotkeys[A_Index].key, Settings_CustomHotkeys[A_Index].command, Settings_CustomHotkeys[A_Index].filter)
-	}
-	Settings_CustomHotkeys := Array()
-	*/
-	;UnSlide hidden windows
-	if(!HKSlideWindows)
-		SlideWindows_Exit()
-	/*
-	;Store FTP Settings
-	GuiControlGet, FTP_Enabled,1: ,Use FTP
-	if(FTP_Password!=temp)
-	{
-		outputdebug ftp password changed from %temp% to %FTP_Password%, encrypt it
-		FTP_Password:=Encrypt(FTP_Password)
-		outputdebug after encryption: %ftp_password%
-	}
-	ValidateFTPVars()
-	*/
+		
 	;Store Autorun setting
 	if(Autorun)
 	{

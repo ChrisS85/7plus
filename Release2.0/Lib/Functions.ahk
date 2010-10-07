@@ -236,13 +236,14 @@ WinGetTitle(WinTitle = "", WinText = "", ExcludeTitle = "", ExcludeText = "") {
 	WinGetTitle, v, %WinTitle%, %WinText%, %ExcludeTitle%, %ExcludeText%
 	Return, v
 }
-WinMaximize(Title = "", WinText = "", ExcludeTitle = "", ExcludeText = "") {
+WinMaximize(WinTitle = "", WinText = "", ExcludeTitle = "", ExcludeText = "") {
 	WinGet, style, style, %WinTitle%, %WinText%, %ExcludeTitle%, %ExcludeText%
 	if(style & 0x10000)
 		WinMaximize, %WinTitle%, %WinText%, %ExcludeTitle%, %ExcludeText%
 }
-WinMinimize(Title = "", WinText = "", ExcludeTitle = "", ExcludeText = "") {
+WinMinimize(WinTitle = "", WinText = "", ExcludeTitle = "", ExcludeText = "") {
 	WinGet, style, style, %WinTitle%, %WinText%, %ExcludeTitle%, %ExcludeText%
+	outputdebug % "style " style " minimize " style & 0x20000
 	if(style & 0x20000)
 		WinMinimize, %WinTitle%, %WinText%, %ExcludeTitle%, %ExcludeText%
 }

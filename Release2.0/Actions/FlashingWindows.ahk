@@ -15,8 +15,14 @@ Action_FlashingWindows_ReadXML(Action, XMLAction)
 
 Action_FlashingWindows_Execute(Action, Event)
 {
+	FlashingWindows(Action)
+	return 1
+} 
+FlashingWindows(Action)
+{
 	global BlinkingWindows,PreviousWindow
 	CoordMode, Mouse, Screen
+	outputdebug flashingwindows
 	if(Action.Notifications && z:=FindWindow("","",0x16CF0000,0x00000188,"trillian.exe")) ;Trillian isn't needed usually, but if tabs are used, clicking the window is preferred
 	{
 		WinGetPos x,y,w,h,ahk_id %z%
@@ -26,11 +32,14 @@ Action_FlashingWindows_Execute(Action, Event)
 		MouseGetPos,mx,my
 		ControlClick,, ahk_id %z%
 		MouseMove %mx%,%my%,0
+		return 1
 	}
 	else if (Action.FlashingWindows && BlinkingWindows.len()>0)
 	{
+		outputdebug flashingwindows found
 		z:=BlinkingWindows[1]
 		WinActivate ahk_id %z%
+		return 1
 	}
 	else if(Action.Notifications && z:=FindWindow("","OpWindow", 0x96000000, 0x88))
 	{
@@ -41,6 +50,7 @@ Action_FlashingWindows_Execute(Action, Event)
 		MouseMove %mx%,%my%,0
 		z:=FindWindow("","OpWindow","",0x00000110)
 		WinActivate ahk_id %z%
+		return 1
 	}
 	else if(Action.Notifications && z:=FindWindow("","MozillaUIWindowClass", 0x94000000, 0x88))
 	{
@@ -51,6 +61,7 @@ Action_FlashingWindows_Execute(Action, Event)
 		MouseGetPos,mx,my
 		ControlClick,,ahk_id %z%
 		MouseMove %mx%,%my%,0
+		return 1
 	}	
 	else if(Action.Notifications && z:=FindWindow("","",0x96000000,0x00000088,"Steam.exe"))
 	{
@@ -61,6 +72,7 @@ Action_FlashingWindows_Execute(Action, Event)
 		MouseGetPos,mx,my
 		Click %x% %y%
 		MouseMove %mx%,%my%,0
+		return 1
 	}
 	else if(Action.Notifications && z:=FindWindow("TTrayAlert"))
 	{
@@ -71,6 +83,7 @@ Action_FlashingWindows_Execute(Action, Event)
 		MouseGetPos,mx,my
 		Click %x% %y%
 		MouseMove %mx%,%my%,0
+		return 1
 	}
 	else if(Action.Notifications && z:=FindWindow("","tooltips_class32", 0x940001C2, ""))
 	{
@@ -81,12 +94,15 @@ Action_FlashingWindows_Execute(Action, Event)
 		MouseGetPos,mx,my
 		Click %x% %y%
 		MouseMove %mx%,%my%,0
+		return 1
 	}
 	else if(Action.ToggleWindows)
+	{
 		WinActivate ahk_id %PreviousWindow%
-	return 1
-} 
-
+		return 1
+	}
+	return 0
+}
 Action_FlashingWindows_DisplayString(Action)
 {
 	return "Activate notification/flashing/previous window"
