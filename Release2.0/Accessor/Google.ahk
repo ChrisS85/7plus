@@ -6,6 +6,7 @@ Accessor_Google_Init(ByRef Google, Settings)
 	Google.MinChars := 0
 	Google.OKName := "Open URL"
 	Google.Description := "Quickly access google by typing ""[keyword] Search query"" and open the results `ndirectly from within Accessor."
+	Google.HasSettings := True
 }
 Accessor_Google_ShowSettings(Google, PluginSettings, PluginGUI)
 {

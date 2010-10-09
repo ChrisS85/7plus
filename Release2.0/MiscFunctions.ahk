@@ -966,7 +966,7 @@ FuzzySearch(string1, string2)
 ; - modified code for speed, might lead to different results compared to original code 
 ; - optimized for speed (30% faster then original SIFT3 and 13.3 times faster than basic Levenshtein distance) 
 ;http://www.autohotkey.com/forum/topic59407.html 
-StringDifference(string1, string2, maxOffset=1) {    ;returns a float: between "0.0 = identical" and "1.0 = nothing in common" 
+StringDifference(string1, string2, maxOffset=3) {    ;returns a float: between "0.0 = identical" and "1.0 = nothing in common" 
   If (string1 = string2) 
     Return (string1 == string2 ? 0/1 : 0.2/StrLen(string1))    ;either identical or (assumption:) "only one" char with different case 
   If (string1 = "" OR string2 = "") 

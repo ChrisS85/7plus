@@ -30,6 +30,7 @@ Accessor_Init()
 		tmpobject.OnKeyDown := "Accessor_" A_LoopField "_OnKeyDown"
 		tmpobject.OnExit := "Accessor_" A_LoopField "_OnExit"
 		tmpobject.ShowSettings := "Accessor_" A_LoopField "_ShowSettings"
+		tmpobject.SaveSettings := "Accessor_" A_LoopField "_SaveSettings"
 		tmpobject.GUISubmit := "Accessor_" A_LoopField "_GUISubmit"
 		tmpobject.Priority := 0
 		tmpobject.OKName := "OK"
@@ -77,6 +78,7 @@ Accessor_OnExit(Accessor)
 CreateAccessorWindow(Action)
 {
 	global AccessorListView, Accessor, AccessorPlugins, AccessorOKButton
+	WasCritical := A_IsCritical
 	Critical, Off
 	if(AccessorGUINum := Accessor.GUINum)
 	{
@@ -329,6 +331,7 @@ AccessorOK()
 AccessorClose()
 {
 	global Accessor, AccessorPlugins
+	WasCritical := A_IsCritical
 	Critical
 	if(Accessor.GUINum)
 	{
@@ -342,7 +345,8 @@ AccessorClose()
 		OnMessage(0x100, Accessor.OldKeyDown) ; Restore previous KeyDown handler
 		Gui, Destroy
 	}
-	Critical, Off
+	if(!WasCritical)
+		Critical, Off
 }
 WM_ACTIVATE(wParam,lParam)
 {
@@ -592,6 +596,7 @@ GUI_EditAccessorPlugin(Settings,GoToLabel="")
 	}
 	else if(GoToLabel = "EditAccessorPluginOK")
 	{
+		Plugin.SaveSettings(PluginSettings.Settings, PluginGUI)
 		SubEventGUI_GUISubmit(PluginSettings.Settings, PluginGUI)
 		Gui, Submit, NoHide
 		outputdebug % " keyword: " PluginSettings.Settings.Keyword " Default: " Plugin.DefaultKeyword

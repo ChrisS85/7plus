@@ -322,8 +322,11 @@ GUI_EditEvent(e,GoToLabel="")
 		if(LV_GetCount("Selected") != 1)
 			return
 		i:=LV_GetNext("")
+		WasCritical := A_IsCritical
 		Critical, Off
 		condition:=GUI_EditSubEvent(Event.Conditions[i].DeepCopy(),0)
+		if(WasCritical)
+			Critical
 		if(condition)
 		{
 			condition.tmpTemporary := false
@@ -402,8 +405,11 @@ GUI_EditEvent(e,GoToLabel="")
 		if(LV_GetCount("Selected") != 1)
 			return
 		i:=LV_GetNext("")
+		WasCritical := A_IsCritical
 		Critical, Off
 		action:=GUI_EditSubEvent(Event.Actions[i].DeepCopy(),1)
+		if(WasCritical)
+			Critical
 		if(action)
 		{
 			outputdebug("Store " Event.Actions[i].WaitForFinish)

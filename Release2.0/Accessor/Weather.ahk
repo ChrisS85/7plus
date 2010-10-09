@@ -6,6 +6,7 @@ Accessor_Weather_Init(ByRef Weather, Settings)
 	Weather.MinChars := 0
 	Weather.OKName := "Copy"
 	Weather.Description := "This plugin shows the weather information for a location. Just type ""[Keyword] location""."
+	Weather.HasSettings := True
 }
 Accessor_Weather_ShowSettings(Weather, PluginSettings, PluginGUI)
 {

@@ -4,6 +4,7 @@
 Settings_CreateEvents() {
 	global
 	local yIt,x1,x2,x,y
+	outputdebug createevents() start
 	xHelp:=xBase
 	x1:=xHelp+10
 	x2 := x1 + 460
@@ -32,10 +33,12 @@ Settings_CreateEvents() {
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 gGUI_EventsList_Help, Help
 	yIt += textboxstep + 4
 	y := yIt + TextBoxTextOffset
+	outputdebug createevents() stop
 }
 Settings_CreateAccessor() {
 	global
 	local yIt,x1,x2,x,y
+	outputdebug createaccessor() start
 	xHelp:=xBase
 	x1:=xHelp+10
 	x2 := x1 + 460
@@ -53,6 +56,7 @@ Settings_CreateAccessor() {
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 gGUI_Accessor_Help, Help
 	yIt += textboxstep + 4
 	y := yIt + TextBoxTextOffset
+	outputdebug createaccessor() stop
 }
 Settings_CreateExplorer() {
 	global
@@ -423,8 +427,11 @@ Settings_CreateAbout() {
 ;---------------------------------------------------------------------------------------------------------------
 Settings_SetupEvents() {
 	global
-	outputdebug setupevents()
+	WasCritical := A_IsCritical
+	Critical
+	outputdebug setupevents() start
 	Gui, 1:Default
+	outputdebug setupevents() listview
 	Gui, ListView, GUI_EventsList
 	if(!Settings_Events)
 	{
@@ -441,11 +448,17 @@ Settings_SetupEvents() {
 	GuiControl, 1:enable, GUI_EventsList_Add
 	GuiControl, 1:enable, GUI_EventsList_Remove
 	GuiControl, 1:enable, GUI_EventsList_Edit
+	outputdebug setupevents() stop
+	if(!WasCritical)
+		Critical, Off
 }
 FillEventsList(){
 	global EventFilter, Settings_Events	
-	outputdebug filleventslist()
+	WasCritical := A_IsCritical
+	Critical
+	outputdebug filleventslist() start
 	Gui, 1:Default
+	outputdebug filleventslist() listview
 	Gui, ListView, GUI_EventsList
 	i := LV_GetNext("")
 	if(i)
@@ -466,18 +479,25 @@ FillEventsList(){
 		scroll := false
 		if((!filter || InStr(id, filter) || InStr(DisplayString, Filter) || InStr(Name, filter)) && (filter || !Category || Category = Settings_Events[A_Index].Category))
 		{
+			outputdebug filleventslist() add 
+			Gui, ListView, GUI_EventsList
 			LV_Add(((SelectedID != "" && id = SelectedID  && (scroll := 1)) || (SelectedID = "" && count = 0) ? "Select Focus" : "") (Settings_Events[A_Index].Enabled ? " Check": " "), "", id, DisplayString, name)
 			if(scroll)
 				LV_Modify(A_Index, "Vis")
 			count++
 		}
 	}
+	outputdebug filleventslist() stop
+	if(!WasCritical)
+		Critical, Off
 }
 RecreateTreeView()
 {
 	global Settings_Events, SettingsTabList, SuppressTreeViewMessages
-	outputdebug recreatetreeview()
+	WasCritical := A_IsCritical
+	Critical
 	Gui, 1:Default
+	outputdebug recreatetreeview() listview
 	Gui, ListView, GUI_EventsList
 	Gui, TreeView, SettingsTreeView
 	i := LV_GetNext("")
@@ -494,12 +514,15 @@ RecreateTreeView()
 	FillEventsList()
 	SuppressTreeViewMessages := false
 	ControlFocus, SysTreeView321
+	if(!WasCritical)
+		Critical, Off
 }
 Settings_SetupAccessor() {
 	global AccessorPlugins, Settings_AccessorPlugins
+	WasCritical := A_IsCritical
 	Critical
-	outputdebug Settings_SetupAccessor()
 	Gui, 1:Default
+	outputdebug Settings_SetupAccessor() listview
 	Gui, ListView, GUI_AccessorPluginsList
 	Settings_AccessorPlugins := Array()
 	outputdebug % "setupaccessor count " accessorplugins.len()
@@ -512,10 +535,12 @@ Settings_SetupAccessor() {
 		PluginCopy.Type := AccessorPlugins[A_Index].Type
 		PluginCopy.Settings := AccessorPlugins[A_Index].Settings.DeepCopy()
 		Settings_AccessorPlugins.append(PluginCopy)
-		outputdebug % "type " Settings_AccessorPlugins[A_Index].Type " enabled: " Settings_AccessorPlugins[A_Index].Enabled
+		outputdebug Settings_SetupAccessor() add
+		Gui, ListView, GUI_AccessorPluginsList
 		LV_Add(Settings_AccessorPlugins[A_Index].Enabled ? "Check" : "", "", A_Index, Settings_AccessorPlugins[A_Index].Type)
 	}
-	Critical, Off
+	if(!WasCritical)
+		Critical, Off
 }
 Settings_SetupExplorer() {
 	global
@@ -737,8 +762,13 @@ ShowSettings() {
 		GuiControl, 1:Hide, Wait
 		GuiControl, 1:Choose,SettingsTreeView,Events
 		GoSub SettingsTreeView
-		Gui, 1:Show, x338 y159 h404 w780, 7plus Settings
-		Winwaitactive 7plus Settings		
+		DetectHiddenWindows, On
+		Gui 1:+LastFoundExist
+		; IfWinNotExist
+		; {
+			; Gui, 1:Show, x338 y159 h404 w780, 7plus Settings
+			; Winwaitactive 7plus Settings
+		; }
 				
 		;---------------------------------------------------------------------------------------------------------------
 		; Setup Control Status
@@ -756,6 +786,9 @@ ShowSettings() {
 		Settings_SetupMisc()
 		Settings_SetupAbout()
 			
+		; Gui 1:+LastFoundExist
+		; IfWinExist
+			Gui, 1:Show, x338 y159 h404 w780, 7plus Settings
 		;Code for URL hand cursor, don't touch :D
 		;Hand cursor over controls where the assigned variable starts with URL_
 		; Retrieve scripts PID 
@@ -771,7 +804,7 @@ ShowSettings() {
 
 		; Call "HandleMessage" when script receives WM_MOUSEMOVE message 
 		WM_MOUSEMOVE = 0x200 
-		OnMessage(WM_MOUSEMOVE, "HandleMessage")	  
+		OnMessage(WM_MOUSEMOVE, "HandleMessage")
 	}
 	Return
 }
@@ -789,6 +822,7 @@ SettingsTreeViewEvents()
 	global SettingsTabList,SuppressTreeViewMessages
 	if(SuppressTreeViewMessages)
 		return
+	outputdebug tree view event
 	selected := TV_GetSelection()
 	TV_GetText(SelectedName, selected)
 	parent := TV_GetParent(selected)
@@ -851,8 +885,10 @@ GUI_EventsList_Update()
 {
 	global
 	local filter, count, i, checked, ListEvent
-	outputdebug GUI_EventsList_Update()
+	WasCritical := A_IsCritical
+	Critical
 	ListEvent := Errorlevel
+	outputdebug GUI_EventsList_Update() listview
 	Gui, ListView, GUI_EventsList
 	ControlGetText, filter,, ahk_id %EventFilter%
 	count := LV_GetCount("Selected")
@@ -891,6 +927,8 @@ GUI_EventsList_Update()
 	}
 	else if(A_GuiEvent="DoubleClick")
 		GUI_EventsList_Edit()
+	if(!WasCritical)
+		Critical, Off
 	Return
 }
 GUI_EventsList_Add:
@@ -899,10 +937,11 @@ Return
 GUI_AddEvent()
 {
 	global Settings_Events, GUI_EventsList
+	outputdebug GUI_AddEvent() listview
 	Gui, ListView, GUI_EventsList
 	Event := EventSystem_CreateEvent(Settings_Events) ;Event is added to Settings_Events here
-	outputdebug add event to listview
 	LV_Modify(LV_GetNext(""), "-Select")
+	outputdebug GUI_AddEvent() add
 	LV_Add("Select Check", "", Event.ID, Event.Trigger.DisplayString(), Event.Name)	
 	selected := TV_GetSelection()
 	TV_GetText(Category,selected)
@@ -918,6 +957,7 @@ Return
 GUI_RemoveEvent()
 {
 	global Settings_Events
+	outputdebug GUI_RemoveEvent() listview
 	Gui, ListView, GUI_EventsList
 	count := LV_GetCount()
 	ListPos := 1
@@ -954,6 +994,7 @@ GUI_EventsList_Edit(Add = 0)
 {	
 	global Settings_Events, EventFilter
 	Critical Off
+	outputdebug GUI_EventsList_Edit() listview
 	Gui, ListView, GUI_EventsList
 	if(LV_GetCount("Selected") != 1)
 		return
@@ -996,6 +1037,7 @@ GUI_EventsList_Import()
 GUI_EventsList_Export()
 {
 	global Settings_Events
+	outputdebug GUI_EventsList_Export() listview
 	Gui, ListView, GUI_EventsList
 	count := LV_GetCount("Selected")
 	if(count > 0)
@@ -1057,12 +1099,15 @@ ShowAccessorSettings()
 return
 ShowAccessorSettings()
 {
-	global Settings_AccessorPlugins
+	global Settings_AccessorPlugins, AccessorPlugins
+	outputdebug ShowAccessorSettings() ListView
 	Gui, ListView, GUI_AccessorPluginsList
 	if(LV_GetCount("Selected") != 1)
 		return
 	i:=LV_GetNext("")
 	LV_GetText(pos,i,2)
+	if(!AccessorPlugins[pos].HasSettings)
+		return
 	outputdebug % "type 1 " Settings_AccessorPlugins[pos].type
 	PluginSettings:=GUI_EditAccessorPlugin(Settings_AccessorPlugins[pos].DeepCopy())
 	; outputdebug % "type 3" PluginSettings.keyword
@@ -1076,11 +1121,20 @@ GUI_AccessorPluginsList_Events()
 {
 	global
 	local count, ListEvent
-	outputdebug GUI_AccessorPluginsList_Events()
+	WasCritical := A_IsCritical
+	Critical
 	ListEvent := Errorlevel
+	outputdebug GUI_AccessorPluginsList_Events() listview
 	Gui, ListView, GUI_AccessorPluginsList
 	if(A_GuiEvent="I" && InStr(ListEvent, "S", true))
-		GuiControl, 1:enable, GUI_AccessorSettings
+	{	
+		Selected := LV_GetNext()		
+		LV_GetText(id,Selected,2)
+		if(AccessorPlugins[id].HasSettings)
+			GuiControl, 1:enable, GUI_AccessorSettings
+		else
+			GuiControl, 1:disable, GUI_AccessorSettings
+	}
 	else if(A_GuiEvent="I" && InStr(ListEvent, "s", true))
 		GuiControl, 1:Disable, GUI_AccessorSettings
 	if(A_GuiEvent = "I" && InStr(ListEvent, "c")) ;Catch both check and uncheck
@@ -1097,6 +1151,8 @@ GUI_AccessorPluginsList_Events()
 	}
 	else if(A_GuiEvent="DoubleClick")
 		ShowAccessorSettings()
+	if(!WasCritical)
+		Critical, Off
 	Return
 }
 return
@@ -1306,6 +1362,7 @@ Return
 WM_KEYDOWN(wParam, lParam)
 {
 	global EventFilter, SettingsActive
+	outputdebug wm_keydown()
 	if(A_GUI = 1 && SettingsActive)
 	{
 		/*
@@ -1347,6 +1404,7 @@ WM_KEYDOWN(wParam, lParam)
 WM_KEYUP(wParam, lParam)
 {
 	global EventFilter
+	outputdebug wm_keyup()
 	if(A_GUI = 1 && A_GuiControl = "GUI_EventsList")
 	{
 		if(wParam = 17 || (wParam > 32 && wParam < 41)) ;CTRL, arrow keys, home, end, page up/down
@@ -1659,7 +1717,7 @@ HandleMessage(p_w, p_l, p_m, p_hw)
 { 
   global   WM_SETCURSOR, WM_MOUSEMOVE, 
   static   URL_hover, h_cursor_hand, h_old_cursor, CtrlIsURL, LastCtrl 
-  
+  outputdebug handlemessage()
   If (p_m = WM_SETCURSOR) 
     { 
       If URL_hover 

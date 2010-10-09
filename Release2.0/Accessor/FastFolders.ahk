@@ -7,6 +7,7 @@ Accessor_FastFolders_Init(ByRef FastFolders, Settings)
 	FastFolders.OKName := "Open Folder"
 	FastFolders.Settings.FuzzySearch := Settings.FuzzySearch
 	FastFolders.Description := "Access the stored FastFolders by typing a part of a folder name."
+	FastFolders.HasSettings := True
 }
 Accessor_FastFolders_ShowSettings(FastFolders, PluginSettings, PluginGUI)
 {
@@ -35,10 +36,14 @@ Accessor_FastFolders_OnExit(FastFolders)
 Accessor_FastFolders_FillAccessorList(FastFoldersPlugin, Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet)
 {	
 	global FastFolders
+	FuzzyList := Array()
 	Loop 10
 		if(FastFolders[A_Index].Path)
-			if(InStr(FastFolders[A_Index].Title,Filter) || InStr(FastFolders[A_Index].Path,Filter) || (FastFoldersPlugin.Settings.FuzzySearch && FuzzySearch(FastFolders[A_Index].Title,Filter) < 0.4))
+			if(InStr(FastFolders[A_Index].Title,Filter) || InStr(FastFolders[A_Index].Path,Filter))
 				Accessor.List.append(Object("Title",FastFolders[A_Index].Title,"Path",FastFolders[A_Index].Path,"Type","FastFolders", "Icon", 2)) ;Use generic folder icon
+			else if(FastFoldersPlugin.Settings.FuzzySearch && FuzzySearch(FastFolders[A_Index].Title,Filter) < 0.4)
+				FuzzyList.List.append(Object("Title",FastFolders[A_Index].Title,"Path",FastFolders[A_Index].Path,"Type","FastFolders", "Icon", 2)) ;Use generic folder icon
+	Accessor.List.extend(FuzzyList)
 }
 Accessor_FastFolders_PerformAction(FastFolders, Accessor, AccessorListEntry)
 {

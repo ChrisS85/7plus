@@ -770,23 +770,37 @@ CopyFilenames()
 
 ;Scroll tree list with mouse wheel
 #if (ScrollUnderMouse && ((IsWindowUnderCursor("#32770") && IsDialog()) || IsWindowUnderCursor("CabinetWClass")||IsWindowUnderCursor("ExploreWClass")) && !IsRenaming())||(Accessor.GUINum && WinActive(Accessor.WindowTitle))
-WheelUp:: 
-Critical 
-CoordMode, Mouse, Screen
-MouseGetPos, MouseX, MouseY
-hw_m_target := DllCall( "WindowFromPoint", "int", MouseX, "int", MouseY )
-SendMessage, 0x20A, 120 << 16, ( MouseY << 16 )|MouseX,, ahk_id %hw_m_target%
-Critical, Off
-return 
-
-WheelDown:: 
-Critical 
-CoordMode, Mouse, Screen
-MouseGetPos, MouseX, MouseY 
-hw_m_target := DllCall( "WindowFromPoint", "int", MouseX, "int", MouseY ) 
-SendMessage, 0x20A, -120 << 16, ( MouseY << 16 )|MouseX,, ahk_id %hw_m_target% 
-Critical, Off
+WheelUp::
+WheelUp()
 return
+
+WheelUp()
+{
+	WasCritical := A_IsCritical
+	Critical
+	CoordMode, Mouse, Screen
+	MouseGetPos, MouseX, MouseY
+	hw_m_target := DllCall( "WindowFromPoint", "int", MouseX, "int", MouseY )
+	SendMessage, 0x20A, 120 << 16, ( MouseY << 16 )|MouseX,, ahk_id %hw_m_target%
+	if(!WasCritical)
+		Critical, Off
+	return
+}
+WheelDown::
+WheelDown()
+return
+WheelDown()
+{
+	WasCritical := A_IsCritical
+	Critical 
+	CoordMode, Mouse, Screen
+	MouseGetPos, MouseX, MouseY 
+	hw_m_target := DllCall( "WindowFromPoint", "int", MouseX, "int", MouseY ) 
+	SendMessage, 0x20A, -120 << 16, ( MouseY << 16 )|MouseX,, ahk_id %hw_m_target% 
+	if(!WasCritical)
+		Critical, Off
+	return
+}
 #if
 
 #if HKInvertSelection && WinActive("ahk_group ExplorerGroup")

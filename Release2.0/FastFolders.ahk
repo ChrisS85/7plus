@@ -47,6 +47,7 @@ Numpad9 UP::SetDirectory(FF9)
 ClearStoredFolder(Slot)
 {
 	global
+	WasCritical := A_IsCritical
 	Critical
 	local pos, name
 	Slot+=1
@@ -62,7 +63,8 @@ ClearStoredFolder(Slot)
 				AddButton("",FastFolders[A_Index].Path,,pos ":" FastFolders[A_Index].Title)
 		}
 	}
-	Critical, Off
+	if(!WasCritical)
+		Critical, Off
 }
 UpdateStoredFolder(Slot, Folder="")
 {
@@ -94,6 +96,7 @@ AddAllButtons(FolderBand,PlacesBar)
 {
 	global
 	local pos, value
+	WasCritical := A_IsCritical
 	Critical
 	loop 10
 	{
@@ -109,7 +112,8 @@ AddAllButtons(FolderBand,PlacesBar)
 			}				
 		}
 	}
-	Critical, Off
+	if(!WasCritical)
+		Critical, Off
 }
 ;Callback function for determining if a specific registry key was created by 7plus
 IsFastFolderButton(Command,Title,Tooltip)

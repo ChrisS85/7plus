@@ -6,13 +6,16 @@ Accessor_WindowSwitcher_Init(ByRef WindowSwitcher, Settings)
 	WindowSwitcher.MinChars := 0
 	WindowSwitcher.OKName := "Activate"
 	WindowSwitcher.Settings.FuzzySearch := Settings.FuzzySearch
+	WindowSwitcher.Settings.IgnoreFileExtensions := Settings.IgnoreFileExtensions
 	WindowSwitcher.Description := "Activate windows by typing a part of their title or their executable filename. `nThis also shows CPU usage, shows/sets Always on Top state and `nallows to close and kill processes."
+	WindowSwitcher.HasSettings := True
 }
 Accessor_WindowSwitcher_ShowSettings(WindowSwitcher, PluginSettings, PluginGUI)
 {
 	SubEventGUI_Add(PluginSettings, PluginGUI, "Edit", "Keyword", "", "", "Keyword:")
 	SubEventGUI_Add(PluginSettings, PluginGUI, "Edit", "BasePriority", "", "", "Base Priority:")
 	SubEventGUI_Add(PluginSettings, PluginGUI, "Checkbox", "FuzzySearch", "Use fuzzy search (slower)", "", "")
+	SubEventGUI_Add(PluginSettings, PluginGUI, "Checkbox", "IgnoreFileExtensions", "Ignore .exe extension in program paths", "", "")	
 }
 Accessor_WindowSwitcher_GetDisplayStrings(WindowSwitcher, AccessorListEntry, ByRef Title, ByRef Path, ByRef Detail1, ByRef Detail2)
 {
@@ -40,18 +43,24 @@ Accessor_WindowSwitcher_OnAccessorClose(WindowSwitcher, Accessor)
 }
 Accessor_WindowSwitcher_FillAccessorList(WindowSwitcher, Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet)
 {
-	strippedFilter := strTrimRight(Filter, ".exe")
+	strippedFilter := WindowSwitcher.Settings.IgnoreFileExtensions ? strTrimRight(Filter, ".exe") : Filter
+	FuzzyList := Array()
 	Loop % WindowSwitcher.List.len()
 	{
+		x := 0
 		window := WindowSwitcher.List[A_Index]
-		ExeName := strTrimRight(window.ExeName,".exe")
-		if(Filter = "" || InStr(window.Title,Filter) || InStr(ExeName,strippedFilter) || (WindowSwitcher.Settings.FuzzySearch && FuzzySearch(ExeName,strippedFilter) < 0.4))
+		ExeName := WindowSwitcher.Settings.IgnoreFileExtensions ? strTrimRight(window.ExeName,".exe") : window.ExeName
+		if(x := (Filter = "" || InStr(window.Title,Filter) || InStr(ExeName,strippedFilter)) || (WindowSwitcher.Settings.FuzzySearch && FuzzySearch(ExeName,strippedFilter) < 0.4))
 		{
 			DllCall("ImageList_ReplaceIcon", UInt, Accessor.ImageListID, Int, -1, UInt, window.Icon)
 			IconCount++
-			Accessor.List.append(Object("Icon", IconCount, "Title", window.Title, "Path", window.Path, "ExeName", window.ExeName, "CPU", window.CPU, "OnTop", window.OnTop, "Type", "WindowSwitcher", "PID", window.PID, "hwnd", window.hwnd))			
+			if(x)
+				Accessor.List.append(Object("Icon", IconCount, "Title", window.Title, "Path", window.Path, "ExeName", window.ExeName, "CPU", window.CPU, "OnTop", window.OnTop, "Type", "WindowSwitcher", "PID", window.PID, "hwnd", window.hwnd))			
+			else
+				FuzzyList.append(Object("Icon", IconCount, "Title", window.Title, "Path", window.Path, "ExeName", window.ExeName, "CPU", window.CPU, "OnTop", window.OnTop, "Type", "WindowSwitcher", "PID", window.PID, "hwnd", window.hwnd))			
 		}
 	}
+	Accessor.List.extend(FuzzyList)
 }
 Accessor_WindowSwitcher_PerformAction(WindowSwitcher, Accessor, AccessorListEntry)
 {

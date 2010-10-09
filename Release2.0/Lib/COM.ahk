@@ -144,6 +144,7 @@ COM_InvokeSet(pdsp,name,prm0,prm1="vT_NoNe",prm2="vT_NoNe",prm3="vT_NoNe",prm4="
 
 COM_DispInterface(this, prm1="", prm2="", prm3="", prm4="", prm5="", prm6="", prm7="", prm8="")
 {
+	WasCritical := A_IsCritical
 	Critical
 	If	A_EventInfo = 6
 		hr:=DllCall(NumGet(NumGet(0+p:=NumGet(this+8))+28),"Uint",p,"Uint",prm1,"UintP",pname,"Uint",1,"UintP",0), hr==0 ? (VarSetCapacity(sfn,63),DllCall("user32\wsprintfA","str",sfn,"str","%s%S","Uint",this+40,"Uint",pname,"Cdecl"),COM_SysFreeString(pname),%sfn%(prm5,this,prm6)):""
@@ -159,6 +160,8 @@ COM_DispInterface(this, prm1="", prm2="", prm3="", prm4="", prm5="", prm6="", pr
 		NumPut(hr:=NumGet(this+4)+1,this+4)
 	Else If	A_EventInfo = 0
 		COM_IsEqualGUID(this+24,prm1)||InStr("{00020400-0000-0000-C000-000000000046}{00000000-0000-0000-C000-000000000046}",COM_String4GUID(prm1)) ? NumPut(NumPut(NumGet(this+4)+1,this+4)-8,prm2+0):NumPut(0*hr:=0x80004002,prm2+0)
+	if(!WasCritical)
+		Critical, Off
 	Return	hr
 }
 

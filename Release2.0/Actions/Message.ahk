@@ -79,6 +79,7 @@ Action_Message_GuiSubmit(Action, ActionGUI)
 ;Non blocking message box (can wait for closing in event system though)
 CustomMsgBox(Title,Message) 
 {
+	WasCritical := A_IsCritical
 	Critical, Off
 	l_GUI:=10
     loop
@@ -95,6 +96,8 @@ CustomMsgBox(Title,Message)
 				,HotkeyGUI Error
 				,Unable to create Msgbox window. GUI windows 10 to 99 are already in use.
 			ErrorLevel=9999
+			if(WasCritical)
+				Critical
 			return ""
 		}
 
@@ -111,6 +114,8 @@ CustomMsgBox(Title,Message)
 	SoundPlay,*-1
 	Gui,%l_GUI%:Show,,%Title% 
 	
+	if(WasCritical)
+		Critical
 	;return Gui number to indicate that the message box is still open
 	return l_GUI
 }

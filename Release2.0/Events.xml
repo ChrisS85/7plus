@@ -1185,17 +1185,7 @@
 <Title>Enter filename</Title>
 <Type>Input</Type>
 </Action><Action>
-<Clipboard>1</Clipboard>
-<Hostname>Enter Hostname</Hostname>
-<Password></Password>
-<Port>21</Port>
-<Silent>0</Silent>
-<SourceFiles>%temp%\Screenshot.jpg</SourceFiles>
-<TargetFile>${Input}</TargetFile>
-<TargetFolder></TargetFolder>
-<Type>Upload</Type>
-<URL>http://urltohost.com</URL>
-<User>Enter Username</User>
+<Type></Type>
 </Action><Action>
 <Overwrite>0</Overwrite>
 <Silent>1</Silent>

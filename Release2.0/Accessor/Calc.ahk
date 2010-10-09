@@ -6,6 +6,7 @@ Accessor_Calc_Init(ByRef Calc, Settings)
 	Calc.MinChars := 0
 	Calc.OKName := "Copy Result"
 	Calc.Description := "Use Google Calc to make calculations `nand unit conversions (e.g. ""g in pounds"")."
+	Calc.HasSettings := True
 }
 Accessor_Calc_ShowSettings(Calc, PluginSettings, PluginGUI)
 {
@@ -98,6 +99,9 @@ QueryCalcResult()
 	{
 		RegexMatch(GoogleQuery, "<b>.*?=.*?</b>", result)
 		result := strTrim(strTrim(result, "<b>"), "</b>")
+		StringReplace, result, result, <sup>, ^
+		outputdebug result %result%
+		result := unhtml(Deref_Umlauts(result))
 		if(result)
 		{
 			outputdebug calc result: %result%

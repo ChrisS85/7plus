@@ -6,6 +6,7 @@ Accessor_Uninstall_Init(ByRef Uninstall, Settings)
 	Uninstall.MinChars := 0
 	Uninstall.OKName := "Uninstall"
 	Uninstall.Description := "This plugin lets you uninstall programs or remove the uninstall entries from the list."
+	Uninstall.HasSettings := True
 }
 Accessor_Uninstall_ShowSettings(Uninstall, PluginSettings, PluginGUI)
 {
@@ -60,13 +61,20 @@ Accessor_Uninstall_OnExit(Uninstall)
 }
 Accessor_Uninstall_FillAccessorList(Uninstall, Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet)
 {
+	FuzzyList := Array()
 	Loop % Uninstall.List.len()
-		if(Filter = "" || InStr(Uninstall.List[A_Index].DisplayName,Filter) || FuzzySearch(Uninstall.List[A_Index].DisplayName,Filter) < 0.4)
+	{
+		x := 0
+		if(x := (Filter = "" || InStr(Uninstall.List[A_Index].DisplayName,Filter)) || y := (Uninstall.Settings.FuzzySearch && FuzzySearch(Uninstall.List[A_Index].DisplayName,Filter) < 0.4))
 		{
 			DllCall("ImageList_ReplaceIcon", UInt, Accessor.ImageListID, Int, -1, UInt, Uninstall.List[A_Index].Icon)
 			IconCount++
-			Accessor.List.append(Object("Title",Uninstall.List[A_Index].DisplayName,"Path",Uninstall.List[A_Index].InstallLocation, "UninstallString", Uninstall.List[A_Index].UninstallString, "Type","Uninstall", "Icon", IconCount))
+			if(x)
+				Accessor.List.append(Object("Title",Uninstall.List[A_Index].DisplayName,"Path",Uninstall.List[A_Index].InstallLocation, "UninstallString", Uninstall.List[A_Index].UninstallString, "Type","Uninstall", "Icon", IconCount))
+			else
+				FuzzyList.append(Object("Title",Uninstall.List[A_Index].DisplayName,"Path",Uninstall.List[A_Index].InstallLocation, "UninstallString", Uninstall.List[A_Index].UninstallString, "Type","Uninstall", "Icon", IconCount))
 		}
+	}
 }
 Accessor_Uninstall_PerformAction(Uninstall, Accessor, AccessorListEntry)
 {

@@ -10,13 +10,126 @@ Accessor_ProgramLauncher_Init(ByRef ProgramLauncher, Settings)
 	ProgramLauncher.MinChars := 2
 	ProgramLauncher.OKName := "Run"	
 	ProgramLauncher.Settings.FuzzySearch := Settings.FuzzySearch
+	ProgramLauncher.Settings.IgnoreExtensions := Settings.IgnoreExtensions
 	ProgramLauncher.Description := "Run programs/files by typing a part of their name. All programs/files from the folders `nin the list below can be used. 7plus also looks for running programs `nand automatically adds them to the index."
+	ProgramLauncher.HasSettings := True
 } 
-Accessor_ProgramLauncher_ShowSettings(ProgramLauncher, PluginSettings, PluginGUI)
+Accessor_ProgramLauncher_ShowSettings(ProgramLauncher, PluginSettings, PluginGUI, GoToLabel = "")
 {
-	SubEventGUI_Add(PluginSettings, PluginGUI, "Edit", "Keyword", "", "", "Keyword:")
-	SubEventGUI_Add(PluginSettings, PluginGUI, "Edit", "BasePriority", "", "", "Base Priority:")
-	SubEventGUI_Add(PluginSettings, PluginGUI, "Checkbox", "FuzzySearch", "Use fuzzy search (slower)", "", "")
+	global ProgramLauncherListView, ProgramLauncherAddPath, ProgramLauncherEditPath, ProgramLauncherDeletePath
+	static PLauncher,PSettings,PGUI, hEdit
+	if(GoToLabel = "")
+	{
+		PLauncher := ProgramLauncher
+		PSettings := PluginSettings
+		PGUI := PluginGUI
+		hEdit := 0
+		PSettings.tmpPaths := PLauncher.Paths.DeepCopy()
+		SubEventGUI_Add(PSettings, PGUI, "Edit", "Keyword", "", "", "Keyword:")
+		SubEventGUI_Add(PSettings, PGUI, "Edit", "BasePriority", "", "", "Base Priority:")
+		SubEventGUI_Add(PSettings, PGUI, "Checkbox", "FuzzySearch", "Use fuzzy search (slower)", "", "")
+		SubEventGUI_Add(PSettings, PGUI, "Checkbox", "IgnoreExtensions", "Ignore file extensions", "", "")
+		GUI, Add, ListView, vProgramLauncherListView gProgramLauncherListView AltSubmit -Hdr -Multi w330 R8, ID|Path
+		Loop % PSettings.tmpPaths.len()
+			LV_Add(A_Index = 1 ? "Select" : "", A_Index, PSettings.tmpPaths[A_Index].Path)
+		GUI, Add, Button, x+10 gProgramLauncherAddPath w80, Add Path
+		GUI, Add, Button, y+10 gProgramLauncherEditPath vProgramLauncherEditPath w80, Browse
+		GUI, Add, Button, y+10 gProgramLauncherDeletePath vProgramLauncherDeletePath w80, Delete Path
+		GUI, Add, Button, y+10 gProgramLauncherRefreshCache w80, Refresh Cache
+		x := PGUI.x
+		Gui, Add, Text, x%x% y+35, File extensions:
+		Gui, Add, Edit, hwndhEdit x+10 y+-17 w248
+		Gui, Add, Text, x+10 y+-17, Seperator: Comma
+	}
+	else if(GoToLabel = "ListView")
+	{
+		ListEvent := Errorlevel
+		outputdebug listevent %listevent%
+		Gui, ListView, ProgramLauncherListView
+		if(A_GuiEvent="I" && InStr(ListEvent, "S", true))
+		{	
+			GuiControl, enable, ProgramLauncherDeletePath
+			GuiControl, enable, ProgramLauncherEditPath
+			LV_GetText(pos,A_EventInfo,1)
+			extensions := PSettings.tmpPaths[pos].Extensions
+			ControlSetText,,%extensions%, ahk_id %hEdit%
+		}
+		else if(A_GuiEvent="I" && InStr(ListEvent, "s", true))
+		{
+			LV_GetText(pos,A_EventInfo,1)
+			ControlGetText, extensions,, ahk_id %hEdit%
+			outputdebug save extensions %extensions% pos %pos%
+			PSettings.tmpPaths[pos].Extensions := extensions
+			GuiControl, disable, ProgramLauncherEditPath
+			GuiControl, disable, ProgramLauncherDeletePath
+		}
+	}
+	else if(GoToLabel = "AddPath")
+	{
+		Gui +OwnDialogs
+		path:=COM_CreateObject("Shell.Application").BrowseForFolder(0, "Add indexing path", 0).Self.Path
+		if(path!="")
+		{
+			PSettings.tmpPaths.append(Object("Path", path, "Extensions", "exe"))
+			LV_Add("Select", PSettings.tmpPaths.len(), path)
+		}
+	}
+	else if(GoToLabel = "EditPath")
+	{
+		selected := LV_GetNext()
+		if(selected)
+		{
+			Gui +OwnDialogs
+			FileSelectFolder, path,,,Add indexing path
+			; path:=COM_CreateObject("Shell.Application").BrowseForFolder(0, "Add indexing path", 0x50).Self.Path
+			if(path!="")
+			{
+				LV_GetText(pos,selected,1)
+				PSettings.tmpPaths[pos].Path := path
+				LV_Modify(selected, "Select Col2", path)
+			}
+		}
+	}
+	else if(GoToLabel = "DeletePath")
+	{
+		selected := LV_GetNext()
+		if(selected)
+		{
+			LV_GetText(pos,selected,1)
+			PSettings.tmpPaths.Delete(pos)
+			LV_Delete(selected)
+		}
+	}
+	else if(GoToLabel = "SaveSettings")
+	{		
+		Gui, ListView, ProgramLauncherListView
+		selected := LV_GetNext()
+		LV_GetText(pos,selected,1)
+		ControlGetText, extensions,, ahk_id %hEdit%
+		PSettings.tmpPaths[pos].Extensions := extensions
+		PLauncher.Paths := PSettings.tmpPaths.DeepCopy()
+	}
+	else if(GoToLabel = "RefreshCache")
+		RefreshProgramLauncherCache(PLauncher)
+}
+ProgramLauncherListView:
+Accessor_ProgramLauncher_ShowSettings("","","","ListView")
+return
+ProgramLauncherAddPath:
+Accessor_ProgramLauncher_ShowSettings("","","","AddPath")
+return
+ProgramLauncherEditPath:
+Accessor_ProgramLauncher_ShowSettings("","","","EditPath")
+return
+ProgramLauncherDeletePath:
+Accessor_ProgramLauncher_ShowSettings("","","","DeletePath")
+return
+ProgramLauncherRefreshCache:
+Accessor_ProgramLauncher_ShowSettings("","","","RefreshCache")
+return
+Accessor_ProgramLauncher_SaveSettings(ProgramLauncher, PluginSettings, PluginGUI)
+{
+	Accessor_ProgramLauncher_ShowSettings("","","","SaveSettings")
 }
 Accessor_ProgramLauncher_GetDisplayStrings(ProgramLauncher, AccessorListEntry, ByRef Title, ByRef Path, ByRef Detail1, ByRef Detail2)
 {
@@ -36,11 +149,15 @@ Accessor_ProgramLauncher_IsInSinglePluginContext(ProgramLauncher, Filter, LastFi
 }
 Accessor_ProgramLauncher_FillAccessorList(ProgramLauncher, Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet)
 {
-	index := 1
+	FuzzyList := Array()
+	
+	strippedFilter := WindowSwitcher.Settings.IgnoreFileExtensions ? RegexReplace(Filter, "\.\w+") : Filter 
 	; outputdebug % "Accessor_ProgramLauncher_FillAccessorList count " ProgramLauncher.List.len()
 	Loop % ProgramLauncher.List.len()
 	{
-		if(ProgramLauncher.List[A_Index].Command && ProgramLauncher.List[A_Index].Name && (InStr(ProgramLauncher.List[A_Index].Name,Filter) || (ProgramLauncher.Settings.FuzzySearch && strlen(Filter) < 5 && FuzzySearch(ProgramLauncher.List[A_Index].Name,Filter) < 0.4)))
+		x := 0
+		strippedName := WindowSwitcher.Settings.IgnoreFileExtensions ? RegexReplace(ProgramLauncher.List[A_Index].Name, "\.\w+") : ProgramLauncher.List[A_Index].Name 
+		if(ProgramLauncher.List[A_Index].Command && strippedName && (x := InStr(strippedName,StrippedFilter) || (ProgramLauncher.Settings.FuzzySearch && strlen(StrippedFilter) < 5 && FuzzySearch(StrippedName,StrippedFilter) < 0.4)))
 		{
 			if(!FileExist(ProgramLauncher.List[A_Index].Command))
 			{
@@ -52,10 +169,13 @@ Accessor_ProgramLauncher_FillAccessorList(ProgramLauncher, Accessor, Filter, Las
 			if(!ProgramLauncher.List[A_Index].hIcon) ;Program launcher icons are cached lazy, only when needed
 				ProgramLauncher.List[A_Index].hIcon := DllCall("Shell32\ExtractAssociatedIconA", UInt, 0, Str, ProgramLauncher.List[A_Index].Command, UShortP, iIndex)
 			DllCall("ImageList_ReplaceIcon", UInt, Accessor.ImageListID, Int, -1, UInt, ProgramLauncher.List[A_Index].hIcon)
-			Accessor.List.append(Object("Title",ProgramLauncher.List[A_Index].Name,"Path",ProgramLauncher.List[A_Index].Command,"Type","ProgramLauncher", "Icon", IconCount))
+			if(x)
+				Accessor.List.append(Object("Title",ProgramLauncher.List[A_Index].Name,"Path",ProgramLauncher.List[A_Index].Command,"Type","ProgramLauncher", "Icon", IconCount))
+			else
+				FuzzyList.append(Object("Title",ProgramLauncher.List[A_Index].Name,"Path",ProgramLauncher.List[A_Index].Command,"Type","ProgramLauncher", "Icon", IconCount))
 		}
-		index++
 	}
+	Accessor.List.Extend(FuzzyList)
 }
 Accessor_ProgramLauncher_PerformAction(ProgramLauncher, Accessor, AccessorListEntry)
 {

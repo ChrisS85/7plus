@@ -39,7 +39,7 @@ Else	Click, % SubStr(A_ThisHotkey,1,1)	; for hotkey: LButton/MButton/RButton
 Return
 */
 wtmRestore: 
-WinTraymin(wtmwParam,3) 
+WinTraymin(wtmwParam,3)
 Return 
 
 wtmExit: 

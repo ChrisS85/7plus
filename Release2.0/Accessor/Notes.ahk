@@ -27,6 +27,7 @@ Accessor_Notes_Init(ByRef Notes, Settings)
 		Notes.List.append(Object("Text",Text))
 	}
 	Notes.Description := "This plugin allows to take notes and view them later."
+	Notes.HasSettings := True
 }
 Accessor_Notes_ShowSettings(Notes, PluginSettings, PluginGUI)
 {

@@ -90,6 +90,7 @@ ShellContextMenu(sPath,idn="")
 } 
 WindowProc(hWnd, nMsg, wParam, lParam) 
 { 
+	WasCritical := A_IsCritical
    Critical 
    Global   pcm2, pcm3, WPOld 
    If   pcm3 
@@ -102,7 +103,8 @@ WindowProc(hWnd, nMsg, wParam, lParam)
       If   !DllCall(NumGet(NumGet(1*pcm2)+24), "Uint", pcm2, "Uint", nMsg, "Uint", wParam, "Uint", lParam) 
          Return   0 
    } 
-   Critical, Off
+   if(!WasCritical)
+		Critical, Off
    Return   DllCall("user32.dll\CallWindowProcA", "Uint", WPOld, "Uint", hWnd, "Uint", nMsg, "Uint", wParam, "Uint", lParam) 
 } 
 VTable(ppv, idx) 

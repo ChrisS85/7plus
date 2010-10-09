@@ -9,6 +9,7 @@ Accessor_NotepadPlusPlus_Init(ByRef NotepadPlusPlus, Settings)
 	NotepadPlusPlus.OKName := "Open Tab"
 	NotepadPlusPlus.Settings.FuzzySearch := Settings.FuzzySearch
 	NotepadPlusPlus.Description := "Activate a specific Notepad++ tab by typing a part of its name. This plugin restores the text `nwhich was previously entered when the current tab was last active. `nThis way you can quicly switch between the most used tabs."
+	NotepadPlusPlus.HasSettings := True
 }
 Accessor_NotepadPlusPlus_ShowSettings(NotepadPlusPlus, PluginSettings, PluginGUI)
 {
@@ -88,20 +89,51 @@ Accessor_NotepadPlusPlus_FillAccessorList(NotepadPlusPlus, Accessor, Filter, Las
 		return
 	DllCall("ImageList_ReplaceIcon", UInt, Accessor.ImageListID, Int, -1, UInt, NotepadPlusPlus.Icon)
 	IconCount++
+	if(!Filter && KeywordSet)
+	{
+		Loop % NotepadPlusPlus.List1.len()
+		{
+			Path := NotepadPlusPlus.List1[A_Index]
+			SplitPath, Path, Name
+			Accessor.List.append(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
+		}
+		Loop % NotepadPlusPlus.List2.len()
+		{
+			Path := NotepadPlusPlus.List2[A_Index]
+			SplitPath, Path, Name
+			Accessor.List.append(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
+		}
+		return
+	}
+	InStrList := Array()
+	FuzzyList := Array()
 	Loop % NotepadPlusPlus.List1.len()
 	{
 		Path := NotepadPlusPlus.List1[A_Index]
 		SplitPath, Path, Name
-		if((!Filter && KeywordSet) || InStr(Name, Filter) || (NotepadPlusPlus.Settings.FuzzySearch && FuzzySearch(Name,Filter) < 0.4))
+		pos := InStr(Name, Filter)
+		if(pos = 1)
 			Accessor.List.append(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
+		else if(pos > 1)
+			InStrList.append(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
+		else if(NotepadPlusPlus.Settings.FuzzySearch && FuzzySearch(Name,Filter) < 0.3)
+			FuzzyList.append(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
 	}
 	Loop % NotepadPlusPlus.List2.len()
 	{
 		Path := NotepadPlusPlus.List2[A_Index]
-		SplitPath, Path, Name
-		if((!Filter && KeywordSet) || InStr(Name, Filter))
+		SplitPath, Path, Name		
+		pos := InStr(Name, Filter)
+		if(pos = 1)
 			Accessor.List.append(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
+		else if(pos > 1)
+			InStrList.append(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
+		else if(NotepadPlusPlus.Settings.FuzzySearch && FuzzySearch(Name,Filter) < 0.3)
+			FuzzyList.append(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
 	}
+	Accessor.List.Extend(InStrList)
+	Accessor.List.Extend(FuzzyList)
+	return
 }
 Accessor_NotepadPlusPlus_PerformAction(NotepadPlusPlus, Accessor, AccessorListEntry)
 {

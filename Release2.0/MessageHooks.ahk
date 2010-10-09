@@ -60,6 +60,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 
 ShellMessage( wParam,lParam, msg)
 {
+	WasCritical := A_IsCritical
 	Critical
 	ListLines, Off
 	global ExplorerPath, HKShowSpaceAndSize, BlinkingWindows, wtmwParam, SuppressTabEvents, UseTabs, PreviousWindow, PreviousExplorerPath,WindowList,Accessor
@@ -73,7 +74,11 @@ ShellMessage( wParam,lParam, msg)
 	If	msg=1028
 	{
 		If	wParam=1028
+		{
+			if(!WasCritical)
+				Critical, Off
 			Return
+		}
 		Else If lParam=0x205 ; RButton 
 		{
 			wtmwParam := wParam
@@ -202,7 +207,8 @@ ShellMessage( wParam,lParam, msg)
 		}
 	}
 	ListLines, On
-	Critical, Off
+	if(!WasCritical)
+		Critical, Off
 }
 /*
 UpdatePosition:
@@ -214,9 +220,11 @@ WM_LBUTTONUP(wParam,lParam,msg,hWnd){
 } 
 
 WM_NOTIFY(wParam, lParam, msg, hWnd){ 
+	WasCritical := A_IsCritical
 	Critical
 	ToolTip("",lParam,"") 
-	Critical, Off
+	if(!WasCritical)
+		Critical, Off
 } 
 ToolTip: 
 link:=ErrorLevel 

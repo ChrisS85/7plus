@@ -573,30 +573,32 @@ UpdateTabs()
 {
 	global
 	local TabContainer, hwnd,tabhwnd,folder,tabs
+	WasCritical := A_IsCritical
 	Critical
 	outputdebug updatetabs()
-	if(SuppressTabEvents)
-		return
-	if(NoTabUpdate)
-		return
-	outputdebug not suppressed
-	hwnd:=WinActive("ahk_group ExplorerGroup")
-	TabContainer:=TabContainerList.ContainsHWND(hwnd)
-	if(hwnd && TabContainer)
+	if(!SuppressTabEvents && !NoTabUpdate)
 	{
-		Loop % TabContainer.tabs.len()
+		outputdebug not suppressed
+		hwnd:=WinActive("ahk_group ExplorerGroup")
+		TabContainer:=TabContainerList.ContainsHWND(hwnd)
+		if(hwnd && TabContainer)
 		{
-			path := GetCurrentFolder(TabContainer.tabs[A_Index].hwnd,1)
-			if(path != TabContainer.tabs[A_Index].path)
+			Loop % TabContainer.tabs.len()
 			{
-				TabContainer.tabs[A_Index].path := path
-				CalculateTabText(TabContainer.tabs[A_Index])
-			}			
+				path := GetCurrentFolder(TabContainer.tabs[A_Index].hwnd,1)
+				if(path != TabContainer.tabs[A_Index].path)
+				{
+					TabContainer.tabs[A_Index].path := path
+					CalculateTabText(TabContainer.tabs[A_Index])
+				}			
+			}
+			CalculateHorizontalTabPositions(TabContainer)
 		}
-		CalculateHorizontalTabPositions(TabContainer)
+		SuppressTabEvents:=false
+		DrawTabWindow()
 	}
-	SuppressTabEvents:=false
-	DrawTabWindow()
+	if(!WasCritical)
+		Critical, Off
 	return
 	/*
 	SuppressTabEvents:=true
@@ -639,6 +641,7 @@ CreateTab(hwnd,path=-1,Activate=-1)
 		Msgbox CreateTab(): No active tab!
 		Return
 	}
+	WasCritical := A_IsCritical
 	Critical
 	Activate := Activate = -1 ? ActivateTab : Activate
 	path := path = -1 ? TabStartupPath : path
@@ -750,7 +753,8 @@ CreateTab(hwnd,path=-1,Activate=-1)
 	UpdateTabs()
 	UpdatePosition(TabNum, TabWindow)
 	GuiControl, %TabNum%:MoveDraw, TabControl
-	Critical, Off
+	if(!WasCritical)
+		Critical, Off
 }
 
 

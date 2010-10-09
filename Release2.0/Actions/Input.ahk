@@ -70,6 +70,7 @@ Action_Input_GuiSubmit(Action, ActionGUI)
 ;Non blocking Input box (can wait for closing in event system though)
 UserInputBox(Action, Title, Text, Cancel) 
 {
+	WasCritical := A_IsCritical
 	Critical, Off
 	GuiNum:=GetFreeGUINum(10)
 
@@ -89,6 +90,8 @@ UserInputBox(Action, Title, Text, Cancel)
 	Action.tmpEdit := Edit
 	Action.tmpGuiNum := GuiNum
 	;return Gui number to indicate that the Input box is still open
+	if(WasCritical)
+		Critical
 	return GuiNum
 }
 
