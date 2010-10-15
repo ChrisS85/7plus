@@ -17,12 +17,22 @@ New Functions:
     * URL: Opens URLs and keeps a history of entered URLs.
   * Accessor may use user-defined keywords. This is very useful for web searches.
   * Events are now categorized. Old users may need to store their custom events prior to upgrade.
+  * FTP Upload action now uses FTP profiles instead of defining the FTP access data separately in each action.
+  * New ExplorerButton trigger allows to add buttons to the explorer bar that trigger any function, like uploading files, creating a backup of the current folder, open selected files with a specific program,...
+  * In addition to the last entry, a button was added to ExplorerButton config menu and FastFolders tab to remove all explorer buttons created by 7plus. This can be used to remove any buttons which were erroneously generated.
   * New ViewMode action for controlling the visibility of hidden files and file extensions in explorer.
+  * 7plus can now be run in portable mode by appending -Portable as command line switch. Features that access the registry (mostly explorer bar buttons) won't work in this mode.
+  * 7plus can now run as normal user when admin privileges aren't available. In this mode certain features (mostly explorer bar buttons) are not accessible. This is configurable in Misc settings tab. When installed in Program Files directory and not running as admin, settings will have to be located in %AppData%\7plus.
+  * Added an apply button to settings.
+  * Added an uninstaller that removes all changes made by 7plus.
 
 Bugfixes:
   * Bug about nonexistent hotkey in settings was fixed.
   * Events, conditions and actions are now removed again if "Add event/condition/action" was used and cancel was pressed.
   * Default settings file accidently contained a translated version of "New textfile" string in previous version.
+  * Fixed an error in IsRenaming condition that prevented Backspace and Shift+C while renaming files.
+  * Backspace made Explorer/File dialog go upwards in address/search bar.
+  * Clipboard history is now stored separately in an XML file, this should get rid of occassionally appearing settings file bloat.
   * And some others not worth noting
 
 If you like this program and want to support its development, please consider donating!
