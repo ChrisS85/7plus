@@ -14,6 +14,8 @@ New Functions:
     * Notes: Take notes
     * FastFolders: Access to FastFolders from anywhere
     * Notepad++ Tab Switcher: Activates Notepad++ and shows a specific tab. Uses smart prediction similar to Notepad++ FileSwitcher plugin.
+    * URL: Opens URLs and keeps a history of entered URLs.
+  * Accessor may use user-defined keywords. This is very useful for web searches.
   * Events are now categorized. Old users may need to store their custom events prior to upgrade.
   * New ViewMode action for controlling the visibility of hidden files and file extensions in explorer.
 
