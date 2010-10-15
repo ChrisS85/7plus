@@ -2,29 +2,29 @@
 _This file is temporary and will be changed in the future_
 
 New Functions:
-  * Accessor window which serves as a versatile way to access all kinds of things with the keyboard. It also provides useful context menu options and shows CPU load.
-  * Accessor plugins:
-    * Window Switcher: Activates windows, shows cpu load/always on top state, allows closing the window/process and setting always on top state
-    * Program Launcher: Runs programs by typing their names, similar to programs like Launchy or Exekutor. Automatically indexes the running programs so indexing of program files or windows directory should be unnecessary.
-    * File System Viewer: Browse the file system and execute or open files/folders. Supports autocompletion
-    * Uninstaller: Uninstall programs or remove them from uninstall list
-    * Google Search: Quickly search for something using Google
-    * Calculator: Use Google calculator for quick calculations and unit conversions
-    * Weather: Quickly access Google Weather
-    * Notes: Take notes
-    * FastFolders: Access to FastFolders from anywhere
-    * Notepad++ Tab Switcher: Activates Notepad++ and shows a specific tab. Uses smart prediction similar to Notepad++ FileSwitcher plugin.
-    * URL: Opens URLs and keeps a history of entered URLs.
-  * Accessor may use user-defined keywords. This is very useful for web searches.
-  * Events are now categorized. Old users may need to store their custom events prior to upgrade.
-  * FTP Upload action now uses FTP profiles instead of defining the FTP access data separately in each action.
-  * New ExplorerButton trigger allows to add buttons to the explorer bar that trigger any function, like uploading files, creating a backup of the current folder, open selected files with a specific program,...
-  * In addition to the last entry, a button was added to ExplorerButton config menu and FastFolders tab to remove all explorer buttons created by 7plus. This can be used to remove any buttons which were erroneously generated.
-  * New ViewMode action for controlling the visibility of hidden files and file extensions in explorer.
-  * 7plus can now be run in portable mode by appending -Portable as command line switch. Features that access the registry (mostly explorer bar buttons) won't work in this mode.
-  * 7plus can now run as normal user when admin privileges aren't available. In this mode certain features (mostly explorer bar buttons) are not accessible. This is configurable in Misc settings tab. When installed in Program Files directory and not running as admin, settings will have to be located in %AppData%\7plus.
-  * Added an apply button to settings.
-  * Added an uninstaller that removes all changes made by 7plus.
+  * *Accessor* window which serves as a versatile way to access all kinds of things with the keyboard. It also provides useful context menu options and shows CPU load.
+  * *Accessor plugins*:
+    * *Window Switcher*: Activates windows, shows cpu load/always on top state, allows closing the window/process and setting always on top state
+    * *Program Launcher*: Runs programs by typing their names, similar to programs like Launchy or Exekutor. Automatically indexes the running programs so indexing of program files or windows directory should be unnecessary.
+    * *File System Viewer*: Browse the file system and execute or open files/folders. Supports autocompletion
+    * *Uninstaller*: Uninstall programs or remove them from uninstall list
+    * *Google Search*: Quickly search for something using Google
+    * *Calculator*: Use Google calculator for quick calculations and unit conversions
+    * *Weather*: Quickly access Google Weather
+    * *Notes*: Take notes
+    * *FastFolders*: Access to FastFolders from anywhere
+    * *Notepad++ Tab Switcher*: Activates Notepad++ and shows a specific tab. Uses smart prediction similar to Notepad++ FileSwitcher plugin.
+    * *URL*: Opens URLs and keeps a history of entered URLs.
+  * *Accessor* may use *user-defined keywords*. This is very useful for web searches.
+  * *Events* are now *categorized*. Old users may need to store their custom events prior to upgrade.
+  * *FTP Upload* action now uses *FTP profiles* instead of defining the FTP access data separately in each action.
+  * New *ExplorerButton* trigger allows to add buttons to the explorer bar that trigger any function, like uploading files, creating a backup of the current folder, open selected files with a specific program,...
+  * In addition to the last entry, a button was added to ExplorerButton config menu and FastFolders tab to *remove all explorer buttons* created by 7plus. This can be used to remove any buttons which were erroneously generated.
+  * New *ViewMode* action for controlling the visibility of hidden files and file extensions in explorer.
+  * 7plus can now be run in *portable mode* by appending -Portable as command line switch. Features that access the registry (mostly explorer bar buttons) won't work in this mode.
+  * 7plus can now *run as normal user* when admin privileges aren't available. In this mode certain features (mostly explorer bar buttons) are not accessible. This is configurable in Misc settings tab. When installed in Program Files directory and not running as admin, settings will have to be located in %AppData%\7plus.
+  * Added an *apply button* to settings.
+  * Added an *uninstaller* that removes all changes made by 7plus.
 
 Bugfixes:
   * Bug about nonexistent hotkey in settings was fixed.
