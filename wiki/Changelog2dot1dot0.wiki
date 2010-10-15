@@ -1,7 +1,7 @@
 = 7plus Version 2.1.0 changelog =
 _This file is temporary and will be changed in the future_
 
-New Functions:
+===New Functions:===
   * *Accessor* window which serves as a versatile way to access all kinds of things with the keyboard. It also provides useful context menu options and shows CPU load.
   * *Accessor plugins*:
     * *Window Switcher*: Activates windows, shows cpu load/always on top state, allows closing the window/process and setting always on top state
@@ -26,7 +26,7 @@ New Functions:
   * Added an *apply button* to settings.
   * Added an *uninstaller* that removes all changes made by 7plus.
 
-Bugfixes:
+===Bugfixes:===
   * Bug about nonexistent hotkey in settings was fixed.
   * Events, conditions and actions are now removed again if "Add event/condition/action" was used and cancel was pressed.
   * Default settings file accidently contained a translated version of "New textfile" string in previous version.
