@@ -1,0 +1,2 @@
+= 7plus Uninstaller Accessor Plugin =
+This plugin makes it possible to quickly list and uninstall programs that are installed on the computer. Type "Uninstall" (default keyword) to see a list of uninstallable programs, and add a part of the program's name to filter the list. It is also possible to remove a program from the uninstall list if it is not uninstallable anymore for some reason.
