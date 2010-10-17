@@ -37,6 +37,7 @@ _This file is temporary and will be changed in the future_
   * Clipboard history is now stored separately in an XML file, this should get rid of occassionally appearing settings file bloat.
   * Double click on Desktop trigger should now work properly on 32 bit systems. On 64 bit systems it will only work sometimes until the switch to a 64 bit version of Autohotkey is made.
   * A bug causing WindowState action not to work properly was fixed.
+  * Fixed selecting files on the desktop, NewFile and NewFolder actions should now work on the desktop in most cases.
   * UACAutorun.exe and ChangeLocation.exe are not needed anymore. Their functionality is now implemented in 7plus.exe.
   * And some others not worth noting
 
