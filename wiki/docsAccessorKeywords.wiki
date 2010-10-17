@@ -5,12 +5,9 @@ For URLs which require parameters (mostly searches), it is possible to use place
 
 Example:
 
-Keyword: google
-
-Command: http://google.com/search?q=${1}
-
-Entered Accessor command: google 7plus
-
-Resulting URL: http://google.com/search?q=7plus
+|| Keyword || google ||
+|| Command || http://google.com/search?q=${1} ||
+|| Entered Accessor command || google 7plus ||
+|| Resulting URL || http://google.com/search?q=7plus ||
 
 Of course more than one parameter is supported, in which case the parameters after the keyword are splitted at spaces. If a parameter contains spaces, it needs to be enclosed by quotes.
