@@ -1,0 +1,2 @@
+= Weather Accessor Plugin =
+This plugin can search for weather forecasts for a specific place using Google Weather. Just type "weather location" and you'll see the current data and the forecast for the next 4 days. You can also copy this information to the clipboard.
