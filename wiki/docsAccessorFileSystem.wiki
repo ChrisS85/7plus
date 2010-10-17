@@ -1,0 +1,15 @@
+= Accessor File System Browser Plugin=
+
+The Accessor filesystem browser plugin allows to enter paths and browse folders.
+
+Pressing Enter will either launch the selected file or dive into the selected folder.
+When there is more than one result, TAB will toggle through the results. If there is only one result, TAB will act like the Enter key and go into the folder.
+
+To show only filetypes of a certain kind, you may enter *.extensions at the end of the string, e.g. "C:\Downloads\*.zip" to only show zip files in the directory.
+
+Launching a program by this method will append it to the [docsAccessorProgramLauncher Program launcher plugin's] cache, so it can be accessed next time by simply typing a part of its filename.
+
+In addition, this plugin allows to:
+  * Open the path of a folder/file in explorer or CMD or copying it to the clipboard
+  * Running a program with arguments
+  * Showing the explorer context menu of the selected item.
