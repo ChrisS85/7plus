@@ -25,8 +25,9 @@ _This file is temporary and will be changed in the future_
   * 7plus can now *run as normal user* when admin privileges aren't available. In this mode certain features (mostly explorer bar buttons) are not accessible. This is configurable in Misc settings tab. When installed in Program Files directory and not running as admin, settings will have to be located in %AppData%\7plus.
   * Added an *apply button* to settings.
   * Added an *uninstaller* that removes all changes made by 7plus.
-  * Added a new placeholder: ${MC} - Class of window under mouse.
-  * Added a new placeholder: ${MNN} - ClassNN of control under mouse.
+  * Added a *new placeholder: ${MC}* - Class of window under mouse.
+  * Added a *new placeholder: ${MNN}* - ClassNN of control under mouse.
+  * Added a *new action: Wait*
 ===Bugfixes:===
   * Bug about nonexistent hotkey in settings was fixed.
   * Events, conditions and actions are now removed again if "Add event/condition/action" was used and cancel was pressed.
