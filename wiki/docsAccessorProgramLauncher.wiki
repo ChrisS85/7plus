@@ -7,6 +7,9 @@ The plugin uses a cache in which the paths to the programs are stored. By defaul
 For speed and clarity reasons, it is not suggested to include large folders like the Program Files or Windows directory. Instead, this plugin maintains a dynamic cache in which it stores programs which have been running during the program's runtime. This way you can run a program once and this plugin will know about it in the future.
 Another way to add a program to this cache is by running it through the [docsAccessorFileSystem file system accessor plugin].
 
+This plugin is able to resolve .lnk files to their correct paths to avoid duplications.
+You may also use the "run" (default) keyword to exclude the results of other plugins from the list and show all indexed programs.
+
 Like the [docsAccessorFileSystem file system accessor plugin], you can:
   * Open a program with arguments
   * Open its executable path in explorer or CMD
