@@ -1,3 +1,4 @@
+= Accessor =
 Accessor is a multi-purpose window introduced in 7plus 2.1.0.
 
 It is similar to launchers like Launchy or Exekutor. The user types a command and possible matches and actions will appear in the list below. 
