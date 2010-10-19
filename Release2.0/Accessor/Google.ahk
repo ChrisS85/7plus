@@ -39,9 +39,6 @@ Accessor_Google_OnAccessorOpen(Google, Accessor)
 }
 Accessor_Google_OnAccessorClose(Google, Accessor)
 {
-	Loop % Google.List.len()
-		if(Google.List[A_Index].Icon != Accessor.GenericIcons.Application)			
-			DestroyIcon(Google.List[A_Index].Icon)
 }
 Accessor_Google_OnExit(Google)
 {
@@ -90,14 +87,11 @@ QueryGoogleResult()
 		return
 	Gui, %GUINum%: Default
 	GuiControlGet, Filter, , AccessorEdit
-	outputdebug query Google result
 	if(!strStartsWith(Filter, GooglePlugin.Settings.Keyword " "))
 		return
 	Filter := strTrim(Filter, GooglePlugin.Settings.Keyword " ")
-	outputdebug for filter %filter%
 	
 	URL := uriEncode("http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=") uriEncode(Filter, 1) "&rsz=8"
-	outputdebug url %url%
 	FileDelete, %A_Temp%\7plus\GoogleQuery.htm
 	URLDownloadToFile, %URL%, %A_Temp%\7plus\GoogleQuery.htm
 	FileEncoding, UTF-8
@@ -105,7 +99,6 @@ QueryGoogleResult()
 	FileEncoding
 	GooglePlugin.List := Array()
 	
-	outputdebug %GoogleQuery%
 	pos1 := 0, pos2 := 0, pos3 := 0
 	Loop
 	{

@@ -1,6 +1,5 @@
 Event_ExpandPlaceHolders(Event,text)
 {
-	outputdebug expand %text%
 	;Expand dynamic placeholders (for example ${Input} defined by input action)
 	enum := Event.Placeholders._newEnum()
 	while enum[key,value]
@@ -10,18 +9,33 @@ Event_ExpandPlaceHolders(Event,text)
 	}
 	return ExpandGlobalPlaceHolders(text)
 }
+GetFullPathName(SPath)
+{ 
+	VarSetCapacity(lPath,260,0), DllCall("GetLongPathName", Str,SPath, Str,lPath, UInt,260 ) 
+	Return lPath 
+}
 ExpandPathPlaceholders(text)
 {
-	outputdebug expand %text%
-	StringReplace, text, text, `%ProgramFiles`%, %A_ProgramFiles%, All
-	StringReplace, text, text, `%Windir`%, %A_Windir%, All
-	StringReplace, text, text, `%Temp`%, %A_Temp%, All
-	StringReplace, text, text, `%AppData`%, %A_AppData%, All
-	StringReplace, text, text, `%Desktop`%, %A_Desktop%, All
-	StringReplace, text, text, `%MyDocuments`%, %A_MyDocuments%, All
-	StringReplace, text, text, `%StartMenu`%, %A_StartMenu%, All
-	StringReplace, text, text, `%StartMenuCommon`%, %A_StartMenuCommon%, All
-	outputdebug expanded %text%
+	static sProgramFiles, sWinDir, sTemp, sAppData, sDesktop, sMyDocuments, sStartMenu, sStartMenuCommon
+	if(!sProgramFiles)
+	{
+		sProgramFiles := GetFullPathName(A_ProgramFiles)
+		sWinDir := GetFullPathName(A_WinDir)
+		sTemp := GetFullPathName(A_Temp)
+		sAppData := GetFullPathName(A_AppData)
+		sDesktop := GetFullPathName(A_Desktop)
+		sMyDocuments := GetFullPathName(A_MyDocuments)
+		sStartMenu := GetFullPathName(A_StartMenu)
+		sStartMenuCommon := GetFullPathName(A_StartMenuCommon)
+	}
+	StringReplace, text, text, `%ProgramFiles`%, %sProgramFiles%, All
+	StringReplace, text, text, `%Windir`%, %sWindir%, All
+	StringReplace, text, text, `%Temp`%, %sTemp%, All
+	StringReplace, text, text, `%AppData`%, %sAppData%, All
+	StringReplace, text, text, `%Desktop`%, %sDesktop%, All
+	StringReplace, text, text, `%MyDocuments`%, %sMyDocuments%, All
+	StringReplace, text, text, `%StartMenu`%, %sStartMenu%, All
+	StringReplace, text, text, `%StartMenuCommon`%, %sStartMenuCommon%, All
 	return text
 }
 ExpandGlobalPlaceholders(text)
@@ -70,10 +84,10 @@ ExpandPlaceholder(Placeholder)
 	}
 	else if(Placeholder = "U" || strStartsWith(Placeholder,"M")) ;Mouse submenu
 	{
-		if(strlen(Placeholder > 1) && InStr(Placeholder, "A"))
+		if(strlen(Placeholder > 1) && InStr(Placeholder, "A") = 2)
 			CoordMode, Mouse, Relative
-		MouseGetPos,x,y,UnderMouse
-		if(strlen(Placeholder > 1) && InStr(Placeholder, "U"))
+		MouseGetPos,x,y,UnderMouse, Control
+		if(strlen(Placeholder > 1) && InStr(Placeholder, "U") = 2)
 		{
 			WinGetPos, wx, wy, , ,ahk_id %UnderMouse%
 			x -= wx
@@ -81,10 +95,14 @@ ExpandPlaceholder(Placeholder)
 		}
 		if(Placeholder = "U")
 			return UnderMouse
-		else if(InStr(Placeholder, "X"))
+		else if(InStr(Placeholder, "X") = 3)
 			return x
-		else if(InStr(Placeholder, "Y"))
+		else if(InStr(Placeholder, "Y") = 3)
 			return y
+		else if(InStr(Placeholder, "NN") = 2)
+			return Control
+		else if(InStr(Placeholder, "C") = 2)
+			return WinGetClass("ahk_id " window)
 	}
 	else if(strStartsWith(Placeholder, "DateTime"))
 	{

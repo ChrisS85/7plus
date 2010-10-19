@@ -344,31 +344,34 @@ GetSelectedFiles(FullName=1)
 	}
 	else if(WinActive("ahk_group DesktopGroup"))
 	{	
-		MuteClipboardList := true
-		clipboardbackup := clipboardall
-		outputdebug clearing clipboard
-		clipboard := ""
-		ClipWait, 0.05, 1
-		outputdebug copying files to clipboard
-		Send ^c
-		ClipWait, 0.05, 1
-		result := clipboard
-		clipboard := clipboardbackup
-		OutputDebug, Selected Files: %result%
-		MuteClipboardList:=false
-		return result
-		
-		/*
-		ControlGet, result, List, Selected Col1, SysListView321, A ;This line causes explorer to crash
-		if(result)
+		if(A_PtrSize = 8) ;64bit doesn't support listview method below yet
 		{
-			Loop, Parse, result, `n  ; Rows are delimited by linefeeds (`n).
-				result2 .= "`n" A_Desktop "\" A_LoopField
-			return SubStr(result2,2)
+			MuteClipboardList := true
+			clipboardbackup := clipboardall
+			outputdebug clearing clipboard
+			clipboard := ""
+			ClipWait, 0.15, 1
+			outputdebug copying files to clipboard
+			Send ^c
+			ClipWait, 0.15, 1
+			result := clipboard
+			clipboard := clipboardbackup
+			OutputDebug, Selected Files: %result%
+			MuteClipboardList:=false
+			return result
 		}
 		else
-			return ""
-		*/
+		{
+			ControlGet, result, List, Selected Col1, SysListView321, A ;This line causes explorer to crash on 64 bit systems when used in a 32 bit AHK build
+			if(result)
+			{
+				Loop, Parse, result, `n  ; Rows are delimited by linefeeds (`n).
+					result2 .= "`n" A_Desktop "\" A_LoopField
+				return SubStr(result2,2)
+			}
+			else
+				return ""
+			}
 	}
 }
 
@@ -479,6 +482,10 @@ SelectFiles(Select,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)
 					COM_Invoke(doc,"SelectItem",doc.Folder.ParseName(filter),(A_Index=1 ? value1 : value)) ;http://msdn.microsoft.com/en-us/library/bb774047(VS.85).aspx					
 			}
 		}
+	}
+	else if(hWnd:=WinActive("ahk_group DesktopGroup") && A_PtrSize = 4)
+	{
+		SendInput %Select%
 	}
 }
 

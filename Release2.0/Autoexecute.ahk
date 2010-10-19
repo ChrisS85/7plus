@@ -1,30 +1,3 @@
-if 1 = -id
-	CommunicateWithRunningInstance()
-
-FileCreateDir %A_Temp%\7plus
-
-if(FileExist(A_ScriptDir "\Settings.ini"))
-	ConfigPath := A_ScriptDir "\Settings.ini"
-Else
-{
-	ConfigPath := A_AppData "\7plus\Settings.ini"
-	if(!FileExist(A_AppData "\7plus\Events.xml") && FileExist(A_ScriptDir "\Events.xml")) ; make sure sample events.xml is in appdata directory
-	{
-		FileCopy, %A_ScriptDir%\Events.xml, %A_AppData%\7plus\Events.xml
-		if(FileExist(A_AppData "\7plus\Events.xml"))
-			FileDelete, %A_ScriptDir%\Events.xml
-	}
-}
-;Start debugger
-IniRead, DebugEnabled, %ConfigPath%, General, DebugEnabled , 0
-if(DebugEnabled)
-	DebuggingStart()
-	
-;Update checker
-IniRead, AutoUpdate, %ConfigPath%, Misc, AutoUpdate, 1
-if(AutoUpdate)
-	AutoUpdate()
-PostUpdate()
 ;Groups for explorer classes
 GroupAdd, ExplorerGroup, ahk_class ExploreWClass
 GroupAdd, ExplorerGroup, ahk_class CabinetWClass
@@ -35,6 +8,102 @@ GroupAdd, TaskbarGroup, ahk_class BaseBar
 GroupAdd, TaskbarGroup, ahk_class DV2ControlHost
 GroupAdd, TaskbarDesktopGroup, ahk_group DesktopGroup
 GroupAdd, TaskbarDesktopGroup, ahk_group TaskbarGroup
+
+Loop %0%
+{
+	SplitPath, 1,x,y
+	if(strStartsWith(%A_Index%,"-id"))
+		CommunicateWithRunningInstance(%A_Index%)
+	else if(%A_Index% = "-Portable")
+		IsPortable := true
+	else if(y)
+	{
+		x = %1%
+		SetDirectory(x)
+		ExitApp
+	}
+}
+FileCreateDir %A_Temp%\7plus
+
+IniRead, NoAdminSettingsTransfered, %A_AppData%\7plus\Settings.ini, Misc, NoAdminSettingsTransfered, 0
+if((IsPortable || FileExist(A_ScriptDir "\Settings.ini")) && !NoAdminSettingsTransfered)
+	ConfigPath := A_ScriptDir "\Settings.ini"
+Else
+{
+	ConfigPath := A_AppData "\7plus\Settings.ini"
+	if(!FileExist(A_AppData "\7plus\Events.xml") && FileExist(A_ScriptDir "\Events.xml") && WriteAccess(A_ScriptDir "\Events.xml")) ; make sure sample events.xml is in appdata directory
+	{
+		FileCopy, %A_ScriptDir%\Events.xml, %A_AppData%\7plus\Events.xml
+		if(FileExist(A_AppData "\7plus\Events.xml"))
+			FileDelete, %A_ScriptDir%\Events.xml
+	}
+}
+;Start debugger
+IniRead, DebugEnabled, %ConfigPath%, General, DebugEnabled , 0
+if(DebugEnabled)
+	DebuggingStart()
+
+IniRead, RunAsAdmin, %ConfigPath%, Misc, RunAsAdmin , Always/Ask
+if(RunAsAdmin = "Never" && !IsPortable)
+{
+	if(A_IsCompiled)
+		RegRead, temp, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_ScriptFullPath%
+	else
+		RegRead, temp, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_AhkPath%
+	if(temp)
+	{
+		if(A_IsCompiled)
+			RegDelete, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_ScriptFullPath%
+		else
+			RegDelete, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_AhkPath%
+	}
+}
+if(RunAsAdmin = "Always/Ask" && !IsPortable) ;Write it again incase it gets changed externally
+{
+	if(A_IsCompiled)
+		RegWrite, REG_SZ, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_ScriptFullPath%, RUNASADMIN
+	else
+		RegWrite, REG_SZ, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_AhkPath%, RUNASADMIN
+}
+if(!A_IsAdmin && RunAsAdmin = "Always/Ask")
+{
+	If(A_IsCompiled)
+		uacrep := DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, A_ScriptFullPath, str, "/r", str, A_WorkingDir, int, 1)
+	else
+		uacrep := DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, A_AhkPath, str, "/r """ A_ScriptFullPath """", str, A_WorkingDir, int, 1)
+	If(uacrep = 42) ;UAC Prompt confirmed, application may run as admin
+		ExitApp
+}
+if(ConfigPath = A_ScriptDir "\Settings.ini" && !WriteAccess(A_ScriptDir "\Settings.ini"))
+{
+	if(IsPortable)
+		MsgBox No File access to settings files in program directory. 7plus will not be able to store its settings. Please move 7plus to a folder with write permissions, run it as administrator, or grant write permissions to this directory.
+	else
+	{
+		ConfigPath := A_AppData "\7plus\Settings.ini"
+		if(NoAdminSettingsTransfered = 0)
+		{
+			MsgBox No File access to settings files in program directory. 7plus will use %A_AppData%\7plus as settings directory.
+			FileCopy, %A_ScriptDir%\Events.xml, %A_AppData%\7plus\Events.xml, 1
+			FileCopy, %A_ScriptDir%\Settings.ini, %A_AppData%\7plus\Settings.ini, 1
+			FileCopy, %A_ScriptDir%\ProgramCache.xml, %A_AppData%\7plus\ProgramCache.xml, 1
+			FileCopy, %A_ScriptDir%\Notes.xml, %A_AppData%\7plus\Notes.xml, 1
+			FileCopy, %A_ScriptDir%\History.xml, %A_AppData%\7plus\History.xml, 1
+			FileCopy, %A_ScriptDir%\Clipboard.xml, %A_AppData%\7plus\Clipboard.xml, 1
+			FileCopy, %A_ScriptDir%\Accessor.xml, %A_AppData%\7plus\Accessor.xml, 1
+			FileCopy, %A_ScriptDir%\FTPProfiles.xml, %A_AppData%\7plus\FTPProfiles.xml, 1
+			NoAdminSettingsTransfered := true
+		}
+	}
+}
+;Update checker
+IniRead, AutoUpdate, %ConfigPath%, Misc, AutoUpdate, 1
+if(A_IsAdmin) ;For some reason this does not work for normal user
+{
+	if(AutoUpdate)
+		AutoUpdate()
+	PostUpdate()
+}
 
 CreateTabWindow()
 ;Get windows version
@@ -191,18 +260,21 @@ if((AeroFlipTime>=0&&Vista7)||HKSlideWindows)
 	SetTimer, hovercheck, 10
 }
 ;Clipboard manager list (is some sort of fixed size stack which removes oldest entry on add/insert/push)
-Stack := Object("len", "Array_Length", "indexOf", "Array_indexOf", "join", "Array_Join" 
-      , "append", "Array_Append", "insert", "Array_Insert", "delete", "Array_Delete" 
-      , "sort", "Array_sort", "reverse", "Array_Reverse", "unique", "Array_Unique" 
-      , "extend", "Array_Extend", "copy", "Array_Copy", "pop", "Array_Pop", "swap", "Array_Swap", "Move", "Array_Move" , "push", "Stack_Push") 
-
-ClipboardList := Object("base", Stack) 
-Loop 10
+ClipboardList := Array()
+ClipboardList.push := "Stack_Push"
+ClipboardList := Object("Base", ClipboardList)
+SplitPath, ConfigPath,,path
+path .= "\Clipboard.xml"
+if(FileExist(path))
 {
-	IniRead, x, %ConfigPath%, Misc, Clipboard%A_Index%
-	Transform, x, Deref, %x%
-	if(x!="Error")
-		ClipboardList.Append(x)
+	FileRead, xml, %path%
+	XMLObject := XML_Read(xml)
+	;Convert empty and single arrays to real array
+	if(!XMLObject.List.len())
+		XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()		
+
+	Loop % min(XMLObject.List.len(), 10)
+		ClipboardList.append(XMLObject.List[A_Index])
 }
 FastFolders := Array()
 Loop 10
@@ -249,7 +321,9 @@ if(Vista7)
 	
 if(A_OSVersion="WIN_7")
 	CreateInfoGui()
-	
+
+Action_Upload_ReadFTPProfiles()
+
 GoSub TrayminOpen
 
 /*ReadHotkeys()
@@ -307,6 +381,7 @@ OnExit(Reload=0)
 	EventSystem_End()
 	Gdip_Shutdown(pToken)
 	WriteIni()
+	Action_Upload_WriteFTPProfiles()
 	SlideWindows_Exit()
 	TabContainerList.CloseAllInactiveTabs()
 	GoSub TrayminClose	
@@ -340,6 +415,8 @@ ShowWizard()
 AutoUpdate()
 {	
 	global MajorVersion,MinorVersion,BugfixVersion
+	if(!A_IsAdmin) ;For some reason this does not work for normal user
+		return
 	if(IsConnected())
 	{
 		random, rand
@@ -390,6 +467,26 @@ PostUpdate()
 		IniRead, tmpBugfixVersion, %A_ScriptDir%\Version.ini,Version,BugfixVersion
 		if(tmpMajorVersion=MajorVersion && tmpMinorVersion = MinorVersion && tmpBugfixVersion = BugfixVersion)
 		{
+			if(MajorVersion "." MinorVersion "." BugfixVersion = "2.1.0")
+			{
+				RemoveAllButtons()
+				RefreshFastFolders()
+			}
+			;2.0.0 -> 2.1.0 compatibility
+			if(!IsPortable)
+			{
+				RegRead, Autorun, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus
+				if(InStr(Autorun, "UACAutorun"))
+					if(A_IsCompiled)
+						RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptDir%\7plus.exe"
+					else
+						RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptDir%\7plus.ahk"
+			}
+			if(FileExist(A_ScriptDir "UACAutorun.exe") && WriteAccess(A_ScriptDir "UACAutorun.exe"))
+				FileDelete % A_ScriptDir "UACAutorun.exe"
+			if(FileExist(A_ScriptDir "ChangeLocation.exe") && WriteAccess(A_ScriptDir "ChangeLocation.exe"))
+				FileDelete % A_ScriptDir "ChangeLocation.exe"
+			
 			if(FileExist(A_ScriptDir "\Changelog.txt"))
 			{
 				MsgBox,4,, Update successful. View Changelog?
@@ -489,8 +586,11 @@ WriteIni()
 	IniWrite, %ImageQuality%, %ConfigPath%, Misc, ImageQuality
 	IniWrite, %ImageExtension%, %ConfigPath%, Misc, ImageExtension
 	IniWrite, %AutoUpdate%, %ConfigPath%, Misc, AutoUpdate
+	IniWrite, %RunAsAdmin%, %ConfigPath%, Misc, RunAsAdmin
 	IniWrite, %ExplorerPath%, %ConfigPath%, Misc, ExplorerPath
 	IniWrite, %PreviousExplorerPath%, %ConfigPath%, Misc, PreviousExplorerPath
+	if(NoAdminSettingsTransferred)
+		IniWrite, %NoAdminSettingsTransfered%, %ConfigPath%, Misc, NoAdminSettingsTransfered
 	
 	;FastFolders
 	Loop 10
@@ -502,15 +602,15 @@ WriteIni()
 	    IniWrite, %z%, %ConfigPath%, FastFolders, FolderTitle%x%
 	}
 	
-	Loop 10
-	{
-		x:=ClipboardList[A_Index]
-		x := RegExReplace(RegExReplace(RegExReplace(x, "``", "````"), "\r?\n", "``r``n"), "%", "``%")
-		IniWrite, %x%, %ConfigPath%, Misc, Clipboard%A_Index%
-	}
-	; SaveHotkeys()
+	SplitPath, ConfigPath,,path
+	path .= "\Clipboard.xml"
+	FileDelete, %path%
+	XMLObject := Object("List",Array())
+	Loop % min(ClipboardList.len(), 10)
+		XMLObject.List.append(ClipboardList[A_Index])
+	XML_Save(XMLObject,path)
 }
-CommunicateWithRunningInstance()
+CommunicateWithRunningInstance(Parameter)
 {
 	global
 	local Count
@@ -518,7 +618,8 @@ CommunicateWithRunningInstance()
 	FileRead, hwnd, %A_Temp%\7plus\hwnd.txt
 	if(WinExist("ahk_id " hwnd))
 	{
-		SendMessage, 55555, %2%, 0, ,ahk_id %hwnd%
+		Parameter := SubStr(Parameter, 5) ;-ID:Value
+		SendMessage, 55555, %Parameter%, 0, ,ahk_id %hwnd%
 		ExitApp
 	}
 	DetectHiddenWindows, Off

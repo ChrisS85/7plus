@@ -25,7 +25,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>3</ID>
+<ID>218</ID>
 <Name>Append file(s) to clipboard</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -57,7 +57,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>4</ID>
+<ID>219</ID>
 <Name>Append file(s) to clipboard: Cut</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -83,11 +83,17 @@
 </Condition><Condition>
 <Negate>1</Negate>
 <Type>IsRenaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>0</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>DirectUIHWND3</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>7</ID>
+<ID>222</ID>
 <Name>Make backspace go upwards</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -114,7 +120,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>10</ID>
+<ID>225</ID>
 <Name>Run CMD  in current directory</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -143,7 +149,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>228</ID>
+<ID>443</ID>
 <Name>Copy filenames to clipboard</Name>
 <OneInstance>1</OneInstance>
 <Trigger>
@@ -153,12 +159,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<Append>0</Append>
-<Clear>1</Clear>
-<Content>${SelNM}</Content>
-<Cut>0</Cut>
-<InsertType>Text</InsertType>
-<Type>Clipboard</Type>
+<Type></Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -172,7 +173,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>229</ID>
+<ID>444</ID>
 <Name>Copy full filepaths to clipboard</Name>
 <OneInstance>1</OneInstance>
 <Trigger>
@@ -201,7 +202,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>230</ID>
+<ID>445</ID>
 <Name>Append filenames to clipboard</Name>
 <OneInstance>1</OneInstance>
 <Trigger>
@@ -230,7 +231,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>231</ID>
+<ID>446</ID>
 <Name>Append full filepaths to clipboard</Name>
 <OneInstance>1</OneInstance>
 <Trigger>
@@ -240,7 +241,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<Filename></Filename>
+<Filename>Neues Textdokument.txt</Filename>
 <Rename>1</Rename>
 <Type>NewFile</Type>
 </Action></Actions>
@@ -259,7 +260,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>232</ID>
+<ID>447</ID>
 <Name>Create new textfile</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -269,7 +270,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<FolderName></FolderName>
+<FolderName>Neuer Ordner</FolderName>
 <Rename>1</Rename>
 <Type>NewFolder</Type>
 </Action></Actions>
@@ -288,7 +289,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>233</ID>
+<ID>448</ID>
 <Name>Create new folder</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -309,7 +310,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>236</ID>
+<ID>451</ID>
 <Name>Run explorer</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -329,7 +330,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>238</ID>
+<ID>453</ID>
 <Name>Double click go upwards</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -363,7 +364,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>301</ID>
+<ID>516</ID>
 <Name>Open image files in image editor</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -398,7 +399,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>302</ID>
+<ID>517</ID>
 <Name>Open non-image files in text editor</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -433,7 +434,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>305</ID>
+<ID>520</ID>
 <Name>Select files</Name>
 <OneInstance>0</OneInstance>
 <Trigger>

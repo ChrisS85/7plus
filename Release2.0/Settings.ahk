@@ -1,7 +1,7 @@
 ;---------------------------------------------------------------------------------------------------------------
 ; The following functions create the GUI and are only called once at startup
 ;---------------------------------------------------------------------------------------------------------------
-Settings_CreateEvents() {
+Settings_CreateEvents(ByRef TabCount) {
 	global
 	local yIt,x1,x2,x,y
 	outputdebug createevents() start
@@ -10,12 +10,13 @@ Settings_CreateEvents() {
 	x2 := x1 + 460
 	yIt:=yBase
 	Gui, 1:Add, Tab2, x176 y14 w460 h350 vEventsTab, 
-	AddTab(0, "","SysTabControl321")
+	TabCount++
+	AddTab(0, "","SysTabControl32" TabCount)
 	Gui, 1:Add, Text, x%x1% y%yIt% R3, You can add events here that are triggered under certain conditions. When triggered,`nthe event can launch a series of actions. This is a very powerful tool to add `nall kinds of features, and many features from 7plus are now implemented with this system.
 	yIt+=54
 	Gui, 1:Add, Text, x%x1% y%yIt%, Event search:
 	yIt-=4
-	Gui, 1:Add, ComboBox, x+10 y%yIt% w375 hwndEventFilter gEventFilterChange, 7plus|Clipboard|CMD|Explorer|Fast Folders|File Dialog|FTP|Picture Viewer|Window Handling
+	Gui, 1:Add, Edit, x+10 y%yIt% w375 hwndEventFilter gEventFilterChange
 	yIt += textboxstep
 	Gui, 1:Add, ListView, x%x1% y%yIt% w450 h232 vGUI_EventsList gGUI_EventsList_SelectionChange Grid -LV0x10 AltSubmit Checked, Enabled|ID|Trigger|Name
 	OnMessage(0x100, "WM_KEYDOWN")
@@ -35,16 +36,42 @@ Settings_CreateEvents() {
 	y := yIt + TextBoxTextOffset
 	outputdebug createevents() stop
 }
-Settings_CreateAccessor() {
+Settings_CreateAccessorKeywords(ByRef TabCount) {
 	global
 	local yIt,x1,x2,x,y
-	outputdebug createaccessor() start
+	xHelp:=xBase
+	x1:=xHelp+10
+	x2 := x1 + 460
+	yIt:=yBase
+	Gui, 1:Add, Tab2, x176 y14 w460 h350 vAccessorKeywordsTab, 
+	TabCount++
+	AddTab(0, "","SysTabControl32" TabCount)
+	Gui, 1:Add, ListView, x%x1% y%yIt% w450 h232 vGUI_AccessorKeywordsList gGUI_AccessorKeywordsList_Events Grid -Multi -LV0x10 AltSubmit, ID|Key|Command
+	OnMessage(0x100, "WM_KEYDOWN")j
+	OnMessage(0x101, "WM_KEYUP")
+	LV_ModifyCol(1, 0)
+    LV_ModifyCol(2, 100)
+	LV_ModifyCol(3, "AutoHdr")
+	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_AccessorKeywords_Add gGUI_AccessorKeywords_Add, Add keyword
+	yIt += textboxstep
+	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_AccessorKeywords_Delete gGUI_AccessorKeywords_Delete, Delete keyword
+	yIt += textboxstep + 4
+	Gui, 1:Add, Text, x%x1% y+190, Keyword:
+	Gui, 1:Add, Edit, x+27 y+-17 w380 vGUI_AccessorKeywordsKey gGUI_AccessorKeywordsTextChange
+	Gui, 1:Add, Text, x%x1% y+10, Command:
+	Gui, 1:Add, Edit, x+21 y+-17 w380 vGUI_AccessorKeywordsCommand gGUI_AccessorKeywordsTextChange
+	Gui, 1:Add, Text, x%x1% y+10, URL plugin can use parameters: hKey: "google" Command: "www.google.com/search?q=${1}" `nEntered Text: "google 7plus" result: "www.google.com/search?q=7plus"
+}
+Settings_CreateAccessor(ByRef TabCount) {
+	global
+	local yIt,x1,x2,x,y
 	xHelp:=xBase
 	x1:=xHelp+10
 	x2 := x1 + 460
 	yIt:=yBase
 	Gui, 1:Add, Tab2, x176 y14 w460 h350 vAccessorPluginsTab, 
-	AddTab(0, "","SysTabControl322")
+	TabCount++
+	AddTab(0, "","SysTabControl32" TabCount)
 	Gui, 1:Add, ListView, x%x1% y%yIt% w450 h232 vGUI_AccessorPluginsList gGUI_AccessorPluginsList_Events Grid -LV0x10 AltSubmit Checked, Enabled|ID|Name
 	OnMessage(0x100, "WM_KEYDOWN")
 	OnMessage(0x101, "WM_KEYUP")
@@ -54,15 +81,14 @@ Settings_CreateAccessor() {
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_AccessorSettings gGUI_AccessorSettings, Plugin Settings
 	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 gGUI_Accessor_Help, Help
-	yIt += textboxstep + 4
-	y := yIt + TextBoxTextOffset
-	outputdebug createaccessor() stop
+	Gui, 1:Add, Text, x%x1% y+190, Accessor is a versatile tool that is used to perform many commands through the keyboard, `nlike launching programs, switching windows, open URLs, browsing the filesystem,...`nPress the assigned hotkey (Default: ALT+Space) and start typing!
 }
-Settings_CreateExplorer() {
+Settings_CreateExplorer(ByRef TabCount) {
 	global
 	local yIt,x1,x2,x
 	Gui, 1:Add, Tab2, x176 y14 w460 h350 vExplorerTab, 
-	AddTab(1, "","SysTabControl323") 
+	TabCount++
+	AddTab(0, "","SysTabControl32" TabCount)
 	yIt:=yBase
 	
 	x1:=xHelp+10
@@ -172,14 +198,15 @@ Settings_CreateExplorer() {
 	Gui, 1:Add, Edit, x%x2% y%y% w%wTBMedium% vImgName R1	
 	yIt+=textboxstep	
 }
-Settings_CreateFastFolders() {
+Settings_CreateFastFolders(ByRef TabCount) {
 	global
 	local yIt,x1,x,y
 	yIt:=yBase
 	xHelp:=xBase
 	x1:=xHelp+10
 	Gui, 1:Add, Tab2, x176 y14 w460 h350 vFastFoldersTab
-	AddTab(0, "","SysTabControl324")
+	TabCount++
+	AddTab(0, "","SysTabControl32" TabCount)
 	
 	; Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders1 vURL_FastFolders1, ?		
 	; Gui, 1:Add, Checkbox, x%x1% y%yIt% gFastFolders,Use Fast Folders
@@ -189,20 +216,26 @@ Settings_CreateFastFolders() {
 	y:=yIt ;+yCheckboxTextOffset
 	Gui, 1:Add, Text, x%x% y%y% R2, In explorer and file dialogs you can store a path in one of ten slots by pressing CTRL`nand a numpad number key (default settings), and restore it by pressing the numpad number key again
 	yIt+=checkboxstep*1.5
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders1 vURL_FastFolders11, ?
-	Gui, 1:Add, Checkbox, x%x% y%yIt% vHKFolderBand, Integrate Fast Folders into explorer folder band bar (Vista/7 only)	
-	yIt+=checkboxstep
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders2 vURL_FastFolders2, ?
-	Gui, 1:Add, Checkbox, x%x% y%yIt% vHKCleanFolderBand, Remove windows folder band buttons (Vista/7 only)
-	yIt+=checkboxstep
-	x+=xCheckboxTextOffset
-	y:=yIt+yCheckboxTextOffset
-	Gui, 1:Add, Text, x%x% y%y% R2 vFolderBandDescription, If you use the folder band as a favorites bar like in browsers, it is recommended that you get rid`nof the buttons predefined by windows whereever possible (such as Slideshow, Add to Library,...)
-	x-=xCheckboxTextOffset
-	yIt+=checkboxstep*1.5
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders2 vURL_FastFolders21, ?
-	Gui, 1:Add, Checkbox, x%x% y%yIt% vHKPlacesBar, Integrate Fast Folders into open/save dialog places bar (First 5 Entries)
-	yIt+=checkboxstep
+	if(!IsPortable && A_IsAdmin)
+	{
+		Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders1 vURL_FastFolders11, ?
+		Gui, 1:Add, Checkbox, x%x% y%yIt% vHKFolderBand, Integrate Fast Folders into explorer folder band bar (Vista/7 only)	
+		yIt+=checkboxstep
+		Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders2 vURL_FastFolders2, ?
+		Gui, 1:Add, Checkbox, x%x% y%yIt% vHKCleanFolderBand, Remove windows folder band buttons (Vista/7 only)
+		yIt+=checkboxstep
+		x+=xCheckboxTextOffset
+		y:=yIt+yCheckboxTextOffset
+		Gui, 1:Add, Text, x%x% y%y% R2 vFolderBandDescription, If you use the folder band as a favorites bar like in browsers, it is recommended that you get rid`nof the buttons predefined by windows whereever possible (such as Slideshow, Add to Library,...)
+		x-=xCheckboxTextOffset
+		yIt+=checkboxstep*1.5
+		Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders2 vURL_FastFolders21, ?
+		Gui, 1:Add, Checkbox, x%x% y%yIt% vHKPlacesBar, Integrate Fast Folders into open/save dialog places bar (First 5 Entries)
+		yIt+=checkboxstep
+		Gui, 1:Add, Button, x%x% y%yIt% gRemoveAllExplorerButtons, Remove custom Explorer buttons
+	}
+	else
+		Gui, 1:Add, Text, x%x% y%yIt%, Explorer bar functions don't work in portable mode and require admin priviledges!
 	; Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders2 vURL_FastFolders22, ?
 	; Gui, 1:Add, Checkbox, x%x% y%yIt% vHKFFMenu, Middle mouse button: Show Fast Folders move/copy menu
 	; yIt+=checkboxstep
@@ -210,14 +243,15 @@ Settings_CreateFastFolders() {
 	; x+=xCheckboxTextOffset
 	; Gui, 1:Add, Text, x%x% y%y% R3, When clicking with middle mouse button in a supported file view, a menu`nwith the stored Fast Folders will show up. Clicking an entry will move all`nselected files into that directory, holding CTRL while clicking will copy the files.
 }
-Settings_CreateTabs() {
+Settings_CreateTabs(ByRef TabCount) {
 	global
 	local yIt,x1,x,y,x2
 	yIt:=yBase
 	xHelp:=xBase
 	x1:=xHelp+10
 	Gui, 1:Add, Tab2, x176 y14 w460 h350 vExplorerTabsTab
-	AddTab(0, "","SysTabControl325")
+	TabCount++
+	AddTab(0, "","SysTabControl32" TabCount)
 	
 	Gui, 1:Add, Text, x%x1% y%yIt% R3, 7plus makes it possible to use tabs in explorer. New tabs are opened with the middle mouse button`nand with CTRL+T, Tabs are cycled by clicking the Tabs or pressing CTRL+(SHIFT)+TAB,`nand closed by middle clicking a tab and with CTRL+W
 	yIt+=CheckboxStep*2.25
@@ -252,13 +286,51 @@ Settings_CreateTabs() {
 	Gui, 1:Add, DropDownList, x%x2% y%yIt% w%wTBMedium% vMiddleOpenFolder AltSubmit, window|tab|tab in background
 	yIt+=checkboxstep	
 }
-Settings_CreateWindows() {
+Settings_CreateFTPProfiles(ByRef TabCount) {
+	global
+	local yIt,x1,x,y,x2
+	yIt:=yBase
+	xHelp:=xBase
+	x1:=xHelp+10
+	Gui, 1:Add, Tab2, x176 y14 w460 h350 vFTPProfilesTab
+	TabCount++
+	AddTab(0, "","SysTabControl32" TabCount)
+	
+	Gui, 1:Add, Text, x%x1% y%yIt% R3, You can define FTP profiles for use with the upload action here. `nTarget folder and filename are set separately for each event.
+	yIt+=CheckboxStep*2
+	Gui, Add, DropDownList, x%x1% y%yIt% w200 vFTPProfilesDropDownList gFTPProfilesDropDownList,
+	Gui, Add, Button, x+10 w80 gFTPProfiles_Add, Add profile
+	Gui, Add, Button, x+10 w80 vFTPProfiles_Delete gFTPProfiles_Delete, Delete profile
+	yIt += CheckboxStep * 2
+	y:=yIt+yCheckboxTextOffset
+	x2 := x1 + 100
+	Gui, Add, Text, x%x1% y%yIt%, Hostname:
+	Gui, Add, Edit, x%x2% y%y% w200 vFTPProfiles_Hostname gFTPProfiles_Hostname,
+	yIt += TextboxStep
+	y:=yIt+yCheckboxTextOffset
+	Gui, Add, Text, x%x1% y%yIt%, Port:
+	Gui, Add, Edit, x%x2% y%y% w40 Number vFTPProfiles_Port,
+	yIt += TextboxStep
+	y:=yIt+yCheckboxTextOffset
+	Gui, Add, Text, x%x1% y%yIt%, User:
+	Gui, Add, Edit, x%x2% y%y% w200 vFTPProfiles_User,
+	yIt += TextboxStep
+	y:=yIt+yCheckboxTextOffset
+	Gui, Add, Text, x%x1% y%yIt%, Password:
+	Gui, Add, Edit, x%x2% y%y% w200 Password vFTPProfiles_Password,
+	yIt += TextboxStep
+	y:=yIt+yCheckboxTextOffset
+	Gui, Add, Text, x%x1% y%yIt%, URL:
+	Gui, Add, Edit, x%x2% y%y% w200 vFTPProfiles_URL,
+}
+Settings_CreateWindows(ByRef TabCount) {
 	global
 	local yIt,x1,x,y
 	xHelp:=xBase
 	x1:=xHelp+10
 	Gui, 1:Add, Tab2, x176 y14 w460 h350 vWindowsTab, 
-	AddTab(0, "","SysTabControl326")
+	TabCount++
+	AddTab(0, "","SysTabControl32" TabCount)
 	yIt:=yBase
 	/*
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar3, ?
@@ -318,18 +390,22 @@ Settings_CreateWindows() {
 	Gui, 1:Add, Text, x%x% y%y%, Middle click on empty taskbar: Taskbar properties
 	yIt+=checkboxstep	
 	
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar2, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKActivateBehavior, Left click on task group button (7 only): cycle through windows	
-	yIt+=checkboxstep	
+	if(!IsPortable)
+	{
+		Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar2, ?
+		Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKActivateBehavior, Left click on task group button (7 only): cycle through windows	
+		yIt+=checkboxstep
+	}
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window2, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKToggleWallpaper, Middle mouse click on desktop: Toggle wallpaper (7 only)
 	yIt+=checkboxstep
 }
-Settings_CreateMisc() {
+Settings_CreateMisc(ByRef TabCount) {
 	global
 	local yIt,x1
 	Gui, 1:Add, Tab2, x176 y14 w460 h350 vMiscTab, 
-	AddTab(0, "","SysTabControl327")
+	TabCount++
+	AddTab(0, "","SysTabControl32" TabCount)
 	x1:=xBase+10
 	xhelp:=xBase
 	yIt:=yBase
@@ -357,19 +433,28 @@ Settings_CreateMisc() {
 	Gui, 1:Add, Text, x%x1% y%y%, Fullscreen detection exclude list
 	Gui, 1:Add, Edit, x%x2% y%yIt% w%wTBHuge% R1 vFullscreenExclude
 	yIt+=TextBoxStep
-	
-	yIt+=checkboxstep
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vAutorun, Autorun 7plus on windows startup
+	if(!IsPortable)
+	{
+		yIt+=checkboxstep
+		Gui, 1:Add, Checkbox, x%x1% y%yIt% vAutorun, Autorun 7plus on windows startup
+	}
 	yIt+=checkboxstep
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHideTrayIcon, Hide Tray Icon (press WIN + H (default settings) to show settings!)
 	yIt+=checkboxstep
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vAutoUpdate, Automatically look for updates on startup
+	yIt+=checkboxstep
+	y:=yIt+TextBoxCheckBoxOffset
+	Gui, 1:Add, Text, x%x1% y%y%, Run as admin:
+	Gui, 1:Add, DropDownList, x%x2% y%yIt% w%wTBMedium% vRunAsAdmin, Always/Ask|Never
+	yIt+=textboxstep
+	Gui, 1:Add, Text, x%x1% y%yIt%, Required for explorer buttons, Autoupdate and for accessing programs which are running as admin.`nAlso make sure that 7plus has write access to its config files when not running as admin.	
 }
-Settings_CreateAbout() {
+Settings_CreateAbout(ByRef TabCount) {
 	global
 	local yIt,x1,x2,x,y,version
 	Gui, 1:Add, Tab2, x176 y14 w460 h350 vAboutTab, 
-	AddTab(0, "","SysTabControl328")
+	TabCount++
+	AddTab(0, "","SysTabControl32" TabCount)
 	yIt:=YBase
 	x1:=XBase+10
 	x2:=xBase+350
@@ -517,6 +602,22 @@ RecreateTreeView()
 	if(!WasCritical)
 		Critical, Off
 }
+Settings_SetupAccessorKeywords() {
+	global Accessor, Settings_AccessorKeywords
+	WasCritical := A_IsCritical
+	Critical
+	Gui, 1:Default
+	Gui, ListView, GUI_AccessorKeywordsList
+	Settings_AccessorKeywords := Accessor.Keywords.DeepCopy()
+	LV_Delete()
+	Loop % Settings_AccessorKeywords.len()
+	{
+		Gui, ListView, GUI_AccessorKeywordsList
+		LV_Add(A_Index = 1 ? "Select" : "", A_Index, Settings_AccessorKeywords[A_Index].Key, Settings_AccessorKeywords[A_Index].Command)
+	}
+	if(!WasCritical)
+		Critical, Off
+}
 Settings_SetupAccessor() {
 	global AccessorPlugins, Settings_AccessorPlugins
 	WasCritical := A_IsCritical
@@ -622,6 +723,32 @@ Settings_SetupTabs() {
 	local x:=max(MiddleOpenFolder,1)	
 	GuiControl, 1:Choose, MiddleOpenFolder, %x%
 }
+Settings_SetupFTPProfiles() {
+	global
+	local Profiles
+	Settings_FTPProfiles := FTPProfiles.DeepCopy()
+	Loop % FTPProfiles.len()
+		Profiles .= "|" A_Index ": " FTPProfiles[A_Index].Hostname (A_Index = 1 ? "|" : "")
+	GuiControl, 1:,FTPProfilesDropDownList, %Profiles%
+	GuiControl, 1:Choose, FTPProfilesDropDownList, |1 ;| -> trigger g-label
+	GuiControlGet, selection,, FTPProfilesDropDownList
+	if(selection)
+	{
+		GuiControl, enable, FTPProfiles_Hostname
+		GuiControl, enable, FTPProfiles_Port
+		GuiControl, enable, FTPProfiles_User
+		GuiControl, enable, FTPProfiles_Password
+		GuiControl, enable, FTPProfiles_URL
+	}
+	else
+	{
+		GuiControl, disable, FTPProfiles_Hostname
+		GuiControl, disable, FTPProfiles_Port
+		GuiControl, disable, FTPProfiles_User
+		GuiControl, disable, FTPProfiles_Password
+		GuiControl, disable, FTPProfiles_URL
+	}
+}
 Settings_SetupWindows() {
 	global
 	GuiControl, 1:,HKSlideWindows,%HKSlideWindows%
@@ -636,12 +763,16 @@ Settings_SetupWindows() {
 	GoSub Flip3D
 	if(A_OsVersion!="WIN_7")
 	{
-		GuiControl, 1:disable, HKActivateBehavior
+		if(!IsPortable)
+			GuiControl, 1:disable, HKActivateBehavior
 		GuiControl, 1:disable, HKToggleWallpaper
 	}
 	GuiControl, 1:,HKMiddleClose,%HKMiddleClose%
-	RegRead, HKActivateBehavior, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick
-	GuiControl, 1:,HKActivateBehavior,%HKActivateBehavior%
+	if(!IsPortable)
+	{
+		RegRead, HKActivateBehavior, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick
+		GuiControl, 1:,HKActivateBehavior,%HKActivateBehavior%
+	}
 	GuiControl, 1:,HKToggleWallpaper,%HKToggleWallpaper%
 }
 Settings_SetupMisc() {
@@ -661,9 +792,13 @@ Settings_SetupMisc() {
 	GuiControl, 1:,HideTrayIcon,%HideTrayIcon%
 	GuiControl, 1:,AutoUpdate,%AutoUpdate%
 	;Figure out if Autorun is enabled
-	RegRead, Autorun, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus
-	temp:=Autorun != ""
-	GuiControl, 1:, Autorun,%temp%
+	if(!IsPortable)
+	{
+		RegRead, Autorun, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus
+		temp:=Autorun != ""
+		GuiControl, 1:, Autorun,%temp%
+	}
+	GuiControl, 1:Choose, RunAsAdmin, %RunAsAdmin%
 }
 Settings_SetupAbout() {
 	global
@@ -683,7 +818,7 @@ ShowSettings()
 return
 ShowSettings() {
 	global
-	local x,y,yIt,x1,x2
+	local x,y,yIt,x1,x2,TabCount
 	Critical, Off
 	if(!SettingsActive)
 	{
@@ -717,7 +852,7 @@ ShowSettings() {
 			wButton:=30
 			hCheckbox:=16 
 			
-			SettingsTabList := "Accessor Plugins|Explorer|Fast Folders|Explorer Tabs|Windows|Misc|About"
+			SettingsTabList := "Accessor Keywords|Accessor Plugins|Explorer|Fast Folders|Explorer Tabs|FTP Profiles|Windows|Misc|About"
 			; Gui, 1:Add, ListBox, x16 y20 w120 h350 gListbox vMyListBox, %TabList%
 			Gui, 1:Add, TreeView, x16 y20 w140 h350 gSettingsTreeView vSettingsTreeView -HScroll
 			EventsTreeViewEntry := TV_Add("All Events", "", "Expand")
@@ -741,22 +876,25 @@ ShowSettings() {
 			TV_Misc:=TV_Add("Misc","","Expand")
 			TV_About:=TV_Add("About","","Expand")
 			*/
-			Gui, 1:Add, Button, x660 y370 w80 h23 vBtnOK gCancel, Cancel
-			Gui, 1:Add, Button, x582 y370 w70 h23 vBtnCancel gOK, OK
+			Gui, 1:Add, Button, x495 y370 w70 h23 vBtnOK gOK, OK
+			Gui, 1:Add, Button, x573 y370 w80 h23 vBtnCancel gCancel, Cancel
+			Gui, 1:Add, Button, x660 y370 w80 h23 vBtnApply gApply, Apply
 			Gui, 1:Add, Text, x16 y375 vTutLabel, Click on ? to see video tutorial help!
-			Gui, 1:Add, Text, y375 x370 vWait, Applying settings, please wait!
-			Settings_CreateEvents()
-			Settings_CreateAccessor()
-			Settings_CreateExplorer()
+			Gui, 1:Add, Text, y375 x330 vWait, Applying settings, please wait!
+			Settings_CreateEvents(TabCount)
+			Settings_CreateAccessorKeywords(TabCount)
+			Settings_CreateAccessor(TabCount)
+			Settings_CreateExplorer(TabCount)
 			; Settings_CreateBehavior()
-			Settings_CreateFastFolders()
-			Settings_CreateTabs()
-			Settings_CreateWindows()
+			Settings_CreateFastFolders(TabCount)
+			Settings_CreateTabs(TabCount)
+			Settings_CreateFTPProfiles(TabCount)
+			Settings_CreateWindows(TabCount)
 			; Settings_CreateDesktopTaskBar()
 			;Settings_CreateCustomHotkeys()
 			;Settings_CreateFTP()
-			Settings_CreateMisc()
-			Settings_CreateAbout()			
+			Settings_CreateMisc(TabCount)
+			Settings_CreateAbout(TabCount)			
 			SettingsInitialized := true
 		}
 		GuiControl, 1:Hide, Wait
@@ -774,11 +912,13 @@ ShowSettings() {
 		; Setup Control Status
 		;---------------------------------------------------------------------------------------------------------------
 		Settings_SetupEvents()
+		Settings_SetupAccessorKeywords()
 		Settings_SetupAccessor()
 		Settings_SetupExplorer()
 		; Settings_SetupBehavior()
 		Settings_SetupFastFolders()
 		Settings_SetupTabs()
+		Settings_SetupFTPProfiles()
 		Settings_SetupWindows()
 		; Settings_SetupDesktopTaskBar()
 		;Settings_SetupCustomHotkeys()
@@ -819,7 +959,7 @@ return
 
 SettingsTreeViewEvents()
 {
-	global SettingsTabList,SuppressTreeViewMessages
+	global SettingsTabList,SuppressTreeViewMessages,EventFilter
 	if(SuppressTreeViewMessages)
 		return
 	outputdebug tree view event
@@ -841,7 +981,8 @@ SettingsTreeViewEvents()
 		outputdebug events tab
 		GuiControl, 1:Show, EventsTab
 		GuiControl, 1:Text, GGroupBox, %SelectedName%
-		FillEventsList()
+		ControlSetText,,, ahk_id %EventFilter%
+		; FillEventsList()
 	}
 	else
 	{
@@ -871,6 +1012,7 @@ SettingsTreeViewEvents()
 		GuiControl, 1:Movedraw, EventsTab
 	GuiControl, 1:MoveDraw, BtnOK
 	GuiControl, 1:MoveDraw, BtnCancel
+	GuiControl, 1:MoveDraw, BtnApply
 	GuiControl, 1:MoveDraw, TutLabel
 	GuiControl, 1:MoveDraw, Wait
 	return
@@ -899,9 +1041,7 @@ GUI_EventsList_Update()
 		if(count = 1)
 			GuiControl, 1:enable, GUI_EventsList_Edit
 		if(count > 1)
-		{
 			GuiControl, 1:disable, GUI_EventsList_Edit
-		}
 	}
 	else if(A_GuiEvent="I" && InStr(ListEvent, "s", true))
 	{
@@ -922,7 +1062,9 @@ GUI_EventsList_Update()
 		{
 			Checked := LV_GetNext(A_Index-1, "Checked") = A_Index ? 1 : 0
 			LV_GetText(id,A_Index,2)
-			Settings_Events[Settings_Events.FindID(id)].Enabled := Checked
+			Event := Settings_Events[Settings_Events.FindID(id)]
+			if((!IsPortable && A_IsAdmin) || Event.Trigger.Type != "ExplorerButton")
+				Event.Enabled := Checked
 		}
 	}
 	else if(A_GuiEvent="DoubleClick")
@@ -941,7 +1083,6 @@ GUI_AddEvent()
 	Gui, ListView, GUI_EventsList
 	Event := EventSystem_CreateEvent(Settings_Events) ;Event is added to Settings_Events here
 	LV_Modify(LV_GetNext(""), "-Select")
-	outputdebug GUI_AddEvent() add
 	LV_Add("Select Check", "", Event.ID, Event.Trigger.DisplayString(), Event.Name)	
 	selected := TV_GetSelection()
 	TV_GetText(Category,selected)
@@ -956,7 +1097,7 @@ GUI_RemoveEvent()
 Return
 GUI_RemoveEvent()
 {
-	global Settings_Events
+	global Settings_Events, IsPortable
 	outputdebug GUI_RemoveEvent() listview
 	Gui, ListView, GUI_EventsList
 	count := LV_GetCount()
@@ -967,10 +1108,13 @@ GUI_RemoveEvent()
 		{
 			LV_GetText(id,ListPos,2)			
 			pos := Settings_Events.FindID(id)
-			Category := Settings_Events[pos].Category
-			Settings_Events.Delete(pos)		
-			LV_Delete(ListPos)
-			continue
+			if((!IsPortable && A_IsAdmin) || Settings_Events[pos].Trigger.Type != "ExplorerButton")
+			{
+				Category := Settings_Events[pos].Category
+				Settings_Events.Delete(pos)		
+				LV_Delete(ListPos)
+				continue
+			}
 		}
 		ListPos++
 	}
@@ -992,7 +1136,7 @@ return
 
 GUI_EventsList_Edit(Add = 0)
 {	
-	global Settings_Events, EventFilter
+	global Settings_Events, EventFilter, IsPortable
 	Critical Off
 	outputdebug GUI_EventsList_Edit() listview
 	Gui, ListView, GUI_EventsList
@@ -1001,11 +1145,22 @@ GUI_EventsList_Edit(Add = 0)
 	i:=LV_GetNext("")
 	LV_GetText(id,i,2)
 	pos := Settings_Events.FindID(id)
+	if((IsPortable || !A_IsAdmin) && Settings_Events[pos].Trigger.Type = "ExplorerButton")
+	{
+		Msgbox ExplorerButton trigger events may not be modified in portable or non-admin mode, as this might cause inconsistencies with the registry.
+		return
+	}
 	outputdebug pos %pos%
 	event:=GUI_EditEvent(Settings_Events[pos].DeepCopy())
+	if(event && (IsPortable || !A_IsAdmin) && Event.Trigger.Type = "ExplorerButton")
+	{
+		Msgbox ExplorerButton trigger events may not be modified in portable or non-admin mode, as this might cause inconsistencies with the registry.
+		if(Add)
+			GUI_RemoveEvent()
+		return
+	}
 	if(event)
 	{
-		;event.Enabled := LV_GetNext(pos-1, "Checked") = pos ? 1 : 0 ;Update enabled state of this event
 		ControlSetText,,, ahk_id %EventFilter%
 		Settings_Events[pos] := event ;overwrite edited event
 		outputdebug % " category " event.Category
@@ -1028,11 +1183,28 @@ GUI_EventsList_Import()
 {
 	global Settings_Events
 	FileSelectFile, file, 3, , Import Events file, Event files (*.xml)
-	outputdebug % "pre import length:" settings_events.len()
+	oldlen := Settings_Events.len()
 	if(file)
 		ReadEventsFile(Settings_Events, file)
-		outputdebug % "post import length:" settings_events.len()
 	Settings_SetupEvents()
+	
+	;Figure out if FTP events were added and notify the user to set the FTP profile assignments
+	Loop % Settings_Events.len() - oldlen
+	{
+		pos := A_Index + oldlen
+		Loop % Settings_Events[pos].Actions.len()
+		{
+			if(Settings_Events[pos].Actions[A_Index].Type = "Upload")
+			{
+				found := true
+				break
+			}
+		}
+		if(found)
+			break
+	}
+	if(found)
+		MsgBox, Note: Make sure to assign the FTP profiles of all imported FTP actions!
 }
 GUI_EventsList_Export()
 {
@@ -1051,12 +1223,17 @@ GUI_EventsList_Export()
 				if(LV_GetNext(A_Index - 1) = A_Index)
 				{
 					LV_GetText(id,A_Index,2)
-					Events.append(Settings_Events[Settings_Events.FindID(id)])
+					Event := Settings_Events[Settings_Events.FindID(id)]
+					Events.append(Event)
+					if(!FTP && Event.Actions.indexOfSubItem("Type","Upload"))
+						FTP := true
 				}
 			}
 			WriteEventsFile(Events, file)
+			if(FTP)
+				MsgBox, Note: FTP profiles won't be exported by this function. To save them, create a backup of FTPProfiles.xml. This file is only updated at program exit!
 		}
-	}
+	}	
 }
 GUI_EventsList_Help:
 Return
@@ -1072,16 +1249,16 @@ GUI_SaveEvents()
 	{
 		if(!Settings_Events[Settings_Events.FindID(Events[A_Index].id)]) ;separate destroy routine instead of simple disable is needed for removed events because of hotkey/timer discrepancy
 		{
-			outputdebug % "remove " Events[A_Index].Name
 			Events.Remove(Events[A_Index])
 			continue
 		}
 		Events[A_Index].Trigger.PrepareReplacement(Events[A_Index], Settings_Events[Settings_Events.FindID(Events[A_Index].id)])
 	}
 	
+	
 	;Replace the original events with the copies
 	Events := Settings_Events.DeepCopy()
-	
+	 
 	;Update enabled state
 	Loop % Events.len()
 	{
@@ -1091,8 +1268,113 @@ GUI_SaveEvents()
 			Events[A_Index].Disable()
 	}
 }
-
+GUI_AccessorKeywordsTextChange:
+GUI_AccessorKeywordsTextChange()
+return
+GUI_AccessorKeywordsTextChange()
+{
+	global GUI_AccessorKeywordsKey, GUI_AccessorKeywordsCommand, Settings_AccessorKeywords
+	GuiControlGet, key,, GUI_AccessorKeywordsKey
+	GuiControlGet, command,, GUI_AccessorKeywordsCommand
+	Gui, ListView, GUI_AccessorKeywordsList
+	i:=LV_GetNext("")
+	if(!i)
+		return
+	LV_GetText(pos,i,1)
+	LV_Modify(i, "Col2", key)
+	LV_Modify(i, "Col3", command)
+	Settings_AccessorKeywords[pos].key := key
+	Settings_AccessorKeywords[pos].command := command
+}
+GUI_AccessorKeywords_Add:
+GUI_Accessor_AddKeyword()
+return
+GUI_Accessor_AddKeyword()
+{
+	global Settings_AccessorKeywords
+	Gui, ListView, GUI_AccessorKeywordsList
+	Settings_AccessorKeywords.append(Object("Key", "Key", "Command", "Command"))
+	LV_Add("Select", Settings_AccessorKeywords.len(), "Key", "Command")
+}
+GUI_AccessorKeywords_Delete:
+GUI_AccessorKeywords_Delete()
+return
+GUI_AccessorKeywords_Delete()
+{
+	global Settings_AccessorKeywords
+	Gui, ListView, GUI_AccessorKeywordsList
+	if(LV_GetCount("Selected") != 1)
+		return
+	len := LV_GetCount()
+	i:=LV_GetNext("")
+	LV_GetText(pos,i,1)
+	Settings_AccessorKeywords.Delete(pos)
+	LV_Delete(i)
+	Loop % len
+	{
+		LV_GetText(pos,A_Index,1)
+		if(pos>i)
+			LV_Modify(A_Index, "Col1", pos - 1)
+	}
+}
+GUI_AccessorKeywordsList_Events:
+GUI_AccessorKeywordsList_Events()
+return
+GUI_AccessorKeywordsList_Events()
+{
+	global
+	local count, ListEvent
+	WasCritical := A_IsCritical
+	Critical
+	ListEvent := Errorlevel
+	Gui, ListView, GUI_AccessorKeywordsList
+	if(A_GuiEvent="I" && InStr(ListEvent, "S", true))
+	{	
+		Selected := LV_GetNext()		
+		LV_GetText(id,Selected,1)
+		GuiControl,,GUI_AccessorKeywordsKey, % Settings_AccessorKeywords[id].Key
+		GuiControl,,GUI_AccessorKeywordsCommand, % Settings_AccessorKeywords[id].Command
+		GuiControl, 1:enable, GUI_AccessorKeywordsKey
+		GuiControl, 1:enable, GUI_AccessorKeywordsCommand
+		GuiControl, 1:enable, GUI_AccessorKeywords_Delete
+	}
+	else if(A_GuiEvent="I" && InStr(ListEvent, "s", true))
+	{		
+		GuiControl, 1:disable, GUI_AccessorKeywordsKey
+		GuiControl, 1:disable, GUI_AccessorKeywordsCommand
+		GuiControl, 1:disable, GUI_AccessorKeywords_Delete
+		GuiControl,,GUI_AccessorKeywordsKey,
+		GuiControl,,GUI_AccessorKeywordsCommand,
+	}
+	if(!WasCritical)
+		Critical, Off
+	Return
+}
+return
+GUI_SaveAccessorKeywords()
+{
+	global Accessor, Settings_AccessorKeywords
+	pos := 1
+	len := Settings_AccessorKeywords.len()
+	Loop % len
+	{
+		keywordentry := Settings_AccessorKeywords[A_Index]
+		Loop % Settings_AccessorKeywords.len()
+		{
+			if(pos != A_Index && Settings_AccessorKeywords[A_Index].Key = keywordentry.Key)
+			{
+				Settings_AccessorKeywords.Delete(pos)
+				keywordentry := ""
+				break
+			}
+		}
+		if(IsObject(keywordentry))
+			pos++
+	}
+	Accessor.Keywords := Settings_AccessorKeywords.DeepCopy()
+}
 GUI_Accessor_Help:
+run http://code.google.com/p/7plus/wiki/docsAccessor
 return
 GUI_AccessorSettings:
 ShowAccessorSettings()
@@ -1110,6 +1392,7 @@ ShowAccessorSettings()
 		return
 	outputdebug % "type 1 " Settings_AccessorPlugins[pos].type
 	PluginSettings:=GUI_EditAccessorPlugin(Settings_AccessorPlugins[pos].DeepCopy())
+	
 	; outputdebug % "type 3" PluginSettings.keyword
 	if(PluginSettings)
 		Settings_AccessorPlugins[pos] := PluginSettings
@@ -1156,7 +1439,7 @@ GUI_AccessorPluginsList_Events()
 	Return
 }
 return
-GUI_SaveAccessorSettings()
+GUI_SaveAccessorPluginSettings()
 {
 	global AccessorPlugins, Settings_AccessorPlugins	
 	outputdebug save accessor settings
@@ -1265,6 +1548,111 @@ if !ErrorLevel
 }
 Return
 */
+FTPProfilesDropDownList:
+FTPProfilesDropDownList()
+return
+FTPProfilesDropDownList()
+{
+	global Settings_FTPProfiles	
+	SavePreviousFTPProfile()
+	GuiControlGet, selection,, FTPProfilesDropDownList
+	outputdebug % "Old ID: " Settings_FTPProfiles.CurrentID
+	ShowCurrentFTPProfile()
+	Settings_FTPProfiles.CurrentId := SubStr(selection, 1, Instr(selection, ": ") - 1)
+	outputdebug % "Current ID: " Settings_FTPProfiles.CurrentID
+}
+FTPProfiles_Hostname:
+FTPProfiles_Hostname()
+return
+FTPProfiles_Hostname()
+{
+	global Settings_FTPProfiles
+	GuiControlGet, hostname,, FTPProfiles_Hostname
+	GuiControlGet, selection,, FTPProfilesDropDownList
+	if(SubStr(selection, 1, Instr(selection, ": ") - 1) != Settings_FTPProfiles.CurrentID)
+		return
+	Loop % Settings_FTPProfiles.len()
+		Profiles .= "|" A_Index ": " (A_Index = Settings_FTPProfiles.CurrentID ? hostname : Settings_FTPProfiles[A_Index].Hostname) (A_Index = Settings_FTPProfiles.CurrentID ? "|" : "")
+	if(strEndsWith(Profiles, "|"))
+		Profiles .= "|"
+	GuiControl, 1:,FTPProfilesDropDownList, %Profiles%
+}
+SavePreviousFTPProfile()
+{
+	global Settings_FTPProfiles, FTPProfiles_Hostname, FTPProfiles_Port, FTPProfiles_User, FTPProfiles_Password, FTPProfiles_URL
+	CurrentID := Settings_FTPProfiles.CurrentID
+	if(CurrentID)
+	{
+		CurrentProfile := Settings_FTPProfiles[CurrentID]
+		GuiControlGet, Hostname, , FTPProfiles_Hostname
+		CurrentProfile.Hostname := strTrimRight(Hostname, "/")
+		GuiControlGet, Port, , FTPProfiles_Port
+		CurrentProfile.Port := Port
+		GuiControlGet, User, , FTPProfiles_User	
+		CurrentProfile.User := User
+		GuiControlGet, Password, , FTPProfiles_Password
+		CurrentProfile.Password := Encrypt(Password)
+		GuiControlGet, URL, , FTPProfiles_URL
+		CurrentProfile.URL := strTrimRight(URL, "/")
+	}
+}
+ShowCurrentFTPProfile()
+{
+	global Settings_FTPProfiles, FTPProfilesDropDownList, FTPProfiles_Hostname, FTPProfiles_Port, FTPProfiles_User, FTPProfiles_Password, FTPProfiles_URL
+	GuiControlGet, selection,, FTPProfilesDropDownList
+	id := SubStr(selection, 1, Instr(selection, ": ") - 1)
+	;If id is invalid (because there are no profiles), fields will be cleared
+	
+	Password := Decrypt(Settings_FTPProfiles[id].Password)
+	GuiControl,,FTPProfiles_Hostname, % Settings_FTPProfiles[id].Hostname
+	GuiControl,,FTPProfiles_Port, % Settings_FTPProfiles[id].Port
+	GuiControl,,FTPProfiles_User, % Settings_FTPProfiles[id].User
+	GuiControl,,FTPProfiles_Password, %Password%
+	GuiControl,,FTPProfiles_URL, % Settings_FTPProfiles[id].URL
+}
+FTPProfiles_Add:
+FTPProfiles_Add()
+return
+FTPProfiles_Add()
+{
+	global Settings_FTPProfiles, FTPProfilesDropDownList
+	Settings_FTPProfiles.append(Object("Hostname", "Hostname.com", "Port", 21, "User", "SomeUser", "Password", "", "URL", "http://somehost.com"))
+	len := Settings_FTPProfiles.len()
+	string := len ": " Settings_FTPProfiles[Settings_FTPProfiles.len()].Hostname
+	GuiControl, , FTPProfilesDropDownList, %string%
+	GuiControl, Choose,FTPProfilesDropDownList, |%len% ;|->trigger g-label
+	GuiControl, enable, FTPProfiles_Hostname
+	GuiControl, enable, FTPProfiles_Port
+	GuiControl, enable, FTPProfiles_User
+	GuiControl, enable, FTPProfiles_Password
+	GuiControl, enable, FTPProfiles_URL
+}
+FTPProfiles_Delete:
+FTPProfiles_Delete()
+return
+FTPProfiles_Delete()
+{
+	global Settings_FTPProfiles, FTPProfilesDropDownList
+	GuiControlGet, selection,, FTPProfilesDropDownList
+	id := SubStr(selection, 1, Instr(selection, ": ") - 1)
+	Settings_FTPProfiles.Delete(id)
+	Settings_FTPProfiles.CurrentID := 0 ;Don't save current values
+	Loop % Settings_FTPProfiles.len()
+		Profiles .= "|" A_Index ": " Settings_FTPProfiles[A_Index].Hostname (A_Index = 1 ? "|" : "")
+	outputdebug new list: %Profiles%
+	GuiControl, 1:,FTPProfilesDropDownList, %Profiles%
+	GuiControl, 1:Choose, FTPProfilesDropDownList, |1 ;| -> trigger g-label
+	GuiControlGet, selection,, FTPProfilesDropDownList
+	if(!selection) ;No entries anymore, disable controls
+	{
+		GuiControl, disable, FTPProfiles_Hostname
+		GuiControl, disable, FTPProfiles_Port
+		GuiControl, disable, FTPProfiles_User
+		GuiControl, disable, FTPProfiles_Password
+		GuiControl, disable, FTPProfiles_URL
+	}
+	MsgBox, Make sure to update any FTP event profile assignments that pointed to the deleted profile!
+}
 Flip3D:
 GuiControlGet, enabled ,1: ,Mouse in upper left corner: Toggle Aero Flip 3D
 GuiControl, 1:enable%enabled%, AeroFlipTime
@@ -1395,6 +1783,8 @@ WM_KEYDOWN(wParam, lParam)
 				return true
 			}
 		}
+		else if(A_GuiControl = "GUI_AccessorKeywordsList" && wParam = 0x2E)
+			GUI_AccessorKeywords_Delete()
 	}
 	if(A_GUI = 4 && A_GuiControl = "EditEventConditions" && wParam = 0x2E)
 		GUI_EditEvent("","EditEvent_RemoveCondition")
@@ -1519,13 +1909,17 @@ run https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CCDPER7
 return
 
 ;---------------------------------------------------------------------------------------------------------------
-; OK/Cancel/Close
+; OK/Cancel/Close/Apply
 ;---------------------------------------------------------------------------------------------------------------
 OK:
-ApplySettings()
+ApplySettings(1)
 return
 
-ApplySettings()
+Apply:
+ApplySettings(0)
+return
+
+ApplySettings(Close = 0)
 {
 	global
 	local active, enabled, pastename, flip, path, temp
@@ -1539,34 +1933,37 @@ ApplySettings()
 	; HKFastFolders:=active
 	GuiControl, 1:Show, Wait
 	GuiControl, 1:MoveDraw, Wait
-	GuiControlGet, active ,1: , HKFolderBand
-	if(active && !HKFolderBand)
-		PrepareFolderBand()
-	else if(HKFolderBand && !active)
-		RestoreFolderBand()
+	if(!IsPortable || !A_IsAdmin)
+	{
+		GuiControlGet, active ,1: , HKFolderBand
+		if(active && !HKFolderBand)
+			PrepareFolderBand()
+		else if(HKFolderBand && !active)
+			RestoreFolderBand()
 
-	GuiControlGet, active ,1: , HKCleanFolderBand
-	if(active && !HKCleanFolderBand)
-		BackupAndRemoveFolderBandButtons()
-	else if(HKCleanFolderBand && !active)
-		RestoreFolderBandButtons()
-			
-	GuiControlGet, active ,1: , HKPlacesBar
-	if(active && !HKPlacesBar)
-		BackupPlacesBar()
-	else if(HKPlacesBar && !active)
-		RestorePlacesBar()
-		
+		GuiControlGet, active ,1: , HKCleanFolderBand
+		if(active && !HKCleanFolderBand)
+			BackupAndRemoveFolderBandButtons()
+		else if(HKCleanFolderBand && !active)
+			RestoreFolderBandButtons()
+				
+		GuiControlGet, active ,1: , HKPlacesBar
+		if(active && !HKPlacesBar)
+			BackupPlacesBar()
+		else if(HKPlacesBar && !active)
+			RestorePlacesBar()
+	}
 	Autorun:=0 ;?
 	; temp:=FTP_Password
 	;Store variables which can be stored directly
-	Gui 1:Submit
-
-	SettingsActive:=False
+	Gui 1:Submit, NoHide
+	
+	;SaveEvents relies on SettingsActive to be false so that enabling/dissabling the events doesn't refresh them in settings window
+	SettingsActive := false
 	GUI_SaveEvents()
-	Settings_Events := ""
-	GUI_SaveAccessorSettings()
-	Settings_AccessorPlugins := ""
+	SettingsActive := true
+	GUI_SaveAccessorKeywords()
+	GUI_SaveAccessorPluginSettings()
 	if(JoyControl)
 		JoystickStart()
 	else
@@ -1598,7 +1995,10 @@ ApplySettings()
 		ImgName:=""
 		temp_img:=""
 	}
-
+	SavePreviousFTPProfile()
+	FTPProfiles := Array()
+	Loop % Settings_FTPProfiles.len()
+		FTPProfiles.append(Settings_FTPProfiles[A_Index])
 	/*
 	;Store editor filename
 	GuiControlGet, editorenabled ,1: , F3: Open selected files in text/image editor
@@ -1652,42 +2052,45 @@ ApplySettings()
 		DoubleClickDesktop:=0
 	else
 		GuiControlGet, DoubleClickDesktop, 1:, DoubleClickDesktopPath
-		
-	;Store Autorun setting
-	if(Autorun)
+	
+	if(!IsPortable)
 	{
-		if(A_IsCompiled)
-			RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptDir%\UACAutorun.exe"
-		else
-			RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptDir%\UACAutorun.ahk"
-	}
-	else
-		RegDelete, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus
-
-	RegRead, temp, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick
-	RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick, %HKActivateBehavior%
-	if(temp!=HKActivateBehavior)
-	{
-		MsgBox, 4, Restart Explorer, You need to restart explorer to apply a setting. Do you want to do this now?
-		IfMsgBox Yes
+		;Store Autorun setting
+		if(Autorun)
 		{
-			Runwait, taskkill /im explorer.exe /f, , Hide
-			Run, %a_windir%\explorer.exe
-			;Process, close,explorer.exe
-			/*
-			Send {CTRL down}{ESC}{CTRL up}
-			WinWaitActive ahk_class DV2ControlHost
-			Send {Right}
-			Send {CTRL down}{SHIFT down}{AppsKey}
-			while(!IsContextMenuActive())
+			if(A_IsCompiled)
+				RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptDir%\7plus.exe"
+			else
+				RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptDir%\7plus.ahk"
+		}
+		else
+			RegDelete, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus
+		
+		RegRead, temp, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick
+		RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick, %HKActivateBehavior%
+		if(temp!=HKActivateBehavior)
+		{
+			MsgBox, 4, Restart Explorer, You need to restart explorer to apply a setting. Do you want to do this now?
+			IfMsgBox Yes
 			{
-				Sleep 10
+				Runwait, taskkill /im explorer.exe /f, , Hide
+				Run, %a_windir%\explorer.exe
+				;Process, close,explorer.exe
+				/*
+				Send {CTRL down}{ESC}{CTRL up}
+				WinWaitActive ahk_class DV2ControlHost
+				Send {Right}
+				Send {CTRL down}{SHIFT down}{AppsKey}
+				while(!IsContextMenuActive())
+				{
+					Sleep 10
+				}
+				Send {CTRL up}{Shift up}{Up}
+				Send {Enter}
+				Sleep 500
+				Run %a_windir%\explorer.exe
+				*/
 			}
-			Send {CTRL up}{Shift up}{Up}
-			Send {Enter}
-			Sleep 500
-			Run %a_windir%\explorer.exe
-			*/
 		}
 	}
 	if(HideTrayIcon)
@@ -1697,9 +2100,10 @@ ApplySettings()
 	}
 	else
 		Menu, Tray, Icon
-	;RefreshHotkeyArrays()
 	WriteIni()
-	Gui 1:Cancel
+	GuiControl, 1:Hide, Wait
+	if(Close)
+		GoSub Cancel
 	Return
 }
 
@@ -1707,8 +2111,10 @@ GuiEscape:
 Cancel:
 GuiClose:
 SettingsActive:=False
-;Settings_CustomHotkeys := ""
+Settings_FTPProfiles := ""
 Settings_Events := ""
+Settings_AccessorKeywords := ""
+Settings_AccessorPlugins := ""
 Gui 1:Cancel
 Return
 
@@ -1717,7 +2123,6 @@ HandleMessage(p_w, p_l, p_m, p_hw)
 { 
   global   WM_SETCURSOR, WM_MOUSEMOVE, 
   static   URL_hover, h_cursor_hand, h_old_cursor, CtrlIsURL, LastCtrl 
-  outputdebug handlemessage()
   If (p_m = WM_SETCURSOR) 
     { 
       If URL_hover 

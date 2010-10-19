@@ -2,7 +2,6 @@ Accessor_ProgramLauncher_Init(ByRef ProgramLauncher, Settings)
 {
 	ReadProgramLauncherCache(ProgramLauncher)
 	RefreshProgramLauncherCache(ProgramLauncher)
-	; outputdebug % "final count 2 " ProgramLauncher.List.len()
 	SetTimer, UpdateLauncherPrograms, 60000
 	ProgramLauncher.Settings.Keyword := "run"
 	ProgramLauncher.DefaultKeyword := "run"
@@ -11,9 +10,9 @@ Accessor_ProgramLauncher_Init(ByRef ProgramLauncher, Settings)
 	ProgramLauncher.OKName := "Run"	
 	ProgramLauncher.Settings.FuzzySearch := Settings.FuzzySearch
 	ProgramLauncher.Settings.IgnoreExtensions := Settings.IgnoreExtensions
-	ProgramLauncher.Description := "Run programs/files by typing a part of their name. All programs/files from the folders `nin the list below can be used. 7plus also looks for running programs `nand automatically adds them to the index."
+	ProgramLauncher.Description := "Run programs/files by typing a part of their name. All programs/files from the folders in the list `nbelow can be used. 7plus also looks for running programs and automatically adds them `nto the index, so you don't have to add large directories like Program Files or WinDir usually."
 	ProgramLauncher.HasSettings := True
-} 
+}
 Accessor_ProgramLauncher_ShowSettings(ProgramLauncher, PluginSettings, PluginGUI, GoToLabel = "")
 {
 	global ProgramLauncherListView, ProgramLauncherAddPath, ProgramLauncherEditPath, ProgramLauncherDeletePath
@@ -44,7 +43,6 @@ Accessor_ProgramLauncher_ShowSettings(ProgramLauncher, PluginSettings, PluginGUI
 	else if(GoToLabel = "ListView")
 	{
 		ListEvent := Errorlevel
-		outputdebug listevent %listevent%
 		Gui, ListView, ProgramLauncherListView
 		if(A_GuiEvent="I" && InStr(ListEvent, "S", true))
 		{	
@@ -58,7 +56,6 @@ Accessor_ProgramLauncher_ShowSettings(ProgramLauncher, PluginSettings, PluginGUI
 		{
 			LV_GetText(pos,A_EventInfo,1)
 			ControlGetText, extensions,, ahk_id %hEdit%
-			outputdebug save extensions %extensions% pos %pos%
 			PSettings.tmpPaths[pos].Extensions := extensions
 			GuiControl, disable, ProgramLauncherEditPath
 			GuiControl, disable, ProgramLauncherDeletePath
@@ -134,7 +131,6 @@ Accessor_ProgramLauncher_SaveSettings(ProgramLauncher, PluginSettings, PluginGUI
 Accessor_ProgramLauncher_GetDisplayStrings(ProgramLauncher, AccessorListEntry, ByRef Title, ByRef Path, ByRef Detail1, ByRef Detail2)
 {
 	Detail1 := "Program"
-	; outputdebug Accessor_ProgramLauncher_GetDisplayStrings %Title%
 }
 Accessor_ProgramLauncher_OnAccessorOpen(ProgramLauncher, Accessor)
 {
@@ -150,14 +146,13 @@ Accessor_ProgramLauncher_IsInSinglePluginContext(ProgramLauncher, Filter, LastFi
 Accessor_ProgramLauncher_FillAccessorList(ProgramLauncher, Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet)
 {
 	FuzzyList := Array()
-	
-	strippedFilter := WindowSwitcher.Settings.IgnoreFileExtensions ? RegexReplace(Filter, "\.\w+") : Filter 
-	; outputdebug % "Accessor_ProgramLauncher_FillAccessorList count " ProgramLauncher.List.len()
+	InStrList := Array()
+	strippedFilter := WindowSwitcher.Settings.IgnoreFileExtensions ? RegexReplace(Filter, "\.\w+") : Filter
 	Loop % ProgramLauncher.List.len()
 	{
 		x := 0
 		strippedName := WindowSwitcher.Settings.IgnoreFileExtensions ? RegexReplace(ProgramLauncher.List[A_Index].Name, "\.\w+") : ProgramLauncher.List[A_Index].Name 
-		if(ProgramLauncher.List[A_Index].Command && strippedName && (x := InStr(strippedName,StrippedFilter) || (ProgramLauncher.Settings.FuzzySearch && strlen(StrippedFilter) < 5 && FuzzySearch(StrippedName,StrippedFilter) < 0.4)))
+		if(ProgramLauncher.List[A_Index].Command && strippedName && ((x := InStr(strippedName,StrippedFilter)) || (ProgramLauncher.Settings.FuzzySearch && strlen(StrippedFilter) < 5 && FuzzySearch(StrippedName,StrippedFilter) < 0.4)))
 		{
 			if(!FileExist(ProgramLauncher.List[A_Index].Command))
 			{
@@ -169,12 +164,15 @@ Accessor_ProgramLauncher_FillAccessorList(ProgramLauncher, Accessor, Filter, Las
 			if(!ProgramLauncher.List[A_Index].hIcon) ;Program launcher icons are cached lazy, only when needed
 				ProgramLauncher.List[A_Index].hIcon := DllCall("Shell32\ExtractAssociatedIconA", UInt, 0, Str, ProgramLauncher.List[A_Index].Command, UShortP, iIndex)
 			DllCall("ImageList_ReplaceIcon", UInt, Accessor.ImageListID, Int, -1, UInt, ProgramLauncher.List[A_Index].hIcon)
-			if(x)
+			if(x = 1)
 				Accessor.List.append(Object("Title",ProgramLauncher.List[A_Index].Name,"Path",ProgramLauncher.List[A_Index].Command,"Type","ProgramLauncher", "Icon", IconCount))
+			else if(x)
+				InStrList.append(Object("Title",ProgramLauncher.List[A_Index].Name,"Path",ProgramLauncher.List[A_Index].Command,"Type","ProgramLauncher", "Icon", IconCount))
 			else
 				FuzzyList.append(Object("Title",ProgramLauncher.List[A_Index].Name,"Path",ProgramLauncher.List[A_Index].Command,"Type","ProgramLauncher", "Icon", IconCount))
 		}
 	}
+	Accessor.List.Extend(InStrList)
 	Accessor.List.Extend(FuzzyList)
 }
 Accessor_ProgramLauncher_PerformAction(ProgramLauncher, Accessor, AccessorListEntry)
@@ -222,7 +220,6 @@ ReadProgramLauncherCache(ProgramLauncher)
 	ProgramLauncher.Paths := Array()
 	if(!FileExist(path))
 		return
-	; outputdebug read ProgramLauncher cache from %path%
 	FileRead, xml, %path%
 	XMLObject := XML_Read(xml)
 	;Convert empty and single arrays to real array
@@ -234,8 +231,6 @@ ReadProgramLauncherCache(ProgramLauncher)
 	
 	
 	ProgramLauncher.Exclude := XMLObject.Exclude
-	; outputdebug % "xml list count " xmlobject.list.len()
-	; outputdebug % "xml paths count " xmlobject.paths.len()
 	Loop % XMLObject.List.len()
 	{
 		XMLObjectListEntry := XMLObject.List[A_Index]
@@ -270,8 +265,7 @@ RefreshProgramLauncherCache(ProgramLauncher, Path ="")
 	Loop % ProgramLauncher.List.len()
 	{
 		if((Path && ProgramLauncher.List[pos].BasePath=Path) || (!Path && ProgramLauncher.List[pos].BasePath))
-		{
-			; outputdebug % "delete " ProgramLauncher.List[pos].Command			
+		{	
 			if(ProgramLauncher.List[pos].hIcon)
 				DestroyIcon(ProgramLauncher.List[pos].hIcon)
 			ProgramLauncher.List.Delete(pos)
@@ -283,25 +277,18 @@ RefreshProgramLauncherCache(ProgramLauncher, Path ="")
 		Paths := Array(Path)
 	else
 		Paths := ProgramLauncher.Paths
-	; outputdebug % "paths len: " Paths.len()
 	Loop % Paths.len()
 	{
 		Path := Paths[A_Index].Path
-		; outputdebug path %path%
 		Path := ExpandGlobalPlaceholders(Path)
 		if(!Path)
 			continue
-		; outputdebug path loop %path%
 		extList := Paths[A_Index].Extensions
-		; outputdebug extenseions %extlist%
 		Loop, %Path%\*.*, , 1
 		{
-			; outputdebug file system loop %A_LoopFileFullPath%
 			if A_LoopFileExt in %extList%
 			{
-				; outputdebug in extlist
 				exclude := ProgramLauncher.Exclude
-				; outputdebug exclude %exclude%
 				command := A_LoopFileFullPath
 				name := A_LoopFileName
 				if(strEndsWith(command,".lnk"))
@@ -310,22 +297,18 @@ RefreshProgramLauncherCache(ProgramLauncher, Path ="")
 					if(!args)
 						SplitPath, command,name
 					command .= args
-					; outputdebug resolved lnk to %command%
 				}
 				if command not contains %exclude%
 				{
-					; outputdebug command not excluded
 					found := false
 					if(ProgramLauncher.List.indexOfSubItem("Command",command) = 0)
 					{
-						; outputdebug not in old list, append it
 						ProgramLauncher.List.append(Object("Name",name, "Command", command, "BasePath", Path))
 					}
 				}
 			}
 		}
 	}
-	; outputdebug % "final count " ProgramLauncher.List.len()
 }
 
 UpdateLauncherPrograms:
@@ -337,7 +320,6 @@ UpdateLauncherPrograms(ProgramLauncher)
 	global Accessor
 	if(Accessor.GUINum)
 		return
-	; outputdebug start loop
 	Loop % Accessor.List.len()
 	{
 		Window := Accessor.List[A_Index]
@@ -358,7 +340,6 @@ UpdateLauncherPrograms(ProgramLauncher)
 				if(!found)
 				{
 					path := Window.Path
-					; outputdebug not found %path%
 					SplitPath, path, name
 					ProgramLauncher.List.append(Object("Name", name,"Command", WindowFullPath))
 				}

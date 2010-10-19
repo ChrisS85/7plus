@@ -24,39 +24,37 @@ Trigger_ExplorerButton_ReadXML(Trigger, XMLTrigger)
 Trigger_ExplorerButton_Enable(Trigger, Event)
 {
 	global
-	outputdebug enable
-	if(!FindButton("IsExplorerButton", Event))
+	if(!IsPortable && A_IsAdmin && Vista7 !FindButton("IsExplorerButton", Event))
 		AddButton("","",Event.ID, Trigger.Name, Trigger.Tooltip, (Trigger.ShowSelected && Trigger.ShowNoSelected ? "Both" : Trigger.ShowSelected ? "Selected" : Trigger.ShowNoSelected ? "NoSelected" : "")) ;Event.ID here
 }
 Trigger_ExplorerButton_Disable(Trigger, Event)
 {
 	global
-	if(Event.Disabled)
+	if(Event.Disabled && A_IsAdmin && Vista7 && !IsPortable)
 		RemoveButton("IsExplorerButton", Event)
 }
 Trigger_ExplorerButton_Delete(Trigger, Event)
 {
 	global
-	RemoveButton("IsExplorerButton", Event)
+	if(!IsPortable && Vista7 && A_IsAdmin)
+		RemoveButton("IsExplorerButton", Event)
 }
 Trigger_ExplorerButton_PrepareReplacement(Trigger, Event1, Event2)
 {
 	global
 	if(Trigger.Name = Event2.Trigger.Name && Trigger.Tooltip = Event2.Trigger.Tooltip && Trigger.ShowSelected = Event2.Trigger.ShowSelected && Trigger.ShowNoSelected = Event2.Trigger.ShowNoSelected) ; Check if something changed
 		return
-	RemoveButton("IsExplorerButton", Event1)
+	if(!IsPortable && Vista7 && A_IsAdmin)
+		RemoveButton("IsExplorerButton", Event1)
 }
 IsExplorerButton(value, key, Event)
 {
-	outputdebug value %value% key %key%
 	if(!Event.Trigger.ShowSelected && InStr(key, "TasksItemsSelected"))
 		return false
 	else if(!Event.Trigger.ShowNoSelected && InStr(key, "TasksNoItemsSelected"))
 		return false
 	RegRead, command, HKLM, %key%
-	outputdebug command %command%
 	RegexMatch(command,""" -id (\d+)$", command)
-	outputdebug % "command1: " command1 " id: " Event.ID
 	if(command1 && command1 = Event.ID)
 		return true
 	return false
@@ -75,13 +73,21 @@ Trigger_ExplorerButton_DisplayString(Trigger)
 
 Trigger_ExplorerButton_GuiShow(Trigger, TriggerGUI)
 {
-	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Name", Trigger.Name, "", "Button Name:")
-	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Tooltip", Trigger.Tooltip, "", "Tooltip:")
-	SubEventGUI_Add(Trigger, TriggerGUI, "Checkbox", "ShowSelected", "Show when files are selected", "", "")	
-	SubEventGUI_Add(Trigger, TriggerGUI, "Checkbox", "ShowNoSelected", "Show when no files are selected", "", "")
+	global
+	if(Vista7)
+	{
+		SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Name", Trigger.Name, "", "Button Name:")
+		SubEventGUI_Add(Trigger, TriggerGUI, "Checkbox", "ShowSelected", "Show when files are selected", "", "")
+		SubEventGUI_Add(Trigger, TriggerGUI, "Button", "RemoveAllButtons", "Remove custom Explorer Buttons", "RemoveAllExplorerButtons", "")
+	}
+	else
+		SubEventGUI_Add(Trigger, TriggerGUI, "Text", "tmpText", "This trigger is only supported in Windows 7 and Vista", "", "")		
 }
 
 Trigger_ExplorerButton_GuiSubmit(Trigger, TriggerGUI)
 {
 	SubEventGUI_GuiSubmit(Trigger,TriggerGUI)
 }  
+RemoveAllExplorerButtons:
+RemoveAllButtons()
+return

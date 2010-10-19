@@ -119,7 +119,7 @@ CreateFile()
 	;outputdebug CreateFile
 	if(!MuteClipboardList)
 	{	 
-    MuteClipboardList:=true
+		MuteClipboardList:=true
 		if(!DllCall("IsClipboardFormatAvailable", "Uint", CF_HDROP))
 		{			
 		  If (DllCall("IsClipboardFormatAvailable", "Uint", 2) && temp_img!="" )

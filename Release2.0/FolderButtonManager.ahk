@@ -203,7 +203,10 @@ RemoveButton(Command, param="")
 AddButton(Command,path,Args="",Name="", Tooltip="",AddTo = "Both")
 {
 	outputdebug addbutton command %command% path %path% args %args% name %name%
-	ahk_path:=A_ScriptDir "\ChangeLocation.exe"
+	if(A_IsCompiled)
+		ahk_path:="""" A_ScriptDir "\7plus.exe"""
+	else
+		ahk_path := """" A_AhkPath """ """ A_ScriptFullPath """"
 	icon=`%SystemRoot`%\System32\shell32.dll`,3 ;Icon is not working, probably not supported by explorer, some ms entries have icons defined but they don't show up either
 	if(Command)
 	{
@@ -229,7 +232,7 @@ AddButton(Command,path,Args="",Name="", Tooltip="",AddTo = "Both")
 			if(Name="")
 				Name:=path
 		}
-		Command="%ahk_path%" "%path%"	
+		Command := ahk_path " """ path """"	
 		description:=path	
 	}		
 	if(!command && !path && args) ;args only, use start 7plus with -id param

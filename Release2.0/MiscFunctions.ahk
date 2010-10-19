@@ -864,7 +864,14 @@ IsNumeric(x)
    Return 0 
 }
 
-
+StringUnescape(String)
+{
+	return StringReplace(StringReplace(StringReplace(String, "\\", Chr(1), 1), "\""", """", 1), Chr(1), "\", 1)
+}
+StringEscape(String)
+{
+	return StringReplace(StringReplace(String, "\", "\\", 1), """", "\""", 1)
+}
 uriDecode(str) { 
    Loop 
       If RegExMatch(str, "i)(?<=%)[\da-f]{1,2}", hex) 
@@ -996,4 +1003,16 @@ StringDifference(string1, string2, maxOffset=3) {    ;returns a float: between "
     EnvAdd, mi, 1 
   } 
   Return ((n0 + m0)/2 - lcs) / (n0 > m0 ? n0 : m0) 
+}
+
+IsURL(string)
+{
+	return RegexMatch(strTrim(string, " "), "(?:(?:ht|f)tps?://|www\.).+\..+") > 0
+}
+CouldBeURL(string)
+{
+	return RegexMatch(strTrim(string, " "), "(?:(?:ht|f)tps?://|www\.)?.+\..+") > 0
+}
+WriteAccess( F ) { 
+  Return ((h:=DllCall("_lopen",Str,F,Int,1)) > 0 ? 1 : 0) (DllCall("_lclose",Int,h)+NULL) 
 }

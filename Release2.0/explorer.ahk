@@ -182,15 +182,16 @@ ExplorerPathChanged(from, to)
 	;focus first file
 	if(HKSelectFirstFile)
 	{
+		SplitPath, to, name, dir,,,drive
 		x:=GetSelectedFiles()
-		if(!x && (!vista7||SubStr(to, 1 ,40)!="::{26EE0668-A00A-44D7-9371-BEB064C98683}"))
+		if(!x && dir && (!vista7||SubStr(to, 1 ,40)!="::{26EE0668-A00A-44D7-9371-BEB064C98683}"))
 		{
 			if(A_OSVersion="WIN_7")
 			{
-		    ControlGetFocus focussed, A
-		    ControlFocus DirectUIHWND3, A
+				ControlGetFocus focussed, A
+				ControlFocus DirectUIHWND3, A
 				ControlSend DirectUIHWND3, {Home}{Space},A
-		  }
+			}
 			else
 			{
 				focussed:=XPGetFocussed()
@@ -369,10 +370,13 @@ RunExplorer()
 	}
 	Return
 }
+#MaxThreadsPerHotkey 2
 #if (Vista7 && IsWindowUnderCursor("WorkerW")) || (!Vista7 && IsWindowUnderCursor("ProgMan"))
 ~LButton::
 CurrentDesktopFiles:=GetSelectedFiles()
-outputdebug current: %CurrentDesktopFiles% previous: %PreviousDesktopFiles%
+outputdebug current: "%CurrentDesktopFiles%" previous: %PreviousDesktopFiles%
+outputdebug % "is doubleclick: """ IsDoubleClick() """ no files: """ (CurrentDesktopFiles = "") """"
+outputdebug(A_TimeSincePriorHotkey " < " DllCall("GetDoubleClickTime") " && " A_ThisHotkey "=" A_PriorHotkey)
 if(IsDoubleClick() && CurrentDesktopFiles = "")
 {
 	Trigger := EventSystem_CreateSubEvent("Trigger","DoubleClickDesktop")
@@ -380,6 +384,7 @@ if(IsDoubleClick() && CurrentDesktopFiles = "")
 }
 Return
 #if
+#MaxThreadsPerHotkey 1
 ;Double click upwards is buggy in filedialogs, so only explorer for now until someone comes up with non-intrusive getpath, getselectedfiles functionsunrel
 #if !IsDialog() && IsMouseOverFileList() && GetKeyState("RButton")!=1
 ;LButton on empty space in explorer -> go upwards
@@ -392,7 +397,7 @@ WaitTime:=DllCall("GetDoubleClickTime")/1000
 MouseGetPos, Click1X, Click1Y
 ;This check is needed so that we don't send CTRL+C in a textfield control, which would disrupt the text entering process
 ;Make sure only filelist is focussed
-if(!IsRenaming()&&InFileList())
+if(!IsRenaming() && InFileList())
 {
 	path:=GetCurrentFolder()
 	files:=GetSelectedFiles()
@@ -491,7 +496,7 @@ return
 
 IsDoubleClick()
 {	
-	return A_TimeSincePriorHotkey< DllCall("GetDoubleClickTime") && A_ThisHotkey=A_PriorHotkey
+	return A_TimeSincePriorHotkey < DllCall("GetDoubleClickTime") && A_ThisHotkey=A_PriorHotkey
 }
 
 #if !IsFullScreen()
@@ -809,8 +814,8 @@ WheelDown()
 ;Flat View
 #if HKFlattenDirectory && Vista7 && WinActive("ahk_group ExplorerGroup")
 +Enter::
-if(FileExist(a_scriptdir "\FlatView.search-ms"))
-	FileDelete %a_scriptdir%\FlatView.search-ms 
+if(FileExist(A_Temp "\7plus\FlatView.search-ms"))
+	FileDelete %A_Temp%\7plus\FlatView.search-ms 
 files:=GetSelectedFiles()
 /*
 if(files="::{26EE0668-A00A-44D7-9371-BEB064C98683}")
@@ -848,8 +853,8 @@ Loop, Parse, files, `n,`r  ; Rows are delimited by linefeeds ('r`n).
 		searchString=%searchString%<include path="%A_LoopField%"/>
 } 
 searchString.="</scope></query></persistedQuery>"
-Fileappend,%searchString%, %a_scriptdir%\FlatView.search-ms 
-SetDirectory(a_scriptdir "\FlatView.search-ms")
+Fileappend,%searchString%, %A_Temp%\7plus\FlatView.search-ms 
+SetDirectory(A_Temp "\7plus\FlatView.search-ms")
 return
 #if
 

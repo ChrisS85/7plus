@@ -38,8 +38,10 @@ XML_Save(xmlObject, path, xml = "", level = 0)
 				}
 				else
 				{
-					value := StringReplace(v,"<","&lt;",1)
+					value := StringReplace(v[A_Index],"<","&lt;",1)
 					value := StringReplace(value,">","&gt;",1)
+					value := StringReplace(value,"`r","&r;",1)
+					value := StringReplace(value,"`n","&n;",1)
 					xml .= "<" k ">" value "</" k ">`r`n"
 				}
 			}
@@ -55,6 +57,8 @@ XML_Save(xmlObject, path, xml = "", level = 0)
 		{
 			value := StringReplace(v,"<","&lt;",1)
 			value := StringReplace(value,">","&gt;",1)
+			value := StringReplace(value,"`r","&r;",1)
+			value := StringReplace(value,"`n","&n;",1)
 			xml .= "<" k ">" value "</" k ">"
 		}
 		xml .= "`r`n"
@@ -68,8 +72,7 @@ XML_Save(xmlObject, path, xml = "", level = 0)
 	return xml
 }
 XML_Read(xml,node = 0)
-{
-	global A
+{ 
 	if(node = 0)
 		node := Object()
 	xml := strTrim(xml,"`r`n")
@@ -145,6 +148,8 @@ XML_Read(xml,node = 0)
 				outputdebug normal value %key%
 			value := StringReplace(value, "&gt;",">",1)
 			value := StringReplace(value, "&lt;","<",1)
+			value := StringReplace(value, "&r;","`r",1)
+			value := StringReplace(value, "&n;","`n",1)
 		}
 		if(node.HasKey(key) && node[key].len() < 0) ;Key already exists and is not an array, make it one and append things
 		{

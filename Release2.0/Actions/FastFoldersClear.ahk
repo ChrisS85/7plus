@@ -10,7 +10,17 @@ Action_FastFoldersClear_ReadXML(Action, XMLAction)
 Action_FastFoldersClear_Execute(Action, Event)
 {
 	global
-	local Slot
+	local Slot	
+	if(IsPortable)
+	{
+		MsgBox 7plus is running in portable mode. Features which need to make changes to the registry won't be available.
+		return
+	}
+	if(!A_IsAdmin)
+	{
+		MsgBox 7plus is running without admin priviledges. Features which need to make changes to the registry won't be available.
+		return
+	}
 	Slot := Action.Slot
 	if(Slot >= 0 && Slot <= 9 )
 		ClearStoredFolder(Slot)

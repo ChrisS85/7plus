@@ -56,6 +56,8 @@ Action_NewFile_Execute(Action, Event)
 	}
 	RefreshExplorer()
 	Sleep 50
+	if(WinActive("ahk_group DesktopGroup")) ;Desktop needs more time for refresh and selecting an item is handled by typing its name
+		Sleep 1000
 	if(i=1)
 		SelectFiles(filename "." extension)
 	else

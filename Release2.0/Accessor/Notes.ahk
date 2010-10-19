@@ -9,7 +9,6 @@ Accessor_Notes_Init(ByRef Notes, Settings)
 	SplitPath, ConfigPath,,path
 	path .= "\Notes.xml"
 	Notes.List := Array()
-	outputdebug init notes
 	Notes.Icon := ExtractIcon("shell32.dll", 115, 64)
 	if(!FileExist(path))
 		return

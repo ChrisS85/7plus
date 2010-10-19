@@ -3,7 +3,7 @@ Accessor_Init()
 	global AccessorPlugins, Accessor, ConfigPath
 	SplitPath, ConfigPath,,path
 	path .= "\Accessor.xml"
-	AccessorPluginsList := "WindowSwitcher,FileSystem,Google,Calc,ProgramLauncher,NotepadPlusPlus,Notes,FastFolders,Uninstall,Weather" ;The order here partly determines the order in the window, so choose carefully
+	AccessorPluginsList := "WindowSwitcher,FileSystem,Google,Calc,ProgramLauncher,NotepadPlusPlus,Notes,FastFolders,Uninstall,URL,Weather" ;The order here partly determines the order in the window, so choose carefully
 	AccessorPlugins := Array()
 	Accessor := Object("Base", Object("OnExit", "Accessor_OnExit"))
 	if(FileExist(path))
@@ -35,20 +35,41 @@ Accessor_Init()
 		tmpobject.Priority := 0
 		tmpobject.OKName := "OK"
 		tmpobject.Settings := RichObject()
-		tmpobject.Settings.BasePriority := XMLObject ? XMLObject[A_LoopField].Settings.BasePriority : 1
-		tmpobject.Enabled := XMLObject ? XMLObject[A_LoopField].Enabled : 1
+		tmpobject.Settings.BasePriority := IsObject(XMLObject[A_LoopField]) ? XMLObject[A_LoopField].Settings.BasePriority : 0
+		tmpobject.Enabled := IsObject(XMLObject[A_LoopField]) ? XMLObject[A_LoopField].Enabled : 1
 		Accessor_%A_LoopField%_Init(tmpobject, XMLObject[A_LoopField].Settings)
-		if(XMLObject[A_LoopField].Settings.Keyword) ;Set keyword automatically for each plugin to save some lines
-			tmpobject.Settings.Keyword := XMLObject[A_LoopField].Settings.Keyword
-		if(XMLObject[A_LoopField].Settings.BasePriority) ;Set keyword automatically for each plugin to save some lines
-			tmpobject.Settings.Keyword := XMLObject[A_LoopField].Settings.BasePriority	
+		if(IsObject(XMLObject[A_LoopField]))
+		{
+			if(XMLObject[A_LoopField].Settings.Keyword) ;Set keyword automatically for each plugin to save some lines
+				tmpobject.Settings.Keyword := XMLObject[A_LoopField].Settings.Keyword
+			if(XMLObject[A_LoopField].Settings.BasePriority) ;Set keyword automatically for each plugin to save some lines
+				tmpobject.Settings.Keyword := XMLObject[A_LoopField].Settings.BasePriority	
+		}
 		AccessorPlugins.append(Object("Base",tmpobject))
 	}
+	
+	outputdebug % "key1: " XMLObject.Keywords.Keyword.Key
+	Accessor.Keywords := Array()
+	if(!IsObject(XMLObject.Keywords))
+	{
+		outputdebug create kywords object
+		XMLObject.Keywords := Object()
+	}
+	if(!XMLObject.Keywords.Keyword.len())
+	{
+		XMLObject.Keywords.Keyword := IsObject(XMLObject.Keywords.Keyword) ? Array(XMLObject.Keywords.Keyword) : Array()
+		outputdebug % "create array len " XMLObject.Keywords.Keyword.len()
+	}
+	Loop % XMLObject.Keywords.Keyword.len()
+		Accessor.Keywords.append(Object("Key", XMLObject.Keywords.Keyword[A_Index].Key, "Command", XMLObject.Keywords.Keyword[A_Index].Command))
+	outputdebug % "key1: " Accessor.Keywords[1].Key
 	Accessor.GenericIcons := Object()
 	; hInstance := DllCall("GetModuleHandle", UInt, 0)
 	Accessor.GenericIcons.Application := ExtractIcon("shell32.dll", 3, 64)
 	Accessor.GenericIcons.Folder := ExtractIcon("shell32.dll", 4, 64)
-	Accessor.GenericIcons.URL := ExtractIcon("shell32.dll", 14, 64)
+	FileAppend, test, %A_Temp%\7plus\test.htm
+	Accessor.GenericIcons.URL := DllCall("Shell32\ExtractAssociatedIconA", UInt, 0, Str, A_Temp "\7plus\test.htm", UShortP, iIndex)
+	FileDelete, %A_Temp%\7plus\test.htm
 	; DllCall("ExtractIcon", "uint", hInstance, "str", "shell32.dll", "uint", 3)
 	; Accessor.GenericIcons.Folder := DllCall("ExtractIcon", "uint", hInstance, "str", "shell32.dll", "uint", 4)
 	outputdebug % "folder " Accessor.GenericIcons.Folder
@@ -67,7 +88,10 @@ Accessor_OnExit(Accessor)
 	{
 		XMLObject[AccessorPlugins[A_Index].Type] := Object("Enabled", AccessorPlugins[A_Index].Enabled, "Keyword", AccessorPlugins[A_Index].Settings.Keyword, "Settings", AccessorPlugins[A_Index].Settings)
 		AccessorPlugins[A_Index].OnExit()
-	}	
+	}
+	XMLObject.Keywords := Object("Keyword",Array())
+	Loop % Accessor.Keywords.len()
+		XMLObject.Keywords.Keyword.append(Object("Key", Accessor.Keywords[A_Index].Key, "Command", Accessor.Keywords[A_Index].Command))
 	XML_Save(XMLObject,path)
 	
 	DestroyIcon(Accessor.GenericIcons.Application)
@@ -120,8 +144,6 @@ CreateAccessorWindow(Action)
 	Action.tmpGuiNum := AccessorGUINum
 	Accessor.WindowTitle := "7Plus Accessor"
 	Gui, Show,, % Accessor.WindowTitle
-	if(!IsObject(Accessor))
-		Accessor := Object()
 	Accessor.GUINum := AccessorGUINum
 	Accessor.hwndEdit := hwndEdit
 	Accessor.hwndListView := hwndListView	
@@ -137,10 +159,14 @@ CreateAccessorWindow(Action)
 	old := OnMessage(0x100)
 	Accessor.OldKeyDown := old
 	OnMessage(0x100, "Accessor_WM_KEYDOWN")
+	if(WasCritical)
+		Critical
 	;return Gui number to indicate that the Accessor box is still open
 	return AccessorGUINum
 }
-
+^p::
+DllCall( "SetParent", "uint", WinExist("A"), "uint", PreviousWindow )
+return
 FillAccessorList()
 {
 	global AccessorPlugins,Accessor,AccessorListView,AccessorEdit
@@ -155,14 +181,24 @@ FillAccessorList()
 		return
 	Gui, %guinum%: Default
 	Gui, ListView, AccessorListView	
-	GuiControlGet, Filter, , AccessorEdit
+	GuiControlGet, BaseFilter, , AccessorEdit
+	Loop % Accessor.Keywords.len()
+	{
+		;if filter starts with keyword and ends directly after it or has a space after it
+		if(InStr(BaseFilter, Accessor.Keywords[A_Index].Key) = 1 && (strlen(BaseFilter) = strlen(Accessor.Keywords[A_Index].Key) || InStr(BaseFilter, " ") = strLen(Accessor.Keywords[A_Index].Key) + 1))
+		{
+			Filter := StringReplace(BaseFilter, Accessor.Keywords[A_Index].Key, Accessor.Keywords[A_Index].Command)
+			break
+		}
+	}
+	Filter := Filter ? Filter : BaseFilter
+	
 	; if(filter = "run ")
 	; {
 		; Send % "$" Accessor.LauncherHotkey
 		; AccessorClose()
 		; return
 	; }
-	outputdebug lv not ready
 	Accessor.ListViewReady := false
 	GuiControl, -Redraw, AccessorListView
 	LV_Delete()
@@ -182,23 +218,19 @@ FillAccessorList()
 			AccessorPlugins[A_Index].FillAccessorList(Accessor, Filter, LastFilter, IconCount, KeywordSet)
 			break
 		}
-	outputdebug singlecontext : %singlecontext%
 	;If we aren't, let all plugins add the items we want according to their priorities
 	if(!SingleContext)
 	{
 		Pluginlist := ""
 		Loop % AccessorPlugins.len()
 			Pluginlist .= (Pluginlist ? "," : "") A_Index
-		outputdebug Pluginlist %Pluginlist%
 		Sort, Pluginlist, F AccessorPrioritySort D`,
-		outputdebug sorted %Pluginlist%
 		Loop, Parse, Pluginlist, `,
 			if(AccessorPlugins[A_Index].Enabled && !AccessorPlugins[A_LoopField].KeywordOnly && StrLen(Filter) >= AccessorPlugins[A_LoopField].MinChars)
 				AccessorPlugins[A_LoopField].FillAccessorList(Accessor, Filter, LastFilter, IconCount, False)
 	}
 	;Now that items are added, add them to the listview
 	LV_SetImageList(Accessor.ImageListID, 1) ; Attach the ImageLists to the ListView so that it can later display the icons
-	outputdebug % "len: " Accessor.List.len()
 	Loop % Accessor.List.len()
 	{
 		AccessorListEntry := Accessor.List[A_Index]
@@ -206,7 +238,6 @@ FillAccessorList()
 		AccessorPlugin.GetDisplayStrings(AccessorListEntry, Title := AccessorListEntry.Title, Path := AccessorListEntry.Path, Detail1 := AccessorListEntry.Detail1, Detail2 := AccessorListEntry.Detail2)
 		LV_Add("Icon" AccessorListEntry.Icon, "", A_Index, Title, Path, Detail1, Detail2)
 	}
-	outputdebug lv ready
 	Accessor.ListViewReady := true
 	Accessor.LastFilter := Filter	
 	selected := LV_GetNext()
@@ -536,12 +567,15 @@ AccessorOpenCMD()
 }
 GUI_EditAccessorPlugin(Settings,GoToLabel="")
 {
-	static PluginSettings, result, PluginGUI, Plugin
+	static PluginSettings, result, PluginGUI, Plugin, GuiNum
 	global AccessorPlugins
 	if(GoToLabel = "")
 	{
 		;Don't show more than once
 		if(PluginSettings)
+			return ""
+		GuiNum := GetFreeGuiNum(4)
+		if(!GuiNum)
 			return ""
 		PluginSettings := Settings
 		result := ""
@@ -549,19 +583,20 @@ GUI_EditAccessorPlugin(Settings,GoToLabel="")
 		Plugin := AccessorPlugins[AccessorPlugins.indexOfSubItem("Type", PluginSettings.Type)]
 		outputdebug % "type " PluginSettings.type
 		Gui 1:+LastFoundExist
-		IfWinExist		
+		IfWinExist
 			Gui, 1:+Disabled
-		Gui, 4:Default
+		Gui, %GuiNum%:Default
 		Gui, +LabelEditAccessorPlugin +Owner1 +ToolWindow +OwnDialogs
 		width := 500
-		height := 500
+		height := 430
 		;Gui, 4:Add, Button, ,OK
-		x := Width - 174
+		x := PluginGUI.x
 		y := Height - 34
+		Gui, Add, Button, gEditAccessorPluginHelp x%x% y%y% w70 h23, Help
+		x := Width - 174
 		Gui, Add, Button, gEditAccessorPluginOK x%x% y%y% w70 h23, &OK
 		x := Width - 94
 		Gui, Add, Button, gEditAccessorPluginCancel x%x% y%y% w80 h23, &Cancel
-		
 		;Fill tabs
 		x := 40
 		y := 18
@@ -571,15 +606,15 @@ GUI_EditAccessorPlugin(Settings,GoToLabel="")
 		x := 28
 		y += 40 + 4
 		w := width - 54
-		h := height - 158 - 28 
+		h := height - 110
 		Gui, Add, GroupBox, x%x% y%y% w%w% h%h%, Options
-		
 		Plugin.ShowSettings(PluginSettings.Settings, PluginGUI)
 		Gui, Show, w%width% h%height%, Edit Plugin
 		
-		Gui, +LastFound
+		Gui, %GuiNum%:+LastFound
 		WinGet, EditAccessorPlugin_hWnd,ID
 		DetectHiddenWindows, Off
+		Critical, Off
 		loop
 		{
 			sleep 250
@@ -589,6 +624,7 @@ GUI_EditAccessorPlugin(Settings,GoToLabel="")
 		Plugin := ""
 		PluginSettings := ""
 		PluginGUI := ""
+		GuiNum := 0
 		Gui 1:+LastFoundExist
 		IfWinExist
 			Gui, 1:Default
@@ -596,9 +632,10 @@ GUI_EditAccessorPlugin(Settings,GoToLabel="")
 	}
 	else if(GoToLabel = "EditAccessorPluginOK")
 	{
+		outputdebug ok %guinum%
 		Plugin.SaveSettings(PluginSettings.Settings, PluginGUI)
 		SubEventGUI_GUISubmit(PluginSettings.Settings, PluginGUI)
-		Gui, Submit, NoHide
+		Gui, %GuiNum%:Submit, NoHide
 		outputdebug % " keyword: " PluginSettings.Settings.Keyword " Default: " Plugin.DefaultKeyword
 		if(PluginSettings.Settings.Keyword = "" && Plugin.DefaultKeyword != "")
 			PluginSettings.Settings.Keyword := Plugin.DefaultKeyword
@@ -606,7 +643,7 @@ GUI_EditAccessorPlugin(Settings,GoToLabel="")
 		Gui 1:+LastFoundExist
 		IfWinExist		
 			Gui, 1:-Disabled
-		Gui, Destroy
+		Gui, %GuiNum%:Destroy
 		return
 	}
 	else if(GoToLabel = "EditAccessorPluginClose")
@@ -615,15 +652,18 @@ GUI_EditAccessorPlugin(Settings,GoToLabel="")
 		result := ""
 		IfWinExist		
 			Gui, 1:-Disabled
-		Gui, Cancel
-		Gui, destroy
+		Gui,%GuiNum%: Cancel
+		Gui,%GuiNum%: destroy
 		Gui 1:+LastFoundExist
 		IfWinExist		
 			Gui, 1:Default
 		return
 	}
+	else if(GoToLabel = "EditAccessorPluginHelp")
+		run % "http://code.google.com/p/7plus/wiki/docsAccessor" Plugin.Type
 } 
 EditAccessorPluginOK:
+outputdebug ok
 GUI_EditAccessorPlugin("","EditAccessorPluginOK")
 return
 
@@ -631,4 +671,8 @@ EditAccessorPluginClose:
 EditAccessorPluginEscape:
 EditAccessorPluginCancel:
 GUI_EditAccessorPlugin("","EditAccessorPluginClose")
+return
+
+EditAccessorPluginHelp:
+GUI_EditAccessorPlugin("","EditAccessorPluginHelp")
 return

@@ -15,16 +15,12 @@
 <Type>Input</Type>
 </Action><Action>
 <Clipboard>1</Clipboard>
-<Hostname>Enter Hostname</Hostname>
-<Password></Password>
-<Port>21</Port>
+<FTPProfile>1</FTPProfile>
 <Silent>0</Silent>
 <SourceFiles>%temp%\Screenshot.jpg</SourceFiles>
 <TargetFile>${Input}</TargetFile>
 <TargetFolder></TargetFolder>
 <Type>Upload</Type>
-<URL>http://urltohost.com</URL>
-<User>Enter Username</User>
 </Action><Action>
 <Overwrite>0</Overwrite>
 <Silent>1</Silent>
@@ -39,7 +35,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>308</ID>
+<ID>882</ID>
 <Name>Upload screenshot of active window</Name>
 <OneInstance>1</OneInstance>
 <Trigger>
@@ -61,16 +57,12 @@
 <Type>Input</Type>
 </Action><Action>
 <Clipboard>1</Clipboard>
-<Hostname>Enter Hostname</Hostname>
-<Password></Password>
-<Port>21</Port>
+<FTPProfile>1</FTPProfile>
 <Silent>0</Silent>
 <SourceFiles>%temp%\Screenshot.jpg</SourceFiles>
 <TargetFile>${Input}</TargetFile>
 <TargetFolder></TargetFolder>
 <Type>Upload</Type>
-<URL>http://urltohost.com</URL>
-<User>Enter Username</User>
 </Action><Action>
 <Overwrite>0</Overwrite>
 <Silent>1</Silent>
@@ -85,7 +77,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>309</ID>
+<ID>883</ID>
 <Name>Upload screenshot</Name>
 <OneInstance>1</OneInstance>
 <Trigger>
@@ -96,16 +88,12 @@
 <Actions>
 <Action>
 <Clipboard>1</Clipboard>
-<Hostname>Enter Hostname</Hostname>
-<Password></Password>
-<Port>21</Port>
+<FTPProfile>1</FTPProfile>
 <Silent>0</Silent>
 <SourceFiles>${SelNQ}</SourceFiles>
 <TargetFile></TargetFile>
 <TargetFolder></TargetFolder>
 <Type>Upload</Type>
-<URL>http://urltohost.com</URL>
-<User>Enter Username</User>
 </Action></Actions>
 <Category>FTP</Category>
 <Conditions>
@@ -122,7 +110,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>310</ID>
+<ID>884</ID>
 <Name>Explorer: Upload selected files</Name>
 <OneInstance>1</OneInstance>
 <Trigger>
@@ -133,16 +121,12 @@
 <Actions>
 <Action>
 <Clipboard>1</Clipboard>
-<Hostname>Enter Hostname</Hostname>
-<Password></Password>
-<Port>21</Port>
+<FTPProfile>1</FTPProfile>
 <Silent>0</Silent>
 <SourceFiles>${SelNQ}</SourceFiles>
 <TargetFile></TargetFile>
 <TargetFolder></TargetFolder>
 <Type>Upload</Type>
-<URL>http://urltohost.com</URL>
-<User>Enter Username</User>
 </Action></Actions>
 <Category>FTP</Category>
 <Conditions>
@@ -156,7 +140,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>311</ID>
+<ID>885</ID>
 <Name>File Dialog: Upload selected files</Name>
 <OneInstance>1</OneInstance>
 <Trigger>

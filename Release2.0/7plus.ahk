@@ -16,24 +16,9 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ;SetFormat, Integer, D
 MajorVersion := 2
-MinorVersion := 0
+MinorVersion := 1
 BugfixVersion := 0
-; ProgramLauncher := Object("List",Array())
-; ProgramLauncher.List.append(Object("Name","CMD","Command",A_Windir "\System32\CMD.exe"))
-; ProgramLauncher.List.append(Object("Name","explorer","Command",A_Windir "\Explorer.exe"))
 #include %A_ScriptDir%\Autoexecute.ahk ;include first to avoid issues with autoexecute ending too soon because of labels
-/*
-#if !IsFullscreen("A",true,false)
-#h::
-	DetectHiddenWindows, Off
-	if(WinExist("7plus Settings"))
-		WinActivate 7plus Settings
-	else
-		ShowSettings()
-	return
-#if
-;#q::Reload
-*/
 #Include %A_ScriptDir%
 #include %A_ScriptDir%\lib\Array.ahk
 #include %A_ScriptDir%\lib\binreadwrite.ahk
@@ -44,13 +29,14 @@ BugfixVersion := 0
 #include %A_ScriptDir%\lib\FTPLib.ahk
 #include %A_ScriptDir%\lib\Functions.ahk
 #include %A_ScriptDir%\lib\gdip.ahk
+#include %A_ScriptDir%\lib\Parse.ahk
 #include %A_ScriptDir%\lib\RemoteBuf.ahk
 #include %A_ScriptDir%\lib\RichObject.ahk
 #include %A_ScriptDir%\lib\Taskbutton.ahk
 #include %A_ScriptDir%\lib\unhtml.ahk
 #include %A_ScriptDir%\lib\VA.ahk
 #include %A_ScriptDir%\lib\Win.ahk
-#include %A_ScriptDir%\lib\xpath.ahk
+; #include %A_ScriptDir%\lib\xpath.ahk
 
 #include %A_ScriptDir%\Accessor\Accessor.ahk
 #include %A_ScriptDir%\Accessor\Calc.ahk
@@ -62,6 +48,7 @@ BugfixVersion := 0
 #include %A_ScriptDir%\Accessor\ProgramLauncher.ahk
 #include %A_ScriptDir%\Accessor\WindowSwitcher.ahk
 #include %A_ScriptDir%\Accessor\Uninstall.ahk
+#include %A_ScriptDir%\Accessor\URL.ahk
 #include %A_ScriptDir%\Accessor\Weather.ahk
 
 #include %A_ScriptDir%\Trigger.ahk
@@ -157,6 +144,7 @@ BugfixVersion := 0
 #include %A_ScriptDir%\Actions\Tooltip.ahk
 #include %A_ScriptDir%\Actions\ViewMode.ahk
 #include %A_ScriptDir%\Actions\Volume.ahk
+#include %A_ScriptDir%\Actions\Wait.ahk
 #include %A_ScriptDir%\Actions\WindowActivate.ahk
 #include %A_ScriptDir%\Actions\WindowClose.ahk
 #include %A_ScriptDir%\Actions\WindowHide.ahk
@@ -167,11 +155,3 @@ BugfixVersion := 0
 
 #include %A_ScriptDir%\Generic\WindowFilter.ahk
 #include %A_ScriptDir%\Generic\FileOperation.ahk
-
-
-; AssignHotkeys:
-; outputdebug blah
-; Hotkey, If, !IsFullScreen()
-; Hotkey, MButton, MButton, On
-; Hotkey, If
-; return

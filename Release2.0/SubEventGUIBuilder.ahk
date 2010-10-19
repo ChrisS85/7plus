@@ -78,7 +78,7 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 		Loop, Parse, text, |
 		{
 			if(A_LoopField)
-				if(InStr(A_LoopField, ": "))
+				if(InStr(A_LoopField, ": ")) ;if list entries start with "\d+: " or similar, it is sufficient to store \d+ in the assigned variable to select its item
 					text1 .= A_LoopField (SubStr(A_LoopField, 1, InStr(A_LoopField, ": ") - 1) = SubEvent[name] ? "||" : "|")
 				else
 					text1 .= A_LoopField (A_LoopField = SubEvent[name] ? "||" : "|")
@@ -154,7 +154,7 @@ SubEventGUI_GUISubmit(SubEvent, SubEventGUI)
 		{
 			name := SubStr(key, 10)
 			ControlGetText, text, , ahk_id %value%
-			if(InStr(text, ": "))
+			if(InStr(text, ": ")) ;If the selection starts with "\d+: " or similar, (\d+) is returned instead
 				text := SubStr(text, 1, InStr(text, ": ") - 1)
 			outputdebug save %name% %text%
 			SubEvent[name] := text
@@ -264,6 +264,8 @@ SubEventGUI_Placeholders(SubEventGUI, name, ClickedMenu="")
 		Menu, Placeholders_FilePaths, add, `%Temp`% - Temp Directory, PlaceholderHandler
 		
 		Menu, Placeholders_Mouse, add, ${U} - Handle of window under mouse, PlaceholderHandler
+		Menu, Placeholders_Mouse, add, ${MC} - Class of window under mouse, PlaceholderHandler
+		Menu, Placeholders_Mouse, add, ${MNN} - ClassNN of control under mouse, PlaceholderHandler
 		Menu, Placeholders_Mouse, add, ${MX} - Mouse X coordinate, PlaceholderHandler
 		Menu, Placeholders_Mouse, add, ${MY} - Mouse Y coordinate, PlaceholderHandler		
 		Menu, Placeholders_Mouse, add, ${MXA} - Mouse X coordinate`, relative to active window, PlaceholderHandler

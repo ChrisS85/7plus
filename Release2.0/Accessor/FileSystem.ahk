@@ -13,7 +13,7 @@ Accessor_FileSystem_IsInSinglePluginContext(FileSystem, Filter, LastFilter)
 	Filter := ExpandPathPlaceholders(Filter)
 	outputdebug filter %filter%
 	SplitPath, Filter, name, dir,,,drive
-	return dir != ""
+	return dir != "" && !InStr(Filter, "://") ;Don't match URLs
 }
 Accessor_FileSystem_GetDisplayStrings(FileSystem, AccessorListEntry, ByRef Title, ByRef Path, ByRef Detail1, ByRef Detail2)
 {
