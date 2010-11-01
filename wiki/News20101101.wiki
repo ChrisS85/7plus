@@ -1,4 +1,4 @@
-7plus Version 2.1.0 released!
+= 7plus Version 2.1.0 released! =
 
 The next version of 7plus is here. It improves the event system by a few things such as categories for the events, making it much smoother to handle.
 
