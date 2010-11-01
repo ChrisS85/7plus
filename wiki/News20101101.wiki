@@ -13,6 +13,6 @@ Of course some features will have to be sacrificed in these modes.
 
 There are also lots of bug fixes since the last version, and everything should be a bit smoother I hope.
 
-Users who don't use autoupdate or haven't used 7plus before can get the newest version here. 
+Users who don't use autoupdate or haven't used 7plus before can get the newest version [http://code.google.com/p/7plus/downloads/list here]. 
 
 The changelog can be found [Changelog2dot1dot0 here]. The documentation for all actions, conditions and triggers is located [EventsOverview here].
