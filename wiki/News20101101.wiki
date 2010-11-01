@@ -5,6 +5,8 @@ The next version of 7plus is here. It improves the event system by a few things 
 The biggest change, however, is the new [docsAccessor Accessor] tool. Think of it as a launcher similar to programs like Launchy or Exekutor, but with many very useful plugins already integrated.
 It can run programs, switch windows, uninstall programs, do all kinds of web searches, browse the file system, do calculations and unit conversions, show weather forecast, take notes and much more!
 
+http://b.imagehost.org/0897/Accessor.png
+
 FTP connection data is now stored in profiles instead of storing it in the single events, so it isn't necessary anymore to enter the same data multiple times.
 
 2.1.0 introduces the possibility to run 7plus in portable mode (command line: "-portable") and use it without admin privileges (see settings->misc).
