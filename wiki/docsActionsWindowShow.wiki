@@ -1,1 +1,2 @@
+= WindowShow =
 This action shows a window which was previously [docsActionsWindowHide hidden]. Use the [docsGenericWindowFilter WindowFilter controls] to select it.
