@@ -1,1 +1,1 @@
-<wiki:gadget url="http://7plus.googlecode.com/svn/Gadgets/url.xml" width="540" height="400"/>
+<wiki:gadget url="http://7plus.googlecode.com/svn/Gadgets/url.xml" width="260" height="300"/>
