@@ -1,0 +1,1 @@
+<wiki:gadget url="www.google.com" width="540" height="400" />
