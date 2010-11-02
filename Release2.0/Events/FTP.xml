@@ -35,8 +35,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>882</ID>
+<ID>379</ID>
 <Name>Upload screenshot of active window</Name>
+<OfficialEvent>380</OfficialEvent>
 <OneInstance>1</OneInstance>
 <Trigger>
 <Key>#Insert</Key>
@@ -77,8 +78,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>883</ID>
+<ID>380</ID>
 <Name>Upload screenshot</Name>
+<OfficialEvent>381</OfficialEvent>
 <OneInstance>1</OneInstance>
 <Trigger>
 <Key>!Insert</Key>
@@ -110,8 +112,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>884</ID>
+<ID>381</ID>
 <Name>Explorer: Upload selected files</Name>
+<OfficialEvent>382</OfficialEvent>
 <OneInstance>1</OneInstance>
 <Trigger>
 <Key>^U</Key>
@@ -140,8 +143,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>885</ID>
+<ID>382</ID>
 <Name>File Dialog: Upload selected files</Name>
+<OfficialEvent>383</OfficialEvent>
 <OneInstance>1</OneInstance>
 <Trigger>
 <Key>^U</Key>
@@ -149,4 +153,4 @@
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
-<MinorVersion>0</MinorVersion>
+<MinorVersion>1</MinorVersion>

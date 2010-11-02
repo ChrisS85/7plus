@@ -90,13 +90,13 @@ RegRename(root,key,target)
 	if(!hive)
 		return 0
 	
-	result:=DllCall("Advapi32.dll\RegOpenKeyExA", "uint", hive, "str", key, "uint",0, "uint", 0xF003F, "uint *",hkey)
+	result:=DllCall("Advapi32.dll\RegOpenKeyEx", "uint", hive, "str", key, "uint",0, "uint", 0xF003F, "uint *",hkey)
 	if(result=0)
 	{
-		result:=DllCall("Advapi32.dll\RegCreateKeyExA", "uint", hive, "str", target, "uint", 0, "uint", 0, "uint", 0, "uint", 0xF003F, "uint", 0, "uint *", hNewKey, "uint",0)
+		result:=DllCall("Advapi32.dll\RegCreateKeyEx", "uint", hive, "str", target, "uint", 0, "uint", 0, "uint", 0, "uint", 0xF003F, "uint", 0, "uint *", hNewKey, "uint",0)
 		if(result=0)
 		{
-			result:=DllCall("Advapi32.dll\RegCopyTreeA", uint, hkey, "uint", 0, "uint", hNewKey)
+			result:=DllCall("Advapi32.dll\RegCopyTree", uint, hkey, "uint", 0, "uint", hNewKey)
 			if(result=0)
 			{
 				DllCall("Advapi32.dll\RegCloseKey", "uint", hkey)

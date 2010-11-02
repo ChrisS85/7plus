@@ -37,7 +37,6 @@ BugfixVersion := 0
 #include %A_ScriptDir%\lib\VA.ahk
 #include %A_ScriptDir%\lib\Win.ahk
 ; #include %A_ScriptDir%\lib\xpath.ahk
-
 #include %A_ScriptDir%\Accessor\Accessor.ahk
 #include %A_ScriptDir%\Accessor\Calc.ahk
 #include %A_ScriptDir%\Accessor\FastFolders.ahk
@@ -50,7 +49,6 @@ BugfixVersion := 0
 #include %A_ScriptDir%\Accessor\Uninstall.ahk
 #include %A_ScriptDir%\Accessor\URL.ahk
 #include %A_ScriptDir%\Accessor\Weather.ahk
-
 #include %A_ScriptDir%\Trigger.ahk
 #include %A_ScriptDir%\EditEventGUI.ahk
 #include %A_ScriptDir%\EditSubEventGUI.ahk

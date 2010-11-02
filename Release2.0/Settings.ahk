@@ -361,9 +361,11 @@ Settings_CreateWindows(ByRef TabCount) {
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghCapslock vURL_Capslock1, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKToggleWindows, Capslock: Switch between current and previous window
 	yIt+=checkboxstep
+	*/
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow1dot1 vURL_Window1dot1, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKAltDrag, ALT+Left Mouse Drag: Move windows
 	yIt+=checkboxstep
+	/*
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow1dot1 vURL_Window1dot11, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKAltMinMax, ALT + Mouse wheel: Minimize/Maximize/Restore window under mouse
 	yIt+=checkboxstep

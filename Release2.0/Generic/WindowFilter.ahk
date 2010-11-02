@@ -26,7 +26,7 @@ WindowFilter_Get(WindowFilter)
 		VarSetCapacity(ti, 16, 0)  ; structure of privileges
 		NumPut(1, ti, 0)  ; one entry in the privileges array...
 		; Retrieves the locally unique identifier of the debug privilege:
-		DllCall("Advapi32.dll\LookupPrivilegeValueA", "UInt", 0, "Str", "SeDebugPrivilege", "Int64P", luid)
+		DllCall("Advapi32.dll\LookupPrivilegeValue", "UInt", 0, "Str", "SeDebugPrivilege", "Int64P", luid)
 		NumPut(luid, ti, 4, "int64")
 		NumPut(2, ti, 12)  ; enable this privilege: SE_PRIVILEGE_ENABLED = 2
 		; Update the privileges of this process with the new access token:
@@ -43,7 +43,7 @@ WindowFilter_Get(WindowFilter)
 			; Open process with: PROCESS_VM_READ (0x0010) | PROCESS_QUERY_INFORMATION (0x0400)
 			h := DllCall("OpenProcess", "UInt", 0x0010 | 0x0400, "Int", false, "UInt", id)
 			VarSetCapacity(n, s, 0)  ; a buffer that receives the base name of the module:
-			e := DllCall("Psapi.dll\GetModuleBaseNameA", "UInt", h, "UInt", 0, "Str", n, "UInt", s)
+			e := DllCall("Psapi.dll\GetModuleBaseName", "UInt", h, "UInt", 0, "Str", n, "UInt", s)
 			DllCall("CloseHandle", "UInt", h)  ; close process handle to save memory
 			if (n && e)  ; if image is not null add to list:
 			{
@@ -84,11 +84,15 @@ WindowFilter_Matches(WindowFilter, TargetWindow, TriggerFilter = "")
 		if(!title)
 			title := WindowList[TargetWindow].title
 		if(WindowFilter.WindowMatchType = "Program")
+		{
 			if(GetProcessName(TargetWindow) = WindowFilter.WindowFilter)
 				return true
+		}
 		else if(WindowFilter.WindowMatchType = "Class")
+		{
 			if(class = WindowFilter.WindowFilter)
 				return true
+		}
 		else if(WindowFilter.WindowMatchType = "Title")
 			if(strStartsWith(title,WindowFilter.WindowFilter))
 				return true

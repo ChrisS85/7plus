@@ -22,7 +22,6 @@ EventSystem_Startup()
 		Trigger.ID := ID
 		OnTrigger(Trigger)
 	}
-	EventScheduler()
 }
 
 Events_FindID(Events,ID)
@@ -278,6 +277,10 @@ ReadEventsFile(Events, path)
 		;One Instance
 		Event.OneInstance := XMLEvent.OneInstance
 		
+		;Official event identifier for update processes
+		if(XMLEvent.OfficialEvent)
+			Event.OfficialEvent := XMLEvent.OfficialEvent
+		
 		;Read trigger values
 		Event.Trigger := EventSystem_CreateSubEvent("Trigger", XMLEvent.Trigger.Type)
 		Event.Trigger.ReadXML(XMLEvent.Trigger)
@@ -425,6 +428,11 @@ WriteEventsFile(Events, path)
 		
 		;One Instance
 		xmlEvent.OneInstance := Event.OneInstance
+		
+		if(Event.Officialevent)
+			xmlEvent.OfficialEvent := Event.OfficialEvent
+		;Enable the line below to save events with an "official" tag that allows to identify them in update processeses
+		; xmlEvent.OfficialEvent := Event.ID + 1
 		
 		xmlTrigger := Object()
 		xmlEvent.Trigger := xmlTrigger

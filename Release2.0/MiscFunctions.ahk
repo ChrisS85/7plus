@@ -491,7 +491,7 @@ GetModuleFileNameEx( p_pid )
    name_size = 255 
    VarSetCapacity( name, name_size ) 
     
-   result := DllCall( "psapi.dll\GetModuleFileNameExA", "uint", h_process, "uint", 0, "str", name, "uint", name_size ) 
+   result := DllCall( "psapi.dll\GetModuleFileNameEx", "uint", h_process, "uint", 0, "str", name, "uint", name_size ) 
    if ( ErrorLevel or result = 0 ) 
       outputdebug, [GetModuleFileNameExA] failed 
     
@@ -528,7 +528,7 @@ ExtractIcon(Filename, IconNumber, IconSize)
         } 
     } 
     ; Use ExtractIconEx, which only returns 16x16 or 32x32 icons. 
-    if DllCall("shell32.dll\ExtractIconExA","str",Filename,"int",IconNumber-1 
+    if DllCall("shell32.dll\ExtractIconEx","str",Filename,"int",IconNumber-1 
                 ,"uint*",h_icon,"uint*",h_icon_small,"uint",1) 
     { 
         SysGet, SmallIconSize, 49 

@@ -25,8 +25,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>218</ID>
+<ID>2</ID>
 <Name>Append file(s) to clipboard</Name>
+<OfficialEvent>3</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>+C</Key>
@@ -57,8 +58,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>219</ID>
+<ID>3</ID>
 <Name>Append file(s) to clipboard: Cut</Name>
+<OfficialEvent>4</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>+X</Key>
@@ -93,8 +95,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>222</ID>
+<ID>6</ID>
 <Name>Make backspace go upwards</Name>
+<OfficialEvent>7</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Backspace</Key>
@@ -120,8 +123,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>225</ID>
+<ID>9</ID>
 <Name>Run CMD  in current directory</Name>
+<OfficialEvent>10</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>#C</Key>
@@ -149,8 +153,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>443</ID>
+<ID>227</ID>
 <Name>Copy filenames to clipboard</Name>
+<OfficialEvent>228</OfficialEvent>
 <OneInstance>1</OneInstance>
 <Trigger>
 <Key>!C</Key>
@@ -173,8 +178,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>444</ID>
+<ID>228</ID>
 <Name>Copy full filepaths to clipboard</Name>
+<OfficialEvent>229</OfficialEvent>
 <OneInstance>1</OneInstance>
 <Trigger>
 <Key>^!C</Key>
@@ -202,8 +208,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>445</ID>
+<ID>229</ID>
 <Name>Append filenames to clipboard</Name>
+<OfficialEvent>230</OfficialEvent>
 <OneInstance>1</OneInstance>
 <Trigger>
 <Key>+!C</Key>
@@ -231,8 +238,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>446</ID>
+<ID>230</ID>
 <Name>Append full filepaths to clipboard</Name>
+<OfficialEvent>231</OfficialEvent>
 <OneInstance>1</OneInstance>
 <Trigger>
 <Key>^+!C</Key>
@@ -241,7 +249,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<Filename>Neues Textdokument.txt</Filename>
+<Filename></Filename>
 <Rename>1</Rename>
 <Type>NewFile</Type>
 </Action></Actions>
@@ -260,8 +268,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>447</ID>
+<ID>231</ID>
 <Name>Create new textfile</Name>
+<OfficialEvent>232</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>F7</Key>
@@ -270,7 +279,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<FolderName>Neuer Ordner</FolderName>
+<FolderName></FolderName>
 <Rename>1</Rename>
 <Type>NewFolder</Type>
 </Action></Actions>
@@ -289,8 +298,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>448</ID>
+<ID>232</ID>
 <Name>Create new folder</Name>
+<OfficialEvent>233</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>F8</Key>
@@ -310,8 +320,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>451</ID>
+<ID>235</ID>
 <Name>Run explorer</Name>
+<OfficialEvent>236</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Type>DoubleClickDesktop</Type>
@@ -330,8 +341,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>453</ID>
+<ID>237</ID>
 <Name>Double click go upwards</Name>
+<OfficialEvent>238</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Type>ExplorerDoubleClickSpace</Type>
@@ -364,8 +376,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>516</ID>
+<ID>300</ID>
 <Name>Open image files in image editor</Name>
+<OfficialEvent>301</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>F3</Key>
@@ -399,8 +412,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>517</ID>
+<ID>301</ID>
 <Name>Open non-image files in text editor</Name>
+<OfficialEvent>302</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>F3</Key>
@@ -434,13 +448,59 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>520</ID>
+<ID>304</ID>
 <Name>Select files</Name>
+<OfficialEvent>305</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^S</Key>
 <Type>Hotkey</Type>
 </Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Type>WindowActivate</Type>
+<WindowFilter></WindowFilter>
+<WindowMatchType>UnderMouse</WindowMatchType>
+</Action><Action>
+<Button>Right</Button>
+<Relative>1</Relative>
+<RestorePosition>1</RestorePosition>
+<Type>MouseClick</Type>
+<X></X>
+<Y></Y>
+</Action></Actions>
+<Category>Explorer</Category>
+<Conditions>
+<Condition>
+<Compare>${MNN}</Compare>
+<Negate>0</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>DirectUIHWND3</With>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>WindowActive</Type>
+<WindowFilter></WindowFilter>
+<WindowMatchType>UnderMouse</WindowMatchType>
+</Condition><Condition>
+<Compare>${MC}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(ExploreWClass|CabinetWClass)</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>318</ID>
+<Name>Allow right-click on files in inactive window</Name>
+<OfficialEvent>319</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>RButton</Key>
+<Type>Hotkey</Type>
+</Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
-<MinorVersion>0</MinorVersion>
+<MinorVersion>1</MinorVersion>

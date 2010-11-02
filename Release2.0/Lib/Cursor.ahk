@@ -78,7 +78,7 @@ Ext_Cursor_wndProc(Hwnd, UMsg, WParam, LParam) {
 			DllCall("SetCursor", "uint", %Hwnd%)
 	  else  DllCall("SetCursor", "uint", curArrow)
 
-   return DllCall("CallWindowProcA", "UInt", A_EventInfo, "UInt", hwnd, "UInt", uMsg, "UInt", wParam, "UInt", lParam)
+   return DllCall("CallWindowProc", "UInt", A_EventInfo, "UInt", hwnd, "UInt", uMsg, "UInt", wParam, "UInt", lParam)
 } 
 
 #include *i Win.ahk

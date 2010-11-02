@@ -141,9 +141,7 @@ ExpandPlaceholder(Placeholder)
 		}
 		else if(strStartsWith(Placeholder, "SelN"))
 			Loop, Parse, files, `n, %A_Space%
-			{
 				array.append(A_LoopField)
-			}
 		if(array.len() = 0)
 			return ""
 		Placeholder := SubStr(Placeholder, 4+max(strLen(number), 1))

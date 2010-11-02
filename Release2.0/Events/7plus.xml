@@ -17,7 +17,8 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>0</ID>
-<Name>7plus: Show settings window</Name>
+<Name>Show settings window</Name>
+<OfficialEvent>1</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>#H</Key>
@@ -35,7 +36,8 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>1</ID>
-<Name>7plus: Restart 7plus</Name>
+<Name>Restart 7plus</Name>
+<OfficialEvent>2</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>#Q</Key>
@@ -43,4 +45,4 @@
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
-<MinorVersion>0</MinorVersion>
+<MinorVersion>1</MinorVersion>

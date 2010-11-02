@@ -68,7 +68,7 @@ Accessor_Init()
 	Accessor.GenericIcons.Application := ExtractIcon("shell32.dll", 3, 64)
 	Accessor.GenericIcons.Folder := ExtractIcon("shell32.dll", 4, 64)
 	FileAppend, test, %A_Temp%\7plus\test.htm
-	Accessor.GenericIcons.URL := DllCall("Shell32\ExtractAssociatedIconA", UInt, 0, Str, A_Temp "\7plus\test.htm", UShortP, iIndex)
+	Accessor.GenericIcons.URL := DllCall("Shell32\ExtractAssociatedIcon", UInt, 0, Str, A_Temp "\7plus\test.htm", UShortP, iIndex)
 	FileDelete, %A_Temp%\7plus\test.htm
 	; DllCall("ExtractIcon", "uint", hInstance, "str", "shell32.dll", "uint", 3)
 	; Accessor.GenericIcons.Folder := DllCall("ExtractIcon", "uint", hInstance, "str", "shell32.dll", "uint", 4)
@@ -164,9 +164,6 @@ CreateAccessorWindow(Action)
 	;return Gui number to indicate that the Accessor box is still open
 	return AccessorGUINum
 }
-^p::
-DllCall( "SetParent", "uint", WinExist("A"), "uint", PreviousWindow )
-return
 FillAccessorList()
 {
 	global AccessorPlugins,Accessor,AccessorListView,AccessorEdit
@@ -588,7 +585,7 @@ GUI_EditAccessorPlugin(Settings,GoToLabel="")
 		Gui, %GuiNum%:Default
 		Gui, +LabelEditAccessorPlugin +Owner1 +ToolWindow +OwnDialogs
 		width := 500
-		height := 430
+		height := 460
 		;Gui, 4:Add, Button, ,OK
 		x := PluginGUI.x
 		y := Height - 34

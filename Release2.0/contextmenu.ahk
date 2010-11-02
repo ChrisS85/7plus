@@ -105,7 +105,7 @@ WindowProc(hWnd, nMsg, wParam, lParam)
    } 
    if(!WasCritical)
 		Critical, Off
-   Return   DllCall("user32.dll\CallWindowProcA", "Uint", WPOld, "Uint", hWnd, "Uint", nMsg, "Uint", wParam, "Uint", lParam) 
+   Return   DllCall("user32.dll\CallWindowProc", "Uint", WPOld, "Uint", hWnd, "Uint", nMsg, "Uint", wParam, "Uint", lParam) 
 } 
 VTable(ppv, idx) 
 { 

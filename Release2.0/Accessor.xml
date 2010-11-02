@@ -32,23 +32,32 @@
 </Google>
 <Keywords>
 <Keyword>
-<Command>http://dict.leo.org/ende?search=</Command>
-<Key>leo </Key>
+<Command>http://dict.leo.org/ende?search={1}</Command>
+<Key>leo</Key>
 </Keyword><Keyword>
-<Command>http://blog.fefe.de</Command>
-<Key>fefe</Key>
+<Command>http://google.com/search?q=${1}</Command>
+<Key>google</Key>
 </Keyword><Keyword>
-<Command>http://google.com/search?q=</Command>
-<Key>google </Key>
-</Keyword><Keyword>
-<Command>C:\Program Files\Opera\Opera.exe</Command>
-<Key>op</Key>
-</Keyword><Keyword>
-<Command>http://de.wikipedia.org/wiki/</Command>
-<Key>w </Key>
+<Command>http://en.wikipedia.org/wiki/Special:Search?search=${1}</Command>
+<Key>w</Key>
 </Keyword><Keyword>
 <Command>http://maps.google.com/maps?q=${1}</Command>
 <Key>gm</Key>
+</Keyword><Keyword>
+<Command>http://www.amazon.com/s?url=search-alias%3Daps&field-keywords=${1}</Command>
+<Key>a</Key>
+</Keyword><Keyword>
+<Command>http://www.bing.com/search?q=${1}</Command>
+<Key>bing</Key>
+</Keyword><Keyword>
+<Command>http://www.youtube.com/results?search_query=${1}</Command>
+<Key>y</Key>
+</Keyword><Keyword>
+<Command>http://www.imdb.com/find?q=${1}</Command>
+<Key>i</Key>
+</Keyword><Keyword>
+<Command>http://www.wolframalpha.com/input/?i=${1}</Command>
+<Key>wa</Key>
 </Keyword></Keywords>
 <NotepadPlusPlus>
 <Enabled>1</Enabled>
@@ -72,6 +81,7 @@
 <Keyword>run</Keyword>
 <Settings>
 <BasePriority>0</BasePriority>
+<Exclude>install,unwise,setup</Exclude>
 <FuzzySearch>1</FuzzySearch>
 <IgnoreExtensions>1</IgnoreExtensions>
 <Keyword>run</Keyword>

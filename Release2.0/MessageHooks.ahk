@@ -24,14 +24,14 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 	if(event = 0x000E)
 	{
 		class := WinGetClass("ahk_id " hwnd)
-		outputdebug dragdropstart %class%
+		; outputdebug dragdropstart %class%
 	}
 	if(event=0x8001 && UseTabs) ;EVENT_OBJECT_DESTROY
 	{
 		DecToHex(hwnd)
 		if(TabContainerList.ContainsHWND(hwnd))		
 		{
-			outputdebug tab closed
+			; outputdebug tab closed
 			ExplorerDestroyed(hwnd)
 		}
 		return
@@ -69,7 +69,7 @@ ShellMessage( wParam,lParam, msg)
 	Trigger.wParam := wParam
 	Trigger.lParam := lParam
 	OnTrigger(Trigger)
-	outputdebug shellmessage %wparam%
+	; outputdebug shellmessage %wparam%
 	;Traymin
 	If	msg=1028
 	{
@@ -92,7 +92,7 @@ ShellMessage( wParam,lParam, msg)
 		WinTraymin(lParam,wParam)
 		Trigger := wParam = 1 ? EventSystem_CreateSubEvent("Trigger","WindowCreated") : EventSystem_CreateSubEvent("Trigger","WindowClosed")
 		class:=WinGetClass("ahk_Id " lParam)
-		outputdebug(Trigger.Type " triggered! class:" class " hwnd: " lParam)
+		; outputdebug(Trigger.Type " triggered! class:" class " hwnd: " lParam)
 		Trigger.Window := lParam
 		OnTrigger(Trigger)
 	}
@@ -129,12 +129,12 @@ ShellMessage( wParam,lParam, msg)
 	if(wParam=32774)
 	{
 		class:=WinGetClass("ahk_id " lParam)
-		outputdebug blinking window %class%
+		; outputdebug blinking window %class%
 		if(BlinkingWindows.indexOf(lParam)=0)
 		{			
 			BlinkingWindows.Append(lParam)
 			ct:=BlinkingWindows.len()
-			outputdebug add window, count is now %ct%
+			; outputdebug add window, count is now %ct%
 		}
 	}
 	
@@ -149,7 +149,6 @@ ShellMessage( wParam,lParam, msg)
 			BlinkingWindows.Delete(x)
 		DecToHex(lParam)
 		class:=WinGetClass("ahk_id " lParam)
-		outputdebug blup
 		if(Accessor.GUINum && WinGetTitle("A") != Accessor.WindowTitle)
 			AccessorClose()
 		;If we change from another program to explorer/desktop/dialog

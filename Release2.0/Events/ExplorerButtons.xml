@@ -4,16 +4,12 @@
 <Actions>
 <Action>
 <Clipboard>1</Clipboard>
-<Hostname>Enter Hostname</Hostname>
-<Password></Password>
-<Port>21</Port>
+<FTPProfile></FTPProfile>
 <Silent>0</Silent>
 <SourceFiles>${SelNNEM}</SourceFiles>
 <TargetFile>${Input}</TargetFile>
 <TargetFolder></TargetFolder>
 <Type>Upload</Type>
-<URL>http://urltohost.com</URL>
-<User>Enter Username</User>
 </Action></Actions>
 <Category>Explorer Buttons</Category>
 <Conditions>
@@ -21,8 +17,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>325</ID>
+<ID>978</ID>
 <Name>Upload selected files</Name>
+<OfficialEvent>979</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Name>Upload</Name>
@@ -44,8 +41,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>326</ID>
+<ID>979</ID>
 <Name>New text file</Name>
+<OfficialEvent>980</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Name>New text file</Name>
@@ -56,4 +54,4 @@
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
-<MinorVersion>0</MinorVersion>
+<MinorVersion>1</MinorVersion>

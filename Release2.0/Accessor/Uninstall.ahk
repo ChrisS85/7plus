@@ -42,7 +42,7 @@ Accessor_Uninstall_OnAccessorOpen(Uninstall, Accessor)
 			Number := 0
 		; outputdebug displayicon %displayicon% number %number%
 		if(FileExist(DisplayIcon))
-			hIcon := DllCall("Shell32\ExtractAssociatedIconA", UInt, Number, Str, DisplayIcon, UShortP, iIndex)
+			hIcon := DllCall("Shell32\ExtractAssociatedIcon", UInt, Number, Str, DisplayIcon, UShortP, iIndex)
 		else
 			hIcon := Accessor.GenericIcons.Application
 		; outputdebug hicon %hicon%

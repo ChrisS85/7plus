@@ -9,34 +9,20 @@ GroupAdd, TaskbarGroup, ahk_class DV2ControlHost
 GroupAdd, TaskbarDesktopGroup, ahk_group DesktopGroup
 GroupAdd, TaskbarDesktopGroup, ahk_group TaskbarGroup
 
-Loop %0%
-{
-	SplitPath, 1,x,y
-	if(strStartsWith(%A_Index%,"-id"))
-		CommunicateWithRunningInstance(%A_Index%)
-	else if(%A_Index% = "-Portable")
-		IsPortable := true
-	else if(y)
-	{
-		x = %1%
-		SetDirectory(x)
-		ExitApp
-	}
-}
+CommunicateWithRunningInstance()
 FileCreateDir %A_Temp%\7plus
 
+;This value is used when there are no write permissions in 7plus folder (mostly %ProgramFiles% in Vista/7), so that the config file can be copied to %AppData%\7plus and used from there in the future.
+;As the old file would still exist then, we need to write this value to the new file and check for its existance to decide which config file needs to be used.
 IniRead, NoAdminSettingsTransfered, %A_AppData%\7plus\Settings.ini, Misc, NoAdminSettingsTransfered, 0
+;Try to use config file from script dir in portable mode or when it wasn't neccessary to copy it to appdata yet
 if((IsPortable || FileExist(A_ScriptDir "\Settings.ini")) && !NoAdminSettingsTransfered)
 	ConfigPath := A_ScriptDir "\Settings.ini"
 Else
 {
 	ConfigPath := A_AppData "\7plus\Settings.ini"
-	if(!FileExist(A_AppData "\7plus\Events.xml") && FileExist(A_ScriptDir "\Events.xml") && WriteAccess(A_ScriptDir "\Events.xml")) ; make sure sample events.xml is in appdata directory
-	{
-		FileCopy, %A_ScriptDir%\Events.xml, %A_AppData%\7plus\Events.xml
-		if(FileExist(A_AppData "\7plus\Events.xml"))
-			FileDelete, %A_ScriptDir%\Events.xml
-	}
+	if(!FileExist(A_AppData "\7plus"))
+		FileCreateDir, %A_AppData%\7plus
 }
 ;Start debugger
 IniRead, DebugEnabled, %ConfigPath%, General, DebugEnabled , 0
@@ -44,6 +30,7 @@ if(DebugEnabled)
 	DebuggingStart()
 
 IniRead, RunAsAdmin, %ConfigPath%, Misc, RunAsAdmin , Always/Ask
+;Remove 'Always run as admin' compatibility flag from registry in portable or non-admin mode
 if(RunAsAdmin = "Never" && !IsPortable)
 {
 	if(A_IsCompiled)
@@ -58,13 +45,16 @@ if(RunAsAdmin = "Never" && !IsPortable)
 			RegDelete, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_AhkPath%
 	}
 }
-if(RunAsAdmin = "Always/Ask" && !IsPortable) ;Write it again incase it gets changed externally
+;Set 'Always run as admin' compatibility flag from registry in non-portable and admin mode
+if(RunAsAdmin = "Always/Ask" && !IsPortable)
 {
 	if(A_IsCompiled)
 		RegWrite, REG_SZ, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_ScriptFullPath%, RUNASADMIN
 	else
 		RegWrite, REG_SZ, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_AhkPath%, RUNASADMIN
 }
+
+;If program is run without admin privileges, try to run it again as admin, and exit this instance when the user confirms it
 if(!A_IsAdmin && RunAsAdmin = "Always/Ask")
 {
 	If(A_IsCompiled)
@@ -74,16 +64,22 @@ if(!A_IsAdmin && RunAsAdmin = "Always/Ask")
 	If(uacrep = 42) ;UAC Prompt confirmed, application may run as admin
 		ExitApp
 }
-if(ConfigPath = A_ScriptDir "\Settings.ini" && !WriteAccess(A_ScriptDir "\Settings.ini"))
+
+;If the current config path is set to the program directory but there is no write access, %AppData%\7plus needs to be used.
+;If this is the first time (i.e. NoAdminSettingsTransfered = 0), all config files need to be copied to the new config path
+if((ConfigPath = A_ScriptDir "\Settings.ini" && !WriteAccess(A_ScriptDir "\Accessor.xml")) || ConfigPath = A_AppData "\7plus\Settings.ini")
 {
 	if(IsPortable)
-		MsgBox No File access to settings files in program directory. 7plus will not be able to store its settings. Please move 7plus to a folder with write permissions, run it as administrator, or grant write permissions to this directory.
+		MsgBox No file access to settings files in program directory. 7plus will not be able to store its settings. Please move 7plus to a folder with write permissions, run it as administrator, or grant write permissions to this directory.
 	else
 	{
 		ConfigPath := A_AppData "\7plus\Settings.ini"
-		if(NoAdminSettingsTransfered = 0)
+		if(!FileExist(A_AppData "\7plus"))
+			FileCreateDir, %A_AppData%\7plus
+		if(NoAdminSettingsTransfered != MajorVersion "." MinorVersion "." BugfixVersion)
 		{
-			MsgBox No File access to settings files in program directory. 7plus will use %A_AppData%\7plus as settings directory.
+			if(!WriteAccess(A_ScriptDir "\Accessor.xml"))
+				MsgBox No File access to settings files in program directory. 7plus will use %A_AppData%\7plus as settings directory.
 			FileCopy, %A_ScriptDir%\Events.xml, %A_AppData%\7plus\Events.xml, 1
 			FileCopy, %A_ScriptDir%\Settings.ini, %A_AppData%\7plus\Settings.ini, 1
 			FileCopy, %A_ScriptDir%\ProgramCache.xml, %A_AppData%\7plus\ProgramCache.xml, 1
@@ -92,10 +88,19 @@ if(ConfigPath = A_ScriptDir "\Settings.ini" && !WriteAccess(A_ScriptDir "\Settin
 			FileCopy, %A_ScriptDir%\Clipboard.xml, %A_AppData%\7plus\Clipboard.xml, 1
 			FileCopy, %A_ScriptDir%\Accessor.xml, %A_AppData%\7plus\Accessor.xml, 1
 			FileCopy, %A_ScriptDir%\FTPProfiles.xml, %A_AppData%\7plus\FTPProfiles.xml, 1
-			NoAdminSettingsTransfered := true
+			FileDelete, %A_ScriptDir%\Events.xml
+			FileDelete, %A_ScriptDir%\Settings.ini
+			FileDelete, %A_ScriptDir%\ProgramCache.xml
+			FileDelete, %A_ScriptDir%\Notes.xml
+			FileDelete, %A_ScriptDir%\History.xml
+			FileDelete, %A_ScriptDir%\Clipboard.xml,
+			FileDelete, %A_ScriptDir%\Accessor.xml
+			FileDelete, %A_ScriptDir%\FTPProfiles.xml
+			NoAdminSettingsTransfered := MajorVersion "." MinorVersion "." BugfixVersion
 		}
 	}
 }
+
 ;Update checker
 IniRead, AutoUpdate, %ConfigPath%, Misc, AutoUpdate, 1
 if(A_IsAdmin) ;For some reason this does not work for normal user
@@ -105,6 +110,23 @@ if(A_IsAdmin) ;For some reason this does not work for normal user
 	PostUpdate()
 }
 
+
+SplitPath, ConfigPath,,path
+;Possibly replace an old Events.xml with the current one. The current version is stored in LastReplacedEventsFile so that this is not done repeatedly if the new file couldn't be deleted.
+;In addition, a backup of the old file is created.
+IniRead, LastReplacedEventsFile, %ConfigPath%, Misc, LastReplacedEventsFile, 0
+if(FileExist(A_ScriptDir "\Events " MajorVersion "." MinorVersion "." BugfixVersion ".xml") && LastReplacedEventsFile != MajorVersion "." MinorVersion "." BugfixVersion && WriteAccess(path "\Accessor.xml"))
+{
+	if(FileExist(path "\Events.xml"))
+	{
+		FileCopy, %path%\Events.xml, %path%\Events Backup.xml
+		FileDelete, %path%\Events.xml
+		Msgbox A Backup of your previous Events.xml file was created in %path%\Events Backup.xml.
+	}
+	FileCopy, %A_ScriptDir%\Events %MajorVersion%.%MinorVersion%.%BugfixVersion%.xml, %path%\Events.xml
+	FileDelete, %A_ScriptDir%\Events %MajorVersion%.%MinorVersion%.%BugfixVersion%.xml
+	LastReplacedEventsFile := MajorVersion "." MinorVersion "." BugfixVersion
+}
 CreateTabWindow()
 ;Get windows version
 RegRead, vista7, HKLM, SOFTWARE\Microsoft\Windows NT\CurrentVersion, CurrentVersion
@@ -353,20 +375,22 @@ IniRead, HideTrayIcon, %ConfigPath%, Misc, HideTrayIcon, 0
 if(!HidetrayIcon)
 	menu, tray, Icon
 
-;possibly start wizard
-if (Firstrun=1)
-	SetTimer, wizardry, -500
 
 
 	
 SetTimer, TriggerTimer, 1000
 ; SetTimer, AssignHotkeys, -10000
 
-; Hotkey, If, !IsFullScreen()
-; Hotkey, MButton, MButton, On
-; Hotkey, If
-;put it at the end because this will be the main loop of the program
+;Init event system
 EventSystem_Startup()
+
+;possibly start wizard
+if (Firstrun=1)
+	GoSub, wizardry
+FirstRun:=0
+
+;Event loop
+EventScheduler()
 Return
 
 ExitSub:
@@ -381,6 +405,7 @@ OnExit(Reload=0)
 	EventSystem_End()
 	Gdip_Shutdown(pToken)
 	WriteIni()
+	WriteClipboard()
 	Action_Upload_WriteFTPProfiles()
 	SlideWindows_Exit()
 	TabContainerList.CloseAllInactiveTabs()
@@ -408,8 +433,6 @@ ShowWizard()
 		ShowSettings()
 	Tooltip(1, "That's it for now. Have fun!", "Everything Done!","O1 L1 P99 C1 XTrayIcon YTrayIcon I1")
 	SetTimer, ToolTipClose, -5000	
-	FirstRun:=0
-	IniWrite, 0, %ConfigPath%, General, FirstRun
 	return
 }
 AutoUpdate()
@@ -420,7 +443,10 @@ AutoUpdate()
 	if(IsConnected())
 	{
 		random, rand
+		;Disable keyboard hook to increase responsiveness
+		Suspend, On
 		URLDownloadToFile, http://7plus.googlecode.com/files/NewVersion.ini?x=%rand%, %A_ScriptDir%\Version.ini
+		Suspend, Off
 		if(!Errorlevel)
 		{
 			IniRead, tmpMajorVersion, %A_ScriptDir%\Version.ini, Version,MajorVersion
@@ -459,7 +485,7 @@ AutoUpdate()
 }
 PostUpdate()
 {
-	global MajorVersion,MinorVersion,BugfixVersion
+	global MajorVersion,MinorVersion,BugfixVersion, ConfigPath, IsPortable
 	if(FileExist(A_ScriptDir "\Updater.exe"))
 	{
 		IniRead, tmpMajorVersion, %A_ScriptDir%\Version.ini,Version,MajorVersion
@@ -467,12 +493,13 @@ PostUpdate()
 		IniRead, tmpBugfixVersion, %A_ScriptDir%\Version.ini,Version,BugfixVersion
 		if(tmpMajorVersion=MajorVersion && tmpMinorVersion = MinorVersion && tmpBugfixVersion = BugfixVersion)
 		{
+			;If the new version is 2.1.0, some registry values need to be modified according to the new version.
 			if(MajorVersion "." MinorVersion "." BugfixVersion = "2.1.0")
 			{
 				RemoveAllButtons()
 				RefreshFastFolders()
 			}
-			;2.0.0 -> 2.1.0 compatibility
+			;2.0.0 -> 2.1.0 compatibility, update autorun executable
 			if(!IsPortable)
 			{
 				RegRead, Autorun, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus
@@ -482,16 +509,18 @@ PostUpdate()
 					else
 						RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptDir%\7plus.ahk"
 			}
-			if(FileExist(A_ScriptDir "UACAutorun.exe") && WriteAccess(A_ScriptDir "UACAutorun.exe"))
-				FileDelete % A_ScriptDir "UACAutorun.exe"
-			if(FileExist(A_ScriptDir "ChangeLocation.exe") && WriteAccess(A_ScriptDir "ChangeLocation.exe"))
-				FileDelete % A_ScriptDir "ChangeLocation.exe"
+			;Possibly delete remaining files from 2.0.0 which are obsolete now
+			List := "UACAutorun.exe,ChangeLocation.exe,Events\cmd.xml,Events\CopyFilenames.xml,Events\CreateNewFile,Folder.xml,Events\DoubleClickDesktop.xml,Events\DoubleClickTaskbar.xml,Events\DoubleClickUpwards.xml,Events\Mouse Volume.xml,Events\Open in Editor.xml,Events\Other things.xml,Events\Upload.xml,Events\AppendToClipboard.xml,Events\BackspaceUpwards.xml"
+			Loop, Parse, List,`,
+				if(FileExist(A_ScriptDir "/" A_LoopField) && WriteAccess(A_ScriptDir "/" A_LoopField))
+					FileDelete %A_ScriptDir%/%A_LoopField%
 			
 			if(FileExist(A_ScriptDir "\Changelog.txt"))
 			{
 				MsgBox,4,, Update successful. View Changelog?
 				IfMsgBox Yes
 					run %A_ScriptDir%\Changelog.txt
+				MsgBox Make sure to try out the new Accessor tool (Default: ALT + Space) !
 			}
 		}		
 		FileDelete %A_ScriptDir%\Updater.exe
@@ -507,6 +536,7 @@ WriteIni()
 		SplitPath, ConfigPath,, path
 		FileCreateDir %path%
 	}
+	FileDelete, %ConfigPath%
 	IniWrite, %DebugEnabled%, %ConfigPath%, General, DebugEnabled
 	/*
 	IniWrite, %FTP_Enabled%, %ConfigPath%, FTP, UseFTP
@@ -589,9 +619,11 @@ WriteIni()
 	IniWrite, %RunAsAdmin%, %ConfigPath%, Misc, RunAsAdmin
 	IniWrite, %ExplorerPath%, %ConfigPath%, Misc, ExplorerPath
 	IniWrite, %PreviousExplorerPath%, %ConfigPath%, Misc, PreviousExplorerPath
-	if(NoAdminSettingsTransferred)
+	if(NoAdminSettingsTransfered)
 		IniWrite, %NoAdminSettingsTransfered%, %ConfigPath%, Misc, NoAdminSettingsTransfered
-	
+	if(LastReplacedEventsFile)
+		IniWrite, %LastReplacedEventsFile%, %ConfigPath%, Misc, LastReplacedEventsFile	
+	IniWrite, 0, %ConfigPath%, General, FirstRun
 	;FastFolders
 	Loop 10
 	{
@@ -601,26 +633,46 @@ WriteIni()
 	    IniWrite, %y%, %ConfigPath%, FastFolders, Folder%x%
 	    IniWrite, %z%, %ConfigPath%, FastFolders, FolderTitle%x%
 	}
-	
+}
+WriteClipboard()
+{
+	global ConfigPath, ClipboardList
 	SplitPath, ConfigPath,,path
-	path .= "\Clipboard.xml"
-	FileDelete, %path%
+	FileDelete, %path%\Clipboard.xml
 	XMLObject := Object("List",Array())
 	Loop % min(ClipboardList.len(), 10)
 		XMLObject.List.append(ClipboardList[A_Index])
-	XML_Save(XMLObject,path)
+	XML_Save(XMLObject,path "\Clipboard.xml")
 }
-CommunicateWithRunningInstance(Parameter)
+CommunicateWithRunningInstance()
 {
 	global
-	local Count
+	local Count, x, y
 	DetectHiddenWindows, On	
 	FileRead, hwnd, %A_Temp%\7plus\hwnd.txt
-	if(WinExist("ahk_id " hwnd))
+	
+	Loop %0%
 	{
-		Parameter := SubStr(Parameter, 5) ;-ID:Value
-		SendMessage, 55555, %Parameter%, 0, ,ahk_id %hwnd%
-		ExitApp
+		SplitPath, 1,x,y
+		if(strStartsWith(%A_Index%,"-id"))
+		{
+			if(WinExist("ahk_id " hwnd))
+			{
+				Parameter := SubStr(%A_Index%, 5) ;-ID:Value
+				SendMessage, 55555, %Parameter%, 0, ,ahk_id %hwnd%
+				ExitApp
+			}
+		}
+		else if(%A_Index% = "-Portable")
+			IsPortable := true
+		else if(y)
+		{
+			x = %1%
+			SetDirectory(x)
+			ExitApp
+		}
 	}
+	if(WinExist("ahk_id " hwnd))
+		ExitApp
 	DetectHiddenWindows, Off
 }

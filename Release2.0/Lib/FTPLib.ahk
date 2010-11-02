@@ -6,7 +6,7 @@ http://msdn.microsoft.com/library/en-us/wininet/wininet/internetconnect.asp
 
 FtpCreateDirectory(DirName) { 
 global ic_hInternet 
-r := DllCall("wininet\FtpCreateDirectoryA", "uint", ic_hInternet, "str", DirName) 
+r := DllCall("wininet\FtpCreateDirectory", "uint", ic_hInternet, "str", DirName) 
 If (ErrorLevel != 0 or r = 0) 
 return 0 
 else 
@@ -15,7 +15,7 @@ return 1
 
 FtpRemoveDirectory(DirName) { 
 global ic_hInternet 
-r := DllCall("wininet\FtpRemoveDirectoryA", "uint", ic_hInternet, "str", DirName) 
+r := DllCall("wininet\FtpRemoveDirectory", "uint", ic_hInternet, "str", DirName) 
 If (ErrorLevel != 0 or r = 0) 
 return 0 
 else 
@@ -24,7 +24,7 @@ return 1
 
 FtpSetCurrentDirectory(DirName) { 
 global ic_hInternet 
-r := DllCall("wininet\FtpSetCurrentDirectoryA", "uint", ic_hInternet, "str", DirName) 
+r := DllCall("wininet\FtpSetCurrentDirectory", "uint", ic_hInternet, "str", DirName) 
 If (ErrorLevel != 0 or r = 0) 
 return 0 
 else 
@@ -39,7 +39,7 @@ FtpPutFile(LocalFile, NewRemoteFile="", Flags=0) {
 If NewRemoteFile= 
 NewRemoteFile := LocalFile 
 global ic_hInternet 
-r := DllCall("wininet\FtpPutFileA" 
+r := DllCall("wininet\FtpPutFile" 
 , "uint", ic_hInternet 
 , "str", LocalFile 
 , "str", NewRemoteFile 
@@ -59,7 +59,7 @@ FtpGetFile(RemoteFile, NewFile="", Flags=0) {
 If NewFile= 
 NewFile := RemoteFile 
 global ic_hInternet 
-r := DllCall("wininet\FtpGetFileA" 
+r := DllCall("wininet\FtpGetFile" 
 , "uint", ic_hInternet 
 , "str", RemoteFile 
 , "str", NewFile 
@@ -79,7 +79,7 @@ FtpGetFileSize(FileName, Flags=0) {
 ;FTP_TRANSFER_TYPE_ASCII = 1 
 ;FTP_TRANSFER_TYPE_BINARY = 2 
 global ic_hInternet 
-fof_hInternet := DllCall("wininet\FtpOpenFileA" 
+fof_hInternet := DllCall("wininet\FtpOpenFile" 
 , "uint", ic_hInternet 
 , "str", FileName 
 , "uint", 0x80000000 ;dwAccess: GENERIC_READ 
@@ -96,7 +96,7 @@ return, FileSize
 
 FtpDeleteFile(FileName) { 
 global ic_hInternet 
-r :=  DllCall("wininet\FtpDeleteFileA", "uint", ic_hInternet, "str", FileName) 
+r :=  DllCall("wininet\FtpDeleteFile", "uint", ic_hInternet, "str", FileName) 
 If (ErrorLevel != 0 or r = 0) 
 return 0 
 else 
@@ -105,7 +105,7 @@ return 1
 
 FtpRenameFile(Existing, New) { 
 global ic_hInternet 
-r := DllCall("wininet\FtpRenameFileA", "uint", ic_hInternet, "str", Existing, "str", New) 
+r := DllCall("wininet\FtpRenameFile", "uint", ic_hInternet, "str", Existing, "str", New) 
 If (ErrorLevel != 0 or r = 0) 
 return 0 
 else 
@@ -128,7 +128,7 @@ AccessType=1
 global ic_hInternet, io_hInternet, hModule 
 hModule := DllCall("LoadLibrary", "str", "wininet.dll") 
 
-io_hInternet := DllCall("wininet\InternetOpenA" 
+io_hInternet := DllCall("wininet\InternetOpen" 
 , "str", A_ScriptName ;lpszAgent 
 , "UInt", AccessType 
 , "str", Proxy 
@@ -140,7 +140,7 @@ FtpClose()
 return 0
 } 
 
-ic_hInternet := DllCall("wininet\InternetConnectA" 
+ic_hInternet := DllCall("wininet\InternetConnect" 
 , "uint", io_hInternet 
 , "str", Server 
 , "uint", Port 

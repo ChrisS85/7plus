@@ -315,7 +315,7 @@ Return::
 ; #if
 
 ;Function(s) to align explorer windows side by side and to launch explorer with last used directory
-#if (RecallExplorerPath && ExplorerPath != "") || AlignExplorer
+#if (RecallExplorerPath && ExplorerPath != "") || AlignExplorer && WinActive("ahk_group ExplorerGroup")
 #e::RunExplorer()
 #if
 RunExplorer()
@@ -342,7 +342,7 @@ RunExplorer()
 	if(RecallExplorerPath && ExplorerPath)
 		Run(A_WinDir "\explorer.exe /n,/e," ExplorerPath)
 	Else
-		run, %A_WinDir%\explorer.exe
+		run, "%A_WinDir%\explorer.exe" ""
 	if(AlignExplorer && active)
 	{
 		WinWaitNotActive ahk_id %active%	

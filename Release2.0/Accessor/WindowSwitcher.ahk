@@ -268,10 +268,10 @@ GetCPA_file_name( p_hw_target ) ; retrives Control Panel applet icon
    WinGet, pid_target, PID, ahk_id %p_hw_target%
    hp_target := DllCall( "OpenProcess", "uint", 0x18, "int", false, "uint", pid_target )
    hm_kernel32 := DllCall( "GetModuleHandle", "str", "kernel32.dll" )
-   pGetCommandLineA := DllCall( "GetProcAddress", "uint", hm_kernel32, "str", "GetCommandLineA" )
+   pGetCommandLine := DllCall( "GetProcAddress", "uint", hm_kernel32, "str", A_IsUnicode ? "GetCommandLineW"  : "GetCommandLineA")
    buffer_size = 6
    VarSetCapacity( buffer, buffer_size )
-   DllCall( "ReadProcessMemory", "uint", hp_target, "uint", pGetCommandLineA, "uint", &buffer, "uint", buffer_size, "uint", 0 )
+   DllCall( "ReadProcessMemory", "uint", hp_target, "uint", pGetCommandLine, "uint", &buffer, "uint", buffer_size, "uint", 0 )
    loop, 4
       ppCommandLine += ( ( *( &buffer+A_Index ) ) << ( 8*( A_Index-1 ) ) )
    buffer_size = 4

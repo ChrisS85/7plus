@@ -14,8 +14,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>237</ID>
+<ID>897</ID>
 <Name>Run task manager</Name>
+<OfficialEvent>898</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Type>DoubleClickTaskbar</Type>
@@ -39,8 +40,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>299</ID>
+<ID>959</ID>
 <Name>Over taskbar: Increase volume</Name>
+<OfficialEvent>960</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>WheelUp</Key>
@@ -65,8 +67,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>300</ID>
+<ID>960</ID>
 <Name>Over taskbar: Decrease volume</Name>
+<OfficialEvent>961</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>WheelDown</Key>
@@ -74,4 +77,4 @@
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
-<MinorVersion>0</MinorVersion>
+<MinorVersion>1</MinorVersion>

@@ -5,14 +5,15 @@
 <Action>
 <Type>Clipmenu</Type>
 </Action></Actions>
-<Category>Clipboard</Category>
+<Category>Clipboard Manager</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>9</ID>
+<ID>383</ID>
 <Name>Clipboard Manager</Name>
+<OfficialEvent>384</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>#V</Key>
@@ -20,4 +21,4 @@
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
-<MinorVersion>0</MinorVersion>
+<MinorVersion>1</MinorVersion>

@@ -10,6 +10,7 @@ Accessor_ProgramLauncher_Init(ByRef ProgramLauncher, Settings)
 	ProgramLauncher.OKName := "Run"	
 	ProgramLauncher.Settings.FuzzySearch := Settings.FuzzySearch
 	ProgramLauncher.Settings.IgnoreExtensions := Settings.IgnoreExtensions
+	ProgramLauncher.Settings.Exclude := Settings.Exclude
 	ProgramLauncher.Description := "Run programs/files by typing a part of their name. All programs/files from the folders in the list `nbelow can be used. 7plus also looks for running programs and automatically adds them `nto the index, so you don't have to add large directories like Program Files or WinDir usually."
 	ProgramLauncher.HasSettings := True
 }
@@ -28,14 +29,15 @@ Accessor_ProgramLauncher_ShowSettings(ProgramLauncher, PluginSettings, PluginGUI
 		SubEventGUI_Add(PSettings, PGUI, "Edit", "BasePriority", "", "", "Base Priority:")
 		SubEventGUI_Add(PSettings, PGUI, "Checkbox", "FuzzySearch", "Use fuzzy search (slower)", "", "")
 		SubEventGUI_Add(PSettings, PGUI, "Checkbox", "IgnoreExtensions", "Ignore file extensions", "", "")
-		GUI, Add, ListView, vProgramLauncherListView gProgramLauncherListView AltSubmit -Hdr -Multi w330 R8, ID|Path
+		SubEventGUI_Add(PSettings, PGUI, "Edit", "Exclude", "", "", "Exclude:")
+		x := PGUI.x
+		GUI, Add, ListView, vProgramLauncherListView gProgramLauncherListView AltSubmit -Hdr -Multi x%x% y+10 w330 R8, ID|Path
 		Loop % PSettings.tmpPaths.len()
 			LV_Add(A_Index = 1 ? "Select" : "", A_Index, PSettings.tmpPaths[A_Index].Path)
 		GUI, Add, Button, x+10 gProgramLauncherAddPath w80, Add Path
 		GUI, Add, Button, y+10 gProgramLauncherEditPath vProgramLauncherEditPath w80, Browse
 		GUI, Add, Button, y+10 gProgramLauncherDeletePath vProgramLauncherDeletePath w80, Delete Path
 		GUI, Add, Button, y+10 gProgramLauncherRefreshCache w80, Refresh Cache
-		x := PGUI.x
 		Gui, Add, Text, x%x% y+35, File extensions:
 		Gui, Add, Edit, hwndhEdit x+10 y+-17 w248
 		Gui, Add, Text, x+10 y+-17, Seperator: Comma
@@ -162,7 +164,7 @@ Accessor_ProgramLauncher_FillAccessorList(ProgramLauncher, Accessor, Filter, Las
 			
 			IconCount++
 			if(!ProgramLauncher.List[A_Index].hIcon) ;Program launcher icons are cached lazy, only when needed
-				ProgramLauncher.List[A_Index].hIcon := DllCall("Shell32\ExtractAssociatedIconA", UInt, 0, Str, ProgramLauncher.List[A_Index].Command, UShortP, iIndex)
+				ProgramLauncher.List[A_Index].hIcon := DllCall("Shell32\ExtractAssociatedIcon", UInt, 0, Str, ProgramLauncher.List[A_Index].Command, UShortP, iIndex)
 			DllCall("ImageList_ReplaceIcon", UInt, Accessor.ImageListID, Int, -1, UInt, ProgramLauncher.List[A_Index].hIcon)
 			if(x = 1)
 				Accessor.List.append(Object("Title",ProgramLauncher.List[A_Index].Name,"Path",ProgramLauncher.List[A_Index].Command,"Type","ProgramLauncher", "Icon", IconCount))
@@ -230,7 +232,7 @@ ReadProgramLauncherCache(ProgramLauncher)
 		
 	
 	
-	ProgramLauncher.Exclude := XMLObject.Exclude
+
 	Loop % XMLObject.List.len()
 	{
 		XMLObjectListEntry := XMLObject.List[A_Index]
@@ -250,7 +252,7 @@ WriteProgramLauncherCache(ProgramLauncher)
 	SplitPath, ConfigPath,,path
 	path .= "\ProgramCache.xml"
 	FileDelete, %path%
-	XMLObject := Object("List",Array(),"Paths",Array(),"Exclude",ProgramLauncher.Exclude)
+	XMLObject := Object("List",Array(),"Paths",Array())
 	Loop % ProgramLauncher.List.len()
 		XMLObject.List.append(Object("Command",ProgramLauncher.List[A_Index].Command,"BasePath",ProgramLauncher.List[A_Index].BasePath))
 	Loop % ProgramLauncher.Paths.len()
@@ -288,21 +290,34 @@ RefreshProgramLauncherCache(ProgramLauncher, Path ="")
 		{
 			if A_LoopFileExt in %extList%
 			{
-				exclude := ProgramLauncher.Exclude
+				exclude := ProgramLauncher.Settings.Exclude
 				command := A_LoopFileFullPath
 				name := A_LoopFileName
 				if(strEndsWith(command,".lnk"))
 				{
 					FileGetShortcut, %command% , command, , args
+					SplitPath, command,,,ext
+					if(InStr(command, "ja"))
+						outputdebug filename %command% ext %ext% extlist %extList%
+					if ext not in %extList%
+						continue
+						
+					if(InStr(command, "ja"))
+						outputdebug correct extension %command% ext %ext%
 					if(!args)
 						SplitPath, command,name
 					command .= args
 				}
+				;Exclude undesired programs (uninstall, setup,...)
 				if command not contains %exclude%
-				{
-					found := false
+				{					
+					if(InStr(command, "ja"))
+						outputdebug not excluded %command% ext %ext%
+					;Check for existing duplicates
 					if(ProgramLauncher.List.indexOfSubItem("Command",command) = 0)
-					{
+					{						
+						if(InStr(command, "ja"))
+							outputdebug no duplicate %command% ext %ext%
 						ProgramLauncher.List.append(Object("Name",name, "Command", command, "BasePath", Path))
 					}
 				}

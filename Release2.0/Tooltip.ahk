@@ -631,7 +631,7 @@ MI_ExtractIcon(Filename, IconNumber, IconSize)
       If !ErrorLevel 
       Return hIcon 
    } 
-   If DllCall("shell32.dll\ExtractIconExA", "Str", Filename, "Int", IconNumber-1, "UInt*", hIcon, "UInt*", hIcon_Small, "UInt", 1) 
+   If DllCall("shell32.dll\ExtractIconEx", "Str", Filename, "Int", IconNumber-1, "UInt*", hIcon, "UInt*", hIcon_Small, "UInt", 1) 
    { 
       SysGet, SmallIconSize, 49 
        
@@ -670,7 +670,7 @@ GetAssociatedIcon(File){
       SplitPath, File,,, Ext 
       hIcon%Ext%:=MI_ExtractIcon(file,FileIcon# ? FileIcon# : 1,32) 
    } else If (!hIcon%Ext% or !InStr(hIcons,"|" . hIcon%Ext% . "|")){ 
-      If DllCall("Shell32\SHGetFileInfoA", "str", File, "uint", 0, "str", sfi, "uint", sfi_size, "uint", 0x101){ 
+      If DllCall("Shell32\SHGetFileInfo", "str", File, "uint", 0, "str", sfi, "uint", sfi_size, "uint", 0x101){ 
          Loop 4 
             hIcon%Ext% += *(&sfi + A_Index-1) << 8*(A_Index-1) 
       } 

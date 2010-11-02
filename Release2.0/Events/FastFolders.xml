@@ -21,8 +21,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>239</ID>
+<ID>319</ID>
 <Name>Open Fast Folders Slot 0</Name>
+<OfficialEvent>320</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad0</Key>
@@ -46,8 +47,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>240</ID>
+<ID>320</ID>
 <Name>Open Fast Folders Slot 0</Name>
+<OfficialEvent>321</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad0</Key>
@@ -74,8 +76,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>241</ID>
+<ID>321</ID>
 <Name>Open Fast Folders Slot 1</Name>
+<OfficialEvent>322</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad1</Key>
@@ -99,8 +102,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>242</ID>
+<ID>322</ID>
 <Name>Open Fast Folders Slot 1</Name>
+<OfficialEvent>323</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad1</Key>
@@ -127,8 +131,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>243</ID>
+<ID>323</ID>
 <Name>Open Fast Folders Slot 2</Name>
+<OfficialEvent>324</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad2</Key>
@@ -152,8 +157,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>244</ID>
+<ID>324</ID>
 <Name>Open Fast Folders Slot 2</Name>
+<OfficialEvent>325</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad2</Key>
@@ -180,8 +186,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>245</ID>
+<ID>325</ID>
 <Name>Open Fast Folders Slot 3</Name>
+<OfficialEvent>326</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad3</Key>
@@ -205,8 +212,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>246</ID>
+<ID>326</ID>
 <Name>Open Fast Folders Slot 3</Name>
+<OfficialEvent>327</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad3</Key>
@@ -233,8 +241,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>247</ID>
+<ID>327</ID>
 <Name>Open Fast Folders Slot 4</Name>
+<OfficialEvent>328</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad4</Key>
@@ -258,8 +267,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>248</ID>
+<ID>328</ID>
 <Name>Open Fast Folders Slot 4</Name>
+<OfficialEvent>329</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad4</Key>
@@ -286,8 +296,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>249</ID>
+<ID>329</ID>
 <Name>Open Fast Folders Slot 5</Name>
+<OfficialEvent>330</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad5</Key>
@@ -311,8 +322,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>250</ID>
+<ID>330</ID>
 <Name>Open Fast Folders Slot 5</Name>
+<OfficialEvent>331</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad5</Key>
@@ -339,8 +351,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>251</ID>
+<ID>331</ID>
 <Name>Open Fast Folders Slot 6</Name>
+<OfficialEvent>332</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad6</Key>
@@ -364,8 +377,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>252</ID>
+<ID>332</ID>
 <Name>Open Fast Folders Slot 6</Name>
+<OfficialEvent>333</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad6</Key>
@@ -392,8 +406,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>253</ID>
+<ID>333</ID>
 <Name>Open Fast Folders Slot 7</Name>
+<OfficialEvent>334</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad7</Key>
@@ -417,8 +432,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>254</ID>
+<ID>334</ID>
 <Name>Open Fast Folders Slot 7</Name>
+<OfficialEvent>335</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad7</Key>
@@ -445,8 +461,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>255</ID>
+<ID>335</ID>
 <Name>Open Fast Folders Slot 8</Name>
+<OfficialEvent>336</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad8</Key>
@@ -470,8 +487,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>256</ID>
+<ID>336</ID>
 <Name>Open Fast Folders Slot 8</Name>
+<OfficialEvent>337</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad8</Key>
@@ -498,8 +516,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>257</ID>
+<ID>337</ID>
 <Name>Open Fast Folders Slot 9</Name>
+<OfficialEvent>338</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad9</Key>
@@ -523,8 +542,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>258</ID>
+<ID>338</ID>
 <Name>Open Fast Folders Slot 9</Name>
+<OfficialEvent>339</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad9</Key>
@@ -552,8 +572,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>259</ID>
+<ID>339</ID>
 <Name>Save Fast Folders Slot 0</Name>
+<OfficialEvent>340</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad0</Key>
@@ -578,8 +599,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>260</ID>
+<ID>340</ID>
 <Name>Save Fast Folders Slot 0</Name>
+<OfficialEvent>341</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad0</Key>
@@ -607,8 +629,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>261</ID>
+<ID>341</ID>
 <Name>Save Fast Folders Slot 1</Name>
+<OfficialEvent>342</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad1</Key>
@@ -633,8 +656,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>262</ID>
+<ID>342</ID>
 <Name>Save Fast Folders Slot 1</Name>
+<OfficialEvent>343</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad1</Key>
@@ -662,8 +686,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>263</ID>
+<ID>343</ID>
 <Name>Save Fast Folders Slot 2</Name>
+<OfficialEvent>344</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad2</Key>
@@ -688,8 +713,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>264</ID>
+<ID>344</ID>
 <Name>Save Fast Folders Slot 2</Name>
+<OfficialEvent>345</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad2</Key>
@@ -717,8 +743,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>265</ID>
+<ID>345</ID>
 <Name>Save Fast Folders Slot 3</Name>
+<OfficialEvent>346</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad3</Key>
@@ -743,8 +770,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>266</ID>
+<ID>346</ID>
 <Name>Save Fast Folders Slot 3</Name>
+<OfficialEvent>347</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad3</Key>
@@ -772,8 +800,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>267</ID>
+<ID>347</ID>
 <Name>Save Fast Folders Slot 4</Name>
+<OfficialEvent>348</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad4</Key>
@@ -798,8 +827,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>268</ID>
+<ID>348</ID>
 <Name>Save Fast Folders Slot 4</Name>
+<OfficialEvent>349</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad4</Key>
@@ -827,8 +857,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>269</ID>
+<ID>349</ID>
 <Name>Save Fast Folders Slot 5</Name>
+<OfficialEvent>350</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad5</Key>
@@ -853,8 +884,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>270</ID>
+<ID>350</ID>
 <Name>Save Fast Folders Slot 5</Name>
+<OfficialEvent>351</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad5</Key>
@@ -882,8 +914,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>271</ID>
+<ID>351</ID>
 <Name>Save Fast Folders Slot 6</Name>
+<OfficialEvent>352</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad6</Key>
@@ -908,8 +941,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>272</ID>
+<ID>352</ID>
 <Name>Save Fast Folders Slot 6</Name>
+<OfficialEvent>353</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad6</Key>
@@ -937,8 +971,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>273</ID>
+<ID>353</ID>
 <Name>Save Fast Folders Slot 7</Name>
+<OfficialEvent>354</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad7</Key>
@@ -963,8 +998,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>274</ID>
+<ID>354</ID>
 <Name>Save Fast Folders Slot 7</Name>
+<OfficialEvent>355</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad7</Key>
@@ -992,8 +1028,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>275</ID>
+<ID>355</ID>
 <Name>Save Fast Folders Slot 8</Name>
+<OfficialEvent>356</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad8</Key>
@@ -1018,8 +1055,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>276</ID>
+<ID>356</ID>
 <Name>Save Fast Folders Slot 8</Name>
+<OfficialEvent>357</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad8</Key>
@@ -1047,8 +1085,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>277</ID>
+<ID>357</ID>
 <Name>Save Fast Folders Slot 9</Name>
+<OfficialEvent>358</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad9</Key>
@@ -1073,8 +1112,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>278</ID>
+<ID>358</ID>
 <Name>Save Fast Folders Slot 9</Name>
+<OfficialEvent>359</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad9</Key>
@@ -1104,8 +1144,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>279</ID>
+<ID>359</ID>
 <Name>Clear Fast Folders Slot 0</Name>
+<OfficialEvent>360</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad0</Key>
@@ -1132,8 +1173,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>280</ID>
+<ID>360</ID>
 <Name>Clear Fast Folders Slot 0</Name>
+<OfficialEvent>361</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad0</Key>
@@ -1163,8 +1205,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>281</ID>
+<ID>361</ID>
 <Name>Clear Fast Folders Slot 1</Name>
+<OfficialEvent>362</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad1</Key>
@@ -1191,8 +1234,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>282</ID>
+<ID>362</ID>
 <Name>Clear Fast Folders Slot 1</Name>
+<OfficialEvent>363</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad1</Key>
@@ -1222,8 +1266,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>283</ID>
+<ID>363</ID>
 <Name>Clear Fast Folders Slot 2</Name>
+<OfficialEvent>364</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad2</Key>
@@ -1250,8 +1295,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>284</ID>
+<ID>364</ID>
 <Name>Clear Fast Folders Slot 2</Name>
+<OfficialEvent>365</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad2</Key>
@@ -1281,8 +1327,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>285</ID>
+<ID>365</ID>
 <Name>Clear Fast Folders Slot 3</Name>
+<OfficialEvent>366</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad3</Key>
@@ -1309,8 +1356,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>286</ID>
+<ID>366</ID>
 <Name>Clear Fast Folders Slot 3</Name>
+<OfficialEvent>367</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad3</Key>
@@ -1340,8 +1388,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>287</ID>
+<ID>367</ID>
 <Name>Clear Fast Folders Slot 4</Name>
+<OfficialEvent>368</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad4</Key>
@@ -1368,8 +1417,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>288</ID>
+<ID>368</ID>
 <Name>Clear Fast Folders Slot 4</Name>
+<OfficialEvent>369</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad4</Key>
@@ -1399,8 +1449,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>289</ID>
+<ID>369</ID>
 <Name>Clear Fast Folders Slot 5</Name>
+<OfficialEvent>370</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad5</Key>
@@ -1427,8 +1478,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>290</ID>
+<ID>370</ID>
 <Name>Clear Fast Folders Slot 5</Name>
+<OfficialEvent>371</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad5</Key>
@@ -1458,8 +1510,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>291</ID>
+<ID>371</ID>
 <Name>Clear Fast Folders Slot 6</Name>
+<OfficialEvent>372</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad6</Key>
@@ -1486,8 +1539,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>292</ID>
+<ID>372</ID>
 <Name>Clear Fast Folders Slot 6</Name>
+<OfficialEvent>373</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad6</Key>
@@ -1517,8 +1571,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>293</ID>
+<ID>373</ID>
 <Name>Clear Fast Folders Slot 7</Name>
+<OfficialEvent>374</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad7</Key>
@@ -1545,8 +1600,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>294</ID>
+<ID>374</ID>
 <Name>Clear Fast Folders Slot 7</Name>
+<OfficialEvent>375</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad7</Key>
@@ -1576,8 +1632,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>295</ID>
+<ID>375</ID>
 <Name>Clear Fast Folders Slot 8</Name>
+<OfficialEvent>376</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad8</Key>
@@ -1604,12 +1661,13 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>296</ID>
+<ID>376</ID>
 <Name>Clear Fast Folders Slot 8</Name>
+<OfficialEvent>377</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Key>!Numpad8</Key>
-<Type>Hotkey</Type>
+<Message></Message>
+<Type>OnMessage</Type>
 </Trigger>
 </Event><Event>
 <Actions>
@@ -1635,8 +1693,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>297</ID>
+<ID>377</ID>
 <Name>Clear Fast Folders Slot 9</Name>
+<OfficialEvent>378</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad9</Key>
@@ -1663,8 +1722,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>298</ID>
+<ID>378</ID>
 <Name>Clear Fast Folders Slot 9</Name>
+<OfficialEvent>379</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!Numpad9</Key>
@@ -1672,4 +1732,4 @@
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
-<MinorVersion>0</MinorVersion>
+<MinorVersion>1</MinorVersion>
