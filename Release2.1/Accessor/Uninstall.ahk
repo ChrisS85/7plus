@@ -1,0 +1,120 @@
+Accessor_Uninstall_Init(ByRef Uninstall, Settings)
+{
+	Uninstall.Settings.Keyword := "Uninstall"
+	Uninstall.DefaultKeyword := "Uninstall"
+	Uninstall.KeywordOnly := True
+	Uninstall.MinChars := 0
+	Uninstall.OKName := "Uninstall"
+	Uninstall.Description := "This plugin lets you uninstall programs or remove the uninstall entries from the list."
+	Uninstall.HasSettings := True
+}
+Accessor_Uninstall_ShowSettings(Uninstall, PluginSettings, PluginGUI)
+{
+	SubEventGUI_Add(PluginSettings, PluginGUI, "Edit", "Keyword", "", "", "Keyword:")
+}
+Accessor_Uninstall_IsInSinglePluginContext(Uninstall, Filter, LastFilter)
+{
+}
+Accessor_Uninstall_GetDisplayStrings(Uninstall, AccessorListEntry, ByRef Title, ByRef Path, ByRef Detail1, ByRef Detail2)
+{
+	Path := AccessorListEntry.UninstallString
+	Detail1 := "Uninstall"
+}
+Accessor_Uninstall_OnAccessorOpen(Uninstall, Accessor)
+{
+	Uninstall.List := Array()
+	Loop, HKLM , SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, 2, 0
+	{
+		GUID := A_LoopRegName ;Note: This is not always a GUID but can also be a regular name. It seems that MSIExec likes to use GUIDs
+		RegRead, DisplayName, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%GUID%, DisplayName
+		; outputdebug displayname %displayname%
+		RegRead, UninstallString, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%GUID%, UninstallString
+		RegRead, InstallLocation, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%GUID%, InstallLocation
+		RegRead, DisplayIcon, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%GUID%, DisplayIcon
+		; outputdebug orig displayicon %displayicon%
+		if(RegexMatch(DisplayIcon,".+,\d*"))
+		{
+			; outputdebug match
+			Number := strTrim(SubStr(DisplayIcon, InStr(DisplayIcon,",",0,0) + 1), " ")
+			DisplayIcon := strTrim(SubStr(DisplayIcon, 1, InStr(DisplayIcon,",",0,0) - 1), " ")
+		}
+		if(!Number)
+			Number := 0
+		; outputdebug displayicon %displayicon% number %number%
+		if(FileExist(DisplayIcon))
+			hIcon := DllCall("Shell32\ExtractAssociatedIcon", UInt, Number, Str, DisplayIcon, UShortP, iIndex)
+		else
+			hIcon := Accessor.GenericIcons.Application
+		; outputdebug hicon %hicon%
+		if(DisplayName)
+			Uninstall.List.append(Object("GUID", GUID, "DisplayName", DisplayName, "UninstallString", UninstallString, "InstallLocation", InstallLocation, "Icon", hIcon))
+	}
+}
+Accessor_Uninstall_OnAccessorClose(Uninstall, Accessor)
+{
+	Loop % Uninstall.List.len()
+		if(Uninstall.List[A_Index].Icon != Accessor.GenericIcons.Application)			
+			DestroyIcon(Uninstall.List[A_Index].Icon)
+}
+Accessor_Uninstall_OnExit(Uninstall)
+{
+}
+Accessor_Uninstall_FillAccessorList(Uninstall, Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet)
+{
+	FuzzyList := Array()
+	Loop % Uninstall.List.len()
+	{
+		x := 0
+		if(x := (Filter = "" || InStr(Uninstall.List[A_Index].DisplayName,Filter)) || y := (Uninstall.Settings.FuzzySearch && FuzzySearch(Uninstall.List[A_Index].DisplayName,Filter) < 0.4))
+		{
+			DllCall("ImageList_ReplaceIcon", UInt, Accessor.ImageListID, Int, -1, UInt, Uninstall.List[A_Index].Icon)
+			IconCount++
+			if(x)
+				Accessor.List.append(Object("Title",Uninstall.List[A_Index].DisplayName,"Path",Uninstall.List[A_Index].InstallLocation, "UninstallString", Uninstall.List[A_Index].UninstallString, "Type","Uninstall", "Icon", IconCount))
+			else
+				FuzzyList.append(Object("Title",Uninstall.List[A_Index].DisplayName,"Path",Uninstall.List[A_Index].InstallLocation, "UninstallString", Uninstall.List[A_Index].UninstallString, "Type","Uninstall", "Icon", IconCount))
+		}
+	}
+}
+Accessor_Uninstall_PerformAction(Uninstall, Accessor, AccessorListEntry)
+{
+	Run(AccessorListEntry.UninstallString)
+}
+Accessor_Uninstall_ListViewEvents(Uninstall, AccessorListEntry)
+{
+}
+Accessor_Uninstall_EditEvents(Uninstall, AccessorListEntry, Filter, LastFilter)
+{
+	return true
+}
+Accessor_Uninstall_SetupContextMenu(Uninstall, AccessorListEntry)
+{
+	Menu, AccessorMenu, add, Uninstall,AccessorOK
+	Menu, AccessorMenu, Default,Uninstall
+	Menu, AccessorMenu, add, Remove uninstall entry, RemoveUninstallEntry
+	if(AccessorListEntry.Path)
+	{
+		Menu, AccessorMenu, add, Open path in explorer, AccessorOpenExplorer
+		Menu, AccessorMenu, add, Open path in CMD,AccessorOpenCMD
+	}
+}
+
+RemoveUninstallEntry:
+RemoveUninstallEntry()
+return
+RemoveUninstallEntry()
+{
+	global Accessor, AccessorListView, AccessorPlugins
+	GUINum := Accessor.GUINum
+	Gui, %GUINum%: Default
+	Gui, ListView, AccessorListView
+	selected := LV_GetNext()
+	if(!selected)
+		return
+	LV_GetText(id,selected,2)
+	GUID := Accessor.List[id].GUID
+	RegDelete, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%GUID%
+	Uninstall := AccessorPlugins[AccessorPlugins.indexOfSubItem("Type", "Uninstall")]
+	Uninstall.List.Delete(Uninstall.List.indexOfSubItem("GUID", GUID))
+	FillAccessorList()
+}
