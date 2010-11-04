@@ -75,7 +75,7 @@ Accessor_URL_OnExit(URL)
 }
 Accessor_URL_FillAccessorList(URL, Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet)
 {
-	; DllCall("ImageList_ReplaceIcon", UInt, Accessor.ImageListID, Int, -1, UInt, URL.Icon)
+	;ImageList_ReplaceIcon(Accessor.ImageListID, -1, URL.Icon)
 	; IconCount++
 	outputdebug Accessor_URL_FillAccessorList %filter%
 	if(!CouldBeURL(Filter))

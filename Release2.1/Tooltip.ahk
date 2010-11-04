@@ -237,7 +237,7 @@ ToolTip(ID="", text="", title="",options=""){
       Loop, Parse, hWndArray, % Chr(2) ;Destroy all ToolTip Windows 
       { 
          If WinExist("ahk_id " . A_LoopField) 
-            DllCall("DestroyWindow","Uint",A_LoopField) 
+            DllCall("DestroyWindow","Ptr",A_LoopField) 
          hWndArray%A_LoopField%= 
       } 
       hWndArray= 
@@ -318,16 +318,16 @@ ToolTip(ID="", text="", title="",options=""){
     
    If (!TT_HWND and text) 
    { 
-      TT_HWND := DllCall("CreateWindowEx", "Uint", 0x8, "str", "tooltips_class32", "str", "", "Uint", 0x02 + (v ? 0x1 : 0) + (l ? 0x100 : 0) + (C ? 0x80 : 0)+(O ? 0x40 : 0), "int", 0x80000000, "int", 0x80000000, "int", 0x80000000, "int", 0x80000000, "Uint", P ? P : 0, "Uint", 0, "Uint", 0, "Uint", 0) 
+      TT_HWND := DllCall("CreateWindowEx", "Uint", 0x8, "str", "tooltips_class32", "str", "", "Uint", 0x02 + (v ? 0x1 : 0) + (l ? 0x100 : 0) + (C ? 0x80 : 0)+(O ? 0x40 : 0), "int", 0x80000000, "int", 0x80000000, "int", 0x80000000, "int", 0x80000000, "Uint", P ? P : 0, "Uint", 0, "Uint", 0, "Uint", 0, "Ptr") 
       TT_HWND_%TT_ID%:=TT_HWND 
       hWndArray.=(hWndArray ? Chr(2) : "") . TT_HWND 
       idArray.=(idArray ? Chr(2) : "") . TT_ID 
       Gosub, TTM_SETMAXTIPWIDTH 
-      DllCall("SendMessage", "Uint", TT_HWND, "Uint", 0x403, "Uint", 2, "Uint", (D ? D*1000 : -1)) ;TTDT_AUTOPOP 
-      DllCall("SendMessage", "Uint", TT_HWND, "Uint", 0x403, "Uint", 3, "Uint", (W ? W*1000 : -1)) ;TTDT_INITIAL 
-      DllCall("SendMessage", "Uint", TT_HWND, "Uint", 0x403, "Uint", 1, "Uint", (W ? W*1000 : -1)) ;TTDT_RESHOW 
+      DllCall("SendMessage", "Ptr", TT_HWND, "Uint", 0x403, "Uint", 2, "Uint", (D ? D*1000 : -1)) ;TTDT_AUTOPOP 
+      DllCall("SendMessage", "Ptr", TT_HWND, "Uint", 0x403, "Uint", 3, "Uint", (W ? W*1000 : -1)) ;TTDT_INITIAL 
+      DllCall("SendMessage", "Ptr", TT_HWND, "Uint", 0x403, "Uint", 1, "Uint", (W ? W*1000 : -1)) ;TTDT_RESHOW 
    } else if (!text and !options){ 
-      DllCall("DestroyWindow","Uint",TT_HWND) 
+      DllCall("DestroyWindow","Ptr",TT_HWND) 
       TT_HWND_%TT_ID%= 
       Gosub, TT_DESTROY 
       DetectHiddenWindows,%#_DetectHiddenWindows% 
@@ -363,7 +363,7 @@ ToolTip(ID="", text="", title="",options=""){
                Break 
          } 
          Gosub, TT_DESTROY 
-         DllCall("DestroyWindow","Uint",TT_HWND) 
+         DllCall("DestroyWindow","Ptr",TT_HWND) 
          TT_HWND_%TT_ID%= 
       } else { 
          Gosub, TTM_TRACKPOSITION 
@@ -386,10 +386,10 @@ ToolTip(ID="", text="", title="",options=""){
    TTM_POP:    ;Hide ToolTip 
    TTM_POPUP:    ;Causes the ToolTip to display at the coordinates of the last mouse message. 
    TTM_UPDATE: ;Forces the current tool to be redrawn. 
-      DllCall("SendMessage", "Uint", TT_HWND, "Uint", %A_ThisLabel%, "Uint", 0, "Uint", 0) 
+      DllCall("SendMessage", "Ptr", TT_HWND, "Uint", %A_ThisLabel%, "Uint", 0, "Uint", 0) 
    Return 
    TTM_TRACKACTIVATE: ;Activates or deactivates a tracking ToolTip. 
-   DllCall("SendMessage", "Uint", TT_HWND, "Uint", 0x411, "Uint", (N ? 0 : 1), "Uint", &TOOLINFO_%ID%) 
+   DllCall("SendMessage", "Ptr", TT_HWND, "Uint", 0x411, "Uint", (N ? 0 : 1), "Uint", &TOOLINFO_%ID%) 
    Return 
    TTM_UPDATETIPTEXT: 
    TTM_GETBUBBLESIZE: 
@@ -397,21 +397,21 @@ ToolTip(ID="", text="", title="",options=""){
    TTM_DELTOOL: 
    TTM_SETTOOLINFO: 
    TTM_NEWTOOLRECT: 
-      DllCall("SendMessage", "Uint", TT_HWND, "Uint", %A_ThisLabel%, "Uint", 0, "Uint", &TOOLINFO_%ID%) 
+      DllCall("SendMessage", "Ptr", TT_HWND, "Uint", %A_ThisLabel%, "Uint", 0, "Uint", &TOOLINFO_%ID%) 
    Return 
    TTM_SETTITLEA: 
    TTM_SETTITLEW: 
       title := (StrLen(title) < 96) ? title : ("…" . SubStr(title, -97)) 
-      DllCall("SendMessage", "Uint", TT_HWND, "Uint", %A_ThisLabel%, "Uint", I, "Uint", &Title) 
+      DllCall("SendMessage", "Ptr", TT_HWND, "Uint", %A_ThisLabel%, "Uint", I, "Uint", &Title) 
    Return 
    TTM_SETWINDOWTHEME: 
       If Q 
-         DllCall("uxtheme\SetWindowTheme", "Uint", TT_HWND, "Uint", 0, "UintP", 0) 
+         DllCall("uxtheme\SetWindowTheme", "Ptr", TT_HWND, "Uint", 0, "UintP", 0) 
       else 
-         DllCall("SendMessage", "Uint", TT_HWND, "Uint", %A_ThisLabel%, "Uint", 0, "Uint", &Q) 
+         DllCall("SendMessage", "Ptr", TT_HWND, "Uint", %A_ThisLabel%, "Uint", 0, "Uint", &Q) 
    Return 
    TTM_SETMAXTIPWIDTH: 
-      DllCall("SendMessage", "Uint", TT_HWND, "Uint", %A_ThisLabel%, "Uint", 0, "Uint", R ? R : A_ScreenWidth) 
+      DllCall("SendMessage", "Ptr", TT_HWND, "Uint", %A_ThisLabel%, "Uint", 0, "Uint", R ? R : A_ScreenWidth) 
    Return 
    TTM_TRACKPOSITION: 
       VarSetCapacity(xc, 20, 0), xc := Chr(20) 
@@ -484,7 +484,7 @@ ToolTip(ID="", text="", title="",options=""){
             B:=%b% 
       B := (StrLen(B) < 8 ? "0x" : "") . B 
       B := ((B&255)<<16)+(((B>>8)&255)<<8)+(B>>16) ; rgb -> bgr 
-      DllCall("SendMessage", "Uint", TT_HWND, "Uint", %A_ThisLabel%, "Uint", B, "Uint", 0) 
+      DllCall("SendMessage", "Ptr", TT_HWND, "Uint", %A_ThisLabel%, "Uint", B, "Uint", 0) 
    Return 
    TTM_SETTIPTEXTCOLOR: 
       If F is alpha 
@@ -492,13 +492,13 @@ ToolTip(ID="", text="", title="",options=""){
             F:=%f% 
       F := (StrLen(F) < 8 ? "0x" : "") . F 
       F := ((F&255)<<16)+(((F>>8)&255)<<8)+(F>>16) ; rgb -> bgr 
-      DllCall("SendMessage", "Uint", TT_HWND, "Uint", %A_ThisLabel%, "Uint",F & 0xFFFFFF, "Uint", 0) 
+      DllCall("SendMessage", "Ptr", TT_HWND, "Uint", %A_ThisLabel%, "Uint",F & 0xFFFFFF, "Uint", 0) 
    Return 
    TTM_SETMARGIN: 
       VarSetCapacity(RECT,16) 
       Loop,Parse,E,. 
          NumPut(A_LoopField,RECT,(A_Index-1)*4) 
-      DllCall("SendMessage", "Uint", TT_HWND, "Uint", %A_ThisLabel%, "Uint", 0, "Uint", &RECT) 
+      DllCall("SendMessage", "Ptr", TT_HWND, "Uint", %A_ThisLabel%, "Uint", 0, "Uint", &RECT) 
    Return 
    TT_SETTOOLINFO: 
       If A { 
@@ -627,23 +627,23 @@ MI_ExtractIcon(Filename, IconNumber, IconSize)
 { 
    If A_OSVersion in WIN_VISTA,WIN_2003,WIN_XP,WIN_2000 
    { 
-     DllCall("PrivateExtractIcons", "Str", Filename, "Int", IconNumber-1, "Int", IconSize, "Int", IconSize, "UInt*", hIcon, "UInt*", 0, "UInt", 1, "UInt", 0, "Int") 
+     DllCall("PrivateExtractIcons", "Str", Filename, "Int", IconNumber-1, "Int", IconSize, "Int", IconSize, "Ptr*", hIcon, "Ptr*", 0, "UInt", 1, "UInt", 0, "Int") 
       If !ErrorLevel 
       Return hIcon 
    } 
-   If DllCall("shell32.dll\ExtractIconEx", "Str", Filename, "Int", IconNumber-1, "UInt*", hIcon, "UInt*", hIcon_Small, "UInt", 1) 
+   If DllCall("shell32.dll\ExtractIconEx", "Str", Filename, "Int", IconNumber-1, "Ptr*", hIcon, "Ptr*", hIcon_Small, "UInt", 1) 
    { 
       SysGet, SmallIconSize, 49 
        
       If (IconSize <= SmallIconSize) { 
-       DllCall("DeStroyIcon", "UInt", hIcon) 
+       DllCall("DestroyIcon", "Ptr", hIcon) 
        hIcon := hIcon_Small 
       } 
      Else 
-      DllCall("DeStroyIcon", "UInt", hIcon_Small) 
+      DllCall("DestroyIcon", "Ptr", hIcon_Small) 
        
       If (hIcon && IconSize) 
-         hIcon := DllCall("CopyImage", "UInt", hIcon, "UInt", 1, "Int", IconSize, "Int", IconSize, "UInt", 4|8) 
+         hIcon := DllCall("CopyImage", "Ptr", hIcon, "UInt", 1, "Int", IconSize, "Int", IconSize, "UInt", 4|8) 
    } 
    Return, hIcon ? hIcon : 0 
 } 
@@ -654,7 +654,7 @@ GetAssociatedIcon(File){
    If !File 
       Loop, Parse, #_hIcons, | 
          If A_LoopField 
-            DllCall("DestroyIcon",UInt,A_LoopField) 
+            DllCall("DestroyIcon","Ptr",A_LoopField) 
    If not sfi 
       VarSetCapacity(sfi, sfi_size) 
    SplitPath, File,,, Ext 

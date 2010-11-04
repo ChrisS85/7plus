@@ -1,6 +1,8 @@
 Accessor_NotepadPlusPlus_Init(ByRef NotepadPlusPlus, Settings)
 {	
-	NotepadPlusPlus.Icon := ExtractIcon(GetNotepadPlusPlusPath() "\Notepad++.exe", 1, 64)
+	path := GetNotepadPlusPlusPath()
+	if(path)
+		NotepadPlusPlus.Icon := ExtractIcon(path "\Notepad++.exe", 1, 64)
 	NotepadPlusPlus.Settings.Keyword := "np"
 	NotepadPlusPlus.DefaultKeyword := "np"
 	NotepadPlusPlus.KeywordOnly := false
@@ -29,7 +31,11 @@ Accessor_NotepadPlusPlus_OnAccessorOpen(NotepadPlusPlus, Accessor)
 	NotepadPlusPlus.List1 := GetListOfOpenNotepadPlusPlusTabs()
 	NotepadPlusPlus.List2 := GetListOfOpenNotepadPlusPlusTabs(2)
 	NotepadPlusPlus.Priority := NotepadPlusPlus.Settings.BasePriority
-	outputdebug % WinExist("ahk_class Notepad++") " and " Accessor.PreviousWindow
+	if(!NotePadPlusPlus.Icon)
+	{
+		path := GetNotepadPlusPlusPath()
+		NotepadPlusPlus.Icon := ExtractIcon(path "\Notepad++.exe", 1, 64)
+	}
 	;if Notepad++ is open and there is an entry with the last usd command for the current tab, put it in edit box
 	if(WinExist("ahk_class Notepad++") = Accessor.PreviousWindow)
 	{
@@ -83,12 +89,11 @@ Accessor_NotepadPlusPlus_FillAccessorList(NotepadPlusPlus, Accessor, Filter, Las
 	if(NotepadPlusPlus.Waiting)
 	{
 		NotepadPlusPlus.Waiting := false
-		outputdebug stop waiting
 	}
 	if(!WinActive("ahk_class Notepad++") && strLen(Filter) < 2 && !KeywordSet)
 		return
-	DllCall("ImageList_ReplaceIcon", UInt, Accessor.ImageListID, Int, -1, UInt, NotepadPlusPlus.Icon)
-	IconCount++
+	if(!NotepadPlusPlus.List1.len() && !NotepadPlusPlus.List2.len())
+		return
 	if(!Filter && KeywordSet)
 	{
 		Loop % NotepadPlusPlus.List1.len()

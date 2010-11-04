@@ -42,7 +42,7 @@ Accessor_Uninstall_OnAccessorOpen(Uninstall, Accessor)
 			Number := 0
 		; outputdebug displayicon %displayicon% number %number%
 		if(FileExist(DisplayIcon))
-			hIcon := DllCall("Shell32\ExtractAssociatedIcon", UInt, Number, Str, DisplayIcon, UShortP, iIndex)
+			hIcon := ExtractAssociatedIcon(Number, DisplayIcon, iIndex)
 		else
 			hIcon := Accessor.GenericIcons.Application
 		; outputdebug hicon %hicon%
@@ -67,7 +67,7 @@ Accessor_Uninstall_FillAccessorList(Uninstall, Accessor, Filter, LastFilter, ByR
 		x := 0
 		if(x := (Filter = "" || InStr(Uninstall.List[A_Index].DisplayName,Filter)) || y := (Uninstall.Settings.FuzzySearch && FuzzySearch(Uninstall.List[A_Index].DisplayName,Filter) < 0.4))
 		{
-			DllCall("ImageList_ReplaceIcon", UInt, Accessor.ImageListID, Int, -1, UInt, Uninstall.List[A_Index].Icon)
+			ImageList_ReplaceIcon(Accessor.ImageListID, -1, Uninstall.List[A_Index].Icon)
 			IconCount++
 			if(x)
 				Accessor.List.append(Object("Title",Uninstall.List[A_Index].DisplayName,"Path",Uninstall.List[A_Index].InstallLocation, "UninstallString", Uninstall.List[A_Index].UninstallString, "Type","Uninstall", "Icon", IconCount))

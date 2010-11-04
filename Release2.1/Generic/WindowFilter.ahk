@@ -20,9 +20,9 @@ WindowFilter_Get(WindowFilter)
 
 		Process, Exist  ; sets ErrorLevel to the PID of this running script
 		; Get the handle of this script with PROCESS_QUERY_INFORMATION (0x0400)
-		h := DllCall("OpenProcess", "UInt", 0x0400, "Int", false, "UInt", ErrorLevel)
+		h := DllCall("OpenProcess", "UInt", 0x0400, "Int", false, "UInt", ErrorLevel, "Ptr")
 		; Open an adjustable access token with this process (TOKEN_ADJUST_PRIVILEGES = 32)
-		DllCall("Advapi32.dll\OpenProcessToken", "UInt", h, "UInt", 32, "UIntP", t)
+		DllCall("Advapi32.dll\OpenProcessToken", "Ptr", h, "UInt", 32, "UIntP", t)
 		VarSetCapacity(ti, 16, 0)  ; structure of privileges
 		NumPut(1, ti, 0)  ; one entry in the privileges array...
 		; Retrieves the locally unique identifier of the debug privilege:
@@ -31,9 +31,9 @@ WindowFilter_Get(WindowFilter)
 		NumPut(2, ti, 12)  ; enable this privilege: SE_PRIVILEGE_ENABLED = 2
 		; Update the privileges of this process with the new access token:
 		DllCall("Advapi32.dll\AdjustTokenPrivileges", "UInt", t, "Int", false, "UInt", &ti, "UInt", 0, "UInt", 0, "UInt", 0)
-		DllCall("CloseHandle", "UInt", h)  ; close this process handle to save memory
+		DllCall("CloseHandle", "Ptr", h)  ; close this process handle to save memory
 
-		hModule := DllCall("LoadLibrary", "Str", "Psapi.dll")  ; increase performance by preloading the libaray
+		hModule := DllCall("LoadLibrary", "Str", "Psapi.dll", "Ptr")  ; increase performance by preloading the libaray
 		s := VarSetCapacity(a, s)  ; an array that receives the list of process identifiers:
 		c := 0  ; counter for process idendifiers
 		DllCall("Psapi.dll\EnumProcesses", "UInt", &a, "UInt", s, "UIntP", r)
@@ -41,17 +41,17 @@ WindowFilter_Get(WindowFilter)
 		{
 			id := NumGet(a, A_Index * 4)
 			; Open process with: PROCESS_VM_READ (0x0010) | PROCESS_QUERY_INFORMATION (0x0400)
-			h := DllCall("OpenProcess", "UInt", 0x0010 | 0x0400, "Int", false, "UInt", id)
+			h := DllCall("OpenProcess", "UInt", 0x0010 | 0x0400, "Int", false, "UInt", id, "Ptr")
 			VarSetCapacity(n, s, 0)  ; a buffer that receives the base name of the module:
-			e := DllCall("Psapi.dll\GetModuleBaseName", "UInt", h, "UInt", 0, "Str", n, "UInt", s)
-			DllCall("CloseHandle", "UInt", h)  ; close process handle to save memory
+			e := DllCall("Psapi.dll\GetModuleBaseName", "Ptr", h, "UInt", 0, "Str", n, "UInt", s)
+			DllCall("CloseHandle", "Ptr", h)  ; close process handle to save memory
 			if (n && e)  ; if image is not null add to list:
 			{
 				if(n = WindowFilter.WindowFilter && hwnd:=WinExist("ahk_pid " id))
 					return hwnd
 			}
 		}
-		DllCall("FreeLibrary", "UInt", hModule)  ; unload the library to free memory
+		DllCall("FreeLibrary", "Ptr", hModule)  ; unload the library to free memory
 		return 0
 	}
 	else if(WindowFilter.WindowMatchType = "class")

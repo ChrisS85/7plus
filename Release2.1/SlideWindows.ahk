@@ -103,7 +103,7 @@ SlideWindow_SlideOut(SlideWindow)
 	SuspendWindowMoveCheck:=true
 	SlideWindow.SlideState:=3	
 	SlideWindow.Move(SlideWindow.SlideInX,SlideWindow.SlideInY,SlideWindow.SlideOutX,SlideWindow.SlideOutY,2)
-	;DllCall("ShowWindow","UInt", hwnd, "UINT", 6) ;#define SW_MINIMIZE         6 SW_FORCEMINIMIZE    11
+	;DllCall("ShowWindow","Ptr", hwnd, "UINT", 6) ;#define SW_MINIMIZE         6 SW_FORCEMINIMIZE    11
 	if(SlideWinHide)
 		WinHide, ahk_id %hwnd%
 	else

@@ -21,6 +21,12 @@
 </Condition><Condition>
 <Negate>1</Negate>
 <Type>IsRenaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(DirectUIHWND3|SysListView321)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
@@ -54,6 +60,12 @@
 </Condition><Condition>
 <Negate>1</Negate>
 <Type>IsRenaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(DirectUIHWND3|SysListView321)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <DisableAfterUse>0</DisableAfterUse>
@@ -249,7 +261,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<Filename></Filename>
+<Filename>Neues Textdokument.txt</Filename>
 <Rename>1</Rename>
 <Type>NewFile</Type>
 </Action></Actions>
@@ -279,7 +291,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<FolderName></FolderName>
+<FolderName>Neuer Ordner</FolderName>
 <Rename>1</Rename>
 <Type>NewFolder</Type>
 </Action></Actions>

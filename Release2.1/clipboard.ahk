@@ -144,18 +144,16 @@ CreateFile()
     MuteClipboardList:=false
 	}
 }
-
 ;Read real text (=not filenames, when CF_HDROP is in clipboard) from clipboard
 ReadClipboardText()
 {
-	if(DllCall("IsClipboardFormatAvailable", "Uint", 1))
+	if((!A_IsUnicode && DllCall("IsClipboardFormatAvailable", "Uint", 1)) || (A_IsUnicode && DllCall("IsClipboardFormatAvailable", "Uint", 13))) ;CF_TEXT = 1 ;CF_UNICODETEXT = 13
 	{
-		DllCall("OpenClipboard", "Uint", 0)	
-		htext:=DllCall("GetClipboardData", "Uint", 1)
-		ptext := DllCall("GlobalLock", "uint", htext)
+		DllCall("OpenClipboard", "Ptr", 0)	
+		htext:=DllCall("GetClipboardData", "Uint", A_IsUnicode ? 13 : 1, "Ptr")
+		ptext := DllCall("GlobalLock", "Ptr", htext)
 		text:=PointerToString(pText)
-		text:=ExtractData(ptext)				
-		DllCall("GlobalUnlock", "uint", htext)
+		DllCall("GlobalUnlock", "Ptr", htext)
 		DllCall("CloseClipboard")
 	}
 	return text
@@ -166,8 +164,8 @@ ReadClipboardImage()
 {
 	if(DllCall("IsClipboardFormatAvailable", "Uint", 2))
 	{
-		DllCall("OpenClipboard", "Uint", 0)
-		hBM:=DllCall("GetClipboardData", "Uint", 2)
+		DllCall("OpenClipboard", "Ptr", 0)
+		hBM:=DllCall("GetClipboardData", "Uint", 2, "Ptr")
 		pBitmap := Gdip_CreateBitmapFromHBITMAP(hBM)
 		Gdip_DisposeImage(hBM)
 		DllCall("CloseClipboard")
@@ -185,13 +183,6 @@ WriteClipboardImageToFile(path,Quality="")
 	if(!pBitmap)
 		return -1
 	Gdip_SaveBitmapToFile(pBitmap, path, ImageQuality)
-	;clipback:=ClipboardAll
-	;DllCall("OpenClipboard", "Uint", 0)
-	;DllCall("EmptyClipboard") 
-	;DllCall("CloseClipboard")
-	;Write the file into clipboard again
-	;Gdip_ImageToClipboard(temp_img)
-	;Clipboard:=clipback
 	return 1
 }
 
@@ -202,72 +193,84 @@ WriteClipboardTextToFile(path)
 		return -1
 	if(FileExist(path))
 		FileDelete, %path%
-	FileAppend , %text%, %path%
+	FileAppend , %text%, %path%, % A_IsUnicode ? "UTF-8" : ""
 	return 1 
 }
 
 ;Copies a list of files (separated by new line) to the clipboard so they can be pasted in explorer
+/* Example clipboard data:
+00000000   14 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
+00000010   01 00 00 00 43 00 3A 00 5C 00 62 00 6F 00 6F 00    ....C.:.\.b.o.o.				<-- I believe the 01 byte at the start of this line could indicate unicode?
+00000020   74 00 6D 00 67 00 72 00 00 00 43 00 3A 00 5C 00    t.m.g.r...C.:.\.
+00000030   62 00 6C 00 61 00 2E 00 6C 00 6F 00 67 00 00 00    b.l.a...l.o.g...
+00000040   00 00                                             										..     
+
+typedef struct _DROPFILES {
+  DWORD pFiles;
+  POINT pt;
+  BOOL  fNC;
+  BOOL  fWide;
+} DROPFILES, *LPDROPFILES;
+
+_DROPFILES struct: 20 characters at the start
+null-terminated filename list, and double-null termination at the end
+*/
 CopyToClipboard(files, clear, cut=0){
 	global CF_HDROP
 	FileCount:=0
 	PathLength:=0
+	;Count files and total string length
 	Loop, Parse, files, `n,`r  ; Rows are delimited by linefeeds (`r`n).
 	{
 		FileCount++
 		PathLength+=StrLen(A_LoopField)
-	}	
-	; Copy image file - CF_HDROP	
+	}
 	pid:=DllCall("GetCurrentProcessId","Uint")
 	hwnd:=WinExist("ahk_pid " . pid)
-	DllCall("OpenClipboard", "Uint", hwnd)
-  hPath := DllCall("GlobalAlloc", "uint", 0x42, "uint", PathLength+FileCount+22)      ; 0x42 = GMEM_MOVEABLE(0x2) | GMEM_ZEROINIT(0x40)
-  pPath := DllCall("GlobalLock", "uint", hPath)                   ; Lock the moveable memory, retrieving a pointer to it.
-  NumPut(20, pPath+0), pPath += 20                                                ; DROPFILES.pFiles = offset of file list
-  Offset:=0	  
-  Offset:=0       
-  Loop, Parse, files, `n,`r  ; Rows are delimited by linefeeds (`r`n).
-		DllCall("lstrcpy", "uint", pPath+offset, "str", A_LoopField)    ; Copy the file into moveable memory.
-			, offset+=StrLen(A_LoopField)+1
-  DllCall("GlobalUnlock", "uint", hPath)  
+	DllCall("OpenClipboard", "Ptr", hwnd)
+	hPath := DllCall("GlobalAlloc", "uint", 0x42, "uint", 20 + (PathLength + FileCount + 1) * 2, "Ptr")      ; 0x42 = GMEM_MOVEABLE(0x2) | GMEM_ZEROINIT(0x40)
+	pPath := DllCall("GlobalLock", "Ptr", hPath)                   ; Lock the moveable memory, retrieving a pointer to it.
+	NumPut(20, pPath+0), pPath += 16 ; DROPFILES.pFiles = offset of file list
+	NumPut(1, pPath+0), pPath += 4 ;fWide = 0 -->ANSI, fWide = 1 -->Unicode
+	Offset:=0
+	Loop, Parse, files, `n,`r  ; Rows are delimited by linefeeds (`r`n).
+		offset += StrPut(A_LoopField, pPath+offset,StrLen(A_LoopField)+1,"UTF-16") * 2
+	DllCall("GlobalUnlock", "Ptr", hPath)  
+	;hPath must not be freed! ->http://msdn.microsoft.com/en-us/library/ms649051(VS.85).aspx
 	if clear
 	{
-  	DllCall("EmptyClipboard")                                                              ; Empty the clipboard, otherwise SetClipboardData may fail.
-  	Clipwait, 1, 1
-  }
-  result:=DllCall("SetClipboardData", "uint", CF_HDROP, "uint", hPath) ; Place the data on the clipboard. CF_HDROP=0xF
+		DllCall("EmptyClipboard")                                                              ; Empty the clipboard, otherwise SetClipboardData may fail.
+		Clipwait, 1, 1
+	}
+	result:=DllCall("SetClipboardData", "uint", CF_HDROP, "Ptr", hPath) ; Place the data on the clipboard. CF_HDROP=0xF
 	Clipwait, 1, 1
-  outputdebug hdrop setclipboarddata result: %result% errorlevel %errorlevel%
-  x:=GetLastError()
- 	mem := DllCall("GlobalAlloc","UInt",2,"UInt",4) 
-  str := DllCall("GlobalLock","UInt",mem) 
-  if(!cut)
-     DllCall("RtlFillMemory","UInt",str,"UInt",1,"UChar",0x05) 
-  else 
-     DllCall("RtlFillMemory","UInt",str,"UInt",1,"UChar",0x02) 
-  DllCall("RtlZeroMemory","UInt",str + 1,"UInt",1) 
-  DllCall("RtlZeroMemory","UInt",str + 2,"UInt",1) 
-  DllCall("RtlZeroMemory","UInt",str + 3,"UInt",1) 
-  DllCall("GlobalUnlock","UInt",mem)
-
-  cfFormat := DllCall("RegisterClipboardFormat","Str","Preferred DropEffect") 
-  result:=DllCall("SetClipboardData","UInt",cfFormat,"UInt",mem)
-  Clipwait, 1, 1
+	outputdebug hdrop setclipboarddata result: %result% errorlevel %errorlevel%
+	
+	;Write Preferred DropEffect structure to clipboard to switch between copy/cut operations
+ 	mem := DllCall("GlobalAlloc","UInt",0x42,"UInt",4, "Ptr")  ; 0x42 = GMEM_MOVEABLE(0x2) | GMEM_ZEROINIT(0x40)
+	str := DllCall("GlobalLock","Ptr",mem) 
+	if(!cut)
+		DllCall("RtlFillMemory","UInt",str,"UInt",1,"UChar",0x05) 
+	else 
+		DllCall("RtlFillMemory","UInt",str,"UInt",1,"UChar",0x02) 
+	DllCall("GlobalUnlock","Ptr",mem)
+	cfFormat := DllCall("RegisterClipboardFormat","Str","Preferred DropEffect") 
+	result:=DllCall("SetClipboardData","UInt",cfFormat,"Ptr",mem)
+	Clipwait, 1, 1
 	DllCall("CloseClipboard")
+	;mem must not be freed! ->http://msdn.microsoft.com/en-us/library/ms649051(VS.85).aspx
 	return
 }
 
 ;Appends files to CF_HDROP structure in clipboard
 AppendToClipboard( files, cut=0) { 
-	DllCall("OpenClipboard", "Uint", 0)
-	if(DllCall("IsClipboardFormatAvailable", "Uint", 1))
-		DllCall("EmptyClipboard")	
+	DllCall("OpenClipboard", "Ptr", 0)
+	if(DllCall("IsClipboardFormatAvailable", "Uint", 1)) ;If text is stored in clipboard, clear it and consider it empty (even though the clipboard may contain CF_HDROP due to text being copied to a temp file for pasting)
+		DllCall("EmptyClipboard")
 	DllCall("CloseClipboard")
 	txt:=clipboard (clipboard = "" ? "" : "`n") files
-	Sort, txt , U
-	outputdebug files: %txt%
-	DllCall("OpenClipboard", "Uint", 0)
+	Sort, txt , U ;Remove duplicates
 	CopyToClipboard(txt, true, cut)
-	DllCall("CloseClipboard")
 	return
 }
 
@@ -281,11 +284,11 @@ Gdip_ImageToClipboard(Filename)
   Gdip_DisposeImage(pBitmap) 
   if !hbm 
       return 
-  if hdc := DllCall("CreateCompatibleDC","uint",0) 
+  if hdc := DllCall("CreateCompatibleDC","Ptr",0) 
   { 
       ; Get BITMAPINFO. 
       VarSetCapacity(bmi,40,0), NumPut(40,bmi) 
-      DllCall("GetDIBits","uint",hdc,"uint",hbm,"uint",0 
+      DllCall("GetDIBits","Ptr",hdc,"Ptr",hbm,"uint",0 
            ,"uint",0,"uint",0,"uint",&bmi,"uint",0) 
       ; GetDIBits seems to screw up and give the image the BI_BITFIELDS 
       ; (i.e. colour-indexed) compression type when it is in fact BI_RGB. 
@@ -294,23 +297,23 @@ Gdip_ImageToClipboard(Filename)
       if size := NumGet(bmi,20) 
       { 
           VarSetCapacity(bits,size) 
-          DllCall("GetDIBits","uint",hdc,"uint",hbm,"uint",0 
+          DllCall("GetDIBits","Ptr",hdc,"Ptr",hbm,"uint",0 
               ,"uint",NumGet(bmi,8),"uint",&bits,"uint",&bmi,"uint",0) 
           ; 0x42 = GMEM_MOVEABLE(0x2) | GMEM_ZEROINIT(0x40) 
-          hMem := DllCall("GlobalAlloc","uint",0x42,"uint",40+size) 
-          pMem := DllCall("GlobalLock","uint",hMem) 
+          hMem := DllCall("GlobalAlloc","uint",0x42,"uint",40+size, "Ptr") 
+          pMem := DllCall("GlobalLock","Ptr",hMem) 
           DllCall("RtlMoveMemory","uint",pMem,"uint",&bmi,"uint",40) 
           DllCall("RtlMoveMemory","uint",pMem+40,"uint",&bits,"uint",size) 
-          DllCall("GlobalUnlock","uint",hMem) 
+          DllCall("GlobalUnlock","Ptr",hMem) 
       } 
-      DllCall("DeleteDC","uint",hdc) 
+      DllCall("DeleteDC","Ptr",hdc) 
   } 
   if hMem 
   { 
-  		DllCall("OpenClipboard", "Uint", 0)
+  		DllCall("OpenClipboard", "Ptr", 0)
       ; Place the data on the clipboard. CF_DIB=0x8 
-      if ! DllCall("SetClipboardData","uint",0x8,"uint",hMem) 
-          DllCall("GlobalFree","uint",hMem) 
+      if ! DllCall("SetClipboardData","uint",0x8,"Ptr",hMem) 
+          DllCall("GlobalFree","Ptr",hMem) 
       DllCall("CloseClipboard")
   } 
 } 

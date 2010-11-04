@@ -39,7 +39,7 @@ Accessor_Calc_FillAccessorList(Calc, Accessor, Filter, LastFilter, ByRef IconCou
 		return
 	Loop % Calc.List.len()
 	{
-		DllCall("ImageList_ReplaceIcon", UInt, Accessor.ImageListID, Int, -1, UInt, Calc.List[A_Index].Icon)
+		ImageList_ReplaceIcon(Accessor.ImageListID, -1, Calc.List[A_Index].Icon)
 		IconCount++
 		Accessor.List.append(Object("Title",Calc.List[A_Index].Result,"Path",Calc.List[A_Index].URL, "Type","Calc", "Icon", IconCount))
 	}

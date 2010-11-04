@@ -248,7 +248,10 @@ AcquireExplorerConfirmationDialogStrings()
 	global shell32MUIpath
 	VarSetCapacity(buffer, 85*2)
 	length:=DllCall("GetUserDefaultLocaleName","uint",&buffer,"uint",85)
-	locale:=COM_Ansi4Unicode(&buffer)
+	if(A_IsUnicode)
+		locale := StrGet(buffer)
+	else
+		locale:=COM_Ansi4Unicode(&buffer)
 	shell32MUIpath:=A_WinDir "\winsxs\*_microsoft-windows-*resources*" locale "*" ;\x86_microsoft-windows-shell32.resources_31bf3856ad364e35_6.1.7600.16385_de-de_b08f46c44b512da0\shell32.dll.mui
 	loop %shell32MUIpath%,2,0
 	{
@@ -785,7 +788,7 @@ WheelUp()
 	Critical
 	CoordMode, Mouse, Screen
 	MouseGetPos, MouseX, MouseY
-	hw_m_target := DllCall( "WindowFromPoint", "int", MouseX, "int", MouseY )
+	hw_m_target := DllCall( "WindowFromPoint", "int", MouseX, "int", MouseY, "Ptr")
 	SendMessage, 0x20A, 120 << 16, ( MouseY << 16 )|MouseX,, ahk_id %hw_m_target%
 	if(!WasCritical)
 		Critical, Off
@@ -800,7 +803,7 @@ WheelDown()
 	Critical 
 	CoordMode, Mouse, Screen
 	MouseGetPos, MouseX, MouseY 
-	hw_m_target := DllCall( "WindowFromPoint", "int", MouseX, "int", MouseY ) 
+	hw_m_target := DllCall( "WindowFromPoint", "int", MouseX, "int", MouseY, "Ptr") 
 	SendMessage, 0x20A, -120 << 16, ( MouseY << 16 )|MouseX,, ahk_id %hw_m_target% 
 	if(!WasCritical)
 		Critical, Off

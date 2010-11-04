@@ -64,14 +64,14 @@ Accessor_Init()
 		Accessor.Keywords.append(Object("Key", XMLObject.Keywords.Keyword[A_Index].Key, "Command", XMLObject.Keywords.Keyword[A_Index].Command))
 	outputdebug % "key1: " Accessor.Keywords[1].Key
 	Accessor.GenericIcons := Object()
-	; hInstance := DllCall("GetModuleHandle", UInt, 0)
+	; hInstance := GetModuleHandle(0)
 	Accessor.GenericIcons.Application := ExtractIcon("shell32.dll", 3, 64)
 	Accessor.GenericIcons.Folder := ExtractIcon("shell32.dll", 4, 64)
 	FileAppend, test, %A_Temp%\7plus\test.htm
-	Accessor.GenericIcons.URL := DllCall("Shell32\ExtractAssociatedIcon", UInt, 0, Str, A_Temp "\7plus\test.htm", UShortP, iIndex)
+	Accessor.GenericIcons.URL := ExtractAssociatedIcon(0, A_Temp "\7plus\test.htm", iIndex)
 	FileDelete, %A_Temp%\7plus\test.htm
-	; DllCall("ExtractIcon", "uint", hInstance, "str", "shell32.dll", "uint", 3)
-	; Accessor.GenericIcons.Folder := DllCall("ExtractIcon", "uint", hInstance, "str", "shell32.dll", "uint", 4)
+	; ExtractIcon(hInstance, "shell32.dll", 3)
+	; Accessor.GenericIcons.Folder :=ExtractIcon( hInstance, "shell32.dll", 4)
 	outputdebug % "folder " Accessor.GenericIcons.Folder
 }
 Accessor_OnExit(Accessor)
@@ -203,9 +203,9 @@ FillAccessorList()
 		IL_Destroy(Accessor.ImageListID)
 	Accessor.ImageListID := IL_Create(10,5,1) ; Create an ImageList so that the ListView can display some icons
 	IconCount := 3
-	DllCall("ImageList_ReplaceIcon", UInt, Accessor.ImageListID, Int, -1, UInt, Accessor.GenericIcons.Application)
-	DllCall("ImageList_ReplaceIcon", UInt, Accessor.ImageListID, Int, -1, UInt, Accessor.GenericIcons.Folder)
-	DllCall("ImageList_ReplaceIcon", UInt, Accessor.ImageListID, Int, -1, UInt, Accessor.GenericIcons.URL)
+	ImageList_ReplaceIcon(Accessor.ImageListID, -1, Accessor.GenericIcons.Application)
+	ImageList_ReplaceIcon(Accessor.ImageListID, -1, Accessor.GenericIcons.Folder)
+	ImageList_ReplaceIcon(Accessor.ImageListID, -1, Accessor.GenericIcons.URL)
 	Accessor.List := Array()
 	;Find out if we are in a single plugin context, and add only those items
 	Loop % AccessorPlugins.len()
@@ -435,7 +435,7 @@ Accessor_WM_KEYDOWN(wParam,lParam)
 	else if(wParam = 40) ;Down arrow
 	{
 		selected := LV_GetNext()
-		selected := Mod(selected + 1,LV_GetCount())
+		selected := Mod(selected,LV_GetCount()) + 1
 		LV_Modify(selected,"Select Vis")
 		return 1
 	}

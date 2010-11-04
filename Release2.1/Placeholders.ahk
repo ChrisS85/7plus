@@ -11,7 +11,7 @@ Event_ExpandPlaceHolders(Event,text)
 }
 GetFullPathName(SPath)
 { 
-	VarSetCapacity(lPath,260,0), DllCall("GetLongPathName", Str,SPath, Str,lPath, UInt,260 ) 
+	VarSetCapacity(lPath,A_IsUnicode ? 520 : 260,0), DllCall("GetLongPathName", Str,SPath, Str,lPath, UInt,260 ) 
 	Return lPath 
 }
 ExpandPathPlaceholders(text)

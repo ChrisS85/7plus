@@ -343,7 +343,7 @@ CreateTabWindow()
 	*/
 	SuppressTabEvents:=false
 	;GuiControl, %TabNum%:MoveDraw, TabControl
-	;DllCall("InvalidateRect",UInt, TabWindow, UInt, 0, UInt, 1)
+	;DllCall("InvalidateRect","Ptr", TabWindow, UInt, 0, UInt, 1)
 	UpdateTabs()
 	UpdatePosition(TabNum, TabWindow)
 	SuppressTabEvents:=backup
@@ -558,7 +558,7 @@ UpdatePosition(TabNum, TabWindow)
 		{
 			outputdebug hide %class% id %TabWindow%
 			WinHide ahk_id %TabWindow%
-			;DllCall("AnimateWindow",UInt,TabWindow,UInt,0,UInt,0x00010000)
+			;DllCall("AnimateWindow","Ptr",TabWindow,UInt,0,UInt,0x00010000)
 		}
 	}
 	;SuppressTabEvents:=false
@@ -706,7 +706,7 @@ CreateTab(hwnd,path=-1,Activate=-1)
 			{
 				outputdebug hide style %visible% title %title%
 				WinHide ahk_id %hwndnew%
-				;DllCall("AnimateWindow",UInt,hwndnew,UInt,0,UInt,0x00010000)
+				;DllCall("AnimateWindow","Ptr",hwndnew,UInt,0,UInt,0x00010000)
 			}
 			Else
 				break
@@ -719,7 +719,7 @@ CreateTab(hwnd,path=-1,Activate=-1)
 	WinSetPlacement(hwndnew,x,y,w,h,state)
 	if(!Activate)
 		WinHide ahk_id %hwndnew%
-		;DllCall("AnimateWindow",UInt,hwndnew,UInt,0,UInt,0x00010000) ;Hide again because WinSetPlacement unhides it, but is required for max/restore state
+		;DllCall("AnimateWindow","Ptr",hwndnew,UInt,0,UInt,0x00010000) ;Hide again because WinSetPlacement unhides it, but is required for max/restore state
 	
 	;WinMove ahk_id %hwndnew%,,%x%,%y%,%w%,%h%
 	;if(state = 1)
@@ -734,7 +734,7 @@ CreateTab(hwnd,path=-1,Activate=-1)
 		TabContainerList.active:=hwndnew
 		TabContainer.active:=hwndnew
 		WinHide ahk_id %hwnd%
-		;DllCall("AnimateWindow",UInt,hwnd,UInt,0,UInt,0x00010000)
+		;DllCall("AnimateWindow","Ptr",hwnd,UInt,0,UInt,0x00010000)
 		outputdebug hide old tab
 	}
 	if(NewTabPosition=1)

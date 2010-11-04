@@ -62,11 +62,11 @@ Ext_Cursor_wndProc(Hwnd, UMsg, WParam, LParam) {
 		{
 			ext := SubStr(WParam, -2, 3)
 			if ext in cur,ani
-			 	 %LParam% := DllCall("LoadCursorFromFile", "Str", WParam) 
-			else %LParam% := DllCall("LoadCursor", "Uint", 0, "Int", %WParam%, "Uint")
+			 	 %LParam% := DllCall("LoadCursorFromFile", "Str", WParam, "Ptr") 
+			else %LParam% := DllCall("LoadCursor", "Ptr", 0, "Int", %WParam%, "Uint", "Ptr")
 		} else %LParam% := %WParam%
 		
-		curArrow .= curArrow ? "" : DllCall("LoadCursor", "Uint", 0, "Int", 32512, "Uint")
+		curArrow .= curArrow ? "" : DllCall("LoadCursor", "Ptr", 0, "Int", 32512, "Uint", "Ptr")
 		return (%LParam%)
 	}
 
@@ -75,10 +75,8 @@ Ext_Cursor_wndProc(Hwnd, UMsg, WParam, LParam) {
 
    if (UMsg = WM_MOUSEMOVE) 
       If (%Hwnd% != "")
-			DllCall("SetCursor", "uint", %Hwnd%)
-	  else  DllCall("SetCursor", "uint", curArrow)
+			DllCall("SetCursor", "Ptr", %Hwnd%)
+	  else  DllCall("SetCursor", "Ptr", curArrow)
 
-   return DllCall("CallWindowProc", "UInt", A_EventInfo, "UInt", hwnd, "UInt", uMsg, "UInt", wParam, "UInt", lParam)
+   return DllCall("CallWindowProc", "UInt", A_EventInfo, "Ptr", hwnd, "UInt", uMsg, "UInt", wParam, "UInt", lParam)
 } 
-
-#include *i Win.ahk

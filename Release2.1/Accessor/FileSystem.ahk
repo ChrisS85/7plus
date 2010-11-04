@@ -53,8 +53,8 @@ Accessor_FileSystem_FillAccessorList(FileSystem, Accessor, Filter, LastFilter, B
 			name := FileSystem.AutocompletionString
 		Loop %dir%\*%name%*, 1, 0
 		{
-			hIcon := DllCall("Shell32\ExtractAssociatedIcon", UInt, 0, Str, A_LoopFileFullPath, UShortP, iIndex)
-			DllCall("ImageList_ReplaceIcon", UInt, Accessor.ImageListID, Int, -1, UInt, hIcon)
+			hIcon := ExtractAssociatedIcon(0, A_LoopFileFullPath, iIndex)
+			ImageList_ReplaceIcon(Accessor.ImageListID, -1, hIcon)
 			DestroyIcon(hIcon)
 			IconCount++
 			Accessor.List.append(Object("Title",A_LoopFileName,"Path",A_LoopFileFullPath,"Type","FileSystem", "Icon", IconCount))

@@ -62,7 +62,7 @@ Accessor_Notes_OnExit(Notes)
 }
 Accessor_Notes_FillAccessorList(Notes, Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet)
 {
-	DllCall("ImageList_ReplaceIcon", UInt, Accessor.ImageListID, Int, -1, UInt, Notes.Icon)
+	ImageList_ReplaceIcon(Accessor.ImageListID, -1, Notes.Icon)
 	IconCount++
 	GUINum := Accessor.GUINum
 	if(!GUINum)

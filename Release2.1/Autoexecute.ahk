@@ -164,7 +164,7 @@ Gui +LastFound
 hAHK := WinExist()
 FileAppend, %hAHK%, %A_Temp%\7plus\hwnd.txt
 outputdebug hahk %hahk%
-DllCall( "RegisterShellHookWindow", UInt,hAHK ) 
+DllCall( "RegisterShellHookWindow", "Ptr",hAHK ) 
 ShellHookMsgNum := DllCall( "RegisterWindowMessage", Str,"SHELLHOOK" ) 
 OnMessage( ShellHookMsgNum, "ShellMessage" ) 
 ;Tooltip messages

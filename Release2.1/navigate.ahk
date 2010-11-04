@@ -57,7 +57,7 @@ ShellNavigate(sPath, hWnd=0)
 				if(window.Hwnd=hWnd)
 					break
 		}
-		DllCall("shell32\SHParseDisplayName", "Uint", COM_Unicode4Ansi(wPath,sPath) , "Uint", 0, "UintP", pidl, "Uint", 0, "Uint", 0)
+		DllCall("shell32\SHParseDisplayName", "Uint", A_IsUnicode ? sPath : COM_Unicode4Ansi(wPath,sPath) , "Uint", 0, "UintP", pidl, "Uint", 0, "Uint", 0)
 		VarSetCapacity(sa,24,0), NumPut(DllCall("shell32\ILGetSize","Uint",pidl), NumPut(pidl, NumPut(1, NumPut(1,sa)),4)) 
 		Window.Navigate2(COM_Parameter(0x2011,&sa))
 		return

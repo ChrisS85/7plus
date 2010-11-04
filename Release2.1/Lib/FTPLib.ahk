@@ -6,7 +6,7 @@ http://msdn.microsoft.com/library/en-us/wininet/wininet/internetconnect.asp
 
 FtpCreateDirectory(DirName) { 
 global ic_hInternet 
-r := DllCall("wininet\FtpCreateDirectory", "uint", ic_hInternet, "str", DirName) 
+r := DllCall("wininet\FtpCreateDirectory", "Ptr", ic_hInternet, "str", DirName) 
 If (ErrorLevel != 0 or r = 0) 
 return 0 
 else 
@@ -15,7 +15,7 @@ return 1
 
 FtpRemoveDirectory(DirName) { 
 global ic_hInternet 
-r := DllCall("wininet\FtpRemoveDirectory", "uint", ic_hInternet, "str", DirName) 
+r := DllCall("wininet\FtpRemoveDirectory", "Ptr", ic_hInternet, "str", DirName) 
 If (ErrorLevel != 0 or r = 0) 
 return 0 
 else 
@@ -24,7 +24,7 @@ return 1
 
 FtpSetCurrentDirectory(DirName) { 
 global ic_hInternet 
-r := DllCall("wininet\FtpSetCurrentDirectory", "uint", ic_hInternet, "str", DirName) 
+r := DllCall("wininet\FtpSetCurrentDirectory", "Ptr", ic_hInternet, "str", DirName) 
 If (ErrorLevel != 0 or r = 0) 
 return 0 
 else 
@@ -40,7 +40,7 @@ If NewRemoteFile=
 NewRemoteFile := LocalFile 
 global ic_hInternet 
 r := DllCall("wininet\FtpPutFile" 
-, "uint", ic_hInternet 
+, "Ptr", ic_hInternet 
 , "str", LocalFile 
 , "str", NewRemoteFile 
 , "uint", Flags 
@@ -60,7 +60,7 @@ If NewFile=
 NewFile := RemoteFile 
 global ic_hInternet 
 r := DllCall("wininet\FtpGetFile" 
-, "uint", ic_hInternet 
+, "Ptr", ic_hInternet 
 , "str", RemoteFile 
 , "str", NewFile 
 , "int", 1 ;do not overwrite existing files 
@@ -80,23 +80,23 @@ FtpGetFileSize(FileName, Flags=0) {
 ;FTP_TRANSFER_TYPE_BINARY = 2 
 global ic_hInternet 
 fof_hInternet := DllCall("wininet\FtpOpenFile" 
-, "uint", ic_hInternet 
+, "Ptr", ic_hInternet 
 , "str", FileName 
 , "uint", 0x80000000 ;dwAccess: GENERIC_READ 
 , "uint", Flags 
-, "uint", 0) ;dwContext 
+, "uint", 0, "Ptr") ;dwContext 
 If (ErrorLevel != 0 or fof_hInternet = 0) 
 return -1 
 
-FileSize := DllCall("wininet\FtpGetFileSize", "uint", fof_hInternet, "uint", 0) 
-DllCall("wininet\InternetCloseHandle",  "UInt", fof_hInternet) 
+FileSize := DllCall("wininet\FtpGetFileSize", "Ptr", fof_hInternet, "uint", 0) 
+DllCall("wininet\InternetCloseHandle",  "Ptr", fof_hInternet) 
 return, FileSize 
 } 
 
 
 FtpDeleteFile(FileName) { 
 global ic_hInternet 
-r :=  DllCall("wininet\FtpDeleteFile", "uint", ic_hInternet, "str", FileName) 
+r :=  DllCall("wininet\FtpDeleteFile", "Ptr", ic_hInternet, "str", FileName) 
 If (ErrorLevel != 0 or r = 0) 
 return 0 
 else 
@@ -105,7 +105,7 @@ return 1
 
 FtpRenameFile(Existing, New) { 
 global ic_hInternet 
-r := DllCall("wininet\FtpRenameFile", "uint", ic_hInternet, "str", Existing, "str", New) 
+r := DllCall("wininet\FtpRenameFile", "Ptr", ic_hInternet, "str", Existing, "str", New) 
 If (ErrorLevel != 0 or r = 0) 
 return 0 
 else 
@@ -126,14 +126,14 @@ AccessType=1
 ;#define INTERNET_OPEN_TYPE_PRECONFIG_WITH_NO_AUTOPROXY  4   // prevent using java/script/INS 
 
 global ic_hInternet, io_hInternet, hModule 
-hModule := DllCall("LoadLibrary", "str", "wininet.dll") 
+hModule := DllCall("LoadLibrary", "str", "wininet.dll", "Ptr") 
 
 io_hInternet := DllCall("wininet\InternetOpen" 
 , "str", A_ScriptName ;lpszAgent 
 , "UInt", AccessType 
 , "str", Proxy 
 , "str", ProxyBypass 
-, "UInt", 0) ;dwFlags 
+, "UInt", 0, "Ptr") ;dwFlags 
 
 If (ErrorLevel != 0 or io_hInternet = 0) { 
 FtpClose() 
@@ -141,14 +141,14 @@ return 0
 } 
 
 ic_hInternet := DllCall("wininet\InternetConnect" 
-, "uint", io_hInternet 
+, "Ptr", io_hInternet 
 , "str", Server 
 , "uint", Port 
 , "str", Username 
 , "str", Password 
 , "uint" , 1 ;dwService (INTERNET_SERVICE_FTP = 1) 
 , "uint", 0 ;dwFlags 
-, "uint", 0) ;dwContext 
+, "uint", 0, "Ptr") ;dwContext 
 
 If (ErrorLevel != 0 or ic_hInternet = 0) 
 return 0 
@@ -158,7 +158,7 @@ return 1
 
 FtpClose() { 
 global ic_hInternet, io_hInternet, hModule 
-DllCall("wininet\InternetCloseHandle",  "UInt", ic_hInternet) 
-DllCall("wininet\InternetCloseHandle",  "UInt", io_hInternet) 
-DllCall("FreeLibrary", "UInt", hModule) 
+DllCall("wininet\InternetCloseHandle",  "Ptr", ic_hInternet) 
+DllCall("wininet\InternetCloseHandle",  "Ptr", io_hInternet) 
+DllCall("FreeLibrary", "Ptr", hModule) 
 }

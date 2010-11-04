@@ -25,7 +25,6 @@ BugfixVersion := 0
 #include %A_ScriptDir%\lib\com.ahk
 #include %A_ScriptDir%\lib\Crypt.ahk
 #include %A_ScriptDir%\lib\Cursor.ahk
-#include %A_ScriptDir%\lib\Dock.ahk
 #include %A_ScriptDir%\lib\FTPLib.ahk
 #include %A_ScriptDir%\lib\Functions.ahk
 #include %A_ScriptDir%\lib\gdip.ahk
@@ -36,6 +35,7 @@ BugfixVersion := 0
 #include %A_ScriptDir%\lib\unhtml.ahk
 #include %A_ScriptDir%\lib\VA.ahk
 #include %A_ScriptDir%\lib\Win.ahk
+#include %A_ScriptDir%\lib\DllCalls.ahk
 ; #include %A_ScriptDir%\lib\xpath.ahk
 #include %A_ScriptDir%\Accessor\Accessor.ahk
 #include %A_ScriptDir%\Accessor\Calc.ahk
@@ -131,6 +131,7 @@ BugfixVersion := 0
 #include %A_ScriptDir%\Actions\PlaySound.ahk
 #include %A_ScriptDir%\Actions\Restart7plus.ahk
 #include %A_ScriptDir%\Actions\Run.ahk
+#include %A_ScriptDir%\Actions\RunOrActivate.ahk
 #include %A_ScriptDir%\Actions\Screenshot.ahk
 #include %A_ScriptDir%\Actions\SelectFiles.ahk
 #include %A_ScriptDir%\Actions\SendKeys.ahk

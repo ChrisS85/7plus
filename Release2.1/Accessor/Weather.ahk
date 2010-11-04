@@ -53,7 +53,7 @@ Accessor_Weather_FillAccessorList(Weather, Accessor, Filter, LastFilter, ByRef I
 		return
 	Loop % Weather.List.len()
 	{
-		DllCall("ImageList_ReplaceIcon", UInt, Accessor.ImageListID, Int, -1, UInt, Weather.List[A_Index].Icon)
+		ImageList_ReplaceIcon(Accessor.ImageListID, -1, Weather.List[A_Index].Icon)
 		IconCount++
 		Accessor.List.append(Object("Title",Weather.List[A_Index].Title,"Path",Weather.List[A_Index].Path, "Type","Weather", "Detail1", Weather.List[A_Index].Detail1, "Detail2", Weather.List[A_Index].Detail2,"Icon", IconCount))
 	}

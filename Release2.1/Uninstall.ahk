@@ -149,29 +149,29 @@ RegRename(root,key,target)
 	if(!hive)
 		return 0
 	
-	result:=DllCall("Advapi32.dll\RegOpenKeyEx", "uint", hive, "str", key, "uint",0, "uint", 0xF003F, "uint *",hkey)
+	result:=DllCall("Advapi32.dll\RegOpenKeyEx", "Ptr", hive, "str", key, "uint",0, "uint", 0xF003F, "Ptr *",hkey)
 	if(result=0)
 	{
-		result:=DllCall("Advapi32.dll\RegCreateKeyEx", "uint", hive, "str", target, "uint", 0, "uint", 0, "uint", 0, "uint", 0xF003F, "uint", 0, "uint *", hNewKey, "uint",0)
+		result:=DllCall("Advapi32.dll\RegCreateKeyEx", "Ptr", hive, "str", target, "uint", 0, "uint", 0, "uint", 0, "uint", 0xF003F, "uint", 0, "Ptr *", hNewKey, "uint",0)
 		if(result=0)
 		{
-			result:=DllCall("Advapi32.dll\RegCopyTree", uint, hkey, "uint", 0, "uint", hNewKey)
+			result:=DllCall("Advapi32.dll\RegCopyTree", "Ptr", hkey, "uint", 0, "Ptr", hNewKey)
 			if(result=0)
 			{
-				DllCall("Advapi32.dll\RegCloseKey", "uint", hkey)
+				DllCall("Advapi32.dll\RegCloseKey", "Ptr", hkey)
 				RegDelete, %root%, %key%
-				DllCall("Advapi32.dll\RegCloseKey", "uint", hNewKey)
+				DllCall("Advapi32.dll\RegCloseKey", "Ptr", hNewKey)
 				return 1
 			}			
 			else
 			{
-				DllCall("Advapi32.dll\RegCloseKey", "uint", hNewKey)
+				DllCall("Advapi32.dll\RegCloseKey", "Ptr", hNewKey)
 				RegDelete, %root%, %target%
-				DllCall("Advapi32.dll\RegCloseKey", "uint", hkey)
+				DllCall("Advapi32.dll\RegCloseKey", "Ptr", hkey)
 				return 1
 			}
 		}
-		DllCall("Advapi32.dll\RegCloseKey", "uint", hkey)
+		DllCall("Advapi32.dll\RegCloseKey", "Ptr", hkey)
 	}
 	return 0
 }

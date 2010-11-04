@@ -41,7 +41,7 @@ OpenFileForRead(_filename)
          , "UInt", 0      ; lpSecurityAttributes 
          , "UInt", 3      ; dwCreationDisposition (OPEN_EXISTING) 
          , "UInt", 0      ; dwFlagsAndAttributes 
-         , "UInt", 0)   ; hTemplateFile 
+         , "UInt", 0, "Ptr")   ; hTemplateFile 
    If (handle = INVALID_HANDLE_VALUE or handle = 0) 
    { 
       ErrorLevel = -1 
@@ -66,7 +66,7 @@ OpenFileForWrite(_filename)
          , "UInt", 0      ; lpSecurityAttributes 
          , "UInt", 4      ; dwCreationDisposition (OPEN_ALWAYS: create if not exists) 
          , "UInt", 0      ; dwFlagsAndAttributes 
-         , "UInt", 0)   ; hTemplateFile 
+         , "UInt", 0, "Ptr")   ; hTemplateFile 
    If (handle = INVALID_HANDLE_VALUE or handle = 0) 
    { 
       ErrorLevel = -1 
@@ -83,7 +83,7 @@ CloseFile(_handle)
    local result 
 
    result := DllCall("CloseHandle" 
-         , "UInt", _handle) 
+         , "Ptr", _handle) 
    If (result = 0) 
    { 
       ErrorLevel = -1 
@@ -102,7 +102,7 @@ GetFileSize(_handle)
    local fileSize 
 
    fileSize := DllCall("GetFileSize" 
-         , "UInt", _handle 
+         , "Ptr", _handle 
          , "UInt", 0) 
    If (fileSize = INVALID_FILE_SIZE) 
    { 
@@ -131,7 +131,7 @@ MoveInFile(_handle, _moveMethod=-1, _offset=0)
    if (_moveMethod != -1) 
    { 
       result := DllCall("SetFilePointer" 
-            , "UInt", _handle      ; hFile 
+            , "Ptr", _handle      ; hFile 
             , "Int", _offset      ; lDistanceToMove 
             , "UInt", 0         ; lpDistanceToMoveHigh 
             , "UInt", _moveMethod)   ; dwMoveMethod 
@@ -172,7 +172,7 @@ WriteInFile(_handle, ByRef @data, _byteNb=0, _moveMethod=-1, _offset=0)
       byteNb := dataSize 
    } 
    result := DllCall("WriteFile" 
-         , "UInt", _handle   ; hFile 
+         , "Ptr", _handle   ; hFile 
          , "Str", @data      ; lpBuffer 
          , "UInt", _byteNb   ; nNumberOfBytesToWrite 
          , "UInt *", written   ; lpNumberOfBytesWritten 
@@ -224,7 +224,7 @@ ReadFromFile(_handle, ByRef @data, _byteNb=0, _moveMethod=-1, _offset=0)
    } 
 
    result := DllCall("ReadFile" 
-         , "UInt", _handle   ; hFile 
+         , "Ptr", _handle   ; hFile 
          , "Str", @data      ; lpBuffer 
          , "UInt", _byteNb   ; nNumberOfBytesToRead 
          , "UInt *", read   ; lpNumberOfBytesRead 

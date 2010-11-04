@@ -52,7 +52,7 @@ Accessor_WindowSwitcher_FillAccessorList(WindowSwitcher, Accessor, Filter, LastF
 		ExeName := WindowSwitcher.Settings.IgnoreFileExtensions ? strTrimRight(window.ExeName,".exe") : window.ExeName
 		if(x := (Filter = "" || InStr(window.Title,Filter) || InStr(ExeName,strippedFilter)) || (WindowSwitcher.Settings.FuzzySearch && FuzzySearch(ExeName,strippedFilter) < 0.4))
 		{
-			DllCall("ImageList_ReplaceIcon", UInt, Accessor.ImageListID, Int, -1, UInt, window.Icon)
+			ImageList_ReplaceIcon(Accessor.ImageListID, -1, window.Icon)
 			IconCount++
 			if(x)
 				Accessor.List.append(Object("Icon", IconCount, "Title", window.Title, "Path", window.Path, "ExeName", window.ExeName, "CPU", window.CPU, "OnTop", window.OnTop, "Type", "WindowSwitcher", "PID", window.PID, "hwnd", window.hwnd))			
@@ -174,7 +174,7 @@ GetWindowInfo()
 	windows := Array()
 	DetectHiddenWindows, Off
 	WinGet, Window_List, List ; Gather a list of running programs
-	hInstance := DllCall("GetModuleHandle", UInt, 0)
+	hInstance := GetModuleHandle(0)
 	Loop, %Window_List%
 	{
 		wid := Window_List%A_Index%
@@ -185,9 +185,9 @@ GetWindowInfo()
 			Continue
 
 		WinGet, es, ExStyle, ahk_id %wid%
-		Parent := DecToHex( Parent := DllCall( "GetParent", "uint", wid ) )
+		Parent := DecToHex( Parent := GetParent(wid) )
 		WinGet, Style_parent, Style, ahk_id %Parent%
-		Owner := DecToHex( Owner := DllCall( "GetWindow", "uint", wid , "uint", "4" ) ) ; GW_OWNER = 4
+		Owner := DecToHex( Owner := GetWindow(wid, 4) ) ; GW_OWNER = 4
 		WinGet, Style_Owner, Style, ahk_id %Owner%
 
 		If (((es & WS_EX_TOOLWINDOW)  and !(Parent)) ; filters out program manager, etc
@@ -201,7 +201,7 @@ GetWindowInfo()
 		WinGet, PID, PID, ahk_id %wid%
 		FullPath := GetModuleFileNameEx(PID)
 		WinGetClass, Win_Class, ahk_id %wid%
-		hw_popup := DecToHex( hw_popup := DllCall("GetLastActivePopup", "uint", wid))
+		hw_popup := DecToHex( hw_popup := DllCall("GetLastActivePopup", "Ptr", wid))
 
 		Dialog := 0 ; init/reset
 		If (Parent and ! Style_parent)
@@ -211,7 +211,7 @@ GetWindowInfo()
 		If (CPA_file_name or (Win_Class ="#32770") or ((style & WS_POPUP) and (es & WS_EX_DLGMODALFRAME)))
 			Dialog =1 ; found a Dialog window
 		If (CPA_file_name)
-			hIcon := DllCall("ExtractIcon", "uint", hInstance, "str", CPA_file_name, "uint", 1)
+			hIcon := ExtractIcon(hInstance, CPA_file_name, 1)
 		Else
 			hIcon := GetWindowIcon(wid, 1) ; (window id, whether to get large icons)
 			
@@ -225,7 +225,7 @@ GetWindowIcon(wid, LargeIcons) ; (window id, whether to get large icons)
 	; check status of window - if window is responding or "Not Responding"
 	NR_temp =0 ; init
 	h_icon =
-	Responding := DllCall("SendMessageTimeout", "UInt", wid, "UInt", 0x0, "Int", 0, "Int", 0, "UInt", 0x2, "UInt", 150, "UInt *", NR_temp) ; 150 = timeout in millisecs
+	Responding := DllCall("SendMessageTimeout", "Ptr", wid, "UInt", 0x0, "Int", 0, "Int", 0, "UInt", 0x2, "UInt", 150, "UInt *", NR_temp) ; 150 = timeout in millisecs
 	If (Responding)
 	{
 		; WM_GETICON values -    ICON_SMALL =0,   ICON_BIG =1,   ICON_SMALL2 =2
@@ -245,12 +245,12 @@ GetWindowIcon(wid, LargeIcons) ; (window id, whether to get large icons)
 				If ( ! h_icon )
 				{
 					If LargeIcons =1
-						h_icon := DllCall( "GetClassLong", "uint", wid, "int", -14 ) ; GCL_HICON is -14
+						h_icon := DllCall( "GetClassLong", "Ptr", wid, "int", -14 ) ; GCL_HICON is -14
 					If ( ! h_icon )
 					{
-						h_icon := DllCall( "GetClassLong", "uint", wid, "int", -34 ) ; GCL_HICONSM is -34
+						h_icon := DllCall( "GetClassLong", "Ptr", wid, "int", -34 ) ; GCL_HICONSM is -34
 						If ( ! h_icon )
-						h_icon := DllCall( "LoadIcon", "uint", 0, "uint", 32512 ) ; IDI_APPLICATION is 32512
+						h_icon := DllCall( "LoadIcon", "Ptr", 0, "uint", 32512 ) ; IDI_APPLICATION is 32512
 					}
 				}
 			}
@@ -261,28 +261,28 @@ GetWindowIcon(wid, LargeIcons) ; (window id, whether to get large icons)
 	Else	; use a generic icon
 		return Accessor.GenericIcons.Application
 		; IL_Add(WindowSwitcher.ImageListID, "shell32.dll" , 3)
-		; DllCall("ImageList_ReplaceIcon", UInt, WindowSwitcher.ImageListID, Int, -1, UInt, h_icon)
+		;ImageList_ReplaceIcon(Accessor.ImageListID, -1, h_icon)
 }
 GetCPA_file_name( p_hw_target ) ; retrives Control Panel applet icon
 {
    WinGet, pid_target, PID, ahk_id %p_hw_target%
-   hp_target := DllCall( "OpenProcess", "uint", 0x18, "int", false, "uint", pid_target )
-   hm_kernel32 := DllCall( "GetModuleHandle", "str", "kernel32.dll" )
-   pGetCommandLine := DllCall( "GetProcAddress", "uint", hm_kernel32, "str", A_IsUnicode ? "GetCommandLineW"  : "GetCommandLineA")
+   hp_target := DllCall( "OpenProcess", "uint", 0x18, "int", false, "uint", pid_target, "Ptr")
+   hm_kernel32 := GetModuleHandle("kernel32.dll")
+   pGetCommandLine := DllCall( "GetProcAddress", "Ptr", hm_kernel32, "str", A_IsUnicode ? "GetCommandLineW"  : "GetCommandLineA")
    buffer_size = 6
    VarSetCapacity( buffer, buffer_size )
-   DllCall( "ReadProcessMemory", "uint", hp_target, "uint", pGetCommandLine, "uint", &buffer, "uint", buffer_size, "uint", 0 )
+   DllCall( "ReadProcessMemory", "Ptr", hp_target, "uint", pGetCommandLine, "uint", &buffer, "uint", buffer_size, "uint", 0 )
    loop, 4
       ppCommandLine += ( ( *( &buffer+A_Index ) ) << ( 8*( A_Index-1 ) ) )
    buffer_size = 4
    VarSetCapacity( buffer, buffer_size, 0 )
-   DllCall( "ReadProcessMemory", "uint", hp_target, "uint", ppCommandLine, "uint", &buffer, "uint", buffer_size, "uint", 0 )
+   DllCall( "ReadProcessMemory", "Ptr", hp_target, "uint", ppCommandLine, "uint", &buffer, "uint", buffer_size, "uint", 0 )
    loop, 4
       pCommandLine += ( ( *( &buffer+A_Index-1 ) ) << ( 8*( A_Index-1 ) ) )
    buffer_size = 260
    VarSetCapacity( buffer, buffer_size, 1 )
-   DllCall( "ReadProcessMemory", "uint", hp_target, "uint", pCommandLine, "uint", &buffer, "uint", buffer_size, "uint", 0 )
-   DllCall( "CloseHandle", "uint", hp_target )
+   DllCall( "ReadProcessMemory", "Ptr", hp_target, "uint", pCommandLine, "uint", &buffer, "uint", buffer_size, "uint", 0 )
+   DllCall( "CloseHandle", "Ptr", hp_target )
    IfInString, buffer, desk.cpl ; exception to usual string format
      return, "C:\WINDOWS\system32\desk.cpl"
 
@@ -327,9 +327,9 @@ UpdateCPUTimes()
 			Accessor.List[index].oldKrnlTime := Accessor.List[index].newKrnlTime
 			Accessor.List[index].oldUserTime := Accessor.List[index].newUserTime
 
-			hProc := DllCall("OpenProcess", "Uint", 0x400, "int", 0, "Uint", Accessor.List[index].PID)
-			DllCall("GetProcessTimes", "Uint", hProc, "int64P", CreationTime, "int64P", ExitTime, "int64P", newKrnlTime, "int64P", newUserTime)
-			DllCall("CloseHandle", "Uint", hProc)
+			hProc := DllCall("OpenProcess", "Uint", 0x400, "int", 0, "Uint", Accessor.List[index].PID, "Ptr")
+			DllCall("GetProcessTimes", "Ptr", hProc, "int64P", CreationTime, "int64P", ExitTime, "int64P", newKrnlTime, "int64P", newUserTime, "Ptr")
+			DllCall("CloseHandle", "Ptr", hProc)
 			Accessor.List[index].newKrnlTime := newKrnlTime
 			Accessor.List[index].newUserTime := newUserTime
 			Accessor.List[index].CPU := Round(min(max((Accessor.List[index].newKrnlTime-Accessor.List[index].oldKrnlTime + Accessor.List[index].newUserTime-Accessor.List[index].oldUserTime)/10000000 * 100,0),100), 2)   ; 1sec: 10**7

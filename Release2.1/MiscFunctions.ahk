@@ -3,8 +3,8 @@
 TranslateMUI(resDll, resID)
 {
 VarSetCapacity(buf, 256) 
-hDll := DllCall("LoadLibrary", "str", resDll) 
-Result := DllCall("LoadString", "uint", hDll, "uint", resID, "str", buf, "int", 128)
+hDll := DllCall("LoadLibrary", "str", resDll, "Ptr") 
+Result := DllCall("LoadString", "Ptr", hDll, "uint", resID, "str", buf, "int", 128)
 return buf
 }
 
@@ -63,6 +63,15 @@ IsControlUnderCursor(what)
 		return control
 	return false
 }
+
+API_SetWinEventHook(eventMin, eventMax, hmodWinEventProc, lpfnWinEventProc, idProcess, idThread, dwFlags) { 
+   DllCall("CoInitialize", "Ptr", 0) 
+   return DllCall("SetWinEventHook", "uint", eventMin, "uint", eventMax, "Ptr", hmodWinEventProc, "uint", lpfnWinEventProc, "uint", idProcess, "uint", idThread, "uint", dwFlags, "Ptr") 
+} 
+
+API_UnhookWinEvent( hWinEventHook ) { 
+   return DllCall("UnhookWinEvent", "Ptr", hWinEventHook) 
+} 
 
 ;disables or restores original minimize anim setting
 DisableMinimizeAnim(disable)
@@ -180,7 +189,7 @@ IsFullscreen(sWinTitle = "A", UseExcludeList = true, UseIncludeList=true) {
     
     ;Make sure it's not desktop 
     WinGetClass, c, ahk_id %hWin% 
-    If (hWin = DllCall("GetDesktopWindow") Or (c = "Progman") Or (c = "WorkerW")) 
+    If (hWin = DllCall("GetDesktopWindow", "Ptr") Or (c = "Progman") Or (c = "WorkerW")) 
         Return False 
         
     ;Fullscreen include list
@@ -203,8 +212,8 @@ IsFullscreen(sWinTitle = "A", UseExcludeList = true, UseIncludeList=true) {
 			
     ;Get the window and client area, and style 
     VarSetCapacity(iWinRect, 16), VarSetCapacity(iCltRect, 16) 
-    DllCall("GetWindowRect", UInt, hWin, UInt, &iWinRect) 
-    DllCall("GetClientRect", UInt, hWin, UInt, &iCltRect) 
+    DllCall("GetWindowRect", Ptr, hWin, UInt, &iWinRect) 
+    DllCall("GetClientRect", Ptr, hWin, UInt, &iCltRect) 
     WinGet, iStyle, Style, ahk_id %hWin% 
     
     ;Extract coords and sizes 
@@ -481,7 +490,7 @@ GetModuleFileNameEx( p_pid )
       #define PROCESS_VM_READ           (0x0010) 
       #define PROCESS_QUERY_INFORMATION (0x0400) 
    */ 
-   h_process := DllCall( "OpenProcess", "uint", 0x10|0x400, "int", false, "uint", p_pid ) 
+   h_process := DllCall( "OpenProcess", "uint", 0x10|0x400, "int", false, "uint", p_pid, "Ptr") 
    if ( ErrorLevel or h_process = 0 ) 
    { 
       outputdebug [OpenProcess] failed. PID = %p_pid%
@@ -491,16 +500,16 @@ GetModuleFileNameEx( p_pid )
    name_size = 255 
    VarSetCapacity( name, name_size ) 
     
-   result := DllCall( "psapi.dll\GetModuleFileNameEx", "uint", h_process, "uint", 0, "str", name, "uint", name_size ) 
+   result := DllCall( "psapi.dll\GetModuleFileNameEx", "Ptr", h_process, "uint", 0, "str", name, "uint", name_size ) 
    if ( ErrorLevel or result = 0 ) 
       outputdebug, [GetModuleFileNameExA] failed 
     
-   DllCall( "CloseHandle", "uint", h_process ) ; Corrected by Moderator! 2010-03-16 
+   DllCall( "CloseHandle", "Ptr", h_process ) ; Corrected by Moderator! 2010-03-16 
     
    return, name 
 }
 ; Extract an icon from an executable, DLL or icon file. 
-ExtractIcon(Filename, IconNumber, IconSize) 
+ExtractIcon(Filename, IconNumber, IconSize = 64) 
 { 
     ; LoadImage is not used.. 
     ; ..with exe/dll files because: 
@@ -514,36 +523,28 @@ ExtractIcon(Filename, IconNumber, IconSize)
     { 
         r:=DllCall("PrivateExtractIcons" 
             ,"str",Filename,"int",IconNumber-1,"int",IconSize,"int",IconSize 
-            ,"uint*",h_icon,"uint*",0,"uint",1,"uint",0,"int") 
+            ,"Ptr*",h_icon,"uint*",0,"uint",1,"uint",0,"int") 
 ;         StdOut("icon: " h_icon ", size: " IconSize ", num: " IconNumber ", file: " Filename) 
         if !ErrorLevel 
-        { 
-            if !h_icon || r>1 
-            { 
-                Clipboard:=Filename 
-                ListVars 
-                Pause 
-            } 
             return h_icon 
-        } 
     } 
     ; Use ExtractIconEx, which only returns 16x16 or 32x32 icons. 
     if DllCall("shell32.dll\ExtractIconEx","str",Filename,"int",IconNumber-1 
-                ,"uint*",h_icon,"uint*",h_icon_small,"uint",1) 
+                ,"Ptr*",h_icon,"Ptr*",h_icon_small,"uint",1) 
     { 
         SysGet, SmallIconSize, 49 
         
         ; Use the best-fit size; delete the other. Defaults to small icon. 
         if (IconSize <= SmallIconSize) { 
-            DllCall("DestroyIcon","uint",h_icon) 
+            DllCall("DestroyIcon","Ptr",h_icon) 
             h_icon := h_icon_small 
         } else 
-            DllCall("DestroyIcon","uint",h_icon_small) 
+            DllCall("DestroyIcon","Ptr", h_icon_small) 
         
         ; I think PrivateExtractIcons resizes icons automatically, 
         ; so resize icons returned by ExtractIconEx for consistency. 
         if (h_icon && IconSize) 
-            h_icon := DllCall("CopyImage","uint",h_icon,"uint",1,"int",IconSize 
+            h_icon := DllCall("CopyImage","Ptr",h_icon,"uint",1,"int",IconSize 
                                 ,"int",IconSize,"uint",4|8) 
     } 
 
@@ -575,7 +576,7 @@ IsInArea(px,py,x,y,w,h)
 WinGetPlacement(hwnd, ByRef x="", ByRef y="", ByRef w="", ByRef h="", ByRef state="") 
 { 
     VarSetCapacity(wp, 44), NumPut(44, wp) 
-    DllCall("GetWindowPlacement", "uint", hwnd, "uint", &wp) 
+    DllCall("GetWindowPlacement", "Ptr", hwnd, "uint", &wp) 
     x := NumGet(wp, 28, "int") 
     y := NumGet(wp, 32, "int") 
     w := NumGet(wp, 36, "int") - x 
@@ -609,7 +610,7 @@ WinSetPlacement(hwnd, x="",y="",w="",h="",state="")
     NumPut(y, wp, 32, "Int")
     NumPut(x+w, wp, 36, "Int")
     NumPut(y+h, wp, 40, "Int")
-	DllCall("SetWindowPlacement", "uint", hwnd, "uint", &wp) 
+	DllCall("SetWindowPlacement", "Ptr", hwnd, "uint", &wp) 
 }
 ExpandEnvVars(ppath)
 {
@@ -657,9 +658,9 @@ InsertInteger(pInteger, ByRef pDest, pOffset = 0, pSize = 4)
         DllCall("RtlFillMemory", "UInt", &pDest + pOffset + A_Index-1, "UInt", 1, "UChar", pInteger >> 8*(A_Index-1) & 0xFF) 
 }
 
-PointerToString(string)
+PointerToString(pstring)
 {
-	return DllCall("MulDiv", int, &sTest, int, 1, int, 1, str)
+	return DllCall("MulDiv", int, pstring, int, 1, int, 1, str)
 }
 
 ExtractInteger(ByRef pSource, pOffset = 0, pIsSigned = false, pSize = 4) 
@@ -1014,5 +1015,5 @@ CouldBeURL(string)
 	return RegexMatch(strTrim(string, " "), "(?:(?:ht|f)tps?://|www\.)?.+\..+") > 0
 }
 WriteAccess( F ) { 
-  Return ((h:=DllCall("_lopen",Str,F,Int,1)) > 0 ? 1 : 0) (DllCall("_lclose",Int,h)+NULL) 
+  Return ((h:=DllCall("_lopen",Str,F,Int,1)) > 0 ? 1 : 0, "Ptr") (DllCall("_lclose","Ptr",h)+NULL) 
 }

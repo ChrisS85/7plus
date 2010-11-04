@@ -2142,11 +2142,11 @@ HandleMessage(p_w, p_l, p_m, p_hw)
               GuiControl, 1:Font, %A_GuiControl% 
               LastCtrl = %A_GuiControl% 
               
-              h_cursor_hand := DllCall("LoadCursor", "uint", 0, "uint", 32649) 
+              h_cursor_hand := DllCall("LoadCursor", "Ptr", 0, "uint", 32649, "Ptr") 
               
               URL_hover := true 
             }
-            h_old_cursor := DllCall("SetCursor", "uint", h_cursor_hand) 
+            h_old_cursor := DllCall("SetCursor", "Ptr", h_cursor_hand, "Ptr") 
         } 
       ; Mouse cursor doesn't hover URL text control 
       Else 
@@ -2156,7 +2156,7 @@ HandleMessage(p_w, p_l, p_m, p_hw)
               Gui, 1:Font, norm cBlue 
               GuiControl, 1:Font, %LastCtrl% 
               
-              DllCall("SetCursor", "uint", h_old_cursor) 
+              DllCall("SetCursor", "Ptr", h_old_cursor) 
               
               URL_hover= 
             } 

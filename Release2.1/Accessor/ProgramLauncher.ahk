@@ -164,8 +164,8 @@ Accessor_ProgramLauncher_FillAccessorList(ProgramLauncher, Accessor, Filter, Las
 			
 			IconCount++
 			if(!ProgramLauncher.List[A_Index].hIcon) ;Program launcher icons are cached lazy, only when needed
-				ProgramLauncher.List[A_Index].hIcon := DllCall("Shell32\ExtractAssociatedIcon", UInt, 0, Str, ProgramLauncher.List[A_Index].Command, UShortP, iIndex)
-			DllCall("ImageList_ReplaceIcon", UInt, Accessor.ImageListID, Int, -1, UInt, ProgramLauncher.List[A_Index].hIcon)
+				ProgramLauncher.List[A_Index].hIcon := ExtractAssociatedIcon(0, ProgramLauncher.List[A_Index].Command, iIndex)
+			ImageList_ReplaceIcon(Accessor.ImageListID, -1, ProgramLauncher.List[A_Index].hIcon)
 			if(x = 1)
 				Accessor.List.append(Object("Title",ProgramLauncher.List[A_Index].Name,"Path",ProgramLauncher.List[A_Index].Command,"Type","ProgramLauncher", "Icon", IconCount))
 			else if(x)
