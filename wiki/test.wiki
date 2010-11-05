@@ -1,1 +1,0 @@
-<wiki:gadget url="http://7plus.googlecode.com/svn/Gadgets/url.xml" width="245" height="250" border="0" />
