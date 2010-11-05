@@ -672,6 +672,15 @@ ExtractInteger(ByRef pSource, pOffset = 0, pIsSigned = false, pSize = 4)
     return -(0xFFFFFFFF - result + 1) 
 }
 
+; Force kill program on Alt+F5 and on right click close button
+CloseKill(hwnd)
+{
+	WinGet, pid, pid, ahk_id %hwnd%
+	WinKill ahk_id %hwnd%
+	if(WinExist("ahk_id " hwnd))
+		Process, close, %pid%
+}
+
 RemoveLineFeedsAndSurroundWithDoubleQuotes(files)
 {
 	if(isobject(files))

@@ -251,16 +251,6 @@ MouseMax()
 	; return
 ; #if
 
-; Force kill program on Alt+F5 and on right click close button
-CloseKill(hwnd)
-{
-	WinGet, pid, pid, ahk_id %hwnd%
-	WinKill ahk_id %hwnd%, , 1
-	WinGet, pid1 , pid, ahk_id %hwnd%
-	if(pid=pid1)
-		Process close, %pid1%
-}
-
 ; Close on middle click titlebar
 ; TitleBarClose()
 ; {
