@@ -152,7 +152,7 @@ ReadClipboardText()
 		DllCall("OpenClipboard", "Ptr", 0)	
 		htext:=DllCall("GetClipboardData", "Uint", A_IsUnicode ? 13 : 1, "Ptr")
 		ptext := DllCall("GlobalLock", "Ptr", htext)
-		text:=PointerToString(pText)
+		text := StrGet(pText, A_IsUnicode ? "UTF-16" : "cp0")
 		DllCall("GlobalUnlock", "Ptr", htext)
 		DllCall("CloseClipboard")
 	}
@@ -244,7 +244,6 @@ CopyToClipboard(files, clear, cut=0){
 	}
 	result:=DllCall("SetClipboardData", "uint", CF_HDROP, "Ptr", hPath) ; Place the data on the clipboard. CF_HDROP=0xF
 	Clipwait, 1, 1
-	outputdebug hdrop setclipboarddata result: %result% errorlevel %errorlevel%
 	
 	;Write Preferred DropEffect structure to clipboard to switch between copy/cut operations
  	mem := DllCall("GlobalAlloc","UInt",0x42,"UInt",4, "Ptr")  ; 0x42 = GMEM_MOVEABLE(0x2) | GMEM_ZEROINIT(0x40)

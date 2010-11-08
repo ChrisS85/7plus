@@ -95,59 +95,9 @@ Settings_CreateExplorer(ByRef TabCount) {
 	x2:=xBase+280
 	x:=xBase+247
 	y:=yIt+TextBoxCheckBoxOffset
-	/*
-	Gui, 1:Add, CheckBox, x%x1% y%y% gEditor, F3: Open selected files in text/image editor
-	Gui, 1:Add, Text, y%y% x%xhelp% cBlue ghOpenEditor vURL_OpenEditor, ?
-	y:=yIt+TextBoxTextOffset
-	Gui, 1:Add, Text, x%x% y%y%, Editor:
-	y:=yIt
-	Gui, 1:Add, Edit, x%x2% y%y% w%wTBMedium% vTextEditor R1 
-	x:=x2+wTBMedium+10
-	y:=yIt+TextBoxButtonOffset
-	Gui, 1:Add, Button, x%x% y%y% w%wButton% gTextBrowse, ...
-	yIt+=textboxstep
-	x:=xBase+215
-	y:=yIt+TextBoxTextOffset
-	Gui, 1:Add, Text, x%x% y%y%, Image editor:
-	y:=yIt
-	Gui, 1:Add, Edit, x%x2% y%y% w%wTBMedium% vImageEditor R1 
-	x:=x2+wTBMedium+10
-	y:=yIt+TextBoxButtonOffset
-	Gui, 1:Add, Button, x%x% y%y% w%wButton% gImageBrowse, ...
-	yIt+=textboxstep
-	
-	x2:=x2-60
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghCreateNew vURL_CreateNew, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKCreateNewFile, F7: Create new file
-	yIt+=checkboxstep
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghCreateNew vURL_CreateNew1, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKCreateNewFolder, F8: Create new folder
-	yIt+=checkboxstep	
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghCopyFilenames vURL_CopyFilenames, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKCopyFilenames, ALT + C: Copy Filenames	
-	yIt+=checkboxstep	
-	
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghCopyFilenames vURL_CopyFilenames1, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKCopyPaths, CTRL + ALT + C: Copy paths + filenames
-	yIt+=checkboxstep	
-	
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghNavigation vURL_Navigation, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKProperBackspace, Backspace (Vista/7): Go upwards
-	x:=x2+80
-	yIt+=checkboxstep	
-	
-	*/
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghNavigation vURL_Navigation1, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKMouseGestures, Hold right mouse and click left: Go back, Hold left mouse and click right: Go forward
 	yIt+=checkboxstep	
-	/*
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghNavigation vURL_Navigation2, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKDoubleClickUpwards, Double click on empty space in filelist: Go upwards
-	yIt+=checkboxstep	
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghAppendClipboard vURL_AppendClipboard, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKAppendClipboard, Shift + X / Shift + C: Append files to clipboard instead of replacing (cut/copy)
-	yIt+=checkboxstep	
-	*/
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghExplorer1dot1 vURL_Explorer1dot1, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKInvertSelection, CTRL + I: Invert selection
 	yIt+=checkboxstep
@@ -1004,6 +954,10 @@ SettingsTreeViewEvents()
 				break
 			}
 		}
+		if(SelectedName = "Accessor Keywords")
+			Gui +E0x10
+		else
+			Gui -E0x10
 	}
 	
 	GuiControl, 1:MoveDraw, SettingsTreeView
@@ -1374,6 +1328,21 @@ GUI_SaveAccessorKeywords()
 			pos++
 	}
 	Accessor.Keywords := Settings_AccessorKeywords.DeepCopy()
+}
+GuiDropFiles:
+DropAccessorFiles()
+return
+DropAccessorFiles()
+{
+	global Settings_AccessorKeywords
+	Gui, ListView, GUI_AccessorKeywordsList
+	Loop, parse, A_GuiEvent, `n
+	{
+		SplitPath, A_LoopField, ,,,name
+		Settings_AccessorKeywords.append(Object("Key", name, "Command", A_LoopField))
+		LV_Add("Select", Settings_AccessorKeywords.len(), name, A_LoopField)
+	}
+	return
 }
 GUI_Accessor_Help:
 run http://code.google.com/p/7plus/wiki/docsAccessor

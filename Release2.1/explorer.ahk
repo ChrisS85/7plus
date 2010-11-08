@@ -247,11 +247,9 @@ AcquireExplorerConfirmationDialogStrings()
 {
 	global shell32MUIpath
 	VarSetCapacity(buffer, 85*2)
-	length:=DllCall("GetUserDefaultLocaleName","uint",&buffer,"uint",85)
+	length:=DllCall("GetUserDefaultLocaleName","UIntP",buffer,"UInt",85)
 	if(A_IsUnicode)
 		locale := StrGet(buffer)
-	else
-		locale:=COM_Ansi4Unicode(&buffer)
 	shell32MUIpath:=A_WinDir "\winsxs\*_microsoft-windows-*resources*" locale "*" ;\x86_microsoft-windows-shell32.resources_31bf3856ad364e35_6.1.7600.16385_de-de_b08f46c44b512da0\shell32.dll.mui
 	loop %shell32MUIpath%,2,0
 	{
@@ -287,12 +285,14 @@ LButton::
 	Shell_GoBack()
 	return
 #if
+
 #if HKMouseGestures && SuppressRButtonUp
 ~RButton UP::
 	SuppressRButtonUp:=false
 	Send, {Esc}
 	Return
 #if
+
 #if HKMouseGestures && GetKeyState("LButton","P") && (WinActive("ahk_group ExplorerGroup")||IsDialog()) && IsMouseOverFileList()
 RButton::
 	outputdebug go forward
@@ -300,6 +300,7 @@ RButton::
 	SuppressRButtonUp:=true
 	Return
 #if
+
 ;Enter:Execute focussed file
 #if HKImproveEnter && WinActive("ahk_group ExplorerGroup") && InFileList() && !IsRenaming() && !IsContextMenuActive()
 Enter::
@@ -312,10 +313,6 @@ Return::
 		Send {Enter}
 	return
 #if
-; Backspace: go up instead of back    
-; #if Vista7 && HKProperBackspace && (IsDialog() || WinActive("ahk_group ExplorerGroup")) && !IsRenaming() && (InTree()||InFileList()) && !strEndsWith(GetCurrentFolder(),".search-ms")
-; Backspace::Send !{Up}
-; #if
 
 ;Function(s) to align explorer windows side by side and to launch explorer with last used directory
 #if (RecallExplorerPath && ExplorerPath != "") || AlignExplorer && WinActive("ahk_group ExplorerGroup")
@@ -373,13 +370,14 @@ RunExplorer()
 	}
 	Return
 }
+
 #MaxThreadsPerHotkey 2
 #if (Vista7 && IsWindowUnderCursor("WorkerW")) || (!Vista7 && IsWindowUnderCursor("ProgMan"))
 ~LButton::
 CurrentDesktopFiles:=GetSelectedFiles()
-outputdebug current: "%CurrentDesktopFiles%" previous: %PreviousDesktopFiles%
-outputdebug % "is doubleclick: """ IsDoubleClick() """ no files: """ (CurrentDesktopFiles = "") """"
-outputdebug(A_TimeSincePriorHotkey " < " DllCall("GetDoubleClickTime") " && " A_ThisHotkey "=" A_PriorHotkey)
+; outputdebug current: "%CurrentDesktopFiles%" previous: %PreviousDesktopFiles%
+; outputdebug % "is doubleclick: """ IsDoubleClick() """ no files: """ (CurrentDesktopFiles = "") """"
+; outputdebug(A_TimeSincePriorHotkey " < " DllCall("GetDoubleClickTime") " && " A_ThisHotkey "=" A_PriorHotkey)
 if(IsDoubleClick() && CurrentDesktopFiles = "")
 {
 	Trigger := EventSystem_CreateSubEvent("Trigger","DoubleClickDesktop")
@@ -387,6 +385,7 @@ if(IsDoubleClick() && CurrentDesktopFiles = "")
 }
 Return
 #if
+
 #MaxThreadsPerHotkey 1
 ;Double click upwards is buggy in filedialogs, so only explorer for now until someone comes up with non-intrusive getpath, getselectedfiles functionsunrel
 #if !IsDialog() && IsMouseOverFileList() && GetKeyState("RButton")!=1
@@ -467,26 +466,7 @@ if(IsDoubleClick() && IsMouseOverFreeTaskListSpace())
 	outputdebug doubleclicktaskbar
 	Trigger := EventSystem_CreateSubEvent("Trigger", "DoubleClickTaskbar")
 	OnTrigger(Trigger)
-	; SplitCommand(TaskbarLaunchPath, cmd, args)
-	; cmd:=ExpandEnvVars(cmd)
-	; if(FileExist(cmd))
-		; run, "%cmd%" %args%
-	; else if(TaskbarLaunchPath)
-	; {
-		; ToolTip(1, "You need to enter a valid command in <a>Settings</a> to run when you double click on empty taskbar space!", "Invalid Command","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
-		; SetTimer, ToolTipClose, -10000
-		; TooltipShowSettings:=true
-	; }
 }
-/*
-else if (HKActivateBehavior && A_OSVersion="WIN_7")
-{
-	Send {CTRL Down}{LButton Down}
-	while(GetKeyState("LButton", "P"))
-		Sleep 20
-	Send {LButton Up}{CTRL Up}
-}
-*/
 else
 {
 	Send {LButton Down}
@@ -497,11 +477,6 @@ else
 return
 #if
 
-IsDoubleClick()
-{	
-	return A_TimeSincePriorHotkey < DllCall("GetDoubleClickTime") && A_ThisHotkey=A_PriorHotkey
-}
-
 #if !IsFullScreen()
 ^MButton::
 +MButton::
@@ -511,14 +486,10 @@ key.=GetKeyState("ALT") ? "!" : ""
 key.=GetKeyState("SHIFT") ? "+" : ""
 key.=(GetKeyState("RWIN") || GetKeyState("LWIN")) ? "#" : ""
 Handled:=TaskbuttonClose()
-; if !Handled
-	; Handled:=TitleBarClose()
 if(!Handled)
 	Handled:=ToggleWallpaper()
 if(!Handled)
 	Handled:=OpenInNewFolder()
-; if !Handled
-	; Handled:=FastFolderMenu()
 if (!Handled && Handled:=IsMouseOverTabButton())
 	MouseCloseTab()
 	
@@ -573,209 +544,6 @@ ToggleWallpaper()
 	return true
 }
 
-; #if HKCreateNewFile && (WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog()) && !IsRenaming() 
-; F7: Create new text file  
-; F7::CreateNewTextFile()	
-; #if
-CreateNewTextFile()
-{
-  global Vista7
-	;This is done manually, by creating a text file with the translated name, which is then focussed
-	SetFocusToFileView()
-	if(Vista7)
-    TextTranslated:=TranslateMUI("notepad.exe",470) ;"New Textfile"
-  else
-  {
-    newstring:=TranslateMUI("shell32.dll",8587) ;"New"
-    TextTranslated:=newstring " " TranslateMUI("notepad.exe",469) ;"Textfile"
-    
-  }
-	path:=GetCurrentFolder()
-	Testpath := path "\" TextTranslated ".txt"
-	i:=1 ;Find free filename
-	while FileExist(TestPath)
-	{
-		i++
-		Testpath:=path "\" TextTranslated " (" i ").txt"
-	}
-	FileAppend , %A_Space%, %TestPath%	;Create file and then select it and rename it
-	if(!FileExist(TestPath))
-	{
-		ToolTip(1, "Could not create a new textfile here. Make sure you have the correct permissions!", "Could not create new textfile!","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
-		SetTimer, ToolTipClose, -5000
-		return
-	}
-	RefreshExplorer()
-	Sleep 50
-	if(i=1)
-		SelectFiles(TextTranslated ".txt")
-	else
-		SelectFiles(TextTranslated " (" i ").txt")
-	Sleep 50
-	Send {F2}
-	return
-}
-
-;F8: Create new Folder  
-; #if HKCreateNewFolder && !IsRenaming() && (WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog())
-; F8::
-; if(A_OSVersion="WIN_7")
-  ; Send ^+n
-; else
-  ; CreateNewFolder()
-; return
-; #if
-CreateNewFolder()
-{
-	Global shell32muipath
-  ;This is done manually, by creating a text file with the translated name, which is then focussed
-	SetFocusToFileView()
-	if(A_OSVersion="WIN_VISTA")
-		TextTranslated:=TranslateMUI(shell32muipath,16859) ;"New Folder"
-	else
-		TextTranslated:=TranslateMUI("shell32.dll",30320) ;"New Folder"
-	path:=GetCurrentFolder()
-	Testpath := path "\" TextTranslated
-	i:=1 ;Find free filename
-	while FileExist(TestPath)
-	{
-		i++
-		Testpath:=path "\" TextTranslated " (" i ")"
-	}
-	FileCreateDir, %TestPath%	;Create file and then select it and rename it
-	if(!FileExist(TestPath))
-	{
-		ToolTip(1, "Could not create a new textfile here. Make sure you have the correct permissions!", "Could not create new textfile!","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
-		SetTimer, ToolTipClose, -5000
-		return
-	}
-	RefreshExplorer()
-	if(i=1)
-		SelectFiles(TextTranslated)
-	else
-		SelectFiles(TextTranslated " (" i ")")
-	Sleep 50
-	Send {F2}
-	return
-}
-/*
-;F3: edit selected files
-#if (WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog()) && !IsRenaming() 
-F3::EditSelectedFiles()
-#if
-*/
-EditSelectedFiles()
-{
-	global ImageExtensions,TextEditor,ImageEditor, TooltipShowSettings
-	files:=GetSelectedFiles()
-	if(!files)
-		files:=GetFocussedFile()
-	SplitByExtension(files, splitfiles, ImageExtensions)
-	files:=RemoveLineFeedsAndSurroundWithDoubleQuotes(files)
-	splitfiles:=RemoveLineFeedsAndSurroundWithDoubleQuotes(splitfiles)
-	outputdebug(files[1])
-	x:=ExpandEnvVars(TextEditor)
-	y:=ExpandEnvVars(ImageEditor)
-	if (files.len() > 0 && !FileExist(x) && x && splitfiles.len() > 0 && !FileExist(y) && y)
-	{
-		ToolTip(1, "You need to enter a valid path in <a>Settings</a> for text and image editors!", "Invalid Paths","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
-		SetTimer, ToolTipClose, -10000
-		TooltipShowSettings:=true
-	}
-	else if(files.len() > 0 && !FileExist(x) && x)
-	{
-		ToolTip(1, "You need to enter a valid path in <a>Settings</a> for text editor!", "Invalid Path","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
-		SetTimer, ToolTipClose, -10000
-		TooltipShowSettings:=true
-	}
-	else if(splitfiles.len() > 0 && !FileExist(y) && y)
-	{
-		ToolTip(1, "You need to enter a valid path in <a>Settings</a> for image editor!", "Invalid Path","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
-		SetTimer, ToolTipClose, -10000
-		TooltipShowSettings:=true
-	}
-	if ((files.len() > 0 && FileExist(x))||(splitfiles.len() > 0 && FileExist(y)))
-	{
-		Loop % files.len()
-			textfiles .= files[A_Index]
-		if (textfiles != "")
-			run %x% %textfiles%
-		Loop % splitfiles.len()
-			imagefiles .= splitfiles[A_Index]
-		if (imagefiles!="")
-			run %y% %imagefiles%
-	}
-	else
-		SendInput {F3}
-	return
-}
-
-;Alt+C:Copy filenames, CTRL+ALT+C: Copy filepaths
-; #if (HKCopyFilenames || HKCopyPaths) && (WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog()) && !IsRenaming() 
-; *!c::CopyFilenames()
-; #if
-CopyFilenames()
-{
-	global HKCopyPaths, HKCopyFilenames,PasteFileClipboardBackup
-	files := GetSelectedFiles()
-	if(!files)
-		files:=GetFocussedFile()
-	if(files)
-	{
-		clip:=ReadClipboardText()
-		if(!GetKeyState("Shift")) ;Shift=append to clipboard
-			clip := ""
-		if (GetKeyState("Control")) ; use control to save paths too
-		{
-			if HKCopyPaths
-			{
-				Loop, Parse, files, `n,`r  ; Rows are delimited by linefeeds (`r`n).
-					clip .= (clip = "" ? "" : "`r`n") A_LoopField
-				PasteFileClipboardBackup:="" ;Clear clipboard backup so it won't be restored when another program gets activated, since clipboard gets changed now
-				clipboard:=clip
-			}
-		}
-		else
-		{
-			if HKCopyFilenames
-			{
-				Loop, Parse, files, `n,`r  ; Rows are delimited by linefeeds (`r`n).
-				{
-					SplitPath, A_LoopField, file
-					clip .= (clip = "" ? "" : "`r`n") file
-				}
-				PasteFileClipboardBackup:="" ;Clear clipboard backup so it won't be restored when another program gets activated, since clipboard gets changed now
-				clipboard:=clip
-			}
-		}
-	}
-	else
-		SendInput !{c}
-	return
-}
-
-;Shift+C: Append files to clipboard
-; #if HKAppendClipboard && (WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog()) && InFileList() && !IsRenaming()
-; +c::	
-; files := GetSelectedFiles()
-; if(!files)
-	; files:=GetFocussedFile()
-; if(files)
-	; AppendToClipboard(files)
-; else
-	; Send +{c}
-; return
-; +x::	
-; files := GetSelectedFiles()
-; if(!files)
-	; files:=GetFocussedFile()
-; if(files)
-	; AppendToClipboard(files,1)
-; else
-	; Send +{x}
-; return
-; #if
-
 ;Scroll tree list with mouse wheel
 #if (ScrollUnderMouse && ((IsWindowUnderCursor("#32770") && IsDialog()) || IsWindowUnderCursor("CabinetWClass")||IsWindowUnderCursor("ExploreWClass")) && !IsRenaming())||(Accessor.GUINum && WinActive(Accessor.WindowTitle))
 WheelUp::
@@ -820,13 +588,6 @@ WheelDown()
 if(FileExist(A_Temp "\7plus\FlatView.search-ms"))
 	FileDelete %A_Temp%\7plus\FlatView.search-ms 
 files:=GetSelectedFiles()
-/*
-if(files="::{26EE0668-A00A-44D7-9371-BEB064C98683}")
-{
-	outputdebug god mode
-	SetDirectory("::{ED7BA470-8E54-465E-825C-99712043E01C}")
-}
-*/
 searchString=
 (
 <?xml version="1.0"?>
@@ -856,7 +617,7 @@ Loop, Parse, files, `n,`r  ; Rows are delimited by linefeeds ('r`n).
 		searchString=%searchString%<include path="%A_LoopField%"/>
 } 
 searchString.="</scope></query></persistedQuery>"
-Fileappend,%searchString%, %A_Temp%\7plus\FlatView.search-ms 
+Fileappend,%searchString%, %A_Temp%\7plus\FlatView.search-ms
 SetDirectory(A_Temp "\7plus\FlatView.search-ms")
 return
 #if

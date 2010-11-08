@@ -2,10 +2,10 @@
 ;Need to check if other context menus are active (trillian, browsers,...)
 IsContextMenuActive() 
 { 
-	GuiThreadInfoSize = 48 
-	VarSetCapacity(GuiThreadInfo, 48) 
+	GuiThreadInfoSize := 24 + 6 * A_PtrSize 
+	VarSetCapacity(GuiThreadInfo, GuiThreadInfoSize) 
 	NumPut(GuiThreadInfoSize, GuiThreadInfo, 0) 
-	if not DllCall("GetGUIThreadInfo", uint, 0, str, GuiThreadInfo) 
+	if not DllCall("GetGUIThreadInfo", uint, 0, "Ptr", &GuiThreadInfo) 
 	{ 
 	  MsgBox GetGUIThreadInfo() indicated a failure. 
 	  return 
@@ -28,7 +28,7 @@ Leave 2nd parameter empty to show context menu and extract idn by clicking on an
 ShellContextMenu(sPath,idn="") 
 { 
 	global hAHK
-   DllCall("ole32\OleInitialize", "Uint", 0) 
+   DllCall("ole32\OleInitialize", "Ptr", 0) 
    if (spath="Desktop")
    {
 		 DllCall("shell32\SHGetDesktopFolder", "UintP", psf) 
@@ -37,7 +37,7 @@ ShellContextMenu(sPath,idn="")
    else
    {
 		 If   sPath Is Not Integer 
-	      DllCall("shell32\SHParseDisplayName", "Uint", Unicode4Ansi(wPath,sPath), "Uint", 0, "UintP", pidl, "Uint", 0, "Uint", 0) 
+	      DllCall("shell32\SHParseDisplayName", "Uint", sPath, "Uint", 0, "UintP", pidl, "Uint", 0, "Uint", 0) 
 	   Else   DllCall("shell32\SHGetFolderLocation", "Uint", 0, "int", sPath, "Uint", 0, "Uint", 0, "UintP", pidl) 
 	   DllCall("shell32\SHBindToParent", "Uint", pidl, "Uint", GUID4String(IID_IShellFolder,"{000214E6-0000-0000-C000-000000000046}"), "UintP", psf, "UintP", pidlChild) 
 	   DllCall(NumGet(NumGet(1*psf)+40), "Uint", psf, "Uint", 0, "Uint", 1, "UintP", pidlChild, "Uint", GUID4String(IID_IContextMenu,"{000214E4-0000-0000-C000-000000000046}"), "Uint", 0, "UintP", pcm)
@@ -58,33 +58,33 @@ ShellContextMenu(sPath,idn="")
 	   WinActivate, ahk_id %hAHK% 	   
 	   Global   pcm2 := QueryInterface(pcm,IID_IContextMenu2:="{000214F4-0000-0000-C000-000000000046}") 
 	   Global   pcm3 := QueryInterface(pcm,IID_IContextMenu3:="{BCFCE0A0-EC17-11D0-8D10-00A0C90F2719}") 
-	   Global   WPOld:= DllCall("SetWindowLong", "Uint", hAHK, "int",-4, "int",RegisterCallback("WindowProc")) 
+	   Global   WPOld:= DllCall("SetWindowLong", "Ptr", hAHK, "int",-4, "int",RegisterCallback("WindowProc")) 
 	   DllCall("GetCursorPos", "int64P", pt) 
-	   DllCall("InsertMenu", "Uint", hMenu, "Uint", 0, "Uint", 0x0400|0x800, "Uint", 2, "Uint", 0) 
-	   DllCall("InsertMenu", "Uint", hMenu, "Uint", 0, "Uint", 0x0400|0x002, "Uint", 1, "Uint", &sPath) 
-	   idn2 := DllCall("TrackPopupMenu", "Uint", hMenu, "Uint", 0x0100, "int", pt << 32 >> 32, "int", pt >> 32, "Uint", 0, "Uint", hAHK, "Uint", 0)
+	   DllCall("InsertMenu", "Ptr", hMenu, "Uint", 0, "Uint", 0x0400|0x800, "Uint", 2, "Uint", 0) 
+	   DllCall("InsertMenu", "Ptr", hMenu, "Uint", 0, "Uint", 0x0400|0x002, "Uint", 1, "Uint", &sPath) 
+	   idn2 := DllCall("TrackPopupMenu", "Ptr", hMenu, "Uint", 0x0100, "int", pt << 32 >> 32, "int", pt >> 32, "Uint", 0, "Ptr", hAHK, "Uint", 0)
 	 }
 	 else
 	 	 idn2:=idn
-   NumPut(VarSetCapacity(ici,64,0),ici)
-	 NumPut(0x4000|0x20000000,ici,4) 
-	 NumPut(1,NumPut(hAHK,ici,8),12)
-	 NumPut(idn2-idnMIN,NumPut(idn2-idnMIN,ici,12),24)
-	 if !idn
-	 	NumPut(pt,ici,56,"int64") 
-   DllCall(NumGet(NumGet(1*pcm)+16), "Uint", pcm, "Uint", &ici)   ; InvokeCommand 
-   if !idn
-   {
-	 VarSetCapacity(sName,259), DllCall(NumGet(NumGet(1*pcm)+20), "Uint", pcm, "Uint", idn2-idnMIN, "Uint", 1, "Uint", 0, "str", sName, "Uint", 260)   ; GetCommandString
-	 outputdebug command string: %sname% idn: %idn2%
-   DllCall("GlobalFree", "Uint", DllCall("SetWindowLong", "Uint", hAHK, "int", -4, "int", WPOld)) 
-   
-   Release(pcm3) 
-   Release(pcm2) 
-   }
-   DllCall("DestroyMenu", "Uint", hMenu) 
+	NumPut(VarSetCapacity(ici,64,0),ici)
+	NumPut(0x4000|0x20000000,ici,4) 
+	NumPut(1,NumPut(hAHK,ici,8),12)
+	NumPut(idn2-idnMIN,NumPut(idn2-idnMIN,ici,12),24)
+	if !idn
+		NumPut(pt,ici,56,"int64") 
+	DllCall(NumGet(NumGet(1*pcm)+16), "Uint", pcm, "Uint", &ici)   ; InvokeCommand 
+	if !idn
+	{
+		VarSetCapacity(sName,259), DllCall(NumGet(NumGet(1*pcm)+20), "Uint", pcm, "Uint", idn2-idnMIN, "Uint", 1, "Uint", 0, "str", sName, "Uint", 260)   ; GetCommandString
+		outputdebug command string: %sname% idn: %idn2%
+		DllCall("GlobalFree", "Uint", DllCall("SetWindowLong", "Ptr", hAHK, "int", -4, "int", WPOld)) 
+
+		Release(pcm3) 
+		Release(pcm2) 
+	}
+   DllCall("DestroyMenu", "Ptr", hMenu) 
    Release(pcm) 
-   DllCall("ole32\OleUnInitialize", "Uint", 0) 
+   DllCall("ole32\OleUnInitialize", "Ptr", 0) 
    if !idn
 	 	pcm2:=pcm3:=WPOld:=0 
 } 
@@ -129,7 +129,7 @@ Release(ppv)
 GUID4String(ByRef CLSID, String) 
 { 
    VarSetCapacity(CLSID, 16) 
-   DllCall("ole32\CLSIDFromString", "Uint", Unicode4Ansi(String,String,38), "Uint", &CLSID) 
+   DllCall("ole32\CLSIDFromString", "Uint", String, "Uint", &CLSID) 
    Return   &CLSID 
 } 
 CoTaskMemAlloc(cb) 

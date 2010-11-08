@@ -1,4 +1,4 @@
-; Gdip standard library v1.34 by tic (Tariq Porter) 10/06/10
+; Gdip standard library v1.43 by tic (Tariq Porter) 04/11/10
 ;
 ;#####################################################################################
 ;#####################################################################################
@@ -272,6 +272,15 @@ Gdip_BitmapFromScreen(Screen=0, Raster="")
 		Sysget, w, 78
 		Sysget, h, 79
 	}
+	else if (SubStr(Screen, 1, 5) = "hwnd:")
+	{
+		Screen := SubStr(Screen, 6)
+		if !WinExist( "ahk_id " Screen)
+			return -2
+		WinGetPos,,, w, h, ahk_id %Screen%
+		x := y := 0
+		hhdc := GetDCEx(Screen, 1)
+	}
 	else if (Screen&1 != "")
 	{
 		Sysget, M, Monitor, %Screen%
@@ -285,13 +294,13 @@ Gdip_BitmapFromScreen(Screen=0, Raster="")
 
 	if (x = "") || (y = "") || (w = "") || (h = "")
 		return -1
-	
-	chdc := CreateCompatibleDC(), hbm := CreateDIBSection(w, h, chdc), obm := SelectObject(chdc, hbm), hhdc := GetDC()
+
+	chdc := CreateCompatibleDC(), hbm := CreateDIBSection(w, h, chdc), obm := SelectObject(chdc, hbm), hhdc := hhdc ? hhdc : GetDC()
 	BitBlt(chdc, 0, 0, w, h, hhdc, x, y, Raster)
 	ReleaseDC(hhdc)
 	
 	pBitmap := Gdip_CreateBitmapFromHBITMAP(hbm)
-	SelectObject(hhdc, obm), DeleteObject(hbm), DeleteDC(hhdc), DeleteDC(chdc)
+	SelectObject(chdc, obm), DeleteObject(hbm), DeleteDC(hhdc), DeleteDC(chdc)
 	return pBitmap
 }
 
@@ -315,6 +324,7 @@ Gdip_BitmapFromHWND(hwnd)
 	SelectObject(hdc, obm), DeleteObject(hbm), DeleteDC(hdc)
 	return pBitmap
 }
+
 ;#####################################################################################
 
 ; Function    			CreateRectF
@@ -332,6 +342,25 @@ CreateRectF(ByRef RectF, x, y, w, h)
 {
    VarSetCapacity(RectF, 16)
    NumPut(x, RectF, 0, "float"), NumPut(y, RectF, 4, "float"), NumPut(w, RectF, 8, "float"), NumPut(h, RectF, 12, "float")
+}
+
+;#####################################################################################
+
+; Function    			CreateRect
+; Description			Creates a Rect object, containing a the coordinates and dimensions of a rectangle
+;
+; RectF       			Name to call the RectF object
+; x            			x-coordinate of the upper left corner of the rectangle
+; y            			y-coordinate of the upper left corner of the rectangle
+; w            			Width of the rectangle
+; h            			Height of the rectangle
+;
+; return      			No return value
+
+CreateRect(ByRef Rect, x, y, w, h)
+{
+	VarSetCapacity(Rect, 16)
+	NumPut(x, Rect, 0, "uint"), NumPut(y, Rect, 4, "uint"), NumPut(w, Rect, 8, "uint"), NumPut(h, Rect, 12, "uint")
 }
 ;#####################################################################################
 
@@ -386,8 +415,8 @@ CreateDIBSection(w, h, hdc="", bpp=32, ByRef ppvBits=0)
 	VarSetCapacity(bi, 40, 0)
 	NumPut(w, bi, 4), NumPut(h, bi, 8), NumPut(40, bi, 0), NumPut(1, bi, 12, "ushort"), NumPut(0, bi, 16), NumPut(bpp, bi, 14, "ushort")
 	hbm := DllCall("CreateDIBSection", "uint" , hdc2, "uint" , &bi, "uint" , 0, "uint*", ppvBits, "uint" , 0, "uint" , 0)
-	
-	If !hdc
+
+	if !hdc
 		ReleaseDC(hdc2)
 	return hbm
 }
@@ -514,6 +543,27 @@ GetDC(hwnd=0)
 
 ;#####################################################################################
 
+; DCX_CACHE = 0x2
+; DCX_CLIPCHILDREN = 0x8
+; DCX_CLIPSIBLINGS = 0x10
+; DCX_EXCLUDERGN = 0x40
+; DCX_EXCLUDEUPDATE = 0x100
+; DCX_INTERSECTRGN = 0x80
+; DCX_INTERSECTUPDATE = 0x200
+; DCX_LOCKWINDOWUPDATE = 0x400
+; DCX_NORECOMPUTE = 0x100000
+; DCX_NORESETATTRS = 0x4
+; DCX_PARENTCLIP = 0x20
+; DCX_VALIDATE = 0x200000
+; DCX_WINDOW = 0x1
+
+GetDCEx(hwnd, flags=0, hrgnClip=0)
+{
+    return DllCall("GetDCEx", "uint", hwnd, "uint", hrgnClip, "int", flags)
+}
+
+;#####################################################################################
+
 ; Function				ReleaseDC
 ; Description			This function releases a device context (DC), freeing it for use by other applications. The effect of ReleaseDC depends on the type of device context
 ;
@@ -557,7 +607,7 @@ DeleteDC(hdc)
 
 Gdip_LibraryVersion()
 {
-	return 1.33
+	return 1.43
 }
 
 ;#####################################################################################
@@ -1221,7 +1271,6 @@ Gdip_BlurBitmap(pBitmap, Blur)
 	Gdip_DrawImage(G1, pBitmap, 0, 0, dWidth, dHeight, 0, 0, sWidth, sHeight)
 
 	Gdip_DeleteGraphics(G1)
-	Gdip_DisposeImage(pBitmap)
 
 	pBitmap2 := Gdip_CreateBitmap(sWidth, sHeight)
 	G2 := Gdip_GraphicsFromImage(pBitmap2)
@@ -1251,13 +1300,13 @@ Gdip_BlurBitmap(pBitmap, Blur)
 ;
 ; notes					This function will use the extension supplied from the sOutput parameter to determine the output format
 
-Gdip_SaveBitmapToFile(pBitmap, sOutput, Quality=100)
+Gdip_SaveBitmapToFile(pBitmap, sOutput, Quality=75)
 {
 	SplitPath, sOutput,,, Extension
-	Extension := "." Extension
-	if Extension not in .BMP,.DIB,.RLE,.JPG,.JPEG,.JPE,.JFIF,.GIF,.TIF,.TIFF,.PNG
+	if Extension not in BMP,DIB,RLE,JPG,JPEG,JPE,JFIF,GIF,TIF,TIFF,PNG
 		return -1
-   
+	Extension := "." Extension
+
 	DllCall("gdiplus\GdipGetImageEncodersSize", "uint*", nCount, "uint*", nSize)
 	VarSetCapacity(ci, nSize)
 	DllCall("gdiplus\GdipGetImageEncoders", "uint", nCount, "uint", nSize, "uint", &ci)
@@ -1266,45 +1315,62 @@ Gdip_SaveBitmapToFile(pBitmap, sOutput, Quality=100)
    
 	Loop, %nCount%
 	{
-		nSize := DllCall("WideCharToMultiByte", "uint", 0, "uint", 0, "uint", NumGet(ci, 76*(A_Index-1)+44), "int", -1, "uint", 0, "int",  0, "uint", 0, "uint", 0)
-		VarSetCapacity(sString, nSize)
-		DllCall("WideCharToMultiByte", "uint", 0, "uint", 0, "uint", NumGet(ci, 76*(A_Index-1)+44), "int", -1, "str", sString, "int", nSize, "uint", 0, "uint", 0)
-		
-		If !InStr(sString, Extension)
-			continue
+		Location := NumGet(ci, 76*(A_Index-1)+44)
+		if !A_IsUnicode
+		{
+			nSize := DllCall("WideCharToMultiByte", "uint", 0, "uint", 0, "uint", Location, "int", -1, "uint", 0, "int",  0, "uint", 0, "uint", 0)
+			VarSetCapacity(sString, nSize)
+			DllCall("WideCharToMultiByte", "uint", 0, "uint", 0, "uint", Location, "int", -1, "str", sString, "int", nSize, "uint", 0, "uint", 0)
+			if !InStr(sString, "*" Extension)
+				continue
+		}
+		else
+		{
+			nSize := DllCall("WideCharToMultiByte", "uint", 0, "uint", 0, "uint", Location, "int", -1, "uint", 0, "int",  0, "uint", 0, "uint", 0)
+			sString := ""
+			Loop, %nSize%
+				sString .= Chr(NumGet(Location+0, 2*(A_Index-1), "char"))
+			if !InStr(sString, "*" Extension)
+				continue
+		}
 		pCodec := &ci+76*(A_Index-1)
 		break
-    }
+	}
 	if !pCodec
 		return -3
 
-	if (Quality != 100)
+	if (Quality != 75)
 	{
+		Quality := (Quality < 0) ? 0 : (Quality > 100) ? 100 : Quality
 		if Extension in .JPG,.JPEG,.JPE,.JFIF
 		{
 			DllCall("gdiplus\GdipGetEncoderParameterListSize", "uint", pBitmap, "uint", pCodec, "uint*", nSize)
 			VarSetCapacity(EncoderParameters, nSize, 0)
 			DllCall("gdiplus\GdipGetEncoderParameterList", "uint", pBitmap, "uint", pCodec, "uint", nSize, "uint", &EncoderParameters)
-			Loop, % NumGet(EncoderParameters)		;%
+			Loop, % NumGet(EncoderParameters)      ;%
 			{
-				if	(NumGet(EncoderParameters, (28*(A_Index-1))+20) = 1) && (NumGet(EncoderParameters, (28*(A_Index-1))+24) = 6)
+				if (NumGet(EncoderParameters, (28*(A_Index-1))+20) = 1) && (NumGet(EncoderParameters, (28*(A_Index-1))+24) = 6)
 				{
-					p := (28*(A_Index-1))+&EncoderParameters
-					NumPut(Quality, NumGet(NumPut(4, NumPut(1, p+0)+20)))
-					break
+				   p := (28*(A_Index-1))+&EncoderParameters
+				   NumPut(Quality, NumGet(NumPut(4, NumPut(1, p+0)+20)))
+				   break
 				}
-			}		
-		}
+			}      
+	  }
 	}
-   
-	nSize := DllCall("MultiByteToWideChar", "uint", 0, "uint", 0, "uint", &sOutput, "int", -1, "uint", 0, "int", 0)
-	VarSetCapacity(wOutput, nSize*2)
-	DllCall("MultiByteToWideChar", "uint", 0, "uint", 0, "uint", &sOutput, "int", -1, "uint", &wOutput, "int", nSize)
-	VarSetCapacity(wOutput, -1)
-	if !VarSetCapacity(wOutput)
-		return -4
 
-	E := DllCall("gdiplus\GdipSaveImageToFile", "uint", pBitmap, "uint", &wOutput, "uint", pCodec, "uint", p ? p : 0)
+	if !A_IsUnicode
+	{
+		nSize := DllCall("MultiByteToWideChar", "uint", 0, "uint", 0, "uint", &sOutput, "int", -1, "uint", 0, "int", 0)
+		VarSetCapacity(wOutput, nSize*2)
+		DllCall("MultiByteToWideChar", "uint", 0, "uint", 0, "uint", &sOutput, "int", -1, "uint", &wOutput, "int", nSize)
+		VarSetCapacity(wOutput, -1)
+		if !VarSetCapacity(wOutput)
+			return -4
+		E := DllCall("gdiplus\GdipSaveImageToFile", "uint", pBitmap, "uint", &wOutput, "uint", pCodec, "uint", p ? p : 0)
+	}
+	else
+		E := DllCall("gdiplus\GdipSaveImageToFile", "uint", pBitmap, "uint", &sOutput, "uint", pCodec, "uint", p ? p : 0)
 	return E ? -5 : 0
 }
 
@@ -1387,6 +1453,14 @@ Gdip_GetDimensions(pBitmap, ByRef Width, ByRef Height)
 {
 	Width := Gdip_GetImageWidth(pBitmap)
 	Height := Gdip_GetImageHeight(pBitmap)
+}
+
+;#####################################################################################
+
+Gdip_GetImagePixelFormat(pBitmap)
+{
+	DllCall("gdiplus\GdipGetImagePixelFormat", "uint", pBitmap, "uint*", Format)
+	return Format
 }
 
 ;#####################################################################################
@@ -1478,9 +1552,14 @@ Gdip_CreateBitmapFromFile(sFile, IconNumber=1, IconSize="")
 	}
 	else
 	{
-		VarSetCapacity(wFile, 1023)
-		DllCall("kernel32\MultiByteToWideChar", "uint", 0, "uint", 0, "uint", &sFile, "int", -1, "uint", &wFile, "int", 512)
-		DllCall("gdiplus\GdipCreateBitmapFromFile", "uint", &wFile, "uint*", pBitmap)
+		if !A_IsUnicode
+		{
+			VarSetCapacity(wFile, 1023)
+			DllCall("kernel32\MultiByteToWideChar", "uint", 0, "uint", 0, "uint", &sFile, "int", -1, "uint", &wFile, "int", 512)
+			DllCall("gdiplus\GdipCreateBitmapFromFile", "uint", &wFile, "uint*", pBitmap)
+		}
+		else
+			DllCall("gdiplus\GdipCreateBitmapFromFile", "uint", &sFile, "uint*", pBitmap)
 	}
 	return pBitmap
 }
@@ -1744,6 +1823,7 @@ Gdip_TextToGraphics(pGraphics, Text, Options, Font="Arial", Width="", Height="",
 	RegExMatch(Options, "i)H([\-\d\.]+)(p*)", Height)
 	RegExMatch(Options, "i)C(?!(entre|enter))([a-f\d]+)", Colour)
 	RegExMatch(Options, "i)Top|Up|Bottom|Down|vCentre|vCenter", vPos)
+	RegExMatch(Options, "i)NoWrap", NoWrap)
 	RegExMatch(Options, "i)R(\d)", Rendering)
 	RegExMatch(Options, "i)S(\d+)(p*)", Size)
 
@@ -1773,12 +1853,13 @@ Gdip_TextToGraphics(pGraphics, Text, Options, Font="Arial", Width="", Height="",
 	Height := Height1 ? Height2 ? IHeight*(Height1/100) : Height1 : IHeight
 	if !PassBrush
 		Colour := "0x" (Colour2 ? Colour2 : "ff000000")
-	Rendering := ((Rendering1 >= 0) && (Rendering1 <= 5)) ? Rendering1 : 5
+	Rendering := ((Rendering1 >= 0) && (Rendering1 <= 5)) ? Rendering1 : 4
 	Size := (Size1 > 0) ? Size2 ? IHeight*(Size1/100) : Size1 : 12
 
 	hFamily := Gdip_FontFamilyCreate(Font)
 	hFont := Gdip_FontCreate(hFamily, Size, Style)
-	hFormat := Gdip_StringFormatCreate(0x4000)
+	FormatStyle := NoWrap ? 0x4000 | 0x1000 : 0x4000
+	hFormat := Gdip_StringFormatCreate(FormatStyle)
 	pBrush := PassBrush ? pBrush : Gdip_BrushCreateSolid(Colour)
 	if !(hFamily && hFont && hFormat && pBrush && pGraphics)
 		return !pGraphics ? -2 : !hFamily ? -3 : !hFont ? -4 : !hFormat ? -5 : !pBrush ? -6 : 0
@@ -1816,20 +1897,38 @@ Gdip_TextToGraphics(pGraphics, Text, Options, Font="Arial", Width="", Height="",
 
 Gdip_DrawString(pGraphics, sString, hFont, hFormat, pBrush, ByRef RectF)
 {
-   nSize := DllCall("MultiByteToWideChar", "uint", 0, "uint", 0, "uint", &sString, "int", -1, "uint", 0, "int", 0)
-   VarSetCapacity(wString, nSize*2)
-   DllCall("MultiByteToWideChar", "uint", 0, "uint", 0, "uint", &sString, "int", -1, "uint", &wString, "int", nSize)
-   return DllCall("gdiplus\GdipDrawString", "uint", pGraphics, "uint", &wString, "int", -1, "uint", hFont, "uint", &RectF, "uint", hFormat, "uint", pBrush)
+	if !A_IsUnicode
+	{
+		nSize := DllCall("MultiByteToWideChar", "uint", 0, "uint", 0, "uint", &sString, "int", -1, "uint", 0, "int", 0)
+		VarSetCapacity(wString, nSize*2)
+		DllCall("MultiByteToWideChar", "uint", 0, "uint", 0, "uint", &sString, "int", -1, "uint", &wString, "int", nSize)
+		return DllCall("gdiplus\GdipDrawString", "uint", pGraphics
+		, "uint", &wString, "int", -1, "uint", hFont, "uint", &RectF, "uint", hFormat, "uint", pBrush)
+	}
+	else
+	{
+		return DllCall("gdiplus\GdipDrawString", "uint", pGraphics
+		, "uint", &sString, "int", -1, "uint", hFont, "uint", &RectF, "uint", hFormat, "uint", pBrush)
+	}	
 }
 
 Gdip_MeasureString(pGraphics, sString, hFont, hFormat, ByRef RectF)
 {
-   nSize := DllCall("MultiByteToWideChar", "uint", 0, "uint", 0, "uint", &sString, "int", -1, "uint", 0, "int", 0)
-   VarSetCapacity(wString, nSize*2)   
-   DllCall("MultiByteToWideChar", "uint", 0, "uint", 0, "uint", &sString, "int", -1, "uint", &wString, "int", nSize)
-   VarSetCapacity(RC, 16)   
-   DllCall("gdiplus\GdipMeasureString", "uint", pGraphics, "uint", &wString, "int", -1, "uint", hFont, "uint", &RectF, "uint", hFormat, "uint", &RC, "uint*", Chars, "uint*", Lines)
-   return &RC ? NumGet(RC, 0, "float") "|" NumGet(RC, 4, "float") "|" NumGet(RC, 8, "float") "|" NumGet(RC, 12, "float") "|" Chars "|" Lines : 0
+	VarSetCapacity(RC, 16)
+	if !A_IsUnicode
+	{
+		nSize := DllCall("MultiByteToWideChar", "uint", 0, "uint", 0, "uint", &sString, "int", -1, "uint", 0, "int", 0)
+		VarSetCapacity(wString, nSize*2)   
+		DllCall("MultiByteToWideChar", "uint", 0, "uint", 0, "uint", &sString, "int", -1, "uint", &wString, "int", nSize)
+		DllCall("gdiplus\GdipMeasureString", "uint", pGraphics
+		, "uint", &wString, "int", -1, "uint", hFont, "uint", &RectF, "uint", hFormat, "uint", &RC, "uint*", Chars, "uint*", Lines)
+	}
+	else
+	{
+		DllCall("gdiplus\GdipMeasureString", "uint", pGraphics
+		, "uint", &sString, "int", -1, "uint", hFont, "uint", &RectF, "uint", hFormat, "uint", &RC, "uint*", Chars, "uint*", Lines)
+	}
+	return &RC ? NumGet(RC, 0, "float") "|" NumGet(RC, 4, "float") "|" NumGet(RC, 8, "float") "|" NumGet(RC, 12, "float") "|" Chars "|" Lines : 0
 }
 
 ; Near = 0
@@ -1840,6 +1939,15 @@ Gdip_SetStringFormatAlign(hFormat, Align)
    return DllCall("gdiplus\GdipSetStringFormatAlign", "uint", hFormat, "int", Align)
 }
 
+; StringFormatFlagsDirectionRightToLeft    = 0x00000001
+; StringFormatFlagsDirectionVertical       = 0x00000002
+; StringFormatFlagsNoFitBlackBox           = 0x00000004
+; StringFormatFlagsDisplayFormatControl    = 0x00000020
+; StringFormatFlagsNoFontFallback          = 0x00000400
+; StringFormatFlagsMeasureTrailingSpaces   = 0x00000800
+; StringFormatFlagsNoWrap                  = 0x00001000
+; StringFormatFlagsLineLimit               = 0x00002000
+; StringFormatFlagsNoClip                  = 0x00004000 
 Gdip_StringFormatCreate(Format=0, Lang=0)
 {
    DllCall("gdiplus\GdipCreateStringFormat", "int", Format, "int", Lang, "uint*", hFormat)
@@ -1860,12 +1968,16 @@ Gdip_FontCreate(hFamily, Size, Style=0)
 
 Gdip_FontFamilyCreate(Font)
 {
-   nSize := DllCall("MultiByteToWideChar", "uint", 0, "uint", 0, "uint", &Font, "int", -1, "uint", 0, "int", 0)
-   VarSetCapacity(wFont, nSize*2)
-   DllCall("MultiByteToWideChar", "uint", 0, "uint", 0, "uint", &Font, "int", -1, "uint", &wFont, "int", nSize)
-
-   DllCall("gdiplus\GdipCreateFontFamilyFromName", "uint", &wFont, "uint", 0, "uint*", hFamily)
-   return hFamily
+	if !A_IsUnicode
+	{
+		nSize := DllCall("MultiByteToWideChar", "uint", 0, "uint", 0, "uint", &Font, "int", -1, "uint", 0, "int", 0)
+		VarSetCapacity(wFont, nSize*2)
+		DllCall("MultiByteToWideChar", "uint", 0, "uint", 0, "uint", &Font, "int", -1, "uint", &wFont, "int", nSize)
+		DllCall("gdiplus\GdipCreateFontFamilyFromName", "uint", &wFont, "uint", 0, "uint*", hFamily)
+	}
+	else
+		DllCall("gdiplus\GdipCreateFontFamilyFromName", "uint", &Font, "uint", 0, "uint*", hFamily)
+	return hFamily
 }
 
 ;#####################################################################################
@@ -2072,4 +2184,84 @@ Gdip_CreateRegion()
 Gdip_DeleteRegion(Region)
 {
 	return DllCall("gdiplus\GdipDeleteRegion", "uint", Region)
+}
+
+;#####################################################################################
+; BitmapLockBits
+;#####################################################################################
+
+Gdip_LockBits(pBitmap, x, y, w, h, ByRef Stride, ByRef Scan0, ByRef BitmapData, LockMode = 3, PixelFormat = 0x26200a)
+{   
+	CreateRect(Rect, x, y, w, h)
+	VarSetCapacity(BitmapData, 21, 0)
+	E := DllCall("Gdiplus\GdipBitmapLockBits", "uint", pBitmap, "uint", &Rect, "uint", LockMode, "int", PixelFormat, "uint", &BitmapData)
+	Stride := NumGet(BitmapData, 8)
+	Scan0 := NumGet(BitmapData, 16)
+	return E
+}
+
+;#####################################################################################
+
+Gdip_UnlockBits(pBitmap, ByRef BitmapData)
+{
+	return DllCall("Gdiplus\GdipBitmapUnlockBits", "uint", pBitmap, "uint", &BitmapData)
+}
+
+;#####################################################################################
+
+Gdip_SetLockBitPixel(ARGB, Scan0, x, y, Stride)
+{
+	Numput(ARGB, Scan0+0, (x*4)+(y*Stride))
+}
+
+;#####################################################################################
+
+Gdip_GetLockBitPixel(Scan0, x, y, Stride)
+{
+	return NumGet(Scan0+0, (x*4)+(y*Stride))
+}
+
+;#####################################################################################
+
+Gdip_ToARGB(A, R, G, B)
+{
+	return (A << 24) | (R << 16) | (G << 8) | B
+}
+
+;#####################################################################################
+
+Gdip_FromARGB(ARGB, ByRef A, ByRef R, ByRef G, ByRef B)
+{
+	A := (0xff000000 & ARGB) >> 24
+	R := (0x00ff0000 & ARGB) >> 16
+	G := (0x0000ff00 & ARGB) >> 8
+	B := 0x000000ff & ARGB
+}
+
+;#####################################################################################
+
+Gdip_AFromARGB(ARGB)
+{
+	return (0xff000000 & ARGB) >> 24
+}
+
+;#####################################################################################
+
+Gdip_RFromARGB(ARGB)
+{
+	return (0x00ff0000 & ARGB) >> 16
+}
+
+;#####################################################################################
+
+Gdip_GFromARGB(ARGB)
+{
+	return (0x0000ff00 & ARGB) >> 8
+}
+
+;#####################################################################################
+
+Gdip_BFromARGB(ARGB)
+{
+	return 0x000000ff & ARGB
 }

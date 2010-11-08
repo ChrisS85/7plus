@@ -40,7 +40,6 @@ Accessor_NotepadPlusPlus_OnAccessorOpen(NotepadPlusPlus, Accessor)
 	if(WinExist("ahk_class Notepad++") = Accessor.PreviousWindow)
 	{
 		NotepadPlusPlus.Priority := 10000
-		outputdebug increase priority
 		if(index := NotepadPlusPlus.MRUList.indexOfSubItem("Path", Path := GetNotepadPlusPlusActiveTab()))
 		{
 			GUINum := Accessor.GUINum
@@ -48,28 +47,22 @@ Accessor_NotepadPlusPlus_OnAccessorOpen(NotepadPlusPlus, Accessor)
 				return
 			Gui, %GUINum%: Default
 			NotepadPlusPlus.Waiting := true
-			outputdebug waiting
 			GuiControl,, AccessorEdit, % NotepadPlusPlus.MRUList[index].Command
 			hwndEdit := Accessor.hwndEdit
 			SendMessage, 0xC1, -1,,, AHK_ID %hwndEdit%  ; EM_LINEINDEX (Gets index number of line)
 			CaretTo := ErrorLevel
-			outputdebug caretto %carretto%
 			SendMessage, 0xB1, 0, CaretTo,, AHK_ID %hwndEdit% ;EM_SETSEL
 			
 			while(NotepadPlusPlus.Waiting || !Accessor.ListViewReady)
 				Sleep 10
-			outputdebug	continue
 			Gui, ListView, AccessorListView
 			Entry := NotepadPlusPlus.MRUList[index].Entry
-			outputdebug entry %entry%
 			Loop % LV_GetCount()
 			{
 				LV_GetText(Path,A_Index,4)
 				LV_GetText(Type,A_Index,5)
-				outputdebug loop path %path% type %type%
 				if(Path = Entry && Type = "NP++")
 				{
-					outputdebug found %A_Index%
 					LV_Modify(A_Index, "Select")
 					break
 				}
@@ -94,6 +87,9 @@ Accessor_NotepadPlusPlus_FillAccessorList(NotepadPlusPlus, Accessor, Filter, Las
 		return
 	if(!NotepadPlusPlus.List1.len() && !NotepadPlusPlus.List2.len())
 		return
+	outputdebug count %IconCount%
+	ImageList_ReplaceIcon(Accessor.ImageListID, -1, NotepadPlusPlus.Icon)
+	IconCount++
 	if(!Filter && KeywordSet)
 	{
 		Loop % NotepadPlusPlus.List1.len()

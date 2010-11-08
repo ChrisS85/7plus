@@ -57,7 +57,7 @@ ShellNavigate(sPath, hWnd=0)
 				if(window.Hwnd=hWnd)
 					break
 		}
-		DllCall("shell32\SHParseDisplayName", "Uint", A_IsUnicode ? sPath : COM_Unicode4Ansi(wPath,sPath) , "Uint", 0, "UintP", pidl, "Uint", 0, "Uint", 0)
+		DllCall("shell32\SHParseDisplayName", "Str",  sPath , "Uint", 0, "UintP", pidl, "Uint", 0, "Uint", 0)
 		VarSetCapacity(sa,24,0), NumPut(DllCall("shell32\ILGetSize","Uint",pidl), NumPut(pidl, NumPut(1, NumPut(1,sa)),4)) 
 		Window.Navigate2(COM_Parameter(0x2011,&sa))
 		return
@@ -344,24 +344,24 @@ GetSelectedFiles(FullName=1)
 	}
 	else if(WinActive("ahk_group DesktopGroup"))
 	{	
-		if(A_PtrSize = 8) ;64bit doesn't support listview method below yet
-		{
-			MuteClipboardList := true
-			clipboardbackup := clipboardall
-			outputdebug clearing clipboard
-			clipboard := ""
-			ClipWait, 0.15, 1
-			outputdebug copying files to clipboard
-			Send ^c
-			ClipWait, 0.15, 1
-			result := clipboard
-			clipboard := clipboardbackup
-			OutputDebug, Selected Files: %result%
-			MuteClipboardList:=false
-			return result
-		}
-		else
-		{
+		; if(A_PtrSize = 8) ;64bit doesn't support listview method below yet
+		; {
+			; MuteClipboardList := true
+			; clipboardbackup := clipboardall
+			; outputdebug clearing clipboard
+			; clipboard := ""
+			; ClipWait, 0.15, 1
+			; outputdebug copying files to clipboard
+			; Send ^c
+			; ClipWait, 0.15, 1
+			; result := clipboard
+			; clipboard := clipboardbackup
+			; OutputDebug, Selected Files: %result%
+			; MuteClipboardList:=false
+			; return result
+		; }
+		; else
+		; {
 			ControlGet, result, List, Selected Col1, SysListView321, A ;This line causes explorer to crash on 64 bit systems when used in a 32 bit AHK build
 			if(result)
 			{
@@ -372,7 +372,7 @@ GetSelectedFiles(FullName=1)
 			else
 				return ""
 			}
-	}
+	; }
 }
 
 GetFocussedFile()

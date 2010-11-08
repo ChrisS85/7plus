@@ -64,15 +64,14 @@ Accessor_Init()
 		Accessor.Keywords.append(Object("Key", XMLObject.Keywords.Keyword[A_Index].Key, "Command", XMLObject.Keywords.Keyword[A_Index].Command))
 	outputdebug % "key1: " Accessor.Keywords[1].Key
 	Accessor.GenericIcons := Object()
-	; hInstance := GetModuleHandle(0)
 	Accessor.GenericIcons.Application := ExtractIcon("shell32.dll", 3, 64)
+	outputdebug % "application " Accessor.GenericIcons.Application
 	Accessor.GenericIcons.Folder := ExtractIcon("shell32.dll", 4, 64)
+	outputdebug % "Folder " Accessor.GenericIcons.Folder
 	FileAppend, test, %A_Temp%\7plus\test.htm
 	Accessor.GenericIcons.URL := ExtractAssociatedIcon(0, A_Temp "\7plus\test.htm", iIndex)
+	outputdebug % "URL " Accessor.GenericIcons.URL
 	FileDelete, %A_Temp%\7plus\test.htm
-	; ExtractIcon(hInstance, "shell32.dll", 3)
-	; Accessor.GenericIcons.Folder :=ExtractIcon( hInstance, "shell32.dll", 4)
-	outputdebug % "folder " Accessor.GenericIcons.Folder
 }
 Accessor_OnExit(Accessor)
 {
@@ -179,16 +178,19 @@ FillAccessorList()
 	Gui, %guinum%: Default
 	Gui, ListView, AccessorListView	
 	GuiControlGet, BaseFilter, , AccessorEdit
+	outputdebug pre keyword:%BaseFilter%
 	Loop % Accessor.Keywords.len()
 	{
 		;if filter starts with keyword and ends directly after it or has a space after it
 		if(InStr(BaseFilter, Accessor.Keywords[A_Index].Key) = 1 && (strlen(BaseFilter) = strlen(Accessor.Keywords[A_Index].Key) || InStr(BaseFilter, " ") = strLen(Accessor.Keywords[A_Index].Key) + 1))
 		{
+			outputdebug replace
 			Filter := StringReplace(BaseFilter, Accessor.Keywords[A_Index].Key, Accessor.Keywords[A_Index].Command)
 			break
 		}
 	}
 	Filter := Filter ? Filter : BaseFilter
+	outputdebug post keyword:%filter%
 	
 	; if(filter = "run ")
 	; {

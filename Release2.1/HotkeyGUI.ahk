@@ -1,8 +1,8 @@
-﻿;************************
-;*                      *
-;*    HotkeyGUI v0.2    *
-;*                      *
-;************************
+﻿; ************************
+; *                      *
+; *    HotkeyGUI v0.2    *
+; *                      *
+; ************************
 ;
 ;
 ;   Description
@@ -184,7 +184,7 @@ HotkeyGUI(p_GUI=""
     ;[  Initialize  ]
     ;[==============]
     SplitPath A_ScriptName,,,,l_ScriptName
-    l_GUIDelimiter:=chr(131)
+    l_GUIDelimiter:="ƒ"
     l_ErrorLevel=0
 
 
@@ -497,18 +497,18 @@ HotkeyGUI(p_GUI=""
 
 
 
-    ;*****************************
-    ;*                           *
-    ;*                           *
-    ;*        Subroutines        *
-    ;*                           *
-    ;*                           *
-    ;*****************************
-    ;***********************
-    ;*                     *
-    ;*    Update Hotkey    *
-    ;*                     *
-    ;***********************
+    ; *****************************
+    ; *                           *
+    ; *                           *
+    ; *        Subroutines        *
+    ; *                           *
+    ; *                           *
+    ; *****************************
+    ; ***********************
+    ; *                     *
+    ; *    Update Hotkey    *
+    ; *                     *
+    ; ***********************
     HotkeyGUI_UpdateHotkey:
     ;-- Set GUI default
     gui %l_GUI%:Default
@@ -592,11 +592,11 @@ HotkeyGUI(p_GUI=""
 
 
 
-    ;**********************
-    ;*                    *
-    ;*    Pair Options    *
-    ;*                    *
-    ;**********************
+    ; **********************
+    ; *                    *
+    ; *    Pair Options    *
+    ; *                    *
+    ; **********************
     HotkeyGUI_LeftPair:
 
     ;-- Set GUI default
@@ -623,11 +623,11 @@ HotkeyGUI(p_GUI=""
     
     
     
-    ;*************************
-    ;*                       *
-    ;*    Update Key List    *
-    ;*                       *
-    ;*************************
+    ; *************************
+    ; *                       *
+    ; *    Update Key List    *
+    ; *                       *
+    ; *************************
     HotkeyGUI_UpdateKeyList:
     
     ;-- Set GUI default
@@ -711,11 +711,11 @@ HotkeyGUI(p_GUI=""
     
     
     
-    ;***********************
-    ;*                     *
-    ;*    Accept Button    *
-    ;*                     *
-    ;***********************
+    ; ***********************
+    ; *                     *
+    ; *    Accept Button    *
+    ; *                     *
+    ; ***********************
     HotkeyGUI_AcceptButton:
 
     ;-- Attach any messages to the current GUI
@@ -985,11 +985,11 @@ HotkeyGUI(p_GUI=""
 
 
 
-    ;***********************
-    ;*                     *
-    ;*    Close up shop    *
-    ;*                     *
-    ;***********************
+    ; ***********************
+    ; *                     *
+    ; *    Close up shop    *
+    ; *                     *
+    ; ***********************
     HotkeyGUIEscape:
     HotkeyGUIClose:
     HG_Hotkey:=""

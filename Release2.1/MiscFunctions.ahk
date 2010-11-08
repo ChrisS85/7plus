@@ -81,14 +81,9 @@ DisableMinimizeAnim(disable)
 	{
 		lastcall:=1
 		RegRead, original, HKCU, Control Panel\Desktop\WindowMetrics , MinAnimate
-		outputdebug storing original value %original%
 	}
 	else if(!disable) ;this is a restore call, on next disable backup may be created again
 		lastcall:=0
-	if(disable)
-		outputdebug disable
-	if(!disable)
-		outputdebug restore %original%
 	;Disable Minimize/Restore animation
 	VarSetCapacity(struct, 8, 0)	
 	NumPut(8, struct, 0, "UInt")
@@ -96,7 +91,7 @@ DisableMinimizeAnim(disable)
 		NumPut(0, struct, 4, "Int")
 	else
 		NumPut(1, struct, 4, "UInt")
-	DllCall("SystemParametersInfo", "UINT", 0x0049,"UINT", 8,"STR", struct,"UINT", 0x0003) ;SPI_SETANIMATION            0x0049 SPIF_SENDWININICHANGE 0x0002
+	DllCall("SystemParametersInfo", "UINT", 0x0049,"UINT", 8,"Ptr", &struct,"UINT", 0x0003) ;SPI_SETANIMATION            0x0049 SPIF_SENDWININICHANGE 0x0002
 }
 /* 
 Performs a hittest on the window under the mouse and returns the WM_NCHITTEST Result
@@ -212,8 +207,8 @@ IsFullscreen(sWinTitle = "A", UseExcludeList = true, UseIncludeList=true) {
 			
     ;Get the window and client area, and style 
     VarSetCapacity(iWinRect, 16), VarSetCapacity(iCltRect, 16) 
-    DllCall("GetWindowRect", Ptr, hWin, UInt, &iWinRect) 
-    DllCall("GetClientRect", Ptr, hWin, UInt, &iCltRect) 
+    DllCall("GetWindowRect", "Ptr", hWin, "UIntP", iWinRect) 
+    DllCall("GetClientRect", "Ptr", hWin, "UIntP", iCltRect) 
     WinGet, iStyle, Style, ahk_id %hWin% 
     
     ;Extract coords and sizes 
@@ -478,7 +473,7 @@ GetProcessName(hwnd)
 	WinGet, ProcessName, processname, ahk_id %hwnd%
 	return ProcessName
 }
-GetModuleFileNameEx( p_pid ) 
+GetModuleFileNameEx( pid ) 
 { 
    if A_OSVersion in WIN_95,WIN_98,WIN_ME 
    { 
@@ -490,22 +485,21 @@ GetModuleFileNameEx( p_pid )
       #define PROCESS_VM_READ           (0x0010) 
       #define PROCESS_QUERY_INFORMATION (0x0400) 
    */ 
-   h_process := DllCall( "OpenProcess", "uint", 0x10|0x400, "int", false, "uint", p_pid, "Ptr") 
+   h_process := DllCall( "OpenProcess", "uint", 0x10|0x400, "int", false, "uint", pid, "Ptr") 
    if ( ErrorLevel or h_process = 0 ) 
    { 
-      outputdebug [OpenProcess] failed. PID = %p_pid%
+      outputdebug [OpenProcess] failed. PID = %pid%
       return 
    } 
     
-   name_size = 255 
+   name_size := A_IsUnicode ? 510 : 255 
    VarSetCapacity( name, name_size ) 
     
    result := DllCall( "psapi.dll\GetModuleFileNameEx", "Ptr", h_process, "uint", 0, "str", name, "uint", name_size ) 
    if ( ErrorLevel or result = 0 ) 
       outputdebug, [GetModuleFileNameExA] failed 
     
-   DllCall( "CloseHandle", "Ptr", h_process ) ; Corrected by Moderator! 2010-03-16 
-    
+   DllCall( "CloseHandle", "Ptr", h_process )
    return, name 
 }
 ; Extract an icon from an executable, DLL or icon file. 
@@ -519,35 +513,9 @@ ExtractIcon(Filename, IconNumber, IconSize = 64)
     ;   it can only load the first icon (of size %IconSize%) from an .ico file. 
     
     ; If possible, use PrivateExtractIcons, which supports any size of icon. 
-    if A_OSVersion in WIN_VISTA,WIN_2003,WIN_XP,WIN_2000 
-    { 
-        r:=DllCall("PrivateExtractIcons" 
-            ,"str",Filename,"int",IconNumber-1,"int",IconSize,"int",IconSize 
-            ,"Ptr*",h_icon,"uint*",0,"uint",1,"uint",0,"int") 
-;         StdOut("icon: " h_icon ", size: " IconSize ", num: " IconNumber ", file: " Filename) 
-        if !ErrorLevel 
-            return h_icon 
-    } 
-    ; Use ExtractIconEx, which only returns 16x16 or 32x32 icons. 
-    if DllCall("shell32.dll\ExtractIconEx","str",Filename,"int",IconNumber-1 
-                ,"Ptr*",h_icon,"Ptr*",h_icon_small,"uint",1) 
-    { 
-        SysGet, SmallIconSize, 49 
-        
-        ; Use the best-fit size; delete the other. Defaults to small icon. 
-        if (IconSize <= SmallIconSize) { 
-            DllCall("DestroyIcon","Ptr",h_icon) 
-            h_icon := h_icon_small 
-        } else 
-            DllCall("DestroyIcon","Ptr", h_icon_small) 
-        
-        ; I think PrivateExtractIcons resizes icons automatically, 
-        ; so resize icons returned by ExtractIconEx for consistency. 
-        if (h_icon && IconSize) 
-            h_icon := DllCall("CopyImage","Ptr",h_icon,"uint",1,"int",IconSize 
-                                ,"int",IconSize,"uint",4|8) 
-    } 
-
+	r:=DllCall("PrivateExtractIcons" , "str", Filename, "int", IconNumber-1, "int", IconSize, "int", IconSize, "Ptr*", h_icon, "uint*", 0, "uint", 1, "uint", 0, "int") 
+	if !ErrorLevel 
+		return h_icon 
     return h_icon ? h_icon : 0 
 }
 GetVisibleWindowAtPoint(x,y,IgnoredWindow)
@@ -576,7 +544,7 @@ IsInArea(px,py,x,y,w,h)
 WinGetPlacement(hwnd, ByRef x="", ByRef y="", ByRef w="", ByRef h="", ByRef state="") 
 { 
     VarSetCapacity(wp, 44), NumPut(44, wp) 
-    DllCall("GetWindowPlacement", "Ptr", hwnd, "uint", &wp) 
+    DllCall("GetWindowPlacement", "Ptr", hwnd, "Ptr", &wp) 
     x := NumGet(wp, 28, "int") 
     y := NumGet(wp, 32, "int") 
     w := NumGet(wp, 36, "int") - x 
@@ -610,13 +578,18 @@ WinSetPlacement(hwnd, x="",y="",w="",h="",state="")
     NumPut(y, wp, 32, "Int")
     NumPut(x+w, wp, 36, "Int")
     NumPut(y+h, wp, 40, "Int")
-	DllCall("SetWindowPlacement", "Ptr", hwnd, "uint", &wp) 
+	DllCall("SetWindowPlacement", "Ptr", hwnd, "Ptr", &wp) 
 }
-ExpandEnvVars(ppath)
+ExpandEnvVars(path)
 {
 	VarSetCapacity(dest, 2000) 
-	DllCall("ExpandEnvironmentStrings", "str", ppath, "str", dest, int, 1999, "Cdecl int") 
+	DllCall("ExpandEnvironmentStrings", "str", path, "str", dest, int, 1999, "Cdecl int") 
 	return dest
+}
+
+IsDoubleClick()
+{	
+	return A_TimeSincePriorHotkey < DllCall("GetDoubleClickTime") && A_ThisHotkey=A_PriorHotkey
 }
 
 IsControlActive(controlclass)
@@ -632,45 +605,33 @@ IsControlActive(controlclass)
 
 ; This script retrieves the ahk_id (HWND) of the active window's focused control. 
 ; This script requires Windows 98+ or NT 4.0 SP3+. 
+/*
+typedef struct tagGUITHREADINFO {
+  DWORD cbSize;
+  DWORD flags;
+  HWND  hwndActive;
+  HWND  hwndFocus;
+  HWND  hwndCapture;
+  HWND  hwndMenuOwner;
+  HWND  hwndMoveSize;
+  HWND  hwndCaret;
+  RECT  rcCaret;
+} GUITHREADINFO, *PGUITHREADINFO;
+*/
 GetFocusedControl() 
 { 
-   guiThreadInfoSize = 48 
+   guiThreadInfoSize = 8 + 6 * A_PtrSize + 32
    VarSetCapacity(guiThreadInfo, guiThreadInfoSize, 0) 
-   addr := &guiThreadInfo 
-   DllCall("RtlFillMemory" 
-         , "UInt", addr 
-         , "UInt", 1 
-         , "UChar", guiThreadInfoSize)   ; Below 0xFF, one call only is needed 
-   If not DllCall("GetGUIThreadInfo" 
-         , "UInt", 0   ; Foreground thread 
-         , "UInt", &guiThreadInfo) 
+   DllCall("RtlFillMemory" , "UIntP", guiThreadInfo, "UInt", 1 , "UChar", guiThreadInfoSize)   ; Below 0xFF, one call only is needed 
+   If not DllCall("GetGUIThreadInfo" , "UInt", 0   ; Foreground thread 
+         , "UIntP", guiThreadInfo) 
    { 
       ErrorLevel := A_LastError   ; Failure 
       Return 0 
    } 
-   focusedHwnd := *(addr + 12) + (*(addr + 13) << 8) +  (*(addr + 14) << 16) + (*(addr + 15) << 24) 
+   focusedHwnd := NumGet(guiThreadInfo,8+A_PtrSize, "Ptr") ; *(addr + 12) + (*(addr + 13) << 8) +  (*(addr + 14) << 16) + (*(addr + 15) << 24) 
    Return focusedHwnd 
 } 
-
-InsertInteger(pInteger, ByRef pDest, pOffset = 0, pSize = 4) 
-{ 
-    Loop %pSize%  ; Copy each byte in the integer into the structure as raw binary data. 
-        DllCall("RtlFillMemory", "UInt", &pDest + pOffset + A_Index-1, "UInt", 1, "UChar", pInteger >> 8*(A_Index-1) & 0xFF) 
-}
-
-PointerToString(pstring)
-{
-	return DllCall("MulDiv", int, pstring, int, 1, int, 1, str)
-}
-
-ExtractInteger(ByRef pSource, pOffset = 0, pIsSigned = false, pSize = 4) 
-{ 
-    Loop %pSize%  ; Build the integer by adding up its bytes. 
-        result += *(&pSource + pOffset + A_Index-1) << 8*(A_Index-1) 
-    if (!pIsSigned OR pSize > 4 OR result < 0x80000000) 
-        return result  ; Signed vs. unsigned doesn't matter in these cases. 
-    return -(0xFFFFFFFF - result + 1) 
-}
 
 ; Force kill program on Alt+F5 and on right click close button
 CloseKill(hwnd)
@@ -702,6 +663,7 @@ RemoveLineFeedsAndSurroundWithDoubleQuotes(files)
 		return result
 	}
 }
+
 /*
 To be parsed:
 
@@ -786,86 +748,6 @@ CompareVersion(major1,major2,minor1,minor2,bugfix1,bugfix2)
 	else
 		return -1
 }
-;get data starting from pointer up to 0 char
-ExtractData(pointer) { 
-Loop { 
-       errorLevel := ( pointer+(A_Index-1) ) 
-       Asc := *( errorLevel ) 
-       IfEqual, Asc, 0, Break ; Break if NULL Character 
-       String := String . Chr(Asc) 
-     } 
-Return String 
-}
-
-ReadUnicodeFile(path)
-{
-	FileGetSize fileSize, %path%
-	FileRead fileBuffer, %path%
-	bufferAddress := &fileBuffer
-	If (*bufferAddress != 0xFF || *(bufferAddress + 1) != 0xFE)
-	{
-		MsgBox 16, Test, Not a valid Windows Unicode file! (no little-endian Bom)
-		Exit
-	}
-	
-	textSize := fileSize / 2 - 1
-	VarSetCapacity(ansiText, textSize, 0)
-	
-	DllCall("SetLastError", "UInt", 0)
-	r := DllCall("WideCharToMultiByte"
-			, "UInt", 0           ; CodePage: CP_ACP=0 (current Ansi), CP_UTF7=65000, CP_UTF8=65001
-			, "UInt", 0           ; dwFlags
-			, "UInt", bufferAddress + 2  ; LPCWSTR lpWideCharStr
-			, "Int", textSize     ; cchWideChar: size in WCHAR values, -1=null terminated
-			, "Str", ansiText     ; LPSTR lpMultiByteStr
-			, "Int", textSize     ; cbMultiByte: 0 to get required size
-			, "UInt", 0           ; LPCSTR lpDefaultChar
-			, "UInt", 0)          ; LPBOOL lpUsedDefaultChar
-			
-			
-			
-	return ansiText
-}
-
-WriteUnicodeFile(path,text)
-{
-	;===== Use a Bom
-	
-	; Convert the Ansi text to Unicode
-	
-	textLength := StrLen(text)
-	uniLength := textLength * 2 + 2
-	VarSetCapacity(uniText, uniLength + 1, 0)
-	; Write Bom
-	DllCall("RtlFillMemory", "UInt", &uniText, "UInt", 1, "UChar", 0xFF)
-	DllCall("RtlFillMemory", "UInt", &uniText+1, "UInt", 1, "UChar", 0xFE)
-	
-	DllCall("SetLastError", "UInt", 0)
-	r := DllCall("MultiByteToWideChar"
-			, "UInt", 0             ; CodePage: CP_ACP=0 (current Ansi), CP_UTF7=65000, CP_UTF8=65001
-			, "UInt", 0             ; dwFlags
-			, "Str", text  ; LPSTR lpMultiByteStr
-			, "Int", textLength     ; cbMultiByte: -1=null terminated
-			, "UInt", &uniText + 2  ; LPCWSTR lpWideCharStr
-			, "Int", textLength)    ; cchWideChar: 0 to get required size
-	
-	;~ MsgBox % DumpDWORDs(uniText, textLength * 2, true)
-	; Write it as binary blob to a file
-	
-	fh := OpenFileForWrite(path)
-	If (ErrorLevel != 0)
-	{
-		MsgBox 16, Test, Can't open file '%path%': %ErrorLevel%
-		Exit
-	}
-	WriteInFile(fh, uniText, uniLength)
-	If (ErrorLevel != 0)
-	{
-		MsgBox 16, Test, Can't write in file '%path%': %ErrorLevel%
-		Exit
-	}
-	CloseFile(fh)
-}
 
 IsNumeric(x)
 {
@@ -902,50 +784,21 @@ uriEncode(str, full=0) {
    SetFormat, Integer, %f% 
    Return, pr . str 
 }
+
 Unicode2Ansi(ByRef wString, ByRef sString, CP = 0) 
 { 
-     nSize := DllCall("WideCharToMultiByte" 
-      , "Uint", CP 
-      , "Uint", 0 
-      , "Uint", &wString 
-      , "int",  -1 
-      , "Uint", 0 
-      , "int",  0 
-      , "Uint", 0 
-      , "Uint", 0) 
-
-   VarSetCapacity(sString, nSize) 
-
-   DllCall("WideCharToMultiByte" 
-      , "Uint", CP 
-      , "Uint", 0 
-      , "Uint", &wString 
-      , "int",  -1 
-      , "str",  sString 
-      , "int",  nSize 
-      , "Uint", 0 
-      , "Uint", 0) 
+	nSize := DllCall("WideCharToMultiByte" , "Uint", CP, "Uint", 0 , "UintP", wString , "int",  -1 , "Uint", 0 , "int",  0 , "Uint", 0 , "Uint", 0) 
+	VarSetCapacity(sString, nSize) 
+	DllCall("WideCharToMultiByte" , "Uint", CP , "Uint", 0 , "UintP", wString , "int",  -1 , "str",  sString , "int",  nSize , "Uint", 0 , "Uint", 0) 
 }
+
 Ansi2Unicode(ByRef sString, ByRef wString, CP = 0) 
 { 
-     nSize := DllCall("MultiByteToWideChar" 
-      , "Uint", CP 
-      , "Uint", 0 
-      , "Uint", &sString 
-      , "int",  -1 
-      , "Uint", 0 
-      , "int",  0) 
-
-   VarSetCapacity(wString, nSize * 2) 
-
-   DllCall("MultiByteToWideChar" 
-      , "Uint", CP 
-      , "Uint", 0 
-      , "Uint", &sString 
-      , "int",  -1 
-      , "Uint", &wString 
-      , "int",  nSize) 
+	nSize := DllCall("MultiByteToWideChar" , "Uint", CP , "Uint", 0 , "UintP", sString , "int",  -1 , "Uint", 0 , "int",  0) 
+	VarSetCapacity(wString, nSize * 2) 
+	DllCall("MultiByteToWideChar" , "Uint", CP , "Uint", 0 , "UintP",  sString , "int",  -1 , "UintP", wString , "int",  nSize) 
 }
+
 FuzzySearch(string1, string2)
 {
 	lenl := StrLen(string1)
@@ -1024,5 +877,5 @@ CouldBeURL(string)
 	return RegexMatch(strTrim(string, " "), "(?:(?:ht|f)tps?://|www\.)?.+\..+") > 0
 }
 WriteAccess( F ) { 
-  Return ((h:=DllCall("_lopen",Str,F,Int,1)) > 0 ? 1 : 0, "Ptr") (DllCall("_lclose","Ptr",h)+NULL) 
+  Return ((h:=DllCall("_lopen", Str, F, Int, 1, "Ptr")) > 0 ? 1 : 0) (DllCall("_lclose","Ptr",h)+NULL) 
 }
