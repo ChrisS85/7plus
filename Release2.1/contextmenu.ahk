@@ -17,7 +17,7 @@ IsContextMenuActive()
 	return false
 }
 
-;This stuff doesn't use COM.ahk yet :(
+;This stuff doesn't properly use COM.ahk yet :(
 /*
 Executes context menu entries of shell items without showing their menus
 Usage:
@@ -28,45 +28,43 @@ Leave 2nd parameter empty to show context menu and extract idn by clicking on an
 ShellContextMenu(sPath,idn="") 
 { 
 	global hAHK
-	; DllCall("ole32\OleInitialize", "Ptr", 0) 
 	if (spath="Desktop")
 	{
-		 DllCall("shell32\SHGetDesktopFolder", "UintP", psf)
-		 DllCall(NumGet(NumGet(1*psf)+32), "Uint", psf, "Uint", 0, "Uint", COM_GUID4String(IID_IContextMenu,"{000214E4-0000-0000-C000-000000000046}"), "UintP", pcm)  ;IContextMenu
-		 outputdebug pcm %pcm%
-	 }
+		DllCall("shell32\SHGetDesktopFolder", "UintP", psf)
+		DllCall(NumGet(NumGet(1*psf)+8*A_PtrSize), "Uint", psf, "Uint", 0, "Uint", COM_GUID4String(IID_IContextMenu,"{000214E4-0000-0000-C000-000000000046}"), "UintP", pcm)  ;IContextMenu +32 originally
+	}
 	else
 	{
-		 If   sPath Is Not Integer 
+		If   sPath Is Not Integer
 			DllCall("shell32\SHParseDisplayName", "Uint", sPath, "Uint", 0, "UintP", pidl, "Uint", 0, "Uint", 0) 
 		Else   DllCall("shell32\SHGetFolderLocation", "Uint", 0, "int", sPath, "Uint", 0, "Uint", 0, "UintP", pidl) 
 		DllCall("shell32\SHBindToParent", "Uint", pidl, "Uint", COM_GUID4String(IID_IShellFolder,"{000214E6-0000-0000-C000-000000000046}"), "UintP", psf, "UintP", pidlChild) 
-		DllCall(NumGet(NumGet(1*psf)+40), "Uint", psf, "Uint", 0, "Uint", 1, "UintP", pidlChild, "Uint", COM_GUID4String(IID_IContextMenu,"{000214E4-0000-0000-C000-000000000046}"), "Uint", 0, "UintP", pcm) ; +40 IShellFolder->GetUIObjectOf()
-		CoTaskMemFree(pidl) 
-	 }
-	 Release(psf) 
+		DllCall(NumGet(NumGet(1*psf)+10*A_PtrSize), "Uint", psf, "Uint", 0, "Uint", 1, "UintP", pidlChild, "Uint", COM_GUID4String(IID_IContextMenu,"{000214E4-0000-0000-C000-000000000046}"), "Uint", 0, "UintP", pcm) ; +40 IShellFolder->GetUIObjectOf()
+		COM_CoTaskMemFree(pidl) 
+	}
+	COM_Release(psf) 
 
-   hMenu := DllCall("CreatePopupMenu") 
-   idnMIN=1
-   DllCall(NumGet(NumGet(1*pcm)+12), "Uint", pcm, "Uint", hMenu, "Uint", 0, "Uint", idnMIN, "Uint", 0x7FFF, "Uint", 0)   ; QueryContextMenu
-	  
+	hMenu := DllCall("CreatePopupMenu") 
+	idnMIN=1
+	DllCall(NumGet(NumGet(1*pcm)+3*A_PtrSize), "Uint", pcm, "Uint", hMenu, "Uint", 0, "Uint", idnMIN, "Uint", 0x7FFF, "Uint", 0)   ; IContextMenu->QueryContextMenu() +12 originally
+	
 
-   DetectHiddenWindows, On 
-   Process, Exist 
-   WinGet, hAHK, ID, ahk_pid %ErrorLevel% 
-   if !idn
-   {
-	   WinActivate, ahk_id %hAHK% 	   
-	   Global   pcm2 := QueryInterface(pcm,IID_IContextMenu2:="{000214F4-0000-0000-C000-000000000046}") 
-	   Global   pcm3 := QueryInterface(pcm,IID_IContextMenu3:="{BCFCE0A0-EC17-11D0-8D10-00A0C90F2719}") 
-	   Global   WPOld:= DllCall("SetWindowLong", "Ptr", hAHK, "int",-4, "int",RegisterCallback("WindowProc")) 
-	   DllCall("GetCursorPos", "int64P", pt) 
-	   DllCall("InsertMenu", "Ptr", hMenu, "Uint", 0, "Uint", 0x0400|0x800, "Uint", 2, "Uint", 0) 
-	   DllCall("InsertMenu", "Ptr", hMenu, "Uint", 0, "Uint", 0x0400|0x002, "Uint", 1, "Uint", &sPath) 
-	   idn2 := DllCall("TrackPopupMenu", "Ptr", hMenu, "Uint", 0x0100, "int", pt << 32 >> 32, "int", pt >> 32, "Uint", 0, "Ptr", hAHK, "Uint", 0)
-	 }
-	 else
-	 	 idn2:=idn
+	DetectHiddenWindows, On 
+	Process, Exist 
+	WinGet, hAHK, ID, ahk_pid %ErrorLevel% 
+	if !idn
+	{
+		WinActivate, ahk_id %hAHK% 	   
+		Global   pcm2 := COM_QueryInterface(pcm,IID_IContextMenu2:="{000214F4-0000-0000-C000-000000000046}") 
+		Global   pcm3 := COM_QueryInterface(pcm,IID_IContextMenu3:="{BCFCE0A0-EC17-11D0-8D10-00A0C90F2719}") 
+		Global   WPOld:= DllCall("SetWindowLong", "Ptr", hAHK, "int",-4, "int",RegisterCallback("WindowProc")) 
+		DllCall("GetCursorPos", "int64P", pt) 
+		DllCall("InsertMenu", "Ptr", hMenu, "Uint", 0, "Uint", 0x0400|0x800, "Uint", 2, "Uint", 0) 
+		DllCall("InsertMenu", "Ptr", hMenu, "Uint", 0, "Uint", 0x0400|0x002, "Uint", 1, "Uint", &sPath) 
+		idn2 := DllCall("TrackPopupMenu", "Ptr", hMenu, "Uint", 0x0100, "int", pt << 32 >> 32, "int", pt >> 32, "Uint", 0, "Ptr", hAHK, "Uint", 0)
+	}
+	else
+		idn2:=idn
 	NumPut(VarSetCapacity(ici,64,0),ici)
 	NumPut(0x4000|0x20000000,ici,4) 
 	NumPut(1,NumPut(hAHK,ici,8),12)
@@ -80,14 +78,13 @@ ShellContextMenu(sPath,idn="")
 		outputdebug command string: %sname% idn: %idn2%
 		DllCall("GlobalFree", "Uint", DllCall("SetWindowLong", "Ptr", hAHK, "int", -4, "int", WPOld)) 
 
-		Release(pcm3) 
-		Release(pcm2) 
+		COM_Release(pcm3) 
+		COM_Release(pcm2) 
 	}
-   DllCall("DestroyMenu", "Ptr", hMenu) 
-   Release(pcm) 
-   DllCall("ole32\OleUnInitialize", "Ptr", 0) 
-   if !idn
-	 	pcm2:=pcm3:=WPOld:=0 
+	DllCall("DestroyMenu", "Ptr", hMenu) 
+	COM_Release(pcm) 
+	if !idn
+		pcm2:=pcm3:=WPOld:=0 
 } 
 WindowProc(hWnd, nMsg, wParam, lParam) 
 { 
@@ -108,49 +105,3 @@ WindowProc(hWnd, nMsg, wParam, lParam)
 		Critical, Off
    Return   DllCall("user32.dll\CallWindowProc", "Uint", WPOld, "Uint", hWnd, "Uint", nMsg, "Uint", wParam, "Uint", lParam) 
 } 
-VTable(ppv, idx) 
-{ 
-   Return   NumGet(NumGet(1*ppv)+4*idx) 
-} 
-QueryInterface(ppv, ByRef IID) 
-{ 
-   If   StrLen(IID)=38 
-      COM_GUID4String(IID,IID) 
-   DllCall(NumGet(NumGet(1*ppv)), "Uint", ppv, "str", IID, "UintP", ppv) 
-   Return   ppv 
-} 
-AddRef(ppv) 
-{ 
-   Return   DllCall(NumGet(NumGet(1*ppv)+4), "Uint", ppv) 
-} 
-Release(ppv)
-{ 
-   Return   DllCall(NumGet(NumGet(1*ppv)+8), "Uint", ppv) 
-} 
-CoTaskMemAlloc(cb) 
-{ 
-   Return   DllCall("ole32\CoTaskMemAlloc", "Uint", cb) 
-} 
-CoTaskMemFree(pv) 
-{ 
-   Return   DllCall("ole32\CoTaskMemFree", "Uint", pv) 
-} 
-Unicode4Ansi(ByRef wString, sString, nSize = "") 
-{ 
-   If (nSize = "") 
-       nSize:=DllCall("kernel32\MultiByteToWideChar", "Uint", 0, "Uint", 0, "Uint", &sString, "int", -1, "Uint", 0, "int", 0) 
-   VarSetCapacity(wString, nSize * 2 + 1) 
-   DllCall("kernel32\MultiByteToWideChar", "Uint", 0, "Uint", 0, "Uint", &sString, "int", -1, "Uint", &wString, "int", nSize + 1) 
-   Return   &wString 
-}
-
-API_GetMenuItemID( hMenu, nPos ) { 
-   return DllCall("GetMenuItemID", "uint", hMenu, "int", nPos) 
-} 
-API_GetSubmenu( hMenu, nPos ) { 
-   return DllCall("GetSubMenu", "uint", hMenu, "int", nPos) 
-} 
-API_GetMenuItemsCount(hMenu) 
-{ 
-   return DllCall("GetMenuItemCount", "Uint", hMenu, "Uint") 
-}
