@@ -28,22 +28,23 @@ Leave 2nd parameter empty to show context menu and extract idn by clicking on an
 ShellContextMenu(sPath,idn="") 
 { 
 	global hAHK
-   DllCall("ole32\OleInitialize", "Ptr", 0) 
-   if (spath="Desktop")
-   {
-		 DllCall("shell32\SHGetDesktopFolder", "UintP", psf) 
-		 DllCall(NumGet(NumGet(1*psf)+32), "Uint", psf, "Uint", 0, "Uint", GUID4String(IID_IContextMenu,"{000214E4-0000-0000-C000-000000000046}"), "UintP", pcm) 
+	; DllCall("ole32\OleInitialize", "Ptr", 0) 
+	if (spath="Desktop")
+	{
+		 DllCall("shell32\SHGetDesktopFolder", "UintP", psf)
+		 DllCall(NumGet(NumGet(1*psf)+32), "Uint", psf, "Uint", 0, "Uint", COM_GUID4String(IID_IContextMenu,"{000214E4-0000-0000-C000-000000000046}"), "UintP", pcm)  ;IContextMenu
+		 outputdebug pcm %pcm%
 	 }
-   else
-   {
+	else
+	{
 		 If   sPath Is Not Integer 
-	      DllCall("shell32\SHParseDisplayName", "Uint", sPath, "Uint", 0, "UintP", pidl, "Uint", 0, "Uint", 0) 
-	   Else   DllCall("shell32\SHGetFolderLocation", "Uint", 0, "int", sPath, "Uint", 0, "Uint", 0, "UintP", pidl) 
-	   DllCall("shell32\SHBindToParent", "Uint", pidl, "Uint", GUID4String(IID_IShellFolder,"{000214E6-0000-0000-C000-000000000046}"), "UintP", psf, "UintP", pidlChild) 
-	   DllCall(NumGet(NumGet(1*psf)+40), "Uint", psf, "Uint", 0, "Uint", 1, "UintP", pidlChild, "Uint", GUID4String(IID_IContextMenu,"{000214E4-0000-0000-C000-000000000046}"), "Uint", 0, "UintP", pcm)
+			DllCall("shell32\SHParseDisplayName", "Uint", sPath, "Uint", 0, "UintP", pidl, "Uint", 0, "Uint", 0) 
+		Else   DllCall("shell32\SHGetFolderLocation", "Uint", 0, "int", sPath, "Uint", 0, "Uint", 0, "UintP", pidl) 
+		DllCall("shell32\SHBindToParent", "Uint", pidl, "Uint", COM_GUID4String(IID_IShellFolder,"{000214E6-0000-0000-C000-000000000046}"), "UintP", psf, "UintP", pidlChild) 
+		DllCall(NumGet(NumGet(1*psf)+40), "Uint", psf, "Uint", 0, "Uint", 1, "UintP", pidlChild, "Uint", COM_GUID4String(IID_IContextMenu,"{000214E4-0000-0000-C000-000000000046}"), "Uint", 0, "UintP", pcm) ; +40 IShellFolder->GetUIObjectOf()
+		CoTaskMemFree(pidl) 
 	 }
 	 Release(psf) 
-   CoTaskMemFree(pidl) 
 
    hMenu := DllCall("CreatePopupMenu") 
    idnMIN=1
@@ -114,7 +115,7 @@ VTable(ppv, idx)
 QueryInterface(ppv, ByRef IID) 
 { 
    If   StrLen(IID)=38 
-      GUID4String(IID,IID) 
+      COM_GUID4String(IID,IID) 
    DllCall(NumGet(NumGet(1*ppv)), "Uint", ppv, "str", IID, "UintP", ppv) 
    Return   ppv 
 } 
@@ -125,12 +126,6 @@ AddRef(ppv)
 Release(ppv)
 { 
    Return   DllCall(NumGet(NumGet(1*ppv)+8), "Uint", ppv) 
-} 
-GUID4String(ByRef CLSID, String) 
-{ 
-   VarSetCapacity(CLSID, 16) 
-   DllCall("ole32\CLSIDFromString", "Uint", String, "Uint", &CLSID) 
-   Return   &CLSID 
 } 
 CoTaskMemAlloc(cb) 
 { 
