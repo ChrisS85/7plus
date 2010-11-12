@@ -24,7 +24,7 @@ Trigger_ExplorerButton_ReadXML(Trigger, XMLTrigger)
 Trigger_ExplorerButton_Enable(Trigger, Event)
 {
 	global
-	if(!IsPortable && A_IsAdmin && Vista7 !FindButton("IsExplorerButton", Event))
+	if(!IsPortable && A_IsAdmin && Vista7 && !FindButton("IsExplorerButton", Event))
 		AddButton("","",Event.ID, Trigger.Name, Trigger.Tooltip, (Trigger.ShowSelected && Trigger.ShowNoSelected ? "Both" : Trigger.ShowSelected ? "Selected" : Trigger.ShowNoSelected ? "NoSelected" : "")) ;Event.ID here
 }
 Trigger_ExplorerButton_Disable(Trigger, Event)

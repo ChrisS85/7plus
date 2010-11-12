@@ -387,7 +387,7 @@ GetFocussedFile()
 		return focussed
 	}
 }
-
+#x::msgbox % shellfolder("",1)
 GetCurrentFolder(hwnd=0, DisplayName=0)
 {
 	global MuteClipboardList

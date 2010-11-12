@@ -18,6 +18,8 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 MajorVersion := 2
 MinorVersion := 1
 BugfixVersion := 0
+if(!A_IsUnicode)
+	Msgbox Not running on Unicode build of Autohotkey. Please use a unicode version!
 #include %A_ScriptDir%\Autoexecute.ahk ;include first to avoid issues with autoexecute ending too soon because of labels
 #Include %A_ScriptDir%
 #include %A_ScriptDir%\lib\Array.ahk
