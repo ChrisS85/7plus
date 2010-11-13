@@ -26,7 +26,11 @@ Settings_CreateEvents(ByRef TabCount) {
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Remove gGUI_EventsList_Remove, Delete Event
 	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Edit gGUI_EventsList_Edit, Edit Event
-	yIt += textboxstep * 3
+	yIt += textboxstep
+	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Copy gGUI_EventsList_Copy, Copy Event
+	yIt += textboxstep
+	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Paste gGUI_EventsList_Paste Disabled, Paste Event
+	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Import gGUI_EventsList_Import, Import
 	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Export gGUI_EventsList_Export, Export
@@ -485,6 +489,7 @@ Settings_SetupEvents() {
 	GuiControl, 1:enable, GUI_EventsList_Add
 	GuiControl, 1:enable, GUI_EventsList_Remove
 	GuiControl, 1:enable, GUI_EventsList_Edit
+	GuiControl, 1:enable, GUI_EventsList_Copy
 	outputdebug setupevents() stop
 	if(!WasCritical)
 		Critical, Off
@@ -993,6 +998,7 @@ GUI_EventsList_Update()
 	if(A_GuiEvent="I" && InStr(ListEvent, "S", true))
 	{	
 		GuiControl, 1:enable, GUI_EventsList_Remove
+		GuiControl, 1:enable, GUI_EventsList_Copy
 		GuiControl, 1:enable, GUI_EventsList_Export
 		if(count = 1)
 			GuiControl, 1:enable, GUI_EventsList_Edit
@@ -1005,6 +1011,7 @@ GUI_EventsList_Update()
 		{
 			GuiControl, 1:disable, GUI_EventsList_Edit
 			GuiControl, 1:disable, GUI_EventsList_Remove
+			GuiControl, 1:disable, GUI_EventsList_Copy
 			GuiControl, 1:disable, GUI_EventsList_Export
 		}
 		else if(count = 1)
@@ -1128,7 +1135,50 @@ GUI_EventsList_Edit(Add = 0)
 		GUI_RemoveEvent()
 	Return
 }
+GUI_EventsList_Copy:
+GUI_EventsList_Copy()
+return
 
+GUI_EventsList_Copy()
+{
+	global Settings_Events, IsPortable
+	Gui, ListView, GUI_EventsList
+	count := LV_GetCount()
+	if(count=0)
+		return
+	Settings_Events_Clipboard := Array()
+	Loop % count
+	{
+		if(LV_GetNext(A_Index-1) = A_Index)
+		{
+			LV_GetText(id,A_Index,2)			
+			pos := Settings_Events.FindID(id)
+			if((!IsPortable && A_IsAdmin) || Settings_Events[pos].Trigger.Type != "ExplorerButton")
+				Settings_Events_Clipboard.append(Settings_Events[pos].DeepCopy())
+		}
+	}
+	WriteEventsFile(Settings_Events_Clipboard,A_Temp "/7plus/EventsClipboard.xml")	
+	GuiControl, 1:enable, GUI_EventsList_Paste
+}
+
+GUI_EventsList_Paste:
+GUI_EventsList_Paste()
+return
+
+GUI_EventsList_Paste()
+{
+	global Settings_Events, IsPortable
+	Gui, ListView, GUI_EventsList
+	if(FileExist(A_Temp "/7plus/EventsClipboard.xml"))
+	{
+		selected := TV_GetSelection()
+		TV_GetText(Category,selected)
+		if(Category = "All Events")
+			Category := "Uncategorized"
+		ReadEventsFile(Settings_Events, A_Temp "/7plus/EventsClipboard.xml", Category)
+		Settings_SetupEvents()
+	}
+}
 GUI_EventsList_Import:
 GUI_EventsList_Import()
 return

@@ -1,6 +1,6 @@
 GUI_EditEvent(e,GoToLabel="")
 {
-	static Event, result, TriggerGUI, EditEventTab, EditEventTriggerCategory, EditEventTriggerType, EditEventConditions, EditEvent_EditCondition, EditEvent_RemoveCondition, EditEvent_AddCondition, EditEventActions, EditEvent_EditAction, EditEvent_RemoveAction, EditEvent_AddAction, EditEvent_Condition_MoveDown, EditEvent_Condition_MoveUp, EditEvent_Action_MoveUp, EditEvent_Action_MoveDown, EditEvent_Name, EditEvent_DisableAfterUse, EditEvent_DeleteAfterUse, EditEvent_OneInstance, EditEvent_Category
+	static Event, result, TriggerGUI, EditEventTab, EditEventTriggerCategory, EditEventTriggerType, EditEventConditions, EditEvent_EditCondition, EditEvent_RemoveCondition, EditEvent_AddCondition, EditEventActions, EditEvent_EditAction, EditEvent_RemoveAction, EditEvent_AddAction, EditEvent_Condition_MoveDown, EditEvent_Condition_MoveUp, EditEvent_Action_MoveUp, EditEvent_Action_MoveDown, EditEvent_Name, EditEvent_DisableAfterUse, EditEvent_DeleteAfterUse, EditEvent_OneInstance, EditEvent_Category, EditEvent_CopyCondition, EditEvent_PasteCondition, EditEvent_CopyAction, EditEvent_PasteAction, ActionClipboard, ConditionClipboard
 	global Trigger_Categories, Settings_Events
 	if(GoToLabel = "")
 	{
@@ -69,7 +69,11 @@ GUI_EditEvent(e,GoToLabel="")
 		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_RemoveCondition gEditEvent_RemoveCondition, Delete Condition
 		y += 30
 		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_EditCondition gEditEvent_EditCondition, Edit Condition
-		y += 30*2
+		y += 30
+		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_CopyCondition gEditEvent_CopyCondition, Copy Condition
+		y += 30
+		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_PasteCondition gEditEvent_PasteCondition, Paste Condition
+		y += 30
 		Gui, Add, Button, x%x% y%y% w%w% vEditEvent_Condition_MoveUp gEditEvent_Condition_MoveUp, Move Up
 		y += 30
 		Gui, Add, Button, x%x% y%y% w%w% vEditEvent_Condition_MoveDown gEditEvent_Condition_MoveDown, Move Down
@@ -92,6 +96,10 @@ GUI_EditEvent(e,GoToLabel="")
 		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_RemoveAction gEditEvent_RemoveAction, Delete Action
 		y += 30
 		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_EditAction gEditEvent_EditAction, Edit Action
+		y += 30
+		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_CopyAction gEditEvent_CopyAction, Copy Action
+		y += 30
+		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_PasteAction gEditEvent_PasteAction, Paste Action
 		y += 30*2
 		Gui, Add, Button, x%x% y%y% w%w% vEditEvent_Action_MoveUp gEditEvent_Action_MoveUp, Move Up
 		y += 30
@@ -295,6 +303,7 @@ GUI_EditEvent(e,GoToLabel="")
 		{
 			GuiControl, enable, EditEvent_EditCondition
 			GuiControl, enable, EditEvent_RemoveCondition
+			GuiControl, enable, EditEvent_CopyCondition
 			i:=LV_GetNext("")
 			if(i>1)
 				GuiControl, enable, EditEvent_Condition_MoveUp
@@ -309,6 +318,7 @@ GUI_EditEvent(e,GoToLabel="")
 		{
 			GuiControl, disable, EditEvent_EditCondition
 			GuiControl, disable, EditEvent_RemoveCondition
+			GuiControl, disable, EditEvent_CopyCondition
 			GuiControl, disable, EditEvent_Condition_MoveDown
 			GuiControl, disable, EditEvent_Condition_MoveUp
 		}
@@ -355,6 +365,21 @@ GUI_EditEvent(e,GoToLabel="")
 		GUI_EditEvent("","EditEvent_EditCondition")
 		return
 	}
+	else if(GoToLabel = "EditEvent_CopyCondition")
+	{
+		Gui, ListView, EditEvent_EditCondition
+		i:=LV_GetNext("")
+		ConditionClipboard := Event.Conditions[i].DeepCopy()
+		GuiControl, enable, EditEvent_PasteCondition
+		return
+	}
+	else if(GoToLabel = "EditEvent_PasteCondition")
+	{
+		Gui, ListView, EditEvent_EditCondition		
+		Event.Conditions.append(ConditionClipboard.DeepCopy())
+		LV_Add("Select", ConditionClipboard.DisplayString())
+		return
+	}
 	else if(GoToLabel = "EditEvent_Condition_MoveDown")
 	{
 		Gui, ListView, EditEvent_EditCondition
@@ -377,7 +402,8 @@ GUI_EditEvent(e,GoToLabel="")
 		if(A_GuiEvent="I" && InStr(ErrorLevel, "S", true))
 		{
 			GuiControl, enable, EditEvent_EditAction
-			GuiControl, enable, EditEvent_RemoveAction		
+			GuiControl, enable, EditEvent_RemoveAction
+			GuiControl, enable, EditEvent_CopyAction
 			i:=LV_GetNext("")
 			if(i>1)
 				GuiControl, enable, EditEvent_Action_MoveUp
@@ -392,6 +418,7 @@ GUI_EditEvent(e,GoToLabel="")
 		{
 			GuiControl, disable, EditEvent_EditAction
 			GuiControl, disable, EditEvent_RemoveAction
+			GuiControl, disable, EditEvent_CopyAction
 			GuiControl, disable, EditEvent_Action_MoveDown
 			GuiControl, disable, EditEvent_Action_MoveUp
 		}
@@ -437,6 +464,21 @@ GUI_EditEvent(e,GoToLabel="")
 		Event.Actions.append(Action)
 		LV_Add("Select", Action.DisplayString())
 		GUI_EditEvent("","EditEvent_EditAction")
+		return
+	}
+	else if(GoToLabel = "EditEvent_CopyAction")
+	{
+		Gui, ListView, EditEvent_EditAction
+		i:=LV_GetNext("")
+		ActionClipboard := Event.Actions[i].DeepCopy()
+		GuiControl, enable, EditEvent_PasteAction
+		return
+	}
+	else if(GoToLabel = "EditEvent_PasteAction")
+	{
+		Gui, ListView, EditEvent_EditAction		
+		Event.Actions.append(ActionClipboard.DeepCopy())
+		LV_Add("Select", ActionClipboard.DisplayString())
 		return
 	}
 	else if(GoToLabel = "EditEvent_Action_MoveDown")
@@ -503,6 +545,12 @@ return
 EditEvent_RemoveCondition:
 GUI_EditEvent("","EditEvent_RemoveCondition")
 return
+EditEvent_CopyCondition:
+GUI_EditEvent("","EditEvent_CopyCondition")
+return
+EditEvent_PasteCondition:
+GUI_EditEvent("","EditEvent_PasteCondition")
+return
 EditEvent_AddCondition:
 GUI_EditEvent("","EditEvent_AddCondition")
 return
@@ -520,6 +568,12 @@ GUI_EditEvent("","EditEvent_EditAction")
 return
 EditEvent_RemoveAction:
 GUI_EditEvent("","EditEvent_RemoveAction")
+return
+EditEvent_CopyAction:
+GUI_EditEvent("","EditEvent_CopyAction")
+return
+EditEvent_PasteAction:
+GUI_EditEvent("","EditEvent_PasteAction")
 return
 EditEvent_AddAction:
 GUI_EditEvent("","EditEvent_AddAction")

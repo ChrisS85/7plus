@@ -37,7 +37,7 @@ ShellContextMenu(sPath,idn="")
 	{
 		If   sPath Is Not Integer
 			DllCall("shell32\SHParseDisplayName", "Uint", sPath, "Uint", 0, "UintP", pidl, "Uint", 0, "Uint", 0) 
-		Else   DllCall("shell32\SHGetFolderLocation", "Uint", 0, "int", sPath, "Uint", 0, "Uint", 0, "UintP", pidl) 
+		Else   DllCall("shell32\SHGetFolderLocation", "Ptr", 0, "int", sPath, "Ptr", 0, "Uint", 0, "UintP", pidl) 
 		DllCall("shell32\SHBindToParent", "Uint", pidl, "Uint", COM_GUID4String(IID_IShellFolder,"{000214E6-0000-0000-C000-000000000046}"), "UintP", psf, "UintP", pidlChild) 
 		DllCall(NumGet(NumGet(1*psf)+10*A_PtrSize), "Uint", psf, "Uint", 0, "Uint", 1, "UintP", pidlChild, "Uint", COM_GUID4String(IID_IContextMenu,"{000214E4-0000-0000-C000-000000000046}"), "Uint", 0, "UintP", pcm) ; +40 IShellFolder->GetUIObjectOf()
 		COM_CoTaskMemFree(pidl) 
@@ -46,7 +46,7 @@ ShellContextMenu(sPath,idn="")
 
 	hMenu := DllCall("CreatePopupMenu") 
 	idnMIN=1
-	DllCall(NumGet(NumGet(1*pcm)+3*A_PtrSize), "Uint", pcm, "Uint", hMenu, "Uint", 0, "Uint", idnMIN, "Uint", 0x7FFF, "Uint", 0)   ; IContextMenu->QueryContextMenu() +12 originally
+	DllCall(NumGet(NumGet(1*pcm)+3*A_PtrSize), "Uint", pcm, "Ptr", hMenu, "Uint", 0, "Uint", idnMIN, "Uint", 0x7FFF, "Uint", 0)   ; IContextMenu->QueryContextMenu() +12 originally
 	
 
 	DetectHiddenWindows, On 
@@ -54,14 +54,14 @@ ShellContextMenu(sPath,idn="")
 	WinGet, hAHK, ID, ahk_pid %ErrorLevel% 
 	if !idn
 	{
-		WinActivate, ahk_id %hAHK% 	   
+		WinActivate, ahk_id %hAHK%
 		Global   pcm2 := COM_QueryInterface(pcm,IID_IContextMenu2:="{000214F4-0000-0000-C000-000000000046}") 
 		Global   pcm3 := COM_QueryInterface(pcm,IID_IContextMenu3:="{BCFCE0A0-EC17-11D0-8D10-00A0C90F2719}") 
-		Global   WPOld:= DllCall("SetWindowLong", "Ptr", hAHK, "int",-4, "int",RegisterCallback("WindowProc")) 
+		Global   WPOld:= DllCall("SetWindowLong", "Ptr", hAHK, "int",-4, "Ptr",RegisterCallback("WindowProc")) 
 		DllCall("GetCursorPos", "int64P", pt) 
-		DllCall("InsertMenu", "Ptr", hMenu, "Uint", 0, "Uint", 0x0400|0x800, "Uint", 2, "Uint", 0) 
-		DllCall("InsertMenu", "Ptr", hMenu, "Uint", 0, "Uint", 0x0400|0x002, "Uint", 1, "Uint", &sPath) 
-		idn2 := DllCall("TrackPopupMenu", "Ptr", hMenu, "Uint", 0x0100, "int", pt << 32 >> 32, "int", pt >> 32, "Uint", 0, "Ptr", hAHK, "Uint", 0)
+		DllCall("InsertMenu", "Ptr", hMenu, "Uint", 0, "Uint", 0x0400|0x800, "Ptr", 2, "Uint", 0) 
+		DllCall("InsertMenu", "Ptr", hMenu, "Uint", 0, "Uint", 0x0400|0x002, "Ptr", 1, "Uint", &sPath) 
+		idn2 := DllCall("TrackPopupMenu", "Ptr", hMenu, "Uint", 0x0100, "int", pt << 32 >> 32, "int", pt >> 32, "Uint", 0, "Ptr", hAHK, "Ptr", 0)
 	}
 	else
 		idn2:=idn
@@ -103,5 +103,5 @@ WindowProc(hWnd, nMsg, wParam, lParam)
    } 
    if(!WasCritical)
 		Critical, Off
-   Return   DllCall("user32.dll\CallWindowProc", "Uint", WPOld, "Uint", hWnd, "Uint", nMsg, "Uint", wParam, "Uint", lParam) 
+   Return   DllCall("user32.dll\CallWindowProc", "Uint", WPOld, "Ptr", hWnd, "Uint", nMsg, "Uint", wParam, "Uint", lParam) 
 } 

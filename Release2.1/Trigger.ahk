@@ -221,7 +221,7 @@ WriteMainEventsFile()
 	WriteEventsFile(Events, path)
 }
 
-ReadEventsFile(Events, path)
+ReadEventsFile(Events, path,OverwriteCategory="")
 {
 	global EventBase, MajorVersion, MinorVersion, BugfixVersion
 	FileRead, xml, %path%
@@ -245,10 +245,7 @@ ReadEventsFile(Events, path)
 			XMLEvent := XMLObject.Events.Event[i]
 		
 		if(!XMLEvent)
-		{
-			msgbox event break
 			break
-		}
 		;Create new Event
 		Event := Object("base",EventBase.DeepCopy())
 		
@@ -260,7 +257,7 @@ ReadEventsFile(Events, path)
 		Event.Name := XMLEvent.Name
 		
 		;Event Category
-		Event.Category := XMLEvent.Category ? XMLEvent.Category : "Uncategorized"
+		Event.Category := OverwriteCategory ? OverwriteCategory : XMLEvent.Category ? XMLEvent.Category : "Uncategorized"
 		
 		if(!Events.Categories.indexOf(Event.Category))
 			Events.Categories.append(Event.Category)
@@ -299,10 +296,7 @@ ReadEventsFile(Events, path)
 			;Check if end of Events is reached
 			XMLCondition := XMLEvent.Conditions.Condition[j]
 			if(!XMLCondition)
-			{
-				msgbox condition break
 				break
-			}
 			;Create new cndition
 			Condition := EventSystem_CreateSubEvent("Condition", XMLCondition.Type)
 			
@@ -329,10 +323,7 @@ ReadEventsFile(Events, path)
 			;Check if end of Events is reached
 			XMLAction := XMLEvent.Actions.Action[j]
 			if(!XMLAction)
-			{
-				msgbox action break
 				break
-			}	
 			;Create new action
 			Action := EventSystem_CreateSubEvent("Action", XMLAction.Type)
 			
