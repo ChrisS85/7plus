@@ -11,7 +11,6 @@ Accessor_FileSystem_ShowSettings(FileSystem, PluginSettings, PluginGUI)
 Accessor_FileSystem_IsInSinglePluginContext(FileSystem, Filter, LastFilter)
 {
 	Filter := ExpandPathPlaceholders(Filter)
-	outputdebug filter %filter%
 	SplitPath, Filter, name, dir,,,drive
 	return dir != "" && !InStr(Filter, "://") ;Don't match URLs
 }

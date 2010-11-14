@@ -150,6 +150,7 @@ Accessor_ProgramLauncher_FillAccessorList(ProgramLauncher, Accessor, Filter, Las
 	FuzzyList := Array()
 	InStrList := Array()
 	strippedFilter := WindowSwitcher.Settings.IgnoreFileExtensions ? RegexReplace(Filter, "\.\w+") : Filter
+	Filter := ExpandGlobalPlaceHolders(Filter)
 	Loop % ProgramLauncher.List.len()
 	{
 		x := 0

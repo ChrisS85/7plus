@@ -51,7 +51,7 @@ Settings_CreateAccessorKeywords(ByRef TabCount) {
 	TabCount++
 	AddTab(0, "","SysTabControl32" TabCount)
 	Gui, 1:Add, ListView, x%x1% y%yIt% w450 h232 vGUI_AccessorKeywordsList gGUI_AccessorKeywordsList_Events Grid -Multi -LV0x10 AltSubmit, ID|Key|Command
-	OnMessage(0x100, "WM_KEYDOWN")j
+	OnMessage(0x100, "WM_KEYDOWN")
 	OnMessage(0x101, "WM_KEYUP")
 	LV_ModifyCol(1, 0)
     LV_ModifyCol(2, 100)
@@ -276,6 +276,33 @@ Settings_CreateFTPProfiles(ByRef TabCount) {
 	y:=yIt+yCheckboxTextOffset
 	Gui, Add, Text, x%x1% y%yIt%, URL:
 	Gui, Add, Edit, x%x2% y%y% w200 vFTPProfiles_URL,
+}
+Settings_CreateHotstrings(ByRef TabCount) {
+	global
+	local yIt,x1,x2,x,y
+	xHelp:=xBase
+	x1:=xHelp+10
+	x2 := x1 + 460
+	yIt:=yBase
+	Gui, 1:Add, Tab2, x176 y14 w460 h350 vHotstringsTab, 
+	TabCount++
+	AddTab(0, "","SysTabControl32" TabCount)
+	Gui, 1:Add, ListView, x%x1% y%yIt% w450 h216 vGUI_HotstringsList gGUI_HotstringsList_Events Grid -Multi -LV0x10 AltSubmit, ID|Key|Command
+	OnMessage(0x100, "WM_KEYDOWN")
+	OnMessage(0x101, "WM_KEYUP")
+	LV_ModifyCol(1, 0)
+    LV_ModifyCol(2, 100)
+	LV_ModifyCol(3, "AutoHdr")
+	Gui, 1:Add, Button, x%x2% y%yIt% w90 vGUI_Hotstrings_Add gGUI_Hotstrings_Add, Add hotstring
+	yIt += textboxstep
+	Gui, 1:Add, Button, x%x2% y%yIt% w90 vGUI_Hotstrings_Delete gGUI_Hotstrings_Delete, Remove hotstring
+	yIt += textboxstep
+	Gui, 1:Add, Button, x%x2% y%yIt% w90 vGUI_Hotstrings_RegexHelp gGUI_Hotstrings_RegexHelp, RegEx help
+	Gui, 1:Add, Text, x%x1% y+144, hotstring:
+	Gui, 1:Add, Edit, x+27 y+-17 w380 vGUI_HotstringsKey gGUI_HotstringsTextChange
+	Gui, 1:Add, Text, x%x1% y+10, value:
+	Gui, 1:Add, Edit, x+41 y+-17 w380 vGUI_HotstringsValue gGUI_HotstringsTextChange
+	Gui, 1:Add, Text, x%x1% y+10, Hotstrings are used to expand abbreviations and acronyms, such as "btw" -> "by the way". They support regular`nexpressions in PCRE format. If you want a hotstring to trigger only when typed as a seperate word, prepend \b`nand append \s.  For case-insensitive hotstrings, put i) at the start. You can also use keys like {Enter}.
 }
 Settings_CreateWindows(ByRef TabCount) {
 	global
@@ -572,6 +599,16 @@ Settings_SetupAccessorKeywords() {
 		Gui, ListView, GUI_AccessorKeywordsList
 		LV_Add(A_Index = 1 ? "Select" : "", A_Index, Settings_AccessorKeywords[A_Index].Key, Settings_AccessorKeywords[A_Index].Command)
 	}
+	if(Settings_AccessorKeywords.len() > 0)
+	{
+		GuiControl, 1:enable, GUI_AccessorKeywordsKey
+		GuiControl, 1:enable, GUI_AccessorKeywordsCommand
+	}
+	else
+	{
+		GuiControl, 1:disable, GUI_AccessorKeywordsKey
+		GuiControl, 1:disable, GUI_AccessorKeywordsCommand
+	}
 	if(!WasCritical)
 		Critical, Off
 }
@@ -706,6 +743,32 @@ Settings_SetupFTPProfiles() {
 		GuiControl, disable, FTPProfiles_URL
 	}
 }
+Settings_SetupHotstrings() {
+	global Hotstrings, Settings_Hotstrings
+	WasCritical := A_IsCritical
+	Critical
+	Gui, 1:Default
+	Gui, ListView, GUI_HotstringsList
+	Settings_Hotstrings := Hotstrings.DeepCopy()
+	LV_Delete()
+	Loop % Settings_Hotstrings.len()
+	{
+		Gui, ListView, GUI_HotstringsList
+		LV_Add(A_Index = 1 ? "Select" : "", A_Index, Settings_Hotstrings[A_Index].Key, Settings_Hotstrings[A_Index].Value)
+	}
+	if(Settings_Hotstrings.len() > 0)
+	{
+		GuiControl, 1:enable, GUI_HotstringsKey
+		GuiControl, 1:enable, GUI_HotstringsValue
+	}
+	else
+	{
+		GuiControl, 1:disable, GUI_HotstringsKey
+		GuiControl, 1:disable, GUI_HotstringsValue
+	}
+	if(!WasCritical)
+		Critical, Off
+}
 Settings_SetupWindows() {
 	global
 	GuiControl, 1:,HKSlideWindows,%HKSlideWindows%
@@ -809,7 +872,7 @@ ShowSettings() {
 			wButton:=30
 			hCheckbox:=16 
 			
-			SettingsTabList := "Accessor Keywords|Accessor Plugins|Explorer|Fast Folders|Explorer Tabs|FTP Profiles|Windows|Misc|About"
+			SettingsTabList := "Accessor Keywords|Accessor Plugins|Explorer|Fast Folders|Explorer Tabs|FTP Profiles|Hotstrings|Windows|Misc|About"
 			; Gui, 1:Add, ListBox, x16 y20 w120 h350 gListbox vMyListBox, %TabList%
 			Gui, 1:Add, TreeView, x16 y20 w140 h350 gSettingsTreeView vSettingsTreeView -HScroll
 			EventsTreeViewEntry := TV_Add("All Events", "", "Expand")
@@ -846,6 +909,7 @@ ShowSettings() {
 			Settings_CreateFastFolders(TabCount)
 			Settings_CreateTabs(TabCount)
 			Settings_CreateFTPProfiles(TabCount)
+			Settings_CreateHotstrings(TabCount)
 			Settings_CreateWindows(TabCount)
 			; Settings_CreateDesktopTaskBar()
 			;Settings_CreateCustomHotkeys()
@@ -876,6 +940,7 @@ ShowSettings() {
 		Settings_SetupFastFolders()
 		Settings_SetupTabs()
 		Settings_SetupFTPProfiles()
+		Settings_SetupHotstrings()
 		Settings_SetupWindows()
 		; Settings_SetupDesktopTaskBar()
 		;Settings_SetupCustomHotkeys()
@@ -1674,6 +1739,129 @@ FTPProfiles_Delete()
 	}
 	MsgBox, Make sure to update any FTP event profile assignments that pointed to the deleted profile!
 }
+
+GUI_HotstringsTextChange:
+GUI_HotstringsTextChange()
+return
+GUI_HotstringsTextChange()
+{
+	global GUI_HotstringsKey, GUI_HotstringsValue, Settings_Hotstrings
+	GuiControlGet, key,, GUI_HotstringsKey
+	GuiControlGet, value,, GUI_HotstringsValue
+	Gui, ListView, GUI_HotstringsList
+	i:=LV_GetNext("")
+	if(!i)
+		return
+	LV_GetText(pos,i,1)
+	LV_Modify(i, "Col2", key)
+	LV_Modify(i, "Col3", value)
+	Settings_Hotstrings[pos].key := key
+	Settings_Hotstrings[pos].value := value
+}
+GUI_Hotstrings_Add:
+GUI_Hotstrings_Add()
+return
+GUI_Hotstrings_Add()
+{
+	global Settings_Hotstrings
+	Gui, ListView, GUI_HotstringsList
+	Settings_Hotstrings.append(Object("Key", "key", "value", "value"))
+	LV_Add("Select", Settings_Hotstrings.len(), "key", "value")
+}
+GUI_Hotstrings_Delete:
+GUI_Hotstrings_Delete()
+return
+GUI_Hotstrings_Delete()
+{
+	global Settings_Hotstrings
+	Gui, ListView, GUI_HotstringsList
+	if(LV_GetCount("Selected") != 1)
+		return
+	len := LV_GetCount()
+	i:=LV_GetNext("")
+	LV_GetText(pos,i,1)
+	Settings_Hotstrings.Delete(pos)
+	LV_Delete(i)
+	Loop % len
+	{
+		LV_GetText(pos,A_Index,1)
+		if(pos>i)
+			LV_Modify(A_Index, "Col1", pos - 1)
+	}
+}
+GUI_Hotstrings_RegexHelp:
+run http://www.autohotkey.com/docs/misc/RegEx-QuickRef.htm
+return
+
+GUI_HotstringsList_Events:
+GUI_HotstringsList_Events()
+return
+GUI_HotstringsList_Events()
+{
+	global
+	local count, ListEvent
+	WasCritical := A_IsCritical
+	Critical
+	ListEvent := Errorlevel
+	Gui, ListView, GUI_HotstringsList
+	if(A_GuiEvent="I" && InStr(ListEvent, "S", true))
+	{	
+		Selected := LV_GetNext()		
+		LV_GetText(id,Selected,1)
+		GuiControl,,GUI_HotstringsKey, % Settings_Hotstrings[id].Key
+		GuiControl,,GUI_HotstringsValue, % Settings_Hotstrings[id].Value
+		GuiControl, 1:enable, GUI_HotstringsKey
+		GuiControl, 1:enable, GUI_HotstringsValue
+		GuiControl, 1:enable, GUI_Hotstrings_Delete
+	}
+	else if(A_GuiEvent="I" && InStr(ListEvent, "s", true))
+	{		
+		GuiControl, 1:disable, GUI_HotstringsKey
+		GuiControl, 1:disable, GUI_HotstringsValue
+		GuiControl, 1:disable, GUI_Hotstrings_Delete
+		GuiControl,,GUI_HotstringsKey,
+		GuiControl,,GUI_HotstringsValue
+	}
+	if(!WasCritical)
+		Critical, Off
+	Return
+}
+return
+GUI_SaveHotstrings()
+{
+	global Hotstrings, Settings_Hotstrings
+	pos := 1
+	len := Settings_Hotstrings.len()
+	Loop % len
+	{
+		Hotstring := Settings_Hotstrings[A_Index]
+		;Remove duplicates and empty keys
+		Loop % Settings_Hotstrings.len()
+		{
+			if(pos != A_Index && Settings_Hotstrings[A_Index].Key = Hotstring.Key)
+			{
+				Settings_Hotstrings.Delete(pos)
+				Hotstring := ""
+				break
+			}
+			if(Settings_Hotstrings[A_Index].Key = "")
+			{
+				Settings_Hotstrings.Delete(pos)
+				Hotstring := ""
+				break
+			}
+		}
+		if(IsObject(Hotstring))
+			pos++
+	}
+	len := Hotstrings.len()
+	Loop % len
+		RemoveHotstring(Hotstrings[1].key)
+	Loop % Settings_Hotstrings.len()
+		AddHotstring(Settings_Hotstrings[A_Index].key, Settings_Hotstrings[A_Index].value)
+}
+
+
 Flip3D:
 GuiControlGet, enabled ,1: ,Mouse in upper left corner: Toggle Aero Flip 3D
 GuiControl, 1:enable%enabled%, AeroFlipTime
@@ -1806,6 +1994,8 @@ WM_KEYDOWN(wParam, lParam)
 		}
 		else if(A_GuiControl = "GUI_AccessorKeywordsList" && wParam = 0x2E)
 			GUI_AccessorKeywords_Delete()
+		else if(A_GuiControl = "GUI_HotstringsList" && wParam = 0x2E)
+			GUI_Hotstrings_Delete()
 	}
 	if(A_GUI = 4 && A_GuiControl = "EditEventConditions" && wParam = 0x2E)
 		GUI_EditEvent("","EditEvent_RemoveCondition")
@@ -1985,6 +2175,7 @@ ApplySettings(Close = 0)
 	SettingsActive := true
 	GUI_SaveAccessorKeywords()
 	GUI_SaveAccessorPluginSettings()
+	GUI_SaveHotstrings()
 	if(JoyControl)
 		JoystickStart()
 	else

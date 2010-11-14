@@ -293,6 +293,8 @@ Action_Upload_ReadFTPProfiles()
 
 GoSub TrayminOpen
 
+LoadHotstrings()
+
 ;Show tray icon when loading is complete
 Menu, tray, add  ; Creates a separator line.
 Menu, tray, add, Settings, SettingsHandler  ; Creates a new menu item.
@@ -316,9 +318,6 @@ menu, tray, Default, Settings
 IniRead, HideTrayIcon, %ConfigPath%, Misc, HideTrayIcon, 0
 if(!HidetrayIcon)
 	menu, tray, Icon
-
-
-
 	
 SetTimer, TriggerTimer, 1000
 ; SetTimer, AssignHotkeys, -10000
@@ -352,6 +351,7 @@ OnExit(Reload=0)
 	SlideWindows_Exit()
 	TabContainerList.CloseAllInactiveTabs()
 	GoSub TrayminClose	
+	SaveHotstrings()
 	if(Reload)
 	{
 		ShouldReload := 1

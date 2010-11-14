@@ -103,7 +103,7 @@ CreateAccessorWindow(Action)
 	global AccessorListView, Accessor, AccessorPlugins, AccessorOKButton
 	WasCritical := A_IsCritical
 	Critical, Off
-	if(AccessorGUINum := Accessor.GUINum)
+	if(  := Accessor.GUINum)
 	{
 		gui %AccessorGUINum%:+LastFoundExist
 		If(WinExist())
@@ -387,7 +387,7 @@ WM_ACTIVATE(wParam,lParam)
 }
 Accessor_WM_KEYDOWN(wParam,lParam)
 {
-	global Accessor,AccessorPlugins,AccessorEdit
+	global Accessor,AccessorPlugins,AccessorEdit,AccessorListView
 	GUINum := Accessor.GUINum
 	Gui, %GUINum%: Default
 	GUI, ListView, AccessorListView
@@ -426,7 +426,12 @@ Accessor_WM_KEYDOWN(wParam,lParam)
 			return 1
 		Accessor_WM_KEYDOWN(40,0) ;Send down key
 		return 1
-	}	
+	}
+	if((wParam = 33 || wParam = 34) && ControlGetFocus("A") = "Edit1") ;PageUp/Down
+	{
+		PostMessage, 0x100, %wParam%, %lParam%,SysListView321,A
+		return 1
+	}
 	if(wParam = 38) ;Up arrow
 	{
 		selected := LV_GetNext()

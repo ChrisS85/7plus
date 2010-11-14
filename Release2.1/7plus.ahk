@@ -67,6 +67,7 @@ if(!A_IsUnicode)
 #include %A_ScriptDir%\clipboard.ahk
 #include %A_ScriptDir%\FTPUpload.ahk 
 #include %A_ScriptDir%\Taskbar.ahk
+#include %A_ScriptDir%\Hotstrings.ahk
 ; #include %A_ScriptDir%\Misc.ahk
 #include %A_ScriptDir%\xml.ahk
 #include %A_ScriptDir%\debugging.ahk
