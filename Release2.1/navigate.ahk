@@ -533,12 +533,18 @@ ShellFolder(hWnd=0,returntype=0)
 		}
 		if(returntype=3 || returntype=4)
 		{
-			loop % doc.SelectedItems.Count
+			count := doc.SelectedItems.Count
+			pos := 1
+			while(pos <= count)
 			{
-				path :=doc.selectedItems.item(A_Index-1).Path "`n" ;= (returntype=3 ? sFolder "\" COM_Invoke(doc.SelectedItems, "Item", A_Index-1).Name "`n" : COM_Invoke(doc.SelectedItems, "Item", A_Index-1).Name "`n")
-				if(returntype=4)
-					SplitPath, path , path
-				sSelect.=path
+				path :=doc.selectedItems.item(pos-1).Path ;= (returntype=3 ? sFolder "\" COM_Invoke(doc.SelectedItems, "Item", A_Index-1).Name "`n" : COM_Invoke(doc.SelectedItems, "Item", A_Index-1).Name "`n")
+				if(path != "")
+				{
+					if(returntype=4)
+						SplitPath, path , path
+					sSelect := sSelect path "`n"
+					pos++
+				}
 			}
 			StringReplace, sSelect, sSelect, \\ , \, 1 
 		}
