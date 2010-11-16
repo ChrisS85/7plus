@@ -826,12 +826,12 @@ Settings_SetupAbout() {
 }
 
 AddTab(IconNumber, TabName, TabControl) {
-   Gui 1: +LastFound
-   VarSetCapacity(TCITEM, 100, 0)
-	 NumPut(3, TCITEM ,0) ; Mask (3) comes from TCIF_TEXT(1) + TCIF_IMAGE(2).
-	 NumPut(&TabName, TCITEM ,12) ; pszText
-	 NumPut(IconNumber - 1, TCITEM ,20) ; iImage: -1 to convert to zero-based.
-   SendMessage, 0x1307, 999, &TCITEM, %TabControl%  ; 0x1307 is TCM_INSERTITEM
+	Gui 1: +LastFound
+	VarSetCapacity(TCITEM, 92 + A_PtrSize * 2, 0)
+	NumPut(3, TCITEM ,0) ; Mask (3) comes from TCIF_TEXT(1) + TCIF_IMAGE(2).
+	StrPut(TabName, &TCITEM + 12) ; pszText
+	NumPut(IconNumber - 1, TCITEM ,16 + A_PtrSize) ; iImage: -1 to convert to zero-based.
+	SendMessage, 0x1307, 999, &TCITEM, %TabControl%  ; 0x1307 is TCM_INSERTITEM
 }
 SettingsHandler:
 ShowSettings()
