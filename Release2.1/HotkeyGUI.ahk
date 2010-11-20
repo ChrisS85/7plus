@@ -307,7 +307,7 @@ HotkeyGUI(p_GUI=""
     ;-- Modifier
     gui Add
        ,GroupBox
-       ,x06 y10 w120 h110
+       ,x06 y10 w120 h140
        ,Modifier
     
     static HG_CtrlModifier
@@ -338,7 +338,7 @@ HotkeyGUI(p_GUI=""
     ;-- Optional Attributes
     gui Add
        ,GroupBox
-       ,x126 y10 w120 h110
+       ,x126 y10 w120 h140
        ,Optional Attributes
     
     static HG_NativeOption
@@ -365,6 +365,12 @@ HotkeyGUI(p_GUI=""
        ,y+0 w100 h20 Disabled vHG_RightPairOption gHotkeyGUI_RightPair
        ,> (Right pair only)
     
+	static HG_UpOption
+    gui Add
+       ,CheckBox                                                                ;-- Button11
+       ,y+0 w100 h20 Disabled vHG_UpOption gHotkeyGUI_UpdateHotkey
+       ,UP (Key release)
+	   
     ;-- Enable "Optional Attributes"?
     if p_OptionalAttrib
         {
@@ -372,19 +378,20 @@ HotkeyGUI(p_GUI=""
         GUIControl Enable,Button8
         GUIControl Enable,Button9
         GUIControl Enable,Button10
+        GUIControl Enable,Button11
         }
     
     
     ;-- Keys
     gui Add
        ,GroupBox
-       ,x6 y120 w240 h180
+       ,x6 y150 w240 h180
        ,Keys
     
     static HG_StandardKeysView
     gui Add
        ,Radio
-       ,x16 y140 w100 h20 vHG_StandardKeysView gHotkeyGUI_UpdateKeyList Checked
+       ,x16 y170 w100 h20 vHG_StandardKeysView gHotkeyGUI_UpdateKeyList Checked
        ,Standard
     
     static HG_FunctionKeysView
@@ -420,7 +427,7 @@ HotkeyGUI(p_GUI=""
     static HG_Key
     gui Add
        ,ListBox                                                                 ; -- ListBox1
-       ,x116 y140 w120 h150 vHG_Key gHotkeyGUI_UpdateHotkey
+       ,x116 y170 w120 h150 vHG_Key gHotkeyGUI_UpdateHotkey
     
     gosub HotkeyGUI_UpdateKeyList
     
@@ -428,7 +435,7 @@ HotkeyGUI(p_GUI=""
     ;-- Hotkey Display
     gui Add
        ,Text
-       ,x6 y310 w40 h20
+       ,x6 y340 w40 h20
        ,Hotkey:
     
     gui Add
@@ -449,7 +456,7 @@ HotkeyGUI(p_GUI=""
     ;-- Buttons
     gui Add
        ,Button
-       ,x6 y370 w70 h25 gHotkeyGUI_AcceptButton +Default
+       ,x6 y400 w70 h25 gHotkeyGUI_AcceptButton +Default
        ,&Accept
     
     gui Add
@@ -475,12 +482,12 @@ HotkeyGUI(p_GUI=""
     ;[      is closed      ]
     ;[=====================]
     loop
-        {
+	{
         sleep 250
 		outputdebug sleep
         IfWinNotExist ahk_id %HotkeyGUI_hWnd% 
             break
-        }
+	}
 
 
     ;-- Set GUI default back to parent
@@ -551,8 +558,7 @@ HotkeyGUI(p_GUI=""
         HG_Hotkey:=HG_Hotkey . "<"
     
     if HG_RightPairOption
-        HG_Hotkey:=HG_Hotkey . ">"
-    
+        HG_Hotkey:=HG_Hotkey . ">"    
     
     ;-- Modifiers
     if HG_CtrlModifier
@@ -581,8 +587,11 @@ HotkeyGUI(p_GUI=""
     
     HG_Hotkey:=HG_Hotkey . HG_Key
     HG_HKDesc:=HG_HKDesc . HG_Key
-
-
+	if HG_UpOption
+	{
+        HG_Hotkey:=HG_Hotkey . " UP"
+		HG_HKDesc:=HG_HKDesc . " UP"
+	}
     ;-- Update Hotkey and HKDescr fields
     GUIControl ,,Edit1,%HG_Hotkey%
     GUIControl ,,Static3,%HG_HKDesc%
@@ -620,7 +629,6 @@ HotkeyGUI(p_GUI=""
     GUIControl ,,Button9,0
     gosub HotkeyGUI_UpdateHotkey
     return
-    
     
     
     ; *************************

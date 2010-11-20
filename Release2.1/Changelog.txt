@@ -8,6 +8,7 @@ New Functions:
 + Program Launcher Accessor plugin now expands placeholders so you can use placeholders like %ProgramFiles%
 + Added dropping files on Accessor keywords list
 + Added PageUp/Down to Accessor list
++ Added support for Hotkey release events (UP in Hotkey GUI)
 
 Bugfixes:
 - Fixed CTRL+P accidently being assigned

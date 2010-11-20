@@ -1,0 +1,4 @@
+LIBRARY Explorer
+DESCRIPTION "Explorer interface functions"
+EXPORTS
+   SetPath @1

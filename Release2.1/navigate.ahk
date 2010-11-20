@@ -38,22 +38,10 @@ Shell_GoUpward()
 	else
 		Send {Backspace}
 }
-ShellNavigate(sPath, hWnd=0) 
+ShellNavigate(Path, hWnd=0) 
 {
 	if(hWnd||(hWnd:=WinExist("ahk_class CabinetWClass"))||(hWnd:=WinExist("ahk_class ExploreWClass")))
-	{
-		for Item in ComObjCreate("Shell.Application").Windows
-		{
-			if (Item.hwnd = hWnd)
-			{				
-				DllCall("shell32\SHParseDisplayName", "Str",  sPath , "Ptr", 0, "UintP", pidl, "Uint", 0, "Ptr", 0)
-				msgbox bla
-				VarSetCapacity(sa,24,0), NumPut(DllCall("shell32\ILGetSize","Ptr",pidl), NumPut(pidl, NumPut(1, NumPut(1,sa)),4)) 
-				Item.Navigate2(ComObjParameter(0x2011,&sa))
-				return
-			}
-		}
-	}
+		DllCall(A_ScriptDir "\Explorer.dll\SetPath", "Ptr", hwnd, "Str", Path, "Cdecl")
 }
 
 RefreshExplorer() 
