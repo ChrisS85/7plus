@@ -85,34 +85,36 @@ int _stdcall SetPath(HWND hWnd, LPCWSTR Path)
 						HWND _hWnd;
 						if(SUCCEEDED(pwb->get_HWND(reinterpret_cast<SHANDLE_PTR*>(&_hWnd))) )
 						{
-												
-							// Get the pidl for your favorite special folder,
-							// in this case literally, the Favorites folder
-							if(FAILED(hr = SHParseDisplayName(Path, NULL, &pidl, 0, NULL)))
+							if(_hWnd==hWnd)
 							{
-								goto Error;
-							}
+								// Get the pidl for your favorite special folder,
+								// in this case literally, the Favorites folder
+								if(FAILED(hr = SHParseDisplayName(Path, NULL, &pidl, 0, NULL)))
+								{
+									goto Error;
+								}
 
-							// Pack the pidl into a VARIANT
-							if (FAILED(hr = InitVARIANTFromPidl(&vPIDL, pidl)))
-							{
-								goto Error;
-							}
+								// Pack the pidl into a VARIANT
+								if (FAILED(hr = InitVARIANTFromPidl(&vPIDL, pidl)))
+								{
+									goto Error;
+								}
 
-							// Verify for testing purposes only that the pidl was packed
-							// properly. Don't clean up pidl2 because it's a copy of the
-							// pointer, not a clone of the id list itself
-							pidl2 = PidlFromVARIANT(&vPIDL);
-							if (FAILED(hr = TestPidl(pidl2)))
-							{
-								OutputDebugString(LPCWSTR("PIDL test failed"));
-								goto Error;
-							}
+								// Verify for testing purposes only that the pidl was packed
+								// properly. Don't clean up pidl2 because it's a copy of the
+								// pointer, not a clone of the id list itself
+								pidl2 = PidlFromVARIANT(&vPIDL);
+								if (FAILED(hr = TestPidl(pidl2)))
+								{
+									OutputDebugString(LPCWSTR("PIDL test failed"));
+									goto Error;
+								}
 						
-							// Show the browser, and navigate to the special location
-							// represented by the pidl
-							hr = pwb->Navigate2(&vPIDL, &vDummy, &vDummy,&vDummy, &vDummy);
-							goto Error;
+								// Show the browser, and navigate to the special location
+								// represented by the pidl
+								hr = pwb->Navigate2(&vPIDL, &vDummy, &vDummy,&vDummy, &vDummy);
+								goto Error;
+							}
 						}
                         pwb->Release();
                     }

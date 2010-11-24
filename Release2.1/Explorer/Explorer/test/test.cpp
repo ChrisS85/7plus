@@ -7,7 +7,15 @@
 int _tmain(int argc, _TCHAR* argv[])
 {
 	SetErrorMode(1);
-	LPCWSTR strPath = L"C:\\Projekte\\Autohotkey\\7plus\\Explorer\\Explorer\\Release\\Explorer.dll";
+	WCHAR sThisDir[MAX_PATH]; // in atlstr.h
+ 
+ 
+::GetModuleFileName( // In WinBase.h.
+   0, // retrieve path of .exe file for the current process.
+   sThisDir, 
+   MAX_PATH);
+ 
+	LPCWSTR strPath = L"C:\\Users\\Chris\\Desktop\\7plus\\Explorer.dll";
 	/* get handle to dll */ 
 	HINSTANCE hGetProcIDDLL = LoadLibrary(strPath);
 	if(!hGetProcIDDLL)
