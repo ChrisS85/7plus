@@ -175,7 +175,7 @@ SubEventGUI_GUISubmit(SubEvent, SubEventGUI)
 SubEventGUI_Browse(SubEventGUI, name, Title="Select Folder",Options=0, Quote=0)
 {
 	Gui +OwnDialogs
-	path:=COM_CreateObject("Shell.Application").BrowseForFolder(0, Title, Options).Self.Path
+	path:=COMObjCreate("Shell.Application").BrowseForFolder(0, Title, Options).Self.Path
 	if(path!="")
 	{
 		enum := SubEventGUI._newEnum()

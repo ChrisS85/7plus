@@ -1612,7 +1612,7 @@ return
 
 TabStartupPathBrowse:
 Gui 1:+OwnDialogs
-path:=COM_CreateObject("Shell.Application").BrowseForFolder(0, "Enter Path to add as button", 0).Self.Path
+path:=COMObjCreate("Shell.Application").BrowseForFolder(0, "Enter Path to add as button", 0).Self.Path
 if(path!="")
 	GuiControl, , 1:TabStartupPath,%path%
 return

@@ -23,3 +23,5 @@ extern EXPLORER_API int nExplorer;
 EXPLORER_API int fnExplorer(void);
 */
 int _stdcall SetPath(HWND hWnd, LPCWSTR Path);
+int _stdcall ExecuteContextMenuCommand(LPWSTR strPath, int idn, HWND hWnd);
+HRESULT GetUIObjectOfFile(HWND hwnd, LPCWSTR pszPath, REFIID riid, void **ppv);

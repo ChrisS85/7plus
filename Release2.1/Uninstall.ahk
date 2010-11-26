@@ -1,5 +1,5 @@
-#include %A_ScriptDir%\lib\com.ahk
-COM_Error(0)
+; #include %A_ScriptDir%\lib\com.ahk
+; COM_Error(0)
 MsgBox, 4,, Do you really want to uninstall 7plus? This will delete the folder where 7plus is installed, possibly %A_AppData%\7plus and undo all changes to the registry
 IfMsgBox Yes
 {
@@ -49,51 +49,53 @@ IfMsgBox Yes
 
 ShellFolder(hWnd=0,returntype=0) 
 { 
-	If   hWnd||(hWnd:=WinActive("ahk_class CabinetWClass"))||(hWnd:=WinActive("ahk_class ExploreWClass")) 
+	if(hWnd||(hWnd:=WinActive("ahk_class CabinetWClass"))||(hWnd:=WinActive("ahk_class ExploreWClass")))
 	{
-		sa := Com_CreateObject("Shell.Application")
-		
 		;Find hwnd window
-		wins := sa.Windows
-		loop % wins.count
+		for Item in ComObjCreate("Shell.Application").Windows
 		{
-			window:=wins.Item(A_Index-1)
-			If Not InStr( window.FullName, "steam.exe" ) ; ensure pwb isn't IE window
-				if(window.Hwnd=hWnd)
-					break
-		}
-		doc:=window.Document
-		sFolder   := doc.Folder.Self.path
-		sDisplay := doc.Folder.Self.name
-		;Don't get focussed item and selected files unless requested, because it will cause a COM error when called during/shortly after explorer path change sometimes
-		if (returntype=2)
-		{
-			sFocus :=doc.FocusedItem.Path
-			SplitPath, sFocus , sFocus
-		}
-		if(returntype=3 || returntype=4)
-		{
-			loop % doc.SelectedItems.Count
+			if (Item.hwnd = hWnd)
 			{
-				path :=doc.selectedItems.item(A_Index-1).Path "`n" ;= (returntype=3 ? sFolder "\" COM_Invoke(doc.SelectedItems, "Item", A_Index-1).Name "`n" : COM_Invoke(doc.SelectedItems, "Item", A_Index-1).Name "`n")
-				if(returntype=4)
-					SplitPath, path , path
-				sSelect.=path
+				doc:=Item.Document
+				sFolder   := doc.Folder.Self.path
+				sDisplay := doc.Folder.Self.name
+				;Don't get focussed item and selected files unless requested, because it will cause a COM error when called during/shortly after explorer path change sometimes
+				if (returntype=2)
+				{
+					sFocus :=doc.FocusedItem.Path
+					SplitPath, sFocus , sFocus
+				}
+				if(returntype=3 || returntype=4)
+				{
+					count := doc.SelectedItems.Count
+					pos := 1
+					while(pos <= count)
+					{
+						path :=doc.selectedItems.item(pos-1).Path ;= (returntype=3 ? sFolder "\" COM_Invoke(doc.SelectedItems, "Item", A_Index-1).Name "`n" : COM_Invoke(doc.SelectedItems, "Item", A_Index-1).Name "`n")
+						if(path != "")
+						{
+							if(returntype=4)
+								SplitPath, path , path
+							sSelect := sSelect path "`n"
+							pos++
+						}
+					}
+					StringReplace, sSelect, sSelect, \\ , \, 1 
+				}
+				;Remove last `n
+				StringTrimRight, sSelect, sSelect, 1
+				if (returntype=1)
+					Return   sFolder
+				else if (returntype=2)
+					Return   sFocus
+				else if (returntype=3)
+					Return   sSelect
+				else if (returntype=4)
+					Return 	 sSelect
+				else if (returntype=5)
+					Return sDisplay
 			}
-			StringReplace, sSelect, sSelect, \\ , \, 1 
 		}
-		;Remove last `n
-		StringTrimRight, sSelect, sSelect, 1
-		if (returntype=1)
-			Return   sFolder
-		else if (returntype=2)
-			Return   sFocus
-		else if (returntype=3)
-			Return   sSelect
-		else if (returntype=4)
-			Return 	 sSelect
-		else if (returntype=5)
-			Return sDisplay
 	}
 }
 RestoreFolderBand()

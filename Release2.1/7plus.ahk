@@ -24,7 +24,7 @@ if(!A_IsUnicode)
 #Include %A_ScriptDir%
 #include %A_ScriptDir%\lib\Array.ahk
 #include %A_ScriptDir%\lib\binreadwrite.ahk
-#include %A_ScriptDir%\lib\com.ahk
+; #include %A_ScriptDir%\lib\com.ahk
 #include %A_ScriptDir%\lib\Crypt.ahk
 #include %A_ScriptDir%\lib\Cursor.ahk
 #include %A_ScriptDir%\lib\Edit.ahk

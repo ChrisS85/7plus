@@ -139,8 +139,8 @@ pToken := Gdip_Startup()
 OnExit, ExitSub
 
 ;Disable COM error notifications that pop up sometimes when opening/closing explorer
-COM_Init()
-COM_Error(0)
+;COM_Init()
+;COM_Error(0)
 
 ;On first run, wizard is used to setup values
 IniRead, FirstRun, %ConfigPath%, General, FirstRun , 1

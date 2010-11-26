@@ -8,7 +8,7 @@ if(A_OSVersion!="WIN_VISTA" && A_OSVersion!="WIN_7")
 MsgBox, 4,, This program allows you to add buttons to the explorer bar.`nWould you like to add a button(yes) or remove one(no)?
 IfMsgBox Yes
 {
-	path:=COM_CreateObject("Shell.Application").BrowseForFolder(0, "Enter Path to add as button", 0).Self.Path
+	path:=COMObjCreate("Shell.Application").BrowseForFolder(0, "Enter Path to add as button", 0).Self.Path
 	SplitPath, path , foldername
 	if(foldername="")
 		foldername:=path
@@ -22,7 +22,7 @@ IfMsgBox No
 	MsgBox, 4,, Would you like to remove one button (yes) or remove all buttons(no) made by this script ?
 	IfMsgBox Yes
 	{
-		path:=COM_CreateObject("Shell.Application").BrowseForFolder(0, "Enter Path which should be removed", 0).Self.Path
+		path:=COMObjCreate("Shell.Application").BrowseForFolder(0, "Enter Path which should be removed", 0).Self.Path
 		RemoveButton(path)
 	}
 	IfMsgBox No

@@ -65,12 +65,12 @@ ShellContextMenu(sPath,idn="")
 	}
 	else
 		idn2:=idn
-	NumPut(VarSetCapacity(ici,64,0),ici)
+	NumPut(VarSetCapacity(ici,56+A_PtrSize*2,0),ici)
 	NumPut(0x4000|0x20000000,ici,4) 
-	NumPut(1,NumPut(hAHK,ici,8),12)
-	NumPut(idn2-idnMIN,NumPut(idn2-idnMIN,ici,12),24)
+	NumPut(1,NumPut(hAHK,ici,8, "PTR"),12)
+	NumPut(idn2-idnMIN,NumPut(idn2-idnMIN,ici,8+A_PtrSize),20+A_PtrSize)
 	if !idn
-		NumPut(pt,ici,56,"int64") 
+		NumPut(pt,ici,48+A_PtrSize*2,"int64") 
 	DllCall(NumGet(NumGet(1*pcm)+16), "Uint", pcm, "Uint", &ici)   ; InvokeCommand 
 	if !idn
 	{

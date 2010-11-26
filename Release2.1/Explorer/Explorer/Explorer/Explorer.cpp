@@ -2,7 +2,6 @@
 //
 
 #include "stdafx.h"
-#include "Explorer.h"
 
 
 #include <windows.h>
@@ -26,11 +25,13 @@
 #include <exdisp.h>
 #include <shlguid.h>
 #include <memory.h>
-
+#include <Shellapi.h>
+#include "Explorer.h"
 // macros for walking PIDLs
 #define _ILSkip(pidl, cb)       ((LPITEMIDLIST)(((BYTE*)(pidl))+cb))
 #define _ILNext(pidl)           _ILSkip(pidl, (pidl)->mkid.cb)
-
+#define SCRATCH_QCM_FIRST 1
+#define SCRATCH_QCM_LAST  0x7FFF
 HRESULT FreeResources(LPVOID pData);
 HRESULT TestPidl(LPITEMIDLIST pidl);
 LPITEMIDLIST PidlFromVARIANT(VARIANT* pvarLoc);
@@ -298,4 +299,81 @@ UINT ILGetSize(LPITEMIDLIST pidl)
 
    return cbTotal;
 }
-				
+
+/*Context Menu code below*/
+int _stdcall ExecuteContextMenuCommand(LPWSTR strPath, int idn, HWND hWnd)
+{
+	#define MIN_SHELL_ID 1
+	#define MAX_SHELL_ID 0x7FFF
+	IShellFolder *psf = NULL;
+	IContextMenu *pCM = NULL;
+	if (wcscmp(strPath,L"Desktop") == 0)
+	{
+		//Get IShellFolder
+		if(!SUCCEEDED(SHGetDesktopFolder(&psf)))
+		{
+			MessageBox(NULL, L"SHGetDesktopFolder failed", NULL, NULL);
+			return 0;
+		}
+		if(!SUCCEEDED(psf->CreateViewObject(0,IID_IContextMenu,(void**)&pCM)))
+		{
+			MessageBox(NULL, L"CreateViewObject failed", NULL, NULL);
+			return 0;
+		}
+	}
+	else
+		GetUIObjectOfFile(hWnd,strPath, IID_IContextMenu, (void**)&pCM);
+
+	if(psf != NULL)
+		psf->Release();
+	else
+		return 0;
+
+	HMENU hmenu = CreatePopupMenu();
+	if (hmenu) 
+	{
+		if (SUCCEEDED(pCM->QueryContextMenu(hmenu, 0, MIN_SHELL_ID, MAX_SHELL_ID, CMF_NORMAL))) 
+		{
+			if(idn == 0)
+				idn = TrackPopupMenuEx(hmenu, TPM_RETURNCMD, 100, 100, hWnd, NULL);
+			if(idn!=0)
+			{
+				CMINVOKECOMMANDINFOEX info = { 0 };
+				info.cbSize = sizeof(info);
+				info.fMask = CMIC_MASK_UNICODE;
+				info.hwnd = hWnd;
+				info.lpVerb  = MAKEINTRESOURCEA(idn - MIN_SHELL_ID);
+				info.lpVerbW = MAKEINTRESOURCEW(idn - MIN_SHELL_ID);
+				info.nShow = SW_SHOWNORMAL;
+				pCM->InvokeCommand((LPCMINVOKECOMMANDINFO)&info);
+			}
+		}
+		DestroyMenu(hmenu);
+	}
+
+	if(pCM != NULL)
+		pCM->Release();
+	else
+		return 0;
+
+	return 1;
+}
+
+HRESULT GetUIObjectOfFile(HWND hwnd, LPCWSTR pszPath, REFIID riid, void **ppv)
+{
+  *ppv = NULL;
+  HRESULT hr;
+  LPITEMIDLIST pidl;
+  SFGAOF sfgao;
+  if (SUCCEEDED(hr = SHParseDisplayName(pszPath, NULL, &pidl, 0, &sfgao))) {
+    IShellFolder *psf;
+    LPCITEMIDLIST pidlChild;
+    if (SUCCEEDED(hr = SHBindToParent(pidl, IID_IShellFolder,
+                                      (void**)&psf, &pidlChild))) {
+      hr = psf->GetUIObjectOf(hwnd, 1, &pidlChild, riid, NULL, ppv);
+      psf->Release();
+    }
+    CoTaskMemFree(pidl);
+  }
+  return hr;
+}

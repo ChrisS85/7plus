@@ -66,7 +66,7 @@ Accessor_ProgramLauncher_ShowSettings(ProgramLauncher, PluginSettings, PluginGUI
 	else if(GoToLabel = "AddPath")
 	{
 		Gui +OwnDialogs
-		path:=COM_CreateObject("Shell.Application").BrowseForFolder(0, "Add indexing path", 0).Self.Path
+		path:=COMObjCreate("Shell.Application").BrowseForFolder(0, "Add indexing path", 0).Self.Path
 		if(path!="")
 		{
 			PSettings.tmpPaths.append(Object("Path", path, "Extensions", "exe"))
@@ -80,7 +80,7 @@ Accessor_ProgramLauncher_ShowSettings(ProgramLauncher, PluginSettings, PluginGUI
 		{
 			Gui +OwnDialogs
 			FileSelectFolder, path,,,Add indexing path
-			; path:=COM_CreateObject("Shell.Application").BrowseForFolder(0, "Add indexing path", 0x50).Self.Path
+			; path:=COMObjCreate("Shell.Application").BrowseForFolder(0, "Add indexing path", 0x50).Self.Path
 			if(path!="")
 			{
 				LV_GetText(pos,selected,1)
