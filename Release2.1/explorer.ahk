@@ -227,25 +227,37 @@ RegisterSelectionChangedEvents()
 		{
 			doc:=Item.Document
 			if(!doc)
+				continue			
+			Path := doc.Folder.Self.path
+			if(!Path)
 				continue
-			
-			if(RegisteredSelectionChangedWindows[index].doc != doc)
+			if(RegisteredSelectionChangedWindows[index].Path != Path) ;Compare by path since the COM wrapper objects are different
 			{
 				Selection := GetSelectedFiles(0,hwnd)
 				outputdebug register new view
 				ComObjConnect(doc, "Explorer")
-				RegisteredSelectionChangedWindows[index].SelectionHistory.append(Selection)
+				RegisteredSelectionChangedWindows[index].SelectionHistory := Array(Selection) ;Recreate array to remove selection history from previous folder
+				RegisteredSelectionChangedWindows[index].Path := Path
 				RegisteredSelectionChangedWindows[index].doc := doc
 			}
 		}
 	}
 }
+UnregisterSelectionChangedEvents(hwnd)
+{
+	global RegisteredSelectionChangedWindows
+	i := RegisteredSelectionChangedWindows.indexOfSubItem("hwnd", hwnd)
+	if(i > 0)
+		RegisteredSelectionChangedWindows.Delete(i)
+}
 ExplorerSelectionChanged(ExplorerCOMObject)
 {
 	global RegisteredSelectionChangedWindows
-	if(RegisteredSelectionChangedWindows.IgnoreNextEvent)
+	outputdebug ExplorerSelectionChanged
+	if(RegisteredSelectionChangedWindows.IgnoreNextEvent > 0)
 	{
-		RegisteredSelectionChangedWindows.IgnoreNextEvent := false
+		RegisteredSelectionChangedWindows.IgnoreNextEvent := RegisteredSelectionChangedWindows.IgnoreNextEvent - 1
+		outputdebug % "expecting " RegisteredSelectionChangedWindows.IgnoreNextEvent " more events."
 		return
 	}
 	RegisteredSelectionChangedWindowsItem := RegisteredSelectionChangedWindows.indexOfSubItem("doc", ExplorerCOMObject)
@@ -253,25 +265,29 @@ ExplorerSelectionChanged(ExplorerCOMObject)
 	{
 		outputdebug found explorer history
 		RegisteredSelectionChangedWindowsItem := RegisteredSelectionChangedWindows[RegisteredSelectionChangedWindowsItem]
-		RegisteredSelectionChangedWindowsItem.SelectionHistory.append(GetSelectedFiles(0, RegisteredSelectionChangedWindowsItem.hwnd))
+		RegisteredSelectionChangedWindowsItem.SelectionHistory.append(ToArray(GetSelectedFiles(0, RegisteredSelectionChangedWindowsItem.hwnd)))
 		if(RegisteredSelectionChangedWindowsItem.SelectionHistory.len() > 10)
 			RegisteredSelectionChangedWindowsItem.SelectionHistory.Delete(1)
 	}
 }
-#if WinActive("ahk_group ExplorerGroup")
-^+z::RestoreExplorerSelection()
-#if
 RestoreExplorerSelection()
 {
 	global RegisteredSelectionChangedWindows
-	outputdebug restore selection
 	hwnd := WinActive("ahk_group ExplorerGroup")
-	RegisteredSelectionChangedWindowsItem := RegisteredSelectionChangedWindows[RegisteredSelectionChangedWindows.indexOfSubItem("hwnd",hwnd)]
-	if(RegisteredSelectionChangedWindowsItem.SelectionHistory.len() > 1)
+	if(hwnd)
 	{
-		RegisteredSelectionChangedWindows.IgnoreNextEvent := true
-		SelectFiles(RegisteredSelectionChangedWindowsItem.SelectionHistory[RegisteredSelectionChangedWindowsItem.SelectionHistory.len() - 1],1,0,1,1,hwnd)
-		RegisteredSelectionChangedWindowsItem.SelectionHistory.Delete(RegisteredSelectionChangedWindowsItem.SelectionHistory.len())
+		RegisteredSelectionChangedWindowsItem := RegisteredSelectionChangedWindows[RegisteredSelectionChangedWindows.indexOfSubItem("hwnd",hwnd)]
+		if(RegisteredSelectionChangedWindowsItem.SelectionHistory.len() > 1)
+		{		
+			outputdebug restore selection
+			Selection := RegisteredSelectionChangedWindowsItem.SelectionHistory[RegisteredSelectionChangedWindowsItem.SelectionHistory.len() - 1]
+			; A SelectionChanged event will be fired 2 times that needs to be suppressed? 
+			;Why is it fired 2 times instead of one time for each file? -> Probably because of timing
+			RegisteredSelectionChangedWindows.IgnoreNextEvent := 2 
+			outputdebug % "expecting " RegisteredSelectionChangedWindows.IgnoreNextEvent " events."
+			SelectFiles(Selection,1,0,1,1,hwnd)
+			RegisteredSelectionChangedWindowsItem.SelectionHistory.Delete(RegisteredSelectionChangedWindowsItem.SelectionHistory.len())
+		}
 	}
 }
 FixExplorerConfirmationDialogs()

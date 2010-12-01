@@ -134,6 +134,7 @@ if(!A_IsUnicode)
 #include %A_ScriptDir%\Actions\NewFolder.ahk
 #include %A_ScriptDir%\Actions\PlaySound.ahk
 #include %A_ScriptDir%\Actions\Restart7plus.ahk
+#include %A_ScriptDir%\Actions\RestoreSelection.ahk
 #include %A_ScriptDir%\Actions\Run.ahk
 #include %A_ScriptDir%\Actions\RunOrActivate.ahk
 #include %A_ScriptDir%\Actions\Screenshot.ahk

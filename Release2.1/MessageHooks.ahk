@@ -31,6 +31,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 		DecToHex(hwnd)
 		if(TabContainerList.ContainsHWND(hwnd))		
 		{
+			UnregisterSelectionChangedEvents(hwnd)
 			; outputdebug tab closed
 			ExplorerDestroyed(hwnd)
 		}
