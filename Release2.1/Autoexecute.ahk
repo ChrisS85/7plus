@@ -262,6 +262,7 @@ Loop 10
 	FastFolders.append(Object("Path", x, "Title", y))
 }
 
+RegisteredSelectionChangedWindows := Array()
 
 IniRead, UseTabs, %ConfigPath%, Tabs, UseTabs, 1
 IniRead, NewTabPosition, %ConfigPath%, Tabs, NewTabPosition, 1

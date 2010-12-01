@@ -710,7 +710,7 @@ ToArray(SourceFiles, ByRef Separator = "`n", ByRef wasQuoted = 0)
 		}
 		else
 		{
-			file := SubStr(SourceFiles, pos, max(InStr(SourceFiles, Separator, 0, pos + 1) - pos - 1, 0)) ; separator
+			file := SubStr(SourceFiles, pos, max(InStr(SourceFiles, Separator, 0, pos + 1) - pos, 0)) ; separator
 			if(!file)
 				file := SubStr(SourceFiles, pos) ;no quotes or separators, single file
 			if(file)

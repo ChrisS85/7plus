@@ -167,6 +167,7 @@ ShellMessage( wParam,lParam, msg)
 				if(WinExist("ahk_id " PreviousWindow " ahk_group ExplorerGroup"))
 					ExplorerDeactivated(PreviousWindow)
 				ExplorerActivated(lParam)
+				RegisterSelectionChangedEvents()
 			}
 			;Explorer info stuff
 			if(A_OSVersion="WIN_7" && HKShowSpaceAndSize)

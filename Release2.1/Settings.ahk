@@ -19,8 +19,8 @@ Settings_CreateEvents(ByRef TabCount) {
 	Gui, 1:Add, Edit, x+10 y%yIt% w375 hwndEventFilter gEventFilterChange
 	yIt += textboxstep
 	Gui, 1:Add, ListView, x%x1% y%yIt% w450 h232 vGUI_EventsList gGUI_EventsList_SelectionChange Grid -LV0x10 AltSubmit Checked, Enabled|ID|Trigger|Name
-	OnMessage(0x100, "WM_KEYDOWN")
-	OnMessage(0x101, "WM_KEYUP")
+	OnMessage(0x0111, "WM_COMMAND")
+	
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Add gGUI_EventsList_Add, Add Event
 	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Remove gGUI_EventsList_Remove, Delete Event
@@ -51,8 +51,6 @@ Settings_CreateAccessorKeywords(ByRef TabCount) {
 	TabCount++
 	AddTab(0, "","SysTabControl32" TabCount)
 	Gui, 1:Add, ListView, x%x1% y%yIt% w450 h232 vGUI_AccessorKeywordsList gGUI_AccessorKeywordsList_Events Grid -Multi -LV0x10 AltSubmit, ID|Key|Command
-	OnMessage(0x100, "WM_KEYDOWN")
-	OnMessage(0x101, "WM_KEYUP")
 	LV_ModifyCol(1, 0)
     LV_ModifyCol(2, 100)
 	LV_ModifyCol(3, "AutoHdr")
@@ -77,8 +75,6 @@ Settings_CreateAccessor(ByRef TabCount) {
 	TabCount++
 	AddTab(0, "","SysTabControl32" TabCount)
 	Gui, 1:Add, ListView, x%x1% y%yIt% w450 h232 vGUI_AccessorPluginsList gGUI_AccessorPluginsList_Events Grid -LV0x10 AltSubmit Checked, Enabled|ID|Name
-	OnMessage(0x100, "WM_KEYDOWN")
-	OnMessage(0x101, "WM_KEYUP")
 	LV_ModifyCol(1, "Auto")
     LV_ModifyCol(2, 0)
 	LV_ModifyCol(3, "AutoHdr")
@@ -288,8 +284,6 @@ Settings_CreateHotstrings(ByRef TabCount) {
 	TabCount++
 	AddTab(0, "","SysTabControl32" TabCount)
 	Gui, 1:Add, ListView, x%x1% y%yIt% w450 h216 vGUI_HotstringsList gGUI_HotstringsList_Events Grid -Multi -LV0x10 AltSubmit, ID|Key|Command
-	OnMessage(0x100, "WM_KEYDOWN")
-	OnMessage(0x101, "WM_KEYUP")
 	LV_ModifyCol(1, 0)
     LV_ModifyCol(2, 100)
 	LV_ModifyCol(3, "AutoHdr")
@@ -959,7 +953,10 @@ ShowSettings() {
 
 		; Retrieve unique ID number (HWND/handle) 
 		WinGet, hw_Gui, ID, ahk_class AutoHotkeyGUI ahk_pid %pid_this% 
-
+		
+		OnMessage(0x100, "WM_KEYDOWN")
+		OnMessage(0x101, "WM_KEYUP")
+	
 		; Call "HandleMessage" when script receives WM_SETCURSOR message 
 		WM_SETCURSOR = 0x20 
 		OnMessage(WM_SETCURSOR, "HandleMessage") 
@@ -1958,10 +1955,12 @@ Return
 */
 WM_KEYDOWN(wParam, lParam)
 {
+	Critical
 	global EventFilter, SettingsActive
 	outputdebug wm_keydown()
 	if(A_GUI = 1 && SettingsActive)
 	{
+		outputdebug settings
 		/*
 		if(A_GuiControl = "CustomHotkeysList" && wParam = 0x2E) ;Delete key pressed on CustomHotkeysList
 		{
@@ -1977,18 +1976,24 @@ WM_KEYDOWN(wParam, lParam)
 			send := true
 			if(wParam = 17 || (wParam > 32 && wParam < 41)) ;CTRL, arrow keys, home, end, page up/down
 				send := false
+			outputdebug wParam %wParam% lParam %lParam%
 			if(GetKeyState("Control", "P")) ;Don't send when CTRL is down
 			{
 				send := false
+				outputdebug ctrl
 				if(GetKeyState("A", "P"))
+				{
+					outputdebug ctrl+a
 					Loop % LV_GetCount()
 						LV_Modify(A_Index, "Select")
+				}
 			}
 			
 			if(send)
 			{
 				outputdebug send keydown %wparam% to %EventFilter%
 				PostMessage, 0x100, %wParam%, %lParam%,,ahk_id %EventFilter%
+				Critical, Off
 				return true
 			}
 		}
@@ -2017,6 +2022,10 @@ WM_KEYUP(wParam, lParam)
 		PostMessage, 0x101, %wParam%, %lParam%,,ahk_id %EventFilter%
 		return true
 	}
+}
+WM_COMMAND(wParam, lParam)
+{
+	outputdebug WM_COMMAND wParam %wParam% lParam %lParam%
 }
 
 ;---------------------------------------------------------------------------------------------------------------

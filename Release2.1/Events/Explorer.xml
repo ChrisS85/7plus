@@ -136,7 +136,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>9</ID>
-<Name>Run CMD  in current directory</Name>
+<Name>Run CMD in current directory</Name>
 <OfficialEvent>10</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>

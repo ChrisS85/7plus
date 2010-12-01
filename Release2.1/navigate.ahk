@@ -286,12 +286,14 @@ IsDialog(window=0)
 	return result
 }
 
-GetSelectedFiles(FullName=1)
+;Returns selected files separated by `n
+GetSelectedFiles(FullName=1, hwnd=0)
 {
 	global MuteClipboardList,Vista7
 	If (WinActive("ahk_group ExplorerGroup"))
 	{
-		hWnd:=WinExist("A")
+		if(!hwnd)
+			hWnd:=WinExist("A")
 		if FullName
 			return ShellFolder(hwnd,3)
 		else
@@ -365,7 +367,6 @@ GetFocussedFile()
 		return focussed
 	}
 }
-#x::msgbox % shellfolder("",1)
 GetCurrentFolder(hwnd=0, DisplayName=0)
 {
 	global MuteClipboardList
@@ -387,10 +388,24 @@ GetCurrentFolder(hwnd=0, DisplayName=0)
 	}
 	return ""
 }
-
+#x::SetFilter("ahk", WinExist("A"))
+SetFilter(Filter,hWnd)
+{
+	If (hWnd||(hWnd:=WinActive("ahk_class CabinetWClass"))||(hWnd:=WinActive("ahk_class ExploreWClass")))
+	{
+		for Item in ComObjCreate("Shell.Application").Windows
+		{
+			if (Item.hwnd = hWnd)
+			{
+				doc:=Item.Document
+				doc.FilterView(Filter)
+			}
+		}
+	}
+}
 SelectFiles(Select,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)
 {
-	If   hWnd||(hWnd:=WinActive("ahk_class CabinetWClass"))||(hWnd:=WinActive("ahk_class ExploreWClass")) 
+	If (hWnd||(hWnd:=WinActive("ahk_class CabinetWClass"))||(hWnd:=WinActive("ahk_class ExploreWClass")))
 	{
 		for Item in ComObjCreate("Shell.Application").Windows
 		{
@@ -413,7 +428,6 @@ SelectFiles(Select,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)
 				}
 				if(!IsObject(Select))
 					Select := ToArray(Select)
-					
 				items := Array()
 				itemnames := Array()
 				Loop % count
@@ -425,10 +439,9 @@ SelectFiles(Select,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)
 						itemname := item.Name
 						if(itemname != "")
 						{
-							outputdebug itemname %itemname%
+							; outputdebug itemname %itemname%
 							break
 						}
-						outputdebug no itemname
 						Sleep 10
 					}
 					items.append(item)	
@@ -436,8 +449,9 @@ SelectFiles(Select,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)
 				}
 				Loop % Select.len()
 				{
+					index := A_Index
 					filter := Select[A_Index]
-					If filter <>
+					If(filter)
 					{
 						If(InStr(filter, "*"))
 						{
@@ -454,8 +468,19 @@ SelectFiles(Select,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)
 							}
 						}
 						else
-							doc.SelectItem(doc.Folder.ParseName(filter),(A_Index=1 ? value1 : value))
+						{
+							Loop % items.len()
+							{
+								if(itemnames[A_Index]=filter)
+								{
+									doc.SelectItem(items[A_Index], index=1 ? value1 : value)
+									index++
+									break
+								}
+							}
+							; doc.SelectItem(doc.Folder.ParseName(COMObjParameter(0x0008,filter)),(A_Index=1 ? value1 : value))
 							; COM_Invoke(doc,"SelectItem",doc.Folder.ParseName(filter),(A_Index=1 ? value1 : value)) ;http://msdn.microsoft.com/en-us/library/bb774047(VS.85).aspx					
+						}
 					}
 				}
 				return
@@ -496,8 +521,14 @@ ShellFolder(hWnd=0,returntype=0)
 			if (Item.hwnd = hWnd)
 			{
 				doc:=Item.Document
+				if(!doc)
+					return
 				sFolder   := doc.Folder.Self.path
+				if(!sFolder)
+					return
 				sDisplay := doc.Folder.Self.name
+				if(!sDisplay)
+					return
 				;Don't get focussed item and selected files unless requested, because it will cause a COM error when called during/shortly after explorer path change sometimes
 				if (returntype=2)
 				{

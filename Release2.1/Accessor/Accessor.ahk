@@ -388,6 +388,7 @@ WM_ACTIVATE(wParam,lParam)
 Accessor_WM_KEYDOWN(wParam,lParam)
 {
 	global Accessor,AccessorPlugins,AccessorEdit,AccessorListView
+	outputdebug accessor keydown
 	GUINum := Accessor.GUINum
 	Gui, %GUINum%: Default
 	GUI, ListView, AccessorListView

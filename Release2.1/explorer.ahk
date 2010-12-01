@@ -179,6 +179,7 @@ SetFocusToFileView()
 ExplorerPathChanged(from, to)
 {
 	global vista7, HKSelectFirstFile
+	RegisterSelectionChangedEvents()
 	;focus first file
 	if(HKSelectFirstFile)
 	{
@@ -203,7 +204,76 @@ ExplorerPathChanged(from, to)
 		}
 	}
 }
-
+RegisterSelectionChangedEvents()
+{
+	global RegisteredSelectionChangedWindows
+	; Find hwnd window
+	for Item in ComObjCreate("Shell.Application").Windows
+	{
+		if((index := RegisteredSelectionChangedWindows.indexOfSubItem("hwnd",(hwnd := Item.hWnd))) = 0)
+		{			
+			doc:=Item.Document
+			if(!doc)
+				continue
+			Path := doc.Folder.Self.path
+			if(!Path)
+				continue
+			Selection := GetSelectedFiles(0,hwnd)
+			outputdebug register explorer %hwnd%
+			ComObjConnect(doc, "Explorer")
+			RegisteredSelectionChangedWindows.append(Object("hwnd", hwnd, "doc", doc, "SelectionHistory", Array(Selection), "Path", Path))
+		}
+		else ;explorer window is already registered, lets see if its view changed
+		{
+			doc:=Item.Document
+			if(!doc)
+				continue
+			
+			if(RegisteredSelectionChangedWindows[index].doc != doc)
+			{
+				Selection := GetSelectedFiles(0,hwnd)
+				outputdebug register new view
+				ComObjConnect(doc, "Explorer")
+				RegisteredSelectionChangedWindows[index].SelectionHistory.append(Selection)
+				RegisteredSelectionChangedWindows[index].doc := doc
+			}
+		}
+	}
+}
+ExplorerSelectionChanged(ExplorerCOMObject)
+{
+	global RegisteredSelectionChangedWindows
+	if(RegisteredSelectionChangedWindows.IgnoreNextEvent)
+	{
+		RegisteredSelectionChangedWindows.IgnoreNextEvent := false
+		return
+	}
+	RegisteredSelectionChangedWindowsItem := RegisteredSelectionChangedWindows.indexOfSubItem("doc", ExplorerCOMObject)
+	if(RegisteredSelectionChangedWindowsItem != 0)
+	{
+		outputdebug found explorer history
+		RegisteredSelectionChangedWindowsItem := RegisteredSelectionChangedWindows[RegisteredSelectionChangedWindowsItem]
+		RegisteredSelectionChangedWindowsItem.SelectionHistory.append(GetSelectedFiles(0, RegisteredSelectionChangedWindowsItem.hwnd))
+		if(RegisteredSelectionChangedWindowsItem.SelectionHistory.len() > 10)
+			RegisteredSelectionChangedWindowsItem.SelectionHistory.Delete(1)
+	}
+}
+#if WinActive("ahk_group ExplorerGroup")
+^+z::RestoreExplorerSelection()
+#if
+RestoreExplorerSelection()
+{
+	global RegisteredSelectionChangedWindows
+	outputdebug restore selection
+	hwnd := WinActive("ahk_group ExplorerGroup")
+	RegisteredSelectionChangedWindowsItem := RegisteredSelectionChangedWindows[RegisteredSelectionChangedWindows.indexOfSubItem("hwnd",hwnd)]
+	if(RegisteredSelectionChangedWindowsItem.SelectionHistory.len() > 1)
+	{
+		RegisteredSelectionChangedWindows.IgnoreNextEvent := true
+		SelectFiles(RegisteredSelectionChangedWindowsItem.SelectionHistory[RegisteredSelectionChangedWindowsItem.SelectionHistory.len() - 1],1,0,1,1,hwnd)
+		RegisteredSelectionChangedWindowsItem.SelectionHistory.Delete(RegisteredSelectionChangedWindowsItem.SelectionHistory.len())
+	}
+}
 FixExplorerConfirmationDialogs()
 {
 	global
