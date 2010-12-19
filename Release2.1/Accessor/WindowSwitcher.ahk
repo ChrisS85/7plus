@@ -138,7 +138,7 @@ WindowSwitcherCloseWindow()
 	hwnd := Accessor.List[id].hwnd
 	outputdebug hwnd %hwnd%
 	PostMessage, 0x112, 0xF060,,, ahk_id %hwnd%
-	WindowSwitcher := AccessorPlugins[AccessorPlugins.indexOfSubItem("Type","WindowSwitcher")]
+	WindowSwitcher := AccessorPlugins.SubItem("Type","WindowSwitcher")
 	WindowSwitcher.List.Delete(WindowSwitcher.List.indexOfSubItem("hwnd",hwnd))
 	FillAccessorList()
 }

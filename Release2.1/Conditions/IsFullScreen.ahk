@@ -11,7 +11,9 @@ Condition_IsFullScreen_ReadXML(Condition, XMLCondition)
 }
 Condition_IsFullScreen_Evaluate(Condition)
 {
-	return IsFullScreen("A",Condition.UseExcludeList, Condition.UseIncludeList)
+	x:=IsFullScreen("A",Condition.UseExcludeList, Condition.UseIncludeList)
+	outputdebug evaluate fullscreen %x%
+	return x
 }
 Condition_IsFullScreen_DisplayString(Condition)
 {

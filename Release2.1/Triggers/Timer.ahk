@@ -78,7 +78,7 @@ return
 AddTimer()
 {
 	global Events, Settings_Events
-	Event := EventSystem_CreateEvent("")
+	Event := EventSystem_CreateAndRegisterEvent("")
 	Event.Trigger := EventSystem_CreateSubEvent("Trigger", "Timer")
 	Event := GUI_EditEvent(Event)
 	if(Event)

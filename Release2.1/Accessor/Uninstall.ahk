@@ -114,7 +114,7 @@ RemoveUninstallEntry()
 	LV_GetText(id,selected,2)
 	GUID := Accessor.List[id].GUID
 	RegDelete, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%GUID%
-	Uninstall := AccessorPlugins[AccessorPlugins.indexOfSubItem("Type", "Uninstall")]
+	Uninstall := AccessorPlugins.SubItem("Type", "Uninstall")
 	Uninstall.List.Delete(Uninstall.List.indexOfSubItem("GUID", GUID))
 	FillAccessorList()
 }

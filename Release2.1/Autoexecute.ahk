@@ -17,19 +17,20 @@ FileCreateDir %A_Temp%\7plus
 IniRead, NoAdminSettingsTransfered, %A_AppData%\7plus\Settings.ini, Misc, NoAdminSettingsTransfered, 0
 ;Try to use config file from script dir in portable mode or when it wasn't neccessary to copy it to appdata yet
 if((IsPortable || FileExist(A_ScriptDir "\Settings.ini")) && !NoAdminSettingsTransfered)
-	ConfigPath := A_ScriptDir "\Settings.ini"
+	ConfigPath := A_ScriptDir 
 Else
 {
-	ConfigPath := A_AppData "\7plus\Settings.ini"
-	if(!FileExist(A_AppData "\7plus"))
-		FileCreateDir, %A_AppData%\7plus
+	ConfigPath := A_AppData "\7plus"
+	if(!FileExist(ConfigPath))
+		FileCreateDir, %ConfigPath%
 }
+IniPath := ConfigPath "\Settings.ini"
 ;Start debugger
-IniRead, DebugEnabled, %ConfigPath%, General, DebugEnabled , 0
+IniRead, DebugEnabled, %IniPath%, General, DebugEnabled , 0
 if(DebugEnabled)
 	DebuggingStart()
 
-IniRead, RunAsAdmin, %ConfigPath%, Misc, RunAsAdmin , Always/Ask
+IniRead, RunAsAdmin, %IniPath%, Misc, RunAsAdmin , Always/Ask
 ;Remove 'Always run as admin' compatibility flag from registry in portable or non-admin mode
 if(RunAsAdmin = "Never" && !IsPortable)
 {
@@ -67,15 +68,15 @@ if(!A_IsAdmin && RunAsAdmin = "Always/Ask")
 
 ;If the current config path is set to the program directory but there is no write access, %AppData%\7plus needs to be used.
 ;If this is the first time (i.e. NoAdminSettingsTransfered = 0), all config files need to be copied to the new config path
-if((ConfigPath = A_ScriptDir "\Settings.ini" && !WriteAccess(A_ScriptDir "\Accessor.xml")) || ConfigPath = A_AppData "\7plus\Settings.ini")
+if((ConfigPath = A_ScriptDir && !WriteAccess(A_ScriptDir "\Accessor.xml")) || ConfigPath = A_AppData "\7plus")
 {
 	if(IsPortable)
 		MsgBox No file access to settings files in program directory. 7plus will not be able to store its settings. Please move 7plus to a folder with write permissions, run it as administrator, or grant write permissions to this directory.
 	else
 	{
-		ConfigPath := A_AppData "\7plus\Settings.ini"
-		if(!FileExist(A_AppData "\7plus"))
-			FileCreateDir, %A_AppData%\7plus
+		ConfigPath := A_AppData "\7plus"
+		if(!FileExist(ConfigPath))
+			FileCreateDir, %ConfigPath%
 		if(NoAdminSettingsTransfered != MajorVersion "." MinorVersion "." BugfixVersion)
 		{
 			if(!WriteAccess(A_ScriptDir "\Accessor.xml"))
@@ -101,33 +102,14 @@ if((ConfigPath = A_ScriptDir "\Settings.ini" && !WriteAccess(A_ScriptDir "\Acces
 	}
 }
 
-;Update checker
-IniRead, AutoUpdate, %ConfigPath%, Misc, AutoUpdate, 1
-if(A_IsAdmin) ;For some reason this does not work for normal user
-{
-	if(AutoUpdate)
-		AutoUpdate()
-	PostUpdate()
-}
+IniRead, PatchVersion, %IniPath%, General, PatchVersion, 0
+
+if(!FileExist(ConfigPath "\Events.xml") && FileExist(A_ScriptDir "\Events\All Events.xml")) ;Fresh install, copy default events file into config directory
+	FileCopy, %A_ScriptDir%\Events\All Events.xml, %A_ConfigPath%\Events.xml
 
 
-SplitPath, ConfigPath,,path
-;Possibly replace an old Events.xml with the current one. The current version is stored in LastReplacedEventsFile so that this is not done repeatedly if the new file couldn't be deleted.
-;In addition, a backup of the old file is created.
-IniRead, LastReplacedEventsFile, %ConfigPath%, Misc, LastReplacedEventsFile, 0
-if(FileExist(A_ScriptDir "\Events " MajorVersion "." MinorVersion "." BugfixVersion ".xml") && LastReplacedEventsFile != MajorVersion "." MinorVersion "." BugfixVersion && WriteAccess(path "\Accessor.xml"))
-{
-	if(FileExist(path "\Events.xml"))
-	{
-		FileCopy, %path%\Events.xml, %path%\Events Backup.xml
-		FileDelete, %path%\Events.xml
-		Msgbox A Backup of your previous Events.xml file was created in %path%\Events Backup.xml.
-	}
-	FileCopy, %A_ScriptDir%\Events %MajorVersion%.%MinorVersion%.%BugfixVersion%.xml, %path%\Events.xml
-	FileDelete, %A_ScriptDir%\Events %MajorVersion%.%MinorVersion%.%BugfixVersion%.xml
-	LastReplacedEventsFile := MajorVersion "." MinorVersion "." BugfixVersion
-}
 CreateTabWindow()
+
 ;Get windows version
 RegRead, vista7, HKLM, SOFTWARE\Microsoft\Windows NT\CurrentVersion, CurrentVersion
 vista7 := vista7 >= 6
@@ -142,16 +124,33 @@ OnExit, ExitSub
 ;COM_Init()
 ;COM_Error(0)
 
-;On first run, wizard is used to setup values
-IniRead, FirstRun, %ConfigPath%, General, FirstRun , 1
+Action_Upload_ReadFTPProfiles()
 
-IniRead, JoyControl, %ConfigPath%, Misc, JoyControl , 1
+;Init event system
+EventSystem_Startup()
+
+;Update checker
+IniRead, AutoUpdate, %IniPath%, Misc, AutoUpdate, 1
+if(A_IsAdmin) ;For some reason this does not work for normal user (maybe because I tried to write to programfiles before??)
+{
+	if(AutoUpdate)
+	{
+		AutoUpdate()
+		AutoUpdate_CheckPatches()
+	}
+	PostUpdate()
+}
+
+;On first run, wizard is used to setup values
+IniRead, FirstRun, %IniPath%, General, FirstRun , 1
+
+IniRead, JoyControl, %IniPath%, Misc, JoyControl , 0
 if(JoyControl)
 	JoystickStart()
 
 ;Explorer pasting as file
-IniRead, ImgName, %ConfigPath%, Explorer, Image, clip.png
-IniRead, TxtName, %ConfigPath%, Explorer, Text, clip.txt
+IniRead, ImgName, %IniPath%, Explorer, Image, clip.png
+IniRead, TxtName, %IniPath%, Explorer, Text, clip.txt
 ;the path where the image file is saved for copying
 temp_img := A_Temp . "\" . ImgName
 temp_txt := A_Temp . "\" . TxtName
@@ -178,49 +177,49 @@ API_SetWinEventHook(0x0016,0x0016,0,HookProcAdr,0,0,0)
 API_SetWinEventHook(0x000E,0x000E,0,HookProcAdr,0,0,0)
 DetectHiddenWindows, On
 
-IniRead, HKPlacesBar, %ConfigPath%, Explorer, HKPlacesBar, 0
-IniRead, HKCleanFolderBand, %ConfigPath%, Explorer, HKCleanFolderBand, 0
-IniRead, HKFolderBand, %ConfigPath%, Explorer, HKFolderBand, 0
+IniRead, HKPlacesBar, %IniPath%, Explorer, HKPlacesBar, 0
+IniRead, HKCleanFolderBand, %IniPath%, Explorer, HKCleanFolderBand, 0
+IniRead, HKFolderBand, %IniPath%, Explorer, HKFolderBand, 0
 
 
-;IniRead, HKImprovedWinE, %ConfigPath%, Explorer, HKImprovedWinE, 1
-IniRead, HKSelectFirstFile, %ConfigPath%, Explorer, HKSelectFirstFile, 1
-IniRead, HKImproveEnter, %ConfigPath%, Explorer, HKImproveEnter, 1
-IniRead, HKShowSpaceAndSize, %ConfigPath%, Explorer, HKShowSpaceAndSize, 1
-IniRead, HKMouseGestures, %ConfigPath%, Explorer, HKMouseGestures, 1
-IniRead, HKAutoCheck, %ConfigPath%, Explorer, HKAutoCheck, 1
-IniRead, ScrollUnderMouse, %ConfigPath%, Explorer, ScrollUnderMouse, 1
-IniRead, HKInvertSelection, %ConfigPath%, Explorer, HKInvertSelection, 1
-IniRead, HKOpenInNewFolder, %ConfigPath%, Explorer, HKOpenInNewFolder, 1
-IniRead, HKFlattenDirectory, %ConfigPath%, Explorer, HKFlattenDirectory, 1
-IniRead, RecallExplorerPath, %ConfigPath%, Explorer, RecallExplorerPath, 1
-IniRead, AlignExplorer, %ConfigPath%, Explorer, AlignExplorer, 1
+;IniRead, HKImprovedWinE, %IniPath%, Explorer, HKImprovedWinE, 1
+IniRead, HKSelectFirstFile, %IniPath%, Explorer, HKSelectFirstFile, 1
+IniRead, HKImproveEnter, %IniPath%, Explorer, HKImproveEnter, 1
+IniRead, HKShowSpaceAndSize, %IniPath%, Explorer, HKShowSpaceAndSize, 1
+IniRead, HKMouseGestures, %IniPath%, Explorer, HKMouseGestures, 1
+IniRead, HKAutoCheck, %IniPath%, Explorer, HKAutoCheck, 1
+IniRead, ScrollUnderMouse, %IniPath%, Explorer, ScrollUnderMouse, 1
+IniRead, HKInvertSelection, %IniPath%, Explorer, HKInvertSelection, 1
+IniRead, HKOpenInNewFolder, %IniPath%, Explorer, HKOpenInNewFolder, 1
+IniRead, HKFlattenDirectory, %IniPath%, Explorer, HKFlattenDirectory, 1
+IniRead, RecallExplorerPath, %IniPath%, Explorer, RecallExplorerPath, 1
+IniRead, AlignExplorer, %IniPath%, Explorer, AlignExplorer, 1
 
-IniRead, HKMiddleClose, %ConfigPath%, Windows, HKMiddleClose, 1
-IniRead, HKActivateBehavior, %ConfigPath%, Windows, HKActivateBehavior, 1
-IniRead, AeroFlipTime, %ConfigPath%, Windows, AeroFlipTime, 0.2
-IniRead, HKAltDrag, %ConfigPath%, Windows, HKAltDrag, 1
-IniRead, HKToggleWallpaper, %ConfigPath%, Windows, HKToggleWallpaper, 1
+IniRead, HKMiddleClose, %IniPath%, Windows, HKMiddleClose, 1
+IniRead, HKActivateBehavior, %IniPath%, Windows, HKActivateBehavior, 1
+IniRead, AeroFlipTime, %IniPath%, Windows, AeroFlipTime, 0.2
+IniRead, HKAltDrag, %IniPath%, Windows, HKAltDrag, 1
+IniRead, HKToggleWallpaper, %IniPath%, Windows, HKToggleWallpaper, 1
 
-IniRead, HKHoverStart, %ConfigPath%, Windows, HKHoverStart, 1
+IniRead, HKHoverStart, %IniPath%, Windows, HKHoverStart, 1
 ;program to launch on double click on taskbar
-IniRead, TaskbarLaunchPath, %ConfigPath%, Windows, TaskbarLaunchPath , %A_Windir%\system32\taskmgr.exe
+IniRead, TaskbarLaunchPath, %IniPath%, Windows, TaskbarLaunchPath , %A_Windir%\system32\taskmgr.exe
 stringreplace, TaskbarLaunchPath, TaskbarLaunchPath, `%A_ProgramFiles`%, %A_ProgramFiles% 
 ;Slide windows
-IniRead, HKSlideWindows, %ConfigPath%, Windows, HKSlideWindows , 1
-IniRead, SlideWinHide, %ConfigPath%, Windows, SlideWinHide , 1
+IniRead, HKSlideWindows, %IniPath%, Windows, HKSlideWindows , 1
+IniRead, SlideWinHide, %IniPath%, Windows, SlideWinHide , 1
 SlideWindows_Startup()
-IniRead, SlideWindowsBorder, %ConfigPath%, Windows, SlideWindowsBorder , 30
-IniRead, ImageExtensions, %ConfigPath%, Misc, ImageExtensions, jpg,png,bmp,gif,tga,tif,ico,jpeg
-IniRead, WordDelete, %ConfigPath%, Misc, WordDelete, 1
+IniRead, SlideWindowsBorder, %IniPath%, Windows, SlideWindowsBorder , 30
+IniRead, ImageExtensions, %IniPath%, Misc, ImageExtensions, jpg,png,bmp,gif,tga,tif,ico,jpeg
+IniRead, WordDelete, %IniPath%, Misc, WordDelete, 1
 
 ;Fullscreen exclusion list
-IniRead, FullscreenExclude, %ConfigPath%, Misc, FullscreenExclude,VLC DirectX,OpWindow,CabinetWClass
-IniRead, FullscreenInclude, %ConfigPath%, Misc, FullscreenInclude,Project64
-IniRead, ImageQuality, %ConfigPath%, Misc, ImageQuality,100
-IniRead, ImageExtension, %ConfigPath%, Misc, ImageExtension,png
-IniRead, PreviousExplorerPath, %ConfigPath%, Misc, PreviousExplorerPath,C:
-IniRead, ExplorerPath, %ConfigPath%, Misc, ExplorerPath,C:
+IniRead, FullscreenExclude, %IniPath%, Misc, FullscreenExclude,VLC DirectX,OpWindow,CabinetWClass
+IniRead, FullscreenInclude, %IniPath%, Misc, FullscreenInclude,Project64
+IniRead, ImageQuality, %IniPath%, Misc, ImageQuality,100
+IniRead, ImageExtension, %IniPath%, Misc, ImageExtension,png
+IniRead, PreviousExplorerPath, %IniPath%, Misc, PreviousExplorerPath,C:
+IniRead, ExplorerPath, %IniPath%, Misc, ExplorerPath,C:
 
 if((AeroFlipTime>=0&&Vista7)||HKSlideWindows)
 {
@@ -230,11 +229,9 @@ if((AeroFlipTime>=0&&Vista7)||HKSlideWindows)
 ClipboardList := Array()
 ClipboardList.push := "Stack_Push"
 ClipboardList := Object("Base", ClipboardList)
-SplitPath, ConfigPath,,path
-path .= "\Clipboard.xml"
-if(FileExist(path))
+if(FileExist(ConfigPath "\Clipboard.xml"))
 {
-	FileRead, xml, %path%
+	FileRead, xml, %ConfigPath%\Clipboard.xml
 	XMLObject := XML_Read(xml)
 	;Convert empty and single arrays to real array
 	if(!XMLObject.List.len())
@@ -249,28 +246,28 @@ Loop 10
 	z := A_Index - 1
 	if(z = 0)
 	{
-		IniRead, x, %ConfigPath%, FastFolders, Folder%z%, ::{20D04FE0-3AEA-1069-A2D8-08002B30309D}
-		IniRead, y, %ConfigPath%, FastFolders, FolderTitle%z%, Computer
+		IniRead, x, %IniPath%, FastFolders, Folder%z%, ::{20D04FE0-3AEA-1069-A2D8-08002B30309D}
+		IniRead, y, %IniPath%, FastFolders, FolderTitle%z%, Computer
 	}
 	else if(z=1)
 	{
-		IniRead, x, %ConfigPath%, FastFolders, Folder%z%, C:\
-		IniRead, y, %ConfigPath%, FastFolders, FolderTitle%z%, C:\
+		IniRead, x, %IniPath%, FastFolders, Folder%z%, C:\
+		IniRead, y, %IniPath%, FastFolders, FolderTitle%z%, C:\
 	}
-    IniRead, x, %ConfigPath%, FastFolders, Folder%z%, %A_Space%
-    IniRead, y, %ConfigPath%, FastFolders, FolderTitle%z%, %A_Space%
+    IniRead, x, %IniPath%, FastFolders, Folder%z%, %A_Space%
+    IniRead, y, %IniPath%, FastFolders, FolderTitle%z%, %A_Space%
 	FastFolders.append(Object("Path", x, "Title", y))
 }
 
 RegisteredSelectionChangedWindows := Array()
 
-IniRead, UseTabs, %ConfigPath%, Tabs, UseTabs, 1
-IniRead, NewTabPosition, %ConfigPath%, Tabs, NewTabPosition, 1
-IniRead, TabStartupPath, %ConfigPath%, Tabs, TabStartupPath, %A_SPACE%
-IniRead, ActivateTab, %ConfigPath%, Tabs, ActivateTab, 1
-IniRead, TabWindowClose, %ConfigPath%, Tabs, TabWindowClose, 1
-IniRead, OnTabClose, %ConfigPath%, Tabs, OnTabClose, 1
-IniRead, MiddleOpenFolder, %ConfigPath%, Tabs, MiddleOpenFolder, 1
+IniRead, UseTabs, %IniPath%, Tabs, UseTabs, 1
+IniRead, NewTabPosition, %IniPath%, Tabs, NewTabPosition, 1
+IniRead, TabStartupPath, %IniPath%, Tabs, TabStartupPath, %A_SPACE%
+IniRead, ActivateTab, %IniPath%, Tabs, ActivateTab, 1
+IniRead, TabWindowClose, %IniPath%, Tabs, TabWindowClose, 1
+IniRead, OnTabClose, %IniPath%, Tabs, OnTabClose, 1
+IniRead, MiddleOpenFolder, %IniPath%, Tabs, MiddleOpenFolder, 1
 TabContainerList := TabContainerList()
 if(Vista7)
 	TabContainerList.Font := "Segoe UI"
@@ -289,8 +286,6 @@ if(Vista7)
 	
 if(A_OSVersion="WIN_7")
 	CreateInfoGui()
-
-Action_Upload_ReadFTPProfiles()
 
 GoSub TrayminOpen
 
@@ -316,21 +311,18 @@ else
 		Menu, tray, Icon, %A_ScriptDir%\7+-w.ico,,1
 }
 menu, tray, Default, Settings
-IniRead, HideTrayIcon, %ConfigPath%, Misc, HideTrayIcon, 0
+IniRead, HideTrayIcon, %IniPath%, Misc, HideTrayIcon, 0
 if(!HidetrayIcon)
 	menu, tray, Icon
 	
 SetTimer, TriggerTimer, 1000
 ; SetTimer, AssignHotkeys, -10000
 
-;Init event system
-EventSystem_Startup()
 
 ;possibly start wizard
 if (Firstrun=1)
 	GoSub, wizardry
 FirstRun:=0
-
 ;Event loop
 EventScheduler()
 Return
@@ -367,8 +359,7 @@ return
 
 ShowWizard()
 {
-	global ConfigPath
-	MsgBox, 4,,Welcome to the ultimate windows tweaking experience!`nBefore we begin, would you like to see a list of features?	
+	MsgBox, 4,,Welcome to 7plus!`nBefore we begin, would you like to see a list of features?	
 	IfMsgBox Yes
 		run http://code.google.com/p/7plus/wiki/Features
 	MsgBox, 4,,At the beginning, you should configure the settings and activate/deactivate the features to your liking. You can access the settings menu later through the tray icon or by pressing WIN+H. Do you want to open the settings window now?
@@ -378,179 +369,85 @@ ShowWizard()
 	SetTimer, ToolTipClose, -5000	
 	return
 }
-AutoUpdate()
-{	
-	global MajorVersion,MinorVersion,BugfixVersion
-	if(!A_IsAdmin) ;For some reason this does not work for normal user
-		return
-	if(IsConnected())
-	{
-		random, rand
-		;Disable keyboard hook to increase responsiveness
-		Suspend, On
-		URLDownloadToFile, http://7plus.googlecode.com/files/NewVersion.ini?x=%rand%, %A_ScriptDir%\Version.ini
-		Suspend, Off
-		if(!Errorlevel)
-		{
-			IniRead, tmpMajorVersion, %A_ScriptDir%\Version.ini, Version,MajorVersion
-			IniRead, tmpMinorVersion, %A_ScriptDir%\Version.ini, Version,MinorVersion
-			IniRead, tmpBugfixVersion, %A_ScriptDir%\Version.ini, Version,BugfixVersion
-			Update := (CompareVersion(tmpMajorVersion, MajorVersion, tmpMinorVersion, MinorVersion, tmpBugfixVersion, BugfixVersion) = 1)
-			if(Update)
-			{
-				IniRead, UpdateMessage, %A_ScriptDir%\Version.ini, Version,UpdateMessage
-				MsgBox,4,,%UpdateMessage%
-				IfMsgBox Yes
-				{
-					Progress zh0 fs18,Downloading Update, please wait.
-					Sleep 10
-					if(A_IsCompiled)
-						IniRead, Link, %A_ScriptDir%\Version.ini, Version,Link
-					else
-						IniRead, Link, %A_ScriptDir%\Version.ini, Version,LinkSource
-					URLDownloadToFile, %link%?x=%rand%,%A_ScriptDir%\Updater.exe
-					if(!Errorlevel)
-					{
-						Run %A_ScriptDir%\Updater.exe
-						ExitApp
-					}
-					else
-					{
-						MsgBox Error while updating. Make sure http://7plus.googlecode.com is reachable.
-						Progress, Off
-					}
-				}
-			}
-		}
-		else
-			MsgBox Could not download version info. Make sure http://7plus.googlecode.com is reachable.
-	}
-}
-PostUpdate()
-{
-	global MajorVersion,MinorVersion,BugfixVersion, ConfigPath, IsPortable
-	if(FileExist(A_ScriptDir "\Updater.exe"))
-	{
-		IniRead, tmpMajorVersion, %A_ScriptDir%\Version.ini,Version,MajorVersion
-		IniRead, tmpMinorVersion, %A_ScriptDir%\Version.ini,Version,MinorVersion
-		IniRead, tmpBugfixVersion, %A_ScriptDir%\Version.ini,Version,BugfixVersion
-		if(tmpMajorVersion=MajorVersion && tmpMinorVersion = MinorVersion && tmpBugfixVersion = BugfixVersion)
-		{
-			;If the new version is 2.1.0, some registry values need to be modified according to the new version.
-			if(MajorVersion "." MinorVersion "." BugfixVersion = "2.1.0")
-			{
-				RemoveAllButtons()
-				RefreshFastFolders()
-			}
-			;2.0.0 -> 2.1.0 compatibility, update autorun executable
-			if(!IsPortable)
-			{
-				RegRead, Autorun, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus
-				if(InStr(Autorun, "UACAutorun"))
-					if(A_IsCompiled)
-						RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptDir%\7plus.exe"
-					else
-						RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptDir%\7plus.ahk"
-			}
-			;Possibly delete remaining files from 2.0.0 which are obsolete now
-			List := "UACAutorun.exe,ChangeLocation.exe,Events\cmd.xml,Events\CopyFilenames.xml,Events\CreateNewFile,Folder.xml,Events\DoubleClickDesktop.xml,Events\DoubleClickTaskbar.xml,Events\DoubleClickUpwards.xml,Events\Mouse Volume.xml,Events\Open in Editor.xml,Events\Other things.xml,Events\Upload.xml,Events\AppendToClipboard.xml,Events\BackspaceUpwards.xml"
-			Loop, Parse, List,`,
-				if(FileExist(A_ScriptDir "/" A_LoopField) && WriteAccess(A_ScriptDir "/" A_LoopField))
-					FileDelete %A_ScriptDir%/%A_LoopField%
-			
-			if(FileExist(A_ScriptDir "\Changelog.txt"))
-			{
-				MsgBox,4,, Update successful. View Changelog?
-				IfMsgBox Yes
-					run %A_ScriptDir%\Changelog.txt
-				MsgBox Make sure to try out the new Accessor tool (Default: ALT + Space) !
-			}
-		}		
-		FileDelete %A_ScriptDir%\Updater.exe
-	}
-	FileDelete %A_ScriptDir%\Version.ini
-}
+
 WriteIni()
 {
 	global
 	local temp,x,y,z
 	if(!FileExist(ConfigPath))
-	{
-		SplitPath, ConfigPath,, path
-		FileCreateDir %path%
-	}
-	FileDelete, %ConfigPath%
-	IniWrite, %DebugEnabled%, %ConfigPath%, General, DebugEnabled
-	IniWrite, %ImgName%, %ConfigPath%, Explorer, Image
-	IniWrite, %TxtName%, %ConfigPath%, Explorer, Text
-	IniWrite, %HKPlacesBar%, %ConfigPath%, Explorer, HKPlacesBar
-	IniWrite, %HKCleanFolderBand%, %ConfigPath%, Explorer, HKCleanFolderBand
-	IniWrite, %HKFolderBand%, %ConfigPath%, Explorer, HKFolderBand	
+		FileCreateDir %ConfigPath%
+	FileDelete, %IniPath%
 	
-	IniWrite, %HKSelectFirstFile%, %ConfigPath%, Explorer, HKSelectFirstFile
-	IniWrite, %HKImproveEnter%, %ConfigPath%, Explorer, HKImproveEnter
-	IniWrite, %HKShowSpaceAndSize%, %ConfigPath%, Explorer, HKShowSpaceAndSize
-	IniWrite, %HKMouseGestures%, %ConfigPath%, Explorer, HKMouseGestures
-	IniWrite, %HKAutoCheck%, %ConfigPath%, Explorer, HKAutoCheck
-	IniWrite, %ScrollUnderMouse%, %ConfigPath%, Explorer, ScrollUnderMouse
-	IniWrite, %HKInvertSelection%, %ConfigPath%, Explorer, HKInvertSelection
-	IniWrite, %HKOpenInNewFolder%, %ConfigPath%, Explorer, HKOpenInNewFolder
-	IniWrite, %HKFlattenDirectory%, %ConfigPath%, Explorer, HKFlattenDirectory
-	IniWrite, %RecallExplorerPath%, %ConfigPath%, Explorer, RecallExplorerPath
-	IniWrite, %AlignExplorer%, %ConfigPath%, Explorer, AlignExplorer
+	IniWrite, %DebugEnabled%, %IniPath%, General, DebugEnabled
+	IniWrite, %ImgName%, %IniPath%, Explorer, Image
+	IniWrite, %TxtName%, %IniPath%, Explorer, Text
+	IniWrite, %HKPlacesBar%, %IniPath%, Explorer, HKPlacesBar
+	IniWrite, %HKCleanFolderBand%, %IniPath%, Explorer, HKCleanFolderBand
+	IniWrite, %HKFolderBand%, %IniPath%, Explorer, HKFolderBand	
 	
-	IniWrite, %UseTabs%, %ConfigPath%, Tabs, UseTabs
-	IniWrite, %NewTabPosition%, %ConfigPath%, Tabs, NewTabPosition
-	IniWrite, %TabStartupPath%, %ConfigPath%, Tabs, TabStartupPath
-	IniWrite, %ActivateTab%, %ConfigPath%, Tabs, ActivateTab
-	IniWrite, %TabWindowClose%, %ConfigPath%, Tabs, TabWindowClose
-	IniWrite, %OnTabClose%, %ConfigPath%, Tabs, OnTabClose
-	IniWrite, %MiddleOpenFolder%, %ConfigPath%, Tabs, MiddleOpenFolder
+	IniWrite, %HKSelectFirstFile%, %IniPath%, Explorer, HKSelectFirstFile
+	IniWrite, %HKImproveEnter%, %IniPath%, Explorer, HKImproveEnter
+	IniWrite, %HKShowSpaceAndSize%, %IniPath%, Explorer, HKShowSpaceAndSize
+	IniWrite, %HKMouseGestures%, %IniPath%, Explorer, HKMouseGestures
+	IniWrite, %HKAutoCheck%, %IniPath%, Explorer, HKAutoCheck
+	IniWrite, %ScrollUnderMouse%, %IniPath%, Explorer, ScrollUnderMouse
+	IniWrite, %HKInvertSelection%, %IniPath%, Explorer, HKInvertSelection
+	IniWrite, %HKOpenInNewFolder%, %IniPath%, Explorer, HKOpenInNewFolder
+	IniWrite, %HKFlattenDirectory%, %IniPath%, Explorer, HKFlattenDirectory
+	IniWrite, %RecallExplorerPath%, %IniPath%, Explorer, RecallExplorerPath
+	IniWrite, %AlignExplorer%, %IniPath%, Explorer, AlignExplorer
 	
-	IniWrite, %HKActivateBehavior%, %ConfigPath%, Windows, HKActivateBehavior
-	IniWrite, %HKToggleWallpaper%, %ConfigPath%, Windows, HKToggleWallpaper
-	IniWrite, %HKMiddleClose%, %ConfigPath%, Windows, HKMiddleClose
-	IniWrite, %AeroFlipTime%, %ConfigPath%, Windows, AeroFlipTime
-	IniWrite, %HKSlideWindows%, %ConfigPath%, Windows, HKSlideWindows
-	IniWrite, %SlideWinHide%, %ConfigPath%, Windows, SlideWinHide
-	IniWrite, %SlideWindowsBorder%, %ConfigPath%, Windows, SlideWindowsBorder
-	IniWrite, %HKAltDrag%, %ConfigPath%, Windows, HKAltDrag
-	IniWrite, %ImageExtensions%, %ConfigPath%, Misc, ImageExtensions
-	IniWrite, %JoyControl%, %ConfigPath%, Misc, JoyControl
-	IniWrite, %FullscreenExclude%, %ConfigPath%, Misc, FullscreenExclude
-	IniWrite, %FullscreenInclude%, %ConfigPath%, Misc, FullscreenInclude
-	IniWrite, %WordDelete%, %ConfigPath%, Misc, WordDelete
-	IniWrite, %HideTrayIcon%, %ConfigPath%, Misc, HideTrayIcon
-	IniWrite, %ImageQuality%, %ConfigPath%, Misc, ImageQuality
-	IniWrite, %ImageExtension%, %ConfigPath%, Misc, ImageExtension
-	IniWrite, %AutoUpdate%, %ConfigPath%, Misc, AutoUpdate
-	IniWrite, %RunAsAdmin%, %ConfigPath%, Misc, RunAsAdmin
-	IniWrite, %ExplorerPath%, %ConfigPath%, Misc, ExplorerPath
-	IniWrite, %PreviousExplorerPath%, %ConfigPath%, Misc, PreviousExplorerPath
+	IniWrite, %UseTabs%, %IniPath%, Tabs, UseTabs
+	IniWrite, %NewTabPosition%, %IniPath%, Tabs, NewTabPosition
+	IniWrite, %TabStartupPath%, %IniPath%, Tabs, TabStartupPath
+	IniWrite, %ActivateTab%, %IniPath%, Tabs, ActivateTab
+	IniWrite, %TabWindowClose%, %IniPath%, Tabs, TabWindowClose
+	IniWrite, %OnTabClose%, %IniPath%, Tabs, OnTabClose
+	IniWrite, %MiddleOpenFolder%, %IniPath%, Tabs, MiddleOpenFolder
+	
+	IniWrite, %HKActivateBehavior%, %IniPath%, Windows, HKActivateBehavior
+	IniWrite, %HKToggleWallpaper%, %IniPath%, Windows, HKToggleWallpaper
+	IniWrite, %HKMiddleClose%, %IniPath%, Windows, HKMiddleClose
+	IniWrite, %AeroFlipTime%, %IniPath%, Windows, AeroFlipTime
+	IniWrite, %HKSlideWindows%, %IniPath%, Windows, HKSlideWindows
+	IniWrite, %SlideWinHide%, %IniPath%, Windows, SlideWinHide
+	IniWrite, %SlideWindowsBorder%, %IniPath%, Windows, SlideWindowsBorder
+	IniWrite, %HKAltDrag%, %IniPath%, Windows, HKAltDrag
+	IniWrite, %ImageExtensions%, %IniPath%, Misc, ImageExtensions
+	IniWrite, %JoyControl%, %IniPath%, Misc, JoyControl
+	IniWrite, %FullscreenExclude%, %IniPath%, Misc, FullscreenExclude
+	IniWrite, %FullscreenInclude%, %IniPath%, Misc, FullscreenInclude
+	IniWrite, %WordDelete%, %IniPath%, Misc, WordDelete
+	IniWrite, %HideTrayIcon%, %IniPath%, Misc, HideTrayIcon
+	IniWrite, %ImageQuality%, %IniPath%, Misc, ImageQuality
+	IniWrite, %ImageExtension%, %IniPath%, Misc, ImageExtension
+	IniWrite, %AutoUpdate%, %IniPath%, Misc, AutoUpdate
+	IniWrite, %RunAsAdmin%, %IniPath%, Misc, RunAsAdmin
+	IniWrite, %ExplorerPath%, %IniPath%, Misc, ExplorerPath
+	IniWrite, %PreviousExplorerPath%, %IniPath%, Misc, PreviousExplorerPath
 	if(NoAdminSettingsTransfered)
-		IniWrite, %NoAdminSettingsTransfered%, %ConfigPath%, Misc, NoAdminSettingsTransfered
+		IniWrite, %NoAdminSettingsTransfered%, %IniPath%, Misc, NoAdminSettingsTransfered
 	if(LastReplacedEventsFile)
-		IniWrite, %LastReplacedEventsFile%, %ConfigPath%, Misc, LastReplacedEventsFile	
-	IniWrite, 0, %ConfigPath%, General, FirstRun
+		IniWrite, %LastReplacedEventsFile%, %IniPath%, Misc, LastReplacedEventsFile	
+	IniWrite, 0, %IniPath%, General, FirstRun
 	;FastFolders
 	Loop 10
 	{
 	    x:=A_Index-1
 	    y:=FastFolders[A_Index].Path
 	    z:=FastFolders[A_Index].Title
-	    IniWrite, %y%, %ConfigPath%, FastFolders, Folder%x%
-	    IniWrite, %z%, %ConfigPath%, FastFolders, FolderTitle%x%
+	    IniWrite, %y%, %IniPath%, FastFolders, Folder%x%
+	    IniWrite, %z%, %IniPath%, FastFolders, FolderTitle%x%
 	}
 }
 WriteClipboard()
 {
 	global ConfigPath, ClipboardList
-	SplitPath, ConfigPath,,path
-	FileDelete, %path%\Clipboard.xml
+	FileDelete, %ConfigPath%\Clipboard.xml
 	XMLObject := Object("List",Array())
 	Loop % min(ClipboardList.len(), 10)
 		XMLObject.List.append(ClipboardList[A_Index])
-	XML_Save(XMLObject,path "\Clipboard.xml")
+	XML_Save(XMLObject,ConfigPath "\Clipboard.xml")
 }
 CommunicateWithRunningInstance()
 {

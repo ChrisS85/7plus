@@ -6,14 +6,11 @@ Accessor_Notes_Init(ByRef Notes, Settings)
 	Notes.KeywordOnly := true
 	Notes.MinChars := 0
 	Notes.OKName := "Show Note"
-	SplitPath, ConfigPath,,path
-	path .= "\Notes.xml"
 	Notes.List := Array()
 	Notes.Icon := ExtractIcon("shell32.dll", 115, 64)
-	if(!FileExist(path))
+	if(!FileExist(ConfigPath "\Notes.xml"))
 		return
-	; outputdebug read ProgramLauncher cache from %path%
-	FileRead, xml, %path%
+	FileRead, xml, %ConfigPath%\Notes.xml
 	XMLObject := XML_Read(xml)
 	;Convert empty and single arrays to real array
 	if(!XMLObject.List.len())
@@ -51,13 +48,11 @@ Accessor_Notes_OnAccessorClose(Notes, Accessor)
 Accessor_Notes_OnExit(Notes)
 {
 	global ConfigPath
-	SplitPath, ConfigPath,,path
-	path .= "\Notes.xml"
-	FileDelete, %path%
+	FileDelete, %ConfigPath%\Notes.xml
 	XMLObject := Object("List",Array())
 	Loop % Notes.List.len()
 		XMLObject.List.append(Object("Text",Notes.List[A_Index].Text))
-	XML_Save(XMLObject,path)
+	XML_Save(XMLObject, ConfigPath "\Notes.xml")
 	DestroyIcon(Notes.Icon)
 }
 Accessor_Notes_FillAccessorList(Notes, Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet)
@@ -156,7 +151,7 @@ NoteDelete()
 	if(!selected)
 		return
 	LV_GetText(id,selected,2)
-	Notes := AccessorPlugins[AccessorPlugins.indexOfSubItem("Type", "Notes")]	
+	Notes := AccessorPlugins.SubItem("Type", "Notes")
 	if(!Accessor.List[id].Path)
 	{
 		Notes.List.Delete(Accessor.List[id].ID)

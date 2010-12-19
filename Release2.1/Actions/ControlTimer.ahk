@@ -13,7 +13,7 @@ Action_ControlTimer_ReadXML(Action, XMLAction)
 Action_ControlTimer_Execute(Action, Timer)
 {
 	global Events
-	Event := Events[Events.FindID(Action.TimerID)]
+	Event := Events.SubItem("ID", Action.TimerID)
 	if(Action.Action = "Start timer" && (!Event.Trigger.tmpStart || Event.Trigger.tmpIsPaused))
 	{
 		Event.Enable()
@@ -33,7 +33,7 @@ Action_ControlTimer_Execute(Action, Timer)
 Action_ControlTimer_DisplayString(Action)
 {
 	global Settings_Events
-	return Action.Action ": " Action.TimerID ": " Settings_Events[Settings_Events.FindID(Action.TimerID)].Name	
+	return Action.Action ": " Action.TimerID ": " Settings_Events.SubItem("ID", Action.TimerID).Name	
 }
 
 Action_ControlTimer_GuiShow(Action, ActionGUI, GoToLabel = "")

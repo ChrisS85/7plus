@@ -74,7 +74,7 @@ return
 QueryCalcResult()
 {
 	global AccessorPlugins, AccessorEdit, Accessor
-	CalcPlugin := AccessorPlugins[AccessorPlugins.indexOfSubItem("Type", "Calc")]
+	CalcPlugin := AccessorPlugins.SubItem("Type", "Calc")
 	GUINum := Accessor.GUINum
 	if(!GUINum)
 		return

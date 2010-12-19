@@ -301,7 +301,7 @@ GetNotepadPlusPlusPath()
 GetNotepadPlusPlusActiveTab()
 {
 	global AccessorPlugins
-	NotepadPlusPlus := AccessorPlugins[AccessorPlugins.indexOfSubItem("Type", "NotepadPlusPlus")]
+	NotepadPlusPlus := AccessorPlugins.SubItem("Type", "NotepadPlusPlus")
 	hwnd := WinExist("ahk_class Notepad++")
 	if(!hwnd)
 		return ""

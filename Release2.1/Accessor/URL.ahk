@@ -9,13 +9,11 @@ Accessor_URL_Init(ByRef URL, Settings)
 	URL.Settings.UseHistory := Settings.UseHistory
 	URL.Settings.MaxHistoryLen := Settings.MaxHistoryLen
 	URL.Settings.SaveHistoryOnExit := Settings.SaveHistoryOnExit
-	SplitPath, ConfigPath,,path
-	path .= "\History.xml"
 	URL.History := Array()
 		outputdebug % "create list new len: " URL.History.len()
-	if(!FileExist(path))
+	if(!FileExist(ConfigPath "\History.xml"))
 		return
-	FileRead, xml, %path%
+	FileRead, xml, %ConfigPath%\History.xml
 	XMLObject := XML_Read(xml)
 	;Convert empty and single arrays to real array
 	if(!XMLObject.List.len())
@@ -40,7 +38,7 @@ return
 Accessor_URL_ClearHistory()
 {
 	global AccessorPlugins
-	URLPlugin := AccessorPlugins[AccessorPlugins.indexOfSubItem("Type","URL")]
+	URLPlugin := AccessorPlugins.SubItem("Type","URL")
 	URLPlugin.History := Array()
 }
 Accessor_URL_IsInSinglePluginContext(URL, Filter, LastFilter)
@@ -63,15 +61,13 @@ Accessor_URL_OnAccessorClose(URL, Accessor)
 Accessor_URL_OnExit(URL)
 {
 	global ConfigPath
-	SplitPath, ConfigPath,,path
-	path .= "\History.xml"
-	FileDelete, %path%
+	FileDelete, %ConfigPath%\History.xml
 	if(!URL.Settings.SaveHistoryOnExit)
 		return
 	XMLObject := Object("List",Array())
 	Loop % URL.History.len()
 		XMLObject.List.append(Object("URL",URL.History[A_Index].URL))
-	XML_Save(XMLObject,path)
+	XML_Save(XMLObject,ConfigPath "\History.xml")
 }
 Accessor_URL_FillAccessorList(URL, Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet)
 {

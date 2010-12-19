@@ -26,12 +26,10 @@ Action_Upload_Init(Action)
 Action_Upload_ReadFTPProfiles()
 {
 	global ConfigPath, FTPProfiles
-	SplitPath, ConfigPath,,path
-	path .= "\FTPProfiles.xml"
 	FTPProfiles := Array()
-	if(!FileExist(path))
+	if(!FileExist(ConfigPath "\FTPProfiles.xml"))
 		return
-	FileRead, xml, %path%
+	FileRead, xml, %ConfigPath%\FTPProfiles.xml
 	XMLObject := XML_Read(xml)
 	;Convert empty and single arrays to real array
 	if(!XMLObject.List.len())
@@ -47,7 +45,7 @@ Action_Upload_WriteFTPProfiles()
 	global ConfigPath, FTPProfiles
 	SplitPath, ConfigPath,,path
 	path .= "\FTPProfiles.xml"
-	FileDelete, %path%
+	FileDelete, %ConfigPath%\FTPProfiles.xml
 	
 	XMLObject := Object("List",Array())
 	Loop % FTPProfiles.len()
@@ -55,7 +53,7 @@ Action_Upload_WriteFTPProfiles()
 		ListEntry := FTPProfiles[A_Index]
 		XMLObject.List.append(Object("Hostname", ListEntry.Hostname, "Port", ListEntry.Port, "User", ListEntry.User, "Password", ListEntry.Password, "URL", ListEntry.URL))
 	}
-	XML_Save(XMLObject,path)
+	XML_Save(XMLObject, ConfigPath "\FTPProfiles.xml")
 }
 
 Action_Upload_GetFTPVariables(id, ByRef Hostname, ByRef Port, ByRef User, ByRef Password, ByRef URL)

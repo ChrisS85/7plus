@@ -276,7 +276,7 @@ RestoreExplorerSelection()
 	hwnd := WinActive("ahk_group ExplorerGroup")
 	if(hwnd)
 	{
-		RegisteredSelectionChangedWindowsItem := RegisteredSelectionChangedWindows[RegisteredSelectionChangedWindows.indexOfSubItem("hwnd",hwnd)]
+		RegisteredSelectionChangedWindowsItem := RegisteredSelectionChangedWindows.SubItem("hwnd",hwnd)
 		if(RegisteredSelectionChangedWindowsItem.SelectionHistory.len() > 1)
 		{		
 			outputdebug restore selection
@@ -649,8 +649,8 @@ Wheel()
 }
 #if
 
-#if HKInvertSelection && WinActive("ahk_group ExplorerGroup")
-^i UP::InvertSelection()
+#if HKInvertSelection && WinActive("ahk_group ExplorerGroup") && GetKeyState("CONTROL", "P")
+i UP::InvertSelection(WinExist("A"))
 #if
 ;Flat View
 #if HKFlattenDirectory && Vista7 && WinActive("ahk_group ExplorerGroup")

@@ -1,7 +1,88 @@
+#include %A_ScriptDir%\Event.ahk
+#include %A_ScriptDir%\Events.ahk
+
+#include %A_ScriptDir%\Triggers\DoubleClickDesktop.ahk
+#include %A_ScriptDir%\Triggers\DoubleClickTaskbar.ahk
+#include %A_ScriptDir%\Triggers\ExplorerButton.ahk
+#include %A_ScriptDir%\Triggers\ExplorerPathChanged.ahk
+#include %A_ScriptDir%\Triggers\ExplorerDoubleClickSpace.ahk
+#include %A_ScriptDir%\Triggers\Hotkey.ahk
+#include %A_ScriptDir%\Triggers\OnMessage.ahk
+#include %A_ScriptDir%\Triggers\Trigger.ahk
+#include %A_ScriptDir%\Triggers\Timer.ahk
+#include %A_ScriptDir%\Triggers\WindowActivated.ahk
+#include %A_ScriptDir%\Triggers\WindowClosed.ahk
+#include %A_ScriptDir%\Triggers\WindowCreated.ahk
+#include %A_ScriptDir%\Triggers\WindowStateChange.ahk
+#include %A_ScriptDir%\Triggers\7plusStart.ahk
+
+#include %A_ScriptDir%\Conditions\If.ahk
+#include %A_ScriptDir%\Conditions\IsDialog.ahk
+#include %A_ScriptDir%\Conditions\IsFullScreen.ahk
+#include %A_ScriptDir%\Conditions\IsContextMenuActive.ahk
+#include %A_ScriptDir%\Conditions\IsRenaming.ahk
+#include %A_ScriptDir%\Conditions\KeyIsDown.ahk
+#include %A_ScriptDir%\Conditions\MouseOver.ahk
+#include %A_ScriptDir%\Conditions\WindowActive.ahk
+#include %A_ScriptDir%\Conditions\WindowExists.ahk
+
+#include %A_ScriptDir%\Actions\Accessor.ahk
+#include %A_ScriptDir%\Actions\Autoupdate.ahk
+#include %A_ScriptDir%\Actions\Clipboard.ahk
+#include %A_ScriptDir%\Actions\Clipmenu.ahk
+#include %A_ScriptDir%\Actions\ControlEvent.ahk
+#include %A_ScriptDir%\Actions\ControlTimer.ahk
+#include %A_ScriptDir%\Actions\Exit7plus.ahk
+#include %A_ScriptDir%\Actions\FastFoldersClear.ahk
+#include %A_ScriptDir%\Actions\FastFoldersMenu.ahk
+#include %A_ScriptDir%\Actions\FastFoldersRecall.ahk
+#include %A_ScriptDir%\Actions\FastFoldersStore.ahk
+#include %A_ScriptDir%\Actions\FileCopy.ahk
+#include %A_ScriptDir%\Actions\FileDelete.ahk
+#include %A_ScriptDir%\Actions\FileMove.ahk
+#include %A_ScriptDir%\Actions\FileWrite.ahk
+#include %A_ScriptDir%\Actions\FilterList.ahk
+#include %A_ScriptDir%\Actions\FlashingWindows.ahk
+#include %A_ScriptDir%\Actions\FocusControl.ahk
+#include %A_ScriptDir%\Actions\FTPUpload.ahk
+#include %A_ScriptDir%\Actions\Input.ahk
+#include %A_ScriptDir%\Actions\Message.ahk
+#include %A_ScriptDir%\Actions\MinimizeToTray.ahk
+#include %A_ScriptDir%\Actions\MouseClick.ahk
+#include %A_ScriptDir%\Actions\NewFile.ahk
+#include %A_ScriptDir%\Actions\NewFolder.ahk
+#include %A_ScriptDir%\Actions\PlaySound.ahk
+#include %A_ScriptDir%\Actions\Restart7plus.ahk
+#include %A_ScriptDir%\Actions\RestoreSelection.ahk
+#include %A_ScriptDir%\Actions\Run.ahk
+#include %A_ScriptDir%\Actions\RunOrActivate.ahk
+#include %A_ScriptDir%\Actions\Screenshot.ahk
+#include %A_ScriptDir%\Actions\SelectFiles.ahk
+#include %A_ScriptDir%\Actions\SendKeys.ahk
+#include %A_ScriptDir%\Actions\SendMessage.ahk
+#include %A_ScriptDir%\Actions\SetDirectory.ahk
+#include %A_ScriptDir%\Actions\SetWindowTitle.ahk
+#include %A_ScriptDir%\Actions\ShowSettings.ahk
+#include %A_ScriptDir%\Actions\ShutDown.ahk
+#include %A_ScriptDir%\Actions\Tooltip.ahk
+#include %A_ScriptDir%\Actions\ViewMode.ahk
+#include %A_ScriptDir%\Actions\Volume.ahk
+#include %A_ScriptDir%\Actions\Wait.ahk
+#include %A_ScriptDir%\Actions\WindowActivate.ahk
+#include %A_ScriptDir%\Actions\WindowClose.ahk
+#include %A_ScriptDir%\Actions\WindowHide.ahk
+#include %A_ScriptDir%\Actions\WindowMove.ahk
+#include %A_ScriptDir%\Actions\WindowResize.ahk
+#include %A_ScriptDir%\Actions\WindowShow.ahk
+#include %A_ScriptDir%\Actions\WindowState.ahk
+
+#include %A_ScriptDir%\Generic\WindowFilter.ahk
+#include %A_ScriptDir%\Generic\FileOperation.ahk
+
 EventSystem_Startup()
 {
 	global Events, EventSchedule
-	EventsBase := object("base", Array(), "Categories", Array(), "HighestID", -1, "CreateEvent", "EventSystem_CreateEvent", "FindID", "Events_FindID", "Add", "Events_Add", "Remove", "Events_Remove")
+	EventsBase := object("base", Array(), "Categories", Array(), "HighestID", -1, "CreateEvent", "EventSystem_CreateEvent", "Add", "Events_Add", "Remove", "Events_Remove")
 	Events := object("base", EventsBase)
 	EventSystem_CreateBaseObjects()
 	
@@ -24,64 +105,30 @@ EventSystem_Startup()
 	}
 }
 
-Events_FindID(Events,ID)
-{
-	Loop % Events.len()
-		if(Events[A_Index].ID = ID)
-			return A_Index
-	return 0
-}
-
-;Enabled state needs to be set through this function, to allow syncing with settings window
-Event_SetEnabled(Event,Value) 
-{
-	global Events, Settings_Events, SettingsActive
-	Event.Enabled := Value
-	if(SettingsActive && Settings_Events && Events[Events.FindID(Event.ID)]) ;if settings are open and updating a regular event, update its counterpart in settings_events
-	{	
-		Settings_Events[Settings_Events.FindID(Event.ID)].Enabled := Value
-		Settings_SetupEvents()
-	}
-}
-
-;This function needs to be used to add events, to allow syncing with settings window
-Events_Add(Events, Event) 
-{
-	global Settings_Events
-	outputdebug addEvent()
-	Events.append(Event)
-	if(Settings_Events && Events != Settings_Events)
-	{
-		outputdebug add event to settings
-		Settings_Events.append(Event.DeepCopy())
-		Settings_SetupEvents()
-	}
-}
-
-;This function needs to be used to remove events, to allow syncing with settings window
-Events_Remove(Events, Event) 
-{
-	global Settings_Events
-	outputdebug yes do it!
-	Events[Events.FindID(Event.ID)].Delete()
-	Events.Delete(Events.FindID(Event.ID))
-	if(Settings_Events && Events != Settings_Events)
-	{
-		Settings_Events.Delete(Settings_Events.FindID(Event.ID))
-		Settings_SetupEvents()
-	}
-}
-
-EventSystem_CreateEvent(lEvents)
+;Creates an event and registers it for lEvents list (-->Assigns an ID that is based on the max ID of the default Events list and its settings copy, and increases HighestID count of lEvents and adds it to lEvents)
+EventSystem_CreateAndRegisterEvent(lEvents)
 {
 	global EventBase, Events, Settings_Events
-	outputdebug createevent()
 	HighestID := max(Events.HighestID, Settings_Events.HighestID) + 1 ;Make sure highest ID is used from both event arrays
-	lEvents.HighestID := HighestID
-	Event := Object("base",EventBase.DeepCopy()) ;Need to use base to make functions work
+	lEvents.HighestID := HighestID	
+	Event := EventSystem_CreateEvent()
 	Event.ID := HighestID
 	lEvents.Add(Event)
 	Event.SetEnabled(true)
+	return Event
+}
+EventSystem_CreateEvent()
+{
+	global EventBase
+	Event := Object("base",EventBase.DeepCopy()) ;Need to use base to make functions work
+	Event.ID := -1
+	Event.Name := "New event"
+	Event.Category := "Uncategorized"
+	Event.Enabled := 1
+	Event.Trigger := EventSystem_CreateSubEvent("Trigger", "Hotkey")
+	Event.Conditions := Array()
+	Event.Actions := Array()
+	Event.PlaceHolders := object()
 	return Event
 }
 EventSystem_CreateBaseObjects()
@@ -98,7 +145,6 @@ EventSystem_CreateBaseObjects()
 	Loop, Parse, EventSystem_Triggers, `,,%A_Space%
 	{		
 		tmpobject := RichObject()
-		tmpobject.Type := A_LoopField
 		tmpobject.Init := "Trigger_" A_LoopField "_Init"
 		tmpobject.ReadXML := "Trigger_" A_LoopField "_ReadXML"
 		tmpobject.Enable := "Trigger_" A_LoopField "_Enable"
@@ -111,8 +157,9 @@ EventSystem_CreateBaseObjects()
 		tmpobject.PrepareCopy := "Trigger_" A_LoopField "_PrepareCopy"
 		tmpobject.PrepareReplacement := "Trigger_" A_LoopField "_PrepareReplacement"
 		tmpobject.OnExit := "Trigger_" A_LoopField "_OnExit"
-		Trigger_%A_LoopField%_Init(tmpobject)
-		Trigger_%A_LoopField%_Base := object("base",tmpobject)		
+		Trigger_%A_LoopField%_Base := object("base",tmpobject)	
+		Trigger_%A_LoopField%_Base.Type := A_LoopField
+		Trigger_%A_LoopField%_Init(Trigger_%A_LoopField%_Base)	
 		;Add type to category
 		Trigger_Categories[tmpobject.Category].append(tmpobject.Type)
 	
@@ -122,22 +169,21 @@ EventSystem_CreateBaseObjects()
 	Loop, Parse, EventSystem_Conditions, `,,%A_Space%
 	{		
 		tmpobject := RichObject()
-		tmpobject.Type := A_LoopField
 		tmpobject.Init := "Condition_" A_LoopField "_Init"
 		tmpobject.ReadXML := "Condition_" A_LoopField "_ReadXML"
 		tmpobject.Evaluate := "Condition_" A_LoopField "_Evaluate"
 		tmpobject.DisplayString := "Condition_" A_LoopField "_DisplayString"
 		tmpobject.GuiShow := "Condition_" A_LoopField "_GuiShow"
 		tmpobject.GuiSubmit := "Condition_" A_LoopField "_GuiSubmit"
-		Condition_%A_LoopField%_Init(tmpobject)
 		Condition_%A_LoopField%_Base := object("base",tmpobject) ;.DeepCopy()
+		Condition_%A_LoopField%_Base.Type := A_LoopField
+		Condition_%A_LoopField%_Init(Condition_%A_LoopField%_Base)
 		;Add type to category
 		Condition_Categories[tmpobject.Category].append(tmpobject.Type)
 	}
 	Loop, Parse, EventSystem_Actions, `,,%A_Space%
 	{
 		tmpobject := RichObject()
-		tmpobject.Type := A_LoopField
 		tmpobject.Init := "Action_" A_LoopField "_Init"
 		tmpobject.ReadXML := "Action_" A_LoopField "_ReadXML"
 		tmpobject.Execute := "Action_" A_LoopField "_Execute"
@@ -145,30 +191,21 @@ EventSystem_CreateBaseObjects()
 		tmpobject.GuiShow := "Action_" A_LoopField "_GuiShow"
 		tmpobject.GuiSubmit := "Action_" A_LoopField "_GuiSubmit"
 		tmpobject.OnExit := "Action_" A_LoopField "_OnExit"
-		Action_%A_LoopField%_Init(tmpobject)
 		Action_%A_LoopField%_Base := object("base", tmpobject) ;.DeepCopy()
+		Action_%A_LoopField%_Base.Type := A_LoopField
+		Action_%A_LoopField%_Init(Action_%A_LoopField%_Base)
 		;Add type to category
 		Action_Categories[tmpobject.Category].append(tmpobject.Type)
 	}
 	EventBase := RichObject()
-	EventBase.ID := -1
-	EventBase.Name := "New event"
-	EventBase.Category := "Uncategorized"
-	EventBase.Enabled := 1
 	EventBase.Enable := "Event_Enable"
 	EventBase.Disable := "Event_Disable"
 	EventBase.Delete := "Event_Delete"
 	EventBase.ExpandPlaceHolders := "Event_ExpandPlaceholders"
 	EventBase.SetEnabled := "Event_SetEnabled"
-	EventBase.PlaceHolders := object()
-	EventBase.Trigger := EventSystem_CreateSubEvent("Trigger", "Hotkey")
-	EventBase.Conditions := Array()
-	EventBase.Actions := Array()
+	EventBase.ApplyPatch := "Event_ApplyPatch"
 }
-Event_Delete(Event)
-{
-	Event.Trigger.Delete(Event)
-}
+
 EventSystem_End()
 {
 	global Events
@@ -191,39 +228,22 @@ EventSystem_CreateSubEvent(Category,Type)
 	copy.Init()
 	return copy ;Object("base", %tmp%, "Type", Type)
 }
-Event_Enable(Event)
-{
-	Event.SetEnabled(true)
-	Event.Trigger.Enable(Event)
-}
-
-Event_Disable(Event)
-{
-	Event.SetEnabled(false)
-	Event.Trigger.Disable(Event)
-}
 
 ReadMainEventsFile()
 {
 	global ConfigPath, Events
-	;Event file is in same dir as settings.ini
-	SplitPath, ConfigPath,,path
-	path .= "\Events.xml"	
-	ReadEvents := ReadEventsFile(Events, path)
+	ReadEvents := ReadEventsFile(Events, ConfigPath "\Events.xml")
 }	
 
 WriteMainEventsFile()
 {
 	global ConfigPath, Events
-	;Events file is in same dir as settings.ini
-	SplitPath, ConfigPath,,path
-	path .= "\Events.xml"	;TODO: Save to different file during development
-	WriteEventsFile(Events, path)
+	WriteEventsFile(Events, ConfigPath "\Events.xml")
 }
 
-ReadEventsFile(Events, path,OverwriteCategory="")
+ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 {
-	global EventBase, MajorVersion, MinorVersion, BugfixVersion
+	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, ConfigPath
 	FileRead, xml, %path%
 	XMLObject := XML_Read(xml)
 	Major := XMLObject.MajorVersion
@@ -231,6 +251,12 @@ ReadEventsFile(Events, path,OverwriteCategory="")
 	Bugfix := XMLObject.BugfixVersion
 	if(CompareVersion(major,MajorVersion,minor,MinorVersion,bugfix,BugfixVersion) > 0)
 		Msgbox Events file was made with a newer version of 7plus. Compatibility is not guaranteed. Please update, or use at own risk!
+		
+	if(Update)
+		Update.Message := Update.Message (XMLObject.Message? "`n" XMLObject.Message : "")
+	if(path = ConfigPath "\Events.xml") ;main config file, read patch version
+		PatchVersion := XMLObject.PatchVersion ? XMLObject.PatchVersion : 0
+	
 	count := Events.len()
 	lowestID := 999999999999
 	HighestID := Events.HighestID
@@ -245,50 +271,76 @@ ReadEventsFile(Events, path,OverwriteCategory="")
 			XMLEvent := XMLObject.Events.Event[i]
 		
 		if(!XMLEvent)
-			break
+			continue
 		;Create new Event
-		Event := Object("base",EventBase.DeepCopy())
+		Event := EventSystem_CreateEvent()
 		
 		;Event ID
-		Event.ID := XMLEvent.ID
-		if(Event.ID < lowestID)
-			lowestID := Event.ID
+		if(XMLEvent.HasKey("ID"))
+		{
+			Event.ID := XMLEvent.ID
+			if(Event.ID < lowestID)
+				lowestID := Event.ID
+		}
+		else
+			Event.Remove("ID")
+		
 		;Event Name
-		Event.Name := XMLEvent.Name
-		
-		;Event Category
-		Event.Category := OverwriteCategory ? OverwriteCategory : XMLEvent.Category ? XMLEvent.Category : "Uncategorized"
-		
-		if(!Events.Categories.indexOf(Event.Category))
-			Events.Categories.append(Event.Category)
+		if(XMLEvent.HasKey("Name"))
+			Event.Name := XMLEvent.Name
+		else
+			Event.Remove("Name")
 			
-		;Event state
-		Event.Enabled := XMLEvent.Enabled
+		;Event Category
+		if(XMLEvent.HasKey("Category") || OverwriteCategory)
+		{
+			Event.Category := OverwriteCategory ? OverwriteCategory : XMLEvent.Category ? XMLEvent.Category : "Uncategorized"
 		
+			if(!Events.Categories.indexOf(Event.Category))
+				Events.Categories.append(Event.Category)
+		}
+		else
+			Event.Remove("Category")
+		
+		;Event state
+		if(XMLEvent.HasKey("Enabled"))
+			Event.Enabled := XMLEvent.Enabled
+		else
+			Event.Remove("Enabled")
+			
 		;Disable after use
-		Event.DisableAfterUse := XMLEvent.DisableAfterUse
+		if(XMLEvent.HasKey("DisableAfterUse"))
+			Event.DisableAfterUse := XMLEvent.DisableAfterUse
 		
 		;Delete after use
-		Event.DeleteAfterUse := XMLEvent.DeleteAfterUse
+		if(XMLEvent.HasKey("DeleteAfterUse"))
+			Event.DeleteAfterUse := XMLEvent.DeleteAfterUse
 		
 		;One Instance
-		Event.OneInstance := XMLEvent.OneInstance
+		if(XMLEvent.HasKey("OneInstance"))
+			Event.OneInstance := XMLEvent.OneInstance
 		
 		;Official event identifier for update processes
-		if(XMLEvent.OfficialEvent)
+		if(XMLEvent.HasKey("OfficialEvent"))
 			Event.OfficialEvent := XMLEvent.OfficialEvent
 		
 		;Read trigger values
-		Event.Trigger := EventSystem_CreateSubEvent("Trigger", XMLEvent.Trigger.Type)
-		Event.Trigger.ReadXML(XMLEvent.Trigger)
+		if(XMLEvent.HasKey("Trigger"))
+		{			
+			Event.Trigger := EventSystem_CreateSubEvent("Trigger", XMLEvent.Trigger.Type)
+			Event.Trigger.ReadXML(XMLEvent.Trigger)
+		}
+		else
+			Event.Remove("Trigger")
 		
 		;Read conditions
-		if(!IsFunc(XMLEvent.Conditions.Condition.len) && XMLEvent.Conditions.HasKey("Condition"))
+		if(XMLEvent.Conditions.HasKey("Condition") && !IsFunc(XMLEvent.Conditions.Condition.len)) ;Single condition
 		{
 			XMLConditions := Array()
 			XMLConditions.append(XMLEvent.Conditions.Condition)
 			XMLEvent.Conditions.Condition := XMLConditions
 		}
+		
 		Loop % XMLEvent.Conditions.Condition.len()
 		{
 			j := A_Index
@@ -310,12 +362,13 @@ ReadEventsFile(Events, path,OverwriteCategory="")
 		}
 		
 		;Read actions
-		if(!IsFunc(XMLEvent.Actions.Action.len) && XMLEvent.Actions.HasKey("Action"))
+		if(XMLEvent.Actions.HasKey("Action") && !IsFunc(XMLEvent.Actions.Action.len)) ;Single Action
 		{
 			XMLActions := Array()
 			XMLActions.append(XMLEvent.Actions.Action)
 			XMLEvent.Actions.Action := XMLActions
 		}
+		
 		Loop % XMLEvent.Actions.Action.len()
 		{
 			j := A_Index
@@ -332,9 +385,27 @@ ReadEventsFile(Events, path,OverwriteCategory="")
 						
 			Event.Actions.append(Action)
 		}
-		Events.append(Event)
+		
+		
+		
+		if(Event.HasKey("OfficialEvent") && (OldEvent := Events.SubItem("OfficialEvent", Event.OfficialEvent))) ;If an official event already exists, apply this as patch
+		{			
+			if(!XMLEvent.HasKey("Conditions"))
+				Event.Remove("Conditions")
+			if(!XMLEvent.HasKey("Actions"))
+				Event.Remove("Actions")
+			Event.Remove("PlaceHolders")
+			OldEvent.ApplyPatch(Event) ;No update messages are generated here, those are handled manually
+		}
+		else
+		{
+			if(Update)
+				Update.Message := Update.Message "`n- Added Event: " Event.Name
+			Events.append(Event)
+		}
 	}
 	;fix IDs from import
+	;Loop over all new events
 	pos := count + 1
 	count := Events.len()
 	Loop
@@ -342,10 +413,14 @@ ReadEventsFile(Events, path,OverwriteCategory="")
 		if(pos > count)
 			break
 		Event := Events[pos]
+		;Make sure Event ID is higher than all previous IDs, but conserve relative differences between IDs
 		offset := (highestID - lowestID) + 1
 		Event.ID := Event.ID + offset
+		
+		;Find highest ID
 		if(Event.ID > Events.HighestID)
 			Events.HighestID := Event.ID
+		
 		;Now adjust Event ID references
 		enum := Event.Trigger._newEnum()
 		while enum[k,v]
@@ -377,17 +452,44 @@ ReadEventsFile(Events, path,OverwriteCategory="")
 		}
 		pos++
 	}
+	if(XMLObject.HasKey("Remove")) ;If Objects are to be removed
+	{
+		len := max(XMLObject.Remove.OfficialEvent.len(), XMLObject.Remove.HasKey("OfficialEvent"))
+		Loop % len
+		{
+			i := A_Index
+			;Check if end of Events is reached
+			if(len = 1)
+				OfficialEvent := XMLObject.Remove.OfficialEvent
+			else
+				OfficialEvent := XMLObject.Remove.OfficialEvent[i]
+			
+			if(!OfficialEvent)
+				continue
+			
+			if((Index := Events.indexOfSubItem("OfficialEvent", OfficialEvent)))
+			{
+				if(Update) ;Should be true if we are here
+					Update.Message := Update.Message "`n- Removed Event: " Events[index].Name
+				Events.Delete(Index)
+			}
+		}
+	}
 	return Events
 }
+
+
 WriteEventsFile(Events, path)
 {
-	global MajorVersion, MinorVersion, BugfixVersion
+	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, ConfigPath
 	; return
 	;Create Events node
 	xmlObject := Object()
 	xmlObject.MajorVersion := MajorVersion
 	xmlObject.MinorVersion := MinorVersion
 	xmlObject.BugfixVersion := BugfixVersion
+	if(path = ConfigPath "\Events.xml")
+		xmlObject.PatchVersion := PatchVersion
 	xmlObject.Events := Object()
 	xmlEvents := Array()
 	xmlObject.Events.Event := xmlEvents
@@ -398,6 +500,10 @@ WriteEventsFile(Events, path)
 		xmlEvents.append(xmlEvent)
 		i := A_Index
 		Event := Events[i]
+		
+		;Don't save temporary events that are only used during runtime
+		if(Event.Temporary)
+			continue
 		
 		;Write ID
 		xmlEvent.ID := Event.ID
@@ -533,8 +639,9 @@ EventScheduler()
 		{			
 			Event := EventSchedule[EventPos]
 			; outputdebug % "process event " Event.Name
+			index := Events.indexOfSubItem("ID", Event.ID)
 			;Check conditions
-			Success := (!Events.FindID(Event.ID) && Event.Enabled) || Events[Events.FindID(Event.ID)].Enabled || Event.Trigger.Type = "Timer" ;Check enabled state again here, because it might have changed since it was appended to queue
+			Success := (!index && Event.Enabled) || Events[index].Enabled || Event.Trigger.Type = "Timer" ;Check enabled state again here, because it might have changed since it was appended to queue
 			ConditionPos := 1
 			if(Success)
 			{
@@ -565,6 +672,7 @@ EventScheduler()
 			}
 			else
 				outputdebug % "disable " Event.ID " in queue"
+			; outputdebug condition evaluation: %success%
 			if(Success = 0) ;Condition was not fulfilled, remove this event
 			{
 				EventSchedule.Delete(EventPos)
@@ -575,7 +683,8 @@ EventScheduler()
 				; outputdebug conditions fulfilled
 				Loop % Event.Actions.len()
 				{
-					if(Events.FindID(Event.ID) && !Events[Events.FindID(Event.ID)].Enabled && Event.Trigger.Type != "Timer") ;Check enabled state again here, because it might have changed since in one of the previous actions during waiting
+					index := Events.indexOfSubItem("ID", Event.ID)
+					if(index && !Events[index].Enabled && Event.Trigger.Type != "Timer") ;Check enabled state again here, because it might have changed since in one of the previous actions during waiting
 					{
 						outputdebug % "disable " Event.ID " during execution"
 						Event.Actions := Array()
@@ -597,12 +706,13 @@ EventScheduler()
 			if(Event.Actions.len() = 0) ;No more actions in this event, consider it processed and remove it from queue
 			{
 				EventSchedule.Delete(EventPos)
-				if(Event.DisableAfterUse && Events.FindID(Event.ID))
-					Events[Events.FindID(Event.ID)].SetEnabled(false)
-				if(Event.DeleteAfterUse && Events.FindID(Event.ID))
+				index := Events.indexOfSubItem("ID", Event.ID)
+				if(Event.DisableAfterUse && index)
+					Events[index].SetEnabled(false)
+				if(Event.DeleteAfterUse && index)
 				{
-					Events[Events.FindID(Event.ID)].Delete()
-					Events.Remove(Events[Events.FindID(Event.ID)])
+					Events[index].Delete()
+					Events.Remove(Events[index])
 				}
 				continue
 			}

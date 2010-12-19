@@ -81,7 +81,7 @@ return
 QueryGoogleResult()
 {
 	global AccessorPlugins, AccessorEdit, Accessor
-	GooglePlugin := AccessorPlugins[AccessorPlugins.indexOfSubItem("Type", "Google")]
+	GooglePlugin := AccessorPlugins.SubItem("Type", "Google")
 	GUINum := Accessor.GUINum
 	if(!GUINum)
 		return

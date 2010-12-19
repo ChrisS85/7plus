@@ -180,6 +180,7 @@ HotkeyGUI(p_GUI=""
 	,p_filter=""
 	,p_exclude="")
     {
+	Critical, Off
     ;[==============]
     ;[  Initialize  ]
     ;[==============]

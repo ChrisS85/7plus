@@ -262,6 +262,10 @@ SubEventGUI_Placeholders(SubEventGUI, name, ClickedMenu="")
 		Menu, Placeholders_FilePaths, add, `%Desktop`% - Desktop Directory, PlaceholderHandler
 		Menu, Placeholders_FilePaths, add, `%MyDocuments`% - My Documents Directory, PlaceholderHandler
 		Menu, Placeholders_FilePaths, add, `%Temp`% - Temp Directory, PlaceholderHandler
+		Menu, Placeholders_FilePaths, add, `%StartMenu`% - Start Menu Directory, PlaceholderHandler
+		Menu, Placeholders_FilePaths, add, `%StartMenuCommon`% - Common Start Menu Directory, PlaceholderHandler
+		Menu, Placeholders_FilePaths, add, `%7plusDrive`% - Drive 7plus is running from, PlaceholderHandler
+		Menu, Placeholders_FilePaths, add, `%7plusDir`% - 7plus Directory, PlaceholderHandler
 		
 		Menu, Placeholders_Mouse, add, ${U} - Handle of window under mouse, PlaceholderHandler
 		Menu, Placeholders_Mouse, add, ${MC} - Class of window under mouse, PlaceholderHandler

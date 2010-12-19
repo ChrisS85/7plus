@@ -63,7 +63,7 @@ Accessor_FileSystem_FillAccessorList(FileSystem, Accessor, Filter, LastFilter, B
 Accessor_FileSystem_PerformAction(FileSystem, Accessor, AccessorListEntry)
 {
 	global AccessorPlugins
-	ProgramLauncher := AccessorPlugins[AccessorPlugins.IndexOfSubItem("Type", "ProgramLauncher")]
+	ProgramLauncher := AccessorPlugins.SubItem("Type", "ProgramLauncher")
 	if(!AccessorListEntry.Path)
 		return
 	if(ProgramLauncher.List.indexOfSubItem("Command",AccessorListEntry.Path) = 0)

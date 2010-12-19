@@ -217,13 +217,11 @@ Accessor_ProgramLauncher_OnExit(ProgramLauncher)
 ReadProgramLauncherCache(ProgramLauncher)
 {
 	global ConfigPath
-	SplitPath, ConfigPath,,path
-	path .= "\ProgramCache.xml"
 	ProgramLauncher.List := Array()
 	ProgramLauncher.Paths := Array()
-	if(!FileExist(path))
+	if(!FileExist(ConfigPath "\ProgramCache.xml"))
 		return
-	FileRead, xml, %path%
+	FileRead, xml, %ConfigPath%\ProgramCache.xml
 	XMLObject := XML_Read(xml)
 	;Convert empty and single arrays to real array
 	if(!XMLObject.List.len())
@@ -250,16 +248,14 @@ ReadProgramLauncherCache(ProgramLauncher)
 WriteProgramLauncherCache(ProgramLauncher)
 {
 	global ConfigPath
-	SplitPath, ConfigPath,,path
-	path .= "\ProgramCache.xml"
-	FileDelete, %path%
+	FileDelete, %ConfigPath%\ProgramCache.xml
 	XMLObject := Object("List",Array(),"Paths",Array())
 	Loop % ProgramLauncher.List.len()
 		XMLObject.List.append(Object("Command",ProgramLauncher.List[A_Index].Command,"BasePath",ProgramLauncher.List[A_Index].BasePath))
 	Loop % ProgramLauncher.Paths.len()
 		XMLObject.Paths.append(Object("Path",ProgramLauncher.Paths[A_Index].Path,"Extensions",ProgramLauncher.Paths[A_Index].Extensions))
 	
-	XML_Save(XMLObject,path)
+	XML_Save(XMLObject, ConfigPath "\ProgramCache.xml")
 }
 RefreshProgramLauncherCache(ProgramLauncher, Path ="")
 {

@@ -24,4 +24,8 @@ EXPLORER_API int fnExplorer(void);
 */
 int _stdcall SetPath(HWND hWnd, LPCWSTR Path);
 int _stdcall ExecuteContextMenuCommand(LPWSTR strPath, int idn, HWND hWnd);
+bool _stdcall Filter(LPTSTR filter, HWND hWnd);
 HRESULT GetUIObjectOfFile(HWND hwnd, LPCWSTR pszPath, REFIID riid, void **ppv);
+/// returns the explorer list view control
+HWND                    GetListView32(IShellView * shellView);
+BOOL CALLBACK    EnumChildProc(HWND hwnd, LPARAM lParam);

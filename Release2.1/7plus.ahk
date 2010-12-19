@@ -16,7 +16,7 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ;SetFormat, Integer, D
 MajorVersion := 2
-MinorVersion := 1
+MinorVersion := 2
 BugfixVersion := 0
 ComObjError(0)
 if(!A_IsUnicode)
@@ -52,7 +52,9 @@ if(!A_IsUnicode)
 #include %A_ScriptDir%\Accessor\Uninstall.ahk
 #include %A_ScriptDir%\Accessor\URL.ahk
 #include %A_ScriptDir%\Accessor\Weather.ahk
-#include %A_ScriptDir%\Trigger.ahk
+
+#include %A_ScriptDir%\Autoupdate.ahk
+#include %A_ScriptDir%\EventSystem.ahk
 #include %A_ScriptDir%\EditEventGUI.ahk
 #include %A_ScriptDir%\EditSubEventGUI.ahk
 #include %A_ScriptDir%\Placeholders.ahk
@@ -82,80 +84,4 @@ if(!A_IsUnicode)
 #include %A_ScriptDir%\CustomHotkeys.ahk
 #include %A_ScriptDir%\HotkeyGUI.ahk
 
-#include %A_ScriptDir%\Triggers\DoubleClickDesktop.ahk
-#include %A_ScriptDir%\Triggers\DoubleClickTaskbar.ahk
-#include %A_ScriptDir%\Triggers\ExplorerButton.ahk
-#include %A_ScriptDir%\Triggers\ExplorerPathChanged.ahk
-#include %A_ScriptDir%\Triggers\ExplorerDoubleClickSpace.ahk
-#include %A_ScriptDir%\Triggers\Hotkey.ahk
-#include %A_ScriptDir%\Triggers\OnMessage.ahk
-#include %A_ScriptDir%\Triggers\Trigger.ahk
-#include %A_ScriptDir%\Triggers\Timer.ahk
-#include %A_ScriptDir%\Triggers\WindowActivated.ahk
-#include %A_ScriptDir%\Triggers\WindowClosed.ahk
-#include %A_ScriptDir%\Triggers\WindowCreated.ahk
-#include %A_ScriptDir%\Triggers\WindowStateChange.ahk
-#include %A_ScriptDir%\Triggers\7plusStart.ahk
-
-#include %A_ScriptDir%\Conditions\If.ahk
-#include %A_ScriptDir%\Conditions\IsDialog.ahk
-#include %A_ScriptDir%\Conditions\IsFullScreen.ahk
-#include %A_ScriptDir%\Conditions\IsContextMenuActive.ahk
-#include %A_ScriptDir%\Conditions\IsRenaming.ahk
-#include %A_ScriptDir%\Conditions\KeyIsDown.ahk
-#include %A_ScriptDir%\Conditions\MouseOver.ahk
-#include %A_ScriptDir%\Conditions\WindowActive.ahk
-#include %A_ScriptDir%\Conditions\WindowExists.ahk
-
-#include %A_ScriptDir%\Actions\Accessor.ahk
-#include %A_ScriptDir%\Actions\Autoupdate.ahk
-#include %A_ScriptDir%\Actions\Clipboard.ahk
-#include %A_ScriptDir%\Actions\Clipmenu.ahk
-#include %A_ScriptDir%\Actions\ControlEvent.ahk
-#include %A_ScriptDir%\Actions\ControlTimer.ahk
-#include %A_ScriptDir%\Actions\Exit7plus.ahk
-#include %A_ScriptDir%\Actions\FastFoldersClear.ahk
-#include %A_ScriptDir%\Actions\FastFoldersMenu.ahk
-#include %A_ScriptDir%\Actions\FastFoldersRecall.ahk
-#include %A_ScriptDir%\Actions\FastFoldersStore.ahk
-#include %A_ScriptDir%\Actions\FileCopy.ahk
-#include %A_ScriptDir%\Actions\FileDelete.ahk
-#include %A_ScriptDir%\Actions\FileMove.ahk
-#include %A_ScriptDir%\Actions\FileWrite.ahk
-#include %A_ScriptDir%\Actions\FilterList.ahk
-#include %A_ScriptDir%\Actions\FlashingWindows.ahk
-#include %A_ScriptDir%\Actions\FocusControl.ahk
-#include %A_ScriptDir%\Actions\FTPUpload.ahk
-#include %A_ScriptDir%\Actions\Input.ahk
-#include %A_ScriptDir%\Actions\Message.ahk
-#include %A_ScriptDir%\Actions\MinimizeToTray.ahk
-#include %A_ScriptDir%\Actions\MouseClick.ahk
-#include %A_ScriptDir%\Actions\NewFile.ahk
-#include %A_ScriptDir%\Actions\NewFolder.ahk
-#include %A_ScriptDir%\Actions\PlaySound.ahk
-#include %A_ScriptDir%\Actions\Restart7plus.ahk
-#include %A_ScriptDir%\Actions\RestoreSelection.ahk
-#include %A_ScriptDir%\Actions\Run.ahk
-#include %A_ScriptDir%\Actions\RunOrActivate.ahk
-#include %A_ScriptDir%\Actions\Screenshot.ahk
-#include %A_ScriptDir%\Actions\SelectFiles.ahk
-#include %A_ScriptDir%\Actions\SendKeys.ahk
-#include %A_ScriptDir%\Actions\SendMessage.ahk
-#include %A_ScriptDir%\Actions\SetDirectory.ahk
-#include %A_ScriptDir%\Actions\SetWindowTitle.ahk
-#include %A_ScriptDir%\Actions\ShowSettings.ahk
-#include %A_ScriptDir%\Actions\ShutDown.ahk
-#include %A_ScriptDir%\Actions\Tooltip.ahk
-#include %A_ScriptDir%\Actions\ViewMode.ahk
-#include %A_ScriptDir%\Actions\Volume.ahk
-#include %A_ScriptDir%\Actions\Wait.ahk
-#include %A_ScriptDir%\Actions\WindowActivate.ahk
-#include %A_ScriptDir%\Actions\WindowClose.ahk
-#include %A_ScriptDir%\Actions\WindowHide.ahk
-#include %A_ScriptDir%\Actions\WindowMove.ahk
-#include %A_ScriptDir%\Actions\WindowResize.ahk
-#include %A_ScriptDir%\Actions\WindowShow.ahk
-#include %A_ScriptDir%\Actions\WindowState.ahk
-
-#include %A_ScriptDir%\Generic\WindowFilter.ahk
-#include %A_ScriptDir%\Generic\FileOperation.ahk
+#t::

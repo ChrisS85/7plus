@@ -491,9 +491,7 @@ Settings_SetupEvents() {
 	global
 	WasCritical := A_IsCritical
 	Critical
-	outputdebug setupevents() start
 	Gui, 1:Default
-	outputdebug setupevents() listview
 	Gui, ListView, GUI_EventsList
 	if(!Settings_Events)
 	{
@@ -511,7 +509,6 @@ Settings_SetupEvents() {
 	GuiControl, 1:enable, GUI_EventsList_Remove
 	GuiControl, 1:enable, GUI_EventsList_Edit
 	GuiControl, 1:enable, GUI_EventsList_Copy
-	outputdebug setupevents() stop
 	if(!WasCritical)
 		Critical, Off
 }
@@ -519,9 +516,7 @@ FillEventsList(){
 	global EventFilter, Settings_Events	
 	WasCritical := A_IsCritical
 	Critical
-	outputdebug filleventslist() start
 	Gui, 1:Default
-	outputdebug filleventslist() listview
 	Gui, ListView, GUI_EventsList
 	i := LV_GetNext("")
 	if(i)
@@ -542,7 +537,6 @@ FillEventsList(){
 		scroll := false
 		if((!filter || InStr(id, filter) || InStr(DisplayString, Filter) || InStr(Name, filter)) && (filter || !Category || Category = Settings_Events[A_Index].Category))
 		{
-			outputdebug filleventslist() add 
 			Gui, ListView, GUI_EventsList
 			LV_Add(((SelectedID != "" && id = SelectedID  && (scroll := 1)) || (SelectedID = "" && count = 0) ? "Select Focus" : "") (Settings_Events[A_Index].Enabled ? " Check": " "), "", id, DisplayString, name)
 			if(scroll)
@@ -550,7 +544,6 @@ FillEventsList(){
 			count++
 		}
 	}
-	outputdebug filleventslist() stop
 	if(!WasCritical)
 		Critical, Off
 }
@@ -634,26 +627,9 @@ Settings_SetupAccessor() {
 Settings_SetupExplorer() {
 	global
 	local temp
-	/*
-	;Setup text editor
-	GuiControl, 1:, TextEditor, %TextEditor%
-	GuiControl, 1:, ImageEditor, %ImageEditor%	
-	temp:=(TextEditor!="" || ImageEditor!="")
-	GuiControl, 1:,F3: Open selected files in text/image editor,%temp%
-	GoSub Editor
-	if(!Vista7)
-		GuiControl, 1:disable, HKProperBackspace
-	GuiControl, 1:,HKCreateNewFile,%HKCreateNewFile%
-	GuiControl, 1:,HKCreateNewFolder,%HKCreateNewFolder%
-	GuiControl, 1:,HKCopyFilenames,%HKCopyFilenames%
-	GuiControl, 1:,HKCopyPaths,%HKCopyPaths%
-	GuiControl, 1:,HKDoubleClickUpwards,%HKDoubleClickUpwards%
-	GuiControl, 1:,HKAppendClipboard,%HKAppendClipboard%
-	GuiControl, 1:,HKProperBackspace,%HKProperBackspace%
-	*/
-	GuiControl, 1:,HKMouseGestures,%HKMouseGestures%
-	GuiControl, 1:,HKInvertSelection,%HKInvertSelection%
-	GuiControl, 1:,HKFlattenDirectory,%HKFlattenDirectory%
+	GuiControl, 1:, HKMouseGestures,% HKMouseGestures = 1
+	GuiControl, 1:, HKInvertSelection,% HKInvertSelection = 1
+	GuiControl, 1:, HKFlattenDirectory,% HKFlattenDirectory = 1
 	if(A_OSVersion!="WIN_7")
 		GuiControl, 1:disable, HKShowSpaceAndSize
 	
@@ -672,13 +648,13 @@ Settings_SetupExplorer() {
 	GuiControl, 1:,Paste image as file,%temp%
 	GoSub img
 		
-	GuiControl, 1:, HKSelectFirstFile, %HKSelectFirstFile%
-	GuiControl, 1:, HKImproveEnter, %HKImproveEnter%
-	GuiControl, 1:, ScrollUnderMouse, %ScrollUnderMouse%
-	GuiControl, 1:, HKShowSpaceAndSize, %HKShowSpaceAndSize%	
-	GuiControl, 1:, HKAutoCheck, %HKAutoCheck%
-	GuiControl, 1:, RecallExplorerPath, %RecallExplorerPath%
-	GuiControl, 1:, AlignExplorer, %AlignExplorer%
+	GuiControl, 1:, HKSelectFirstFile, % HKSelectFirstFile = 1
+	GuiControl, 1:, HKImproveEnter, % HKImproveEnter = 1
+	GuiControl, 1:, ScrollUnderMouse, % ScrollUnderMouse = 1
+	GuiControl, 1:, HKShowSpaceAndSize, % HKShowSpaceAndSize = 1
+	GuiControl, 1:, HKAutoCheck, % HKAutoCheck = 1
+	GuiControl, 1:, RecallExplorerPath, % RecallExplorerPath = 1
+	GuiControl, 1:, AlignExplorer, % AlignExplorer = 1
 }
 Settings_SetupFastFolders() {
 	global			
@@ -688,28 +664,23 @@ Settings_SetupFastFolders() {
 		GuiControl, 1:disable, HKCleanFolderBand
 		GuiControl, 1:disable, FolderBandDescription
 	}
-	GuiControl, 1:,HKFolderBand,%HKFolderBand%
-	GuiControl, 1:,HKCleanFolderBand,%HKCleanFolderBand%
-	GuiControl, 1:,HKPlacesBar,%HKPlacesBar%
-	; GuiControl, 1:,HKFFMenu,%HKFFMenu%
-	GuiControl, 1:,Use Fast Folders,%HKFastFolders%
+	GuiControl, 1:,HKFolderBand,% HKFolderBand = 1
+	GuiControl, 1:,HKCleanFolderBand,% HKCleanFolderBand = 1
+	GuiControl, 1:,HKPlacesBar,% HKPlacesBar = 1
+	GuiControl, 1:,Use Fast Folders,% HKFastFolders = 1
 	GoSub FastFolders
 }
 Settings_SetupTabs() {
 	global
 	GuiControl, 1:Choose, NewTabPosition, %NewTabPosition%
 	GuiControl, 1:Choose, OnTabClose, %OnTabClose%
-	GuiControl, 1:,UseTabs,%UseTabs%
+	GuiControl, 1:,UseTabs,% UseTabs = 1
 	GoSub UseTabs
-	GuiControl, 1:,ActivateTab,%ActivateTab%
-	GuiControl, 1:,TabWindowClose,%TabWindowClose%
-	if(MiddleOpenFolder>0)
-		GuiControl, 1:,OpenFolderInNew,1
-	else
-		GuiControl, 1:,OpenFolderInNew,0
-	GoSub OpenFolderInNew
-	local x:=max(MiddleOpenFolder,1)	
-	GuiControl, 1:Choose, MiddleOpenFolder, %x%
+	GuiControl, 1:,ActivateTab,% ActivateTab = 1
+	GuiControl, 1:,TabWindowClose,% TabWindowClose = 1
+	GuiControl, 1:,OpenFolderInNew,% MiddleOpenFolder > 0
+	GoSub OpenFolderInNew	
+	GuiControl, 1:Choose, MiddleOpenFolder, % max(MiddleOpenFolder,1)
 }
 Settings_SetupFTPProfiles() {
 	global
@@ -765,15 +736,13 @@ Settings_SetupHotstrings() {
 }
 Settings_SetupWindows() {
 	global
-	GuiControl, 1:,HKSlideWindows,%HKSlideWindows%
-	GuiControl, 1:,SlideWinHide,%SlideWinHide%	
-	GuiControl, 1:,HKAltDrag,%HKAltDrag%
+	GuiControl, 1:, HKSlideWindows, % HKSlideWindows = 1
+	GuiControl, 1:, SlideWinHide, % SlideWinHide = 1
+	GuiControl, 1:, HKAltDrag, % HKAltDrag = 1
 	GuiControl, 1:, AeroFlipTime, %AeroFlipTime%
 	;Setup Aero Flip 3D
 	temp:=(AeroFlipTime>=0)
-	GuiControl, 1:,Mouse in upper left corner: Toggle Aero Flip 3D,%temp%
-	if(!temp)
-		GuiControl, 1:, AeroFlipTime, 0
+	GuiControl, 1:,Mouse in upper left corner: Toggle Aero Flip 3D,% AeroFlipTime >= 0
 	GoSub Flip3D
 	if(A_OsVersion!="WIN_7")
 	{
@@ -781,13 +750,13 @@ Settings_SetupWindows() {
 			GuiControl, 1:disable, HKActivateBehavior
 		GuiControl, 1:disable, HKToggleWallpaper
 	}
-	GuiControl, 1:,HKMiddleClose,%HKMiddleClose%
+	GuiControl, 1:, HKMiddleClose, % HKMiddleClose = 1
 	if(!IsPortable)
 	{
 		RegRead, HKActivateBehavior, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick
-		GuiControl, 1:,HKActivateBehavior,%HKActivateBehavior%
+		GuiControl, 1:, HKActivateBehavior, % HKActivateBehavior = 1
 	}
-	GuiControl, 1:,HKToggleWallpaper,%HKToggleWallpaper%
+	GuiControl, 1:, HKToggleWallpaper, % HKToggleWallpaper = 1
 }
 Settings_SetupMisc() {
 	global
@@ -796,21 +765,16 @@ Settings_SetupMisc() {
 	GuiControl, 1:, ImageExtension, %ImageExtension%
 	GuiControl, 1:, FullscreenInclude, %FullscreenInclude%
 	GuiControl, 1:, FullscreenExclude, %FullscreenExclude%
-	/*
-	GuiControl, 1:,HKImproveConsole,%HKImproveConsole%		
-	GuiControl, 1:,HKPhotoViewer,%HKPhotoViewer%	
-	*/
-	GuiControl, 1:,JoyControl,%JoyControl%
-	;GuiControl, 1:,ClipboardManager,%ClipboardManager%
-	GuiControl, 1:,WordDelete,%WordDelete%
-	GuiControl, 1:,HideTrayIcon,%HideTrayIcon%
-	GuiControl, 1:,AutoUpdate,%AutoUpdate%
+	GuiControl, 1:,JoyControl,% JoyControl = 1
+	GuiControl, 1:,WordDelete,% WordDelete = 1
+	GuiControl, 1:,HideTrayIcon,% HideTrayIcon = 1
+	GuiControl, 1:,AutoUpdate,% AutoUpdate = 1
 	;Figure out if Autorun is enabled
 	if(!IsPortable)
 	{
 		RegRead, Autorun, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus
 		temp:=Autorun != ""
-		GuiControl, 1:, Autorun,%temp%
+		GuiControl, 1:, Autorun,% Autorun != ""
 	}
 	GuiControl, 1:Choose, RunAsAdmin, %RunAsAdmin%
 }
@@ -1087,7 +1051,7 @@ GUI_EventsList_Update()
 		{
 			Checked := LV_GetNext(A_Index-1, "Checked") = A_Index ? 1 : 0
 			LV_GetText(id,A_Index,2)
-			Event := Settings_Events[Settings_Events.FindID(id)]
+			Event := Settings_Events.SubItem("ID", id)
 			if((!IsPortable && A_IsAdmin) || Event.Trigger.Type != "ExplorerButton")
 				Event.Enabled := Checked
 		}
@@ -1106,7 +1070,7 @@ GUI_AddEvent()
 	global Settings_Events, GUI_EventsList
 	outputdebug GUI_AddEvent() listview
 	Gui, ListView, GUI_EventsList
-	Event := EventSystem_CreateEvent(Settings_Events) ;Event is added to Settings_Events here
+	Event := EventSystem_CreateAndRegisterEvent(Settings_Events) ;Event is added to Settings_Events here
 	LV_Modify(LV_GetNext(""), "-Select")
 	LV_Add("Select Check", "", Event.ID, Event.Trigger.DisplayString(), Event.Name)	
 	selected := TV_GetSelection()
@@ -1132,7 +1096,7 @@ GUI_RemoveEvent()
 		if(LV_GetNext(ListPos-1) = ListPos)
 		{
 			LV_GetText(id,ListPos,2)			
-			pos := Settings_Events.FindID(id)
+			pos := Settings_Events.indexOfSubItem("ID", id)
 			if((!IsPortable && A_IsAdmin) || Settings_Events[pos].Trigger.Type != "ExplorerButton")
 			{
 				Category := Settings_Events[pos].Category
@@ -1169,7 +1133,7 @@ GUI_EventsList_Edit(Add = 0)
 		return
 	i:=LV_GetNext("")
 	LV_GetText(id,i,2)
-	pos := Settings_Events.FindID(id)
+	pos := Settings_Events.indexOfSubItem("ID", id)
 	if((IsPortable || !A_IsAdmin) && Settings_Events[pos].Trigger.Type = "ExplorerButton")
 	{
 		Msgbox ExplorerButton trigger events may not be modified in portable or non-admin mode, as this might cause inconsistencies with the registry.
@@ -1214,9 +1178,9 @@ GUI_EventsList_Copy()
 		if(LV_GetNext(A_Index-1) = A_Index)
 		{
 			LV_GetText(id,A_Index,2)			
-			pos := Settings_Events.FindID(id)
-			if((!IsPortable && A_IsAdmin) || Settings_Events[pos].Trigger.Type != "ExplorerButton")
-				Settings_Events_Clipboard.append(Settings_Events[pos].DeepCopy())
+			Event := Settings_Events.SubItem("ID", id)
+			if((!IsPortable && A_IsAdmin) || Event.Trigger.Type != "ExplorerButton")
+				Settings_Events_Clipboard.append(Event.DeepCopy())
 		}
 	}
 	WriteEventsFile(Settings_Events_Clipboard,A_Temp "/7plus/EventsClipboard.xml")	
@@ -1291,9 +1255,9 @@ GUI_EventsList_Export()
 				if(LV_GetNext(A_Index - 1) = A_Index)
 				{
 					LV_GetText(id,A_Index,2)
-					Event := Settings_Events[Settings_Events.FindID(id)]
+					Event := Settings_Events.SubItem("ID", id)
 					Events.append(Event)
-					if(!FTP && Event.Actions.indexOfSubItem("Type","Upload"))
+					if(!FTP && Event.Actions.indexOfSubItem("Type", "Upload"))
 						FTP := true
 				}
 			}
@@ -1315,12 +1279,12 @@ GUI_SaveEvents()
 	;Remove deleted events and refresh the copies to consider recent changes (such as timer state)
 	Loop % Events.len()
 	{
-		if(!Settings_Events[Settings_Events.FindID(Events[A_Index].id)]) ;separate destroy routine instead of simple disable is needed for removed events because of hotkey/timer discrepancy
+		if(!Settings_Events.SubItem("ID", Events[A_Index].id)) ;separate destroy routine instead of simple disable is needed for removed events because of hotkey/timer discrepancy
 		{
 			Events.Remove(Events[A_Index])
 			continue
 		}
-		Events[A_Index].Trigger.PrepareReplacement(Events[A_Index], Settings_Events[Settings_Events.FindID(Events[A_Index].id)])
+		Events[A_Index].Trigger.PrepareReplacement(Events[A_Index], Settings_Events.SubItem("ID", Events[A_Index].id))
 	}
 	
 	

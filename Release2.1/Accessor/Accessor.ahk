@@ -1,14 +1,12 @@
 Accessor_Init()
 {
 	global AccessorPlugins, Accessor, ConfigPath
-	SplitPath, ConfigPath,,path
-	path .= "\Accessor.xml"
 	AccessorPluginsList := "WindowSwitcher,FileSystem,Google,Calc,ProgramLauncher,NotepadPlusPlus,Notes,FastFolders,Uninstall,URL,Weather" ;The order here partly determines the order in the window, so choose carefully
 	AccessorPlugins := Array()
 	Accessor := Object("Base", Object("OnExit", "Accessor_OnExit"))
-	if(FileExist(path))
+	if(FileExist(ConfigPath "\Accessor.xml"))
 	{
-		FileRead, xml, %path%
+		FileRead, xml, %ConfigPath%\Accessor.xml
 		XMLObject := XML_Read(xml)
 	}
 	Loop, Parse, AccessorPluginsList, `,,%A_Space%
@@ -79,9 +77,7 @@ Accessor_OnExit(Accessor)
 	if(Accessor.GUINum)
 		AccessorClose()
 	
-	SplitPath, ConfigPath,,path
-	path .= "\Accessor.xml"
-	FileDelete, %path%
+	FileDelete, %ConfigPath%\Accessor.xml
 	XMLObject := Object()
 	Loop % AccessorPlugins.len()
 	{
@@ -91,7 +87,7 @@ Accessor_OnExit(Accessor)
 	XMLObject.Keywords := Object("Keyword",Array())
 	Loop % Accessor.Keywords.len()
 		XMLObject.Keywords.Keyword.append(Object("Key", Accessor.Keywords[A_Index].Key, "Command", Accessor.Keywords[A_Index].Command))
-	XML_Save(XMLObject,path)
+	XML_Save(XMLObject, ConfigPath "\Accessor.xml")
 	
 	DestroyIcon(Accessor.GenericIcons.Application)
 	DestroyIcon(Accessor.GenericIcons.Folder)
@@ -102,8 +98,8 @@ CreateAccessorWindow(Action)
 {
 	global AccessorListView, Accessor, AccessorPlugins, AccessorOKButton
 	WasCritical := A_IsCritical
-	Critical, Off
-	if(  := Accessor.GUINum)
+	Critical
+	if(AccessorGUINum := Accessor.GUINum)
 	{
 		gui %AccessorGUINum%:+LastFoundExist
 		If(WinExist())
@@ -113,12 +109,12 @@ CreateAccessorWindow(Action)
 	DetectHiddenWindows, On
     loop
 	{
-		;-- Window available?
+		; Window available?
 		gui %AccessorGUINum%:+LastFoundExist
 		If(!WinExist())
 			break
 
-		;-- Nothing available?
+		; Nothing available?
 		if(AccessorGUINum=99)
 		{
 			MsgBox 262160
@@ -158,8 +154,8 @@ CreateAccessorWindow(Action)
 	old := OnMessage(0x100)
 	Accessor.OldKeyDown := old
 	OnMessage(0x100, "Accessor_WM_KEYDOWN")
-	if(WasCritical)
-		Critical
+	if(!WasCritical)
+		Critical, Off
 	;return Gui number to indicate that the Accessor box is still open
 	return AccessorGUINum
 }
@@ -233,7 +229,7 @@ FillAccessorList()
 	Loop % Accessor.List.len()
 	{
 		AccessorListEntry := Accessor.List[A_Index]
-		AccessorPlugin := AccessorPlugins[AccessorPlugins.indexOfSubItem("Type", AccessorListEntry.Type)]
+		AccessorPlugin := AccessorPlugins.SubItem("Type", AccessorListEntry.Type)
 		AccessorPlugin.GetDisplayStrings(AccessorListEntry, Title := AccessorListEntry.Title, Path := AccessorListEntry.Path, Detail1 := AccessorListEntry.Detail1, Detail2 := AccessorListEntry.Detail2)
 		LV_Add("Icon" AccessorListEntry.Icon, "", A_Index, Title, Path, Detail1, Detail2)
 	}
@@ -370,9 +366,9 @@ AccessorClose()
 		GUI, ListView, AccessorListView
 		Loop % AccessorPlugins.len()
 			AccessorPlugins[A_Index].OnAccessorClose(Accessor)
-		Accessor.GUINum := 0
 		Accessor.LastFilter := ""
 		OnMessage(0x100, Accessor.OldKeyDown) ; Restore previous KeyDown handler
+		Accessor.GUINum := 0
 		Gui, Destroy
 	}
 	if(!WasCritical)
@@ -526,9 +522,9 @@ AccessorRunWithArgs()
 	GUI, ListView, AccessorListView
 	selected := LV_GetNext()
 	LV_GetText(id,selected,2)
-	Event := EventSystem_CreateEvent("")
-	Event.ID := -1
+	Event := EventSystem_CreateEvent()
 	Event.Name := "Run with arguments"
+	Event.Temporary := true
 	Event.Actions.append(EventSystem_CreateSubEvent("Action","Input"))
 	Event.Actions[1].Text := "Enter program arguments"
 	Event.Actions[1].Title := "Enter program arguments"
@@ -585,7 +581,7 @@ GUI_EditAccessorPlugin(Settings,GoToLabel="")
 		PluginSettings := Settings
 		result := ""
 		PluginGUI := object("x",38,"y",80)
-		Plugin := AccessorPlugins[AccessorPlugins.indexOfSubItem("Type", PluginSettings.Type)]
+		Plugin := AccessorPlugins.SubItem("Type", PluginSettings.Type)
 		outputdebug % "type " PluginSettings.type
 		Gui 1:+LastFoundExist
 		IfWinExist

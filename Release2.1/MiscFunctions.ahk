@@ -174,10 +174,10 @@ IsFullscreen(sWinTitle = "A", UseExcludeList = true, UseIncludeList=true) {
     Local iWinX, iWinY, iWinW, iWinH, iCltX, iCltY, iCltW, iCltH, iMidX, iMidY, iMonitor, c, D, iBestD 
     global FullScreenExclude, FullScreenInclude
     ErrorLevel := False 
-	
     ;Get the active window's dimension 
     hWin := WinExist(sWinTitle) 
     If Not hWin { 
+		outputdebug no window
         ErrorLevel := True 
         Return False 
     }
@@ -185,17 +185,23 @@ IsFullscreen(sWinTitle = "A", UseExcludeList = true, UseIncludeList=true) {
     ;Make sure it's not desktop 
     WinGetClass, c, ahk_id %hWin% 
     If (hWin = DllCall("GetDesktopWindow", "Ptr") Or (c = "Progman") Or (c = "WorkerW")) 
+	{
+		outputdebug desktop
         Return False 
-        
+	}   
     ;Fullscreen include list
     if(UseIncludeList)
     	if c in %FullscreenInclude%
-				return true
+		{
+			; outputdebug included
+			return true
+		}
     ;Fullscreen exclude list
     if(UseExcludeList)
     	if c in %FullscreenExclude%
-				return false
-				
+		{
+			return false
+		}		
     ;Resolution change would only need to be detected every few seconds or so, but since it doesn't add anything notably to cpu usage, just do it always
     SysGet, Mon0, MonitorCount 
     SysGet, iPrimaryMon, MonitorPrimary 
@@ -207,8 +213,8 @@ IsFullscreen(sWinTitle = "A", UseExcludeList = true, UseIncludeList=true) {
 			
     ;Get the window and client area, and style 
     VarSetCapacity(iWinRect, 16), VarSetCapacity(iCltRect, 16) 
-    DllCall("GetWindowRect", "Ptr", hWin, "UIntP", iWinRect) 
-    DllCall("GetClientRect", "Ptr", hWin, "UIntP", iCltRect) 
+    DllCall("GetWindowRect", "Ptr", hWin, "Ptr", &iWinRect) 
+	DllCall("GetClientRect", "Ptr", hWin, "Ptr", &iCltRect)
     WinGet, iStyle, Style, ahk_id %hWin% 
     
     ;Extract coords and sizes 
@@ -217,7 +223,7 @@ IsFullscreen(sWinTitle = "A", UseExcludeList = true, UseIncludeList=true) {
     iWinH := NumGet(iWinRect, 12) - NumGet(iWinRect, 4) ;Bottom-right coordinates are exclusive 
     iCltX := 0, iCltY := 0 ;Client upper-left always (0,0) 
     iCltW := NumGet(iCltRect, 8), iCltH := NumGet(iCltRect, 12) 
-    
+    ; outputdebug iCltW %iCltW% iCltH %iCltH%
     ;Check in which monitor it lies 
     iMidX := iWinX + Ceil(iWinW / 2) 
     iMidY := iWinY + Ceil(iWinH / 2) 
@@ -227,22 +233,28 @@ IsFullscreen(sWinTitle = "A", UseExcludeList = true, UseIncludeList=true) {
     Loop % Mon0 { 
       D := Sqrt((iMidX - Mon%A_Index%MidX)**2 + (iMidY - Mon%A_Index%MidY)**2) 
       If (D < iBestD) { 
-         iBestD := D 
+         iBestD := D
          iMonitor := A_Index 
       } 
    } 
-    
+	
     ;Check if the client area covers the whole screen 
     bCovers := (iCltX <= Mon%iMonitor%Left) And (iCltY <= Mon%iMonitor%Top) And (iCltW >= Mon%iMonitor%Right - Mon%iMonitor%Left) And (iCltH >= Mon%iMonitor%Bottom - Mon%iMonitor%Top) 
-    If bCovers 
-        Return True 
-    
+    If(bCovers)
+	{
+		; outputdebug client covers class %c% hwnd %hwin% monitor %iMonitor% %iCltX% <= %Mon1Left% And %iCltY% <= %Mon1Top% And %iCltW% >= %Mon1Right% - %Mon1Left% And %iCltH% >= %Mon1Bottom% - %Mon1top%
+        Return True
+    }
     ;Check if the window area covers the whole screen and styles 
     bCovers := (iWinX <= Mon%iMonitor%Left) And (iWinY <= Mon%iMonitor%Top) And (iWinW >= Mon%iMonitor%Right - Mon%iMonitor%Left) And (iWinH >= Mon%iMonitor%Bottom - Mon%iMonitor%Top) 
-    If bCovers { ;WS_THICKFRAME or WS_CAPTION 
+    If (bCovers) ;WS_THICKFRAME or WS_CAPTION 
+	{
         bCovers &= Not (iStyle & 0x00040000) Or Not (iStyle & 0x00C00000) 
+		; outputdebug % "window " bCovers ? iMonitor : False 
         Return bCovers ? iMonitor : False 
-    } Else Return False 
+    } 
+	Else 
+		Return False 
 }
 
 ;Returns the workspace area covered by the active monitor

@@ -43,6 +43,7 @@ HotkeyShouldFire(key)
 		{
 			Condition := Event.Conditions[ConditionPos]
 			enable := Condition.Evaluate(Event)
+			
 			if(enable = -1)
 			{
 				Msgbox % Condition.DisplayString() ": Hotkey Conditions must not block! This means that conditions which take a while to evaluate, such as conditions that query input from the user, must not be used. This condition is deleted."
@@ -52,7 +53,8 @@ HotkeyShouldFire(key)
 			}
 			else if(Condition.Negate)
 				enable := 1 - enable
-			
+				
+			outputdebug enable %key% %enable%
 			if(enable = 0)
 				break
 			ConditionPos++

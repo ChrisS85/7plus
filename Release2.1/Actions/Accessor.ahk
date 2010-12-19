@@ -3,7 +3,6 @@ Action_Accessor_Init(Action)
 	static once
 	Action.Category := "Window"
 	Action.FlashingWindows := 1
-	; Action.LauncherHotkey := "!{Space}"
 	if(!once)
 	{		
 		once := 1
@@ -13,7 +12,6 @@ Action_Accessor_Init(Action)
 Action_Accessor_ReadXML(Action, XMLAction)
 {
 	Action.FlashingWindows := XMLAction.FlashingWindows
-	; Action.LauncherHotkey := XMLAction.LauncherHotkey
 }
 Action_Accessor_Execute(Action,Event)
 {

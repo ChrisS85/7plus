@@ -89,7 +89,7 @@ return
 QueryWeatherResult()
 {
 	global AccessorPlugins, AccessorEdit, Accessor
-	WeatherPlugin := AccessorPlugins[AccessorPlugins.indexOfSubItem("Type", "Weather")]
+	WeatherPlugin := AccessorPlugins.SubItem("Type", "Weather")
 	GUINum := Accessor.GUINum
 	if(!GUINum)
 		return

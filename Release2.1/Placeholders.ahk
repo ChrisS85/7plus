@@ -16,7 +16,7 @@ GetFullPathName(SPath)
 }
 ExpandPathPlaceholders(text)
 {
-	static sProgramFiles, sWinDir, sTemp, sAppData, sDesktop, sMyDocuments, sStartMenu, sStartMenuCommon
+	static sProgramFiles, sWinDir, sTemp, sAppData, sDesktop, sMyDocuments, sStartMenu, sStartMenuCommon, s7plusDrive
 	if(!sProgramFiles)
 	{
 		sProgramFiles := GetFullPathName(A_ProgramFiles)
@@ -27,6 +27,7 @@ ExpandPathPlaceholders(text)
 		sMyDocuments := GetFullPathName(A_MyDocuments)
 		sStartMenu := GetFullPathName(A_StartMenu)
 		sStartMenuCommon := GetFullPathName(A_StartMenuCommon)
+		SplitPath, A_ScriptDir,,,,,s7plusDrive
 	}
 	StringReplace, text, text, `%ProgramFiles`%, %sProgramFiles%, All
 	StringReplace, text, text, `%Windir`%, %sWindir%, All
@@ -36,6 +37,8 @@ ExpandPathPlaceholders(text)
 	StringReplace, text, text, `%MyDocuments`%, %sMyDocuments%, All
 	StringReplace, text, text, `%StartMenu`%, %sStartMenu%, All
 	StringReplace, text, text, `%StartMenuCommon`%, %sStartMenuCommon%, All
+	StringReplace, text, text, `%7plusDrive`%, %s7plusDrive%, All
+	StringReplace, text, text, `%7plusDir`%, %A_ScriptDir%, All
 	return text
 }
 ExpandGlobalPlaceholders(text)
