@@ -98,7 +98,7 @@ CreateAccessorWindow(Action)
 {
 	global AccessorListView, Accessor, AccessorPlugins, AccessorOKButton
 	WasCritical := A_IsCritical
-	Critical
+	Critical, Off
 	if(AccessorGUINum := Accessor.GUINum)
 	{
 		gui %AccessorGUINum%:+LastFoundExist
@@ -154,8 +154,8 @@ CreateAccessorWindow(Action)
 	old := OnMessage(0x100)
 	Accessor.OldKeyDown := old
 	OnMessage(0x100, "Accessor_WM_KEYDOWN")
-	if(!WasCritical)
-		Critical, Off
+	if(WasCritical)
+		Critical
 	;return Gui number to indicate that the Accessor box is still open
 	return AccessorGUINum
 }

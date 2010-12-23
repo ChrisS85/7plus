@@ -2,12 +2,14 @@ Action_Run_Init(Action)
 {
 	Action.Category := "System"
 	Action.WaitForFinish := 0
+	Action.RunNonElevated := 1
 }
 Action_Run_ReadXML(Action, XMLAction)
 {
 	Action.Command := XMLAction.Command
 	Action.WorkingDirectory := XMLAction.WorkingDirectory
 	Action.WaitForFinish := XMLAction.WaitForFinish
+	Action.RunNonElevated := XMLAction.RunNonElevated
 }
 Action_Run_Execute(Action, Event)
 {
@@ -17,14 +19,14 @@ Action_Run_Execute(Action, Event)
 		WorkingDirectory := Event.ExpandPlaceholders(Action.WorkingDirectory)
 		if(Action.WaitForFinish)
 		{
-			Action.tmpPid := Run(command, WorkingDirectory)
+			Action.tmpPid := Run(command, WorkingDirectory, "", Action.RunNonElevated)
 			if(Action.tmpPid) ;If retrieved properly
 				return -1
 			MsgBox Waiting for %command% failed!
 			return 0
 		}
 		else
-			Run(command, WorkingDirectory)
+			Run(command, WorkingDirectory, "", Action.RunNonElevated)
 	}
 	else
 	{
@@ -48,6 +50,7 @@ Action_Run_GuiShow(Action, ActionGUI, GoToLabel = "")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Command", "", "", "Command:","Browse", "Action_Run_Browse", "Placeholders", "Action_Run_Placeholders")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "WorkingDirectory", "", "", "Working Dir:","Browse", "Action_Run_Browse_WD", "Placeholders", "Action_Run_Placeholders_WD")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "WaitForFinish", "Wait for finish", "", "")
+		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "RunNonElevated", "Run as normal user", "", "")
 	}
 	else if(GoToLabel = "Browse")
 		SubEventGUI_SelectFile(sActionGUI, "Command", "Select File", "", 1)

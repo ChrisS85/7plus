@@ -24,7 +24,7 @@ Action_Accessor_Execute(Action,Event)
 				return 1
 		}
 		result := CreateAccessorWindow(Action)
-		return result > 1 ? -1 : (result = 1 ? 1 : 0)
+		return result > 1 ? 1 : (result = 1 ? 1 : 0)
 	}
 	else
 	{

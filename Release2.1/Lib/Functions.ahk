@@ -145,8 +145,25 @@ RegRead(RootKey, SubKey, ValueName = "") {
 	RegRead, v, %RootKey%, %SubKey%, %ValueName%
 	Return, v
 }
-Run(Target, WorkingDir = "", Mode = "") {
-	Run, %Target% , %WorkingDir%, %Mode%, v
+Run(Target, WorkingDir = "", Mode = "", NonElevated=1) {
+	if(NonElevated)
+	{
+		if(InStr(Target, """")=1 && InStr(Target, """",false,3))
+		{
+			Args := SubStr(Target,InStr(Target, """", false, 3) + 2)
+			Target := SubStr(Target, 2,InStr(Target, """", false, 3) - 2)
+		}
+		else if(InStr(Target, " "))
+		{
+			Args := SubStr(Target, InStr(Target, " ") + 1)
+			Target := SubStr(Target, 1, InStr(Target, " ") - 1)
+		}
+		else
+			Args := ""
+		DllCall("Explorer.dll\ShellExecInExplorerProcess","Str",Target, "Str", Args, "Str", WorkingDir)
+	}
+	else
+		Run, %Target% , %WorkingDir%, %Mode%, v
 	Return, v	
 }
 RunWait(Target, WorkingDir = "", Mode = "") {

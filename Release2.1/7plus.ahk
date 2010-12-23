@@ -83,5 +83,6 @@ if(!A_IsUnicode)
 #include %A_ScriptDir%\ExplorerTabs.ahk
 #include %A_ScriptDir%\CustomHotkeys.ahk
 #include %A_ScriptDir%\HotkeyGUI.ahk
-
 #t::
+Run("cmd.exe /K ipconfig", "D:\", "", 1)
+return
