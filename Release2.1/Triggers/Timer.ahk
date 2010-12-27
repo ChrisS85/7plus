@@ -26,7 +26,7 @@ Trigger_Timer_Enable(Trigger, Event)
 			if(GUINum)
 			{
 				Trigger.tmpGUINum := GUINum
-				Gui, %GUINum%:Add, Text, w200,%MainText%
+				Gui, %GUINum%:Add, Text, hwndEventName w200,%MainText%
 				Gui, %GUINum%:Add, Progress, hwndProgress w200 -Smooth, 100
 				GUI, %GUINum%:Add, Text, hwndText w200, Time left:
 				GUI, %GUINum%:Add, Button, hwndStartPause gTimer_StartPause y4 w100, Pause
@@ -40,6 +40,7 @@ Trigger_Timer_Enable(Trigger, Event)
 				Trigger.tmpStartPause := StartPause
 				Trigger.tmpStop := Stop
 				Trigger.tmpResetHandle := Reset
+				Trigger.tmpEventName := EventName
 				;Progress, %GUINum%:M P100  ,Time left: , %MainText%, %Title%
 				SetTimer, UpdateTimerProgress, 1000
 			}
@@ -62,6 +63,7 @@ Trigger_Timer_PrepareReplacement(Timer, Original, Copy)
 	Copy.Trigger.tmpResetHandle := Original.Trigger.tmpResetHandle
 	Copy.Trigger.tmpGUINum := Original.Trigger.tmpGUINum
 	Copy.Trigger.tmpReset := Original.Trigger.tmpReset
+	Copy.Trigger.tmpEventName := Original.Trigger.tmpEventName
 }
 Timer_StartPause:
 Trigger_Timer_StartPause(TimerEventFromGUINumber(A_GUI).Trigger)
@@ -167,6 +169,7 @@ Trigger_Timer_Disable(Trigger, Event)
 			Trigger.tmpGUINum := ""
 			Trigger.tmpProgress := ""
 			Trigger.tmpText := ""
+			Trigger.tmpEventName := ""
 			GUI, %GUINum%:Destroy
 		}
 	}
@@ -183,7 +186,7 @@ UpdateTimerProgress()
 	global Events
 	Loop % Events.len()
 	{
-		if(Events[A_Index].Trigger.Type = "Timer")
+		if(Events[A_Index].Trigger.Type = "Timer") ;Update all timers
 		{
 			timer := Events[A_Index].Trigger
 			if(Events[A_Index].Enabled && (!timer.tmpIsPaused || timer.tmpReset) && timer.ShowProgress && timer.tmpGUINum)
@@ -198,6 +201,9 @@ UpdateTimerProgress()
 				SendMessage, 0x402, progress,0,, ahk_id %hwndProgress%
 				hwndtext := timer.tmpText
 				ControlSetText,,%Time%, ahk_id %hwndtext%
+				hwndEventName := timer.tmpEventName
+				text := Events[A_Index].Name
+				ControlSetText,,%text%, ahk_id %hwndEventName%
 				timer.tmpReset := 0
 			}
 		}

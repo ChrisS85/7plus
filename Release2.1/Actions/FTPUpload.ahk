@@ -79,6 +79,7 @@ Action_Upload_ReadXML(Action, XMLAction)
 Action_Upload_Execute(Action, Event)
 {
 	SourceFiles := Event.ExpandPlaceholders(Action.SourceFiles)
+	outputdebug % "orig " Action.SourceFiles " now " SourceFiles
 	TargetFolder := Event.ExpandPlaceholders(Action.TargetFolder)
 	TargetFile := Event.ExpandPlaceholders(Action.TargetFile)
 	files := ToArray(SourceFiles)

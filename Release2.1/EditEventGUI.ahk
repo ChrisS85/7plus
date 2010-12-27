@@ -1,6 +1,6 @@
 GUI_EditEvent(e,GoToLabel="")
 {
-	static Event, result, TriggerGUI, EditEventTab, EditEventTriggerCategory, EditEventTriggerType, EditEventConditions, EditEvent_EditCondition, EditEvent_RemoveCondition, EditEvent_AddCondition, EditEventActions, EditEvent_EditAction, EditEvent_RemoveAction, EditEvent_AddAction, EditEvent_Condition_MoveDown, EditEvent_Condition_MoveUp, EditEvent_Action_MoveUp, EditEvent_Action_MoveDown, EditEvent_Name, EditEvent_DisableAfterUse, EditEvent_DeleteAfterUse, EditEvent_OneInstance, EditEvent_Category, EditEvent_CopyCondition, EditEvent_PasteCondition, EditEvent_CopyAction, EditEvent_PasteAction, ActionClipboard, ConditionClipboard
+	static Event, result, TriggerGUI, EditEventTab, EditEventTriggerCategory, EditEventTriggerType, EditEventConditions, EditEvent_EditCondition, EditEvent_RemoveCondition, EditEvent_AddCondition, EditEventActions, EditEvent_EditAction, EditEvent_RemoveAction, EditEvent_AddAction, EditEvent_Condition_MoveDown, EditEvent_Condition_MoveUp, EditEvent_Action_MoveUp, EditEvent_Action_MoveDown, EditEvent_Name, EditEvent_Description, EditEvent_DisableAfterUse, EditEvent_DeleteAfterUse, EditEvent_OneInstance, EditEvent_Category, EditEvent_CopyCondition, EditEvent_PasteCondition, EditEvent_CopyAction, EditEvent_PasteAction, ActionClipboard, ConditionClipboard
 	global Trigger_Categories, Settings_Events
 	if(GoToLabel = "")
 	{
@@ -16,7 +16,7 @@ GUI_EditEvent(e,GoToLabel="")
 		Gui, 4:Default
 		Gui, +LabelEditEvent +Owner1 +ToolWindow +OwnDialogs
 		width := 500
-		height := 500
+		height := 570
 		;Gui, 4:Add, Button, ,OK
 		x := Width - 174
 		y := Height - 34
@@ -109,15 +109,20 @@ GUI_EditEvent(e,GoToLabel="")
 		x := 28
 		y := 52
 		Gui, Add, Text, x%x% y%y%, Event Name:
-		x += 80
+		x += 100
 		y -= 4
 		w := 300
-		name := Event.Name
-		Gui, Add, Edit, x%x% y%y% w%w% r1 vEditEvent_Name, %name%
+		Gui, Add, Edit, x%x% y%y% w%w% r1 vEditEvent_Name, % Event.Name
 		x := 28
 		y += 30
+		Gui, Add, Text, x%x% y%y%, Event Description:
+		y -= 4
+		x += 100
+		Gui, Add, Edit, x%x% y%y% w%w% r4 vEditEvent_Description, % Event.Description
+		y += 70
+		x := 28
 		Gui, Add, Text, x%x% y%y%, Event Category:
-		x += 80
+		x += 100
 		y -= 4
 		w := 300
 		Category := Event.Category
@@ -175,6 +180,7 @@ GUI_EditEvent(e,GoToLabel="")
 		Event.Trigger.GuiSubmit(TriggerGUI)
 		Gui, Submit, NoHide
 		Event.Name := EditEvent_Name
+		Event.Description := EditEvent_Description
 		StringReplace, EditEvent_Category, EditEvent_Category, |,%A_Space%
 		if(EditEvent_Category = "Events")
 			EditEvent_Category := "Events1"

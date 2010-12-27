@@ -12,11 +12,8 @@ GroupAdd, TaskbarDesktopGroup, ahk_group TaskbarGroup
 CommunicateWithRunningInstance()
 FileCreateDir %A_Temp%\7plus
 
-;This value is used when there are no write permissions in 7plus folder (mostly %ProgramFiles% in Vista/7), so that the config file can be copied to %AppData%\7plus and used from there in the future.
-;As the old file would still exist then, we need to write this value to the new file and check for its existance to decide which config file needs to be used.
-IniRead, NoAdminSettingsTransfered, %A_AppData%\7plus\Settings.ini, Misc, NoAdminSettingsTransfered, 0
 ;Try to use config file from script dir in portable mode or when it wasn't neccessary to copy it to appdata yet
-if((IsPortable || FileExist(A_ScriptDir "\Settings.ini")) && !NoAdminSettingsTransfered)
+if(IsPortable)
 	ConfigPath := A_ScriptDir 
 Else
 {
@@ -68,7 +65,7 @@ if(!A_IsAdmin && RunAsAdmin = "Always/Ask")
 
 ;If the current config path is set to the program directory but there is no write access, %AppData%\7plus needs to be used.
 ;If this is the first time (i.e. NoAdminSettingsTransfered = 0), all config files need to be copied to the new config path
-if((ConfigPath = A_ScriptDir && !WriteAccess(A_ScriptDir "\Accessor.xml")) || ConfigPath = A_AppData "\7plus")
+if((IsPortable && !WriteAccess(A_ScriptDir "\Accessor.xml")) || ConfigPath = A_AppData "\7plus")
 {
 	if(IsPortable)
 		MsgBox No file access to settings files in program directory. 7plus will not be able to store its settings. Please move 7plus to a folder with write permissions, run it as administrator, or grant write permissions to this directory.
@@ -77,28 +74,6 @@ if((ConfigPath = A_ScriptDir && !WriteAccess(A_ScriptDir "\Accessor.xml")) || Co
 		ConfigPath := A_AppData "\7plus"
 		if(!FileExist(ConfigPath))
 			FileCreateDir, %ConfigPath%
-		if(NoAdminSettingsTransfered != MajorVersion "." MinorVersion "." BugfixVersion)
-		{
-			if(!WriteAccess(A_ScriptDir "\Accessor.xml"))
-				MsgBox No File access to settings files in program directory. 7plus will use %A_AppData%\7plus as settings directory.
-			FileCopy, %A_ScriptDir%\Events.xml, %A_AppData%\7plus\Events.xml, 1
-			FileCopy, %A_ScriptDir%\Settings.ini, %A_AppData%\7plus\Settings.ini, 1
-			FileCopy, %A_ScriptDir%\ProgramCache.xml, %A_AppData%\7plus\ProgramCache.xml, 1
-			FileCopy, %A_ScriptDir%\Notes.xml, %A_AppData%\7plus\Notes.xml, 1
-			FileCopy, %A_ScriptDir%\History.xml, %A_AppData%\7plus\History.xml, 1
-			FileCopy, %A_ScriptDir%\Clipboard.xml, %A_AppData%\7plus\Clipboard.xml, 1
-			FileCopy, %A_ScriptDir%\Accessor.xml, %A_AppData%\7plus\Accessor.xml, 1
-			FileCopy, %A_ScriptDir%\FTPProfiles.xml, %A_AppData%\7plus\FTPProfiles.xml, 1
-			FileDelete, %A_ScriptDir%\Events.xml
-			FileDelete, %A_ScriptDir%\Settings.ini
-			FileDelete, %A_ScriptDir%\ProgramCache.xml
-			FileDelete, %A_ScriptDir%\Notes.xml
-			FileDelete, %A_ScriptDir%\History.xml
-			FileDelete, %A_ScriptDir%\Clipboard.xml,
-			FileDelete, %A_ScriptDir%\Accessor.xml
-			FileDelete, %A_ScriptDir%\FTPProfiles.xml
-			NoAdminSettingsTransfered := MajorVersion "." MinorVersion "." BugfixVersion
-		}
 	}
 }
 
@@ -106,7 +81,6 @@ IniRead, PatchVersion, %IniPath%, General, PatchVersion, 0
 
 if(!FileExist(ConfigPath "\Events.xml") && FileExist(A_ScriptDir "\Events\All Events.xml")) ;Fresh install, copy default events file into config directory
 	FileCopy, %A_ScriptDir%\Events\All Events.xml, %A_ConfigPath%\Events.xml
-
 
 CreateTabWindow()
 
@@ -287,8 +261,6 @@ if(Vista7)
 if(A_OSVersion="WIN_7")
 	CreateInfoGui()
 
-GoSub TrayminOpen
-
 LoadHotstrings()
 
 ;Show tray icon when loading is complete
@@ -343,7 +315,6 @@ OnExit(Reload=0)
 	Action_Upload_WriteFTPProfiles()
 	SlideWindows_Exit()
 	TabContainerList.CloseAllInactiveTabs()
-	GoSub TrayminClose	
 	SaveHotstrings()
 	if(Reload)
 	{

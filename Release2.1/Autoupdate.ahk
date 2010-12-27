@@ -31,6 +31,9 @@ AutoUpdate()
 					URLDownloadToFile, %link%?x=%rand%,%A_Temp%\7plus\Updater.exe
 					if(!Errorlevel)
 					{
+						;Write config path and script dir location to temp file to let updater know
+						IniWrite, %ConfigPath%, %A_Temp%\7plus\Update.ini, Update, ConfigPath
+						IniWrite, %A_ScriptDir%, %A_Temp%\7plus\Update.ini, Update, ScriptDir
 						Run %A_Temp%\7plus\Updater.exe
 						ExitApp
 					}
@@ -56,32 +59,10 @@ PostUpdate()
 		IniRead, tmpBugfixVersion, %A_Temp%\7plus\Version.ini,Version,BugfixVersion
 		if(tmpMajorVersion=MajorVersion && tmpMinorVersion = MinorVersion && tmpBugfixVersion = BugfixVersion)
 		{
-			;If the new version is 2.1.0, some registry values need to be modified according to the new version.
-			if(MajorVersion "." MinorVersion "." BugfixVersion = "2.1.0")
-			{
-				RemoveAllButtons()
-				RefreshFastFolders()
-			}
-			;2.0.0 -> 2.1.0 compatibility, update autorun executable
-			if(!IsPortable)
-			{
-				RegRead, Autorun, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus
-				if(InStr(Autorun, "UACAutorun"))
-					if(A_IsCompiled)
-						RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptDir%\7plus.exe"
-					else
-						RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptDir%\7plus.ahk"
-			}
-			;Possibly delete remaining files from 2.0.0 which are obsolete now
-			List := "UACAutorun.exe,ChangeLocation.exe,Events\cmd.xml,Events\CopyFilenames.xml,Events\CreateNewFile,Folder.xml,Events\DoubleClickDesktop.xml,Events\DoubleClickTaskbar.xml,Events\DoubleClickUpwards.xml,Events\Mouse Volume.xml,Events\Open in Editor.xml,Events\Other things.xml,Events\Upload.xml,Events\AppendToClipboard.xml,Events\BackspaceUpwards.xml"
-			Loop, Parse, List,`,
-				if(FileExist(A_ScriptDir "/" A_LoopField) && WriteAccess(A_ScriptDir "/" A_LoopField))
-					FileDelete %A_ScriptDir%/%A_LoopField%
-			
 			if(FileExist(ConfigPath "\Patches\" MajorVersion "." MinorVersion "." BugfixVersion ".0.xml")) ;apply release patch, without showing messages
 			{
 				ReadEventsFile(Events, ConfigPath "\Patches\" MajorVersion "." MinorVersion "." BugfixVersion ".0.xml")
-				PatchVersion := 1
+				PatchVersion := 0
 				WriteMainEventsFile()
 				WriteIni()
 			}
@@ -124,7 +105,6 @@ AutoUpdate_CheckPatches()
 			}
 			if(FileExist(ConfigPath "\Patches\" version ".xml")) ;If the patch exists in patches directory (does not mean it has been downloaded now, they are stored)
 			{
-				msgbox apply patch %version%.xml
 				ReadEventsFile(Events, ConfigPath "\Patches\" version ".xml","", Update)
 				PatchVersion++
 				WriteMainEventsFile()

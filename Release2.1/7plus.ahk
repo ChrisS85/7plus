@@ -79,7 +79,6 @@ if(!A_IsUnicode)
 #include %A_ScriptDir%\SlideWindows.ahk
 #include %A_ScriptDir%\JoyControl.ahk
 #include %A_ScriptDir%\Tooltip.ahk
-#include %A_ScriptDir%\WinTrayMin.ahk
 #include %A_ScriptDir%\ExplorerTabs.ahk
 #include %A_ScriptDir%\CustomHotkeys.ahk
 #include %A_ScriptDir%\HotkeyGUI.ahk

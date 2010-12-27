@@ -47,7 +47,6 @@
 #include %A_ScriptDir%\Actions\FTPUpload.ahk
 #include %A_ScriptDir%\Actions\Input.ahk
 #include %A_ScriptDir%\Actions\Message.ahk
-#include %A_ScriptDir%\Actions\MinimizeToTray.ahk
 #include %A_ScriptDir%\Actions\MouseClick.ahk
 #include %A_ScriptDir%\Actions\NewFile.ahk
 #include %A_ScriptDir%\Actions\NewFolder.ahk
@@ -137,7 +136,7 @@ EventSystem_CreateBaseObjects()
 	local tmpobject
 	EventSystem_Triggers := "DoubleClickDesktop,DoubleClickTaskbar,ExplorerButton,ExplorerDoubleClickSpace,ExplorerPathChanged,Hotkey,None,OnMessage,Timer,Trigger,WindowActivated, WindowClosed, WindowCreated,WindowStateChange,7plusStart"
 	EventSystem_Conditions := "MouseOver,If,IsContextMenuActive,IsDialog,IsFullScreen,KeyIsDown,IsRenaming,WindowActive,WindowExists"
-	EventSystem_Actions := "Accessor,AutoUpdate,Clipboard,Clipmenu,ControlEvent,ControlTimer,Copy,Delete,Exit7plus,FastFoldersClear,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FilterList,FlashingWindows,FocusControl,SetWindowTitle, Input,Message,MinimizeToTray,Move,MouseClick,NewFile,NewFolder,PlaySound,Restart7plus,RestoreSelection,Run,RunOrActivate,Screenshot,SelectFiles,SendKeys,SendMessage,SetDirectory,ShowSettings,Shutdown,Tooltip,Upload,ViewMode,Volume,Wait,WindowActivate,WindowClose,WindowHide,WindowMove,WindowResize,WindowShow,WindowState,Write"
+	EventSystem_Actions := "Accessor,AutoUpdate,Clipboard,Clipmenu,ControlEvent,ControlTimer,Copy,Delete,Exit7plus,FastFoldersClear,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FilterList,FlashingWindows,FocusControl,SetWindowTitle, Input,Message,Move,MouseClick,NewFile,NewFolder,PlaySound,Restart7plus,RestoreSelection,Run,RunOrActivate,Screenshot,SelectFiles,SendKeys,SendMessage,SetDirectory,ShowSettings,Shutdown,Tooltip,Upload,ViewMode,Volume,Wait,WindowActivate,WindowClose,WindowHide,WindowMove,WindowResize,WindowShow,WindowState,Write"
 	Trigger_Categories := object("Explorer", Array(), "Hotkeys", Array(), "Other", Array(), "System", Array(), "Window", Array(), "7plus", Array())
 	Condition_Categories := object("Explorer", Array(), "Mouse", Array(), "Other", Array(), "Window", Array())
 	Action_Categories := object("Explorer", Array(), "FastFolders", Array(), "File", Array(), "Window", Array(), "Input", Array(), "System", Array(), "7plus", Array(), "Other", Array())
@@ -161,7 +160,7 @@ EventSystem_CreateBaseObjects()
 		Trigger_%A_LoopField%_Base.Type := A_LoopField
 		Trigger_%A_LoopField%_Init(Trigger_%A_LoopField%_Base)	
 		;Add type to category
-		Trigger_Categories[tmpobject.Category].append(tmpobject.Type)
+		Trigger_Categories[Trigger_%A_LoopField%_Base.Category].append(Trigger_%A_LoopField%_Base.Type)
 	
 		;Trigger_%A_LoopField%_Base := tmpobject.DeepCopy()
 	}
@@ -179,7 +178,7 @@ EventSystem_CreateBaseObjects()
 		Condition_%A_LoopField%_Base.Type := A_LoopField
 		Condition_%A_LoopField%_Init(Condition_%A_LoopField%_Base)
 		;Add type to category
-		Condition_Categories[tmpobject.Category].append(tmpobject.Type)
+		Condition_Categories[Condition_%A_LoopField%_Base.Category].append(Condition_%A_LoopField%_Base.Type)
 	}
 	Loop, Parse, EventSystem_Actions, `,,%A_Space%
 	{
@@ -195,7 +194,7 @@ EventSystem_CreateBaseObjects()
 		Action_%A_LoopField%_Base.Type := A_LoopField
 		Action_%A_LoopField%_Init(Action_%A_LoopField%_Base)
 		;Add type to category
-		Action_Categories[tmpobject.Category].append(tmpobject.Type)
+		Action_Categories[Action_%A_LoopField%_Base.Category].append(Action_%A_LoopField%_Base.Type)
 	}
 	EventBase := RichObject()
 	EventBase.Enable := "Event_Enable"
@@ -290,7 +289,13 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 			Event.Name := XMLEvent.Name
 		else
 			Event.Remove("Name")
-			
+		
+		;Event Description
+		if(XMLEvent.HasKey("Description"))
+			Event.Description := XMLEvent.Description
+		else
+			Event.Remove("Description")
+		
 		;Event Category
 		if(XMLEvent.HasKey("Category") || OverwriteCategory)
 		{
@@ -510,6 +515,9 @@ WriteEventsFile(Events, path)
 		
 		;Write name
 		xmlEvent.Name := Event.Name
+		
+		;Write description
+		xmlEvent.Description := Event.Description
 		
 		;Write category
 		xmlEvent.Category := Event.Category

@@ -416,7 +416,6 @@ InvertSelection(hWnd)
 		}
 	}
 }
-#g::msgbox % DllCall(A_ScriptDir "\Explorer.dll\Filter", "str", "ahk", "Ptr", WinExist("A"))
 SelectFiles(Select,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)
 {
 	If (hWnd||(hWnd:=WinActive("ahk_class CabinetWClass"))||(hWnd:=WinActive("ahk_class ExploreWClass")))

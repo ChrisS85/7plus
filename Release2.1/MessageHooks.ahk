@@ -71,26 +71,8 @@ ShellMessage( wParam,lParam, msg)
 	Trigger.lParam := lParam
 	OnTrigger(Trigger)
 	; outputdebug shellmessage %wparam%
-	;Traymin
-	If	msg=1028
+	If	(wParam=1||wParam=2)
 	{
-		If	wParam=1028
-		{
-			if(!WasCritical)
-				Critical, Off
-			Return
-		}
-		Else If lParam=0x205 ; RButton 
-		{
-			wtmwParam := wParam
-			Menu, wtmMenu, Show 
-		}
-		Else If	(lParam=0x201||lParam=0x207)
-			WinTraymin(wParam,3)
-	}
-	Else If	(wParam=1||wParam=2)
-	{		
-		WinTraymin(lParam,wParam)
 		Trigger := wParam = 1 ? EventSystem_CreateSubEvent("Trigger","WindowCreated") : EventSystem_CreateSubEvent("Trigger","WindowClosed")
 		class:=WinGetClass("ahk_Id " lParam)
 		; outputdebug(Trigger.Type " triggered! class:" class " hwnd: " lParam)

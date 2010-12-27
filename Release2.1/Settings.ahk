@@ -20,7 +20,7 @@ Settings_CreateEvents(ByRef TabCount) {
 	yIt += textboxstep
 	Gui, 1:Add, ListView, x%x1% y%yIt% w450 h232 vGUI_EventsList gGUI_EventsList_SelectionChange Grid -LV0x10 AltSubmit Checked, Enabled|ID|Trigger|Name
 	OnMessage(0x0111, "WM_COMMAND")
-	
+	Gui, 1:Add, Edit, x%x1% y+10 w450 h60 vGUI_EventsDescription +ReadOnly
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Add gGUI_EventsList_Add, Add Event
 	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Remove gGUI_EventsList_Remove, Delete Event
@@ -513,7 +513,7 @@ Settings_SetupEvents() {
 		Critical, Off
 }
 FillEventsList(){
-	global EventFilter, Settings_Events	
+	global EventFilter, Settings_Events
 	WasCritical := A_IsCritical
 	Critical
 	Gui, 1:Default
@@ -544,6 +544,15 @@ FillEventsList(){
 			count++
 		}
 	}
+	
+	if(LV_GetCount("Selected") = 1)
+	{
+		i:=LV_GetNext("")
+		LV_GetText(id,i,2)
+		Event := Settings_Events.SubItem("ID", id)
+		GuiControl, 1:, GUI_EventsDescription, % Event.Description
+	}
+	
 	if(!WasCritical)
 		Critical, Off
 }
@@ -832,14 +841,14 @@ ShowSettings() {
 			
 			SettingsTabList := "Accessor Keywords|Accessor Plugins|Explorer|Fast Folders|Explorer Tabs|FTP Profiles|Hotstrings|Windows|Misc|About"
 			; Gui, 1:Add, ListBox, x16 y20 w120 h350 gListbox vMyListBox, %TabList%
-			Gui, 1:Add, TreeView, x16 y20 w140 h350 gSettingsTreeView vSettingsTreeView -HScroll
+			Gui, 1:Add, TreeView, x16 y20 w140 h420 gSettingsTreeView vSettingsTreeView -HScroll
 			EventsTreeViewEntry := TV_Add("All Events", "", "Expand")
 			Loop % Events.Categories.len()
 				TV_Add(Events.Categories[A_Index], EventsTreeViewEntry, "Sort")
 			Loop, Parse, SettingsTabList, |
 				TV_Add(A_LoopField)
 			
-			Gui, 1:Add, GroupBox, x176 y14 w580 h350 vGGroupBox , Events
+			Gui, 1:Add, GroupBox, x176 y14 w580 h420 vGGroupBox , Events
 			/*
 			Gui, 1:Add, Treeview, x0 y0 w120 h540 vTree gTree -Lines -Buttons -HScroll
 			
@@ -854,11 +863,11 @@ ShowSettings() {
 			TV_Misc:=TV_Add("Misc","","Expand")
 			TV_About:=TV_Add("About","","Expand")
 			*/
-			Gui, 1:Add, Button, x495 y370 w70 h23 vBtnOK gOK, OK
-			Gui, 1:Add, Button, x573 y370 w80 h23 vBtnCancel gCancel, Cancel
-			Gui, 1:Add, Button, x660 y370 w80 h23 vBtnApply gApply, Apply
-			Gui, 1:Add, Text, x16 y375 vTutLabel, Click on ? to see video tutorial help!
-			Gui, 1:Add, Text, y375 x330 vWait, Applying settings, please wait!
+			Gui, 1:Add, Button, x495 y440 w70 h23 vBtnOK gOK, OK
+			Gui, 1:Add, Button, x573 y440 w80 h23 vBtnCancel gCancel, Cancel
+			Gui, 1:Add, Button, x660 y440 w80 h23 vBtnApply gApply, Apply
+			Gui, 1:Add, Text, x16 y445 vTutLabel, Click on ? to see video tutorial help!
+			Gui, 1:Add, Text, y445 x330 vWait, Applying settings, please wait!
 			Settings_CreateEvents(TabCount)
 			Settings_CreateAccessorKeywords(TabCount)
 			Settings_CreateAccessor(TabCount)
@@ -908,7 +917,7 @@ ShowSettings() {
 			
 		; Gui 1:+LastFoundExist
 		; IfWinExist
-			Gui, 1:Show, x338 y159 h404 w780, 7plus Settings
+			Gui, 1:Show, x338 y159 h474 w780, 7plus Settings
 		;Code for URL hand cursor, don't touch :D
 		;Hand cursor over controls where the assigned variable starts with URL_
 		; Retrieve scripts PID 
@@ -1030,6 +1039,12 @@ GUI_EventsList_Update()
 			GuiControl, 1:enable, GUI_EventsList_Edit
 		if(count > 1)
 			GuiControl, 1:disable, GUI_EventsList_Edit
+		if(count != 1)
+			return
+		i:=LV_GetNext("")
+		LV_GetText(id,i,2)
+		Event := Settings_Events.SubItem("ID", id)
+		GuiControl, 1:, GUI_EventsDescription, % Event.Description
 	}
 	else if(A_GuiEvent="I" && InStr(ListEvent, "s", true))
 	{
@@ -1992,20 +2007,18 @@ WM_COMMAND(wParam, lParam)
 	outputdebug WM_COMMAND wParam %wParam% lParam %lParam%
 }
 
+#if WinActive("7plus Settings ahk_class AutohotkeyGUI") && IsControlActive("SysListView321")
+^a::
+GUI, ListView, GUI_EventsList
+Loop % LV_GetCount()
+	LV_Modify(A_Index, "Select")
+return
+#if
 ;---------------------------------------------------------------------------------------------------------------
 ; Help Links
 ;---------------------------------------------------------------------------------------------------------------
 hPasteAsFile:
 run http://www.youtube.com/watch?v=yOJ8evyuVhY
-return
-hOpenEditor:
-run http://www.youtube.com/watch?v=6bxiyNRh0dk
-return
-hCreateNew:
-run http://www.youtube.com/watch?v=e3op-boVfOk
-return
-hCopyFilenames:
-run http://www.youtube.com/watch?v=CA-W1i1bMmQ
 return
 hNavigation:
 run http://www.youtube.com/watch?v=RZOdgDl2ujU
@@ -2015,9 +2028,6 @@ run http://www.youtube.com/watch?v=xKmWOEbMI1Q
 return
 hScrollUnderMouse:
 run http://www.youtube.com/watch?v=qJ_u4C3EuhU
-return
-hAppendClipboard:
-run http://www.youtube.com/watch?v=je9zk1zy5Xk
 return
 hSelectFirstFile:
 run http://www.youtube.com/watch?v=Bih7HEtpk0A
@@ -2035,7 +2045,7 @@ hFastFolders2:
 run http://www.youtube.com/watch?v=cC6cnG87j2M
 return
 hTabs:
-msgbox not recorded yet
+msgbox Not recorded yet
 return
 hTaskbar:
 run http://www.youtube.com/watch?v=v__ZiHFt7NE
@@ -2052,20 +2062,14 @@ return
 hWindow1dot1:
 run http://www.youtube.com/watch?v=1vutsoA3j7Y
 return
-hFTP:
-run http://www.youtube.com/watch?v=d01Mjiny_E8
-return
 hImproveConsole:
 run http://www.youtube.com/watch?v=irMu69t3kEg
 return
 hJoyControl:
 run http://www.youtube.com/watch?v=MZiK7E98hOU
 return
-hClipboardManager:
-run http://www.youtube.com/watch?v=Yq8HXOuSEiU
-return
 hWordDelete:
-msgbox not recorded yet
+msgbox Not recorded yet
 return
 GPL:
 run http://www.gnu.org/licenses/gpl.html

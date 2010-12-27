@@ -154,8 +154,10 @@ Accessor_ProgramLauncher_FillAccessorList(ProgramLauncher, Accessor, Filter, Las
 	Loop % ProgramLauncher.List.len()
 	{
 		x := 0
-		strippedName := WindowSwitcher.Settings.IgnoreFileExtensions ? RegexReplace(ProgramLauncher.List[A_Index].Name, "\.\w+") : ProgramLauncher.List[A_Index].Name 
-		if(ProgramLauncher.List[A_Index].Command && strippedName && ((x := InStr(strippedName,StrippedFilter)) || (ProgramLauncher.Settings.FuzzySearch && strlen(StrippedFilter) < 5 && FuzzySearch(StrippedName,StrippedFilter) < 0.4)))
+		strippedExeName := WindowSwitcher.Settings.IgnoreFileExtensions ? RegexReplace(ProgramLauncher.List[A_Index].ExeName, "\.\w+") : ProgramLauncher.List[A_Index].ExeName 
+		if(ProgramLauncher.List[A_Index].Command
+		   && (strippedExeName && ((x := InStr(strippedExeName,StrippedFilter)) || (ProgramLauncher.Settings.FuzzySearch && strlen(StrippedFilter) < 5 && FuzzySearch(strippedExeName,StrippedFilter) < 0.4)))
+		   || (ProgramLauncher.List[A_Index].Name && ((x := InStr(ProgramLauncher.List[A_Index].Name,StrippedFilter)) || (ProgramLauncher.Settings.FuzzySearch && strlen(StrippedFilter) < 5 && FuzzySearch(ProgramLauncher.List[A_Index].Name,StrippedFilter) < 0.4))))
 		{
 			if(!FileExist(ProgramLauncher.List[A_Index].Command))
 			{
@@ -167,12 +169,13 @@ Accessor_ProgramLauncher_FillAccessorList(ProgramLauncher, Accessor, Filter, Las
 			if(!ProgramLauncher.List[A_Index].hIcon) ;Program launcher icons are cached lazy, only when needed
 				ProgramLauncher.List[A_Index].hIcon := ExtractAssociatedIcon(0, ProgramLauncher.List[A_Index].Command, iIndex)
 			ImageList_ReplaceIcon(Accessor.ImageListID, -1, ProgramLauncher.List[A_Index].hIcon)
+			Name := ProgramLauncher.List[A_Index].Name ? ProgramLauncher.List[A_Index].Name : ProgramLauncher.List[A_Index].ExeName
 			if(x = 1)
-				Accessor.List.append(Object("Title",ProgramLauncher.List[A_Index].Name,"Path",ProgramLauncher.List[A_Index].Command,"Type","ProgramLauncher", "Icon", IconCount))
+				Accessor.List.append(Object("Title", Name, "Path", ProgramLauncher.List[A_Index].Command, "Type", "ProgramLauncher", "Icon", IconCount))
 			else if(x)
-				InStrList.append(Object("Title",ProgramLauncher.List[A_Index].Name,"Path",ProgramLauncher.List[A_Index].Command,"Type","ProgramLauncher", "Icon", IconCount))
+				InStrList.append(Object("Title", Name, "Path", ProgramLauncher.List[A_Index].Command, "Type", "ProgramLauncher", "Icon", IconCount))
 			else
-				FuzzyList.append(Object("Title",ProgramLauncher.List[A_Index].Name,"Path",ProgramLauncher.List[A_Index].Command,"Type","ProgramLauncher", "Icon", IconCount))
+				FuzzyList.append(Object("Title", Name, "Path", ProgramLauncher.List[A_Index].Command, "Type", "ProgramLauncher", "Icon", IconCount))
 		}
 	}
 	Accessor.List.Extend(InStrList)
@@ -219,8 +222,13 @@ ReadProgramLauncherCache(ProgramLauncher)
 	global ConfigPath
 	ProgramLauncher.List := Array()
 	ProgramLauncher.Paths := Array()
-	if(!FileExist(ConfigPath "\ProgramCache.xml"))
+	if(!FileExist(ConfigPath "\ProgramCache.xml")) ;File doesn't exist, create default values
+	{
+		ProgramLauncher.Paths.append(Object("Path","%StartMenu%","Extensions","lnk,exe"))
+		ProgramLauncher.Paths.append(Object("Path","%StartMenuCommon%","Extensions","lnk,exe"))
 		return
+	}
+	
 	FileRead, xml, %ConfigPath%\ProgramCache.xml
 	XMLObject := XML_Read(xml)
 	;Convert empty and single arrays to real array
@@ -229,31 +237,29 @@ ReadProgramLauncherCache(ProgramLauncher)
 	if(!XMLObject.Paths.len())
 		XMLObject.Paths := IsObject(XMLObject.Paths) ? Array(XMLObject.Paths) : Array()
 		
-	
-	
-
-	Loop % XMLObject.List.len()
+	Loop % XMLObject.List.len() ;Read cached files
 	{
 		XMLObjectListEntry := XMLObject.List[A_Index]
 		command := XMLObjectListEntry.Command
-		SplitPath, command, name
-		ProgramLauncher.List.append(Object("Name",name,"Command",command,"BasePath",XMLObjectListEntry.BasePath))
+		SplitPath, command, ExeName
+		ProgramLauncher.List.append(Object("ExeName", ExeName, "Name", name, "Command", command, "BasePath", XMLObjectListEntry.BasePath))
 	}
-	Loop % XMLObject.Paths.len()
+	
+	Loop % XMLObject.Paths.len() ;Read scan directories
 	{
 		XMLPath := XMLObject.Paths[A_Index]
-		ProgramLauncher.Paths.append(Object("Path",XMLPath.Path,"Extensions",XMLPath.Extensions))
+		ProgramLauncher.Paths.append(Object("Path", XMLPath.Path, "Extensions", XMLPath.Extensions))
 	}
 }
 WriteProgramLauncherCache(ProgramLauncher)
 {
 	global ConfigPath
 	FileDelete, %ConfigPath%\ProgramCache.xml
-	XMLObject := Object("List",Array(),"Paths",Array())
+	XMLObject := Object("List", Array(), "Paths", Array())
 	Loop % ProgramLauncher.List.len()
-		XMLObject.List.append(Object("Command",ProgramLauncher.List[A_Index].Command,"BasePath",ProgramLauncher.List[A_Index].BasePath))
+		XMLObject.List.append(Object("Command", ProgramLauncher.List[A_Index].Command, "Name", ProgramLauncher.List[A_Index].Name, "BasePath", ProgramLauncher.List[A_Index].BasePath))
 	Loop % ProgramLauncher.Paths.len()
-		XMLObject.Paths.append(Object("Path",ProgramLauncher.Paths[A_Index].Path,"Extensions",ProgramLauncher.Paths[A_Index].Extensions))
+		XMLObject.Paths.append(Object("Path", ProgramLauncher.Paths[A_Index].Path, "Extensions", ProgramLauncher.Paths[A_Index].Extensions))
 	
 	XML_Save(XMLObject, ConfigPath "\ProgramCache.xml")
 }
@@ -290,32 +296,34 @@ RefreshProgramLauncherCache(ProgramLauncher, Path ="")
 				exclude := ProgramLauncher.Settings.Exclude
 				command := A_LoopFileFullPath
 				name := A_LoopFileName
+				SplitPath, name,,,, name ;lnk name
+				; outputdebug command %command% name %name%
 				if(strEndsWith(command,".lnk"))
 				{
-					FileGetShortcut, %command% , command, , args
-					SplitPath, command,,,ext
-					if(InStr(command, "ja"))
-						outputdebug filename %command% ext %ext% extlist %extList%
-					if ext not in %extList%
-						continue
-						
-					if(InStr(command, "ja"))
-						outputdebug correct extension %command% ext %ext%
-					if(!args)
-						SplitPath, command,name
-					command .= args
+					FileGetShortcut, %Command% , ResolvedCommand, , args
+					if(!InStr(ResolvedCommand, A_WinDir "\Installer")) ; Fix for MSI Installer shortcuts which don't resolve to the proper executable
+					{
+						command := ResolvedCommand 
+						; outputdebug command %command% args %args%
+						SplitPath, command,,,ext
+						if ext not in %extList%
+							continue
+							
+						if(!args)
+							SplitPath, command,ExeName ;Executable name
+						command .= args
+					}
 				}
 				;Exclude undesired programs (uninstall, setup,...)
 				if command not contains %exclude%
 				{					
-					if(InStr(command, "ja"))
-						outputdebug not excluded %command% ext %ext%
 					;Check for existing duplicates
 					if(ProgramLauncher.List.indexOfSubItem("Command",command) = 0)
-					{						
-						if(InStr(command, "ja"))
-							outputdebug no duplicate %command% ext %ext%
-						ProgramLauncher.List.append(Object("Name",name, "Command", command, "BasePath", Path))
+					{
+						if(ExeName)
+							ProgramLauncher.List.append(Object("Name",name, "ExeName", ExeName, "Command", command, "BasePath", Path))
+						else
+							ProgramLauncher.List.append(Object("Name",name, "Command", command, "BasePath", Path))
 					}
 				}
 			}

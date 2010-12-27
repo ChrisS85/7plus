@@ -12,12 +12,19 @@ New Functions:
 + Added support for auto-updating event configuration so users can receive bugfixes and new events between version updates.
   As a consequence of this, 7plus now uses a versioning scheme consisting of 4 numbers, where the last one represents the
   number of applied patches since the last release.
-  
++ Added descriptions for each event for better usability
+
 Bugfixes:
 - Fixed CTRL+P accidently being assigned
 - Fixed a scrolling bug in Accessor
 - Fixed Alt+LButton: Move windows option not appearing in settings
 - Fixed a bug pausing the script when Notepad++ wasn't running/installed
 - Fixed capital C and X not working in Explorer address and search bar
+- Fixed timer window event name not updating when applying settings with changed event name
+- Fixed a bug which caused selected files placeholder not to work on desktop
+- Fixed Windows Installer shortcuts being resolved incorrectly in program launcher start menu scanning
+
+Changes:
+- Removed "Minimize to tray" for 64bit compatibility reasons
 
 If you like this program and want to support its development, please consider donating!

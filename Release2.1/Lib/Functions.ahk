@@ -148,18 +148,31 @@ RegRead(RootKey, SubKey, ValueName = "") {
 Run(Target, WorkingDir = "", Mode = "", NonElevated=1) {
 	if(NonElevated)
 	{
-		if(InStr(Target, """")=1 && InStr(Target, """",false,3))
+		if(InStr(Target, """")=1 && InStr(Target, """",false,3)) ;command has quotes, split it
 		{
 			Args := SubStr(Target,InStr(Target, """", false, 3) + 2)
 			Target := SubStr(Target, 2,InStr(Target, """", false, 3) - 2)
 		}
-		else if(InStr(Target, " "))
+		else if(InStr(Target, " ")) ;look for spaces after the command, e.g. "C:\Program Files\bla.exe -arg"
+		{
+			if(InStr(Target, " ", false, InStr(Target, ".")))
+			{
+				Args := SubStr(Target, InStr(Target, " ", false, InStr(Target, ".")) + 1)
+				Target := SubStr(Target, 1, InStr(Target, " ", false, InStr(Target, ".")))
+			}
+			else
+			{
+				Args := ""
+			}
+		}
+		else if(InStr(Target, " ")) ;cases like "cmd /D bla". "C:\Program Files\Program -args" won't be parsed correctly.
 		{
 			Args := SubStr(Target, InStr(Target, " ") + 1)
-			Target := SubStr(Target, 1, InStr(Target, " ") - 1)
+			Target := SubStr(Target, 1, InStr(Target, " "))
 		}
 		else
-			Args := ""
+			Args := "" ;Single Command
+		; msgbox command %target% args %args%
 		DllCall("Explorer.dll\ShellExecInExplorerProcess","Str",Target, "Str", Args, "Str", WorkingDir)
 	}
 	else
