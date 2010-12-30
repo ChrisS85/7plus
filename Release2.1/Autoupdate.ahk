@@ -1,8 +1,6 @@
 AutoUpdate()
 {	
 	global MajorVersion,MinorVersion,BugfixVersion, ConfigPath
-	if(!A_IsAdmin) ;For some reason this does not work for normal user
-		return
 	if(IsConnected())
 	{
 		random, rand
@@ -34,7 +32,7 @@ AutoUpdate()
 						;Write config path and script dir location to temp file to let updater know
 						IniWrite, %ConfigPath%, %A_Temp%\7plus\Update.ini, Update, ConfigPath
 						IniWrite, %A_ScriptDir%, %A_Temp%\7plus\Update.ini, Update, ScriptDir
-						Run %A_Temp%\7plus\Updater.exe
+						Run %A_Temp%\7plus\Updater.exe,,UseErrorlevel
 						ExitApp
 					}
 					else
@@ -59,6 +57,18 @@ PostUpdate()
 		IniRead, tmpBugfixVersion, %A_Temp%\7plus\Version.ini,Version,BugfixVersion
 		if(tmpMajorVersion=MajorVersion && tmpMinorVersion = MinorVersion && tmpBugfixVersion = BugfixVersion)
 		{
+			;Remove 'Always run as admin' compatibility flag from registry from previous version (it enforces an unneeded UAC prompt when clicking explorer buttons)
+			if(A_IsCompiled)
+				RegRead, temp, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_ScriptFullPath%
+			else
+				RegRead, temp, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_AhkPath%
+			if(temp)
+			{
+				if(A_IsCompiled)
+					RegDelete, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_ScriptFullPath%
+				else
+					RegDelete, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_AhkPath%
+			}
 			if(FileExist(ConfigPath "\Patches\" MajorVersion "." MinorVersion "." BugfixVersion ".0.xml")) ;apply release patch, without showing messages
 			{
 				ReadEventsFile(Events, ConfigPath "\Patches\" MajorVersion "." MinorVersion "." BugfixVersion ".0.xml")
@@ -70,7 +80,7 @@ PostUpdate()
 			{
 				MsgBox,4,, Update successful. View Changelog?
 				IfMsgBox Yes
-					run %A_ScriptDir%\Changelog.txt
+					run %A_ScriptDir%\Changelog.txt,, UseErrorlevel
 				MsgBox Make sure to try out the new Accessor tool (Default: ALT + Space) !
 			}
 		}		

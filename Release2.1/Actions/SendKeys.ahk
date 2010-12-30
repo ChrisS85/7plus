@@ -32,7 +32,7 @@ Action_SendKeys_GuiShow("", "", "Placeholders")
 return
 
 Action_SendKeys_KeyNames:
-run http://www.autohotkey.com/docs/commands/Send.htm
+run http://www.autohotkey.com/docs/commands/Send.htm ,, UseErrorLevel
 return
 
 Action_SendKeys_GuiSubmit(Action, ActionGUI)

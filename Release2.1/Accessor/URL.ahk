@@ -121,7 +121,7 @@ Accessor_URL_PerformAction(URLPlugin, Accessor, AccessorListEntry)
 		}
 		outputdebug % "append new len: " URLPlugin.History.len()
 		url := (!InStr(AccessorListEntry.Title, "://") ? "http://" : "") AccessorListEntry.Title
-		run %url%
+		run %url%,,UseErrorLevel
 	}
 	return
 }

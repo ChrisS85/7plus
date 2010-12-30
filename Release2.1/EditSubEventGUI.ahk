@@ -177,9 +177,9 @@ GUI_EditSubEvent(se, ia=0, GoToLabel="")
 	{
 		GuiControlGet, type,,EditSubEventType
 		if(IsAction)
-			Run http://code.google.com/p/7plus/wiki/docsActions%type%
+			Run http://code.google.com/p/7plus/wiki/docsActions%type%,, UseErrorLevel
 		else
-			Run http://code.google.com/p/7plus/wiki/docsConditions%type%
+			Run http://code.google.com/p/7plus/wiki/docsConditions%type%,, UseErrorLevel
 		return
 	}
 }

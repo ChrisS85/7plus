@@ -428,7 +428,7 @@ RunExplorer()
 	if(RecallExplorerPath && ExplorerPath)
 		Run(A_WinDir "\explorer.exe /n,/e," ExplorerPath)
 	Else
-		run, "%A_WinDir%\explorer.exe" ""
+		run, "%A_WinDir%\explorer.exe" "",, UseErrorLevel
 	if(AlignExplorer && active)
 	{
 		WinWaitNotActive ahk_id %active%	

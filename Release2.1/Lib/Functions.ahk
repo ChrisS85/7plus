@@ -172,11 +172,14 @@ Run(Target, WorkingDir = "", Mode = "", NonElevated=1) {
 		}
 		else
 			Args := "" ;Single Command
-		; msgbox command %target% args %args%
 		DllCall("Explorer.dll\ShellExecInExplorerProcess","Str",Target, "Str", Args, "Str", WorkingDir)
 	}
 	else
-		Run, %Target% , %WorkingDir%, %Mode%, v
+	{
+		Run, %Target% , %WorkingDir%, %Mode% UseErrorLevel, v
+		if(A_LastError)
+			Msgbox Error launching %Target%
+	}
 	Return, v	
 }
 RunWait(Target, WorkingDir = "", Mode = "") {

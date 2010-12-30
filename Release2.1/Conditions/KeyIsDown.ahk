@@ -26,7 +26,7 @@ Condition_KeyIsDown_GuiShow(Condition, ConditionGUI)
 	SubEventGUI_Add(Condition, ConditionGUI, "Checkbox", "Toggle", "Use toggle state (capslock,numlock, etc only)")
 }
 Condition_KeyIsDown_KeyNames:
-run http://www.autohotkey.com/docs/KeyList.htm
+run http://www.autohotkey.com/docs/KeyList.htm,,UseErrorLevel
 return
 
 Condition_KeyIsDown_GuiSubmit(Condition, ConditionGUI)

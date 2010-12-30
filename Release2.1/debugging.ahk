@@ -10,7 +10,7 @@ DebuggingStart()
 		Winwaitactive, DebugView on
 		winclose, DebugView on
 	}
-	run, %A_ScriptDir%\DebugView\Dbgview.exe /f
+	run, %A_ScriptDir%\DebugView\Dbgview.exe /f,, UseErrorLevel
 	winwait, DebugView
 	winactivate, DebugView
 	Winwaitactive, DebugView

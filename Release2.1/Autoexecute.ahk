@@ -28,30 +28,6 @@ if(DebugEnabled)
 	DebuggingStart()
 
 IniRead, RunAsAdmin, %IniPath%, Misc, RunAsAdmin , Always/Ask
-;Remove 'Always run as admin' compatibility flag from registry in portable or non-admin mode
-if(RunAsAdmin = "Never" && !IsPortable)
-{
-	if(A_IsCompiled)
-		RegRead, temp, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_ScriptFullPath%
-	else
-		RegRead, temp, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_AhkPath%
-	if(temp)
-	{
-		if(A_IsCompiled)
-			RegDelete, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_ScriptFullPath%
-		else
-			RegDelete, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_AhkPath%
-	}
-}
-;Set 'Always run as admin' compatibility flag from registry in non-portable and admin mode
-if(RunAsAdmin = "Always/Ask" && !IsPortable)
-{
-	if(A_IsCompiled)
-		RegWrite, REG_SZ, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_ScriptFullPath%, RUNASADMIN
-	else
-		RegWrite, REG_SZ, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_AhkPath%, RUNASADMIN
-}
-
 ;If program is run without admin privileges, try to run it again as admin, and exit this instance when the user confirms it
 if(!A_IsAdmin && RunAsAdmin = "Always/Ask")
 {
@@ -61,6 +37,8 @@ if(!A_IsAdmin && RunAsAdmin = "Always/Ask")
 		uacrep := DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, A_AhkPath, str, "/r """ A_ScriptFullPath """", str, A_WorkingDir, int, 1)
 	If(uacrep = 42) ;UAC Prompt confirmed, application may run as admin
 		ExitApp
+	else
+		MsgBox 7plus is running in non-admin mode. Some features will not be working.
 }
 
 ;If the current config path is set to the program directory but there is no write access, %AppData%\7plus needs to be used.
@@ -98,22 +76,17 @@ OnExit, ExitSub
 ;COM_Init()
 ;COM_Error(0)
 
-Action_Upload_ReadFTPProfiles()
-
 ;Init event system
 EventSystem_Startup()
 
 ;Update checker
 IniRead, AutoUpdate, %IniPath%, Misc, AutoUpdate, 1
-if(A_IsAdmin) ;For some reason this does not work for normal user (maybe because I tried to write to programfiles before??)
+if(AutoUpdate)
 {
-	if(AutoUpdate)
-	{
-		AutoUpdate()
-		AutoUpdate_CheckPatches()
-	}
-	PostUpdate()
+	AutoUpdate()
+	AutoUpdate_CheckPatches()
 }
+PostUpdate()
 
 ;On first run, wizard is used to setup values
 IniRead, FirstRun, %IniPath%, General, FirstRun , 1
@@ -335,7 +308,7 @@ ShowWizard()
 {
 	MsgBox, 4,,Welcome to 7plus!`nBefore we begin, would you like to see a list of features?	
 	IfMsgBox Yes
-		run http://code.google.com/p/7plus/wiki/Features
+		run http://code.google.com/p/7plus/wiki/Features,,UseErrorlevel
 	MsgBox, 4,,At the beginning, you should configure the settings and activate/deactivate the features to your liking. You can access the settings menu later through the tray icon or by pressing WIN+H. Do you want to open the settings window now?
 	IfMsgBox Yes
 		ShowSettings()

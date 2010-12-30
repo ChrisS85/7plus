@@ -32,7 +32,7 @@ Action_PlaySound_GuiShow(Action, ActionGUI, GoToLabel = "")
 	else if(GoToLabel = "Browse")
 		SubEventGUI_SelectFile(sActionGUI, "File")
 	else if(GoToLabel = "Help")
-		run, http://www.autohotkey.net/docs/commands/SoundPlay.htm
+		run, http://www.autohotkey.net/docs/commands/SoundPlay.htm,,UseErrorLevel
 }
 Action_PlaySound_Placeholders_File:
 Action_PlaySound_GuiShow("", "", "Placeholders_File")

@@ -82,6 +82,7 @@
 EventSystem_Startup()
 {
 	global Events, EventSchedule
+	Action_Upload_ReadFTPProfiles()
 	EventsBase := object("base", Array(), "Categories", Array(), "HighestID", -1, "CreateEvent", "EventSystem_CreateEvent", "Add", "Events_Add", "Remove", "Events_Remove")
 	Events := object("base", EventsBase)
 	EventSystem_CreateBaseObjects()

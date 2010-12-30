@@ -675,7 +675,7 @@ GUI_EditAccessorPlugin(Settings,GoToLabel="")
 		return
 	}
 	else if(GoToLabel = "EditAccessorPluginHelp")
-		run % "http://code.google.com/p/7plus/wiki/docsAccessor" Plugin.Type
+		run % "http://code.google.com/p/7plus/wiki/docsAccessor" Plugin.Type ",,UseErrorLevel"
 } 
 EditAccessorPluginOK:
 outputdebug ok

@@ -506,7 +506,7 @@ GUI_EditEvent(e,GoToLabel="")
 	else if(GoToLabel = "TriggerHelp")
 	{
 		GuiControlGet, type,,EditEventTriggerType
-		Run http://code.google.com/p/7plus/wiki/docsTriggers%type%
+		Run http://code.google.com/p/7plus/wiki/docsTriggers%type%,,UseErrorLevel
 	}
 } 
 EditEventOK:

@@ -172,7 +172,12 @@ IsFullscreen(sWinTitle = "A", UseExcludeList = true, UseIncludeList=true) {
     Static 
     Local iWinX, iWinY, iWinW, iWinH, iCltX, iCltY, iCltW, iCltH, iMidX, iMidY, iMonitor, c, D, iBestD 
     global FullScreenExclude, FullScreenInclude
-    ErrorLevel := False 
+    ErrorLevel := False
+	
+	;Without admin mode processes launched with admin permissions aren't detectable, so better treat all windows as non-fullscreen.
+	if(!A_IsAdmin)
+		return false
+		
     ;Get the active window's dimension 
     hWin := WinExist(sWinTitle) 
     If Not hWin { 
