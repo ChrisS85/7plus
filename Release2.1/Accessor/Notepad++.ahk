@@ -290,11 +290,7 @@ GetNotepadPlusPlusPath()
 	RemoteBuf_Close(H) ;Close/free remote buffer
 	IsUnicode := IsNotepadPlusPlusUnicode()
 	if(A_IsUnicode && !IsUnicode)
-		Ansi2Unicode(Path, ConvertedPath)
-	else if(!A_IsUnicode && IsUnicode)
-		Unicode2Ansi(Path, ConvertedPath)
-	if(ConvertedPath)
-		Path := ConvertedPath
+		Ansi2Unicode(Path, Path)
 	return Path
 }
 ;May only be used while Accessor window is visible

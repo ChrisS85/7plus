@@ -711,7 +711,7 @@ DestroyInfoGui()
 }
 ShouldShowInfo()
 {
-	if !WinActive("ahk_group ExplorerGroup")
+	if(!WinActive("ahk_group ExplorerGroup"))
 		return false
 	ControlGet, visible, visible, , msctls_statusbar321, A ;Check if status bar is visible
 	if(!visible)
@@ -738,15 +738,15 @@ ShouldShowInfo()
 UpdateInfos:
 UpdateInfos()
 return
-UpdateInfos()
+UpdateInfos(force=0)
 {
 	global freetext, newstring, freestring
 	static selectedfiles1, currentfolder1
 	if(WinActive("ahk_group ExplorerGroup") && !IsContextMenuActive())
-	{		
+	{
 		files:=GetSelectedFiles()
 		path:=GetCurrentFolder()		
-		if(files=selectedfiles1 && path=currentfolder1)
+		if(files=selectedfiles1 && path=currentfolder1 && !force)
 			return
 		selectedfiles1:=files
 		currentfolder1:=path

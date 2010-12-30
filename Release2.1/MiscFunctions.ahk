@@ -58,7 +58,6 @@ IsWindowUnderCursor(what)
 IsControlUnderCursor(what)
 {
 	MouseGetPos, , , , control
-	outputdebug control %control%
 	IfInString control, %what%
 		return control
 	return false

@@ -1,7 +1,19 @@
+#include %A_ScriptDir%\Accessor\Calc.ahk
+#include %A_ScriptDir%\Accessor\FastFolders.ahk
+#include %A_ScriptDir%\Accessor\FileSystem.ahk
+#include %A_ScriptDir%\Accessor\Google.ahk
+#include %A_ScriptDir%\Accessor\Notepad++.ahk
+#include %A_ScriptDir%\Accessor\Notes.ahk
+#include %A_ScriptDir%\Accessor\ProgramLauncher.ahk
+#include %A_ScriptDir%\Accessor\SciTE4AutoHotkey.ahk
+#include %A_ScriptDir%\Accessor\WindowSwitcher.ahk
+#include %A_ScriptDir%\Accessor\Uninstall.ahk
+#include %A_ScriptDir%\Accessor\URL.ahk
+#include %A_ScriptDir%\Accessor\Weather.ahk
 Accessor_Init()
 {
 	global AccessorPlugins, Accessor, ConfigPath
-	AccessorPluginsList := "WindowSwitcher,FileSystem,Google,Calc,ProgramLauncher,NotepadPlusPlus,Notes,FastFolders,Uninstall,URL,Weather" ;The order here partly determines the order in the window, so choose carefully
+	AccessorPluginsList := "WindowSwitcher,FileSystem,Google,Calc,ProgramLauncher,NotepadPlusPlus, SciTE4AutoHotkey,Notes,FastFolders,Uninstall,URL,Weather" ;The order here partly determines the order in the window, so choose carefully
 	AccessorPlugins := Array()
 	Accessor := Object("Base", Object("OnExit", "Accessor_OnExit"))
 	if(FileExist(ConfigPath "\Accessor.xml"))
@@ -272,7 +284,8 @@ return
 
 AccessorEditEvents()
 {
-	global Accessor, AccessorPlugins, AccessorEdit	
+	global Accessor, AccessorPlugins, AccessorEdit
+	Critical ;Make critical so that it isn't called while it's still running
 	outputdebug edit events
 	GuiControlGet, Filter, , AccessorEdit
 	LV_GetText(id,A_EventInfo,2)
@@ -296,6 +309,7 @@ AccessorEditEvents()
 		}
 	if(NeedsUpdate)
 		FillAccessorList()
+	Critical, Off
 }
 AccessorListViewEvents()
 {

@@ -1,4 +1,4 @@
-Accessor_Weather_Init(ByRef Weather, Settings)
+ï»¿Accessor_Weather_Init(ByRef Weather, Settings)
 {
 	Weather.Settings.Keyword := "weather"
 	Weather.DefaultKeyword := "weather"
@@ -95,17 +95,13 @@ QueryWeatherResult()
 		return
 	Gui, %GUINum%: Default
 	GuiControlGet, Filter, , AccessorEdit
-	outputdebug query Weather result
 	if(!strStartsWith(Filter, WeatherPlugin.Settings.Keyword " "))
 		return
 	Filter := strTrim(Filter, WeatherPlugin.Settings.Keyword " ")
-	outputdebug for filter %filter%
 	URL := uriEncode("http://www.google.com/ig/api?weather=") uriEncode(Filter, 1) ;"&rsz=8"
-	outputdebug url %url%
 	FileDelete, %A_Temp%\7plus\WeatherQuery.xml
 	URLDownloadToFile, %URL%, %A_Temp%\7plus\WeatherQuery.xml
 	FileRead, WeatherQuery, %A_Temp%\7plus\WeatherQuery.xml
-	outputdebug %weatherquery%
 	Loop % WeatherPlugin.List.len()
 		if(WeatherPlugin.List[A_Index].Icon)
 			DestroyIcon(WeatherPlugin.List[A_Index].Icon)
@@ -114,7 +110,6 @@ QueryWeatherResult()
 	Loop 5
 		pos%A_Index% := 0
 	RegexMatch(WeatherQuery, "i)<city data=""(.*?)""/>",city,1)
-	outputdebug city1 %city1%
 	if(!city1) ;No results
 		return
 	pos1 := RegexMatch(WeatherQuery, "i)<condition data=""(.*?)""/>",condition,pos1+1)
@@ -123,12 +118,11 @@ QueryWeatherResult()
 	RegexMatch(WeatherQuery, "i)<icon data=""(.*?)""/>",icon,1)
 	name := SubStr(icon1, InStr(icon1, "/", 0, 0) + 1)
 	
-	outputdebug name %name%
 	if(!FileExist(A_Temp "\7plus\" name))
 		URLDownloadToFile, http://google.com%icon1%, %A_Temp%\7plus\%name%		
 	pBitmap := Gdip_CreateBitmapFromFile(A_Temp "\7plus\" name)
 	hIcon := Gdip_CreateHICONFromBitmap(pBitmap)
-	WeatherPlugin.List.append(Object("Title", "Now: " condition1 ", " temp_c1 "°C, " humidity1, "Path","Weather in " city1, "Icon", hIcon ))
+	WeatherPlugin.List.append(Object("Title", "Now: " condition1 ", " temp_c1 "Â°C, " humidity1, "Path","Weather in " city1, "Icon", hIcon ))
 	Loop
 	{
 		pos1 := RegexMatch(WeatherQuery, "i)<condition data=""(.*?)""/>",condition,pos1+1)
@@ -144,9 +138,9 @@ QueryWeatherResult()
 				URLDownloadToFile, http://google.com%icon1%, %A_Temp%\7plus\%name%	
 			pBitmap := Gdip_CreateBitmapFromFile(A_Temp "\7plus\" name)
 			hIcon := Gdip_CreateHICONFromBitmap(pBitmap)
-			low1 := Round((5/9)*(low1-32)) ;Convert °F to °C
-			high1 := Round((5/9)*(high1-32)) ;Convert °F to °C
-			WeatherPlugin.List.append(Object("Title", day_of_week1 ": " condition1 ", Low: " low1 "°C, high: " high1 "°C", "Path", "Weather in " city1, "Icon", hIcon ))
+			low1 := Round((5/9)*(low1-32)) ;Convert Â°F to Â°C
+			high1 := Round((5/9)*(high1-32)) ;Convert Â°F to Â°C
+			WeatherPlugin.List.append(Object("Title", day_of_week1 ": " condition1 ", Low: " low1 "Â°C, high: " high1 "Â°C", "Path", "Weather in " city1, "Icon", hIcon ))
 		}
 		else
 			break

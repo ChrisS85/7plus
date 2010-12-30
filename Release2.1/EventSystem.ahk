@@ -72,6 +72,7 @@
 #include %A_ScriptDir%\Actions\WindowHide.ahk
 #include %A_ScriptDir%\Actions\WindowMove.ahk
 #include %A_ScriptDir%\Actions\WindowResize.ahk
+#include %A_ScriptDir%\Actions\WindowSendToBottom.ahk
 #include %A_ScriptDir%\Actions\WindowShow.ahk
 #include %A_ScriptDir%\Actions\WindowState.ahk
 
@@ -136,7 +137,7 @@ EventSystem_CreateBaseObjects()
 	local tmpobject
 	EventSystem_Triggers := "DoubleClickDesktop,DoubleClickTaskbar,ExplorerButton,ExplorerDoubleClickSpace,ExplorerPathChanged,Hotkey,None,OnMessage,Timer,Trigger,WindowActivated, WindowClosed, WindowCreated,WindowStateChange,7plusStart"
 	EventSystem_Conditions := "MouseOver,If,IsContextMenuActive,IsDialog,IsFullScreen,KeyIsDown,IsRenaming,WindowActive,WindowExists"
-	EventSystem_Actions := "Accessor,AutoUpdate,Clipboard,Clipmenu,ControlEvent,ControlTimer,Copy,Delete,Exit7plus,FastFoldersClear,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FilterList,FlashingWindows,FocusControl,SetWindowTitle, Input,Message,Move,MouseClick,NewFile,NewFolder,PlaySound,Restart7plus,RestoreSelection,Run,RunOrActivate,Screenshot,SelectFiles,SendKeys,SendMessage,SetDirectory,ShowSettings,Shutdown,Tooltip,Upload,ViewMode,Volume,Wait,WindowActivate,WindowClose,WindowHide,WindowMove,WindowResize,WindowShow,WindowState,Write"
+	EventSystem_Actions := "Accessor,AutoUpdate,Clipboard,Clipmenu,ControlEvent,ControlTimer,Copy,Delete,Exit7plus,FastFoldersClear,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FilterList,FlashingWindows,FocusControl,SetWindowTitle, Input,Message,Move,MouseClick,NewFile,NewFolder,PlaySound,Restart7plus,RestoreSelection,Run,RunOrActivate,Screenshot,SelectFiles,SendKeys,SendMessage,SetDirectory,ShowSettings,Shutdown,Tooltip,Upload,ViewMode,Volume,Wait,WindowActivate,WindowClose,WindowHide,WindowMove,WindowResize,WindowSendToBottom,WindowShow,WindowState,Write"
 	Trigger_Categories := object("Explorer", Array(), "Hotkeys", Array(), "Other", Array(), "System", Array(), "Window", Array(), "7plus", Array())
 	Condition_Categories := object("Explorer", Array(), "Mouse", Array(), "Other", Array(), "Window", Array())
 	Action_Categories := object("Explorer", Array(), "FastFolders", Array(), "File", Array(), "Window", Array(), "Input", Array(), "System", Array(), "7plus", Array(), "Other", Array())

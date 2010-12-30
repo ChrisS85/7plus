@@ -14,7 +14,7 @@ FileDelete %a_scriptdir%\update.7z
 return
 FolderLoop()
 {	
-	Loop *.*,0,1 ;Extract files
+	Loop *.*,0,1 ;Find files which should be included
 	{
 		if A_LoopFileName contains UpdateCreator
 			continue
@@ -45,17 +45,21 @@ FolderLoop()
 WriteUpdater()
 {
 	FileDelete %A_scriptdir%\Updater.ahk
-	FileAppend, #NoTrayIcon`n,%A_scriptdir%\Updater.ahk
-	FileAppend, SetWorkingDir `%A_scriptdir`%`n,%A_scriptdir%\Updater.ahk
-	FileAppend, Progress zh0 fs18`, Updating, please wait.`n,%A_scriptdir%\Updater.ahk
-	FileAppend, FileInstall`, %A_scriptdir%\Update.7z`, Update.7z`,1`n,%A_scriptdir%\Updater.ahk
-	FileAppend, FileInstall`, %A_scriptdir%\7za.exe`, 7za.exe`,1`n,%A_scriptdir%\Updater.ahk
-	FileAppend, runwait 7za.exe x -y Update.7z`, `%a_scriptdir`%`,hide`n,%A_scriptdir%\Updater.ahk
-	FileAppend, FileDelete 7za.exe`n,%A_scriptdir%\Updater.ahk
-	FileAppend, FileDelete Update.7z`n,%A_scriptdir%\Updater.ahk
-	FileAppend, if(FileExist("7plus.ahk"))`n,%A_scriptdir%\Updater.ahk
-	FileAppend, `trun 7plus.ahk`n,%A_scriptdir%\Updater.ahk
-	FileAppend, else if(FileExist("7plus.exe"))`n,%A_scriptdir%\Updater.ahk
-	FileAppend, `trun 7plus.exe`n,%A_scriptdir%\Updater.ahk
-	FileAppend, ExitApp`n,%A_scriptdir%\Updater.ahk
+	FileAppend, #NoTrayIcon`n, %A_Temp%\Updater.ahk
+	FileAppend, SetWorkingDir `%A_Temp`%\7plus`n, %A_scriptdir%\Updater.ahk
+	FileAppend, IniRead`, ConfigPath`, `%A_Temp`%\7plus\Update.ini`, Update`, ConfigPath`, `%A_AppData`%\7plus, %A_scriptdir%\Updater.ahk
+	FileAppend, IniRead`, ScriptDir`, `%A_Temp`%\7plus\Update.ini`, Update`, ScriptDir`, `%A_ProgramFiles`%\7plus, %A_scriptdir%\Updater.ahk
+	FileAppend, Progress zh0 fs18`, Updating, please wait.`n, %A_scriptdir%\Updater.ahk
+	FileAppend, FileInstall`, %A_scriptdir%\Update.7z`, Update.7z`,1`n, %A_scriptdir%\Updater.ahk
+	FileAppend, FileInstall`, %A_scriptdir%\7za.exe`, 7za.exe`,1`n, %A_scriptdir%\Updater.ahk
+	FileAppend, runwait 7za.exe x -y Update.7z`, `%A_Temp`%\7plus\Update`, hide
+	FileAppend, FileMoveDir`, `%A_Temp`%\7plus\Update\Patches`, `%ConfigPath`%\Patches`, 2, %A_scriptdir%\Updater.ahk
+	FileAppend, FileMove`, `%A_Temp`%\7plus\Update`, `%ScriptDir`%`, 2, %A_scriptdir%\Updater.ahk
+	FileAppend, FileDelete 7za.exe`n, %A_scriptdir%\Updater.ahk
+	FileAppend, FileDelete Update.7z`n, %A_scriptdir%\Updater.ahk
+	FileAppend, if(FileExist("7plus.ahk"))`n, %A_scriptdir%\Updater.ahk
+	FileAppend, `trun 7plus.ahk`n, %A_scriptdir%\Updater.ahk
+	FileAppend, else if(FileExist("7plus.exe"))`n, %A_scriptdir%\Updater.ahk
+	FileAppend, `trun 7plus.exe`n, %A_scriptdir%\Updater.ahk
+	FileAppend, ExitApp`n, %A_scriptdir%\Updater.ahk
 }

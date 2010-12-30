@@ -1,5 +1,6 @@
+; see http://msdn.microsoft.com/en-us/library/dd318066(VS.85).aspxs
 HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEventTime ){ 
-	global HKShowSpaceAndSize,HKAutoCheck,TabNum,TabWindow,TabContainerList,UseTabs, Vista7
+	global HKShowSpaceAndSize,HKAutoCheck,TabNum,TabWindow,TabContainerList,UseTabs, Vista7, ResizeWindow, ShowResizeTooltip
 	ListLines, Off
 	;On dialog popup, check if its an explorer confirmation dialog
 	if(event=0x00008002) ;EVENT_OBJECT_SHOW
@@ -20,11 +21,6 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 		Trigger.Window := hwnd
 		Trigger.Event := "Window minimized"
 		OnTrigger(Trigger)
-	}
-	if(event = 0x000E)
-	{
-		class := WinGetClass("ahk_id " hwnd)
-		; outputdebug dragdropstart %class%
 	}
 	if(event=0x8001 && UseTabs) ;EVENT_OBJECT_DESTROY
 	{
@@ -56,9 +52,32 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 			UpdateInfoPosition()
 		return
 	}
+	if(event = 0x000A && ShowResizeTooltip)
+	{
+		ResizeWindow := hwnd
+		SetTimer, ResizeWindowTooltip, 50
+	}
+	else if(event = 0x000B && ShowResizeTooltip)
+	{
+		ResizeWindow := ""
+		SetTimer, ResizeWindowTooltip, Off
+		Tooltip
+	}
 	ListLines, On
 }
-
+ResizeWindowTooltip:
+ResizeWindowTooltip()
+return
+ResizeWindowTooltip()
+{	
+	global ResizeWindow
+	static w,h
+	WinGetPos, , , wn, hn, ahk_id %ResizeWindow%
+	if(w && h && (w != wn || h != hn))
+		Tooltip %w%/%h%
+	w := wn
+	h := hn
+}
 ShellMessage( wParam,lParam, msg)
 {
 	WasCritical := A_IsCritical
@@ -150,9 +169,10 @@ ShellMessage( wParam,lParam, msg)
 				if(WinExist("ahk_id " PreviousWindow " ahk_group ExplorerGroup"))
 					ExplorerDeactivated(PreviousWindow)
 				ExplorerActivated(lParam)
-				RegisterSelectionChangedEvents()
 			}
+			RegisterSelectionChangedEvents()
 			;Explorer info stuff
+			UpdateInfos(1)
 			if(A_OSVersion="WIN_7" && HKShowSpaceAndSize)
 				SetTimer, UpdateInfos, 100
 		}

@@ -147,8 +147,9 @@ OnMessage(0x4e,"WM_NOTIFY") ;Will make LinkClick and ToolTipClose possible
 ;Register an event hook to catch move and dialog creation messages
 HookProcAdr := RegisterCallback("HookProc", "F" ) 
 API_SetWinEventHook(0x8001,0x800B,0,HookProcAdr,0,0,0) ;Make sure not to register unneccessary messages, as this causes cpu load
-API_SetWinEventHook(0x0016,0x0016,0,HookProcAdr,0,0,0)
-API_SetWinEventHook(0x000E,0x000E,0,HookProcAdr,0,0,0)
+API_SetWinEventHook(0x0016,0x0016,0,HookProcAdr,0,0,0) ;EVENT_SYSTEM_MINIMIZESTART
+; API_SetWinEventHook(0x000E,0x000E,0,HookProcAdr,0,0,0)
+API_SetWinEventHook(0x000A,0x000B,0,HookProcAdr,0,0,0) ;EVENT_SYSTEM_MOVESIZESTART
 DetectHiddenWindows, On
 
 IniRead, HKPlacesBar, %IniPath%, Explorer, HKPlacesBar, 0
@@ -177,13 +178,15 @@ IniRead, HKToggleWallpaper, %IniPath%, Windows, HKToggleWallpaper, 1
 
 IniRead, HKHoverStart, %IniPath%, Windows, HKHoverStart, 1
 ;program to launch on double click on taskbar
-IniRead, TaskbarLaunchPath, %IniPath%, Windows, TaskbarLaunchPath , %A_Windir%\system32\taskmgr.exe
+IniRead, TaskbarLaunchPath, %IniPath%, Windows, TaskbarLaunchPath, %A_Windir%\system32\taskmgr.exe
 stringreplace, TaskbarLaunchPath, TaskbarLaunchPath, `%A_ProgramFiles`%, %A_ProgramFiles% 
 ;Slide windows
-IniRead, HKSlideWindows, %IniPath%, Windows, HKSlideWindows , 1
-IniRead, SlideWinHide, %IniPath%, Windows, SlideWinHide , 1
+IniRead, HKSlideWindows, %IniPath%, Windows, HKSlideWindows, 1
+IniRead, SlideWinHide, %IniPath%, Windows, SlideWinHide, 1
 SlideWindows_Startup()
-IniRead, SlideWindowsBorder, %IniPath%, Windows, SlideWindowsBorder , 30
+IniRead, SlideWindowsBorder, %IniPath%, Windows, SlideWindowsBorder, 30
+IniRead, ShowResizeTooltip, %IniPath%, Windows, ShowResizeTooltip, 1
+
 IniRead, ImageExtensions, %IniPath%, Misc, ImageExtensions, jpg,png,bmp,gif,tga,tif,ico,jpeg
 IniRead, WordDelete, %IniPath%, Misc, WordDelete, 1
 
@@ -384,6 +387,7 @@ WriteIni()
 	IniWrite, %SlideWinHide%, %IniPath%, Windows, SlideWinHide
 	IniWrite, %SlideWindowsBorder%, %IniPath%, Windows, SlideWindowsBorder
 	IniWrite, %HKAltDrag%, %IniPath%, Windows, HKAltDrag
+	IniWrite, %ShowResizeTooltip%, %IniPath%, Windows, ShowResizeTooltip
 	IniWrite, %ImageExtensions%, %IniPath%, Misc, ImageExtensions
 	IniWrite, %JoyControl%, %IniPath%, Misc, JoyControl
 	IniWrite, %FullscreenExclude%, %IniPath%, Misc, FullscreenExclude

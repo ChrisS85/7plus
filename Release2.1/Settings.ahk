@@ -376,6 +376,7 @@ Settings_CreateWindows(ByRef TabCount) {
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window2, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKToggleWallpaper, Middle mouse click on desktop: Toggle wallpaper (7 only)
 	yIt+=checkboxstep
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vShowResizeTooltip, Show window size as tooltip while resizing
 }
 Settings_CreateMisc(ByRef TabCount) {
 	global
@@ -535,7 +536,7 @@ FillEventsList(){
 		DisplayString := Settings_Events[A_Index].Trigger.DisplayString()
 		Name := Settings_Events[A_Index].Name
 		scroll := false
-		if((!filter || InStr(id, filter) || InStr(DisplayString, Filter) || InStr(Name, filter)) && (filter || !Category || Category = Settings_Events[A_Index].Category))
+		if((!filter || InStr(id, filter) || InStr(DisplayString, Filter) || InStr(Name, filter) || InStr(Settings_Events[A_Index].Description, Filter)) && (filter || !Category || Category = Settings_Events[A_Index].Category))
 		{
 			Gui, ListView, GUI_EventsList
 			LV_Add(((SelectedID != "" && id = SelectedID  && (scroll := 1)) || (SelectedID = "" && count = 0) ? "Select Focus" : "") (Settings_Events[A_Index].Enabled ? " Check": " "), "", id, DisplayString, name)
@@ -766,6 +767,7 @@ Settings_SetupWindows() {
 		GuiControl, 1:, HKActivateBehavior, % HKActivateBehavior = 1
 	}
 	GuiControl, 1:, HKToggleWallpaper, % HKToggleWallpaper = 1
+	GuiControl, 1:, ShowResizeTooltip, % ShowResizeTooltip = 1
 }
 Settings_SetupMisc() {
 	global

@@ -41,17 +41,6 @@ if(!A_IsUnicode)
 #include %A_ScriptDir%\lib\DllCalls.ahk
 ; #include %A_ScriptDir%\lib\xpath.ahk
 #include %A_ScriptDir%\Accessor\Accessor.ahk
-#include %A_ScriptDir%\Accessor\Calc.ahk
-#include %A_ScriptDir%\Accessor\FastFolders.ahk
-#include %A_ScriptDir%\Accessor\FileSystem.ahk
-#include %A_ScriptDir%\Accessor\Google.ahk
-#include %A_ScriptDir%\Accessor\Notepad++.ahk
-#include %A_ScriptDir%\Accessor\Notes.ahk
-#include %A_ScriptDir%\Accessor\ProgramLauncher.ahk
-#include %A_ScriptDir%\Accessor\WindowSwitcher.ahk
-#include %A_ScriptDir%\Accessor\Uninstall.ahk
-#include %A_ScriptDir%\Accessor\URL.ahk
-#include %A_ScriptDir%\Accessor\Weather.ahk
 
 #include %A_ScriptDir%\Autoupdate.ahk
 #include %A_ScriptDir%\EventSystem.ahk
@@ -82,6 +71,3 @@ if(!A_IsUnicode)
 #include %A_ScriptDir%\ExplorerTabs.ahk
 #include %A_ScriptDir%\CustomHotkeys.ahk
 #include %A_ScriptDir%\HotkeyGUI.ahk
-#t::
-Run("cmd.exe /K ipconfig", "D:\", "", 1)
-return

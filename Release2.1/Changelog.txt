@@ -13,6 +13,7 @@ New Functions:
   As a consequence of this, 7plus now uses a versioning scheme consisting of 4 numbers, where the last one represents the
   number of applied patches since the last release.
 + Added descriptions for each event for better usability
++ Added "Show window size as tooltip while resizing"
 
 Bugfixes:
 - Fixed CTRL+P accidently being assigned
