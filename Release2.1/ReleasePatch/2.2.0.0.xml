@@ -1,0 +1,698 @@
+<MajorVersion>2</MajorVersion>
+<MinorVersion>1</MinorVersion>
+<BugfixVersion>0</BugfixVersion>
+<PatchVersion>1</PatchVersion>
+<Message>- Fixed "C" and "X" not working in explorer/file dialogs
+- Fixed "Force-Close window under mouse not working properly
+- Fixed ALT + [4 Numpad keys] not generating special characters in Office and similar programs
+- Added descriptions for all official events
+- Fixed a wrongly assigned FastFolders trigger</Message>
+<Events>
+<Event>
+<Actions>
+<Action>
+<Append>0</Append>
+<Clear>1</Clear>
+<Content>${SelNM}</Content>
+<Cut>0</Cut>
+<InsertType>Text</InsertType>
+<Type>Clipboard</Type>
+</Action>
+</Actions>
+<Description>Copy the paths of the selected files to the clipboard.</Description>
+<OfficialEvent>229</OfficialEvent>
+</Event><Event>
+<Actions>
+<Action>
+<ForceClose>1</ForceClose>
+<Type>WindowClose</Type>
+<WindowFilter></WindowFilter>
+<WindowMatchType>UnderMouse</WindowMatchType>
+</Action></Actions>
+<Description>Right click on the close button of a window to kill its process.</Description>
+<OfficialEvent>313</OfficialEvent>
+</Event><Event>
+<Conditions>
+<Condition>
+<Negate>0</Negate>
+<Type>IsDialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>IsRenaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(DirectUIHWND2|SysListView321)</With>
+</Condition></Conditions>
+<Description>Append selected files to clipboard, instead of replacing the current files on the clipboard.</Description>
+<OfficialEvent>598</OfficialEvent>
+</Event><Event>
+<Conditions>
+<Condition>
+<Negate>0</Negate>
+<Type>IsDialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>IsRenaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(DirectUIHWND2|SysListView321)</With>
+</Condition></Conditions>
+<Description>Append selected files to clipboard, instead of replacing the current files on the clipboard. The clipboard will be set to perform a paste operation.</Description>
+<OfficialEvent>599</OfficialEvent>
+</Event><Event>
+<Actions>
+<Action>
+<Type>RestoreSelection</Type>
+</Action></Actions>
+<Category>Explorer</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>IsRenaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(DirectUIHWND3|SysListView321)</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>984</ID>
+<Description>Restores the previous file selection. This is very useful if you need to select many files and accidently click somewhere wrong.</Description>
+<OfficialEvent>985</OfficialEvent>
+<Name>Restore selection</Name>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^+Z</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>IsRenaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(DirectUIHWND3|SysListView321)</With>
+</Condition></Conditions>
+<OfficialEvent>3</OfficialEvent>
+</Event><Event>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>IsRenaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(DirectUIHWND3|SysListView321)</With>
+</Condition></Conditions>
+<Description>Append selected files to clipboard, instead of replacing current files on clipboard. This event will copy ALL the files on the clipboard.</Description>
+<OfficialEvent>4</OfficialEvent>
+</Event><Event>
+<Actions>
+<Action>
+<Type>ViewMode</Type>
+<Action>Toggle show hidden files</Action>
+</Action></Actions>
+<Category>Explorer</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>IsRenaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>383</ID>
+<Name>Toggle hidden files</Name>
+<Description>Toggles the "Show hidden files" explorer setting.</Description>
+<OfficialEvent>981</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^!H</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<Description>Clear the path stored in FastFolders slot 0.</Description>
+<OfficialEvent>360</OfficialEvent>
+</Event><Event>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<Description>Clear the path stored in FastFolders slot 1.</Description>
+<OfficialEvent>362</OfficialEvent>
+</Event><Event>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<Description>Clear the path stored in FastFolders slot 2.</Description>
+<OfficialEvent>364</OfficialEvent>
+</Event><Event>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<Description>Clear the path stored in FastFolders slot 3.</Description>
+<OfficialEvent>366</OfficialEvent>
+</Event><Event>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<Description>Clear the path stored in FastFolders slot 4.</Description>
+<OfficialEvent>368</OfficialEvent>
+</Event><Event>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<Description>Clear the path stored in FastFolders slot 5.</Description>
+<OfficialEvent>370</OfficialEvent>
+</Event><Event>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<Description>Clear the path stored in FastFolders slot 6.</Description>
+<OfficialEvent>372</OfficialEvent>
+</Event><Event>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<Description>Clear the path stored in FastFolders slot 7.</Description>
+<OfficialEvent>374</OfficialEvent>
+</Event><Event>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<Description>Clear the path stored in FastFolders slot 8.</Description>
+<OfficialEvent>376</OfficialEvent>
+</Event><Event>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<Description>Clear the path stored in FastFolders slot 9.</Description>
+<OfficialEvent>378</OfficialEvent>
+</Event><Event>
+<Actions>
+<Action>
+<Type>WindowSendToBottom</Type>
+<WindowFilter></WindowFilter>
+<WindowMatchType>UnderMouse</WindowMatchType>
+</Action></Actions>
+<Category>Window Handling</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Move the window under the mouse to the bottom of the window stack.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>985</ID>
+<Name>Move window to bottom</Name>
+<OneInstance>0</OneInstance>
+<OfficialEvent>986</OfficialEvent>
+<Trigger>
+<Key>#MButton</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Description>Shows the 7plus settings window.</Description>
+<OfficialEvent>1</OfficialEvent>
+</Event><Event>
+<Description>Restarts 7plus.</Description>
+<OfficialEvent>2</OfficialEvent>
+</Event><Event>
+<Description>Append selected files to clipboard, instead of replacing current files on clipboard. This event will cut ALL the files on the clipboard.</Description>
+<OfficialEvent>3</OfficialEvent>
+</Event><Event>
+<Description>Make backspace go upwards in file dialogs, like in the good ol' XP.</Description>
+<OfficialEvent>7</OfficialEvent>
+</Event><Event>
+<Description>Open CMD in the directory of the active explorer window.</Description>
+<OfficialEvent>10</OfficialEvent>
+</Event><Event>
+<Description>Copy the names of the selected files to the clipboard.</Description>
+<OfficialEvent>228</OfficialEvent>
+</Event><Event>
+<Description>Append the names of the selected files to the clipboard.</Description>
+<OfficialEvent>230</OfficialEvent>
+</Event><Event>
+<Description>Append the paths of the selected files to the clipboard.</Description>
+<OfficialEvent>231</OfficialEvent>
+</Event><Event>
+<Description>Create a new text file in the directory of the currently active explorer/desktop.</Description>
+<OfficialEvent>232</OfficialEvent>
+</Event><Event>
+<Description>Create a new folder in the directory of the currently active explorer/desktop.</Description>
+<OfficialEvent>233</OfficialEvent>
+</Event><Event>
+<Description>Run explorer on double click on empty desktop space in the most recent directory.</Description>
+<OfficialEvent>236</OfficialEvent>
+</Event><Event>
+<Description>Make explorer go upwards on double click in empty filelist area.</Description>
+<OfficialEvent>238</OfficialEvent>
+</Event><Event>
+<Description>Open selected image files in an image editor (Paint.NET by default).</Description>
+<OfficialEvent>301</OfficialEvent>
+</Event><Event>
+<Description>Open selected non-image files in a text editor (Notepad++ by default).</Description>
+<OfficialEvent>302</OfficialEvent>
+</Event><Event>
+<Description>Select files in the active explorer window by entering a part of the filename.</Description>
+<OfficialEvent>305</OfficialEvent>
+</Event><Event>
+<Conditions>
+<Condition>
+<MouseOverType>Titlebar</MouseOverType>
+<Negate>0</Negate>
+<Type>MouseOver</Type>
+<WindowFilter></WindowFilter>
+<WindowMatchType>Program</WindowMatchType>
+</Condition><Condition>
+<Compare>${MC}</Compare>
+<Negate>1</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>OperaWindowClass|MozillaWindowClass</With>
+</Condition></Conditions>
+<Description>Close a window by middle clicking it's title bar.</Description>
+<OfficialEvent>306</OfficialEvent>
+</Event><Event>
+<Description>Activate notification windows, flashing windows in the taskbar, or toggle between the current and the previously active window. Very useful for quickly responding to chats and switching back.</Description>
+<OfficialEvent>308</OfficialEvent>
+</Event><Event>
+<Description>Right click on the titlebar of a window to toggle its "Always on top" property. This is useful for keeping a window visible so that you can easily copy data from and to it.</Description>
+<OfficialEvent>309</OfficialEvent>
+</Event><Event>
+<Description>Help event for "Toggle always on top" event.</Description>
+<OfficialEvent>310</OfficialEvent>
+</Event><Event>
+<Description>Help event for "Toggle always on top" event.</Description>
+<OfficialEvent>311</OfficialEvent>
+</Event><Event>
+<Description>Help event for "Toggle always on top" event.</Description>
+<OfficialEvent>312</OfficialEvent>
+</Event><Event>
+<Description>Kill the process of the active window.</Description>
+<OfficialEvent>314</OfficialEvent>
+</Event><Event>
+<Description>Maximize the window under the mouse.</Description>
+<OfficialEvent>315</OfficialEvent>
+</Event><Event>
+<Description>Restore or minimize the window under the mouse.</Description>
+<OfficialEvent>316</OfficialEvent>
+</Event><Event>
+<Description>Removes "Always on top" window property when the window gets maximized. This is done so that you can still switch to other windows by activating them, instead of having to minimize the window which is always on top.</Description>
+<OfficialEvent>317</OfficialEvent>
+</Event><Event>
+<Description>Show accessor window, which can be used to access many things by keyboard. Be sure to check out the Accessor options in Settings dialog!</Description>
+<OfficialEvent>318</OfficialEvent>
+</Event><Event>
+<Description>This event makes it possible to right click on files in inactive explorer windows.</Description>
+<OfficialEvent>319</OfficialEvent>
+</Event><Event>
+<Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 0.</Description>
+<OfficialEvent>320</OfficialEvent>
+</Event><Event>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 0.</Description>
+<OfficialEvent>321</OfficialEvent>
+</Event><Event>
+<Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 1.</Description>
+<OfficialEvent>322</OfficialEvent>
+</Event><Event>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 1.</Description>
+<OfficialEvent>323</OfficialEvent>
+</Event><Event>
+<Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 2.</Description>
+<OfficialEvent>324</OfficialEvent>
+</Event><Event>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 3.</Description>
+<OfficialEvent>325</OfficialEvent>
+</Event><Event>
+<Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 3.</Description>
+<OfficialEvent>326</OfficialEvent>
+</Event><Event>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 4.</Description>
+<OfficialEvent>327</OfficialEvent>
+</Event><Event>
+<Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 4.</Description>
+<OfficialEvent>328</OfficialEvent>
+</Event><Event>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 5.</Description>
+<OfficialEvent>329</OfficialEvent>
+</Event><Event>
+<Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 5.</Description>
+<OfficialEvent>330</OfficialEvent>
+</Event><Event>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 6.</Description>
+<OfficialEvent>331</OfficialEvent>
+</Event><Event>
+<Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 6.</Description>
+<OfficialEvent>332</OfficialEvent>
+</Event><Event>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 7.</Description>
+<OfficialEvent>333</OfficialEvent>
+</Event><Event>
+<Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 7.</Description>
+<OfficialEvent>334</OfficialEvent>
+</Event><Event>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 8.</Description>
+<OfficialEvent>335</OfficialEvent>
+</Event><Event>
+<Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 8.</Description>
+<OfficialEvent>336</OfficialEvent>
+</Event><Event>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 9.</Description>
+<OfficialEvent>337</OfficialEvent>
+</Event><Event>
+<Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 9.</Description>
+<OfficialEvent>338</OfficialEvent>
+</Event><Event>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 9.</Description>
+<OfficialEvent>339</OfficialEvent>
+</Event><Event>
+<Description>Save the path of the currently active explorer window in FastFolders Slot 0.</Description>
+<OfficialEvent>340</OfficialEvent>
+</Event><Event>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 0.</Description>
+<OfficialEvent>341</OfficialEvent>
+</Event><Event>
+<Description>Save the path of the currently active explorer window in FastFolders Slot 1.</Description>
+<OfficialEvent>342</OfficialEvent>
+</Event><Event>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 1.</Description>
+<OfficialEvent>343</OfficialEvent>
+</Event><Event>
+<Description>Save the path of the currently active explorer window in FastFolders Slot 2.</Description>
+<OfficialEvent>344</OfficialEvent>
+</Event><Event>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 2.</Description>
+<OfficialEvent>345</OfficialEvent>
+</Event><Event>
+<Description>Save the path of the currently active explorer window in FastFolders Slot 3.</Description>
+<OfficialEvent>346</OfficialEvent>
+</Event><Event>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 3.</Description>
+<OfficialEvent>347</OfficialEvent>
+</Event><Event>
+<Description>Save the path of the currently active explorer window in FastFolders Slot 4.</Description>
+<OfficialEvent>348</OfficialEvent>
+</Event><Event>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 4.</Description>
+<OfficialEvent>349</OfficialEvent>
+</Event><Event>
+<Description>Save the path of the currently active explorer window in FastFolders Slot 5.</Description>
+<OfficialEvent>350</OfficialEvent>
+</Event><Event>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 5.</Description>
+<OfficialEvent>351</OfficialEvent>
+</Event><Event>
+<Description>Save the path of the currently active explorer window in FastFolders Slot 6.</Description>
+<OfficialEvent>352</OfficialEvent>
+</Event><Event>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 6.</Description>
+<OfficialEvent>353</OfficialEvent>
+</Event><Event>
+<Description>Save the path of the currently active explorer window in FastFolders Slot 7.</Description>
+<OfficialEvent>354</OfficialEvent>
+</Event><Event>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 7.</Description>
+<OfficialEvent>355</OfficialEvent>
+</Event><Event>
+<Description>Save the path of the currently active explorer window in FastFolders Slot 8.</Description>
+<OfficialEvent>356</OfficialEvent>
+</Event><Event>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 8.</Description>
+<OfficialEvent>357</OfficialEvent>
+</Event><Event>
+<Description>Save the path of the currently active explorer window in FastFolders Slot 9.</Description>
+<OfficialEvent>358</OfficialEvent>
+</Event><Event>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 9.</Description>
+<OfficialEvent>359</OfficialEvent>
+</Event><Event>
+<Description>Clear the path stored in FastFolders slot 0.</Description>
+<OfficialEvent>361</OfficialEvent>
+</Event><Event>
+<Description>Clear the path stored in FastFolders slot 1.</Description>
+<OfficialEvent>363</OfficialEvent>
+</Event><Event>
+<Description>Clear the path stored in FastFolders slot 2.</Description>
+<OfficialEvent>365</OfficialEvent>
+</Event><Event>
+<Description>Clear the path stored in FastFolders slot 3.</Description>
+<OfficialEvent>367</OfficialEvent>
+</Event><Event>
+<Description>Clear the path stored in FastFolders slot 4.</Description>
+<OfficialEvent>369</OfficialEvent>
+</Event><Event>
+<Description>Clear the path stored in FastFolders slot 5.</Description>
+<OfficialEvent>371</OfficialEvent>
+</Event><Event>
+<Description>Clear the path stored in FastFolders slot 6.</Description>
+<OfficialEvent>373</OfficialEvent>
+</Event><Event>
+<Description>Clear the path stored in FastFolders slot 7.</Description>
+<OfficialEvent>375</OfficialEvent>
+</Event><Event>
+<Description>Clear the path stored in FastFolders slot 8.</Description>
+<OfficialEvent>377</OfficialEvent>
+<Trigger>
+<Key>!Numpad8</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Description>Clear the path stored in FastFolders slot 9.</Description>
+<OfficialEvent>379</OfficialEvent>
+</Event><Event>
+<Description>Take a screenshot of the currently active window and upload it to the FTP server defined in FTP profile 1. Make sure to configure the FTP profile with your FTP login data.</Description>
+<OfficialEvent>380</OfficialEvent>
+</Event><Event>
+<Description>Take a screenshot of the desktop and upload it to the FTP server defined in FTP profile 1. Make sure to configure the FTP profile with your FTP login data.</Description>
+<OfficialEvent>381</OfficialEvent>
+</Event><Event>
+<Description>Upload the file(s) selected in the currently active explorer window to the FTP server defined in FTP profile 1. Make sure to configure the FTP profile with your FTP login data.</Description>
+<OfficialEvent>382</OfficialEvent>
+</Event><Event>
+<Description>Upload the file(s) selected in the currently active file dialog window to the FTP server defined in FTP profile 1. Make sure to configure the FTP profile with your FTP login data.</Description>
+<OfficialEvent>383</OfficialEvent>
+</Event><Event>
+<Description>Show the clipboard manager menu, which is used to paste the most recent 10 clipboard text entries. You can also use the Numpad keys to select an entry.</Description>
+<OfficialEvent>384</OfficialEvent>
+</Event><Event>
+<Description>Open CMD in C:\ when no useful directory can be extracted from the current context.</Description>
+<OfficialEvent>385</OfficialEvent>
+</Event><Event>
+<Description>Open CMD with the path extracted from the title of the active window.</Description>
+<OfficialEvent>386</OfficialEvent>
+</Event><Event>
+<Description>Make it possible to close CMD with ALT+F4.</Description>
+<OfficialEvent>388</OfficialEvent>
+</Event><Event>
+<Description>Make it possible to paste text in CMD by pressing CTRL+V.</Description>
+<OfficialEvent>389</OfficialEvent>
+</Event><Event>
+<Description>Open CMD in the current directory of the active file dialog window.</Description>
+<OfficialEvent>597</OfficialEvent>
+</Event><Event>
+<Description>Open CMD in the current directory of the active file dialog window.</Description>
+<OfficialEvent>597</OfficialEvent>
+</Event><Event>
+<Description>Make backspace go upwards in file dialogs, like in the good ol' XP.</Description>
+<OfficialEvent>601</OfficialEvent>
+</Event><Event>
+<Description>Copy the names of the selected files to the clipboard.</Description>
+<OfficialEvent>817</OfficialEvent>
+</Event><Event>
+<Description>Copy the paths of the selected files to the clipboard.</Description>
+<OfficialEvent>818</OfficialEvent>
+</Event><Event>
+<Description>Append the names of the selected files to the clipboard.</Description>
+<OfficialEvent>819</OfficialEvent>
+</Event><Event>
+<Description>Append the paths of the selected files to the clipboard.</Description>
+<OfficialEvent>820</OfficialEvent>
+</Event><Event>
+<Description>Create a new text file in the directory of the currently active file dialog.</Description>
+<OfficialEvent>827</OfficialEvent>
+</Event><Event>
+<Description>Create a new folder in the directory of the currently active file dialog.</Description>
+<OfficialEvent>828</OfficialEvent>
+</Event><Event>
+<Description>Open selected image files in an image editor (Paint.NET by default).</Description>
+<OfficialEvent>896</OfficialEvent>
+</Event><Event>
+<Description>Open selected non-image files in a text editor (Notepad++ by default).</Description>
+<OfficialEvent>897</OfficialEvent>
+</Event><Event>
+<Description>Open Task Manager when an empty part of the taskbar is double-clicked.</Description>
+<OfficialEvent>898</OfficialEvent>
+</Event><Event>
+<Description>Increase the sound volume with the mouse wheel over the taskbar.</Description>
+<OfficialEvent>960</OfficialEvent>
+</Event><Event>
+<Description>Decrease the sound volume with the mouse wheel over the taskbar.</Description>
+<OfficialEvent>961</OfficialEvent>
+</Event><Event>
+<Description>Rotate images with R in windows picture viewer.</Description>
+<OfficialEvent>962</OfficialEvent>
+</Event><Event>
+<Description>Rotate images with L in windows picture viewer.</Description>
+<OfficialEvent>963</OfficialEvent>
+</Event><Event>
+<Description>Upload the selected files to the FTP server defined in FTP profile 1 by clicking on the "Upload" button in explorer. Make sure to enter FTP login data for FTP profile 1.</Description>
+<OfficialEvent>979</OfficialEvent>
+</Event><Event>
+<Description>Create a new text file by clicking on the "New text file" button in explorer.</Description>
+<OfficialEvent>980</OfficialEvent>
+</Event></Events>
+<Remove>
+<OfficialEvent>307</OfficialEvent>
+<OfficialEvent>978</OfficialEvent>
+</Remove>
