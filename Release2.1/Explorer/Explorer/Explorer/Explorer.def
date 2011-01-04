@@ -3,5 +3,4 @@ DESCRIPTION "Explorer interface functions"
 EXPORTS
    SetPath @1
    ExecuteContextMenuCommand @2
-   Filter @3
-   ShellExecInExplorerProcess @4
+   ShellExecInExplorerProcess @3

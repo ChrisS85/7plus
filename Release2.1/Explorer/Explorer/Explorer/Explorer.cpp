@@ -379,7 +379,7 @@ HRESULT GetUIObjectOfFile(HWND hwnd, LPCWSTR pszPath, REFIID riid, void **ppv)
   }
   return hr;
 }
-
+/*
 // StExBar - an explorer toolbar
 
 // Copyright (C) 2007-2010 - Stefan Kueng
@@ -486,6 +486,7 @@ bool CheckDisplayName(IShellFolder * shellFolder, LPITEMIDLIST pidl, LPCTSTR fil
     }
     return false;
 }
+
 
 std::vector<LPITEMIDLIST>   m_noShows;  ///< list of pidls which didn't match a filter
 LPITEMIDLIST    m_currentFolder;    ///< pidl of the current folder
@@ -705,6 +706,7 @@ bool _stdcall Filter(LPTSTR filter, HWND hWnd)
     }
     return bReturn;
 }
+*/
 #define ShellExecuteW ShellExecute
 #include "comutil.h"
 #include <comdef.h>

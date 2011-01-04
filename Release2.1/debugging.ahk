@@ -13,7 +13,7 @@ DebuggingStart()
 			winclose, ahk_class dbgviewClass
 			WinWaitNotActive ahk_class dbgviewClass
 		}
-		run, %A_ScriptDir%\DebugView\Dbgview.exe /f,, UseErrorLevel
+		Run(A_ScriptDir "\DebugView\Dbgview.exe /f","", "UseErrorLevel")
 		winwait, ahk_class dbgviewClass
 		winactivate, ahk_class dbgviewClass
 		Winwaitactive, ahk_class dbgviewClass

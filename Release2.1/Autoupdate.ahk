@@ -70,19 +70,17 @@ PostUpdate()
 				else
 					RegDelete, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_AhkPath%
 			}
-			if(FileExist(ConfigPath "\Patches\" MajorVersion "." MinorVersion "." BugfixVersion ".0.xml")) ;apply release patch, without showing messages
+			if(FileExist(A_Temp "\7plus\ReleasePatch\" MajorVersion "." MinorVersion "." BugfixVersion ".0.xml")) ;apply release patch, without showing messages
 			{
-				ReadEventsFile(Events, ConfigPath "\Patches\" MajorVersion "." MinorVersion "." BugfixVersion ".0.xml")
+				ReadEventsFile(Events, A_Temp "\7plus\ReleasePatch\" MajorVersion "." MinorVersion "." BugfixVersion ".0.xml")
 				PatchVersion := 0
 				WriteMainEventsFile()
-				WriteIni()
 			}
 			if(FileExist(A_ScriptDir "\Changelog.txt"))
 			{
 				MsgBox,4,, Update successful. View Changelog?
 				IfMsgBox Yes
 					run %A_ScriptDir%\Changelog.txt,, UseErrorlevel
-				MsgBox Make sure to try out the new Accessor tool (Default: ALT + Space) !
 			}
 		}		
 		FileDelete %A_Temp%\7plus\Updater.exe

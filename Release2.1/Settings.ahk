@@ -1156,8 +1156,9 @@ GUI_EventsList_Edit(Add = 0)
 		Msgbox ExplorerButton trigger events may not be modified in portable or non-admin mode, as this might cause inconsistencies with the registry.
 		return
 	}
-	outputdebug pos %pos%
+	Suspend, On
 	event:=GUI_EditEvent(Settings_Events[pos].DeepCopy())
+	Suspend, Off
 	if(event && (IsPortable || !A_IsAdmin) && Event.Trigger.Type = "ExplorerButton")
 	{
 		Msgbox ExplorerButton trigger events may not be modified in portable or non-admin mode, as this might cause inconsistencies with the registry.
@@ -1528,29 +1529,6 @@ GuiControlGet, enabled ,1: , Paste image as file
 GuiControl, 1:enable%enabled%,ImgName
 Return
 
-/*
-Editor:
-GuiControlGet, enabled ,1: , F3: Open selected files in text/image editor
-GuiControl, 1:enable%enabled%,TextEditor
-GuiControl, 1:enable%enabled%,ImageEditor
-GuiControl, 1:enable%enabled%,Button5
-GuiControl, 1:enable%enabled%,Button6
-Return
-
-TextBrowse:
-Gui 1:+OwnDialogs
-FileSelectFile, editorpath , 3, , Select text editor executable, *.exe
-if !ErrorLevel
-	GuiControl, 1:,TextEditor,%editorpath%
-Return
-
-ImageBrowse:
-Gui 1:+OwnDialogs
-FileSelectFile, imagepath , 3, , Select image editor executable, *.exe
-if !ErrorLevel
-	GuiControl, 1:,ImageEditor,%imagepath%
-Return
-*/
 FastFolders:
 ; GuiControlGet, enabled ,1: , Use Fast Folders
 ; GuiControl, 1:enable%enabled%, HKPlacesBar
@@ -2190,30 +2168,6 @@ ApplySettings(Close = 0)
 	FTPProfiles := Array()
 	Loop % Settings_FTPProfiles.len()
 		FTPProfiles.append(Settings_FTPProfiles[A_Index])
-	/*
-	;Store editor filename
-	GuiControlGet, editorenabled ,1: , F3: Open selected files in text/image editor
-	GuiControlGet, editorpath ,1: , TextEditor
-	if editorenabled
-	{
-		TextEditor:=editorpath
-	}
-	else
-	{
-		TextEditor:=""
-	}
-
-	;Store image editor filename
-	GuiControlGet, imageeditorpath ,1: , ImageEditor
-	if editorenabled
-	{
-		ImageEditor:=imageeditorpath
-	}
-	else
-	{
-		ImageEditor:=""
-	}
-	*/
 	;Store MiddleOpenFolder
 	GuiControlGet, enabled, 1: , OpenFolderInNew
 	if(!enabled)

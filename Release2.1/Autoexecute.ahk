@@ -107,6 +107,7 @@ CF_HDROP = 0xF ;clipboard identifier of copied file from explorer
 ;Register a shell hook to get messages when windows get activated, closed etc
 Gui +LastFound
 hAHK := WinExist()
+FileDelete, %A_Temp%\7plus\hwnd.txt
 FileAppend, %hAHK%, %A_Temp%\7plus\hwnd.txt
 outputdebug 7plus window handle: %hahk%
 DllCall( "RegisterShellHookWindow", "Ptr",hAHK ) 

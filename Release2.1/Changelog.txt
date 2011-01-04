@@ -24,8 +24,12 @@ Bugfixes:
 - Fixed timer window event name not updating when applying settings with changed event name
 - Fixed a bug which caused selected files placeholder not to work on desktop
 - Fixed Windows Installer shortcuts being resolved incorrectly in program launcher start menu scanning
+- Autoupdate is now fully functional for users which have UAC enabled
+- Improved the reliability of the 7plus startup procedure
+- Fixed ${MC} Placeholder not working
 
 Changes:
 - Removed "Minimize to tray" for 64bit compatibility reasons
+- Removed a redundant event
 
 If you like this program and want to support its development, please consider donating!

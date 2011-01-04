@@ -105,7 +105,7 @@ ExpandPlaceholder(Placeholder)
 		else if(InStr(Placeholder, "NN") = 2)
 			return Control
 		else if(InStr(Placeholder, "C") = 2)
-			return WinGetClass("ahk_id " window)
+			return WinGetClass("ahk_id " UnderMouse)
 	}
 	else if(strStartsWith(Placeholder, "DateTime"))
 	{

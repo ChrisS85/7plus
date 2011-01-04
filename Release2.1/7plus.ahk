@@ -1,6 +1,6 @@
 Suspend, On
 #SingleInstance off
-; #NoTrayIcon ;Added later
+#NoTrayIcon ;Added later
 #InstallMouseHook
 #InstallKeyBdHook
 #MaxThreads 255
@@ -21,7 +21,7 @@ MinorVersion := 2
 BugfixVersion := 0
 ComObjError(0)
 if(!A_IsUnicode)
-	Msgbox Not running on Unicode build of Autohotkey. Please use a unicode version!
+	Msgbox Not running on Unicode build of Autohotkey_L. Please use a unicode version!
 #include %A_ScriptDir%\Autoexecute.ahk ;include first to avoid issues with autoexecute ending too soon because of labels
 #Include %A_ScriptDir%
 #include %A_ScriptDir%\lib\Array.ahk
@@ -57,7 +57,7 @@ if(!A_IsUnicode)
 #include %A_ScriptDir%\WindowHandling.ahk
 #include %A_ScriptDir%\explorer.ahk
 #include %A_ScriptDir%\clipboard.ahk
-#include %A_ScriptDir%\FTPUpload.ahk 
+; #include %A_ScriptDir%\FTPUpload.ahk 
 #include %A_ScriptDir%\Taskbar.ahk
 #include %A_ScriptDir%\Hotstrings.ahk
 ; #include %A_ScriptDir%\Misc.ahk
