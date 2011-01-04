@@ -285,10 +285,8 @@ AddButton(Command,path,Args="",Name="", Tooltip="",AddTo = "Both")
 }
 FindButton(function, param)
 {
-	outputdebug find button %function% %param%
 	if(!IsFunc(function))
 		return false
-	outputdebug isfunction
 	;go into view folders (clsid)
 	Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes, 2, 0
 	{
@@ -301,12 +299,10 @@ FindButton(function, param)
 			RegRead, ahk, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%, AHK
 			if(ahk)
 			{
-				outputdebug ahk SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%
 				;go into clsid folder
 				Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%, 2, 0
 				{
 					RegRead, value, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%\%A_LoopRegName%\shell\InvokeTask\command
-					outputdebug value %value%
 					if(%function%(value, "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\" regkey "\TasksItemsSelected\" numberfolder "\" A_LoopRegName "\shell\InvokeTask\command", param))
 						return true
 				}

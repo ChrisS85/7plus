@@ -1,5 +1,6 @@
+Suspend, On
 #SingleInstance off
-#NoTrayIcon ;Added later
+; #NoTrayIcon ;Added later
 #InstallMouseHook
 #InstallKeyBdHook
 #MaxThreads 255

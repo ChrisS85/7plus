@@ -22,11 +22,6 @@ Else
 		FileCreateDir, %ConfigPath%
 }
 IniPath := ConfigPath "\Settings.ini"
-;Start debugger
-IniRead, DebugEnabled, %IniPath%, General, DebugEnabled , 0
-if(DebugEnabled)
-	DebuggingStart()
-
 IniRead, RunAsAdmin, %IniPath%, Misc, RunAsAdmin , Always/Ask
 ;If program is run without admin privileges, try to run it again as admin, and exit this instance when the user confirms it
 if(!A_IsAdmin && RunAsAdmin = "Always/Ask")
@@ -40,7 +35,11 @@ if(!A_IsAdmin && RunAsAdmin = "Always/Ask")
 	else
 		MsgBox 7plus is running in non-admin mode. Some features will not be working.
 }
-
+;Start debugger
+IniRead, DebugEnabled, %IniPath%, General, DebugEnabled , 0
+if(DebugEnabled)
+	DebuggingStart()
+outputdebug 7plus Starting...
 ;If the current config path is set to the program directory but there is no write access, %AppData%\7plus needs to be used.
 ;If this is the first time (i.e. NoAdminSettingsTransfered = 0), all config files need to be copied to the new config path
 if((IsPortable && !WriteAccess(A_ScriptDir "\Accessor.xml")) || ConfigPath = A_AppData "\7plus")
@@ -109,7 +108,7 @@ CF_HDROP = 0xF ;clipboard identifier of copied file from explorer
 Gui +LastFound
 hAHK := WinExist()
 FileAppend, %hAHK%, %A_Temp%\7plus\hwnd.txt
-outputdebug hahk %hahk%
+outputdebug 7plus window handle: %hahk%
 DllCall( "RegisterShellHookWindow", "Ptr",hAHK ) 
 ShellHookMsgNum := DllCall( "RegisterWindowMessage", Str,"SHELLHOOK" ) 
 OnMessage( ShellHookMsgNum, "ShellMessage" ) 
@@ -271,6 +270,14 @@ SetTimer, TriggerTimer, 1000
 if (Firstrun=1)
 	GoSub, wizardry
 FirstRun:=0
+
+;Set this so that config files aren't saved with empty values when there was a problem with the startup procedure
+ProgramStartupFinished := true
+
+Suspend, Off
+
+outputdebug 7plus startup procedure finished, entering event loop.
+
 ;Event loop
 EventScheduler()
 Return
@@ -282,16 +289,20 @@ ExitApp
 OnExit(Reload=0)
 {
 	static ShouldReload
+	global ProgramStartupFinished
 	if(ShouldReload) ;If set, code below has already been executed by a previous call to this function
 		return
-	EventSystem_End()
-	Gdip_Shutdown(pToken)
-	WriteIni()
-	WriteClipboard()
-	Action_Upload_WriteFTPProfiles()
-	SlideWindows_Exit()
-	TabContainerList.CloseAllInactiveTabs()
-	SaveHotstrings()
+	if(ProgramStartupFinished)
+	{
+		EventSystem_End()
+		Gdip_Shutdown(pToken)
+		WriteIni()
+		WriteClipboard()
+		Action_Upload_WriteFTPProfiles()
+		SlideWindows_Exit()
+		TabContainerList.CloseAllInactiveTabs()
+		SaveHotstrings()
+	}
 	if(Reload)
 	{
 		ShouldReload := 1

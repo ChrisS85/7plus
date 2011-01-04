@@ -10,7 +10,6 @@ Accessor_URL_Init(ByRef URL, Settings)
 	URL.Settings.MaxHistoryLen := Settings.MaxHistoryLen
 	URL.Settings.SaveHistoryOnExit := Settings.SaveHistoryOnExit
 	URL.History := Array()
-		outputdebug % "create list new len: " URL.History.len()
 	if(!FileExist(ConfigPath "\History.xml"))
 		return
 	FileRead, xml, %ConfigPath%\History.xml

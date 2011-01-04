@@ -164,19 +164,11 @@ ShellMessage( wParam,lParam, msg)
 		}
 		if(WinActive("ahk_group ExplorerGroup"))
 		{
-			if(UseTabs)
-			{
-				if(WinExist("ahk_id " PreviousWindow " ahk_group ExplorerGroup"))
-					ExplorerDeactivated(PreviousWindow)
-				ExplorerActivated(lParam)
-			}
-			RegisterSelectionChangedEvents()
-			;Explorer info stuff
-			UpdateInfos(1)
-			if(A_OSVersion="WIN_7" && HKShowSpaceAndSize)
-				SetTimer, UpdateInfos, 100
+			if(WinExist("ahk_id " PreviousWindow " ahk_group ExplorerGroup"))
+				ExplorerDeactivated(PreviousWindow)
+			ExplorerActivated(lParam)
 		}
-		Else if(UseTabs)
+		Else ;Right now this is called on every window switch, but it shouldn't hurt much
 			ExplorerDeactivated(lParam)
 		
 		WindowList := Object()

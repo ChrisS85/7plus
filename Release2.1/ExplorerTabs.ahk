@@ -114,7 +114,6 @@ CloseTab(hwnd,TabContainer=0)
 DrawTabWindow()
 {
 	global TabContainerList,TabWindow
-	outputdebug drawtabwindow()
 	TabContainerList.print()
 	TabContainer:=TabContainerList.ContainsHWND(TabContainerList.active)
 	if(TabContainer)
@@ -145,7 +144,6 @@ DrawTabWindow()
 			}
 		}
 		CalculateHorizontalTabPositions(TabContainer)
-		outputdebug drawtabwindow x%x% y%y% w%w% h%h%
 		; Create a gdi bitmap with width and height of what we are going to draw into it. This is the entire drawing area for everything
 		hbm := CreateDIBSection(w, h)
 
@@ -172,7 +170,6 @@ DrawTabWindow()
 		Loop % TabContainer.tabs.len()
 		{
 			tab := TabContainer.tabs[A_Index]
-			outputdebug("draw tab " tab.path)
 			Gdip_SetSmoothingMode(G, 4)
 			; Draw background
 			if(tab.hwnd = TabContainer.active)
@@ -325,6 +322,7 @@ CreateTabWindow()
 	global
 	local backup
 	;Critical
+	outputdebug Create tab window
 	backup:=SuppressTabEvents
 	SuppressTabEvents:=true
 	TabNum:=3
@@ -376,13 +374,19 @@ return
 
 ExplorerActivated(hwnd)
 {
-	global TabContainerList, TabNum, TabWindow,SuppressTabEvents
+	global TabContainerList, TabNum, TabWindow, SuppressTabEvents, HKShowSpaceAndSize
+	RegisterSelectionChangedEvents()
+	;Explorer info stuff
+	if(A_OSVersion="WIN_7" && HKShowSpaceAndSize)
+	{
+		UpdateInfos(1)
+		SetTimer, UpdateInfos, 100
+	}
 	if(SuppressTabEvents)
 		return
 	if(TabContainerList.active=hwnd) ;If active hwnd is set to this window already, activation shall be handled elsewhere
 		return
 	DecToHex(hwnd)
-	outputdebug ExplorerActivated(%hwnd%)
 	if(TabContainer:=TabContainerList.ContainsHWND(hwnd))
 	{
 		TabContainerOld:=TabContainerList.ContainsHWND(TabContainerList.active)
@@ -392,10 +396,7 @@ ExplorerActivated(hwnd)
 		TabContainer.active:=hwnd
 		
 		if(TabContainer!=TabContainerOld)
-		{
-			outputdebug update activated
 			UpdateTabs()
-		}
 		UpdatePosition(TabNum, TabWindow)
 		
 		;SetTimer, UpdatePosition, 100
@@ -408,20 +409,15 @@ return
 */
 ExplorerDeactivated(hwnd)
 {
-	global TabContainerList, TabNum, TabWindow,SuppressTabEvents
-	outputdebug ExplorerDeactivated1(%hwnd%, %TabWindow%)
-	if(SuppressTabEvents)
-		return
-	outputdebug ExplorerDeactivated2(%hwnd%, %TabWindow%)
+	global TabContainerList, TabNum, TabWindow,SuppressTabEvents, HKShowSpaceAndSize
 	hwnd:=WinExist("A")
 	if(hwnd=TabWindow)
 		return
-	outputdebug ExplorerDeactivated3(%hwnd%, %TabWindow%)
-	if(hwnd!=TabWindow)
-	{
-		outputdebug clear active
-		TabContainerList.active:=0
-	}
+	if(HKShowSpaceAndSize && A_OsVersion = "WIN_7")
+		UpdateInfoPosition()
+	if(SuppressTabEvents)
+		return
+	TabContainerList.active:=0
 	UpdatePosition(TabNum, TabWindow)
 	;SetTimer, UpdatePosition, Off
 }
@@ -575,10 +571,8 @@ UpdateTabs()
 	local TabContainer, hwnd,tabhwnd,folder,tabs
 	WasCritical := A_IsCritical
 	Critical
-	outputdebug updatetabs()
 	if(!SuppressTabEvents && !NoTabUpdate)
 	{
-		outputdebug not suppressed
 		hwnd:=WinActive("ahk_group ExplorerGroup")
 		TabContainer:=TabContainerList.ContainsHWND(hwnd)
 		if(hwnd && TabContainer)

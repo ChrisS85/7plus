@@ -546,7 +546,6 @@ Return
 
 #if IsMouseOverTaskList() ;Can't add the conditions below here right now, because IsDoubleClick seems to fail when called in the #if condition
 LButton::
-outputdebug lbutton
 if(IsDoubleClick() && IsMouseOverFreeTaskListSpace())
 {
 	outputdebug doubleclicktaskbar
@@ -607,10 +606,8 @@ OpenInNewFolder()
 		dir:=true
 	if(select!=selected)
 		SelectFiles(selected,1,0,0)
-	outputdebug selected %undermouse% dir %dir%
 	if(!dir)
 		return false
-	outputdebug MiddleOpenFolder %MiddleOpenFolder%
 	if(MiddleOpenFolder = 1)
 		Run(A_WinDir "\explorer.exe /n,/e," undermouse)
 	else if(MiddleOpenFolder = 2 && UseTabs)
@@ -623,10 +620,9 @@ OpenInNewFolder()
 ToggleWallpaper()
 {
 	global
-	if (HKToggleWallpaper && A_OSVersion="WIN_7" && IsMouseOverDesktop())
-		ShellContextMenu("Desktop",1)
-	else 
+	if(IsMouseOverDesktop() || !HKToggleWallpaper || A_OSVersion != "WIN_7")
 		return false
+	ShellContextMenu("Desktop",1)
 	return true
 }
 

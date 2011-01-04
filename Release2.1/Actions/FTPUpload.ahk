@@ -15,7 +15,6 @@ Action_Upload_Init(Action)
 		if(OtherAction)
 			break
 	}
-	outputdebug("init otheraction " isobject(OtherAction))
 	Action.Category := "File"
 	Action.TargetFolder := (OtherAction ? OtherAction.TargetFolder : "Target/Folder/or/empty")
 	Action.TargetFile := (OtherAction ? OtherAction.TargetFile : "Filename(+ optionally .extension) / or empty for original filename")

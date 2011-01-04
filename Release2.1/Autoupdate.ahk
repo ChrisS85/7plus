@@ -22,6 +22,7 @@ AutoUpdate()
 				{
 					Progress zh0 fs18,Downloading Update, please wait.
 					Sleep 10
+					link := "Link" (!A_IsCompiled ? "Source" : "") (A_PtrSize = 8 ? "x64" : "x86")
 					if(A_IsCompiled)
 						IniRead, Link, %A_Temp%\7plus\Version.ini, Version,Link
 					else

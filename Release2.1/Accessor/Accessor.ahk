@@ -21,9 +21,9 @@ Accessor_Init()
 		FileRead, xml, %ConfigPath%\Accessor.xml
 		XMLObject := XML_Read(xml)
 	}
+	outputdebug Accessor Plugins: %AccessorPluginsList%
 	Loop, Parse, AccessorPluginsList, `,,%A_Space%
 	{		
-		outputdebug plugin %a_loopfield%
 		tmpobject := RichObject()
 		tmpobject.Type := A_LoopField
 		tmpobject.Init := "Accessor_" A_LoopField "_Init"
@@ -58,29 +58,18 @@ Accessor_Init()
 		AccessorPlugins.append(Object("Base",tmpobject))
 	}
 	
-	outputdebug % "key1: " XMLObject.Keywords.Keyword.Key
 	Accessor.Keywords := Array()
 	if(!IsObject(XMLObject.Keywords))
-	{
-		outputdebug create kywords object
 		XMLObject.Keywords := Object()
-	}
 	if(!XMLObject.Keywords.Keyword.len())
-	{
 		XMLObject.Keywords.Keyword := IsObject(XMLObject.Keywords.Keyword) ? Array(XMLObject.Keywords.Keyword) : Array()
-		outputdebug % "create array len " XMLObject.Keywords.Keyword.len()
-	}
 	Loop % XMLObject.Keywords.Keyword.len()
 		Accessor.Keywords.append(Object("Key", XMLObject.Keywords.Keyword[A_Index].Key, "Command", XMLObject.Keywords.Keyword[A_Index].Command))
-	outputdebug % "key1: " Accessor.Keywords[1].Key
 	Accessor.GenericIcons := Object()
 	Accessor.GenericIcons.Application := ExtractIcon("shell32.dll", 3, 64)
-	outputdebug % "application " Accessor.GenericIcons.Application
 	Accessor.GenericIcons.Folder := ExtractIcon("shell32.dll", 4, 64)
-	outputdebug % "Folder " Accessor.GenericIcons.Folder
 	FileAppend, test, %A_Temp%\7plus\test.htm
 	Accessor.GenericIcons.URL := ExtractAssociatedIcon(0, A_Temp "\7plus\test.htm", iIndex)
-	outputdebug % "URL " Accessor.GenericIcons.URL
 	FileDelete, %A_Temp%\7plus\test.htm
 }
 Accessor_OnExit(Accessor)

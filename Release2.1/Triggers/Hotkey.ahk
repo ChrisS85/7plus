@@ -53,8 +53,6 @@ HotkeyShouldFire(key)
 			}
 			else if(Condition.Negate)
 				enable := 1 - enable
-				
-			outputdebug enable %key% %enable%
 			if(enable = 0)
 				break
 			ConditionPos++
