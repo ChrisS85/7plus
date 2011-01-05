@@ -50,7 +50,8 @@ Settings_CreateAccessorKeywords(ByRef TabCount) {
 	Gui, 1:Add, Tab2, x176 y14 w460 h350 vAccessorKeywordsTab, 
 	TabCount++
 	AddTab(0, "","SysTabControl32" TabCount)
-	Gui, 1:Add, ListView, x%x1% y%yIt% w450 h232 vGUI_AccessorKeywordsList gGUI_AccessorKeywordsList_Events Grid -Multi -LV0x10 AltSubmit, ID|Key|Command
+	Gui, 1:Add, ListView, x%x1% y%yIt% w450 h232 vGUI_AccessorKeywordsList gGUI_AccessorKeywordsList_Events hwndhwndKeywords Grid -Multi -LV0x10 AltSubmit, ID|Key|Command
+	WinSet, ExStyle, +0x10, ahk_id %hwndKeywords%
 	LV_ModifyCol(1, 0)
     LV_ModifyCol(2, 100)
 	LV_ModifyCol(3, "AutoHdr")
@@ -954,6 +955,7 @@ return
 SettingsTreeViewEvents()
 {
 	global SettingsTabList,SuppressTreeViewMessages,EventFilter
+	static PreviousSelection
 	if(SuppressTreeViewMessages)
 		return
 	outputdebug tree view event
@@ -996,9 +998,9 @@ SettingsTreeViewEvents()
 				break
 			}
 		}
-		if(SelectedName = "Accessor Keywords")
+		if(SelectedName = "Accessor Keywords" && PreviousSelection != "Accessor Keywords")
 			Gui +E0x10
-		else
+		else if(PreviousSelection = "Accessor Keywords")
 			Gui -E0x10
 	}
 	
@@ -1013,6 +1015,8 @@ SettingsTreeViewEvents()
 	GuiControl, 1:MoveDraw, BtnApply
 	GuiControl, 1:MoveDraw, TutLabel
 	GuiControl, 1:MoveDraw, Wait
+	if(SelectedName != PreviousSelection)
+		PreviousSelection := SelectedName
 	return
 }
 EventFilterChange:

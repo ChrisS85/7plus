@@ -16,11 +16,43 @@ Accessor_Init()
 	AccessorPluginsList := "WindowSwitcher,FileSystem,Google,Calc,ProgramLauncher,NotepadPlusPlus, SciTE4AutoHotkey,Notes,FastFolders,Uninstall,URL,Weather" ;The order here partly determines the order in the window, so choose carefully
 	AccessorPlugins := Array()
 	Accessor := Object("Base", Object("OnExit", "Accessor_OnExit"))
-	if(FileExist(ConfigPath "\Accessor.xml"))
+	FileRead, xml, %ConfigPath%\Accessor.xml
+	if(!xml)
 	{
-		FileRead, xml, %ConfigPath%\Accessor.xml
-		XMLObject := XML_Read(xml)
+		xml = 
+		( LTrim
+			<Keywords>
+			<Keyword>
+			<Command>http://dict.leo.org/ende?search={1}</Command>
+			<Key>leo</Key>
+			</Keyword><Keyword>
+			<Command>http://google.com/search?q=${1}</Command>
+			<Key>google</Key>
+			</Keyword><Keyword>
+			<Command>http://en.wikipedia.org/wiki/Special:Search?search=${1}</Command>
+			<Key>w</Key>
+			</Keyword><Keyword>
+			<Command>http://maps.google.com/maps?q=${1}</Command>
+			<Key>gm</Key>
+			</Keyword><Keyword>
+			<Command>http://www.amazon.com/s?url=search-alias`%3Daps&field-keywords=${1}</Command>
+			<Key>a</Key>
+			</Keyword><Keyword>
+			<Command>http://www.bing.com/search?q=${1}</Command>
+			<Key>bing</Key>
+			</Keyword><Keyword>
+			<Command>http://www.youtube.com/results?search_query=${1}</Command>
+			<Key>y</Key>
+			</Keyword><Keyword>
+			<Command>http://www.imdb.com/find?q=${1}</Command>
+			<Key>i</Key>
+			</Keyword><Keyword>
+			<Command>http://www.wolframalpha.com/input/?i=${1}</Command>
+			<Key>wa</Key>
+			</Keyword></Keywords>
+		)
 	}
+	XMLObject := XML_Read(xml)
 	outputdebug Accessor Plugins: %AccessorPluginsList%
 	Loop, Parse, AccessorPluginsList, `,,%A_Space%
 	{		
@@ -57,7 +89,7 @@ Accessor_Init()
 		}
 		AccessorPlugins.append(Object("Base",tmpobject))
 	}
-	
+		
 	Accessor.Keywords := Array()
 	if(!IsObject(XMLObject.Keywords))
 		XMLObject.Keywords := Object()

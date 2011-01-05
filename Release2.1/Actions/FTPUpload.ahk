@@ -26,9 +26,20 @@ Action_Upload_ReadFTPProfiles()
 {
 	global ConfigPath, FTPProfiles
 	FTPProfiles := Array()
-	if(!FileExist(ConfigPath "\FTPProfiles.xml"))
-		return
 	FileRead, xml, %ConfigPath%\FTPProfiles.xml
+	if(!xml)
+	{
+		xml =
+		( LTrim
+			<List>
+			<Hostname>Hostname.com</Hostname>
+			<Password></Password>
+			<Port>21</Port>
+			<URL>http://somehost.com</URL>
+			<User>SomeUser</User>
+			</List>
+		)
+	}
 	XMLObject := XML_Read(xml)
 	;Convert empty and single arrays to real array
 	if(!XMLObject.List.len())
