@@ -5,7 +5,7 @@ Accessor_FastFolders_Init(ByRef FastFolders, Settings)
 	FastFolders.KeywordOnly := false
 	FastFolders.MinChars := 1
 	FastFolders.OKName := "Open Folder"
-	FastFolders.Settings.FuzzySearch := Settings.FuzzySearch
+	FastFolders.Settings.FuzzySearch := Settings.HasKey("FuzzySearch") ? Settings.FuzzySearch : 1
 	FastFolders.Description := "Access the stored FastFolders by typing a part of a folder name."
 	FastFolders.HasSettings := True
 }

@@ -52,8 +52,8 @@ Accessor_Init()
 		{
 			if(XMLObject[A_LoopField].Settings.Keyword) ;Set keyword automatically for each plugin to save some lines
 				tmpobject.Settings.Keyword := XMLObject[A_LoopField].Settings.Keyword
-			if(XMLObject[A_LoopField].Settings.BasePriority) ;Set keyword automatically for each plugin to save some lines
-				tmpobject.Settings.Keyword := XMLObject[A_LoopField].Settings.BasePriority	
+			if(XMLObject[A_LoopField].Settings.BasePriority) ;Set base priority automatically for each plugin to save some lines
+				tmpobject.Settings.BasePriority := XMLObject[A_LoopField].Settings.BasePriority	
 		}
 		AccessorPlugins.append(Object("Base",tmpobject))
 	}

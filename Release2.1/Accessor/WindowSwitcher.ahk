@@ -5,8 +5,8 @@ Accessor_WindowSwitcher_Init(ByRef WindowSwitcher, Settings)
 	WindowSwitcher.KeywordOnly := false
 	WindowSwitcher.MinChars := 0
 	WindowSwitcher.OKName := "Activate"
-	WindowSwitcher.Settings.FuzzySearch := Settings.FuzzySearch
-	WindowSwitcher.Settings.IgnoreFileExtensions := Settings.IgnoreFileExtensions
+	WindowSwitcher.Settings.FuzzySearch := Settings.HasKey("FuzzySearch") ? Settings.FuzzySearch : 1
+	WindowSwitcher.Settings.IgnoreFileExtensions := Settings.HasKey("IgnoreFileExtensions") ? Settings.IgnoreFileExtensions : 1
 	WindowSwitcher.Description := "Activate windows by typing a part of their title or their executable filename. `nThis also shows CPU usage, shows/sets Always on Top state and `nallows to close and kill processes."
 	WindowSwitcher.HasSettings := True
 }

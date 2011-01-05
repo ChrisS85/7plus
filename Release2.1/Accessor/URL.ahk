@@ -6,9 +6,9 @@ Accessor_URL_Init(ByRef URL, Settings)
 	URL.OKName := "Open URL"
 	URL.Description := "This plugin allows to open URLs in the browser and also has a history function."
 	URL.HasSettings := true
-	URL.Settings.UseHistory := Settings.UseHistory
-	URL.Settings.MaxHistoryLen := Settings.MaxHistoryLen
-	URL.Settings.SaveHistoryOnExit := Settings.SaveHistoryOnExit
+	URL.Settings.UseHistory := Settings.HasKey("UseHistory") ? Settings.UseHistory : 1
+	URL.Settings.MaxHistoryLen := Settings.HasKey("MaxHistoryLen") ? Settings.MaxHistoryLen : 1
+	URL.Settings.SaveHistoryOnExit := Settings.HasKey("SaveHistoryOnExit") ? Settings.SaveHistoryOnExit : 1
 	URL.History := Array()
 	if(!FileExist(ConfigPath "\History.xml"))
 		return

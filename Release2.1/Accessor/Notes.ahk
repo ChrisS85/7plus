@@ -8,6 +8,8 @@ Accessor_Notes_Init(ByRef Notes, Settings)
 	Notes.OKName := "Show Note"
 	Notes.List := Array()
 	Notes.Icon := ExtractIcon("shell32.dll", 115, 64)
+	Notes.Description := "This plugin allows to take notes and view them later."
+	Notes.HasSettings := True
 	if(!FileExist(ConfigPath "\Notes.xml"))
 		return
 	FileRead, xml, %ConfigPath%\Notes.xml
@@ -22,8 +24,6 @@ Accessor_Notes_Init(ByRef Notes, Settings)
 		Text := XMLObjectListEntry.Text
 		Notes.List.append(Object("Text",Text))
 	}
-	Notes.Description := "This plugin allows to take notes and view them later."
-	Notes.HasSettings := True
 }
 Accessor_Notes_ShowSettings(Notes, PluginSettings, PluginGUI)
 {

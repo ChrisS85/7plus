@@ -9,7 +9,7 @@ Accessor_NotepadPlusPlus_Init(ByRef NotepadPlusPlus, Settings)
 	NotepadPlusPlus.MinChars := 0 ;This is actually 2, but not when notepad is active
 	NotepadPlusPlus.MRUList := Array()
 	NotepadPlusPlus.OKName := "Open Tab"
-	NotepadPlusPlus.Settings.FuzzySearch := Settings.FuzzySearch
+	NotepadPlusPlus.Settings.FuzzySearch := Settings.HasKey("FuzzySearch") ? Settings.FuzzySearch : 1
 	NotepadPlusPlus.Description := "Activate a specific Notepad++ tab by typing a part of its name. This plugin restores the text `nwhich was previously entered when the current tab was last active. `nThis way you can quicly switch between the most used tabs."
 	NotepadPlusPlus.HasSettings := True
 }
