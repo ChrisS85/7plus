@@ -93,6 +93,7 @@ AutoUpdate_CheckPatches()
 	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, ConfigPath, Events
 	;Disable keyboard hook to increase responsiveness
 	FileCreateDir, %ConfigPath%\Patches
+	FileDelete, %ConfigPath%\PatchInfo.xml
 	Suspend, On
 	URLDownloadToFile, http://7plus.googlecode.com/files/PatchInfo.xml?x=%rand%, %ConfigPath%\PatchInfo.xml
 	Suspend, Off

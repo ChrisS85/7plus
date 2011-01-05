@@ -1,4 +1,4 @@
-;If program is run without admin privileges, try to run it again as admin, and exit this instance when the user confirms it
+﻿;If program is run without admin privileges, try to run it again as admin, and exit this instance when the user confirms it
 if(!A_IsAdmin)
 {
 	If(A_IsCompiled)
@@ -45,15 +45,22 @@ CreateUpdate(Platform, Version)
 	else
 		FileCopy, %A_ProgramFiles%\Autohotkey\Compiler\AutoHotkeySC_UNICODE_64.bin, %A_ProgramFiles%\Autohotkey\Compiler\AutoHotkeySC.bin, 1
 	if(Version = "Binary")
-		runwait Compiler\Compile_AHK.exe /nogui "%A_ScriptDir%\7plus.ahk"
+	{
+		runwait %A_ProgramFiles%\Autohotkey\Compiler\Compile_AHK.exe /nogui "%A_ScriptDir%\7plus.ahk"
+		Sleep 2000
+	}
 	FolderLoop(Platform, Version)
 	runwait 7za.exe a -y "%a_scriptdir%\update.zip" "%A_TEMP%\7plusUpdateCreator\*", %a_scriptdir%,Hide
 	WriteUpdater()
 	sleep 500
+	if(!FileExist(A_Scriptdir "\update.zip"))
+		msgbox update.zip doesn't exist!
 	runwait %a_scriptdir%\update.zip
 	sleep 500
-	runwait Compiler\Compile_AHK.exe /nogui "%A_ScriptDir%\Updater.ahk"
-	sleep 500
+	runwait %A_ProgramFiles%\Autohotkey\Compiler\Compile_AHK.exe /nogui "%A_ScriptDir%\Updater.ahk"
+	sleep 2000
+	if(!FileExist(A_Scriptdir "\updater.exe"))
+		msgbox updater.exe doesn't exist!
 	FileRemoveDir %A_TEMP%\7plusUpdateCreator,1
 	FileMove %a_scriptdir%\update.zip, %A_ScriptDir%\7plus V.%7plusVersion% %Platform% %Version%.zip, 1
 	FileMove, %A_ScriptDir%\Updater.exe, %A_ScriptDir%\Updater%Platform%%Version%.exe, 1
@@ -136,9 +143,9 @@ FolderLoop(Platform, Version)
 		if(InStr(A_LoopFileFullPath, "ReleasePatch\") && !InStr(A_LoopFileName, 7plusVersion)) ;Skip release patches for wrong 7plus version
 			continue
 		FileCreateDir %A_Temp%\7plusUpdateCreator\%A_LoopFileDir%
-		FileCopy, %A_LoopFileLongPath%, %A_Temp%\7plusUpdateCreator\%A_LoopFileFullPath%
+		FileCopy, %A_LoopFileLongPath%, %A_Temp%\7plusUpdateCreator\%A_LoopFileFullPath%, 1
 	}
-	FileCopy, %A_ScriptDir%\%Platform%\*, %A_Temp%\7plusUpdateCreator
+	FileCopy, %A_ScriptDir%\%Platform%\*, %A_Temp%\7plusUpdateCreator, 1
 }
 WriteUpdater()
 {
