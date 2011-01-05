@@ -691,7 +691,7 @@ return
 CreateInfoGui()
 {
 	global FreeSpace, SelectedFileSize,shell32MUIpath,freetext
-	gui, 2: font, s9, Segoe UI 
+	Gui, 2: font, s9, Segoe UI 
 	Gui, 2: Add, Text, x60 y0 w70 h12 vFreeSpace, %A_Space%
 	Gui, 2: Add, Text, x0 y0 w60 h12 vSelectedFileSize, %A_Space%
 	Gui, 2: -Caption  +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs
@@ -873,6 +873,7 @@ UpdateInfoPosition()
 return
 UpdateInfoPosition()
 {
+	Gui, 2: -Caption  +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs
 	if(ShouldShowInfo())
 	{
 		WinGetPos , X, Y, Width, Height, A

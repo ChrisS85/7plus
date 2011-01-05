@@ -59,8 +59,6 @@ IniRead, PatchVersion, %IniPath%, General, PatchVersion, 0
 if(!FileExist(ConfigPath "\Events.xml") && FileExist(A_ScriptDir "\Events\All Events.xml")) ;Fresh install, copy default events file into config directory
 	FileCopy, %A_ScriptDir%\Events\All Events.xml, %A_ConfigPath%\Events.xml
 
-CreateTabWindow()
-
 ;Get windows version
 RegRead, vista7, HKLM, SOFTWARE\Microsoft\Windows NT\CurrentVersion, CurrentVersion
 vista7 := vista7 >= 6
@@ -86,6 +84,9 @@ if(AutoUpdate)
 	AutoUpdate_CheckPatches()
 }
 PostUpdate()
+
+
+CreateTabWindow()
 
 ;On first run, wizard is used to setup values
 IniRead, FirstRun, %IniPath%, General, FirstRun , 1
@@ -233,7 +234,7 @@ TabContainerList.MinWidth := 40
 
 if(Vista7)
 	AcquireExplorerConfirmationDialogStrings()
-	
+
 if(A_OSVersion="WIN_7")
 	CreateInfoGui()
 
@@ -244,20 +245,20 @@ Menu, tray, add  ; Creates a separator line.
 Menu, tray, add, Settings, SettingsHandler  ; Creates a new menu item.
 
 result:=DllCall("uxtheme.dll\IsThemeActive") ; On non-themed environments, standard icon is used
-if(A_IsCompiled)
-{
-	if(result)
-		Menu, tray, Icon, %A_ScriptFullPath%, 2,1
-	else
-		Menu, tray, Icon, %A_ScriptFullPath%, 1,1
-}	
-else
-{
+; if(A_IsCompiled)
+; {
+	; if(result)
+		; Menu, tray, Icon, %A_ScriptFullPath%, 8,1
+	; else
+		; Menu, tray, Icon, %A_ScriptFullPath%, 8,1
+; }	
+; else
+; {
 	if(result)
 		Menu, tray, Icon, %A_ScriptDir%\7+-w2.ico,,1
 	else
 		Menu, tray, Icon, %A_ScriptDir%\7+-w.ico,,1
-}
+; }
 menu, tray, Default, Settings
 IniRead, HideTrayIcon, %IniPath%, Misc, HideTrayIcon, 0
 if(!HidetrayIcon)

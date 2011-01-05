@@ -437,9 +437,9 @@ Settings_CreateAbout(ByRef TabCount) {
 	yIt:=YBase
 	x1:=XBase+10
 	x2:=xBase+350
-	if(A_IsCompiled)			
-		Gui, 1:Add, Picture, w128 h128 y%yIt% x%x2% Icon3 vLogo, %A_ScriptFullPath%
-	else
+	; if(A_IsCompiled)			
+		; Gui, 1:Add, Picture, w128 h128 y%yIt% x%x2% Icon3 vLogo, %A_ScriptFullPath%
+	; else
 		Gui, 1:Add, Picture, w128 h128 y%yIt% x%x2% vLogo, %A_ScriptDir%\128.png
 	
 	Gui, 1:font, s20
@@ -462,9 +462,9 @@ Settings_CreateAbout(ByRef TabCount) {
 	yIt+=hText*2
 	Gui, 1:Add, Text, y%yIt% x%x1%, To support the development of this project, please donate:
 	yIt+=hText*1.5
-	if(A_IsCompiled)			
-		Gui, 1:Add, Picture, y%yIt% x%x1% cBlue gDonate Icon4 vURL_Donate, %A_ScriptFullPath%
-	else
+	; if(A_IsCompiled)			
+		; Gui, 1:Add, Picture, y%yIt% x%x1% cBlue gDonate Icon4 vURL_Donate, %A_ScriptFullPath%
+	; else
 		Gui, 1:Add, Picture, y%yIt% x%x1% cBlue gDonate vURL_Donate, %A_ScriptDir%\Donate.png		
 	yIt+=hText*2
 	x2:=x1+200

@@ -51,11 +51,11 @@ AutoUpdate()
 PostUpdate()
 {
 	global MajorVersion,MinorVersion,BugfixVersion, ConfigPath, IsPortable, Events
-	if(FileExist(A_Temp "\7plus\Updater.exe"))
+	if(FileExist(A_ScriptDir "\Updater.exe")) ;TODO:Change here and below for 2.3.0 to A_TEMP
 	{
-		IniRead, tmpMajorVersion, %A_Temp%\7plus\Version.ini,Version,MajorVersion
-		IniRead, tmpMinorVersion, %A_Temp%\7plus\Version.ini,Version,MinorVersion
-		IniRead, tmpBugfixVersion, %A_Temp%\7plus\Version.ini,Version,BugfixVersion
+		IniRead, tmpMajorVersion, %A_ScriptDir%\Version.ini,Version,MajorVersion
+		IniRead, tmpMinorVersion, %A_ScriptDir%\Version.ini,Version,MinorVersion
+		IniRead, tmpBugfixVersion, %A_ScriptDir%\Version.ini,Version,BugfixVersion
 		if(tmpMajorVersion=MajorVersion && tmpMinorVersion = MinorVersion && tmpBugfixVersion = BugfixVersion)
 		{
 			;Remove 'Always run as admin' compatibility flag from registry from previous version (it enforces an unneeded UAC prompt when clicking explorer buttons)
@@ -83,9 +83,9 @@ PostUpdate()
 					run %A_ScriptDir%\Changelog.txt,, UseErrorlevel
 			}
 		}		
-		FileDelete %A_Temp%\7plus\Updater.exe
+		FileDelete %A_ScriptDir%\Updater.exe
 	}
-	FileDelete %A_Temp%\7plus\Version.ini
+	FileDelete %A_ScriptDir%\Version.ini
 }
 
 AutoUpdate_CheckPatches()

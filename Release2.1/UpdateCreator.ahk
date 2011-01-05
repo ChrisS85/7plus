@@ -55,8 +55,8 @@ CreateUpdate(Platform, Version)
 	sleep 500
 	if(!FileExist(A_Scriptdir "\update.zip"))
 		msgbox update.zip doesn't exist!
-	runwait %a_scriptdir%\update.zip
-	sleep 500
+	; runwait %a_scriptdir%\update.zip
+	; sleep 500
 	runwait %A_ProgramFiles%\Autohotkey\Compiler\Compile_AHK.exe /nogui "%A_ScriptDir%\Updater.ahk"
 	sleep 2000
 	if(!FileExist(A_Scriptdir "\updater.exe"))
@@ -106,14 +106,14 @@ FolderLoop(Platform, Version)
 			continue
 		if(A_LoopFileExt = "zip")
 			continue
-		if(Version = "Binary" && A_LoopFileName = "128.png")
-			continue
-		if(Version = "Binary" && A_LoopFileName = "Donate.png")
-			continue
-		if(Version = "Binary" && A_LoopFileName = "7+-w2.ico")
-			continue
-		if(Version = "Binary" && A_LoopFileName = "7+-w.ico")
-			continue
+		; if(Version = "Binary" && A_LoopFileName = "128.png")
+			; continue
+		; if(Version = "Binary" && A_LoopFileName = "Donate.png")
+			; continue
+		; if(Version = "Binary" && A_LoopFileName = "7+-w2.ico")
+			; continue
+		; if(Version = "Binary" && A_LoopFileName = "7+-w.ico")
+			; continue
 		if A_LoopFileFullPath contains .svn
 			continue
 		if A_LoopFileFullPath contains Compiler
@@ -150,18 +150,20 @@ FolderLoop(Platform, Version)
 WriteUpdater()
 {
 	FileDelete %A_scriptdir%\Updater.ahk
-	FileAppend, #NoTrayIcon`n,%A_scriptdir%\Updater.ahk
-	FileAppend, SetWorkingDir `%A_scriptdir`%`n,%A_scriptdir%\Updater.ahk
-	FileAppend, Progress zh0 fs18`, Updating, please wait.`n,%A_scriptdir%\Updater.ahk
-	FileAppend, FileInstall`, %A_scriptdir%\Update.zip`, Update.zip`,1`n,%A_scriptdir%\Updater.ahk
-	FileAppend, FileInstall`, %A_scriptdir%\7za.exe`, 7za.exe`,1`n,%A_scriptdir%\Updater.ahk
-	FileAppend, runwait 7za.exe x -y Update.zip`, `%a_scriptdir`%`,hide`n,%A_scriptdir%\Updater.ahk
-	FileAppend, FileDelete 7za.exe`n,%A_scriptdir%\Updater.ahk
-	FileAppend, FileDelete Update.zip`n,%A_scriptdir%\Updater.ahk
-	FileAppend, FileMove ReleasePatch`n,`%A_Temp`%\7plus\`, 1,%A_scriptdir%\Updater.ahk
-	FileAppend, if(FileExist("7plus.ahk"))`n,%A_scriptdir%\Updater.ahk
-	FileAppend, `trun 7plus.ahk`n,%A_scriptdir%\Updater.ahk
-	FileAppend, else if(FileExist("7plus.exe"))`n,%A_scriptdir%\Updater.ahk
-	FileAppend, `trun 7plus.exe`n,%A_scriptdir%\Updater.ahk
-	FileAppend, ExitApp`n,%A_scriptdir%\Updater.ahk
+	FileAppend, #NoTrayIcon`n,													%A_scriptdir%\Updater.ahk
+	FileAppend, if(!A_IsCompiled)`n,											%A_scriptdir%\Updater.ahk
+	FileAppend, `tExitApp`n,													%A_scriptdir%\Updater.ahk
+	FileAppend, SetWorkingDir `%A_scriptdir`%`n,								%A_scriptdir%\Updater.ahk
+	FileAppend, Progress zh0 fs18`, Updating, please wait.`n,					%A_scriptdir%\Updater.ahk
+	FileAppend, FileInstall`, %A_scriptdir%\Update.zip`, Update.zip`,1`n,		%A_scriptdir%\Updater.ahk	;%A_scriptdir% mustn't be dynamic for FileInstall -> no quotes
+	FileAppend, FileInstall`, %A_scriptdir%\7za.exe`, 7za.exe`,1`n,				%A_scriptdir%\Updater.ahk	;%A_scriptdir% mustn't be dynamic for FileInstall -> no quotes
+	FileAppend, runwait 7za.exe x -y Update.zip`, `%a_scriptdir`%`,hide`n,		%A_scriptdir%\Updater.ahk
+	FileAppend, FileDelete 7za.exe`n,											%A_scriptdir%\Updater.ahk
+	FileAppend, FileDelete Update.zip`n,										%A_scriptdir%\Updater.ahk
+	FileAppend, FileMoveDir ReleasePatch`,`%A_Temp`%\7plus\ReleasePatch`, 2`n,	%A_scriptdir%\Updater.ahk
+	FileAppend, if(FileExist("7plus.ahk"))`n,									%A_scriptdir%\Updater.ahk
+	FileAppend, `trun 7plus.ahk`n,												%A_scriptdir%\Updater.ahk
+	FileAppend, else if(FileExist("7plus.exe"))`n,								%A_scriptdir%\Updater.ahk
+	FileAppend, `trun 7plus.exe`n,												%A_scriptdir%\Updater.ahk
+	FileAppend, ExitApp`n,														%A_scriptdir%\Updater.ahk
 }
