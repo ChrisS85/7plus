@@ -19,6 +19,8 @@ Below is a list of placeholders in 7plus. Some actions also define custom placeh
 ||${SelN}||Filepaths of all selected files, separated by spaces||
 ||${SelNNEM}||Filenames+extensions of all selected files, separated by new lines||
 ||${U}||Handle of window under mouse||
+||${MC}||Class of window under mouse||
+||${MNN}||ClassNN of control under mouse||
 ||${MX}||Mouse X coordinate||
 ||${MY}||Mouse Y coordinate||
 ||${MXA}||Mouse X coordinate, relative to active window||
