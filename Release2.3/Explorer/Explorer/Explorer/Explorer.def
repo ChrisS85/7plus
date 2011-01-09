@@ -1,0 +1,6 @@
+LIBRARY Explorer
+DESCRIPTION "Explorer interface functions"
+EXPORTS
+   SetPath @1
+   ExecuteContextMenuCommand @2
+   ShellExecInExplorerProcess @3

@@ -1,0 +1,24 @@
+<BugfixVersion>0</BugfixVersion>
+<Events>
+<Event>
+<Actions>
+<Action>
+<Type>Clipmenu</Type>
+</Action></Actions>
+<Category>Clipboard Manager</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>383</ID>
+<Name>Clipboard Manager</Name>
+<OfficialEvent>384</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>#V</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event></Events>
+<MajorVersion>2</MajorVersion>
+<MinorVersion>1</MinorVersion>
