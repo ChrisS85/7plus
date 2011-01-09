@@ -11,3 +11,5 @@ The update process from one version to the next version is also improved, 7plus 
 There are also some smaller new features and many bug fixes, for a full list of changes please see [Changelog2dot2dot0 here].
 
 You can get the appropriate release in the [http://code.google.com/p/7plus/downloads/list Downloads section].
+
+As always, please feel free to report any bugs, suggestions or feature requests.
