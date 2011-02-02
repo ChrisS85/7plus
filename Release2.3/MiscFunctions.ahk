@@ -130,15 +130,8 @@ MouseHitTest()
 	CoordMode, Mouse, Screen
 	MouseGetPos, MouseX, MouseY, WindowUnderMouseID 
 	WinGetClass, winclass , ahk_id %WindowUnderMouseID%
-	;outputdebug windclass: %winclass%
 	if winclass in BaseBar,D2VControlHost,Shell_TrayWnd,WorkerW,ProgMan  ; make sure we're not doing this on the taskbar
 		return -2
-	;if IsContextMenuActive()
-	;	return -2
-	/*
-	IfWinNotActive, ahk_id %WindowUnderMouseID%
-	WinActivate, ahk_id %WindowUnderMouseID% 
-	*/
 	; WM_NCHITTEST 
 	SendMessage, 0x84,, ( (MouseY&0xFFFF) << 16 )|(MouseX&0xFFFF),, ahk_id %WindowUnderMouseID%
 	return ErrorLevel

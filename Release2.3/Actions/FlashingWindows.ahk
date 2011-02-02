@@ -22,7 +22,6 @@ FlashingWindows(Action)
 {
 	global BlinkingWindows,PreviousWindow
 	CoordMode, Mouse, Screen
-	outputdebug flashingwindows
 	if(Action.Notifications && z:=FindWindow("","",0x16CF0000,0x00000188,"trillian.exe")) ;Trillian isn't needed usually, but if tabs are used, clicking the window is preferred
 	{
 		WinGetPos x,y,w,h,ahk_id %z%
@@ -34,11 +33,12 @@ FlashingWindows(Action)
 		MouseMove %mx%,%my%,0
 		return 1
 	}
-	else if (Action.FlashingWindows && BlinkingWindows.len()>0)
+	else if (Action.FlashingWindows && BlinkingWindows.len()>0 && WinExist("ahk_id " BlinkingWindows[1]))
 	{
-		outputdebug flashingwindows found
 		z:=BlinkingWindows[1]
 		WinActivate ahk_id %z%
+		class := WInGetClass("ahk_id " z)
+		outputdebug flashingwindows found class %class%
 		return 1
 	}
 	else if(Action.Notifications && z:=FindWindow("","OpWindow", 0x96000000, 0x88))

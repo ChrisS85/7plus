@@ -8,8 +8,8 @@ PrepareFolderBand()
 	if(Vista7)
 	{
 		;Give us all rights
-		runwait %A_ScriptDir%\SetACL.exe -on "hklm\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes" -ot Reg -actn setowner -ownr "n:S-1-5-32-544;s:y“ -rec yes,,Hide
-		runwait %A_ScriptDir%\SetACL.exe -on "hklm\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes" -ot Reg -actn ace -ace "n:S-1-5-32-545;p:full;s:y;i:so,sc;m:grant;w:dacl",,Hide
+		RunWait(A_ScriptDir "\SetACL.exe -on ""hklm\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes"" -ot Reg -actn setowner -ownr ""n:S-1-5-32-544;s:y"" -rec yes","","Hide")
+		RunWait(A_ScriptDir "\SetACL.exe -on ""hklm\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes"" -ot Reg -actn ace -ace ""n:S-1-5-32-545;p:full;s:y;i:so,sc;m:grant;w:dacl"" -rec yes","","Hide")
 		; runwait subinacl /subkeyreg HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes /setowner=S-1-5-32-544,,Hide
 		; runwait subinacl /subkeyreg HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes /grant=S-1-5-32-545=F,,Hide
 		AddAllButtons(1,0)
@@ -21,8 +21,8 @@ BackupAndRemoveFolderBandButtons()
 	if(Vista7)
 	{
 		;Give us all rights
-		runwait %A_ScriptDir%\SetACL.exe -on "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell" -ot Reg -actn setowner -ownr "n:S-1-5-32-544;s:y“ -rec yes,,Hide
-		runwait %A_ScriptDir%\SetACL.exe -on "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell" -ot Reg -actn ace -ace "n:S-1-5-32-545;p:full;s:y;i:so,sc;m:grant;w:dacl",,Hide
+		RunWait(A_ScriptDir "\SetACL.exe -on ""SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell"" -ot Reg -actn setowner -ownr ""n:S-1-5-32-544;s:y"" -rec yes","","Hide")
+		RunWait(A_ScriptDir "\SetACL.exe -on ""SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell"" -ot Reg -actn ace -ace ""n:S-1-5-32-545;p:full;s:y;i:so,sc;m:grant;w:dacl""","","Hide")
 		; runwait subinacl /subkeyreg HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell /setowner=S-1-5-32-544,,Hide
 		; runwait subinacl /subkeyreg HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell /grant=S-1-5-32-545=F,,Hide
 		RegRename("HKLM","SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\Windows.Burn","SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\Windows.Burn7pBackup")
@@ -47,8 +47,7 @@ RestoreFolderBand()
 	if(!Vista7)
 		return
 	RemoveAllButtons()
-	cmd := """" A_ScriptDir "\SetACL.exe"" -on ""hklm\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes"" -ot Reg -actn ace -ace ""n:S-1-5-32-545;p:full;s:y;i:so,sc;m:revoke;w:dacl"""
-	run %cmd%,,Hide
+	RunWait(A_ScriptDir "\SetACL.exe -on ""hklm\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes"" -ot Reg -actn ace -ace ""n:S-1-5-32-545;p:full;s:y;i:so,sc;m:revoke;w:dacl""","","Hide")
 	;remove some rights
 	;~ runwait "%A_ScriptDir%\SetACL.exe" -on "hklm\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes" -ot Reg -actn ace -ace "n:S-1-5-32-545;p:full;s:y;i:so,sc;m:revoke;w:dacl"
 	; runwait %A_ScriptDir%\SetACL.exe -on "hklm\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes" -ot Reg -actn ace -ace "n:S-1-5-32-545;p:read;s:y;i:so,sc;m:grant;w:dacl"
@@ -68,7 +67,7 @@ RestoreFolderBandButtons()
 		RegRename("HKLM","SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\Windows.Share7pBackup","SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\Windows.Share")
 		RegRename("HKLM","SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\Windows.SlideShow7pBackup","SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\Windows.SlideShow")
 		;remove some rights
-		runwait %A_ScriptDir%\SetACL.exe -on "hklm\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell" -ot Reg -actn ace -ace "n:S-1-5-32-545;p:full;s:y;i:so,sc;m:revoke;w:dacl",,Hide
+		RunWait(A_ScriptDir "\SetACL.exe -on ""hklm\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell"" -ot Reg -actn ace -ace ""n:S-1-5-32-545;p:full;s:y;i:so,sc;m:revoke;w:dacl""","","Hide")
 		; runwait %A_ScriptDir%\SetACL.exe -on "hklm\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell" -ot Reg -actn ace -ace "n:S-1-5-32-545;p:read;s:y;i:so,sc;m:grant;w:dacl"
 		; runwait subinacl /subkeyreg HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore /revoke=S-1-5-32-545,,Hide
 		; runwait subinacl /subkeyreg HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore /grant=S-1-5-32-545=R,,Hide

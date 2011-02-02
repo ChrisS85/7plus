@@ -429,7 +429,7 @@ FlashWindows()
 ; http://www.howtogeek.com
 
 #if HKAltDrag && IsDraggable()
-!LButton::EWD_StartDrag()
+~!LButton::EWD_StartDrag()
 #if
 
 IsDraggable()
@@ -482,7 +482,8 @@ EWD_WatchMouse()
 	MouseGetPos, EWD_MouseX, EWD_MouseY
 	WinGetPos, EWD_WinX, EWD_WinY,,, ahk_id %EWD_MouseWin%
 	SetWinDelay, -1   ; Makes the below move faster/smoother.
-	WinMove, ahk_id %EWD_MouseWin%,, EWD_WinX + EWD_MouseX - EWD_MouseStartX, EWD_WinY + EWD_MouseY - EWD_MouseStartY
+	if(EWD_MouseX - EWD_OriginalPosX > 10 && EWD_MouseY - EWD_OriginalPosY > 10)
+		WinMove, ahk_id %EWD_MouseWin%,, EWD_WinX + EWD_MouseX - EWD_MouseStartX, EWD_WinY + EWD_MouseY - EWD_MouseStartY
 	EWD_MouseStartX := EWD_MouseX  ; Update for the next timer-call to this subroutine.
 	EWD_MouseStartY := EWD_MouseY
 }
