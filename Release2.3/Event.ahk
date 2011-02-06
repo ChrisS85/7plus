@@ -29,5 +29,8 @@ Event_ApplyPatch(Event, Patch, Level=0)
 {
 	enum := Patch._newEnum()
 	while enum[key, value]
-		Event[key] := value
+	{
+		if(key != "PatchOnly")
+			Event[key] := value
+	}
 }

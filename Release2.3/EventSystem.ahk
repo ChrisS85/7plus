@@ -431,9 +431,7 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 						
 			Event.Actions.append(Action)
 		}
-		
-		
-		
+				
 		if(Event.HasKey("OfficialEvent") && (OldEvent := Events.SubItem("OfficialEvent", Event.OfficialEvent))) ;If an official event already exists, apply this as patch
 		{			
 			if(!XMLEvent.HasKey("Conditions"))
@@ -443,7 +441,7 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 			Event.Remove("PlaceHolders")
 			OldEvent.ApplyPatch(Event) ;No update messages are generated here, those are handled manually
 		}
-		else
+		else if(!Event.PatchOnly)
 		{
 			if(Update)
 				Update.Message := Update.Message "`n- Added Event: " Event.Name
