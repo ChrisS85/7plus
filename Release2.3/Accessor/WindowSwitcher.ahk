@@ -260,8 +260,6 @@ GetWindowIcon(wid, LargeIcons) ; (window id, whether to get large icons)
 		return h_icon
 	Else	; use a generic icon
 		return Accessor.GenericIcons.Application
-		; IL_Add(WindowSwitcher.ImageListID, "shell32.dll" , 3)
-		;ImageList_ReplaceIcon(Accessor.ImageListID, -1, h_icon)
 }
 GetCPA_file_name( p_hw_target ) ; retrives Control Panel applet icon
 {

@@ -226,7 +226,7 @@ SetDialogDirectory(Path)
 	ControlFocus %focussed%,A
 }
 
-IsDialog(window=0)
+IsDialog(window=0,ListViewSelected = False)
 {
 	result:=0
 	if(window)
@@ -253,7 +253,7 @@ IsDialog(window=0)
 						{
 						ControlGet, hwnd, Hwnd , , ToolBarWindow323, %window%
 						if(hwnd)
-							result:=1
+							result:=(!ListViewSelected||IsControlActive("DirectUIHWND2")||IsControlActive("SysTreeView321"))
 						}
 					}
 				}
@@ -276,7 +276,7 @@ IsDialog(window=0)
 						{
 							ControlGet, hwnd, Hwnd , , SysHeader321 , %window%
 							if(hwnd)
-								result:=2
+								result:=(!ListViewSelected||IsControlActive("DirectUIHWND2")||IsControlActive("SysTreeView321")) ? 2 : 0
 						}
 					}
 				}

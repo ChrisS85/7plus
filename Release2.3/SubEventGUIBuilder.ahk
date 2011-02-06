@@ -122,7 +122,6 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 	}
 	SubEventGUI.y := y
 	z := SubEventGUI.y
-	outputdebug post add %type% y%z%
 }
 SubEventGUI_GUISubmit(SubEvent, SubEventGUI)
 {

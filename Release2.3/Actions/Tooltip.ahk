@@ -16,12 +16,13 @@ Action_ToolTip_ReadXML(Action, XMLAction)
 Action_ToolTip_Execute(Action, Event)
 {
 	Text := Event.ExpandPlaceholders(Action.Text)
-	Timeout := Action.Timeout * 1000
+	Timeout := Action.Timeout
 	if(TrayToolTip)
 	{		
 		Title := Event.ExpandPlaceholders(Action.Title)
-		ToolTip(1, Text, Title, "O1 L1 C1 XTrayIcon YTrayIcon")
-		SetTimer, ToolTipClose, -%Timeout%
+		Notify(Title, Text, Timeout, "GC=555555 TC=White MC=White","")
+		; ToolTip(1, Text, Title, "O1 L1 C1 XTrayIcon YTrayIcon")
+		; SetTimer, ToolTipClose, -%Timeout%
 	}
 	else
 	{

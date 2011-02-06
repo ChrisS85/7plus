@@ -170,6 +170,7 @@ GUI_EditSubEvent(se, ia=0, GoToLabel="")
 			SubEventGUI.y := 148
 		SubEventGUI.w := width - 74
 		SubEventGUI.h := height - 168 - 28 
+		SubEventGUI.GUINum := 5
 		SubEvent.GuiShow(SubEventGUI)
 		return
 	}

@@ -298,6 +298,7 @@ GUI_EditEvent(e,GoToLabel="")
 		TriggerGUI.y := 148
 		TriggerGUI.w := width - 74
 		TriggerGUI.h := height - 168 - 28 
+		TriggerGUI.GUINum := 4
 		Gui, Tab, Trigger
 		Event.Trigger.GuiShow(TriggerGUI)
 		return

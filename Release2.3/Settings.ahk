@@ -1118,7 +1118,7 @@ GUI_RemoveEvent()
 		{
 			LV_GetText(id,ListPos,2)			
 			pos := Settings_Events.indexOfSubItem("ID", id)
-			if((!IsPortable && A_IsAdmin) || Settings_Events[pos].Trigger.Type != "ExplorerButton")
+			if((!IsPortable && A_IsAdmin) || (Settings_Events[pos].Trigger.Type != "ExplorerButton" && Settings_Events[pos].Trigger.Type != "ContextMenu"))
 			{
 				Category := Settings_Events[pos].Category
 				Settings_Events.Delete(pos)		
@@ -1134,11 +1134,30 @@ GUI_RemoveEvent()
 		ListPos := min(max(ListPos, 1), count)
 		LV_Modify(ListPos, "Select")
 	}
-	else if(Category)
+	deleted := false	
+	pos := 1
+	Loop % Settings_Events.Categories.len()
 	{
-		Settings_Events.Categories.Delete(Settings_Events.Categories.indexOf(Category))
-		RecreateTreeView()
+		found := false
+		Category := Settings_Events.Categories[pos]
+		Loop % Settings_Events.len()
+		{
+			if(Settings_Events[A_Index].Category = Category)
+			{
+				found := true
+				break
+			}
+		}
+		if(!found)
+		{
+			Settings_Events.Categories.Delete(pos)
+			deleted := true
+		}
+		else
+			pos++
 	}
+	if(deleted)
+		RecreateTreeView()
 }
 GUI_EventsList_Edit:
 GUI_EventsList_Edit()
@@ -1298,22 +1317,19 @@ GUI_SaveEvents()
 	;Disable all events first (without setting enabled to false, so triggers can decide what they want to do themselves)
 	Loop % Events.len()
 		Events[A_Index].Trigger.Disable(Events[A_Index])	
-	
 	;Remove deleted events and refresh the copies to consider recent changes (such as timer state)
 	Loop % Events.len()
 	{
 		if(!Settings_Events.SubItem("ID", Events[A_Index].id)) ;separate destroy routine instead of simple disable is needed for removed events because of hotkey/timer discrepancy
 		{
-			Events.Remove(Events[A_Index])
+			Events.Remove(Events[A_Index],false)
 			continue
 		}
 		Events[A_Index].Trigger.PrepareReplacement(Events[A_Index], Settings_Events.SubItem("ID", Events[A_Index].id))
 	}
 	
-	
 	;Replace the original events with the copies
 	Events := Settings_Events.DeepCopy()
-	 
 	;Update enabled state
 	Loop % Events.len()
 	{
@@ -2177,7 +2193,7 @@ ApplySettings(Close = 0)
 	GuiControlGet, enabled, 1: , OpenFolderInNew
 	if(!enabled)
 		MiddleOpenFolder:=0
-
+	
 	;Store taskbar launch filename
 	GuiControlGet, enabled ,1: , Double click on empty taskbar: Run
 	GuiControlGet, path ,1: , TaskbarLaunchPath

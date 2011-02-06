@@ -646,7 +646,7 @@ Wheel()
 #if
 
 #if HKInvertSelection && WinActive("ahk_group ExplorerGroup") && GetKeyState("CONTROL", "P")
-i UP::InvertSelection(WinExist("A"))
+^i UP::InvertSelection(WinExist("A"))
 #if
 ;Flat View
 #if HKFlattenDirectory && Vista7 && WinActive("ahk_group ExplorerGroup")

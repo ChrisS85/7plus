@@ -180,7 +180,9 @@ SetImage(hwnd, hBitmap)
 {
 	SendMessage, 0x172, 0x0, hBitmap,, ahk_id %hwnd%
 	E := ErrorLevel
+	outputdebug old hbitmap %E%
 	DeleteObject(E)
+	outputdebug E %E%
 	return E
 }
 
@@ -521,7 +523,7 @@ SelectObject(hdc, hgdiobj) ;64
 
 DeleteObject(hObject) ;64
 {
-   return DllCall("DeleteObject", "uint", hObject)
+   return DllCall("DeleteObject", "PTR", hObject)
 }
 
 ;#####################################################################################

@@ -171,14 +171,16 @@ ShellMessage( wParam,lParam, msg)
 		Else ;Right now this is called on every window switch, but it shouldn't hurt much
 			ExplorerDeactivated(lParam)
 		
-		WindowList := Object()
+		if(!WindowList)
+			WindowList := Object()
 		WinGet, hwnds, list,,, Program Manager
 		Loop, %hwnds%
 		{
 			hwnd := hwnds%A_Index%
 			WinGetClass, class, ahk_id %hwnd%
 			WinGetTitle, title, ahk_id %hwnd%
-			WindowList[hwnd] := Object("class",class,"title",title)
+			WinGet, exe, ProcessName, ahk_id %hwnd%
+			WindowList[hwnd] := Object("class", class, "title", title, "Executable", exe)
 		}
 	}
 	;Redraw is fired on Explorer path change
@@ -210,27 +212,27 @@ UpdatePosition:
 UpdatePosition()
 return
 */
-WM_LBUTTONUP(wParam,lParam,msg,hWnd){
-	SetTimer, TooltipClose, -20
-} 
+; WM_LBUTTONUP(wParam,lParam,msg,hWnd){
+	; SetTimer, TooltipClose, -20
+; } 
 
-WM_NOTIFY(wParam, lParam, msg, hWnd){ 
-	WasCritical := A_IsCritical
-	Critical
-	ToolTip("",lParam,"") 
-	if(!WasCritical)
-		Critical, Off
-} 
-ToolTip: 
-link:=ErrorLevel 
-SetTimer, TooltipClose, off
-ToolTip()
-If(TooltipShowSettings && Link) { 
-	ShowSettings()
-	TooltipShowSettings:=false
-}
-Return 
+; WM_NOTIFY(wParam, lParam, msg, hWnd){ 
+	; WasCritical := A_IsCritical
+	; Critical
+	; ToolTip("",lParam,"") 
+	; if(!WasCritical)
+		; Critical, Off
+; } 
+; ToolTip: 
+; link:=ErrorLevel 
+; SetTimer, TooltipClose, off
+; ToolTip()
+; If(TooltipShowSettings && Link) { 
+	; ShowSettings()
+	; TooltipShowSettings:=false
+; }
+; Return 
 
-ToolTipClose: 
-Tooltip()
-return
+; ToolTipClose: 
+; Tooltip()
+; return

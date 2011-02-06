@@ -813,5 +813,6 @@ HRESULT ShellExecInExplorerProcess(LPCTSTR pszFile, LPCTSTR pszArgs, LPCTSTR psz
         }
         psv->Release();
     }
+
     return hr;
 }

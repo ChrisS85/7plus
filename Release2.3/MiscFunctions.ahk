@@ -873,5 +873,5 @@ CouldBeURL(string)
 	return RegexMatch(strTrim(string, " "), "(?:(?:ht|f)tps?://|www\.)?.+\..+") > 0
 }
 WriteAccess( F ) { 
-  Return ((h:=DllCall("_lopen", Str, F, Int, 1, "Ptr")) > 0 ? 1 : 0) (DllCall("_lclose","Ptr",h)+NULL) 
+  Return ((h:=DllCall("_lopen", AStr, F, Int, 1, "Ptr")) > 0 ? 1 : 0) (DllCall("_lclose","Ptr",h)+NULL) 
 }

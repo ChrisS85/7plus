@@ -23,7 +23,6 @@ ComObjError(0)
 if(!A_IsUnicode)
 	Msgbox Not running on Unicode build of Autohotkey_L. Please use a unicode version!
 #include %A_ScriptDir%\Autoexecute.ahk ;include first to avoid issues with autoexecute ending too soon because of labels
-#Include %A_ScriptDir%
 #include %A_ScriptDir%\lib\Array.ahk
 #include %A_ScriptDir%\lib\binreadwrite.ahk
 #include %A_ScriptDir%\lib\Crypt.ahk
@@ -40,13 +39,17 @@ if(!A_IsUnicode)
 #include %A_ScriptDir%\lib\VA.ahk
 #include %A_ScriptDir%\lib\Win.ahk
 #include %A_ScriptDir%\lib\DllCalls.ahk
+#include %A_ScriptDir%\lib\Notify.ahk
+; #include %A_ScriptDir%\Tooltip.ahk
 ; #include %A_ScriptDir%\lib\xpath.ahk
+
 #include %A_ScriptDir%\Accessor\Accessor.ahk
 
 #include %A_ScriptDir%\Autoupdate.ahk
 #include %A_ScriptDir%\EventSystem.ahk
 #include %A_ScriptDir%\EditEventGUI.ahk
 #include %A_ScriptDir%\EditSubEventGUI.ahk
+#include %A_ScriptDir%\WindowFinder.ahk
 #include %A_ScriptDir%\Placeholders.ahk
 #include %A_ScriptDir%\SubEventGUIBuilder.ahk
 #include %A_ScriptDir%\messagehooks.ahk
@@ -68,7 +71,7 @@ if(!A_IsUnicode)
 #include %A_ScriptDir%\Registry.ahk
 #include %A_ScriptDir%\SlideWindows.ahk
 #include %A_ScriptDir%\JoyControl.ahk
-#include %A_ScriptDir%\Tooltip.ahk
+; #include %A_ScriptDir%\Tooltip.ahk
 #include %A_ScriptDir%\ExplorerTabs.ahk
 #include %A_ScriptDir%\CustomHotkeys.ahk
 #include %A_ScriptDir%\HotkeyGUI.ahk

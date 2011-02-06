@@ -26,10 +26,12 @@ IniRead, RunAsAdmin, %IniPath%, Misc, RunAsAdmin , Always/Ask
 ;If program is run without admin privileges, try to run it again as admin, and exit this instance when the user confirms it
 if(!A_IsAdmin && RunAsAdmin = "Always/Ask")
 {
+	Loop %0%
+		params .= " " (InStr(%A_Index%, " ") ? """" %A_Index% """" : %A_Index%)
 	If(A_IsCompiled)
-		uacrep := DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, A_ScriptFullPath, str, "/r", str, A_WorkingDir, int, 1)
+		uacrep := DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, A_ScriptFullPath, str, "/r" params, str, A_WorkingDir, int, 1)
 	else
-		uacrep := DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, A_AhkPath, str, "/r """ A_ScriptFullPath """", str, A_WorkingDir, int, 1)
+		uacrep := DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, A_AhkPath, str, "/r """ A_ScriptFullPath """" params, str, A_WorkingDir, int, 1)
 	If(uacrep = 42) ;UAC Prompt confirmed, application may run as admin
 		ExitApp
 	else
@@ -115,8 +117,8 @@ DllCall( "RegisterShellHookWindow", "Ptr",hAHK )
 ShellHookMsgNum := DllCall( "RegisterWindowMessage", Str,"SHELLHOOK" ) 
 OnMessage( ShellHookMsgNum, "ShellMessage" ) 
 ;Tooltip messages
-OnMessage(0x202,"WM_LBUTTONUP") ;Will make ToolTip Click possible 
-OnMessage(0x4e,"WM_NOTIFY") ;Will make LinkClick and ToolTipClose possible
+; OnMessage(0x202,"WM_LBUTTONUP") ;Will make ToolTip Click possible 
+; OnMessage(0x4e,"WM_NOTIFY") ;Will make LinkClick and ToolTipClose possible
  
 ;Register an event hook to catch move and dialog creation messages
 HookProcAdr := RegisterCallback("HookProc", "F" ) 
@@ -290,8 +292,8 @@ ExitApp
 
 OnExit(Reload=0)
 {
+	global
 	static ShouldReload
-	global ProgramStartupFinished
 	if(ShouldReload) ;If set, code below has already been executed by a previous call to this function
 		return
 	if(ProgramStartupFinished)
@@ -308,7 +310,13 @@ OnExit(Reload=0)
 	if(Reload)
 	{
 		ShouldReload := 1
-		reload
+		Loop %0%
+			params .= " " (InStr(%A_Index%, " ") ? """" %A_Index% """" : %A_Index%)
+		
+		If(A_IsCompiled)
+			DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, A_ScriptFullPath, str, "/r" params, str, A_WorkingDir, int, 1)
+		else
+			DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, A_AhkPath, str, "/r """ A_ScriptFullPath """" params, str, A_WorkingDir, int, 1)
 	}
 	FileRemoveDir, %A_Temp%\7plus, 1
 }
@@ -322,11 +330,10 @@ ShowWizard()
 	MsgBox, 4,,Welcome to 7plus!`nBefore we begin, would you like to see a list of features?	
 	IfMsgBox Yes
 		run http://code.google.com/p/7plus/wiki/Features,,UseErrorlevel
-	MsgBox, 4,,At the beginning, you should configure the settings and activate/deactivate the features to your liking. You can access the settings menu later through the tray icon or by pressing WIN+H. Do you want to open the settings window now?
-	IfMsgBox Yes
-		ShowSettings()
-	Tooltip(1, "That's it for now. Have fun!", "Everything Done!","O1 L1 P99 C1 XTrayIcon YTrayIcon I1")
-	SetTimer, ToolTipClose, -5000	
+	Notify("Open Settings?", "At the beginning you should take some minutes and check out the settings.`nDouble click on the tray icon or click here to open the settings window.", "10", "GC=555555 TC=White MC=White AC=SettingsHandler",24)
+	
+	; Tooltip(1, "That's it for now. Have fun!", "Everything Done!","O1 L1 P99 C1 XTrayIcon YTrayIcon I1")
+	; SetTimer, ToolTipClose, -5000	
 	return
 }
 

@@ -1,13 +1,16 @@
 Condition_IsDialog_Init(Condition)
 {
 	Condition.Category := "Other"
+	Condition.ListViewOnly := True
 }
 Condition_IsDialog_ReadXML(Condition, XMLCondition)
 {
+	if(XMLCondition.HasKey("ListViewOnly"))
+		Condition.ListViewOnly := XMLCondition.ListViewOnly
 }
 Condition_IsDialog_Evaluate(Condition)
 {
-	return IsDialog() > 0
+	return IsDialog(WinExist("A"), Condition.ListViewOnly) > 0
 }
 Condition_IsDialog_DisplayString(Condition)
 {

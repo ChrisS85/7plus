@@ -35,6 +35,8 @@ Action_NewFolder_Execute(Action, Event)
 	;This is done manually, by creating a folder desired name, which is then focussed
 	SetFocusToFileView()
 	path := GetCurrentFolder()
+	if(strEndsWith(path, "\"))
+		path := SubStr(path, 1, StrLen(path) - 1)
 	name := Event.ExpandPlaceholders(Action.Foldername)
 	Testpath := path "\" name
 	i:=1 ;Find free Foldername
@@ -46,8 +48,18 @@ Action_NewFolder_Execute(Action, Event)
 	FileCreateDir, %TestPath% ;Create Folder and then select it and rename it
 	if(!InStr(FileExist(Testpath), "D"))
 	{
-		ToolTip(1, "Could not create a new folder here. Make sure you have the correct permissions!", "Could not create new folder!","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
-		SetTimer, ToolTipClose, -5000
+		SplitPath, TestPath,,,,,Drive
+		FileDelete, %A_Temp%\mkdir.bat
+		FileAppend, %Drive%`nmkdir "%Testpath%", %A_Temp%\mkdir.bat
+		Run, %A_Temp%\mkdir.bat,,Hide
+		FileDelete, %A_Temp%\mkdir.bat
+	}
+	
+	if(!InStr(FileExist(Testpath), "D"))
+	{
+		Notify("Could not create new folder!", "Could not create a new folder here. Make sure you have the correct permissions!", "5", "GC=555555 TC=White MC=White",78)
+		; ToolTip(1, "Could not create a new folder here. Make sure you have the correct permissions!", "Could not create new folder!","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
+		; SetTimer, ToolTipClose, -5000
 		return 0
 	}
 	RefreshExplorer()

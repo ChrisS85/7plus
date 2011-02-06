@@ -202,6 +202,3 @@ XML_Get(XMLObject, path)
 	}
 	return obj
 }
-
-
-#include 7plus.ahk

@@ -50,8 +50,9 @@ Action_NewFile_Execute(Action, Event)
 	outputdebug % "Testpath" Testpath " exist: " FileExist(TestPath)
 	if(!FileExist(TestPath))
 	{
-		ToolTip(1, "Could not create a new file here. Make sure you have the correct permissions!", "Could not create new file!","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
-		SetTimer, ToolTipClose, -5000
+		Notify("Could not create new file!", "Could not create a new file here. Make sure you have the correct permissions!", "5", "GC=555555 TC=White MC=White",78)
+		; ToolTip(1, "Could not create a new file here. Make sure you have the correct permissions!", "Could not create new file!","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
+		; SetTimer, ToolTipClose, -5000
 		return 0
 	}
 	RefreshExplorer()

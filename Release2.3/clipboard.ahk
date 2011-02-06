@@ -102,8 +102,9 @@ ClipboardMenuClicked(index)
 		}
 		else
 		{
-			ToolTip(1, "Error pasting text", "Error pasting text","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
-			SetTimer, ToolTipClose, -10000
+			Notify("Error pasting text", "Error pasting text", "5", "GC=555555 TC=White MC=White",78)
+			; ToolTip(1, "Error pasting text", "Error pasting text","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
+			; SetTimer, ToolTipClose, -10000
 		}
 		Clipboard:=ClipboardBackup
 		Clipwait,1,1

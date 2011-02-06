@@ -135,8 +135,9 @@ Action_Upload_Execute(Action, Event)
 					success := result
 				if(result=0 && !Action.Silent)
 				{
-					ToolTip(1, "Couldn't upload " TargetFolder (TargetFolder ? "/" : "") targets[A_Index] " properly. Make sure you have write rights and the path exists", "Couldn't upload file","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
-					SetTimer, ToolTipClose, -5000
+					Notify("Couldn't upload file", "Couldn't upload " TargetFolder (TargetFolder ? "/" : "") targets[A_Index] " properly. Make sure you have write rights and the path exists", "5", "GC=555555 TC=White MC=White",78)
+					; ToolTip(1, "Couldn't upload " TargetFolder (TargetFolder ? "/" : "") targets[A_Index] " properly. Make sure you have write rights and the path exists", "Couldn't upload file","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
+					; SetTimer, ToolTipClose, -5000
 				}
 				else if(result != 0 && URL && Action.Clipboard)
 					cliptext .= (A_Index = 1 ? "" : "`r`n") URL "/" TargetFolder (TargetFolder ? "/" : "") StringReplace(targets[A_Index], " ", "%20", 1)
@@ -146,8 +147,9 @@ Action_Upload_Execute(Action, Event)
 				clipboard:=cliptext
 			if(!Action.Silent && success)
 			{
-				ToolTip(1, "File uploaded" (URL && Action.Clipboard ? " and links copied to clipboard" : ""), "Transfer finished","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
-				SetTimer, ToolTipClose, -2000
+				Notify("Transfer finished", "File uploaded", "2", "GC=555555 TC=White MC=White",145)
+				; ToolTip(1, "File uploaded" (URL && Action.Clipboard ? " and links copied to clipboard" : ""), "Transfer finished","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
+				; SetTimer, ToolTipClose, -2000
 				SoundBeep
 			}
 			return 1
@@ -156,8 +158,9 @@ Action_Upload_Execute(Action, Event)
 		{
 			if(!Action.Silent)
 			{
-				ToolTip(1, "Couldn't connect to " Hostname ". Correct host/username/password?", "Connection Error","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
-				SetTimer, ToolTipClose, -5000
+				Notify("Connection Error", "Couldn't connect to " Hostname ". Correct host/username/password?", "5", "GC=555555 TC=White MC=White",78)
+				; ToolTip(1, "Couldn't connect to " Hostname ". Correct host/username/password?", "Connection Error","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
+				; SetTimer, ToolTipClose, -5000
 			}
 			return 0
 		}
