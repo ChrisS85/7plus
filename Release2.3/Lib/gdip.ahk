@@ -180,9 +180,7 @@ SetImage(hwnd, hBitmap)
 {
 	SendMessage, 0x172, 0x0, hBitmap,, ahk_id %hwnd%
 	E := ErrorLevel
-	outputdebug old hbitmap %E%
 	DeleteObject(E)
-	outputdebug E %E%
 	return E
 }
 

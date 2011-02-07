@@ -88,6 +88,7 @@ Action_Upload_ReadXML(Action, XMLAction)
 
 Action_Upload_Execute(Action, Event)
 {
+	global 7plus_Blocked
 	SourceFiles := Event.ExpandPlaceholders(Action.SourceFiles)
 	outputdebug % "orig " Action.SourceFiles " now " SourceFiles
 	TargetFolder := Event.ExpandPlaceholders(Action.TargetFolder)
@@ -121,6 +122,11 @@ Action_Upload_Execute(Action, Event)
 	{
 		Action_Upload_GetFTPVariables(Action.FTPProfile, Hostname, Port, User, Password, URL)
 		decrypted:=Decrypt(Password)
+		Suspend, On
+		7plus_Blocked := true
+		; Loop % RegisteredSelectionChangedWindows.len()
+			; COMObjConnect(RegisteredSelectionChangedWindows[A_Index].doc)
+		UpdateInfoPosition()
 		result:=FtpOpen(Hostname, Port, User, decrypted)
 		cliptext=
 		if(result=1)
@@ -147,12 +153,12 @@ Action_Upload_Execute(Action, Event)
 				clipboard:=cliptext
 			if(!Action.Silent && success)
 			{
-				Notify("Transfer finished", "File uploaded", "2", "GC=555555 TC=White MC=White",145)
+				Notify("Transfer finished", "File uploaded", 2, "GC=555555 TC=White MC=White",145)
 				; ToolTip(1, "File uploaded" (URL && Action.Clipboard ? " and links copied to clipboard" : ""), "Transfer finished","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
 				; SetTimer, ToolTipClose, -2000
 				SoundBeep
 			}
-			return 1
+			result := 1
 		}
 		else
 		{
@@ -162,8 +168,13 @@ Action_Upload_Execute(Action, Event)
 				; ToolTip(1, "Couldn't connect to " Hostname ". Correct host/username/password?", "Connection Error","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
 				; SetTimer, ToolTipClose, -5000
 			}
-			return 0
+			result := 0
 		}
+		Suspend, Off
+		7plus_Blocked := false
+		; Loop % RegisteredSelectionChangedWindows.len()
+			; COMObjConnect(RegisteredSelectionChangedWindows[A_Index].doc, "Explorer")
+		return result
 	}
 }
 Action_Upload_DisplayString(Action)

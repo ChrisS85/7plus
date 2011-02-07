@@ -59,6 +59,7 @@ if(!A_IsUnicode)
 #include %A_ScriptDir%\FastFolders.ahk
 #include %A_ScriptDir%\WindowHandling.ahk
 #include %A_ScriptDir%\explorer.ahk
+#include %A_ScriptDir%\ImageConverter.ahk
 #include %A_ScriptDir%\clipboard.ahk
 ; #include %A_ScriptDir%\FTPUpload.ahk 
 #include %A_ScriptDir%\Taskbar.ahk

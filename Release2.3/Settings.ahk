@@ -2218,7 +2218,8 @@ ApplySettings(Close = 0)
 		DoubleClickDesktop:=0
 	else
 		GuiControlGet, DoubleClickDesktop, 1:, DoubleClickDesktopPath
-	
+	if(!(ImageQuality > 0 && ImageQuality <= 100))
+		ImageQuality := 95
 	if(!IsPortable)
 	{
 		;Store Autorun setting

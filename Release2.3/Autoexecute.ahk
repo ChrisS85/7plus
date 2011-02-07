@@ -170,6 +170,8 @@ IniRead, WordDelete, %IniPath%, Misc, WordDelete, 1
 IniRead, FullscreenExclude, %IniPath%, Misc, FullscreenExclude,VLC DirectX,OpWindow,CabinetWClass
 IniRead, FullscreenInclude, %IniPath%, Misc, FullscreenInclude,Project64
 IniRead, ImageQuality, %IniPath%, Misc, ImageQuality,100
+if(!(ImageQuality > 0 && ImageQuality <= 100))
+	ImageQuality := 95
 IniRead, ImageExtension, %IniPath%, Misc, ImageExtension,png
 IniRead, PreviousExplorerPath, %IniPath%, Misc, PreviousExplorerPath,C:
 IniRead, ExplorerPath, %IniPath%, Misc, ExplorerPath,C:

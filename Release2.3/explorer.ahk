@@ -707,7 +707,10 @@ DestroyInfoGui()
 }
 ShouldShowInfo()
 {
+	global 7plus_Blocked
 	if(!WinActive("ahk_group ExplorerGroup"))
+		return false
+	if(7plus_Blocked)
 		return false
 	ControlGet, visible, visible, , msctls_statusbar321, A ;Check if status bar is visible
 	if(!visible)

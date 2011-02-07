@@ -46,6 +46,7 @@
 #include %A_ScriptDir%\Actions\FlashingWindows.ahk
 #include %A_ScriptDir%\Actions\FocusControl.ahk
 #include %A_ScriptDir%\Actions\FTPUpload.ahk
+#include %A_ScriptDir%\Actions\ImageConverter.ahk
 #include %A_ScriptDir%\Actions\Input.ahk
 #include %A_ScriptDir%\Actions\Message.ahk
 #include %A_ScriptDir%\Actions\MouseClick.ahk
@@ -177,7 +178,7 @@ EventSystem_CreateBaseObjects()
 	local tmpobject
 	EventSystem_Triggers := "ContextMenu,DoubleClickDesktop,DoubleClickTaskbar,ExplorerButton,ExplorerDoubleClickSpace,ExplorerPathChanged,Hotkey,None,OnMessage,Timer,Trigger,WindowActivated, WindowClosed, WindowCreated,WindowStateChange,7plusStart"
 	EventSystem_Conditions := "MouseOver,If,IsContextMenuActive,IsDialog,IsFullScreen,KeyIsDown,IsRenaming,WindowActive,WindowExists"
-	EventSystem_Actions := "Accessor,AutoUpdate,Clipboard,Clipmenu,ControlEvent,ControlTimer,Copy,Delete,Exit7plus,FastFoldersClear,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FilterList,FlashingWindows,FocusControl,SetWindowTitle, Input,Message,Move,MouseClick,NewFile,NewFolder,PlaySound,Restart7plus,RestoreSelection,Run,RunOrActivate,Screenshot,SelectFiles,SendKeys,SendMessage,SetDirectory,ShowSettings,Shutdown,Tooltip,Upload,ViewMode,Volume,Wait,WindowActivate,WindowClose,WindowHide,WindowMove,WindowResize,WindowSendToBottom,WindowShow,WindowState,Write"
+	EventSystem_Actions := "Accessor,AutoUpdate,Clipboard,Clipmenu,ControlEvent,ControlTimer,Copy,Delete,Exit7plus,FastFoldersClear,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FilterList,FlashingWindows,FocusControl,ImageConverter,Input,Message,Move,MouseClick,NewFile,NewFolder,PlaySound,Restart7plus,RestoreSelection,Run,RunOrActivate,Screenshot,SelectFiles,SetWindowTitle,SendKeys,SendMessage,SetDirectory,ShowSettings,Shutdown,Tooltip,Upload,ViewMode,Volume,Wait,WindowActivate,WindowClose,WindowHide,WindowMove,WindowResize,WindowSendToBottom,WindowShow,WindowState,Write"
 	Trigger_Categories := object("Explorer", Array(), "Hotkeys", Array(), "Other", Array(), "System", Array(), "Window", Array(), "7plus", Array())
 	Condition_Categories := object("Explorer", Array(), "Mouse", Array(), "Other", Array(), "Window", Array())
 	Action_Categories := object("Explorer", Array(), "FastFolders", Array(), "File", Array(), "Window", Array(), "Input", Array(), "System", Array(), "7plus", Array(), "Other", Array())
@@ -431,7 +432,7 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 						
 			Event.Actions.append(Action)
 		}
-				
+		
 		if(Event.HasKey("OfficialEvent") && (OldEvent := Events.SubItem("OfficialEvent", Event.OfficialEvent))) ;If an official event already exists, apply this as patch
 		{			
 			if(!XMLEvent.HasKey("Conditions"))
