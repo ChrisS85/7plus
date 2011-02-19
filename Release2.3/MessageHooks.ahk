@@ -97,6 +97,17 @@ ShellMessage( wParam,lParam, msg)
 		; outputdebug(Trigger.Type " triggered! class:" class " hwnd: " lParam)
 		Trigger.Window := lParam
 		OnTrigger(Trigger)
+		if(!WindowList)
+			WindowList := Object()
+		WinGet, hwnds, list,,, Program Manager
+		Loop, %hwnds%
+		{
+			hwnd := hwnds%A_Index%
+			WinGetClass, class, ahk_id %hwnd%
+			WinGetTitle, title, ahk_id %hwnd%
+			; WinGet, exe, ProcessName, ahk_id %hwnd%
+			WindowList[hwnd] := Object("class", class, "title", title, "Executable", exe)
+		}
 	}
 	; Execute a command based on wParam and lParam 
 	
@@ -171,17 +182,6 @@ ShellMessage( wParam,lParam, msg)
 		Else ;Right now this is called on every window switch, but it shouldn't hurt much
 			ExplorerDeactivated(lParam)
 		
-		if(!WindowList)
-			WindowList := Object()
-		WinGet, hwnds, list,,, Program Manager
-		Loop, %hwnds%
-		{
-			hwnd := hwnds%A_Index%
-			WinGetClass, class, ahk_id %hwnd%
-			WinGetTitle, title, ahk_id %hwnd%
-			WinGet, exe, ProcessName, ahk_id %hwnd%
-			WindowList[hwnd] := Object("class", class, "title", title, "Executable", exe)
-		}
 	}
 	;Redraw is fired on Explorer path change
 	else if(wParam=6)

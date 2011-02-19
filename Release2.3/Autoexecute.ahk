@@ -329,6 +329,7 @@ return
 
 ShowWizard()
 {
+	GoSub RegisterShellExtension
 	MsgBox, 4,,Welcome to 7plus!`nBefore we begin, would you like to see a list of features?	
 	IfMsgBox Yes
 		run http://code.google.com/p/7plus/wiki/Features,,UseErrorlevel

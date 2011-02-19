@@ -51,11 +51,11 @@ AutoUpdate()
 PostUpdate()
 {
 	global MajorVersion,MinorVersion,BugfixVersion, ConfigPath, IsPortable, Events
-	if(FileExist(A_ScriptDir "\Updater.exe")) ;TODO:Change here and below for 2.3.0 to A_TEMP
+	if(FileExist(A_TEMP "\Updater.exe")) ;TODO:Change here and below for 2.3.0 to A_TEMP
 	{
-		IniRead, tmpMajorVersion, %A_ScriptDir%\Version.ini,Version,MajorVersion
-		IniRead, tmpMinorVersion, %A_ScriptDir%\Version.ini,Version,MinorVersion
-		IniRead, tmpBugfixVersion, %A_ScriptDir%\Version.ini,Version,BugfixVersion
+		IniRead, tmpMajorVersion, %A_TEMP%\Version.ini,Version,MajorVersion
+		IniRead, tmpMinorVersion, %A_TEMP%\Version.ini,Version,MinorVersion
+		IniRead, tmpBugfixVersion, %A_TEMP%\Version.ini,Version,BugfixVersion
 		if(tmpMajorVersion=MajorVersion && tmpMinorVersion = MinorVersion && tmpBugfixVersion = BugfixVersion)
 		{
 			;Remove 'Always run as admin' compatibility flag from registry from previous version (it enforces an unneeded UAC prompt when clicking explorer buttons)
@@ -70,6 +70,11 @@ PostUpdate()
 				else
 					RegDelete, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_AhkPath%
 			}
+			;Register shell extension
+			if(MajorVersion "." MinorVersion "." BugfixVersion = "2.3.0")
+			{
+				RegisterShellExtension(1)
+			}
 			if(FileExist(A_Temp "\7plus\ReleasePatch\" MajorVersion "." MinorVersion "." BugfixVersion ".0.xml")) ;apply release patch, without showing messages
 			{
 				ReadEventsFile(Events, A_Temp "\7plus\ReleasePatch\" MajorVersion "." MinorVersion "." BugfixVersion ".0.xml")
@@ -83,9 +88,9 @@ PostUpdate()
 					run %A_ScriptDir%\Changelog.txt,, UseErrorlevel
 			}
 		}		
-		FileDelete %A_ScriptDir%\Updater.exe
+		FileDelete %A_TEMP%\Updater.exe
 	}
-	FileDelete %A_ScriptDir%\Version.ini
+	FileDelete %A_TEMP%\Version.ini
 }
 
 AutoUpdate_CheckPatches()
