@@ -1,5 +1,7 @@
 = 7plus Version 2.3.0 Changelog =
 
+7plus is now on Twitter. Follow on http://twitter.com/7_plus !
+
 New Functions:
  * Context menu support on files and folders. This is implemented through a shell extension
  * Window finder tool for easily selecting window titles/classes/executables in event config
