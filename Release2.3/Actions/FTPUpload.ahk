@@ -1,3 +1,4 @@
+#include %A_ScriptDir%\Lib\FTP.ahk
 Action_Upload_Init(Action)
 {
 	global Settings_Events
@@ -88,9 +89,8 @@ Action_Upload_ReadXML(Action, XMLAction)
 
 Action_Upload_Execute(Action, Event)
 {
-	global 7plus_Blocked
+	global FTP
 	SourceFiles := Event.ExpandPlaceholders(Action.SourceFiles)
-	outputdebug % "orig " Action.SourceFiles " now " SourceFiles
 	TargetFolder := Event.ExpandPlaceholders(Action.TargetFolder)
 	TargetFile := Event.ExpandPlaceholders(Action.TargetFile)
 	files := ToArray(SourceFiles)
@@ -122,60 +122,72 @@ Action_Upload_Execute(Action, Event)
 	{
 		Action_Upload_GetFTPVariables(Action.FTPProfile, Hostname, Port, User, Password, URL)
 		decrypted:=Decrypt(Password)
-		Suspend, On
-		7plus_Blocked := true
-		; Loop % RegisteredSelectionChangedWindows.len()
-			; COMObjConnect(RegisteredSelectionChangedWindows[A_Index].doc)
-		UpdateInfoPosition()
-		result:=FtpOpen(Hostname, Port, User, decrypted)
 		cliptext=
-		if(result=1)
-		{
-			FtpCreateDirectory(TargetFolder)
-			success := 0
-			Loop % files.len()
-			{
-				FullPath := files[A_Index]
-				result:=FtpPutFile(FullPath, TargetFolder (TargetFolder ? "/" : "") targets[A_Index]) 
-				if(!success && result)
-					success := result
-				if(result=0 && !Action.Silent)
-				{
-					Notify("Couldn't upload file", "Couldn't upload " TargetFolder (TargetFolder ? "/" : "") targets[A_Index] " properly. Make sure you have write rights and the path exists", "5", "GC=555555 TC=White MC=White",78)
-					; ToolTip(1, "Couldn't upload " TargetFolder (TargetFolder ? "/" : "") targets[A_Index] " properly. Make sure you have write rights and the path exists", "Couldn't upload file","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
-					; SetTimer, ToolTipClose, -5000
-				}
-				else if(result != 0 && URL && Action.Clipboard)
-					cliptext .= (A_Index = 1 ? "" : "`r`n") URL "/" TargetFolder (TargetFolder ? "/" : "") StringReplace(targets[A_Index], " ", "%20", 1)
-			}
-			FtpClose()
-			if(URL && Action.Clipboard && cliptext)
-				clipboard:=cliptext
-			if(!Action.Silent && success)
-			{
-				Notify("Transfer finished", "File uploaded", 2, "GC=555555 TC=White MC=White",145)
-				; ToolTip(1, "File uploaded" (URL && Action.Clipboard ? " and links copied to clipboard" : ""), "Transfer finished","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
-				; SetTimer, ToolTipClose, -2000
-				SoundBeep
-			}
-			result := 1
+		; connect to FTP server 
+		FTP := FTP_Init()
+		FTP.Port := Port
+		FTP.Hostname := Hostname
+		if !FTP.Open(Hostname, User, decrypted) 
+		{ 
+			if(!Action.Silent)
+				Notify("Connection Error", "Couldn't connect to " Hostname ". Correct host/username/password?", "5", "GC=555555 TC=White MC=White",78)
+			result := 0
 		}
 		else
 		{
-			if(!Action.Silent)
+			; create a new directory 'testing' 
+			if(TargetFolder != "" && !ftp.CreateDirectory(TargetFolder))
 			{
-				Notify("Connection Error", "Couldn't connect to " Hostname ". Correct host/username/password?", "5", "GC=555555 TC=White MC=White",78)
-				; ToolTip(1, "Couldn't connect to " Hostname ". Correct host/username/password?", "Connection Error","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
-				; SetTimer, ToolTipClose, -5000
+				if(!Action.Silent)
+					Notify("FTP Error", "Couldn't create target directory. Check permissions!", "5", "GC=555555 TC=White MC=White",78)
+				result := 0
 			}
-			result := 0
+			else
+			{
+				success := 0
+				FTP.NumFiles := files.len()
+				Loop % files.len()
+				{
+					FullPath := files[A_Index]
+					result := FTP.InternetWriteFile(FullPath, TargetFolder (TargetFolder ? "/" : "") targets[A_Index], "Action_Upload_Progress")
+					if(!success && result)
+						success := result
+					if(result=0 && !Action.Silent)
+						Notify("Couldn't upload file", "Couldn't upload " TargetFolder (TargetFolder ? "/" : "") targets[A_Index] " properly. Make sure you have write rights and the path exists", "5", "GC=555555 TC=White MC=White",78)
+					else if(result != 0 && URL && Action.Clipboard)
+						cliptext .= (A_Index = 1 ? "" : "`r`n") URL "/" TargetFolder (TargetFolder ? "/" : "") StringReplace(targets[A_Index], " ", "%20", 1)
+				}
+				FTP.Close()
+				if(URL && Action.Clipboard && cliptext)
+					clipboard:=cliptext
+				if(!Action.Silent && success)
+				{
+					Notify("","",0, "Wait",FTP.NotifyID)
+					Notify("Transfer finished", "File uploaded", 2, "GC=555555 TC=White MC=White",145)
+					SoundBeep
+				}
+				result := 1
+			}
 		}
-		Suspend, Off
-		7plus_Blocked := false
 		; Loop % RegisteredSelectionChangedWindows.len()
 			; COMObjConnect(RegisteredSelectionChangedWindows[A_Index].doc, "Explorer")
 		return result
 	}
+}
+Action_Upload_Progress()
+{
+	global FTP
+	my := FTP.File
+	done := my.BytesTransfered
+	total := my.BytesTotal
+	if !FTP.init
+	{
+		FTP.NotifyID := Notify("Uploading " FTP.NumFiles " file" (FTP.NumFiles = 1 ? "":"s") " to " FTP.Hostname,my.RemoteName " - " FormatFileSize(done) " / " FormatFileSize(total),"","PG=100 GC=555555 TC=White MC=White",136)
+		FTP.init := 1
+		return 1
+	}
+	Notify("","",done/total*100, "Progress",FTP.NotifyID)
+	Notify("","",my.RemoteName " - " FormatFileSize(done) " / " FormatFileSize(total), "Text",FTP.NotifyID)
 }
 Action_Upload_DisplayString(Action)
 {

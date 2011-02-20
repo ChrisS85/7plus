@@ -87,7 +87,7 @@ return
 
 ClipboardMenuClicked(index)
 {
-	global ClipboardList,MuteClipboardList
+	global ClipboardList,MuteClipboardList, Events, EventSchedule
 	if(ClipboardList[index])
 	{
 		ClipboardBackup:=ClipboardAll
@@ -97,7 +97,18 @@ ClipboardMenuClicked(index)
 		if(!Errorlevel)
 		{
 			Sleep 100 ;Some extra sleep to increase reliability
-			Send ^v
+			if(WinActive("ahk_class ConsoleWindowClass"))
+			{
+				CoordMode, Mouse, Screen
+				MouseGetPos, mx,my
+				CoordMode, Mouse, Relative
+				Click Right 40, 40
+				CoordMode, Mouse, Screen
+				MouseMove, %mx%, %my%
+				Send {Down 3}{Enter}
+			}
+			else	
+				Send ^v
 			Sleep 20
 		}
 		else

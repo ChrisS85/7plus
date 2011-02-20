@@ -406,14 +406,26 @@ InvertSelection(hWnd)
 {
 	If (hWnd||(hWnd:=WinActive("ahk_class CabinetWClass"))||(hWnd:=WinActive("ahk_class ExploreWClass")))
 	{
-		for Item in ComObjCreate("Shell.Application").Windows
-		{
-			if (Item.hwnd = hWnd)
-			{
-				doc:=Item.Document
-				doc.Select(0x2)
-			}
-		}
+		;Calling the menu item is more reliable than doing it through COM because right now only real files are supported
+		PostMessage,0x112,0xf100,0,,A
+		SendInput {Right}{Down}{Up}{Enter}
+		return
+		selected:="`n" GetSelectedFiles(0) "`n"
+		path:=GetCurrentFolder()
+		Loop, %path%\* , 1
+			if(!InStr(selected,"`n" A_LoopFileName "`n"))
+				NewSelection.= "`n" A_LoopFileName
+		NewSelection:=strTrimLeft(NewSelection,"`n")
+		SelectFiles(NewSelection,0,0,0,0)
+		SelectFiles(selected,0,1,0,0)
+		; for Item in ComObjCreate("Shell.Application").Windows
+		; {
+			; if (Item.hwnd = hWnd)
+			; {
+				; doc:=Item.Document
+				; doc.Select(0x2)
+			; }
+		; }
 	}
 }
 SelectFiles(Select,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)

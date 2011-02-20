@@ -16,6 +16,7 @@ IfMsgBox Yes
 		FileRemoveDir, %A_AppData%\7plus, 1
 		RegDelete, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus
 		RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick, 0
+		RegDelete, HKCU, Software\7plus
 		RestoreFolderBandButtons()
 		RestorePlacesBar()
 		RestoreFolderBand()

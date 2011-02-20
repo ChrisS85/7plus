@@ -41,9 +41,15 @@ CreateUpdate(Platform, Version)
 	FileDelete Updater.exe
 	FileDelete Update.zip
 	if(Platform = "X86")
+	{
 		FileCopy, %A_ProgramFiles%\Autohotkey\Compiler\AutoHotkeySC_UNICODE_32.bin, %A_ProgramFiles%\Autohotkey\Compiler\AutoHotkeySC.bin, 1
+		FileCopy, %A_ScriptDir%\ShellExtension\Release\ShellExtension.dll, %A_TEMP%\7plusUpdateCreator, 1
+	}
 	else
+	{
 		FileCopy, %A_ProgramFiles%\Autohotkey\Compiler\AutoHotkeySC_UNICODE_64.bin, %A_ProgramFiles%\Autohotkey\Compiler\AutoHotkeySC.bin, 1
+		FileCopy, %A_ScriptDir%\ShellExtension\x64\Release\ShellExtension.dll, %A_TEMP%\7plusUpdateCreator, 1
+	}
 	if(Version = "Binary")
 	{
 		runwait %A_ProgramFiles%\Autohotkey\Compiler\Compile_AHK.exe /nogui "%A_ScriptDir%\7plus.ahk"

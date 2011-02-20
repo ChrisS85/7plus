@@ -336,7 +336,6 @@ RegisterShellExtension(Silent=1)
 			MsgBox Shell extension successfully installed. Context menu entries defined in 7plus should now be visible.
 		else ;Always show error
 			MsgBox Unable to install the context menu shell extension. Please grant Admin permissions!
-		}
 	}
 	else if(!Silent)
 		MsgBox Context menu shell extension can only be used in non-portable mode for now.

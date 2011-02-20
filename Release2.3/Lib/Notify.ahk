@@ -50,10 +50,13 @@ Notify(Title="!!!",Message="",Duration=30,Options="",Image="")
  static IW := 32       ;  Image Width 
  static IH := 32       ;  Image Height 
  static IN := 0        ;  Image Icon Number (from Image) 
- static AX := 0        ; Action X Close Button (maybe add yes/no ok/cancel, etc...) 
+ static AX := 0        ; Action X Close Button (maybe add yes/no ok/cancel, etc...)
+ static PW := 350	   ; Progress bar width
+ static PC := "Default" ;Progress bar color
+ static PB := "Default" ;Progress bar background color
  local AC, AT          ;Actions Clicked/Timeout 
  local _Notify_Action, ImageOptions, GY, OtherY 
-
+ local PG
 _Notify_: 
  local NO := 0         ;NO is Notify Option [NO=Reset] 
  If (Options) 
@@ -68,12 +71,16 @@ _Notify_:
     Options := "GF=50 GL=74 GC=FFFFAA GR=9 GT=Off " 
      . "TS=8 TW=625 TC=Black TF=Arial MS=8 MW=550 MC=Black MF=Arial " 
      . "BC=Black BW=2 BR=9 BT=105 BF=150 SC=300 SI=250 ST=100 " 
-     . "IW=32 IH=32 IN=0" 
+     . "IW=32 IH=32 IN=0 PG=0 PW=350 PC=cDefault PB=BackgroundDefault" 
     Goto, _Notify_ 
    } 
   } 
   Else If Options = Wait 
    Goto, _Notify_Wait_ 
+  Else If Options = Progress
+   Goto, _Update_Progress_
+  Else If Options = Text
+   Goto, _Update_Text_
  } 
 
 
@@ -108,11 +115,13 @@ _Notify_:
   Else 
    Gui, %GN%:Add, Picture, w%IW% h%IH% Icon%Image%, c:\windows\system32\shell32.dll 
   ImageOptions = x+10 
- } 
+ }
  If Title <> 
   Gui, %GN%:Add, Text, % ImageOptions, % Title 
  Gui, %GN%:Font, w%MW% s%MS% c%MC%, %MF% 
- If ((Title) && (Message)) 
+ If PG > 0
+  Gui, %GN%:Add, Progress, Range0-%PG% w%PW% c%PC% Background%PB%
+ If ((Title) && (Message) && !PG) 
   Gui, %GN%:Margin, , -5 
  If Message <> 
   Gui, %GN%:Add, Text,, % Message 
@@ -310,4 +319,37 @@ _Notify_Wait_:
   } 
  } 
 Return 
+
+;========================================================================== 
+;================================================ Updates the progress bar:
+_Update_Progress_:
+ If (Image) 
+ { 
+  If Duration is Number
+  {
+   Gui %Image%:+LastFound 
+   If WinExist() 
+    GuiControl, %Image%:,msctls_progress321,%Duration%
+  }
+ } 
+Return
+;========================================================================== 
+;=================================== Updates the text (or title if no text):
+_Update_Text_:
+ If (Image) 
+ { 
+  If Duration
+  {
+   Gui %Image%:+LastFound 
+   If WinExist() 
+   {
+    Gui %Image%:Add, Text, hwndTextHwnd, %Duration%
+	ControlGetPos ,,, Width, Height, , ahk_id %TextHwnd%
+	WinKill ahk_id %TextHwnd%
+    GuiControl, %Image%:,static3,%Duration%
+	GuiControl, %Image%:Move,static3,W%Width%
+   }
+  }
+ } 
+Return
 }

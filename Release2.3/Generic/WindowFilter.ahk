@@ -94,7 +94,7 @@ WindowFilter_Get(WindowFilter)
 		}
 		if(WindowFilter.WindowFilterTitle)
 		{
-			WindowFilterTitleResult := WinExist(WindowFilter.WindowFilterClass)
+			WindowFilterTitleResult := WinExist(WindowFilter.WindowFilterTitle)
 			if(WindowFilterResult > 0 && WindowFilterResult != WindowFilterTitleResult) ;Different windows, or one didn't match
 				WindowFilterResult := 0
 		}
@@ -158,6 +158,7 @@ WindowFilter_DisplayString(WindowFilter)
 		if(WindowFilter.WindowFilterTitle)
 			string .= " Title " WindowFilter.WindowFilterTitle 
 	}
+	return string
 }
 
 WindowFilter_GuiShow(WindowFilter, WindowFilterGUI,GoToLabel="")

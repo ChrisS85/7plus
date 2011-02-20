@@ -73,7 +73,7 @@ UserInputBox(Action, Title, Text, Cancel)
 	WasCritical := A_IsCritical
 	Critical, Off
 	GuiNum:=GetFreeGUINum(10)
-
+	StringReplace, Text, Text, ``n, `n
 	Gui,%GuiNum%:Destroy 
 	Gui,%GuiNum%:Add,Text,y10,%Text% 
 
