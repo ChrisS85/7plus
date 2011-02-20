@@ -1,0 +1,30 @@
+= 7plus Version 2.3.0 Changelog =
+
+New Functions:
+ * Context menu support on files and folders. This is implemented through a shell extension
+ * Window finder tool for easily selecting window titles/classes/executables in event config
+ * Batch Image converter for converting and resizing lots of images at once (through explorer context menu)
+ * MD5 Checksum window for generating MD5 checksums (through explorer context menu)
+ * Progress notification window for FTP upload, and uploading doesn't make the system unresponsive anymore
+ * Volume change notification window for displaying current volume and mute status
+ * "Run with parameters..." context menu option for executable files
+ * "Toggle hidden files" context menu option for directory backgrounds
+ * "Upload" context menu option for files
+
+Bugfixes:
+  Fixed Registry permissions which stopped FastFolders from showing up in explorer bar
+ * Removed unnecessary dependancy on Visual C++ Runtime 2010
+ * "Proper" 64 bit support. 2.2.0 was quite buggy in this regard...
+   If you encountered a bug and you were using the x64 version, it is probably fixed
+ * Fixed Win+C not working on desktop
+ * Fixed Clipboard manager not working in cmd
+ * Fixed ALT+Drag preventing Alt+Click
+ * Fixed Invert Selection
+ * Fixed "Create Folder" not working on network drives
+ * Fixed portable mode startup error messsage and reload issue
+ * Fixed FastFolders numpad keys triggering directory change in file dialog boxes with the filename box selected
+
+Changes:
+ * All tooltips and some message boxes have been replaced by nicer looking notification windows
+
+If you like this program and want to support its development, please consider donating!
