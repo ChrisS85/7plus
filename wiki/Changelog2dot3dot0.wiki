@@ -12,10 +12,9 @@ New Functions:
  * "Upload" context menu option for files
 
 Bugfixes:
-  Fixed Registry permissions which stopped FastFolders from showing up in explorer bar
+ * Fixed Registry permissions which stopped FastFolders from showing up in explorer bar
  * Removed unnecessary dependancy on Visual C++ Runtime 2010
- * "Proper" 64 bit support. 2.2.0 was quite buggy in this regard...
-   If you encountered a bug and you were using the x64 version, it is probably fixed
+ * "Proper" 64 bit support. 2.2.0 was quite buggy in this regard...If you encountered a bug and you were using the x64 version, it is probably fixed
  * Fixed Win+C not working on desktop
  * Fixed Clipboard manager not working in cmd
  * Fixed ALT+Drag preventing Alt+Click
