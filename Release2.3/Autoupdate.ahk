@@ -58,23 +58,7 @@ PostUpdate()
 		IniRead, tmpBugfixVersion, %A_TEMP%\Version.ini,Version,BugfixVersion
 		if(tmpMajorVersion=MajorVersion && tmpMinorVersion = MinorVersion && tmpBugfixVersion = BugfixVersion)
 		{
-			;Remove 'Always run as admin' compatibility flag from registry from previous version (it enforces an unneeded UAC prompt when clicking explorer buttons)
-			if(A_IsCompiled)
-				RegRead, temp, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_ScriptFullPath%
-			else
-				RegRead, temp, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_AhkPath%
-			if(temp)
-			{
-				if(A_IsCompiled)
-					RegDelete, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_ScriptFullPath%
-				else
-					RegDelete, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_AhkPath%
-			}
-			;Register shell extension
-			if(MajorVersion "." MinorVersion "." BugfixVersion = "2.3.0")
-			{
-				RegisterShellExtension(1)
-			}
+			ApplyUpdateFixes()
 			if(FileExist(A_Temp "\7plus\ReleasePatch\" MajorVersion "." MinorVersion "." BugfixVersion ".0.xml")) ;apply release patch, without showing messages
 			{
 				ReadEventsFile(Events, A_Temp "\7plus\ReleasePatch\" MajorVersion "." MinorVersion "." BugfixVersion ".0.xml")
@@ -92,7 +76,22 @@ PostUpdate()
 	}
 	FileDelete %A_TEMP%\Version.ini
 }
-
+ApplyUpdateFixes()
+{
+	global MajorVersion, MinorVersion, BugfixVersion, Vista7
+	if(MajorVersion "." MinorVersion "." BugfixVersion = "2.3.0")
+	{
+		;Register shell extension
+		RegisterShellExtension(1)
+		;Switch to new autorun method
+		RegRead, key, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus
+		if(Vista7 && key != "")
+		{
+			DisableAutorun()
+			EnableAutorun()
+		}				
+	}
+}
 AutoUpdate_CheckPatches()
 {
 	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, ConfigPath, Events

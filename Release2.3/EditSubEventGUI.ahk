@@ -10,7 +10,7 @@ GUI_EditSubEvent(se, ia=0, GoToLabel="")
 		SubEventGUI := ""
 		Gui, 4:+Disabled
 		Gui, 5:Default
-		Gui, +LabelEditSubEvent +Owner1 +ToolWindow
+		Gui, +LabelEditSubEvent +Owner4 +ToolWindow
 		width := 500
 		height := 500
 		x := Width - 184

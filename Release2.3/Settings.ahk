@@ -772,7 +772,6 @@ Settings_SetupWindows() {
 }
 Settings_SetupMisc() {
 	global
-	local temp, Autorun
 	GuiControl, 1:, ImageQuality, %ImageQuality%
 	GuiControl, 1:, ImageExtension, %ImageExtension%
 	GuiControl, 1:, FullscreenInclude, %FullscreenInclude%
@@ -783,11 +782,7 @@ Settings_SetupMisc() {
 	GuiControl, 1:,AutoUpdate,% AutoUpdate = 1
 	;Figure out if Autorun is enabled
 	if(!IsPortable)
-	{
-		RegRead, Autorun, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus
-		temp:=Autorun != ""
-		GuiControl, 1:, Autorun,% Autorun != ""
-	}
+		GuiControl, 1:, Autorun,% IsAutorunEnabled()
 	GuiControl, 1:Choose, RunAsAdmin, %RunAsAdmin%
 }
 Settings_SetupAbout() {
@@ -806,9 +801,9 @@ AddTab(IconNumber, TabName, TabControl) {
 SettingsHandler:
 ShowSettings()
 return
-ShowSettings() {
+ShowSettings(ShowPane="") {
 	global
-	local x,y,yIt,x1,x2,TabCount
+	local x,y,yIt,x1,x2,TabCount,id,text
 	Critical, Off
 	if(!SettingsActive)
 	{
@@ -852,20 +847,6 @@ ShowSettings() {
 				TV_Add(A_LoopField)
 			
 			Gui, 1:Add, GroupBox, x176 y14 w580 h420 vGGroupBox , Events
-			/*
-			Gui, 1:Add, Treeview, x0 y0 w120 h540 vTree gTree -Lines -Buttons -HScroll
-			
-			TV_Explorer:=TV_Add("Explorer","","Expand")
-			TV_ExplorerHotkeys:=TV_Add("Hotkeys",TV_Explorer,"Select")
-			TV_ExplorerBehavior:=TV_Add("Behavior",TV_Explorer)
-			TV_ExplorerFastFolders:=TV_Add("Fast Folders",TV_Explorer)
-			TV_WindowHandling:=TV_Add("Window handling","","Expand")
-			TV_WindowHandling1:=TV_Add("Window handling 1",TV_WindowHandling)
-			TV_WindowHandling1:=TV_Add("Window handling 2",TV_WindowHandling)
-			TV_FTP:=TV_Add("FTP","","Expand")
-			TV_Misc:=TV_Add("Misc","","Expand")
-			TV_About:=TV_Add("About","","Expand")
-			*/
 			Gui, 1:Add, Button, x495 y440 w70 h23 vBtnOK gOK, OK
 			Gui, 1:Add, Button, x573 y440 w80 h23 vBtnCancel gCancel, Cancel
 			Gui, 1:Add, Button, x660 y440 w80 h23 vBtnApply gApply, Apply
@@ -875,15 +856,11 @@ ShowSettings() {
 			Settings_CreateAccessorKeywords(TabCount)
 			Settings_CreateAccessor(TabCount)
 			Settings_CreateExplorer(TabCount)
-			; Settings_CreateBehavior()
 			Settings_CreateFastFolders(TabCount)
 			Settings_CreateTabs(TabCount)
 			Settings_CreateFTPProfiles(TabCount)
 			Settings_CreateHotstrings(TabCount)
 			Settings_CreateWindows(TabCount)
-			; Settings_CreateDesktopTaskBar()
-			;Settings_CreateCustomHotkeys()
-			;Settings_CreateFTP()
 			Settings_CreateMisc(TabCount)
 			Settings_CreateAbout(TabCount)			
 			SettingsInitialized := true
@@ -893,11 +870,6 @@ ShowSettings() {
 		GoSub SettingsTreeView
 		DetectHiddenWindows, On
 		Gui 1:+LastFoundExist
-		; IfWinNotExist
-		; {
-			; Gui, 1:Show, x338 y159 h404 w780, 7plus Settings
-			; Winwaitactive 7plus Settings
-		; }
 				
 		;---------------------------------------------------------------------------------------------------------------
 		; Setup Control Status
@@ -906,21 +878,16 @@ ShowSettings() {
 		Settings_SetupAccessorKeywords()
 		Settings_SetupAccessor()
 		Settings_SetupExplorer()
-		; Settings_SetupBehavior()
 		Settings_SetupFastFolders()
 		Settings_SetupTabs()
 		Settings_SetupFTPProfiles()
 		Settings_SetupHotstrings()
 		Settings_SetupWindows()
-		; Settings_SetupDesktopTaskBar()
-		;Settings_SetupCustomHotkeys()
-		;Settings_SetupFTP()
 		Settings_SetupMisc()
 		Settings_SetupAbout()
-			
-		; Gui 1:+LastFoundExist
-		; IfWinExist
-			Gui, 1:Show, x338 y159 h474 w780, 7plus Settings
+
+		Gui, 1:Show, x338 y159 h474 w780, 7plus Settings
+		
 		;Code for URL hand cursor, don't touch :D
 		;Hand cursor over controls where the assigned variable starts with URL_
 		; Retrieve scripts PID 
@@ -940,6 +907,21 @@ ShowSettings() {
 		; Call "HandleMessage" when script receives WM_MOUSEMOVE message 
 		WM_MOUSEMOVE = 0x200 
 		OnMessage(WM_MOUSEMOVE, "HandleMessage")
+	}
+	;Activate desired Pane
+	if(ShowPane != "")
+	{
+		Gui, 1:TreeView, SettingsTreeView
+		id := 0
+		while(id := TV_GetNext(id, "Full"))
+		{
+			TV_GetText(text, id)
+			if(text = ShowPane)
+			{
+				TV_Modify(id, "Select")
+				break
+			}
+		}
 	}
 	Return
 }
@@ -978,7 +960,6 @@ SettingsTreeViewEvents()
 		GuiControl, 1:Show, EventsTab
 		GuiControl, 1:Text, GGroupBox, %SelectedName%
 		ControlSetText,,, ahk_id %EventFilter%
-		; FillEventsList()
 	}
 	else
 	{
@@ -1220,8 +1201,10 @@ GUI_EventsList_Copy()
 		{
 			LV_GetText(id,A_Index,2)			
 			Event := Settings_Events.SubItem("ID", id)
+			Copy := Event.DeepCopy()
+			Copy.Remove("OfficialEvent") ;Make sure that pasted events don't patch existing events
 			if((!IsPortable && A_IsAdmin) || Event.Trigger.Type != "ExplorerButton")
-				Settings_Events_Clipboard.append(Event.DeepCopy())
+				Settings_Events_Clipboard.append(copy)
 		}
 	}
 	WriteEventsFile(Settings_Events_Clipboard,A_Temp "/7plus/EventsClipboard.xml")	
@@ -1479,7 +1462,6 @@ ShowAccessorSettings()
 	outputdebug % "type 1 " Settings_AccessorPlugins[pos].type
 	PluginSettings:=GUI_EditAccessorPlugin(Settings_AccessorPlugins[pos].DeepCopy())
 	
-	; outputdebug % "type 3" PluginSettings.keyword
 	if(PluginSettings)
 		Settings_AccessorPlugins[pos] := PluginSettings
 }
@@ -1535,7 +1517,6 @@ GUI_SaveAccessorPluginSettings()
 		Plugin := AccessorPlugins[A_Index]
 		Settings_Plugin := Settings_AccessorPlugins[A_Index]
 		Plugin.Enabled := Settings_Plugin.Enabled
-		; Plugin.Keyword := Settings_Plugin.Keyword
 		Plugin.Settings := Settings_Plugin.Settings.DeepCopy()
 		outputdebug % Plugin.Type " save enabled " Plugin.Enabled
 	}
@@ -1551,19 +1532,8 @@ GuiControl, 1:enable%enabled%,ImgName
 Return
 
 FastFolders:
-; GuiControlGet, enabled ,1: , Use Fast Folders
-; GuiControl, 1:enable%enabled%, HKPlacesBar
-; GuiControl, 1:enable%enabled%, HKFFMenu
-; if(enabled)
-; {
-	GuiControl, 1:enable%Vista7%, HKFolderBand
-	GuiControl, 1:enable%Vista7%, HKCleanFolderBand
-; }
-; else
-; {
-	; GuiControl, 1:disable, HKFolderBand
-	; GuiControl, 1:disable, HKCleanFolderBand
-; }
+GuiControl, 1:enable%Vista7%, HKFolderBand
+GuiControl, 1:enable%Vista7%, HKCleanFolderBand
 Return
 
 UseTabs:
@@ -1593,24 +1563,7 @@ path:=COMObjCreate("Shell.Application").BrowseForFolder(0, "Enter Path to add as
 if(path!="")
 	GuiControl, , 1:TabStartupPath,%path%
 return
-/*
-TaskbarLaunch:
-GuiControlGet, enabled ,1: , Double click on empty taskbar: Run
-GuiControl, 1:enable%enabled%,TaskbarLaunchPath
-GuiControl, 1:enable%enabled%,TaskbarLaunchPathBrowse
-Return
 
-TaskbarLaunchBrowse:
-Gui 1:+OwnDialogs
-FileSelectFile, TaskbarPath , 3, , Select taskbar executable, *.exe
-if !ErrorLevel
-{
-	if(InStr(TaskbarPath," "))
-		TaskbarPath:=Quote(TaskbarPath)
-	GuiControl, 1:,TaskbarLaunchPath,%TaskbarPath%
-}
-Return
-*/
 FTPProfilesDropDownList:
 FTPProfilesDropDownList()
 return
@@ -1855,84 +1808,7 @@ SlideWindow:
 GuiControlGet, enabled,1: , HKSlideWindows
 GuiControl, 1:enable%enabled%, SlideWinHide
 return
-/*
-DoubleClickDesktop:
-GuiControlGet, enabled ,1: ,DoubleClickDesktop
-GuiControl, 1:enable%enabled%, DoubleClickDesktopPath
-GuiControl, 1:enable%enabled%, DoubleClickDesktopBrowse
-return
 
-DoubleClickDesktopBrowse:
-Gui 1:+OwnDialogs
-FileSelectFile, path , 3, , Select file to execute, *.exe
-if(path!="")
-	GuiControl, 1:,DoubleClickDesktopPath,%path%
-Return
-*/
-/*
-AddHotkey:
-Gui, ListView, CustomHotkeysList
-LV_Add("Select","","")
-GoSub EditHotkey
-if(key)
-	GoSub EditCommand
-if(key="" || path="")
-{
-	i:=LV_GetNext("")
-	LV_Delete(i)
-}
-return
-
-RemoveHotkey:
-Gui, ListView, CustomHotkeysList
-i:=LV_GetNext("")
-LV_Delete(i)
-return
-
-EditHotkey:
-Gui, ListView, CustomHotkeysList
-Critical, Off
-i:=LV_GetNext("")
-key:=HotKeyGui(10,1, "Select Hotkey", 1,"","","",key)
-if(key)
-	LV_Modify(i,"Col1",key)	
-return
-
-EditCommand:
-Gui 1:+OwnDialogs
-FileSelectFile, path , 3, , Select hotkey command, *.exe
-if(path!="")
-{
-	path:=Quote(path)
-	GuiControl, 1:,CustomHotkeysCommand, %path%
-}
-return
-
-CustomHotkeysList_SelectionChange:
-Gui, ListView, CustomHotkeysList
-if(A_GuiEvent="I" && InStr(ErrorLevel, "S", true))
-{
-	LV_GetText(CustomHotkeysCommand, A_EventInfo , 2)
-	GuiControl, 1:,CustomHotkeysCommand, %CustomHotkeysCommand%
-	GuiControl, 1:enable, CustomHotkeysCommand
-	GuiControl, 1:enable, CustomHotkeysEditCommand
-	GuiControl, 1:enable, CustomHotkeysRemove
-	GuiControl, 1:enable, CustomHotkeysEditKey
-}
-else if(A_GuiEvent="I" && InStr(ErrorLevel, "s", true))
-{
-	GuiControl, 1:disable, CustomHotkeysCommand
-	GuiControl, 1:disable, CustomHotkeysEditCommand
-	GuiControl, 1:disable, CustomHotkeysRemove
-	GuiControl, 1:disable, CustomHotkeysEditKey
-	outputdebug pre clearing
-	GuiControl, 1:,CustomHotkeysCommand, %A_Space%
-	outputdebug post clearing
-}
-else if(A_GuiEvent="DoubleClick")
-	GoSub EditHotkey
-Return
-*/
 WM_KEYDOWN(wParam, lParam)
 {
 	Critical
@@ -2113,13 +1989,8 @@ ApplySettings(Close = 0)
 	global
 	local active, enabled, pastename, flip, path, temp
 	;First process variables which require comparison with previous values
-	;Store explorer info settings
-	; x:=HKShowSpaceAndSize
 
 	;Store Fast Folders settings and make everything consistent by backing up and restoring reg keys
-	; wasActive:=HKFastFolders
-	; GuiControlGet, active ,1: , Use Fast Folders
-	; HKFastFolders:=active
 	GuiControl, 1:Show, Wait
 	GuiControl, 1:MoveDraw, Wait
 	if(!IsPortable || !A_IsAdmin)
@@ -2142,8 +2013,7 @@ ApplySettings(Close = 0)
 		else if(HKPlacesBar && !active)
 			RestorePlacesBar()
 	}
-	Autorun:=0 ;?
-	; temp:=FTP_Password
+	
 	;Store variables which can be stored directly
 	Gui 1:Submit, NoHide
 	
@@ -2224,14 +2094,9 @@ ApplySettings(Close = 0)
 	{
 		;Store Autorun setting
 		if(Autorun)
-		{
-			if(A_IsCompiled)
-				RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptDir%\7plus.exe"
-			else
-				RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus, "%A_ScriptDir%\7plus.ahk"
-		}
+			EnableAutorun()
 		else
-			RegDelete, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus
+			DisableAutorun()
 		
 		RegRead, temp, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick
 		RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick, %HKActivateBehavior%
@@ -2242,21 +2107,6 @@ ApplySettings(Close = 0)
 			{
 				Runwait, taskkill /im explorer.exe /f, , Hide
 				Run, %a_windir%\explorer.exe
-				;Process, close,explorer.exe
-				/*
-				Send {CTRL down}{ESC}{CTRL up}
-				WinWaitActive ahk_class DV2ControlHost
-				Send {Right}
-				Send {CTRL down}{SHIFT down}{AppsKey}
-				while(!IsContextMenuActive())
-				{
-					Sleep 10
-				}
-				Send {CTRL up}{Shift up}{Up}
-				Send {Enter}
-				Sleep 500
-				Run %a_windir%\explorer.exe
-				*/
 			}
 		}
 	}
@@ -2327,4 +2177,88 @@ HandleMessage(p_w, p_l, p_m, p_hw)
             } 
         } 
     } 
+}
+IsAutorunEnabled()
+{
+	global Vista7
+	if(Vista7)
+	{
+		objService := ComObjCreate("Schedule.Service") 
+		objService.Connect()
+		objFolder := objService.GetFolder("\")
+		objTask := objFolder.GetTask("7plus Autorun")
+		return objTask.Name != ""
+	}
+	else
+	{
+		RegRead, key, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus
+		return key != ""
+	}
+}
+DisableAutorun()
+{
+	global Vista7
+	RegDelete, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus
+	if(Vista7)
+	{
+		objService := ComObjCreate("Schedule.Service") 
+		objService.Connect()
+		objFolder := objService.GetFolder("\")
+		objFolder.DeleteTask("7plus Autorun", 0)
+	}
+}
+EnableAutorun()
+{
+	global Vista7
+	if(IsAutorunEnabled())
+		return
+	if(!Vista7)
+	{
+		if(A_IsCompiled)
+			RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus, %A_ScriptFullPath%
+		else
+			RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus, "%A_AhkPath%" "%A_ScriptFullPath%"
+	}
+	else
+	{
+		TriggerType = 9   ; trigger on logon. 
+		ActionTypeExec = 0  ; specifies an executable action. 
+		TaskCreateOrUpdate = 6 
+		Task_Runlevel_Highest = 1 
+
+		objService := ComObjCreate("Schedule.Service") 
+		objService.Connect() 
+
+		objFolder := objService.GetFolder("\") 
+		objTaskDefinition := objService.NewTask(0) 
+
+		principal := objTaskDefinition.Principal 
+		principal.LogonType := 1    ; Set the logon type to TASK_LOGON_PASSWORD 
+		principal.RunLevel := Task_Runlevel_Highest  ; Tasks will be run with the highest privileges. 
+
+		colTasks := objTaskDefinition.Triggers
+		objTrigger := colTasks.Create(TriggerType) 
+		colActions := objTaskDefinition.Actions 
+		objAction := colActions.Create(ActionTypeExec) 
+		objAction.ID := "7plus Autorun" 
+		if(A_IsCompiled)
+			objAction.Path := """" A_ScriptFullPath """"
+		else
+		{
+			objAction.Path := """" A_AhkPath """"
+			objAction.Arguments := """" A_ScriptFullPath """"
+		}
+		objAction.WorkingDirectory := A_ScriptDir
+		objInfo := objTaskDefinition.RegistrationInfo 
+		objInfo.Author := "7plus" 
+		objInfo.Description := "Run 7plus through task scheduler to prevent UAC dialog." 
+		objSettings := objTaskDefinition.Settings 
+		objSettings.Enabled := True 
+		objSettings.Hidden := False 
+		objSettings.StartWhenAvailable := True 
+		objSettings.ExecutionTimeLimit := "PT0S"
+		objSettings.DisallowStartIfOnBatteries := False
+		objSettings.StopIfGoingOnBatteries := False
+		objFolder.RegisterTaskDefinition("7plus Autorun", objTaskDefinition, TaskCreateOrUpdate , "", "", 3 ) 
+	}
 }

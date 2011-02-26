@@ -86,7 +86,7 @@ EventSystem_Startup()
 {
 	global Events, EventSchedule
 	Action_Upload_ReadFTPProfiles()
-	EventsBase := object("base", Array(), "Categories", Array(), "HighestID", -1, "CreateEvent", "EventSystem_CreateEvent", "Add", "Events_Add", "Remove", "Events_Remove")
+	EventsBase := object("base", Array(), "Categories", Array(), "GlobalPlaceholders", Array(), "HighestID", -1, "CreateEvent", "EventSystem_CreateEvent", "Add", "Events_Add", "Remove", "Events_Remove")
 	Events := object("base", EventsBase)
 	EventSystem_CreateBaseObjects()
 	
@@ -106,32 +106,15 @@ EventSystem_Startup()
 		ID = %2%
 		Trigger.ID := ID
 		OnTrigger(Trigger)
-	}	
-	OnMessage(55555, "TriggerFromOtherInstance")
-}
-ContextMenu_CheckFileCount:
-ContextMenu_CheckFileCount()
-return
-ContextMenu_CheckFileCount()
-{
-	global ContextMenu_EventCount, ContextMenu_ID
-	static expectedcount := -1
-	if(expectedcount < 0)
-		expectedcount := ToArray(getselectedfiles()).len()
-	outputdebug count %count% expectedcount %expectedcount%
-	if(ContextMenu_EventCount = expectedcount || (expectedcount = 0 && ContextMenu_EventCount = 1))
-	{
-		ContextMenu_EventCount := 0
-		expectedcount := -1
-		Trigger := EventSystem_CreateSubEvent("Trigger", "Trigger")
-		Trigger.TargetID := ContextMenu_ID
-		OnTrigger(Trigger)
 	}
+	OnMessage(55555, "TriggerFromOtherInstance")
+	;Make sure that non-elevated processes can send this trigger message to the elevated 7plus process.
+	;Keyword: UIPI
+	DllCall("ChangeWindowMessageFilter", "UInt", 55555, "UInt", 1) 
 }
-return
 TriggerFromOtherInstance(wParam, lParam)
 {
-	global ContextMenu_EventCount, ContextMenu_ID
+	global ContextMenu_EventCount, ContextMenu_ID, Events
 	Critical, On
 	if(lParam = 0) ;0 = Single trigger from something else than context menus
 	{
@@ -141,9 +124,16 @@ TriggerFromOtherInstance(wParam, lParam)
 	}
 	else if(lParam = 1) ;1 = Trigger from context menu
 	{		
-		ContextMenu_ID := wparam
-		ContextMenu_EventCount++
-		SetTimer, ContextMenu_CheckFileCount, -10
+		;Read list of selected files written by shell extension
+		if(FileExist(A_Temp "\7plus\files.txt"))
+			FileRead, files, % "*t " A_Temp "\7plus\files.txt"
+		FileDelete, % A_Temp "\7plus\files.txt"
+		;if it failed (because static context menu is used), try to get it from explorer window
+		Events.GlobalPlaceholders.Context := files ? files : GetSelectedFiles()
+		
+		Trigger := EventSystem_CreateSubEvent("Trigger", "Trigger")
+		Trigger.TargetID := wParam
+		OnTrigger(Trigger)
 	}
 	Critical, Off
 }

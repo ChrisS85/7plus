@@ -6,7 +6,7 @@
 
 
  /* File created by MIDL compiler version 7.00.0555 */
-/* at Sat Feb 19 19:18:46 2011
+/* at Sat Feb 26 22:37:30 2011
  */
 /* Compiler settings for ShellExtension.idl:
     Oicf, W1, Zp8, env=Win32 (32b run), target_arch=X86 7.00.0555 

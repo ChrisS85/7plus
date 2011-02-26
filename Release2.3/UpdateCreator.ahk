@@ -38,6 +38,7 @@ CreateUpdate(Platform, Version)
 {
 	global 7plusVersion
 	FileRemoveDir %A_TEMP%\7plusUpdateCreator,1
+	FileCreateDir %A_TEMP%\7plusUpdateCreator
 	FileDelete Updater.exe
 	FileDelete Update.zip
 	if(Platform = "X86")
@@ -144,6 +145,8 @@ FolderLoop(Platform, Version)
 			continue
 		if A_LoopFileFullPath contains DefaultConfig\
 			continue
+		if A_LoopFileFullPath contains ShellExtension\
+			continue
 		if(InStr(A_LoopFileFullPath, "ReleasePatch\") && !InStr(A_LoopFileName, 7plusVersion)) ;Skip release patches for wrong 7plus version
 			continue
 		FileCreateDir %A_Temp%\7plusUpdateCreator\%A_LoopFileDir%
@@ -154,21 +157,43 @@ FolderLoop(Platform, Version)
 WriteUpdater()
 {
 	FileDelete %A_scriptdir%\Updater.ahk
-	FileAppend, #NoTrayIcon`n,																	%A_scriptdir%\Updater.ahk
-	FileAppend, if(!A_IsCompiled)`n,															%A_scriptdir%\Updater.ahk	;Make sure that only the compiled version can be executed
-	FileAppend, `tExitApp`n,																	%A_scriptdir%\Updater.ahk
-	FileAppend, SetWorkingDir `%A_scriptdir`%`n,												%A_scriptdir%\Updater.ahk
-	FileAppend, Progress zh0 fs18`, Updating, please wait.`n,									%A_scriptdir%\Updater.ahk
-	FileAppend, FileInstall`, %A_scriptdir%\Update.zip`, Update.zip`,1`n,						%A_scriptdir%\Updater.ahk	;%A_scriptdir% mustn't be dynamic for FileInstall -> no quotes
-	FileAppend, FileInstall`, %A_scriptdir%\7za.exe`, 7za.exe`,1`n,								%A_scriptdir%\Updater.ahk	;%A_scriptdir% mustn't be dynamic for FileInstall -> no quotes
-	FileAppend, runwait 7za.exe x -y Update.zip`, `%a_scriptdir`%`,hide`n,						%A_scriptdir%\Updater.ahk
-	FileAppend, FileDelete 7za.exe`n,															%A_scriptdir%\Updater.ahk
-	FileAppend, FileDelete Update.zip`n,														%A_scriptdir%\Updater.ahk
-	FileAppend, FileDelete `%A_Temp`%\7plus`n,													%A_scriptdir%\Updater.ahk	;Paranoia, a file with the name of our directory might be there
-	FileAppend, FileMoveDir `%A_scriptdir`%\ReleasePatch`,`%A_Temp`%\7plus\ReleasePatch`, 2`n,	%A_scriptdir%\Updater.ahk
-	FileAppend, if(FileExist("7plus.ahk"))`n,													%A_scriptdir%\Updater.ahk
-	FileAppend, `trun 7plus.ahk`n,																%A_scriptdir%\Updater.ahk
-	FileAppend, else if(FileExist("7plus.exe"))`n,												%A_scriptdir%\Updater.ahk
-	FileAppend, `trun 7plus.exe`n,																%A_scriptdir%\Updater.ahk
-	FileAppend, ExitApp`n,																		%A_scriptdir%\Updater.ahk
+	FileAppend, #NoTrayIcon`n,																						%A_scriptdir%\Updater.ahk
+	FileAppend, if(!A_IsCompiled)`n,																				%A_scriptdir%\Updater.ahk	;Make sure that only the compiled version can be executed
+	FileAppend, `tExitApp`n,																						%A_scriptdir%\Updater.ahk
+	FileAppend, SetWorkingDir `%A_Temp`%\7plus`n,																	%A_scriptdir%\Updater.ahk
+	FileAppend, IniRead`, ConfigPath`, `%A_Temp`%\7plus\Update.ini`, Update`, ConfigPath`, `%A_AppData`%\7plus, 	%A_scriptdir%\Updater.ahk
+	FileAppend, IniRead`, ScriptDir`, `%A_Temp`%\7plus\Update.ini`, Update`, ScriptDir`, `%A_ProgramFiles`%\7plus, 	%A_scriptdir%\Updater.ahk
+	FileAppend, Progress zh0 fs18`, Updating, please wait.`n,														%A_scriptdir%\Updater.ahk
+	FileAppend, FileInstall`, %A_scriptdir%\Update.zip`, Update.zip`,1`n,											%A_scriptdir%\Updater.ahk	;%A_scriptdir% mustn't be dynamic for FileInstall -> no quotes
+	FileAppend, FileInstall`, %A_scriptdir%\7za.exe`, 7za.exe`,1`n,													%A_scriptdir%\Updater.ahk	;%A_scriptdir% mustn't be dynamic for FileInstall -> no quotes
+	FileAppend, runwait 7za.exe x -y Update.zip`, `%A_Temp`%\7plus\Update`, hide`n,									%A_scriptdir%\Updater.ahk	
+	FileAppend, FileMoveDir`, `%A_Temp`%\7plus\Update\Patches`, `%ConfigPath`%\Patches`, 2, 						%A_scriptdir%\Updater.ahk
+	FileAppend, FileMove`, `%A_Temp`%\7plus\Update`, `%ScriptDir`%`, 2, 											%A_scriptdir%\Updater.ahk
+	FileAppend, FileDelete 7za.exe`n,																				%A_scriptdir%\Updater.ahk
+	FileAppend, FileDelete Update.zip`n,																			%A_scriptdir%\Updater.ahk
+	FileAppend, FileMoveDir `%A_Temp`%\7plus\Update\ReleasePatch`,`%A_Temp`%\7plus\ReleasePatch`, 2`n,				%A_scriptdir%\Updater.ahk
+	FileAppend, if(FileExist(ScriptDir "7plus.ahk"))`n,																%A_scriptdir%\Updater.ahk
+	FileAppend, `trun `%ScriptDir`%\7plus.ahk`n,																	%A_scriptdir%\Updater.ahk
+	FileAppend, else if(FileExist(ScriptDir "7plus.exe"))`n,														%A_scriptdir%\Updater.ahk
+	FileAppend, `trun `%ScriptDir`%\7plus.exe`n,																	%A_scriptdir%\Updater.ahk
+	FileAppend, ExitApp`n,																							%A_scriptdir%\Updater.ahk
+	
+
+	FileAppend, SetWorkingDir `%A_Temp`%\7plus`n, %A_scriptdir%\Updater.ahk
+	FileAppend, IniRead`, ConfigPath`, `%A_Temp`%\7plus\Update.ini`, Update`, ConfigPath`, `%A_AppData`%\7plus, %A_scriptdir%\Updater.ahk
+	FileAppend, IniRead`, ScriptDir`, `%A_Temp`%\7plus\Update.ini`, Update`, ScriptDir`, `%A_ProgramFiles`%\7plus, %A_scriptdir%\Updater.ahk
+	FileAppend, Progress zh0 fs18`, Updating, please wait.`n, %A_scriptdir%\Updater.ahk
+	FileAppend, FileInstall`, %A_scriptdir%\Update.7z`, Update.7z`,1`n, %A_scriptdir%\Updater.ahk
+	FileAppend, FileInstall`, %A_scriptdir%\7za.exe`, 7za.exe`,1`n, %A_scriptdir%\Updater.ahk
+	FileAppend, runwait 7za.exe x -y Update.7z`, `%A_Temp`%\7plus\Update`, hide
+	FileAppend, FileMoveDir`, `%A_Temp`%\7plus\Update\Patches`, `%ConfigPath`%\Patches`, 2, %A_scriptdir%\Updater.ahk
+	FileAppend, FileMove`, `%A_Temp`%\7plus\Update`, `%ScriptDir`%`, 2, %A_scriptdir%\Updater.ahk
+	FileAppend, FileDelete 7za.exe`n, %A_scriptdir%\Updater.ahk
+
+	FileAppend, FileDelete Update.7z`n, %A_scriptdir%\Updater.ahk
+	FileAppend, if(FileExist("7plus.ahk"))`n, %A_scriptdir%\Updater.ahk
+	FileAppend, `trun 7plus.ahk`n, %A_scriptdir%\Updater.ahk
+	FileAppend, else if(FileExist("7plus.exe"))`n, %A_scriptdir%\Updater.ahk
+	FileAppend, `trun 7plus.exe`n, %A_scriptdir%\Updater.ahk
+	FileAppend, ExitApp`n, %A_scriptdir%\Updater.ahk
 }

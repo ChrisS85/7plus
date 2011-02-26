@@ -59,8 +59,10 @@ if((IsPortable && !WriteAccess(A_ScriptDir "\Accessor.xml")) || ConfigPath = A_A
 IniRead, PatchVersion, %IniPath%, General, PatchVersion, 0
 
 if(!FileExist(ConfigPath "\Events.xml") && FileExist(A_ScriptDir "\Events\All Events.xml")) ;Fresh install, copy default events file into config directory
+{
 	FileCopy, %A_ScriptDir%\Events\All Events.xml, %ConfigPath%\Events.xml
-
+	ApplyUpdateFixes()
+}
 ;Get windows version
 RegRead, vista7, HKLM, SOFTWARE\Microsoft\Windows NT\CurrentVersion, CurrentVersion
 vista7 := vista7 >= 6

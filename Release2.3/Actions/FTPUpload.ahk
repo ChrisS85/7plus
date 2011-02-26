@@ -130,7 +130,7 @@ Action_Upload_Execute(Action, Event)
 		if !FTP.Open(Hostname, User, decrypted) 
 		{ 
 			if(!Action.Silent)
-				Notify("Connection Error", "Couldn't connect to " Hostname ". Correct host/username/password?", "5", "GC=555555 TC=White MC=White",78)
+				Notify("Connection Error", "Couldn't connect to " Hostname ". Correct host/username/password?", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",78)
 			result := 0
 		}
 		else
@@ -139,7 +139,7 @@ Action_Upload_Execute(Action, Event)
 			if(TargetFolder != "" && !ftp.CreateDirectory(TargetFolder))
 			{
 				if(!Action.Silent)
-					Notify("FTP Error", "Couldn't create target directory. Check permissions!", "5", "GC=555555 TC=White MC=White",78)
+					Notify("FTP Error", "Couldn't create target directory. Check permissions!", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",78)
 				result := 0
 			}
 			else
@@ -153,7 +153,7 @@ Action_Upload_Execute(Action, Event)
 					if(!success && result)
 						success := result
 					if(result=0 && !Action.Silent)
-						Notify("Couldn't upload file", "Couldn't upload " TargetFolder (TargetFolder ? "/" : "") targets[A_Index] " properly. Make sure you have write rights and the path exists", "5", "GC=555555 TC=White MC=White",78)
+						Notify("Couldn't upload file", "Couldn't upload " TargetFolder (TargetFolder ? "/" : "") targets[A_Index] " properly. Make sure you have write rights and the path exists", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",78)
 					else if(result != 0 && URL && Action.Clipboard)
 						cliptext .= (A_Index = 1 ? "" : "`r`n") URL "/" TargetFolder (TargetFolder ? "/" : "") StringReplace(targets[A_Index], " ", "%20", 1)
 				}
@@ -189,6 +189,9 @@ Action_Upload_Progress()
 	Notify("","",done/total*100, "Progress",FTP.NotifyID)
 	Notify("","",my.RemoteName " - " FormatFileSize(done) " / " FormatFileSize(total), "Text",FTP.NotifyID)
 }
+FTP_Notify_Error:
+ShowSettings("FTP Profiles")
+return
 Action_Upload_DisplayString(Action)
 {
 	Action_Upload_GetFTPVariables(Action.FTPProfile, Hostname, Port, User, Password, URL)

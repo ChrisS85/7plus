@@ -428,9 +428,12 @@ FlashWindows()
 ; by The How-To Geek
 ; http://www.howtogeek.com
 
-#if HKAltDrag && IsDraggable()
+#if HKAltDrag && IsDraggable() && !(IsWindowUnderCursor("CabinetWClass")||IsWindowUnderCursor("ExploreWClass")||IsWindowUnderCursor("#32770"))
 ~!LButton::EWD_StartDrag()
+#if HKAltDrag && IsDraggable() && (IsWindowUnderCursor("CabinetWClass")||IsWindowUnderCursor("ExploreWClass")||IsWindowUnderCursor("#32770"))
+!LButton::EWD_StartDrag()
 #if
+
 
 IsDraggable()
 {

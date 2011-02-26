@@ -70,9 +70,11 @@ protected:
 	  bool Directory;
 	  bool DirectoryBackground;
 	  bool Desktop;
+	  bool SingleFileOnly;
 	} ;
 	vector<ContextMenuEntry> ContextMenuEntries;
 	vector<unsigned int> MatchingEntries;
+	vector<wstring> Files;
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(ShellExt), CShellExt)

@@ -147,13 +147,13 @@ std::vector<wstring>::size_type split( const WCHAR* str, const WCHAR* delim, std
 // CShellExt
 CShellExt::CShellExt()
 {
-	ContextMenuEntries.clear();
 }
 
 CShellExt::~CShellExt()
 {
 	ContextMenuEntries.clear();
 	MatchingEntries.clear();
+	Files.clear();
 }
 
 HRESULT CShellExt::RecurseContextMenuEntries()
@@ -184,6 +184,7 @@ HRESULT CShellExt::RecurseContextMenuEntries()
 			DWORD Directory;
 			DWORD DirectoryBackground;
 			DWORD Desktop;
+			DWORD SingleFileOnly;
 
 			if(FAILED(RegGetDWord(hSubKey, TEXT("ID"), &id)))
 				failed = true;
@@ -209,6 +210,9 @@ HRESULT CShellExt::RecurseContextMenuEntries()
 			if(FAILED(RegGetDWord(hSubKey, TEXT("Desktop"), &Desktop)))
 				failed = true;
 
+			if(FAILED(RegGetDWord(hSubKey, TEXT("SingleFileOnly"), &SingleFileOnly)))
+				failed = true;
+
 			if(!failed)
 			{
 				cme.ID = id;
@@ -218,6 +222,7 @@ HRESULT CShellExt::RecurseContextMenuEntries()
 				cme.Directory = Directory > 0;
 				cme.DirectoryBackground = DirectoryBackground > 0;
 				cme.Desktop = Desktop > 0;
+				cme.SingleFileOnly = SingleFileOnly > 0;
 				wstring extensions = wstring(szExtensions);
 				vector<wstring> vExtensions;		  
 				split(extensions.c_str(),L",",vExtensions,false);
@@ -292,7 +297,9 @@ HRESULT CShellExt::Initialize ( LPCITEMIDLIST pidlFolder, LPDATAOBJECT pDO, HKEY
 	//look for matching extensions
 	for(unsigned int i = 0; i < ContextMenuEntries.size(); i++)
 	{
-		bool Show = true;
+		if(ContextMenuEntries[i].SingleFileOnly && uNumFiles > 1)
+			continue;
+		bool Show = true;		
 		//Check if all files match
 		for ( UINT uFile = 0; uFile < uNumFiles; uFile++ )
 		{
@@ -308,8 +315,11 @@ HRESULT CShellExt::Initialize ( LPCITEMIDLIST pidlFolder, LPDATAOBJECT pDO, HKEY
 				 if (pidlFolder == NULL || !SHGetPathFromIDList(pidlFolder, szFile) )
 					continue;
 				 Background = true;
+				 if(i==0)
+					Files.push_back(szFile);
 			}
-
+			if(i==0)
+				Files.push_back(szFile);
 			//ContextMenu on directory
 			bool Directory = DirectoryExists(szFile);
 			if(Directory && !Background && ContextMenuEntries[i].Directory)
@@ -502,7 +512,17 @@ HRESULT CShellExt::InvokeCommand ( LPCMINVOKECOMMANDINFO pInfo )
 				sscanf_s(buffer,"%X",&hwnd);
 				WINDOWPLACEMENT wp;
 				if(GetWindowPlacement(hwnd,&wp))
-					SendMessage(hwnd, 55555, ContextMenuEntries[MatchingEntries[LOWORD(pInfo->lpVerb)]].ID,0);
+				{
+					FILE * pFile;
+					_wfopen_s(&pFile, (TempPath + L"7plus\\files.txt").c_str(), L"w");
+					if (pFile!=NULL)
+					{
+						for(unsigned int i = 0; i < Files.size(); i++)
+							fputws((Files[i]  + L"\n").c_str(), pFile);
+						fclose (pFile);
+						SendMessage(hwnd, 55555, ContextMenuEntries[MatchingEntries[LOWORD(pInfo->lpVerb)]].ID, 1);
+					}						
+				}
 				else
 					return S_OK;
 			}

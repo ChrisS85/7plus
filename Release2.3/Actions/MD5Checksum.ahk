@@ -63,6 +63,7 @@ Action_MD5_GuiSubmit(Action, ActionGUI)
 MD5Dialog(Files) 
 {
 	static MD5ListView, l_GUI, sFiles
+	outputdebug files %files%
 	if(!IsObject(Files))
 		Files := ToArray(Files)
 	if(!Files.len() > 0)

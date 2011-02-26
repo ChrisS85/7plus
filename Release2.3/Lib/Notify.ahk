@@ -173,11 +173,13 @@ _Notify_:
 
  If ((Duration < 0) OR (Duration = "-0")) 
   Exit := GN 
- If (Duration) 
-   SetTimer, % "_Notify_Kill_" GN - GF + 1, % - Abs(Duration) * 1000 
- Else 
-  SetTimer, % "_Notify_Flash_" GN - GF + 1, % BF 
-
+ if (Duration != "")
+ {
+  If (Duration) 
+    SetTimer, % "_Notify_Kill_" GN - GF + 1, % - Abs(Duration) * 1000 
+  Else 
+   SetTimer, % "_Notify_Flash_" GN - GF + 1, % BF 
+ }
 Return % GN 
 
 ;========================================================================== 
@@ -203,8 +205,6 @@ _Notify_Action:
    } 
  StringReplace, NotifyList, NotifyList, % "|" GN, , All 
  SetTimer, % "_Notify_Flash_" A_Gui - GF + 1, Off 
- If (Exit = A_Gui) 
-  ExitApp 
 Return 
 
 ;========================================================================== 
@@ -244,8 +244,6 @@ _Notify_Kill_25:
   DllCall("AnimateWindow","UInt",WinExist(),"Int",ST,"UInt", "0x00050001") 
  Gui, %GK%:Destroy 
  StringReplace, NotifyList, NotifyList, % "|" GK 
- If (Exit = GK) 
-  ExitApp 
 Return 
 
 ;========================================================================== 

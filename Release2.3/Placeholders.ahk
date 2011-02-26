@@ -1,9 +1,17 @@
 Event_ExpandPlaceHolders(Event,text)
 {
+	global Events
 	;Expand dynamic placeholders (for example ${Input} defined by input action)
 	enum := Event.Placeholders._newEnum()
 	while enum[key,value]
 	{
+		if(InStr(text,"${" key "}"))
+			text := StringReplace(text, "${" key "}", value, 1)
+	}
+	enum := Events.GlobalPlaceholders._newEnum()
+	while enum[key,value]
+	{
+		outputdebug key %key%
 		if(InStr(text,"${" key "}"))
 			text := StringReplace(text, "${" key "}", value, 1)
 	}
