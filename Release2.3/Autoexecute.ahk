@@ -135,7 +135,6 @@ IniRead, HKCleanFolderBand, %IniPath%, Explorer, HKCleanFolderBand, 0
 IniRead, HKFolderBand, %IniPath%, Explorer, HKFolderBand, 0
 
 
-;IniRead, HKImprovedWinE, %IniPath%, Explorer, HKImprovedWinE, 1
 IniRead, HKSelectFirstFile, %IniPath%, Explorer, HKSelectFirstFile, 1
 IniRead, HKImproveEnter, %IniPath%, Explorer, HKImproveEnter, 1
 IniRead, HKShowSpaceAndSize, %IniPath%, Explorer, HKShowSpaceAndSize, 1

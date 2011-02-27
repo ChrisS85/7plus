@@ -122,7 +122,6 @@ AutoUpdate_CheckPatches()
 				ReadEventsFile(Events, ConfigPath "\Patches\" version ".xml","", Update)
 				PatchVersion++
 				WriteMainEventsFile()
-				WriteIni()
 				patch := true
 				continue
 			}

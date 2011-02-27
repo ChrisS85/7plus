@@ -28,7 +28,6 @@ if(!A_IsUnicode)
 #include %A_ScriptDir%\lib\Crypt.ahk
 #include %A_ScriptDir%\lib\Cursor.ahk
 #include %A_ScriptDir%\lib\Edit.ahk
-; #include %A_ScriptDir%\lib\FTPLib.ahk
 #include %A_ScriptDir%\lib\Functions.ahk
 #include %A_ScriptDir%\lib\gdip.ahk
 #include %A_ScriptDir%\lib\Parse.ahk
@@ -40,8 +39,6 @@ if(!A_IsUnicode)
 #include %A_ScriptDir%\lib\Win.ahk
 #include %A_ScriptDir%\lib\DllCalls.ahk
 #include %A_ScriptDir%\lib\Notify.ahk
-; #include %A_ScriptDir%\Tooltip.ahk
-; #include %A_ScriptDir%\lib\xpath.ahk
 
 #include %A_ScriptDir%\Accessor\Accessor.ahk
 
@@ -61,10 +58,8 @@ if(!A_IsUnicode)
 #include %A_ScriptDir%\explorer.ahk
 #include %A_ScriptDir%\ImageConverter.ahk
 #include %A_ScriptDir%\clipboard.ahk
-; #include %A_ScriptDir%\FTPUpload.ahk 
 #include %A_ScriptDir%\Taskbar.ahk
 #include %A_ScriptDir%\Hotstrings.ahk
-; #include %A_ScriptDir%\Misc.ahk
 #include %A_ScriptDir%\xml.ahk
 #include %A_ScriptDir%\debugging.ahk
 #include %A_ScriptDir%\settings.ahk
@@ -72,7 +67,6 @@ if(!A_IsUnicode)
 #include %A_ScriptDir%\Registry.ahk
 #include %A_ScriptDir%\SlideWindows.ahk
 #include %A_ScriptDir%\JoyControl.ahk
-; #include %A_ScriptDir%\Tooltip.ahk
 #include %A_ScriptDir%\ExplorerTabs.ahk
 #include %A_ScriptDir%\CustomHotkeys.ahk
 #include %A_ScriptDir%\HotkeyGUI.ahk
