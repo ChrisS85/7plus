@@ -1070,7 +1070,6 @@ Return
 GUI_AddEvent()
 {
 	global Settings_Events, GUI_EventsList
-	outputdebug GUI_AddEvent() listview
 	Gui, ListView, GUI_EventsList
 	Event := EventSystem_CreateAndRegisterEvent(Settings_Events) ;Event is added to Settings_Events here
 	LV_Modify(LV_GetNext(""), "-Select")
@@ -1080,7 +1079,6 @@ GUI_AddEvent()
 	if(Category = "All Events")
 		Category := "Uncategorized"
 	Event.Category := Category
-	outputdebug % "new category " event.category
 	GUI_EventsList_Edit(1)
 }
 GUI_EventsList_Remove:
@@ -1174,7 +1172,8 @@ GUI_EventsList_Edit(Add = 0)
 	{
 		ControlSetText,,, ahk_id %EventFilter%
 		Settings_Events[pos] := event ;overwrite edited event
-		outputdebug % " category " event.Category
+		if(event.Category = "")
+			event.Category := "Uncategorized"
 		if(!Settings_Events.Categories.indexOf(event.Category))
 			Settings_Events.Categories.append(event.Category)
 		Settings_SetupEvents() ;Refresh listview

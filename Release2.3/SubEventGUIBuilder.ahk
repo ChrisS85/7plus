@@ -281,7 +281,7 @@ SubEventGUI_Placeholders(SubEventGUI, name, ClickedMenu="")
 		Menu, Placeholders_System, add, ${MessageResult} - Result of previous SendMessage action (Send only!), PlaceholderHandler
 		Menu, Placeholders_System, add, ${wParam} - wParam value if this condition/action was triggered by OnMessage trigger, PlaceholderHandler
 		Menu, Placeholders_System, add, ${lParam} - lParam value if this condition/action was triggered by OnMessage trigger, PlaceholderHandler
-		Menu, Placeholders_System, add, ${Context} - List of selected files(with paths) from Contextmenu trigger, separated by newlines
+		Menu, Placeholders_System, add, ${Context} - List of selected files(with paths) from Contextmenu trigger`, separated by newlines, PlaceholderHandler
 		
 		Menu, Placeholders_Windows, add, ${A} - Active window handle, PlaceholderHandler
 		Menu, Placeholders_Windows, add, ${Class} - Active window class, PlaceholderHandler

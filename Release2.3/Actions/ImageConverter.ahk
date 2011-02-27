@@ -17,7 +17,7 @@ Action_ImageConverter_Execute(Action, Event)
 
 Action_ImageConverter_DisplayString(Action)
 {
-	return "Open Image Converter: " Action.Slot
+	return "Open Image Converter: " Action.Files
 } 
 Action_ImageConverter_GuiShow(Action, ActionGUI, GoToLabel = "")
 {

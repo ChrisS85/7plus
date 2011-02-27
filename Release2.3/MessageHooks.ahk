@@ -9,11 +9,10 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 			FixExplorerConfirmationDialogs()
 		return
 	}
-	;outputdebug WinEventHook(%event%, %hwnd%, %idObject%, %idChild%, %dwEventThread%, %dwmsEventTime%)
 	if idObject or idChild
 		return
 	WinGet, style, Style, ahk_id %hwnd%
-	if (style & 0x40000000)					;RETURN if hwnd is child window, for some reason idChild may be 0 for some children ?!?! ( I hate ms )
+	if (style & 0x40000000)	;return if hwnd is child window, for some reason idChild may be 0 for some children ?!?! ( I hate ms )
 		return	
 	if(event=0x0016) ;EVENT_SYSTEM_MINIMIZEEND
 	{
@@ -61,6 +60,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 	{
 		ResizeWindow := ""
 		SetTimer, ResizeWindowTooltip, Off
+		ResizeWindowTooltip(true)
 		Tooltip
 	}
 	ListLines, On
@@ -68,100 +68,99 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 ResizeWindowTooltip:
 ResizeWindowTooltip()
 return
-ResizeWindowTooltip()
+ResizeWindowTooltip(reset = false)
 {	
 	global ResizeWindow
 	static w,h
+	if(reset)
+	{
+		w:=0
+		h:=0
+		return
+	}
 	WinGetPos, , , wn, hn, ahk_id %ResizeWindow%
 	if(w && h && (w != wn || h != hn))
 		Tooltip %w%/%h%
 	w := wn
 	h := hn
 }
-ShellMessage( wParam,lParam, msg)
+
+;See http://msdn.microsoft.com/en-us/library/ms644991(VS.85).aspx
+ShellMessage( nCode, wParam, lParam)
 {
 	WasCritical := A_IsCritical
 	Critical
 	ListLines, Off
-	global ExplorerPath, HKShowSpaceAndSize, BlinkingWindows, wtmwParam, SuppressTabEvents, UseTabs, PreviousWindow, PreviousExplorerPath,WindowList,Accessor
+	global ExplorerPath, HKShowSpaceAndSize, BlinkingWindows, wtmwParam, SuppressTabEvents, UseTabs, PreviousWindow, PreviousExplorerPath,WindowList,Accessor, RecentCreateCloseEvents
 	Trigger := EventSystem_CreateSubEvent("Trigger", "OnMessage")
-	Trigger.Message := msg
+	Trigger.Message := nCode
 	Trigger.wParam := wParam
 	Trigger.lParam := lParam
 	OnTrigger(Trigger)
-	; outputdebug shellmessage %wparam%
-	If	(wParam=1||wParam=2)
+	If	(nCode=1||nCode=2) ;Window Created/Closed
 	{
-		Trigger := wParam = 1 ? EventSystem_CreateSubEvent("Trigger","WindowCreated") : EventSystem_CreateSubEvent("Trigger","WindowClosed")
-		class:=WinGetClass("ahk_Id " lParam)
-		; outputdebug(Trigger.Type " triggered! class:" class " hwnd: " lParam)
-		Trigger.Window := lParam
+		;Keep a list of recently received create/close messages, because they can be sent multiple times and we only want one.
+		if(!IsObject(RecentCreateCloseEvents))
+			RecentCreateCloseEvents := Array()
+		SetTimer, ClearRecentCreateCloseEvents, -100
+		if(RecentCreateCloseEvents.HasKey(wParam))
+			return
+		else
+			RecentCreateCloseEvents[wParam] := 1
+		
+		Trigger := nCode = 1 ? EventSystem_CreateSubEvent("Trigger","WindowCreated") : EventSystem_CreateSubEvent("Trigger","WindowClosed")
+		class:=WinGetClass("ahk_Id " wParam)
+		Trigger.Window := wParam
 		OnTrigger(Trigger)
+		;Keep a list of windows and their required info stored. This allows to identify windows which were closed recently.
 		if(!WindowList)
 			WindowList := Object()
 		WinGet, hwnds, list,,, Program Manager
 		Loop, %hwnds%
 		{
 			hwnd := hwnds%A_Index%
-			WinGetClass, class, ahk_id %hwnd%
 			WinGetTitle, title, ahk_id %hwnd%
-			; WinGet, exe, ProcessName, ahk_id %hwnd%
-			WindowList[hwnd] := Object("class", class, "title", title, "Executable", exe)
+			if(IsObject(WindowList[hwnd]))
+				WindowList[hwnd].title := title
+			else
+			{
+				WinGetClass, class, ahk_id %hwnd%
+				WinGet, exe, ProcessName, ahk_id %hwnd%
+				WindowList[hwnd] := Object("class", class, "title", title, "Executable", exe)
+			}
 		}
+		;Remove all closed windows, except the most recently closed one.
+		;NOTE: This could prevent some window identification from working in theory, but it is extremely unlikely 
+		;      and won't happen unless multiple windows are closed rapidly.
+		enum = WindowList._newEnum()
+		while enum[hwnd, value]
+			if(hwnd != wParam && !WindowList.HasKey(hwnd))
+				WindowList.Remove(hwnd)
 	}
-	; Execute a command based on wParam and lParam 
-	
-	;Code for "catching" minimize events. Does not work properly when minimize animation is enabled.
-	;A CBT hook would be required for that, but it injects itsself into every process and can cause a huge system fuckup.
-	;Some minimize events could be catched, like click on min button, but not sure if it's worth it
-	/*
-	if(wParam=5)
-	{		
-		outputdebug getminrect %lParam%
-		hwnd := NumGet(lParam+0, 0, "UInt")
-		;Disable Minimize/Restore animation
-		RegRead, Animate, HKCU, Control Panel\Desktop\WindowMetrics , MinAnimate
-		outputdebug animate is currently set to %animate%
-		VarSetCapacity(struct, 8, 0)	
-		NumPut(8, struct, 0, "UInt")
-		NumPut(0, struct, 4, "Int")
-		DllCall("SystemParametersInfo", "UINT", 0x0049,"UINT", 8,"STR", struct,"UINT", 0x0003) ;SPI_SETANIMATION            0x0049 SPIF_SENDWININICHANGE 0x0002
-		WinActivate ahk_id %hwnd%
-		;Possibly activate it again
-		if(Animate=1)
-		{
-			NumPut(1, struct, 4, "UInt")
-			DllCall("SystemParametersInfo", "UINT", 0x0049,"UINT", 8,"STR", struct,"UINT", 0x0003) ;SPI_SETANIMATION            0x0049 SPIF_SENDWININICHANGE 0x0002
-		}
-		outputdebug %hwnd%
-		
-	}
-	*/
 	
 	;Blinking windows detection, add new blinking windows
-	if(wParam=32774)
+	if(nCode=32774)
 	{
-		class:=WinGetClass("ahk_id " lParam)
+		class:=WinGetClass("ahk_id " wParam)
 		; outputdebug blinking window %class%
-		if(BlinkingWindows.indexOf(lParam)=0)
+		if(BlinkingWindows.indexOf(wParam)=0)
 		{			
-			BlinkingWindows.Append(lParam)
+			BlinkingWindows.Append(wParam)
 			ct:=BlinkingWindows.len()
-			; outputdebug add window, count is now %ct%
 		}
 	}
 	
 	;Window Activation
-	if(wParam=4||wParam=32772) ;HSHELL_WINDOWACTIVATED||HSHELL_RUDEAPPACTIVATED
+	if(nCode=4||nCode=32772) ;HSHELL_WINDOWACTIVATED||HSHELL_RUDEAPPACTIVATED
 	{
 		Trigger := Object("base", TriggerBase)
 		Trigger.Type := "WindowActivated"
 		OnTrigger(Trigger)
 		;Blinking windows detection, remove activated windows
-		if(x:=BlinkingWindows.indexOf(lParam))
+		if(x:=BlinkingWindows.indexOf(wParam))
 			BlinkingWindows.Delete(x)
-		DecToHex(lParam)
-		class:=WinGetClass("ahk_id " lParam)
+		DecToHex(wParam)
+		class:=WinGetClass("ahk_id " wParam)
 		if(Accessor.GUINum && WinGetTitle("A") != Accessor.WindowTitle)
 			AccessorClose()
 		;If we change from another program to explorer/desktop/dialog
@@ -177,14 +176,14 @@ ShellMessage( wParam,lParam, msg)
 		{
 			if(WinExist("ahk_id " PreviousWindow " ahk_group ExplorerGroup"))
 				ExplorerDeactivated(PreviousWindow)
-			ExplorerActivated(lParam)
+			ExplorerActivated(wParam)
 		}
 		Else ;Right now this is called on every window switch, but it shouldn't hurt much
-			ExplorerDeactivated(lParam)
+			ExplorerDeactivated(wParam)
 		
 	}
 	;Redraw is fired on Explorer path change
-	else if(wParam=6)
+	else if(nCode=6)
 	{
 		;Detect changed path		
 		if(WinActive("ahk_group ExplorerGroup")||IsDialog())
@@ -207,32 +206,8 @@ ShellMessage( wParam,lParam, msg)
 	if(!WasCritical)
 		Critical, Off
 }
-/*
-UpdatePosition:
-UpdatePosition()
+
+;Timer for clearing the list of recently received create/close events
+ClearRecentCreateCloseEvents:
+RecentCreateCloseEvents := Array()
 return
-*/
-; WM_LBUTTONUP(wParam,lParam,msg,hWnd){
-	; SetTimer, TooltipClose, -20
-; } 
-
-; WM_NOTIFY(wParam, lParam, msg, hWnd){ 
-	; WasCritical := A_IsCritical
-	; Critical
-	; ToolTip("",lParam,"") 
-	; if(!WasCritical)
-		; Critical, Off
-; } 
-; ToolTip: 
-; link:=ErrorLevel 
-; SetTimer, TooltipClose, off
-; ToolTip()
-; If(TooltipShowSettings && Link) { 
-	; ShowSettings()
-	; TooltipShowSettings:=false
-; }
-; Return 
-
-; ToolTipClose: 
-; Tooltip()
-; return
