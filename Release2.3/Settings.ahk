@@ -575,7 +575,7 @@ RecreateTreeView()
 	TV_Delete()
 	EventsTreeViewEntry := TV_Add("All Events", "", "Expand" (Category = "All Events" ? " Select Vis" : ""))
 	Loop % Settings_Events.Categories.len()
-		TV_Add(Settings_Events.Categories[A_Index], EventsTreeViewEntry, "Sort" (Category = Settings_Events.Categories[A_Index] ? " Select Vis" : ""))
+		TV_Add(Settings_Events.Categories[A_Index], EventsTreeViewEntry, "Sort" (Category = Settings_Events.Categories[A_Index] | A_Index = 1 ? " Select Vis" : ""))
 	Loop, Parse, SettingsTabList, |
 		TV_Add(A_LoopField)
 	FillEventsList()
@@ -1176,6 +1176,15 @@ GUI_EventsList_Edit(Add = 0)
 			event.Category := "Uncategorized"
 		if(!Settings_Events.Categories.indexOf(event.Category))
 			Settings_Events.Categories.append(event.Category)
+		;remove empty categories
+		loop % Settings_Events.Categories.len()
+		{
+			if(Settings_Events.IndexOfSubItem("Category", Settings_Events.Categories[A_Index]) = 0)
+			{
+				Settings_Events.Categories.Delete(A_Index)
+				break
+			}
+		}
 		Settings_SetupEvents() ;Refresh listview
 	}
 	else if(Add)

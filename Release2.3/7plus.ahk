@@ -28,7 +28,7 @@ if(!A_IsUnicode)
 #include %A_ScriptDir%\lib\Crypt.ahk
 #include %A_ScriptDir%\lib\Cursor.ahk
 #include %A_ScriptDir%\lib\Edit.ahk
-#include %A_ScriptDir%\lib\FTPLib.ahk
+; #include %A_ScriptDir%\lib\FTPLib.ahk
 #include %A_ScriptDir%\lib\Functions.ahk
 #include %A_ScriptDir%\lib\gdip.ahk
 #include %A_ScriptDir%\lib\Parse.ahk
