@@ -62,7 +62,9 @@ BuildMenu(Name)
 {
 	global Events
 	Menu, Tray, UseErrorLevel
-	Menu, %Name%, Delete
+	Menu, %Name%, DeleteAll
+	if(Name = "Tray")
+		Menu, Tray, Standard
 	Loop % Events.len()
 	{
 		if(Events[A_Index].Trigger.Type = "MenuItem" && Events[A_Index].Trigger.Menu = Name)
@@ -81,6 +83,12 @@ BuildMenu(Name)
 			}
 			entries := true
 		}
+	}
+	if(Name = "Tray")
+	{
+		Menu, tray, add  ; Creates a separator line.
+		Menu, tray, add, Settings, SettingsHandler  ; Creates a new menu item.
+		menu, tray, Default, Settings
 	}
 	Menu, Tray, UseErrorLevel, Off
 	return entries

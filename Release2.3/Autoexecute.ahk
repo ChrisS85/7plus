@@ -73,9 +73,10 @@ pToken := Gdip_Startup()
 ;Exit Routine
 OnExit, ExitSub
 
-;Disable COM error notifications that pop up sometimes when opening/closing explorer
-;COM_Init()
-;COM_Error(0)
+;Menu entries need to be shown before events are loaded
+Menu, tray, add  ; Creates a separator line.
+Menu, tray, add, Settings, SettingsHandler  ; Creates a new menu item.
+menu, tray, Default, Settings
 
 ;Init event system
 EventSystem_Startup()
@@ -245,10 +246,6 @@ if(A_OSVersion="WIN_7")
 
 LoadHotstrings()
 
-;Show tray icon when loading is complete
-Menu, tray, add  ; Creates a separator line.
-Menu, tray, add, Settings, SettingsHandler  ; Creates a new menu item.
-
 result:=DllCall("uxtheme.dll\IsThemeActive") ; On non-themed environments, standard icon is used
 ; if(A_IsCompiled)
 ; {
@@ -264,8 +261,9 @@ result:=DllCall("uxtheme.dll\IsThemeActive") ; On non-themed environments, stand
 	else
 		Menu, tray, Icon, %A_ScriptDir%\7+-w.ico,,1
 ; }
-menu, tray, Default, Settings
 IniRead, HideTrayIcon, %IniPath%, Misc, HideTrayIcon, 0
+
+;Show tray icon when loading is complete
 if(!HidetrayIcon)
 	menu, tray, Icon
 	

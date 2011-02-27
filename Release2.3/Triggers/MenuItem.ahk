@@ -14,15 +14,19 @@ Trigger_MenuItem_ReadXML(Trigger, XMLTrigger)
 
 Trigger_MenuItem_Enable(Trigger)
 {
-	
+	if(Trigger.Menu = "Tray")
+		BuildMenu("Tray")
 }
 Trigger_MenuItem_Disable(Trigger)
 {
-	
+	if(Trigger.Menu = "Tray")
+		BuildMenu("Tray")
 }
 
 Trigger_MenuItem_Delete(Trigger)
 {
+	if(Trigger.Menu = "Tray")
+		BuildMenu("Tray")
 }
 
 Trigger_MenuItem_Matches(Trigger, Filter)
@@ -55,6 +59,8 @@ return
 MenuItemTriggered(menu, item, pos)
 {
 	global Events
+	if(menu = "Tray")
+		pos -= 10
 	index := 1
 	Loop % Events.len()
 	{

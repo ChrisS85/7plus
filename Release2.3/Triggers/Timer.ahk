@@ -3,7 +3,6 @@ Trigger_Timer_Init(Trigger)
 	Trigger.Category := "System"
 	Trigger.ShowProgress := 0
 	Trigger.Restart := 0
-	Menu, tray, Add, Add timer, AddTimer
 }
 Trigger_Timer_ReadXML(Trigger, XMLTrigger)
 {	

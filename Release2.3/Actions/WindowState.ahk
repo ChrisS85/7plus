@@ -54,7 +54,7 @@ Action_WindowState_Execute(Action,Event)
 		WinSet, AlwaysOnTop, Toggle, ahk_id %hwnd%
 	else if(Action.Action = "Set Transparency")
 	{
-		newValue := Action.Value
+		newValue := Event.ExpandPlaceholders(Action.Value)
 		if(strStartsWith(newValue,"+")||strStartsWith(newValue,"-")||strStartsWith(newValue,"*")||strStartsWith(newValue,"/"))
 		{
 			operator := SubStr(newValue,1,1)
@@ -78,13 +78,23 @@ Action_WindowState_DisplayString(Action)
 {
 	return Action.Action " " WindowFilter_DisplayString(Action)
 }
-Action_WindowState_GuiShow(Action, ActionGUI)
+Action_WindowState_GuiShow(Action, ActionGUI,GoToLabel="")
 {
-	SubEventGUI_Add(Action, ActionGUI, "DropDownList", "Action", "Maximize|Minimize|Restore|Toggle Max/Normal|Toggle Min/Normal|Toggle Min/Max|Toggle Min/Previous state|Maximize->Normal->Minimize|Minimize->Normal->Maximize|Set always on top|Disable always on top|Toggle always on top|Set Transparency", "", "Action:")
-	SubEventGUI_Add(Action, ActionGUI, "Text", "tmpHint", "The value below is only used for transparency. Prepend +,-,* and / for relative changes.")
-	SubEventGUI_Add(Action, ActionGUI, "Edit", "Value", "", "", "Value:")
-	WindowFilter_GuiShow(Action,ActionGUI)
+	static sActionGUI
+	if(GoToLabel = "")
+	{
+		sActionGUI := ActionGUI
+		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "Action", "Maximize|Minimize|Restore|Toggle Max/Normal|Toggle Min/Normal|Toggle Min/Max|Toggle Min/Previous state|Maximize->Normal->Minimize|Minimize->Normal->Maximize|Set always on top|Disable always on top|Toggle always on top|Set Transparency", "", "Action:")
+		SubEventGUI_Add(Action, ActionGUI, "Text", "tmpHint", "The value below is only used for transparency. Prepend +,-,* and / for relative changes.")
+		SubEventGUI_Add(Action, ActionGUI, "Edit", "Value", "", "", "Value:", "Placeholders", "WindowState_Placeholders")
+		WindowFilter_GuiShow(Action,ActionGUI)
+	}
+	else if(GoToLabel = "WindowState_Placeholders")
+		SubEventGUI_Placeholders(sActionGUI, "Value")
 }
+WindowState_Placeholders:
+Action_WindowState_GuiShow("", "","WindowState_Placeholders")
+return
 Action_WindowState_GuiSubmit(Action, ActionGUI)
 {
 	SubEventGUI_GUISubmit(Action, ActionGUI)

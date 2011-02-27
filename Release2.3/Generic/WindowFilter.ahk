@@ -194,30 +194,36 @@ WindowFilter_GuiShow(WindowFilter, WindowFilterGUI,GoToLabel="")
 			{
 				Desc_WindowFilterClass := sWindowFilterGUI.Desc_WindowFilterClass
 				Edit_WindowFilterClass := sWindowFilterGUI.Edit_WindowFilterClass
+				Button1_WindowFilterClass := sWindowFilterGUI.Button1_WindowFilterClass
 								
 				ControlGetText, WindowFilterClass, , ahk_id %Edit_WindowFilterClass%
 				WindowFilter.WindowFilterClass := WindowFilterClass
 				
 				WinKill, ahk_id %Desc_WindowFilterClass%
 				WinKill, ahk_id %Edit_WindowFilterClass%
+				WinKill, ahk_id %Button1_WindowFilterClass%
 				
 				Desc_WindowFilterExecutable := sWindowFilterGUI.Desc_WindowFilterExecutable
 				Edit_WindowFilterExecutable := sWindowFilterGUI.Edit_WindowFilterExecutable
+				Button1_WindowFilterExecutable := sWindowFilterGUI.Button1_WindowFilterExecutable
 								
 				ControlGetText, WindowFilterExecutable, , ahk_id %Edit_WindowFilterExecutable%
 				WindowFilter.WindowFilterExecutable := WindowFilterExecutable
 				
 				WinKill, ahk_id %Desc_WindowFilterExecutable%
 				WinKill, ahk_id %Edit_WindowFilterExecutable%
+				WinKill, ahk_id %Button1_WindowFilterExecutable%
 				
 				Desc_WindowFilterTitle := sWindowFilterGUI.Desc_WindowFilterTitle
 				Edit_WindowFilterTitle := sWindowFilterGUI.Edit_WindowFilterTitle
+				Button1_WindowFilterTitle := sWindowFilterGUI.Button1_WindowFilterTitle
 								
 				ControlGetText, WindowFilterTitle, , ahk_id %Edit_WindowFilterTitle%
 				WindowFilter.WindowFilterTitle := WindowFilterTitle
 				
 				WinKill, ahk_id %Desc_WindowFilterTitle%
 				WinKill, ahk_id %Edit_WindowFilterTitle%
+				WinKill, ahk_id %Button1_WindowFilterTitle%
 				
 				sWindowFilterGUI.y := sWindowFilterGUI.y - 90
 			}
@@ -265,5 +271,47 @@ return
 ;Window filter uses own GUISubmit function, so it can be executed without storing its ancestor's values
 WindowFilter_GuiSubmit(WindowFilter, WindowFilterGUI)
 {
-	SubEventGUI_GUISubmit(WindowFilter, WindowFilterGUI)
+	Desc_WindowMatchType := WindowFilterGUI.Desc_WindowMatchType
+	DropDown_WindowMatchType := WindowFilterGUI.DropDown_WindowMatchType
+					
+	ControlGetText, WindowMatchType, , ahk_id %DropDown_WindowMatchType%
+	WindowFilter.WindowMatchType := WindowMatchType
+	
+	WinKill, ahk_id %Desc_WindowMatchType%
+	WinKill, ahk_id %DropDown_WindowMatchType%
+	
+	Desc_WindowFilterClass := WindowFilterGUI.Desc_WindowFilterClass
+	Edit_WindowFilterClass := WindowFilterGUI.Edit_WindowFilterClass
+	Button1_WindowFilterClass := WindowFilterGUI.Button1_WindowFilterClass
+	
+	ControlGetText, WindowFilterClass, , ahk_id %Edit_WindowFilterClass%
+	WindowFilter.WindowFilterClass := WindowFilterClass
+	
+	WinKill, ahk_id %Desc_WindowFilterClass%
+	WinKill, ahk_id %Edit_WindowFilterClass%
+	WinKill, ahk_id %Button1_WindowFilterClass%
+	
+	Desc_WindowFilterExecutable := WindowFilterGUI.Desc_WindowFilterExecutable
+	Edit_WindowFilterExecutable := WindowFilterGUI.Edit_WindowFilterExecutable
+	Button1_WindowFilterExecutable := WindowFilterGUI.Button1_WindowFilterExecutable
+					
+	ControlGetText, WindowFilterExecutable, , ahk_id %Edit_WindowFilterExecutable%
+	WindowFilter.WindowFilterExecutable := WindowFilterExecutable
+	
+	WinKill, ahk_id %Desc_WindowFilterExecutable%
+	WinKill, ahk_id %Edit_WindowFilterExecutable%
+	WinKill, ahk_id %Button1_WindowFilterExecutable%
+	
+	Desc_WindowFilterTitle := WindowFilterGUI.Desc_WindowFilterTitle
+	Edit_WindowFilterTitle := WindowFilterGUI.Edit_WindowFilterTitle
+	Button1_WindowFilterTitle	:= WindowFilterGUI.Button1_WindowFilterTitle
+					
+	ControlGetText, WindowFilterTitle, , ahk_id %Edit_WindowFilterTitle%
+	WindowFilter.WindowFilterTitle := WindowFilterTitle
+	
+	WinKill, ahk_id %Desc_WindowFilterTitle%
+	WinKill, ahk_id %Edit_WindowFilterTitle%
+	WinKill, ahk_id %Button1_WindowFilterTitle%
+	
+	WindowFilterGUI.y := WindowFilterGUI.y - 60
 }
