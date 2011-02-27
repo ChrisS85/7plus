@@ -511,6 +511,7 @@ Settings_SetupEvents() {
 	GuiControl, 1:enable, GUI_EventsList_Remove
 	GuiControl, 1:enable, GUI_EventsList_Edit
 	GuiControl, 1:enable, GUI_EventsList_Copy
+	ControlFocus, SysListView321, A
 	if(!WasCritical)
 		Critical, Off
 }
@@ -573,14 +574,13 @@ RecreateTreeView()
 	TV_GetText(Category, selected)
 	SuppressTreeViewMessages := true
 	TV_Delete()
-	EventsTreeViewEntry := TV_Add("All Events", "", "Expand" (Category = "All Events" ? " Select Vis" : ""))
+	EventsTreeViewEntry := TV_Add("All Events", "", "Expand Select Vis" )
 	Loop % Settings_Events.Categories.len()
-		TV_Add(Settings_Events.Categories[A_Index], EventsTreeViewEntry, "Sort" (Category = Settings_Events.Categories[A_Index] | A_Index = 1 ? " Select Vis" : ""))
+		TV_Add(Settings_Events.Categories[A_Index], EventsTreeViewEntry, "Sort" (Category = Settings_Events.Categories[A_Index] ? " Select Vis" : ""))
 	Loop, Parse, SettingsTabList, |
 		TV_Add(A_LoopField)
 	FillEventsList()
 	SuppressTreeViewMessages := false
-	ControlFocus, SysTreeView321
 	if(!WasCritical)
 		Critical, Off
 }
@@ -1185,7 +1185,7 @@ GUI_EventsList_Edit(Add = 0)
 				break
 			}
 		}
-		Settings_SetupEvents() ;Refresh listview
+		Settings_SetupEvents() ;Refresh listview		
 	}
 	else if(Add)
 		GUI_RemoveEvent()
