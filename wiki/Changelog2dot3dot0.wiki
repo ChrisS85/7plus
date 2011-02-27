@@ -8,7 +8,7 @@ New Functions:
  * Batch Image converter for converting and resizing lots of images at once (through explorer context menu)
  * MD5 Checksum window for generating MD5 checksums (through explorer context menu)
  * Progress notification window for FTP upload, and uploading doesn't make the system unresponsive anymore
- * Volume change notification window for displaying current volume and mute status
+ * Volume control OSD for displaying current volume and mute status
  * "Run with parameters..." context menu option for executable files
  * "Toggle hidden files" context menu option for directory backgrounds
  * "Upload" context menu option for files
@@ -26,6 +26,7 @@ Bugfixes:
  * Fixed FastFolders numpad keys triggering directory change in file dialog boxes with the filename box selected
 
 Changes:
+ * 7plus now uses the task scheduler instead of autorun in Vista and 7 to avoid UAC dialogs
  * All tooltips and some message boxes have been replaced by nicer looking notification windows
 
 If you like this program and want to support its development, please consider donating!
