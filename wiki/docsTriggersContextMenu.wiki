@@ -8,7 +8,7 @@ Use ${Context} placeholder for the list of selected files when the context menu 
   * Name: The name that will appear in the context menu.
   * Description: The text that will show up in the explorer status bar.
   * Submenu: If set, the context menu will contain an entry with this value, and the context menu entry defined here will appear in the submenu.
-  * File types: Here you can set the file extensions which will have this context menu entry. Leave empty for no files, * for all extensions, or use a comma-seperated list of extensions (without dot). 7plus will only show context menu entries that match all selected files.
+  * File types: Here you can set the file extensions which will have this context menu entry. Leave empty for no files, '*' for all extensions, or use a comma-seperated list of extensions (without dot). 7plus will only show context menu entries that match all selected files.
   * Show in directory context menus: If set, it will show up when directories are selected.
   * Show in directory background context menus: If set, it will show up when the background of a directory is right-clicked.
   * Show in desktop context menu: If set, it will show up in the desktop context menu.
