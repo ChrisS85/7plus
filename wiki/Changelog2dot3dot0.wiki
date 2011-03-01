@@ -12,6 +12,7 @@ New Functions:
  * "Run with parameters..." context menu option for executable files
  * "Toggle hidden files" context menu option for directory backgrounds
  * "Upload" context menu option for files
+ * Added history function for Accessor (CTRL + UP/DOWN Arrow)
 
 Bugfixes:
  * Fixed Registry permissions which stopped FastFolders from showing up in explorer bar
