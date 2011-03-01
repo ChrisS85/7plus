@@ -24,7 +24,7 @@ Bugfixes:
  * Fixed "Create Folder" not working on network drives
  * Fixed portable mode startup error messsage and reload issue
  * Fixed FastFolders numpad keys triggering directory change in file dialog boxes with the filename box selected
-
+ * Improved Accessor window opening delay
 Changes:
  * 7plus now uses the task scheduler instead of autorun in Vista and 7 to avoid UAC dialogs
  * All tooltips and some message boxes have been replaced by nicer looking notification windows
