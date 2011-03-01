@@ -92,6 +92,20 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 		SubEventGUI["DropDown_" name] := DropDown_%name%
 		y += 30
 	}
+	else if(type = "ComboBox")
+	{
+		;Construct options
+		Loop, Parse, text, |
+			if(A_LoopField)
+				text1 .= A_LoopField "|"
+		options = x%x% y%y% w%w% hwndComboBox_%name%
+		if(gLabel != "")
+			options .= " g" gLabel
+		Gui, Add, ComboBox, %options%, %text1%
+		SubEventGUI["ComboBox_" name] := ComboBox_%name%
+		ControlSetText, , % SubEvent[name], % "ahk_id " ComboBox_%name%
+		y += 30
+	}
 	else if(type = "Time")
 	{
 		text := SubEvent[name]
@@ -150,6 +164,16 @@ SubEventGUI_GUISubmit(SubEvent, SubEventGUI)
 			WinKill, ahk_id %value%
 		}
 		else if(strStartsWith(key, "DropDown_"))
+		{
+			name := SubStr(key, 10)
+			ControlGetText, text, , ahk_id %value%
+			if(InStr(text, ": ")) ;If the selection starts with "\d+: " or similar, (\d+) is returned instead
+				text := SubStr(text, 1, InStr(text, ": ") - 1)
+			outputdebug save %name% %text%
+			SubEvent[name] := text
+			WinKill, ahk_id %value%
+		}
+		else if(strStartsWith(key, "ComboBox_"))
 		{
 			name := SubStr(key, 10)
 			ControlGetText, text, , ahk_id %value%

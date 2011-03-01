@@ -41,8 +41,20 @@ Trigger_MenuItem_DisplayString(Trigger)
 
 Trigger_MenuItem_GuiShow(Trigger, TriggerGUI)
 {
+	global Settings_Events
 	sTriggerGUI := TriggerGUI
-	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Menu", "", "", "Menu:")
+	; SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Menu", "", "", "Menu:")
+	Menus := Array()
+	Loop % Settings_Events.len()
+	{
+		if(Settings_Events[A_Index].Trigger.Type = "MenuItem" && Menus.indexOf(Settings_Events[A_Index].Trigger.Menu) = 0)
+		{
+			Menus.append(Settings_Events[A_Index].Trigger.Menu)
+			MenuString .= (Menus.len() = 1 ? "" : "|") Settings_Events[A_Index].Trigger.Menu
+		}
+	}
+	
+	SubEventGUI_Add(Trigger, TriggerGUI, "ComboBox", "Menu", MenuString, "", "Menu:")
 	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Name", "", "", "Name:")
 	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Submenu", "", "", "Submenu:")
 }

@@ -4,9 +4,12 @@ Accessor_FileSystem_Init(ByRef FileSystem, Settings)
 	FileSystem.MinChars := 2
 	FileSystem.DefaultKeyword := ""
 	FileSystem.Description := "Browse the file system by typing a path. `nUse Tab for switching through matching entries and enter to enter a folder.`nApplications launched through this method are directly added to Program Launcher cache."
+	FileSystem.Settings.UseIcons := Settings.HasKey("UseIcons") ? Settings.UseIcons : 0
+	FileSystem.HasSettings := True
 }
 Accessor_FileSystem_ShowSettings(FileSystem, PluginSettings, PluginGUI)
 {
+	SubEventGUI_Add(PluginSettings, PluginGUI, "Checkbox", "UseIcons", "Use exact icons (much slower)", "", "")
 }
 Accessor_FileSystem_IsInSinglePluginContext(FileSystem, Filter, LastFilter)
 {
@@ -52,11 +55,23 @@ Accessor_FileSystem_FillAccessorList(FileSystem, Accessor, Filter, LastFilter, B
 			name := FileSystem.AutocompletionString
 		Loop %dir%\*%name%*, 1, 0
 		{
-			hIcon := ExtractAssociatedIcon(0, A_LoopFileFullPath, iIndex)
-			ImageList_ReplaceIcon(Accessor.ImageListID, -1, hIcon)
-			DestroyIcon(hIcon)
-			IconCount++
-			Accessor.List.append(Object("Title",A_LoopFileName,"Path",A_LoopFileFullPath,"Type","FileSystem", "Icon", IconCount))
+			if(FileSystem.Settings.UseIcons)
+			{
+				hIcon := ExtractAssociatedIcon(0, A_LoopFileFullPath, iIndex)
+				ImageList_ReplaceIcon(Accessor.ImageListID, -1, hIcon)
+				DestroyIcon(hIcon)
+				Icon := ++IconCount
+			}
+			else
+			{
+				if(InStr(FileExist(A_LoopFileFullPath), "D"))
+					Icon := 2
+				else if A_LoopFileExt in exe,bat,cmd
+					Icon := 1
+				else
+					Icon := 4
+			}
+			Accessor.List.append(Object("Title",A_LoopFileName,"Path",A_LoopFileFullPath,"Type","FileSystem", "Icon", Icon))
 		}
 	}
 }

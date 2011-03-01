@@ -23,32 +23,6 @@ Accessor_Uninstall_GetDisplayStrings(Uninstall, AccessorListEntry, ByRef Title, 
 Accessor_Uninstall_OnAccessorOpen(Uninstall, Accessor)
 {
 	Uninstall.List := Array()
-	Loop, HKLM , SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, 2, 0
-	{
-		GUID := A_LoopRegName ;Note: This is not always a GUID but can also be a regular name. It seems that MSIExec likes to use GUIDs
-		RegRead, DisplayName, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%GUID%, DisplayName
-		; outputdebug displayname %displayname%
-		RegRead, UninstallString, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%GUID%, UninstallString
-		RegRead, InstallLocation, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%GUID%, InstallLocation
-		RegRead, DisplayIcon, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%GUID%, DisplayIcon
-		; outputdebug orig displayicon %displayicon%
-		if(RegexMatch(DisplayIcon,".+,\d*"))
-		{
-			; outputdebug match
-			Number := strTrim(SubStr(DisplayIcon, InStr(DisplayIcon,",",0,0) + 1), " ")
-			DisplayIcon := strTrim(SubStr(DisplayIcon, 1, InStr(DisplayIcon,",",0,0) - 1), " ")
-		}
-		if(!Number)
-			Number := 0
-		; outputdebug displayicon %displayicon% number %number%
-		if(FileExist(DisplayIcon))
-			hIcon := ExtractAssociatedIcon(Number, DisplayIcon, iIndex)
-		else
-			hIcon := Accessor.GenericIcons.Application
-		; outputdebug hicon %hicon%
-		if(DisplayName)
-			Uninstall.List.append(Object("GUID", GUID, "DisplayName", DisplayName, "UninstallString", UninstallString, "InstallLocation", InstallLocation, "Icon", hIcon))
-	}
 }
 Accessor_Uninstall_OnAccessorClose(Uninstall, Accessor)
 {
@@ -61,6 +35,36 @@ Accessor_Uninstall_OnExit(Uninstall)
 }
 Accessor_Uninstall_FillAccessorList(Uninstall, Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet)
 {
+	;Lazy loading
+	if(Uninstall.List.len() = 0)
+	{
+		Loop, HKLM , SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, 2, 0
+		{
+			GUID := A_LoopRegName ;Note: This is not always a GUID but can also be a regular name. It seems that MSIExec likes to use GUIDs
+			RegRead, DisplayName, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%GUID%, DisplayName
+			; outputdebug displayname %displayname%
+			RegRead, UninstallString, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%GUID%, UninstallString
+			RegRead, InstallLocation, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%GUID%, InstallLocation
+			RegRead, DisplayIcon, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%GUID%, DisplayIcon
+			; outputdebug orig displayicon %displayicon%
+			if(RegexMatch(DisplayIcon,".+,\d*"))
+			{
+				; outputdebug match
+				Number := strTrim(SubStr(DisplayIcon, InStr(DisplayIcon,",",0,0) + 1), " ")
+				DisplayIcon := strTrim(SubStr(DisplayIcon, 1, InStr(DisplayIcon,",",0,0) - 1), " ")
+			}
+			if(!Number)
+				Number := 0
+			; outputdebug displayicon %displayicon% number %number%
+			if(FileExist(DisplayIcon))
+				hIcon := ExtractAssociatedIcon(Number, DisplayIcon, iIndex)
+			else
+				hIcon := Accessor.GenericIcons.Application
+			; outputdebug hicon %hicon%
+			if(DisplayName)
+				Uninstall.List.append(Object("GUID", GUID, "DisplayName", DisplayName, "UninstallString", UninstallString, "InstallLocation", InstallLocation, "Icon", hIcon))
+		}
+	}
 	FuzzyList := Array()
 	Loop % Uninstall.List.len()
 	{

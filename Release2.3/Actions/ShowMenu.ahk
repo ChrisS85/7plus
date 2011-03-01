@@ -32,11 +32,22 @@ Action_ShowMenu_DisplayString(Action)
 
 Action_ShowMenu_GuiShow(Action, ActionGUI, GoToLabel = "")
 {
+	global Settings_Events
 	static sActionGUI
 	if(GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Menu", "", "", "Menu Name:")
+		Menus := Array()
+		Loop % Settings_Events.len()
+		{
+			if(Settings_Events[A_Index].Trigger.Type = "MenuItem" && Menus.indexOf(Settings_Events[A_Index].Trigger.Menu) = 0)
+			{
+				Menus.append(Settings_Events[A_Index].Trigger.Menu)
+				MenuString .= (Menus.len() = 1 ? "" : "|") Settings_Events[A_Index].Trigger.Menu
+			}
+		}
+	
+		SubEventGUI_Add(Action, ActionGUI, "ComboBox", "Menu", MenuString, "", "Menu:")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "X", "", "", "X:", "Placeholders", "Action_ShowMenu_PlaceholdersX")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Y", "", "", "Y:", "Placeholders", "Action_ShowMenu_PlaceholdersY")
 	}

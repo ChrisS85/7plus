@@ -15,7 +15,7 @@ Accessor_Init()
 	global AccessorPlugins, Accessor, ConfigPath
 	AccessorPluginsList := "WindowSwitcher,FileSystem,Google,Calc,ProgramLauncher,NotepadPlusPlus,Notes,FastFolders,Uninstall,URL,Weather" ;The order here partly determines the order in the window, so choose carefully
 	AccessorPlugins := Array()
-	Accessor := Object("Base", Object("OnExit", "Accessor_OnExit"))
+	Accessor := Object("Base", Object("OnExit", "Accessor_OnExit", "History", Array()))
 	FileRead, xml, %ConfigPath%\Accessor.xml
 	if(!xml)
 	{
@@ -99,6 +99,7 @@ Accessor_Init()
 		Accessor.Keywords.append(Object("Key", XMLObject.Keywords.Keyword[A_Index].Key, "Command", XMLObject.Keywords.Keyword[A_Index].Command))
 	Accessor.GenericIcons := Object()
 	Accessor.GenericIcons.Application := ExtractIcon("shell32.dll", 3, 64)
+	Accessor.GenericIcons.File := ExtractIcon("shell32.dll", 1, 64)
 	Accessor.GenericIcons.Folder := ExtractIcon("shell32.dll", 4, 64)
 	FileAppend, test, %A_Temp%\7plus\test.htm
 	Accessor.GenericIcons.URL := ExtractAssociatedIcon(0, A_Temp "\7plus\test.htm", iIndex)
@@ -123,6 +124,7 @@ Accessor_OnExit(Accessor)
 	XML_Save(XMLObject, ConfigPath "\Accessor.xml")
 	
 	DestroyIcon(Accessor.GenericIcons.Application)
+	DestroyIcon(Accessor.GenericIcons.File)
 	DestroyIcon(Accessor.GenericIcons.Folder)
 	DestroyIcon(Accessor.GenericIcons.URL)
 }
@@ -132,6 +134,7 @@ CreateAccessorWindow(Action)
 	global AccessorListView, Accessor, AccessorPlugins, AccessorOKButton
 	WasCritical := A_IsCritical
 	Critical, Off
+	outputdebug Create Accessor window
 	if(AccessorGUINum := Accessor.GUINum)
 	{
 		gui %AccessorGUINum%:+LastFoundExist
@@ -177,8 +180,14 @@ CreateAccessorWindow(Action)
 	Accessor.hwndListView := hwndListView	
 	Accessor.PreviousWindow := Active
 	Accessor.LauncherHotkey := Action.LauncherHotkey
+	Accessor.History.Index := 1
+	Accessor.History[1] := ""
 	Loop % AccessorPlugins.len()
+	{
+		outputdebug % "load accessor plugin " AccessorPlugins[A_index].type
 		AccessorPlugins[A_Index].OnAccessorOpen(Accessor)
+	}
+	outputdebug All accessor plugins loaded
 	;Check if a plugin set a custom filter
 	GuiControlGet, Filter, , AccessorEdit
 	if(!Filter)
@@ -189,6 +198,7 @@ CreateAccessorWindow(Action)
 	OnMessage(0x100, "Accessor_WM_KEYDOWN")
 	if(WasCritical)
 		Critical
+	outputdebug accessor window created
 	;return Gui number to indicate that the Accessor box is still open
 	return AccessorGUINum
 }
@@ -233,10 +243,11 @@ FillAccessorList()
 	if(Accessor.ImageListID)
 		IL_Destroy(Accessor.ImageListID)
 	Accessor.ImageListID := IL_Create(10,5,1) ; Create an ImageList so that the ListView can display some icons
-	IconCount := 3
+	IconCount := 4
 	ImageList_ReplaceIcon(Accessor.ImageListID, -1, Accessor.GenericIcons.Application)
 	ImageList_ReplaceIcon(Accessor.ImageListID, -1, Accessor.GenericIcons.Folder)
 	ImageList_ReplaceIcon(Accessor.ImageListID, -1, Accessor.GenericIcons.URL)
+	ImageList_ReplaceIcon(Accessor.ImageListID, -1, Accessor.GenericIcons.File)
 	Accessor.List := Array()
 	;Find out if we are in a single plugin context, and add only those items
 	Loop % AccessorPlugins.len()
@@ -328,6 +339,11 @@ AccessorEditEvents()
 			if(NeedsUpdate)
 				break
 		}
+	outputdebug % "cycle " Accessor.History.CycleHistory " filter " Filter
+	if(!Accessor.History.CycleHistory)
+		Accessor.History[1] := Filter
+	else
+		Accessor.History.CycleHistory := 0
 	if(NeedsUpdate)
 		FillAccessorList()
 	Critical, Off
@@ -374,12 +390,16 @@ AccessorClose()
 return
 AccessorOK()
 {
-	global Accessor, AccessorPlugins
+	global Accessor, AccessorPlugins, AccessorEdit
 	GUINum := Accessor.GUINum
 	Gui, %GUINum%: Default
 	GUI, ListView, AccessorListView
 	selected := LV_GetNext()
 	LV_GetText(id,selected,2)
+	GuiControlGet, Filter, , AccessorEdit
+	Accessor.History.Insert(2, Filter)
+	while(Accessor.History.len() > 10)
+		Accessor.History.Delete(11)
 	Loop % AccessorPlugins.len()
 	{
 		if(AccessorPlugins[A_Index].Type = Accessor.List[id].Type)
@@ -466,16 +486,46 @@ Accessor_WM_KEYDOWN(wParam,lParam)
 	}
 	if(wParam = 38) ;Up arrow
 	{
-		selected := LV_GetNext()
-		selected := Mod(selected - 1 + LV_GetCount() - 1, LV_GetCount()) + 1
-		LV_Modify(selected,"Select Vis")
+		if(GetKeyState("Control", "P"))
+		{
+			if(Accessor.History.len() >= Accessor.History.Index + 1 && Accessor.History.Index < 10)
+			{
+				Accessor.History.Index := Accessor.History.Index + 1
+				Accessor.History.CycleHistory := 1
+				GuiControl,, AccessorEdit, % Accessor.History[Accessor.History.Index]
+				SendMessage, 0xC1, -1, , Edit1, A ; EM_LINEINDEX (Gets index number of line)
+				CaretTo := ErrorLevel
+				SendMessage, 0xB1, 0, CaretTo, Edit1, A ;EM_SETSEL
+			}
+		}
+		else
+		{
+			selected := LV_GetNext()
+			selected := Mod(selected - 1 + LV_GetCount() - 1, LV_GetCount()) + 1
+			LV_Modify(selected,"Select Vis")
+		}
 		return 1
 	}
 	else if(wParam = 40) ;Down arrow
 	{
-		selected := LV_GetNext()
-		selected := Mod(selected,LV_GetCount()) + 1
-		LV_Modify(selected,"Select Vis")
+		if(GetKeyState("Control", "P"))
+		{
+			if(Accessor.History.Index > 1)
+			{
+				Accessor.History.Index := Accessor.History.Index - 1
+				Accessor.History.CycleHistory := 1
+				GuiControl,, AccessorEdit, % Accessor.History[Accessor.History.Index]
+				SendMessage, 0xC1, -1, , Edit1, A ; EM_LINEINDEX (Gets index number of line)
+				CaretTo := ErrorLevel
+				SendMessage, 0xB1, 0, CaretTo, Edit1, A ;EM_SETSEL
+			}
+		}
+		else
+		{
+			selected := LV_GetNext()
+			selected := Mod(selected,LV_GetCount()) + 1
+			LV_Modify(selected,"Select Vis")
+		}
 		return 1
 	}
 	; return 0

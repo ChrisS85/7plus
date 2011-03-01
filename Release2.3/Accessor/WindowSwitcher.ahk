@@ -162,6 +162,7 @@ WindowSwitcherAlwaysOnTop()
 }
 GetWindowInfo()
 {
+	global WindowList
 	WS_EX_CONTROLPARENT :=0x10000
 	WS_EX_DLGMODALFRAME :=0x1
 	WS_CLIPCHILDREN :=0x2000000
@@ -197,7 +198,10 @@ GetWindowInfo()
 			continue
 		if(wid_Title = "Window Switcher")
 			continue
-		WinGet, Exe_Name, ProcessName, ahk_id %wid%
+		if(WindowList.HasKey(wid))
+			Exe_Name := WindowList[wid].Executable
+		else
+			WinGet, Exe_Name, ProcessName, ahk_id %wid%
 		WinGet, PID, PID, ahk_id %wid%
 		FullPath := GetModuleFileNameEx(PID)
 		WinGetClass, Win_Class, ahk_id %wid%
