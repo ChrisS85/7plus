@@ -133,9 +133,11 @@ WindowFilter_Matches(WindowFilter, TargetWindow, TriggerFilter = "")
 					&&(!WindowFilter.WindowFilterClass || class = WindowFilter.WindowFilterClass)
 					&&(!WindowFilter.WindowFilterTitle || strStartsWith(title,WindowFilter.WindowFilterTitle)))
 		}
-		else if(WindowFilter.WindowMatchType = "Active")			
+		else if(WindowFilter.WindowMatchType = "Active")	
+		{
 			if(!TargetWindow || WinActive("ahk_id " TargetWindow))
 				return true
+		}
 		else if(WindowFilter.WindowMatchType = "UnderMouse")
 		{
 			MouseGetPos,,,UnderMouse

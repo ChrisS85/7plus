@@ -68,6 +68,7 @@ RegRead, vista7, HKLM, SOFTWARE\Microsoft\Windows NT\CurrentVersion, CurrentVers
 vista7 := vista7 >= 6
 
 ;initialize gdi+
+outputdebug starting gdip
 pToken := Gdip_Startup()
 
 ;Exit Routine
@@ -79,15 +80,18 @@ Menu, tray, add, Settings, SettingsHandler  ; Creates a new menu item.
 menu, tray, Default, Settings
 
 ;Init event system
+outputdebug starting event system
 EventSystem_Startup()
 
 ;Update checker
 IniRead, AutoUpdate, %IniPath%, Misc, AutoUpdate, 1
 if(AutoUpdate)
 {
+	outputdebug AutoUpdate
 	AutoUpdate()
 	AutoUpdate_CheckPatches()
 }
+outputdebug PostUpdate
 PostUpdate()
 
 

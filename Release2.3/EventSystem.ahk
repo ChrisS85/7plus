@@ -118,6 +118,7 @@ TriggerFromOtherInstance(wParam, lParam)
 {
 	global ContextMenu_EventCount, ContextMenu_ID, Events
 	Critical, On
+	outputdebug lParam %lParam%
 	if(lParam = 0) ;0 = Single trigger from something else than context menus
 	{
 		Trigger := EventSystem_CreateSubEvent("Trigger", "Trigger")
@@ -130,6 +131,7 @@ TriggerFromOtherInstance(wParam, lParam)
 		if(FileExist(A_Temp "\7plus\files.txt"))
 			FileRead, files, % "*t " A_Temp "\7plus\files.txt"
 		FileDelete, % A_Temp "\7plus\files.txt"
+		outputdebug files %files%
 		;if it failed (because static context menu is used), try to get it from explorer window
 		Events.GlobalPlaceholders.Context := files ? files : GetSelectedFiles()
 		
@@ -679,7 +681,7 @@ EventScheduler()
 		Loop % EventSchedule.len()
 		{			
 			Event := EventSchedule[EventPos]
-			; outputdebug % "process event " Event.Name
+			outputdebug % "Process event ID: " Event.ID " Name: " Event.Name 
 			index := Events.indexOfSubItem("ID", Event.ID)
 			;Check conditions
 			Success := (!index && Event.Enabled) || Events[index].Enabled || Event.Trigger.Type = "Timer" ;Check enabled state again here, because it might have changed since it was appended to queue
@@ -712,11 +714,12 @@ EventScheduler()
 				}
 			}
 			else
-				outputdebug % "disable " Event.ID " in queue"
+				outputdebug % "event disabled while in queue: ID:" Event.ID " Name: " event.name
 			; outputdebug condition evaluation: %success%
 			if(Success = 0) ;Condition was not fulfilled, remove this event
 			{
 				EventSchedule.Delete(EventPos)
+				outputdebug % "Conditions of event " event.id " were not fulfilled."
 				continue
 			}
 			else if(Success = 1) ;if conditions are fulfilled, execute all actions
@@ -755,6 +758,7 @@ EventScheduler()
 					Events[index].Delete()
 					Events.Remove(Events[index])
 				}
+				outputdebug % "Finished execution of event ID: " event.id " Name:" event.name
 				continue
 			}
 			EventPos++

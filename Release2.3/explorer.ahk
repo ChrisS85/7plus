@@ -204,6 +204,8 @@ ExplorerPathChanged(from, to)
 		}
 	}
 }
+
+;Registers an explorer window for SelectionChanged events. Called when explorer changes path and when new windows are activated/created
 RegisterSelectionChangedEvents()
 {
 	global RegisteredSelectionChangedWindows
@@ -243,6 +245,8 @@ RegisterSelectionChangedEvents()
 		}
 	}
 }
+
+;Unregister an explorer window for SelectionChanged events
 UnregisterSelectionChangedEvents(hwnd)
 {
 	global RegisteredSelectionChangedWindows
@@ -250,9 +254,12 @@ UnregisterSelectionChangedEvents(hwnd)
 	if(i > 0)
 		RegisteredSelectionChangedWindows.Delete(i)
 }
+
+;Called when selection changes in an explorer window. If the shell is restarted, old windows won't be recognized anymore.
 ExplorerSelectionChanged(ExplorerCOMObject)
 {
 	global RegisteredSelectionChangedWindows
+	Critical
 	outputdebug ExplorerSelectionChanged
 	if(RegisteredSelectionChangedWindows.IgnoreNextEvent > 0)
 	{
@@ -269,6 +276,7 @@ ExplorerSelectionChanged(ExplorerCOMObject)
 		if(RegisteredSelectionChangedWindowsItem.SelectionHistory.len() > 10)
 			RegisteredSelectionChangedWindowsItem.SelectionHistory.Delete(1)
 	}
+	Critical, Off
 }
 RestoreExplorerSelection()
 {
@@ -363,11 +371,10 @@ AcquireExplorerConfirmationDialogStrings()
 	return false
 }
 
-
+;Mouse "gestures" (hold left/right and click right/left)
 #if HKMouseGestures && GetKeyState("RButton") && (WinActive("ahk_group ExplorerGroup")||IsDialog()) && IsMouseOverFileList()
 LButton::
 	SuppressRButtonUp:=true
-	;Send !{Left}
 	Shell_GoBack()
 	return
 #if
@@ -381,7 +388,6 @@ LButton::
 
 #if HKMouseGestures && GetKeyState("LButton","P") && (WinActive("ahk_group ExplorerGroup")||IsDialog()) && IsMouseOverFileList()
 RButton::
-	outputdebug go forward
 	Shell_GoForward()
 	SuppressRButtonUp:=true
 	Return

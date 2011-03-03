@@ -529,7 +529,6 @@ InvertSelection()
 
 ShellFolder(hWnd=0,returntype=0) 
 { 
-	outputdebug hwnd %hwnd%
 	if(hWnd||(hWnd:=WinActive("ahk_class CabinetWClass"))||(hWnd:=WinActive("ahk_class ExploreWClass")))
 	{
 		;Find hwnd window
@@ -555,7 +554,6 @@ ShellFolder(hWnd=0,returntype=0)
 				if(returntype=3 || returntype=4)
 				{
 					count := doc.SelectedItems.Count
-					outputdebug count %count%
 					pos := 1
 					while(pos <= count)
 					{
