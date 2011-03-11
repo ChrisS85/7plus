@@ -87,7 +87,7 @@ Accessor_FileSystem_PerformAction(FileSystem, Accessor, AccessorListEntry)
 		SplitPath, path, name
 		ProgramLauncher.List.append(Object("Name",name, "Command", path, "BasePath", ""))
 	}
-	Run(AccessorListEntry.Path)
+	Run("""" AccessorListEntry.Path """")
 }
 Accessor_FileSystem_OnExit(FileSystem)
 {
