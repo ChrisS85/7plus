@@ -676,76 +676,85 @@ EventScheduler()
 	Critical, Off
 	loop
 	{
+		;First, check the conditions of all events in the queue to make sure an event can't influence the result of a condition check of another event.
 		EventPos := 1
-		len := EventSchedule.len()
 		Loop % EventSchedule.len()
 		{			
 			Event := EventSchedule[EventPos]
-			outputdebug % "Process event ID: " Event.ID " Name: " Event.Name 
 			index := Events.indexOfSubItem("ID", Event.ID)
 			;Check conditions
-			Success := (!index && Event.Enabled) || Events[index].Enabled || Event.Trigger.Type = "Timer" ;Check enabled state again here, because it might have changed since it was appended to queue
-			ConditionPos := 1
-			if(Success)
+			if(Event.Conditions.Success != 1) ;Check if conditions have been evaluated before
 			{
-				Loop % Event.Conditions.len()
+				Success := (!index && Event.Enabled) || Events[index].Enabled || Event.Trigger.Type = "Timer" ;Check enabled state again here, because it might have changed since it was appended to queue
+				ConditionPos := 1
+				if(Success)
 				{
-					result := Event.Conditions[ConditionPos].Evaluate(Event)
-					if( result = -1) ;Not decided yet, check later
+					Loop % Event.Conditions.len()
 					{
-						Success := -1
-						break
+						result := Event.Conditions[ConditionPos].Evaluate(Event)
+						if( result = -1) ;Not decided yet, check later
+						{
+							Success := -1
+							break
+						}
+						else if(Event.Conditions[ConditionPos].Negate) ;Result is 0 or 1 before, now invert it
+						{
+							result := 1 - result
+						}
+						if(result = 0) ;Condition did not match
+						{
+							Success := 0
+							break
+						}
+						else if(result = 1) ;This condition was fulfilled, remove it from conditions
+						{
+							Event.Conditions.Delete(ConditionPos)
+							continue
+						}
+						ConditionPos++
 					}
-					else if(Event.Conditions[ConditionPos].Negate) ;Result is 0 or 1 before, now invert it
-					{
-						result := 1 - result
-					}
-					if(result = 0) ;Condition did not match
-					{
-						Success := 0
-						break
-					}
-					else if(result = 1) ;This condition was fulfilled, remove it from conditions
-					{
-						Event.Conditions.Delete(ConditionPos)
-						continue
-					}
-					ConditionPos++
 				}
-			}
-			else
-				outputdebug % "event disabled while in queue: ID:" Event.ID " Name: " event.name
-			; outputdebug condition evaluation: %success%
-			if(Success = 0) ;Condition was not fulfilled, remove this event
-			{
-				EventSchedule.Delete(EventPos)
-				outputdebug % "Conditions of event " event.id " were not fulfilled."
-				continue
-			}
-			else if(Success = 1) ;if conditions are fulfilled, execute all actions
-			{
-				; outputdebug conditions fulfilled
-				Loop % Event.Actions.len()
+				else
+					outputdebug % "event disabled while in queue: ID:" Event.ID " Name: " event.name
+				if(Success = 0) ;Condition was not fulfilled, remove this event
 				{
-					index := Events.indexOfSubItem("ID", Event.ID)
-					if(index && !Events[index].Enabled && Event.Trigger.Type != "Timer") ;Check enabled state again here, because it might have changed since in one of the previous actions during waiting
-					{
-						outputdebug % "disable " Event.ID " during execution"
-						Event.Actions := Array()
-						break
-					}
-					; outputdebug % "perform " Event.Actions[1].DisplayString()
-					result := Event.Actions[1].Execute(Event)
-					if(result = 0) ;Action was cancelled, stop all further actions
-					{
-						Event.Actions := Array()
-						break
-					}
-					else if(result = -1) ;Action needs more time to finish, check back in next main loop
-						break
-					else
-						Event.Actions.Delete(1)
+					EventSchedule.Delete(EventPos)
+					outputdebug % "Conditions of event " event.id " were not fulfilled."
+					continue
 				}
+				else
+					Event.Conditions.Result := 1 ;Set result so conditions don't have to be checked again when this event has a waiting action.
+			}
+			EventPos++
+		}
+		
+		;Now the event queue contains only those events which passed the condition check. These can be processed now.
+		EventPos := 1
+		Loop % EventSchedule.len()
+		{
+			Event := EventSchedule[EventPos]
+			outputdebug % "Process event ID: " Event.ID " Name: " Event.Name
+			; outputdebug conditions fulfilled
+			Loop % Event.Actions.len()
+			{
+				index := Events.indexOfSubItem("ID", Event.ID)
+				if(index && !Events[index].Enabled && Event.Trigger.Type != "Timer") ;Check enabled state again here, because it might have changed since in one of the previous actions during waiting
+				{
+					outputdebug % "disable " Event.ID " during execution"
+					Event.Actions := Array()
+					break
+				}
+				; outputdebug % "perform " Event.Actions[1].DisplayString()
+				result := Event.Actions[1].Execute(Event)
+				if(result = 0) ;Action was cancelled, stop all further actions
+				{
+					Event.Actions := Array()
+					break
+				}
+				else if(result = -1) ;Action needs more time to finish, check back in next main loop
+					break
+				else
+					Event.Actions.Delete(1)
 			}
 			if(Event.Actions.len() = 0) ;No more actions in this event, consider it processed and remove it from queue
 			{
