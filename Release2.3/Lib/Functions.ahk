@@ -146,8 +146,9 @@ RegRead(RootKey, SubKey, ValueName = "") {
 	Return, v
 }
 Run(Target, WorkingDir = "", Mode = "", NonElevated=1) {
+	global Vista7
 	;run as current user
-	if((!A_IsAdmin && NonElevated) || (A_IsAdmin && !NonElevated))
+	if(!Vista7 || (!A_IsAdmin && NonElevated) || (A_IsAdmin && !NonElevated))
 	{
 		Run, %Target% , %WorkingDir%, %Mode% UseErrorLevel, v
 		if(A_LastError)

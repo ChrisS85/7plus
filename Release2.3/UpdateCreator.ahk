@@ -33,6 +33,7 @@ CreateUpdate("X86", "Source")
 CreateUpdate("X86", "Binary")
 CreateUpdate("X64", "Source")
 CreateUpdate("X64", "Binary")
+run, %A_ScriptDir%\7plus.ahk
 return
 CreateUpdate(Platform, Version)
 {

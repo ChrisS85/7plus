@@ -260,10 +260,15 @@ HRESULT CShellExt::Initialize ( LPCITEMIDLIST pidlFolder, LPDATAOBJECT pDO, HKEY
 	FORMATETC etc = { CF_HDROP, NULL, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
 	STGMEDIUM stg = { TYMED_HGLOBAL };
 	bool      bChangedDir = false;
-	DWORD     dwLoadLibFlags = 0;
 
-    if ( (GetVersion() & 0x80000000) == 0 )
-        dwLoadLibFlags = DONT_RESOLVE_DLL_REFERENCES;
+	//Check if 7plus is running
+	wstring TempPath = GetTempFolderPath();//test this for leak
+	FILE * pFile;
+	wstring test = TempPath + L"7plus\\hwnd.txt";
+	errno_t err;
+	err = _wfopen_s(&pFile,(TempPath + L"7plus\\hwnd.txt").c_str(), L"r");
+	if (pFile == NULL) return E_INVALIDARG; //7plus not running
+	fclose(pFile);
 
     // Read the list of folders from the data object.  They're stored in HDROP
     // form, so just get the HDROP handle and then use the drag 'n' drop APIs
@@ -331,7 +336,8 @@ HRESULT CShellExt::Initialize ( LPCITEMIDLIST pidlFolder, LPDATAOBJECT pDO, HKEY
 
 			//ContextMenu on desktop background
 			LPITEMIDLIST pidlDesktop;
-			SHGetKnownFolderIDList(FOLDERID_Desktop,0,NULL, &pidlDesktop);
+			SHGetFolderLocation(NULL,CSIDL_DESKTOP,0,0,&pidlDesktop);
+			//SHGetKnownFolderIDList(FOLDERID_Desktop,0,NULL, &pidlDesktop);
 			WCHAR szDesktop[MAX_PATH];
 			SHGetPathFromIDList(pidlDesktop,szDesktop);
 			if(_wcsicmp(szDesktop, szFile) == 0 && ContextMenuEntries[i].Desktop)
@@ -490,12 +496,10 @@ HRESULT CShellExt::InvokeCommand ( LPCMINVOKECOMMANDINFO pInfo )
     if ( 0 != HIWORD( pInfo->lpVerb ) )
         return E_INVALIDARG;
 
-    // Check that lpVerb is one of our commands (0 or 1)
+    // Check that lpVerb is one of our commands
 	if(LOWORD(pInfo->lpVerb) < MatchingEntries.size() && MatchingEntries[LOWORD(pInfo->lpVerb)] < ContextMenuEntries.size())
 	{
 		wstring TempPath = GetTempFolderPath();//test this for leak
-		bool flag = false;
-
 
 		FILE * pFile;
 		char buffer [100];
@@ -513,25 +517,19 @@ HRESULT CShellExt::InvokeCommand ( LPCMINVOKECOMMANDINFO pInfo )
 				WINDOWPLACEMENT wp;
 				if(GetWindowPlacement(hwnd,&wp))
 				{
-					FILE * pFile;
-					_wfopen_s(&pFile, (TempPath + L"7plus\\files.txt").c_str(), L"w");
-					if (pFile!=NULL)
+					FILE * pFiles;
+					_wfopen_s(&pFiles, (TempPath + L"7plus\\files.txt").c_str(), L"w");
+					if (pFiles!=NULL)
 					{
 						for(unsigned int i = 0; i < Files.size(); i++)
-							fputws((Files[i]  + L"\n").c_str(), pFile);
-						fclose (pFile);
+							fputws((Files[i]  + L"\n").c_str(), pFiles);
+						fclose(pFiles);
 						SendMessage(hwnd, 55555, ContextMenuEntries[MatchingEntries[LOWORD(pInfo->lpVerb)]].ID, 1);
 					}						
 				}
-				else
-					return S_OK;
 			}
-			else
-				return S_OK;
 			fclose (pFile);
 		}
 	}
-	else
-		return S_OK;
 	return S_OK;
 }

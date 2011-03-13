@@ -37,7 +37,7 @@ HKCR
 		{
 			NoRemove ContextMenuHandlers
 			{
-				ForceRemove ShellExt = s '{F547E0EF-E87C-4639-B831-2DE08AD102E9}'
+				ForceRemove 7plus = s '{F547E0EF-E87C-4639-B831-2DE08AD102E9}'
 			}
 		}
 		NoRemove Background
@@ -46,7 +46,7 @@ HKCR
 			{
 				NoRemove ContextMenuHandlers
 				{
-					ForceRemove ShellExt = s '{F547E0EF-E87C-4639-B831-2DE08AD102E9}'
+					ForceRemove 7plus = s '{F547E0EF-E87C-4639-B831-2DE08AD102E9}'
 				}
 			}
 		}
@@ -57,7 +57,7 @@ HKCR
 		{
 			NoRemove ContextMenuHandlers
 			{
-				ForceRemove ShellExt = s '{F547E0EF-E87C-4639-B831-2DE08AD102E9}'
+				ForceRemove 7plus = s '{F547E0EF-E87C-4639-B831-2DE08AD102E9}'
 			}
 		}
 	}
