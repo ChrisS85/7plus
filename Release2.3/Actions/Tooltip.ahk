@@ -16,11 +16,11 @@ Action_ToolTip_ReadXML(Action, XMLAction)
 Action_ToolTip_Execute(Action, Event)
 {
 	Text := Event.ExpandPlaceholders(Action.Text)
-	Timeout := Action.Timeout
+	Timeout := Action.Timeout * 1000
 	if(Action.TrayToolTip)
 	{		
 		Title := Event.ExpandPlaceholders(Action.Title)
-		Notify(Title, Text, Timeout, "GC=555555 TC=White MC=White","")
+		Notify(Title, Text, Timeout / 1000, "GC=555555 TC=White MC=White","")
 		; ToolTip(1, Text, Title, "O1 L1 C1 XTrayIcon YTrayIcon")
 		; SetTimer, ToolTipClose, -%Timeout%
 	}
@@ -48,7 +48,7 @@ Action_ToolTip_GuiShow(Action, ActionGUI, GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Text", "", "", "Text:", "Placeholders", "Action_ToolTip_Placeholders_Text")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Timeout", "", "", "Timeout:")
+		SubEventGUI_Add(Action, ActionGUI, "Edit", "Timeout", "", "", "Timeout [s]:")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "TrayToolTip", "Use notification window instead")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Title", "", "", "Title:", "Placeholders", "Action_ToolTip_Placeholders_Title")
 	}
