@@ -38,9 +38,9 @@ Action_Volume_Execute(Action, Event)
 			if(!VolumeNotifyID)
 			{
 				if(VA_GetMasterMute())
-					VolumeNotifyID := Notify("Volume","","","PG=100 PW=250 GC=555555 SI=0 SC=0 ST=0 TC=White MC=White AC=ToggleMute",Vista7 ? 220 : 173)
+					VolumeNotifyID := Notify("Volume","","","PG=100 PW=250 GC=555555 SI=0 SC=0 ST=0 TC=White MC=White AC=ToggleMute", 220)
 				else
-					VolumeNotifyID := Notify("Volume","","","PG=100 PW=250 GC=555555 SI=0 SC=0 ST=0 TC=White MC=White AC=ToggleMute",Vista7 ? 169 : 114)
+					VolumeNotifyID := Notify("Volume","","","PG=100 PW=250 GC=555555 SI=0 SC=0 ST=0 TC=White MC=White AC=ToggleMute", 169)
 			}
 			
 			Notify("","",VA_GetMasterVolume(),"Progress",VolumeNotifyID)
@@ -58,16 +58,17 @@ Action_Volume_Execute(Action, Event)
 		else if(Action.Action = "Toggle mute/unmute")
 			SoundSet, 0,, Mute
 		else
-			SoundSetWaveVolume, %Volume%
+			SoundSet, %Volume%
 		if(Action.ShowVolume)
 		{
 			if(!VolumeNotifyID)
 			{
 				if(SoundGet("","Mute"))
-					VolumeNotifyID := Notify("Volume","","","PG=100 PW=250 GC=555555 SI=0 ST=0 TC=White MC=White AC=ToggleMute",Vista7 ? 220 : 173)
+					VolumeNotifyID := Notify("Volume","","","PG=100 PW=250 GC=555555 SI=0 ST=0 TC=White MC=White AC=ToggleMute", 169)
 				else
-					VolumeNotifyID := Notify("Volume","","","PG=100 PW=250 GC=555555 SI=0 ST=0 TC=White MC=White AC=ToggleMute",Vista7 ? 169 : 114)
+					VolumeNotifyID := Notify("Volume","","","PG=100 PW=250 GC=555555 SI=0 ST=0 TC=White MC=White AC=ToggleMute", 110)
 			}
+			;msgbox % SoundGet("","Volume")
 			Notify("","",SoundGet("","Volume"),"Progress",VolumeNotifyID)
 			SetTimer, ClearNotifyID, -1500
 		}
