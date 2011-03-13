@@ -2,7 +2,7 @@ ImageConverter(Files)
 {
 	global ImageConverter_ListView,ImageConverter_Picture,ImageConverter_Radio1,ImageConverter_Radio2,ImageConverter_AbsWidth,ImageConverter_AbsHeight
 	global ImageConverter_RelWidth,ImageConverter_RelHeight,ImageConverter_KeepAspectRatio,ImageConverter_TargetExtension,ImageConverter_DeleteOldFiles
-	global ImageConverter_OverwriteFiles,ImageConverter_Quality,ImageConverter_txtQuality,ImageConverter_Lock,ImageQuality
+	global ImageConverter_OverwriteFiles,ImageConverter_Quality,ImageConverter_txtQuality,ImageConverter_Lock,ImageQuality, Vista7
 	static sFiles, GUINum, hwndImageConverter_Picture, AspectRatio, LastChanged, w, h, lastPos, Targets
 	if(!IsObject(Files))
 		Files := ToArray(Files)
@@ -343,10 +343,10 @@ ImageConverter(Files)
 	{
 		Loop % FailedImages.len()
 			Files .= (A_Index := 1 ? "" : "`n") FailedImages[A_Index]
-		Notify("Image Conversion failed!", "Failed to convert these files:`n" Files, 5, "GC=555555 TC=White MC=White",78)
+		Notify("Image Conversion failed!", "Failed to convert these files:`n" Files, 5, "GC=555555 TC=White MC=White",Vista7 ? 78 : 110)
 	}
 	else
-		Notify("Image Conversion completed!", "Successfully converted " ConvertedImages.len() " files.", 5, "GC=555555 TC=White MC=White",145)
+		Notify("Image Conversion completed!", "Successfully converted " ConvertedImages.len() " files.", 5, "GC=555555 TC=White MC=White",Vista7 ? 145 : 22)
 	
 	Gui, %GUINum%: Destroy
 	GUINum := ""

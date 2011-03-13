@@ -38,9 +38,9 @@ Action_Volume_Execute(Action, Event)
 			if(!VolumeNotifyID)
 			{
 				if(VA_GetMasterMute())
-					VolumeNotifyID := Notify("Volume","","","PG=100 PW=250 GC=555555 SI=0 SC=0 ST=0 TC=White MC=White AC=ToggleMute",220)
+					VolumeNotifyID := Notify("Volume","","","PG=100 PW=250 GC=555555 SI=0 SC=0 ST=0 TC=White MC=White AC=ToggleMute",Vista7 ? 220 : 173)
 				else
-					VolumeNotifyID := Notify("Volume","","","PG=100 PW=250 GC=555555 SI=0 SC=0 ST=0 TC=White MC=White AC=ToggleMute",169)
+					VolumeNotifyID := Notify("Volume","","","PG=100 PW=250 GC=555555 SI=0 SC=0 ST=0 TC=White MC=White AC=ToggleMute",Vista7 ? 169 : 114)
 			}
 			
 			Notify("","",VA_GetMasterVolume(),"Progress",VolumeNotifyID)
@@ -64,9 +64,9 @@ Action_Volume_Execute(Action, Event)
 			if(!VolumeNotifyID)
 			{
 				if(SoundGet("","Mute"))
-					VolumeNotifyID := Notify("Volume","","","PG=100 PW=250 GC=555555 SI=0 ST=0 TC=White MC=White AC=ToggleMute",220)
+					VolumeNotifyID := Notify("Volume","","","PG=100 PW=250 GC=555555 SI=0 ST=0 TC=White MC=White AC=ToggleMute",Vista7 ? 220 : 173)
 				else
-					VolumeNotifyID := Notify("Volume","","","PG=100 PW=250 GC=555555 SI=0 ST=0 TC=White MC=White AC=ToggleMute",169)
+					VolumeNotifyID := Notify("Volume","","","PG=100 PW=250 GC=555555 SI=0 ST=0 TC=White MC=White AC=ToggleMute",Vista7 ? 169 : 114)
 			}
 			Notify("","",SoundGet("","Volume"),"Progress",VolumeNotifyID)
 			SetTimer, ClearNotifyID, -1500

@@ -57,7 +57,7 @@ Action_NewFolder_Execute(Action, Event)
 	
 	if(!InStr(FileExist(Testpath), "D"))
 	{
-		Notify("Could not create new folder!", "Could not create a new folder here. Make sure you have the correct permissions!", "5", "GC=555555 TC=White MC=White",78)
+		Notify("Could not create new folder!", "Could not create a new folder here. Make sure you have the correct permissions!", "5", "GC=555555 TC=White MC=White",Vista7 ? 78 : 110)
 		; ToolTip(1, "Could not create a new folder here. Make sure you have the correct permissions!", "Could not create new folder!","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
 		; SetTimer, ToolTipClose, -5000
 		return 0

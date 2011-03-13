@@ -113,7 +113,7 @@ _Notify_:
   If FileExist(Image) 
    Gui, %GN%:Add, Picture, w%IW% h%IH% Icon%IN%, % Image 
   Else 
-   Gui, %GN%:Add, Picture, w%IW% h%IH% Icon%Image%, c:\windows\system32\shell32.dll 
+   Gui, %GN%:Add, Picture, w%IW% h%IH% Icon%Image%, %A_WinDir%\system32\shell32.dll 
   ImageOptions = x+10 
  }
  If Title <> 

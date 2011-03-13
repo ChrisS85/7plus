@@ -89,7 +89,7 @@ Action_Upload_ReadXML(Action, XMLAction)
 
 Action_Upload_Execute(Action, Event)
 {
-	global FTP
+	global FTP, Vista7
 	SourceFiles := Event.ExpandPlaceholders(Action.SourceFiles)
 	TargetFolder := Event.ExpandPlaceholders(Action.TargetFolder)
 	TargetFile := Event.ExpandPlaceholders(Action.TargetFile)
@@ -130,7 +130,7 @@ Action_Upload_Execute(Action, Event)
 		if !FTP.Open(Hostname, User, decrypted) 
 		{ 
 			if(!Action.Silent)
-				Notify("Connection Error", "Couldn't connect to " Hostname ". Correct host/username/password?", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",78)
+				Notify("Connection Error", "Couldn't connect to " Hostname ". Correct host/username/password?", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",Vista7 ? 78 : 110)
 			result := 0
 		}
 		else
@@ -139,7 +139,7 @@ Action_Upload_Execute(Action, Event)
 			if(TargetFolder != "" && !ftp.CreateDirectory(TargetFolder))
 			{
 				if(!Action.Silent)
-					Notify("FTP Error", "Couldn't create target directory. Check permissions!", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",78)
+					Notify("FTP Error", "Couldn't create target directory. Check permissions!", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",Vista7 ? 78 : 110)
 				result := 0
 			}
 			else
@@ -153,7 +153,7 @@ Action_Upload_Execute(Action, Event)
 					if(!success && result)
 						success := result
 					if(result=0 && !Action.Silent)
-						Notify("Couldn't upload file", "Couldn't upload " TargetFolder (TargetFolder ? "/" : "") targets[A_Index] " properly. Make sure you have write rights and the path exists", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",78)
+						Notify("Couldn't upload file", "Couldn't upload " TargetFolder (TargetFolder ? "/" : "") targets[A_Index] " properly. Make sure you have write rights and the path exists", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",Vista7 ? 78 : 110)
 					else if(result != 0 && URL && Action.Clipboard)
 						cliptext .= (A_Index = 1 ? "" : "`r`n") URL "/" TargetFolder (TargetFolder ? "/" : "") StringReplace(targets[A_Index], " ", "%20", 1)
 				}
@@ -163,7 +163,7 @@ Action_Upload_Execute(Action, Event)
 				if(!Action.Silent && success)
 				{
 					Notify("","",0, "Wait",FTP.NotifyID)
-					Notify("Transfer finished", "File uploaded", 2, "GC=555555 TC=White MC=White",145)
+					Notify("Transfer finished", "File uploaded", 2, "GC=555555 TC=White MC=White",Vista7 ? 145 : 136)
 					SoundBeep
 				}
 				result := 1
@@ -176,13 +176,13 @@ Action_Upload_Execute(Action, Event)
 }
 Action_Upload_Progress()
 {
-	global FTP
+	global FTP, Vista7
 	my := FTP.File
 	done := my.BytesTransfered
 	total := my.BytesTotal
 	if !FTP.init
 	{
-		FTP.NotifyID := Notify("Uploading " FTP.NumFiles " file" (FTP.NumFiles = 1 ? "":"s") " to " FTP.Hostname,my.RemoteName " - " FormatFileSize(done) " / " FormatFileSize(total),"","PG=100 GC=555555 TC=White MC=White",136)
+		FTP.NotifyID := Notify("Uploading " FTP.NumFiles " file" (FTP.NumFiles = 1 ? "":"s") " to " FTP.Hostname,my.RemoteName " - " FormatFileSize(done) " / " FormatFileSize(total),"","PG=100 GC=555555 TC=White MC=White",Vista7 ? 136 : 136)
 		FTP.init := 1
 		return 1
 	}

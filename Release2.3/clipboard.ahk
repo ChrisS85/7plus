@@ -87,7 +87,7 @@ return
 
 ClipboardMenuClicked(index)
 {
-	global ClipboardList,MuteClipboardList, Events, EventSchedule
+	global ClipboardList,MuteClipboardList, Events, EventSchedule, Vista7
 	if(ClipboardList[index])
 	{
 		ClipboardBackup:=ClipboardAll
@@ -113,7 +113,7 @@ ClipboardMenuClicked(index)
 		}
 		else
 		{
-			Notify("Error pasting text", "Error pasting text", "5", "GC=555555 TC=White MC=White",78)
+			Notify("Error pasting text", "Error pasting text", "5", "GC=555555 TC=White MC=White",Vista7 ? 78 : 110)
 			; ToolTip(1, "Error pasting text", "Error pasting text","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
 			; SetTimer, ToolTipClose, -10000
 		}

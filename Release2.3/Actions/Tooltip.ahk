@@ -49,7 +49,7 @@ Action_ToolTip_GuiShow(Action, ActionGUI, GoToLabel = "")
 		sActionGUI := ActionGUI
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Text", "", "", "Text:", "Placeholders", "Action_ToolTip_Placeholders_Text")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Timeout", "", "", "Timeout:")
-		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "TrayToolTip", "Use tray tooltip")
+		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "TrayToolTip", "Use notification window instead")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Title", "", "", "Title:", "Placeholders", "Action_ToolTip_Placeholders_Title")
 	}
 	else if(GoToLabel = "Placeholders_Text")
