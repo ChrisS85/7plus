@@ -17,7 +17,7 @@ Action_ToolTip_Execute(Action, Event)
 {
 	Text := Event.ExpandPlaceholders(Action.Text)
 	Timeout := Action.Timeout
-	if(TrayToolTip)
+	if(Action.TrayToolTip)
 	{		
 		Title := Event.ExpandPlaceholders(Action.Title)
 		Notify(Title, Text, Timeout, "GC=555555 TC=White MC=White","")
