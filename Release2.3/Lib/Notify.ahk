@@ -98,10 +98,19 @@ _Notify_:
 
  Prev_DetectHiddenWindows := A_DetectHiddenWindows 
  Prev_TitleMatchMode := A_TitleMatchMode 
- DetectHiddenWindows On 
+ DetectHiddenWindows Off
  SetTitleMatchMode 1 
- If (WinExist("NotifyGui"))  ;=== find all Notifications from ALL scripts, for placement 
-  WinGetPos, OtherX, OtherY  ;=== change this to a loop for all open notifications? 
+ WinGet, id, list,NotifyGui
+ Loop, %id%
+ {
+    this_id := id%A_Index%
+    WinGetPos, OtherX, ly
+	if(ly < OtherY || A_Index = 1)
+		OtherY := ly
+ }
+
+ ; If (WinExist("NotifyGui"))  ;=== find all Notifications from ALL scripts, for placement 
+  ; WinGetPos, OtherX, OtherY  ;=== change this to a loop for all open notifications? 
  DetectHiddenWindows %Prev_DetectHiddenWindows% 
  SetTitleMatchMode %Prev_TitleMatchMode% 
 

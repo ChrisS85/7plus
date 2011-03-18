@@ -672,10 +672,11 @@ OnTrigger(Trigger)
 
 EventScheduler()
 {
-	global Events, EventSchedule
+	global Events, EventSchedule, Profiler
 	Critical, Off
 	loop
 	{
+		StartTime := A_TickCount
 		;First, check the conditions of all events in the queue to make sure an event can't influence the result of a condition check of another event.
 		EventPos := 1
 		Loop % EventSchedule.len()
@@ -771,7 +772,9 @@ EventScheduler()
 				continue
 			}
 			EventPos++
-		}			
+		}
+		Profiler.Total.EventLoop += A_TickCount - StartTime
+		Profiler.Current.EventLoop += A_TickCount - StartTime
 		Sleep 100
 	}
 }

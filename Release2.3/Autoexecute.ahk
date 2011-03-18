@@ -39,9 +39,16 @@ if(!A_IsAdmin && RunAsAdmin = "Always/Ask")
 }
 ;Start debugger
 IniRead, DebugEnabled, %IniPath%, General, DebugEnabled , 0
+IniRead, ProfilingEnabled, %IniPath%, General, ProfilingEnabled , 0
 if(DebugEnabled)
 	DebuggingStart()
 outputdebug 7plus Starting...
+if(ProfilingEnabled)
+{
+	Profiler := Object("Total", Object("StartTime", A_TickCount, "EventLoop", 0, "ShellMessage", 0, "HookProc", 0), "Current", Object("StartTime", A_TickCount, "EventLoop", 0, "ShellMessage", 0, "HookProc", 0))
+	SetTimer, ResetCurrentProfiling, 10000
+	SetTimer, ShowProfiling, 1000
+}
 ;If the current config path is set to the program directory but there is no write access, %AppData%\7plus needs to be used.
 ;If this is the first time (i.e. NoAdminSettingsTransfered = 0), all config files need to be copied to the new config path
 if((IsPortable && !WriteAccess(A_ScriptDir "\Accessor.xml")) || ConfigPath = A_AppData "\7plus")
@@ -352,6 +359,7 @@ WriteIni()
 	FileDelete, %IniPath%
 	
 	IniWrite, %DebugEnabled%, %IniPath%, General, DebugEnabled
+	IniWrite, %DebugEnabled%, %IniPath%, General, ProfilingEnabled
 	IniWrite, %ImgName%, %IniPath%, Explorer, Image
 	IniWrite, %TxtName%, %IniPath%, Explorer, Text
 	IniWrite, %HKPlacesBar%, %IniPath%, Explorer, HKPlacesBar

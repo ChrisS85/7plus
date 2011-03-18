@@ -136,15 +136,9 @@ MouseHitTest()
 	SendMessage, 0x84,, ( (MouseY&0xFFFF) << 16 )|(MouseX&0xFFFF),, ahk_id %WindowUnderMouseID%
 	return ErrorLevel
 }
-IsConnected()
+IsConnected(URL="http://code.google.com/p/7plus/")
 {
-	FileDelete, %a_temp%\result.txt
-	RunWait, cmd /c ping  www.google.com -n 1 >%a_temp%\result.txt,, hide
-	FileRead, result, %a_temp%\result.txt
-	FileDelete, %a_temp%\result.txt
-	IfInString, result, 0`%
-		return true
-	return false
+	return DllCall("Wininet.dll\InternetCheckConnection", "Str", URL,0,0)
 }
 /*! TheGood (modified a bit by Fragman)
     Checks if a window is in fullscreen mode. 

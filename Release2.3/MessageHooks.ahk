@@ -1,15 +1,18 @@
 ; see http://msdn.microsoft.com/en-us/library/dd318066(VS.85).aspxs
 HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEventTime ){ 
-	global HKShowSpaceAndSize,HKAutoCheck,TabNum,TabWindow,TabContainerList,UseTabs, Vista7, ResizeWindow, ShowResizeTooltip
+	global HKShowSpaceAndSize,HKAutoCheck,TabNum,TabWindow,TabContainerList,UseTabs, Vista7, ResizeWindow, ShowResizeTooltip, Profiler
 	ListLines, Off
+	StartTime := A_TickCount
 	;On dialog popup, check if its an explorer confirmation dialog
 	if(event=0x00008002) ;EVENT_OBJECT_SHOW
 	{
 		if(HKAutoCheck && Vista7)
-			FixExplorerConfirmationDialogs()
+			FixExplorerConfirmationDialogs()		
+		Profiler.Total.HookProc += A_TickCount - StartTime
+		Profiler.Current.HookProc += A_TickCount - StartTime
 		return
 	}
-	if idObject or idChild
+	if idObject or idChild ;Doesn't each much time, skip for profiling
 		return
 	WinGet, style, Style, ahk_id %hwnd%
 	if (style & 0x40000000)	;return if hwnd is child window, for some reason idChild may be 0 for some children ?!?! ( I hate ms )
@@ -21,7 +24,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 		Trigger.Event := "Window minimized"
 		OnTrigger(Trigger)
 	}
-	if(event=0x8001 && UseTabs) ;EVENT_OBJECT_DESTROY
+	else if(event=0x8001 && UseTabs) ;EVENT_OBJECT_DESTROY
 	{
 		DecToHex(hwnd)
 		if(TabContainerList.ContainsHWND(hwnd))		
@@ -30,9 +33,8 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 			; outputdebug tab closed
 			ExplorerDestroyed(hwnd)
 		}
-		return
 	}
-	if(event=0x800B) ;EVENT_OBJECT_LOCATIONCHANGE
+	else if(event=0x800B) ;EVENT_OBJECT_LOCATIONCHANGE
 	{
 		WinGet, state, minmax, ahk_id %hwnd%
 		if(state = 1)
@@ -42,16 +44,15 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 			Trigger.Event := "Window maximized"
 			OnTrigger(Trigger)
 		}
-	}
-	if(event=0x800B && WinActive("ahk_group ExplorerGroup")) ;EVENT_OBJECT_LOCATIONCHANGE
-	{
-		if(UseTabs)
-			UpdatePosition(TabNum,TabWindow)
-		if(HKShowSpaceAndSize && A_OsVersion = "WIN_7")
-			UpdateInfoPosition()
-		return
-	}
-	if(event = 0x000A && ShowResizeTooltip)
+		if(WinActive("ahk_group ExplorerGroup"))
+		{
+			if(UseTabs)
+				UpdatePosition(TabNum,TabWindow)
+			if(HKShowSpaceAndSize && A_OsVersion = "WIN_7")
+				UpdateInfoPosition()
+		}
+	}	
+	else if(event = 0x000A && ShowResizeTooltip)
 	{
 		ResizeWindow := hwnd
 		SetTimer, ResizeWindowTooltip, 50
@@ -62,7 +63,9 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 		SetTimer, ResizeWindowTooltip, Off
 		ResizeWindowTooltip(true)
 		Tooltip
-	}
+	}	
+	Profiler.Total.HookProc += A_TickCount - StartTime
+	Profiler.Current.HookProc += A_TickCount - StartTime
 	ListLines, On
 }
 ResizeWindowTooltip:
@@ -91,7 +94,8 @@ ShellMessage( nCode, wParam, lParam)
 	WasCritical := A_IsCritical
 	Critical
 	ListLines, Off
-	global ExplorerPath, HKShowSpaceAndSize, BlinkingWindows, wtmwParam, SuppressTabEvents, UseTabs, PreviousWindow, PreviousExplorerPath,WindowList,Accessor, RecentCreateCloseEvents
+	global ExplorerPath, HKShowSpaceAndSize, BlinkingWindows, wtmwParam, SuppressTabEvents, UseTabs, PreviousWindow, PreviousExplorerPath,WindowList,Accessor, RecentCreateCloseEvents,Profiler
+	StartTime := A_TickCount
 	Trigger := EventSystem_CreateSubEvent("Trigger", "OnMessage")
 	Trigger.Message := nCode
 	Trigger.wParam := wParam
@@ -102,44 +106,42 @@ ShellMessage( nCode, wParam, lParam)
 		;Keep a list of recently received create/close messages, because they can be sent multiple times and we only want one.
 		if(!IsObject(RecentCreateCloseEvents))
 			RecentCreateCloseEvents := Array()
-		SetTimer, ClearRecentCreateCloseEvents, -100
-		if(RecentCreateCloseEvents.HasKey(wParam))
-			return
-		else
-			RecentCreateCloseEvents[wParam] := 1
-		
-		Trigger := nCode = 1 ? EventSystem_CreateSubEvent("Trigger","WindowCreated") : EventSystem_CreateSubEvent("Trigger","WindowClosed")
-		class:=WinGetClass("ahk_Id " wParam)
-		Trigger.Window := wParam
-		OnTrigger(Trigger)
-		;Keep a list of windows and their required info stored. This allows to identify windows which were closed recently.
-		if(!WindowList)
-			WindowList := Object()
-		WinGet, hwnds, list,,, Program Manager
-		Loop, %hwnds%
+		SetTimer, ClearRecentCreateCloseEvents, -300
+		if(!RecentCreateCloseEvents.HasKey(wParam))			
 		{
-			hwnd := hwnds%A_Index%
-			WinGetTitle, title, ahk_id %hwnd%
-			if(IsObject(WindowList[hwnd]))
-				WindowList[hwnd].title := title
-			else
+			RecentCreateCloseEvents[wParam] := 1		
+			Trigger := nCode = 1 ? EventSystem_CreateSubEvent("Trigger","WindowCreated") : EventSystem_CreateSubEvent("Trigger","WindowClosed")
+			class:=WinGetClass("ahk_Id " wParam)
+			Trigger.Window := wParam
+			OnTrigger(Trigger)
+			;Keep a list of windows and their required info stored. This allows to identify windows which were closed recently.
+			if(!WindowList)
+				WindowList := Object()
+			WinGet, hwnds, list,,, Program Manager
+			Loop, %hwnds%
 			{
-				WinGetClass, class, ahk_id %hwnd%
-				WinGet, exe, ProcessName, ahk_id %hwnd%
-				WindowList[hwnd] := Object("class", class, "title", title, "Executable", exe)
+				hwnd := hwnds%A_Index%
+				WinGetTitle, title, ahk_id %hwnd%
+				if(IsObject(WindowList[hwnd]))
+					WindowList[hwnd].title := title
+				else
+				{
+					WinGetClass, class, ahk_id %hwnd%
+					WinGet, exe, ProcessName, ahk_id %hwnd%
+					WindowList[hwnd] := Object("class", class, "title", title, "Executable", exe)
+				}
 			}
+			;Remove all closed windows, except the most recently closed one.
+			;NOTE: This could prevent some window identification from working in theory, but it is extremely unlikely 
+			;      and won't happen unless multiple windows are closed rapidly.
+			enum = WindowList._newEnum()
+			while enum[hwnd, value]
+				if(hwnd != wParam && !WindowList.HasKey(hwnd))
+					WindowList.Remove(hwnd)
 		}
-		;Remove all closed windows, except the most recently closed one.
-		;NOTE: This could prevent some window identification from working in theory, but it is extremely unlikely 
-		;      and won't happen unless multiple windows are closed rapidly.
-		enum = WindowList._newEnum()
-		while enum[hwnd, value]
-			if(hwnd != wParam && !WindowList.HasKey(hwnd))
-				WindowList.Remove(hwnd)
-	}
-	
+	}	
 	;Blinking windows detection, add new blinking windows
-	if(nCode=32774)
+	else if(nCode=32774)
 	{
 		class:=WinGetClass("ahk_id " wParam)
 		; outputdebug blinking window %class%
@@ -148,10 +150,9 @@ ShellMessage( nCode, wParam, lParam)
 			BlinkingWindows.Append(wParam)
 			ct:=BlinkingWindows.len()
 		}
-	}
-	
+	}	
 	;Window Activation
-	if(nCode=4||nCode=32772) ;HSHELL_WINDOWACTIVATED||HSHELL_RUDEAPPACTIVATED
+	else if(nCode=4||nCode=32772) ;HSHELL_WINDOWACTIVATED||HSHELL_RUDEAPPACTIVATED
 	{
 		Trigger := Object("base", TriggerBase)
 		Trigger.Type := "WindowActivated"
@@ -179,8 +180,7 @@ ShellMessage( nCode, wParam, lParam)
 			ExplorerActivated(wParam)
 		}
 		Else ;Right now this is called on every window switch, but it shouldn't hurt much
-			ExplorerDeactivated(wParam)
-		
+			ExplorerDeactivated(wParam)		
 	}
 	;Redraw is fired on Explorer path change
 	else if(nCode=6)
@@ -202,6 +202,8 @@ ShellMessage( nCode, wParam, lParam)
 			}
 		}
 	}
+	Profiler.Total.ShellMessage += A_TickCount - StartTime
+	Profiler.Current.ShellMessage += A_TickCount - StartTime
 	ListLines, On
 	if(!WasCritical)
 		Critical, Off

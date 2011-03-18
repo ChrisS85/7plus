@@ -70,3 +70,4 @@ if(!A_IsUnicode)
 #include %A_ScriptDir%\ExplorerTabs.ahk
 #include %A_ScriptDir%\CustomHotkeys.ahk
 #include %A_ScriptDir%\HotkeyGUI.ahk
+#include %A_ScriptDir%\Profiling.ahk

@@ -51,11 +51,11 @@ AutoUpdate()
 PostUpdate()
 {
 	global MajorVersion,MinorVersion,BugfixVersion, ConfigPath, IsPortable, Events
-	if(FileExist(A_TEMP "\Updater.exe")) ;TODO:Change here and below for 2.3.0 to A_TEMP
+	if(FileExist(A_TEMP "\7plus\Updater.exe")) ;TODO:Change here and below for 2.3.0 to A_TEMP
 	{
-		IniRead, tmpMajorVersion, %A_TEMP%\Version.ini,Version,MajorVersion
-		IniRead, tmpMinorVersion, %A_TEMP%\Version.ini,Version,MinorVersion
-		IniRead, tmpBugfixVersion, %A_TEMP%\Version.ini,Version,BugfixVersion
+		IniRead, tmpMajorVersion, %A_TEMP%\7plus\Version.ini,Version,MajorVersion
+		IniRead, tmpMinorVersion, %A_TEMP%\7plus\Version.ini,Version,MinorVersion
+		IniRead, tmpBugfixVersion, %A_TEMP%\7plus\Version.ini,Version,BugfixVersion
 		if(tmpMajorVersion=MajorVersion && tmpMinorVersion = MinorVersion && tmpBugfixVersion = BugfixVersion)
 		{
 			ApplyUpdateFixes()
@@ -72,9 +72,9 @@ PostUpdate()
 					run %A_ScriptDir%\Changelog.txt,, UseErrorlevel
 			}
 		}		
-		FileDelete %A_TEMP%\Updater.exe
+		FileDelete %A_TEMP%\7plus\Updater.exe
 	}
-	FileDelete %A_TEMP%\Version.ini
+	FileDelete %A_TEMP%\7plus\Version.ini
 }
 ApplyUpdateFixes()
 {
@@ -98,36 +98,36 @@ AutoUpdate_CheckPatches()
 	;Disable keyboard hook to increase responsiveness
 	FileCreateDir, %ConfigPath%\Patches
 	FileDelete, %ConfigPath%\PatchInfo.xml
-	Suspend, On
-	URLDownloadToFile, http://7plus.googlecode.com/files/PatchInfo.xml?x=%rand%, %ConfigPath%\PatchInfo.xml
-	Suspend, Off
-	if(!Errorlevel)
+	if(IsConnected("http://7plus.googlecode.com/files/PatchInfo.xml?x=" rand))
 	{
-		FileRead, xml, %ConfigPath%\PatchInfo.xml
-		XMLObject := XML_Read(xml)
-		Update := Object("Message", "") ;Object storing update message
-		Loop ;Iteratively apply all available patches
+		URLDownloadToFile, http://7plus.googlecode.com/files/PatchInfo.xml?x=%rand%, %ConfigPath%\PatchInfo.xml
+		if(!Errorlevel)
 		{
-			version := MajorVersion "." MinorVersion "." BugfixVersion "." (PatchVersion + 1)
-			if(!FileExist(ConfigPath "\Patches\" version ".xml") && XMLObject.HasKey(version)) ;If a new patch is available online, download it to patches directory
-			{
-				random, rand
-				PatchURL := XMLObject[version]
-				Suspend, On
-				URLDownloadToFile, %PatchURL%?x=%rand%, %ConfigPath%\Patches\%version%.xml
-				Suspend, Off
-			}
-			if(FileExist(ConfigPath "\Patches\" version ".xml")) ;If the patch exists in patches directory (does not mean it has been downloaded now, they are stored)
-			{
-				ReadEventsFile(Events, ConfigPath "\Patches\" version ".xml","", Update)
-				PatchVersion++
-				WriteMainEventsFile()
-				patch := true
-				continue
-			}
-			break
+			FileRead, xml, %ConfigPath%\PatchInfo.xml
+			XMLObject := XML_Read(xml)
 		}
-		if(patch)
-			MsgBox, % "A Patch has been installed that updates the event configuration. Applied changes:`n" Update.Message
 	}
+	Update := Object("Message", "") ;Object storing update message
+	Loop ;Iteratively apply all available patches
+	{
+		version := MajorVersion "." MinorVersion "." BugfixVersion "." (PatchVersion + 1)
+		if(IsObject(XMLObject) && !FileExist(ConfigPath "\Patches\" version ".xml") && XMLObject.HasKey(version)) ;If a new patch is available online, download it to patches directory
+		{
+			random, rand
+			PatchURL := XMLObject[version]
+			if(IsConnected(PatchURL "?x=" rand))
+				URLDownloadToFile, %PatchURL%?x=%rand%, %ConfigPath%\Patches\%version%.xml
+		}
+		if(FileExist(ConfigPath "\Patches\" version ".xml")) ;If the patch exists in patches directory (does not mean it has been downloaded now, they are stored)
+		{
+			ReadEventsFile(Events, ConfigPath "\Patches\" version ".xml","", Update)
+			PatchVersion++
+			WriteMainEventsFile()
+			patch := true
+			continue
+		}
+		break
+	}
+	if(patch)
+		MsgBox, % "A Patch has been installed that updates the event configuration. Applied changes:`n" Update.Message
 }
