@@ -64,8 +64,8 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 		ResizeWindowTooltip(true)
 		Tooltip
 	}	
-	Profiler.Total.HookProc += A_TickCount - StartTime
-	Profiler.Current.HookProc += A_TickCount - StartTime
+	Profiler.Total.HookProc := Profiler.Total.HookProc + A_TickCount - StartTime
+	Profiler.Current.HookProc := Profiler.Current.HookProc + A_TickCount - StartTime
 	ListLines, On
 }
 ResizeWindowTooltip:
@@ -202,8 +202,8 @@ ShellMessage( nCode, wParam, lParam)
 			}
 		}
 	}
-	Profiler.Total.ShellMessage += A_TickCount - StartTime
-	Profiler.Current.ShellMessage += A_TickCount - StartTime
+	Profiler.Total.ShellMessage := Profiler.Total.ShellMessage + A_TickCount - StartTime
+	Profiler.Current.ShellMessage := Profiler.Current.ShellMessage + A_TickCount - StartTime
 	ListLines, On
 	if(!WasCritical)
 		Critical, Off

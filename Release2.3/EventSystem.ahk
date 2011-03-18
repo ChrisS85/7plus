@@ -773,8 +773,8 @@ EventScheduler()
 			}
 			EventPos++
 		}
-		Profiler.Total.EventLoop += A_TickCount - StartTime
-		Profiler.Current.EventLoop += A_TickCount - StartTime
+		Profiler.Total.EventLoop := Profiler.Total.EventLoop + A_TickCount - StartTime
+		Profiler.Current.EventLoop := Profiler.Current.EventLoop + A_TickCount - StartTime
 		Sleep 100
 	}
 }

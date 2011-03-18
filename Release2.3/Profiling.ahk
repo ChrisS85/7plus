@@ -1,4 +1,4 @@
-ResetCurrentProfiling:
+﻿ResetCurrentProfiling:
 enum := Profiler.Current._newEnum()
 while enum[k,v]
 {
