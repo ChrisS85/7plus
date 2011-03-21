@@ -1,27 +1,51 @@
+;Main function to expand placeholders. Placeholders are marked by ${key} and by %PATH%
 Event_ExpandPlaceHolders(Event,text)
 {
 	global Events
-	;Expand dynamic placeholders (for example ${Input} defined by input action)
+	;Expand local dynamic placeholders (for example ${MessageResult} defined by SendMessage action)
 	enum := Event.Placeholders._newEnum()
 	while enum[key,value]
 	{
 		if(InStr(text,"${" key "}"))
 			text := StringReplace(text, "${" key "}", value, 1)
 	}
+	;Expand dynamic placeholders with global scope (for example the result of an Input action)
 	enum := Events.GlobalPlaceholders._newEnum()
 	while enum[key,value]
 	{
-		outputdebug key %key%
 		if(InStr(text,"${" key "}"))
 			text := StringReplace(text, "${" key "}", value, 1)
 	}
-	return ExpandGlobalPlaceHolders(text)
+	return ExpandInternalPlaceHolders(text)
 }
-GetFullPathName(SPath)
-{ 
-	VarSetCapacity(lPath,A_IsUnicode ? 520 : 260,0), DllCall("GetLongPathName", Str,SPath, Str,lPath, UInt,260 ) 
-	Return lPath 
+
+;Expands internal placeholders found inside text
+ExpandInternalPlaceholders(text)
+{
+	text := ExpandPathPlaceholders(text)
+	len := strLen(text)
+	pos := 1	
+	Loop % len
+	{
+		2chars := SubStr(text, pos, 2)
+		if(2chars = "${")
+		{
+			end := InStr(text, "}",0,pos + 2)
+			if(end)
+			{
+				placeholder := SubStr(text, pos + 2, end - (pos + 2))
+				expanded := ExpandPlaceholder(placeholder)
+				text := SubStr(text, 1, pos - 1) expanded SubStr(text, end + 1)
+				pos += strLen(expanded)
+				continue
+			}
+		}
+		pos++
+	}
+	return text
 }
+
+;Expand path placeholders like %ProgramFiles% or %TEMP%
 ExpandPathPlaceholders(text)
 {
 	static sProgramFiles, sWinDir, sTemp, sAppData, sDesktop, sMyDocuments, sStartMenu, sStartMenuCommon, s7plusDrive
@@ -49,31 +73,7 @@ ExpandPathPlaceholders(text)
 	StringReplace, text, text, `%7plusDir`%, %A_ScriptDir%, All
 	return text
 }
-ExpandGlobalPlaceholders(text)
-{
-	global ExplorerPath,PreviousExplorerPath
-	text := ExpandPathPlaceholders(text)
-	len := strLen(text)
-	pos := 1	
-	Loop % len
-	{
-		2chars := SubStr(text, pos, 2)
-		if(2chars = "${")
-		{
-			end := InStr(text, "}",0,pos + 2)
-			if(end)
-			{
-				placeholder := SubStr(text, pos + 2, end - (pos + 2))
-				expanded := ExpandPlaceholder(placeholder)
-				text := SubStr(text, 1, pos - 1) expanded SubStr(text, end + 1)
-				pos += strLen(expanded)
-				continue
-			}
-		}
-		pos++
-	}
-	return text
-}
+;Expands a single placeholder. Placeholder argument contains only the name, without ${}
 ExpandPlaceholder(Placeholder)
 {
 	global Vista7, ExplorerPath, PreviousExplorerPath

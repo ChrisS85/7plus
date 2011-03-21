@@ -46,7 +46,7 @@ outputdebug 7plus Starting...
 if(ProfilingEnabled)
 {
 	Profiler := Object("Total", Object("StartTime", A_TickCount, "EventLoop", 0, "ShellMessage", 0, "HookProc", 0), "Current", Object("StartTime", A_TickCount, "EventLoop", 0, "ShellMessage", 0, "HookProc", 0))
-	SetTimer, ResetCurrentProfiling, 10000
+	; SetTimer, ResetCurrentProfiling, 10000
 	SetTimer, ShowProfiling, 1000
 }
 ;If the current config path is set to the program directory but there is no write access, %AppData%\7plus needs to be used.

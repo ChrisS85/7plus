@@ -6,14 +6,15 @@
 }
 Condition_If_ReadXML(Condition, XMLCondition)
 {
-	Condition.Operator := XMLCondition.Operator
-	Condition.Compare := XMLCondition.Compare
-	Condition.With:= XMLCondition.With
+	Condition.Operator := XMLCondition.HasKey("Operator") ? XMLCondition.Operator : Condition.Operator
+	Condition.Compare := XMLCondition.HasKey("Compare") ? XMLCondition.Compare : Condition.Compare
+	Condition.With:= XMLCondition.HasKey("With") ? XMLCondition.With : Condition.With
 }
 Condition_If_Evaluate(Condition, Event)
 {
 	Compare := Event.ExpandPlaceholders(Condition.Compare)
 	With := Event.ExpandPlaceholders(Condition.With)
+	outputdebug evaluate %compare% %with%
 	if(Condition.Operator = "equals")
 		return Compare = With
 	else if(Condition.Operator = "is greater than")

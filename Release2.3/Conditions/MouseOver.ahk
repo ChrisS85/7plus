@@ -17,6 +17,8 @@ Condition_MouseOver_Evaluate(Condition)
 		MouseGetPos,,,window
 		return WindowFilter_Matches(Condition, window)
 	}
+	else if(Condition.MouseOverType = "Clock")
+		return IsMouseOverClock()
 	else
 	{
 		result := MouseHitTest()
@@ -47,7 +49,7 @@ Condition_MouseOver_GuiShow(Condition, ConditionGUI,GoToLabel="")
 		sConditionGUI := ConditionGUI
 		sCondition := Condition
 		PreviousSelection := ""
-		SubEventGUI_Add(Condition, ConditionGUI, "DropDownList", "MouseOverType", "Window|Titlebar|MinimizeButton|MaximizeButton|CloseButton", "MouseOver_SelectionChange", "Mouse Over:")
+		SubEventGUI_Add(Condition, ConditionGUI, "DropDownList", "MouseOverType", "Clock|Window|Titlebar|MinimizeButton|MaximizeButton|CloseButton", "MouseOver_SelectionChange", "Mouse Over:")
 		x := ConditionGUI.x
 		y := ConditionGUI.y
 		w := 200

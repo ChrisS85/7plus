@@ -150,7 +150,7 @@ Accessor_ProgramLauncher_FillAccessorList(ProgramLauncher, Accessor, Filter, Las
 	FuzzyList := Array()
 	InStrList := Array()
 	strippedFilter := WindowSwitcher.Settings.IgnoreFileExtensions ? RegexReplace(Filter, "\.\w+") : Filter
-	Filter := ExpandGlobalPlaceHolders(Filter)
+	Filter := ExpandInternalPlaceHolders(Filter)
 	Loop % ProgramLauncher.List.len()
 	{
 		x := 0
@@ -285,7 +285,7 @@ RefreshProgramLauncherCache(ProgramLauncher, Path ="")
 	Loop % Paths.len()
 	{
 		Path := Paths[A_Index].Path
-		Path := ExpandGlobalPlaceholders(Path)
+		Path := ExpandInternalPlaceholders(Path)
 		if(!Path)
 			continue
 		extList := Paths[A_Index].Extensions

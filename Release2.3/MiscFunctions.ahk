@@ -890,3 +890,14 @@ FormatFileSize(Bytes, Decimals=2, Prefixes="B,KB,MB,GB,TB,PB,EB,ZB,YB")
 		if(Bytes < e := 1024**A_Index)
 			return % Round(Bytes/(e/1024), decimals) . " " . Prefix%A_Index%
 }
+ExploreObj(Obj, NewRow="`n", Equal="  =  ", Indent="`t", Depth=12, CurIndent="") { 
+    for k,v in Obj 
+        ToReturn .= CurIndent . k . (IsObject(v) && depth>1 ? NewRow . ExploreObj(v, NewRow, Equal, Indent, Depth-1, CurIndent . Indent) : Equal . v) . NewRow 
+    return RTrim(ToReturn, NewRow) 
+}
+
+GetFullPathName(SPath)
+{ 
+	VarSetCapacity(lPath,A_IsUnicode ? 520 : 260,0), DllCall("GetLongPathName", Str,SPath, Str,lPath, UInt,260 ) 
+	Return lPath 
+}
