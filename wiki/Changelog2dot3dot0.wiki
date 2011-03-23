@@ -4,6 +4,8 @@
 
 New Functions:
  * Context menu support on files and folders. This is implemented through a shell extension
+ * Dynamic timer: Start a message/shutdown/run timer by middle clicking the clock
+ * Support for generic menus. It's now possible to design and show (sub)menus and trigger events with the entries.
  * Window finder tool for easily selecting window titles/classes/executables in event config
  * Batch Image converter for converting and resizing lots of images at once (through explorer context menu)
  * MD5 Checksum window for generating MD5 checksums (through explorer context menu)
