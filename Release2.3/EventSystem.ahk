@@ -86,9 +86,10 @@
 
 EventSystem_Startup()
 {
-	global Events, EventSchedule
+	global Events, EventSchedule, TemporaryEvents
 	Action_Upload_ReadFTPProfiles()
-	EventsBase := object("base", Array(), "Categories", Array(), "GlobalPlaceholders", Array(), "HighestID", -1, "CreateEvent", "EventSystem_CreateEvent", "Add", "Events_Add", "Remove", "Events_Remove")
+	EventsBase := object("base", Array(), "Categories", Array(), "GlobalPlaceholders", Array(), "HighestID", -1, "CreateEvent", "EventSystem_CreateEvent", "Add", "Events_Add", "Remove", "Events_Remove", "SubItem", "Events_SubItem", "indexOfSubItem", "Events_indexOfSubItem")
+	TemporaryEvents := object("base", object("base", Array(), "HighestID", -1, "Add", "Events_Add"))
 	Events := object("base", EventsBase)
 	EventSystem_CreateBaseObjects()
 	
@@ -142,15 +143,21 @@ TriggerFromOtherInstance(wParam, lParam)
 	Critical, Off
 }
 ;Creates an event and registers it for lEvents list (-->Assigns an ID that is based on the max ID of the default Events list and its settings copy, and increases HighestID count of lEvents and adds it to lEvents)
-EventSystem_CreateAndRegisterEvent(lEvents)
+EventSystem_RegisterEvent(lEvents, Event = "", Enable = 1)
 {
-	global EventBase, Events, Settings_Events
-	HighestID := max(Events.HighestID, Settings_Events.HighestID) + 1 ;Make sure highest ID is used from both event arrays
+	global EventBase, Events, Settings_Events, TemporaryEvents
+	;Temporary events use negative ID for find functions
+	if(lEvents = TemporaryEvents)
+		HighestID := TemporaryEvents.HighestID - 1
+	else
+		HighestID := max(Events.HighestID, Settings_Events.HighestID) + 1 ;Make sure highest ID is used from both event arrays
 	lEvents.HighestID := HighestID	
-	Event := EventSystem_CreateEvent()
+	if(!IsObject(Event))
+		Event := EventSystem_CreateEvent()
 	Event.ID := HighestID
 	lEvents.Add(Event)
-	Event.SetEnabled(true)
+	if(Enable)
+		Event.SetEnabled(true)
 	return Event
 }
 EventSystem_CreateEvent()
@@ -244,11 +251,18 @@ EventSystem_CreateBaseObjects()
 
 EventSystem_End()
 {
-	global Events
+	global Events, TemporaryEvents
 	WriteMainEventsFile()
 	Loop % Events.len()
 	{
 		Event := Events[A_Index]
+		Event.Trigger.OnExit()
+		Loop % Event.Actions.len()
+			Event.Actions[A_Index].OnExit()
+	}
+	Loop % TemporaryEvents.len()
+	{
+		Event := TemporaryEvents[A_Index]
 		Event.Trigger.OnExit()
 		Loop % Event.Actions.len()
 			Event.Actions[A_Index].OnExit()
@@ -287,7 +301,7 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 	Bugfix := XMLObject.BugfixVersion
 	if(CompareVersion(major,MajorVersion,minor,MinorVersion,bugfix,BugfixVersion) > 0)
 		Msgbox Events file was made with a newer version of 7plus. Compatibility is not guaranteed. Please update, or use at own risk!
-		
+	
 	if(Update)
 		Update.Message := Update.Message (XMLObject.Message? "`n" XMLObject.Message : "")
 	if(path = ConfigPath "\Events.xml") ;main config file, read patch version
@@ -465,7 +479,7 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 		enum := Event.Trigger._newEnum()
 		while enum[k,v]
 		{
-			if(strEndsWith(k, "ID"))
+			if(strEndsWith(k, "ID") && IsNumeric(v))
 				Event.Trigger[k] := Event.Trigger[k] + offset
 		}
 		Loop % Event.Conditions.len()
@@ -474,7 +488,7 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 			Condition := Event.Conditions[A_Index]
 			while enum[k,v]
 			{
-				if(strEndsWith(k, "ID"))
+				if(strEndsWith(k, "ID") && IsNumeric(v))
 					Condition[k] := Condition[k] + offset
 			}
 		}
@@ -484,10 +498,8 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 			Action := Event.Actions[A_Index]
 			while enum[k,v]
 			{
-				if(strEndsWith(k, "ID"))
-				{
+				if(strEndsWith(k, "ID") && IsNumeric(v))
 					Action[k] := Action[k] + offset
-				}
 			}
 		}
 		pos++
@@ -642,37 +654,46 @@ WriteEventsFile(Events, path)
 ;This function is called when a trigger event is received. Trigger contains information about 
 OnTrigger(Trigger)
 {
-	global Events,EventSchedule
+	global Events,EventSchedule, TemporaryEvents
 	;Find matching triggers
 	Loop % Events.len()
 	{
 		Event := Events[A_Index]
-		;Order of this if condition is important here, because Event.Trigger.Matches() can disable the event for timers
-		if(Event.Enabled && (Event.Trigger.Type = Trigger.Type && Event.Trigger.Matches(Trigger, Event)) || (Trigger.Type = "Trigger" && Event.ID = Trigger.TargetID))
+		GoSub OnTrigger_TestEvent
+	}
+	Loop % TemporaryEvents.len()	
+	{
+		Event := TemporaryEvents[A_Index]
+		GoSub OnTrigger_TestEvent
+	}
+	return
+	;I hate GoTo/GoSubs, but now it's here and it won't go away :(
+	OnTrigger_TestEvent:	
+	;Order of this if condition is important here, because Event.Trigger.Matches() can disable the event for timers
+	if(Event.Enabled && (Event.Trigger.Type = Trigger.Type && Event.Trigger.Matches(Trigger, Event)) || (Trigger.Type = "Trigger" && Event.ID = Trigger.TargetID))
+	{
+		;Test if the event is already running and mustn't be run multiple times
+		running := false
+		if(Event.OneInstance)
 		{
-			running := false
-			if(Event.OneInstance)
+			Loop % EventSchedule.len()
 			{
-				Loop % EventSchedule.len()
+				if(EventSchedule[A_Index].ID = Event.ID)
 				{
-					if(EventSchedule[A_Index].ID = Event.ID)
-					{
-						running := true
-						break
-					}
+					running := true
+					break
 				}
 			}
-			outputdebug % "schedule event: " Event.Name
-			
-			if(!running)
-				EventSchedule.append(Event.DeepCopy())
-		}
+		}		
+		if(!running)
+			EventSchedule.append(Event.DeepCopy())
 	}
+	return
 }
 
 EventScheduler()
 {
-	global Events, EventSchedule, Profiler
+	global Events, EventSchedule, Profiler, TemporaryEvents
 	Critical, Off
 	loop
 	{
@@ -682,11 +703,12 @@ EventScheduler()
 		Loop % EventSchedule.len()
 		{			
 			Event := EventSchedule[EventPos]
-			index := Events.indexOfSubItem("ID", Event.ID)
+			index := Events.indexOfSubItem("ID", Event.ID) ;Will return the index of the event in Events or TemporaryEvents
+			OriginalEvent := Event.ID < 0 ? TemporaryEvents[index] : Events[index]
 			;Check conditions
 			if(Event.Conditions.Success != 1) ;Check if conditions have been evaluated before
 			{
-				Success := (!index && Event.Enabled) || Events[index].Enabled || Event.Trigger.Type = "Timer" ;Check enabled state again here, because it might have changed since it was appended to queue
+				Success := (!index && Event.Enabled) || OriginalEvent.Enabled || Event.Trigger.Type = "Timer" ;Check enabled state again here, because it might have changed since it was appended to queue
 				ConditionPos := 1
 				if(Success)
 				{
@@ -738,8 +760,9 @@ EventScheduler()
 			; outputdebug conditions fulfilled
 			Loop % Event.Actions.len()
 			{
-				index := Events.indexOfSubItem("ID", Event.ID)
-				if(index && !Events[index].Enabled && Event.Trigger.Type != "Timer") ;Check enabled state again here, because it might have changed since in one of the previous actions during waiting
+				index := Events.indexOfSubItem("ID", Event.ID) ;Will return the index of the event in Events or TemporaryEvents
+				OriginalEvent := Event.ID < 0 ? TemporaryEvents[index] : Events[index]
+				if(index && !OriginalEvent.Enabled && Event.Trigger.Type != "Timer") ;Check enabled state again here, because it might have changed since in one of the previous actions during waiting
 				{
 					outputdebug % "disable " Event.ID " during execution"
 					Event.Actions := Array()
@@ -760,13 +783,14 @@ EventScheduler()
 			if(Event.Actions.len() = 0) ;No more actions in this event, consider it processed and remove it from queue
 			{
 				EventSchedule.Delete(EventPos)
-				index := Events.indexOfSubItem("ID", Event.ID)
+				index := Events.indexOfSubItem("ID", Event.ID) ;Will return the index of the event in Events or TemporaryEvents
+				OriginalEvent := Event.ID < 0 ? TemporaryEvents[index] : Events[index]
 				if(Event.DisableAfterUse && index)
-					Events[index].SetEnabled(false)
+					OriginalEvent.SetEnabled(false)
 				if(Event.DeleteAfterUse && index)
 				{
-					Events[index].Delete()
-					Events.Remove(Events[index])
+					OriginalEvent.Delete()
+					Events.Remove(OriginalEvent)
 				}
 				outputdebug % "Finished execution of event ID: " event.id " Name:" event.name
 				continue

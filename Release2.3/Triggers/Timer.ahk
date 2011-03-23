@@ -9,6 +9,7 @@ Trigger_Timer_ReadXML(Trigger, XMLTrigger)
 	Trigger.Time := XMLTrigger.Time
 	Trigger.ShowProgress := XMLTrigger.ShowProgress
 	Trigger.Restart := XMLTrigger.Restart
+	Timer.Text := XMLTrigger.Text
 }
 
 Trigger_Timer_Enable(Trigger, Event)
@@ -17,15 +18,13 @@ Trigger_Timer_Enable(Trigger, Event)
 		Trigger_Timer_Start(Trigger)
 	if(Trigger.ShowProgress)
 	{
-		x := Trigger.tmpGUINum
-		MainText := Event.Name
 		if(!Trigger.tmpGUINum)
 		{
 			GUINum := GetFreeGuiNum(10)
 			if(GUINum)
 			{
 				Trigger.tmpGUINum := GUINum
-				Gui, %GUINum%:Add, Text, hwndEventName w200,%MainText%
+				Gui, %GUINum%:Add, Text, hwndEventName w200,% Trigger.Text ? Trigger.Text : Event.Name
 				Gui, %GUINum%:Add, Progress, hwndProgress w200 -Smooth, 100
 				GUI, %GUINum%:Add, Text, hwndText w200, Time left:
 				GUI, %GUINum%:Add, Button, hwndStartPause gTimer_StartPause y4 w100, Pause
@@ -40,7 +39,6 @@ Trigger_Timer_Enable(Trigger, Event)
 				Trigger.tmpStop := Stop
 				Trigger.tmpResetHandle := Reset
 				Trigger.tmpEventName := EventName
-				;Progress, %GUINum%:M P100  ,Time left: , %MainText%, %Title%
 				SetTimer, UpdateTimerProgress, 1000
 			}
 		}
@@ -79,7 +77,7 @@ return
 AddTimer()
 {
 	global Events, Settings_Events
-	Event := EventSystem_CreateAndRegisterEvent("")
+	Event := EventSystem_RegisterEvent("") ;Create new event without registering it in the event list so it won't increase max id
 	Event.Trigger := EventSystem_CreateSubEvent("Trigger", "Timer")
 	Event := GUI_EditEvent(Event)
 	if(Event)
@@ -92,11 +90,16 @@ AddTimer()
 }
 TimerEventFromGUINumber(number)
 {
-	global Events
+	global Events, TemporaryEvents
 	Loop % Events.len()
 	{
 		if(Events[A_Index].Trigger.Type = "Timer" && Events[A_Index].Trigger.tmpGUINum = number)
 			return Events[A_Index]
+	}
+	Loop % TemporaryEvents.len()
+	{
+		if(TemporaryEvents[A_Index].Trigger.Type = "Timer" && TemporaryEvents[A_Index].Trigger.tmpGUINum = number)
+			return TemporaryEvents[A_Index]
 	}
 	return 0
 }
@@ -182,31 +185,40 @@ UpdateTimerProgress()
 return
 UpdateTimerProgress()
 {
-	global Events
+	global Events, TemporaryEvents
 	Loop % Events.len()
 	{
-		if(Events[A_Index].Trigger.Type = "Timer") ;Update all timers
+		Event := Events[A_Index]
+		GoSub UpdateTimerProgress_InnerLoop
+	}
+	Loop % TemporaryEvents.len()
+	{
+		Event := TemporaryEvents[A_Index]
+		GoSub UpdateTimerProgress_InnerLoop
+	}
+	return
+	
+	UpdateTimerProgress_InnerLoop:
+	if(Event.Trigger.Type = "Timer") ;Update all timers
+	{
+		timer := Event.Trigger
+		if(Event.Enabled && (!timer.tmpIsPaused || timer.tmpReset) && timer.ShowProgress && timer.tmpGUINum)
 		{
-			timer := Events[A_Index].Trigger
-			if(Events[A_Index].Enabled && (!timer.tmpIsPaused || timer.tmpReset) && timer.ShowProgress && timer.tmpGUINum)
-			{
-				GUINum := timer.tmpGUINum
-				progress := Round(100 - (A_TickCount - timer.tmpStart)/timer.Time * 100)
-				hours := max(Floor((timer.Time - (A_TickCount - timer.tmpStart)) / 1000 / 3600),0)
-				minutes := max(Floor(((timer.Time - (A_TickCount - timer.tmpStart)) / 1000 - hours * 3600)/60),0)
-				seconds := max(Floor(((timer.Time - (A_TickCount - timer.tmpStart)) / 1000 - hours * 3600 - minutes * 60))+1,0)
-				Time := "Time left: " (strLen(hours) = 1 ? "0" hours : hours) ":" (strLen(minutes) = 1 ? "0" minutes : minutes) ":" (strLen(seconds) = 1 ? "0" seconds : seconds)
-				hwndProgress := timer.tmpProgress
-				SendMessage, 0x402, progress,0,, ahk_id %hwndProgress%
-				hwndtext := timer.tmpText
-				ControlSetText,,%Time%, ahk_id %hwndtext%
-				hwndEventName := timer.tmpEventName
-				text := Events[A_Index].Name
-				ControlSetText,,%text%, ahk_id %hwndEventName%
-				timer.tmpReset := 0
-			}
+			GUINum := timer.tmpGUINum
+			progress := Round(100 - (A_TickCount - timer.tmpStart)/timer.Time * 100)
+			hours := max(Floor((timer.Time - (A_TickCount - timer.tmpStart)) / 1000 / 3600),0)
+			minutes := max(Floor(((timer.Time - (A_TickCount - timer.tmpStart)) / 1000 - hours * 3600)/60),0)
+			seconds := max(Floor(((timer.Time - (A_TickCount - timer.tmpStart)) / 1000 - hours * 3600 - minutes * 60))+1,0)
+			Time := "Time left: " (strLen(hours) = 1 ? "0" hours : hours) ":" (strLen(minutes) = 1 ? "0" minutes : minutes) ":" (strLen(seconds) = 1 ? "0" seconds : seconds)
+			hwndProgress := timer.tmpProgress
+			SendMessage, 0x402, progress,0,, ahk_id %hwndProgress%
+			hwndtext := timer.tmpText
+			ControlSetText,,%Time%, ahk_id %hwndtext%
+			hwndEventName := timer.tmpEventName
+			timer.tmpReset := 0
 		}
-	 }
+	}
+	return
 }
 
 ;Called every second to check if time has run out yet
@@ -248,6 +260,7 @@ Trigger_Timer_GuiShow(Trigger, TriggerGUI)
 	SubEventGUI_Add(Trigger, TriggerGUI, "Time", "tmpTime", "", "", "Start in:")
 	SubEventGUI_Add(Trigger, TriggerGUI, "Checkbox", "ShowProgress", "Show remaining time", "", "")
 	SubEventGUI_Add(Trigger, TriggerGUI, "Checkbox", "Restart", "Restart timer on zero", "", "")
+	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Text", "", "", "Window text:")
 }
 
 Trigger_Timer_GuiSubmit(Trigger, TriggerGUI)

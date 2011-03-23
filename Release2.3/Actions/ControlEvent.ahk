@@ -8,18 +8,24 @@
 
 Action_ControlEvent_ReadXML(Action, XMLAction)
 {
+	Condition_If_ReadXML(Action, XMLAction)
 	Action.EventID := XMLAction.EventID
 	Action.Action := XMLAction.Action
-	Condition_If_ReadXML(Action, XMLAction)
+	if(Action.Action = "Copy Event")
+	{
+		Action.EvaluateOnCopy := XMLAction.EvaluateOnCopy
+		Action.Placeholder := XMLAction.Placeholder
+		Action.DeleteAfterUse := XMLAction.DeleteAfterUse
+	}
 }
 
 Action_ControlEvent_Execute(Action, Event)
 {
-	global Events
+	global Events, TemporaryEvents
 	if(Condition_If_Evaluate(Action, Event))
 	{
 		outputdebug condition fulfilled
-		TargetEvent := Events.SubItem("ID", Action.EventID)
+		TargetEvent := Events.SubItem("ID", Event.ExpandPlaceholders(Action.EventID))
 		if(Action.Action = "Enable Event")
 			TargetEvent.Enable()
 		else if(Action.Action = "Disable Event")
@@ -38,6 +44,16 @@ Action_ControlEvent_Execute(Action, Event)
 			Trigger.TargetID := Action.EventID
 			OnTrigger(Trigger)
 		}
+		else if(Action.Action = "Copy Event")
+		{
+			Copy := EventSystem_RegisterEvent(TemporaryEvents, TargetEvent.DeepCopy(), 0)
+			Copy.DeleteAfterUse := Action.DeleteAfterUse
+			;Placeholders may be evaluated at the time of the copy operation, 
+			;so they don't use placeholders which may have changed in the meantime
+			if(Action.EvaluateOnCopy)
+				objDeepPerform(Copy, "Event_ExpandPlaceHolders", Copy)
+			Events.GlobalPlaceholders[Action.Placeholder] := Copy.ID
+		}
 	}
 	return 1
 } 
@@ -50,13 +66,46 @@ Action_ControlEvent_DisplayString(Action)
 
 Action_ControlEvent_GuiShow(Action, ActionGUI, GoToLabel = "")
 {	
-	SubEventGUI_Add(Action, ActionGUI, "DropDownList", "Action", "Enable Event|Disable Event|Toggle Enable/Disable|Trigger Event", "", "Action:")
-	SubEventGUI_Add(Action, ActionGUI, "DropDownList", "EventID", "TriggerType:", "", "Event:")
-	SubEventGUI_Add(Action, ActionGUI, "Text", "text1", "This action is only performed if the condition below is matched.")
-	SubEventGUI_Add(Action, ActionGUI, "Text", "text2", "Leave both text fields empty to always perform it.")
-	Condition_If_GuiShow(Action, ActionGUI, "")
+	static sActionGUI, sAction, PreviousSelection
+	if(GoToLabel = "")
+	{
+		sActionGUI := ActionGUI
+		sAction := Action
+		PreviousSelection := ""
+		SubEventGUI_Add(Action, ActionGUI, "Text", "text1", "This action is only performed if the condition below is matched.")
+		SubEventGUI_Add(Action, ActionGUI, "Text", "text2", "Leave both text fields empty to always perform it.")
+		Condition_If_GuiShow(Action, ActionGUI, "")
+		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "Action", "Copy Event|Disable Event|Enable Event|Toggle Enable/Disable|Trigger Event", "Action_ControlEvent_SelectionChange", "Action:")
+		SubEventGUI_Add(Action, ActionGUI, "ComboBox", "EventID", "TriggerType:", "", "Event:")
+		Action_ControlEvent_GuiShow("", "","ControlEvent_SelectionChange")
+	}
+	else if(GoToLabel = "ControlEvent_SelectionChange")
+	{
+		ControlGetText, Action, , % "ahk_id " sActionGUI.DropDown_Action
+		if(Action = "Copy Event")
+		{
+			if(Action != PreviousSelection)
+			{
+				sAction.EvaluateOnCopy := true
+				sAction.DeleteAfterUse := true
+				SubEventGUI_Add(sAction, sActionGUI, "Text", "Text", "Copied event is stored in placeholder (Enter without ${})")
+				SubEventGUI_Add(sAction, sActionGUI, "Edit", "Placeholder", "", "", "Placeholder:")				
+				; SubEventGUI_Add(sAction, sActionGUI, "Text", "Text1", "Placeholders can be evaluated when copying to make them use the current value.")
+				SubEventGUI_Add(sAction, sActionGUI, "Checkbox", "EvaluateOnCopy", "Evaluate placeholders when copying to make them use the current value")
+				SubEventGUI_Add(sAction, sActionGUI, "Checkbox", "DeleteAfterUse", "Delete copy after use")
+			}
+		}
+		else
+		{
+			if(PreviousSelection = "Window")
+				sActionGUI.y := sActionGUI.y - 130
+		}
+		PreviousSelection := Action
+	}
 }
-
+Action_ControlEvent_SelectionChange:
+Action_ControlEvent_GuiShow("","","ControlEvent_SelectionChange")
+return
 Action_ControlEvent_GuiSubmit(Action, ActionGUI)
 {
 	SubEventGUI_GUISubmit(Action, ActionGUI)

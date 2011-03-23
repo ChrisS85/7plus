@@ -12,10 +12,10 @@ Action_ControlTimer_ReadXML(Action, XMLAction)
 		Action.Time := XMLAction.Time
 }
 
-Action_ControlTimer_Execute(Action, Timer)
+Action_ControlTimer_Execute(Action, ThisEvent)
 {
 	global Events
-	Event := Events.SubItem("ID", Action.TimerID)
+	Event := Events.SubItem("ID", ThisEvent.ExpandPlaceholders(Action.TimerID))
 	if(Action.Action = "Start timer" && (!Event.Trigger.tmpStart || Event.Trigger.tmpIsPaused))
 	{
 		Event.Enable()
@@ -60,7 +60,7 @@ Action_ControlTimer_GuiShow(Action, ActionGUI, GoToLabel = "")
 		sAction := Action
 		PreviousSelection := ""
 		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "Action", "Set time|Start timer|Stop timer|Pause timer|Start/Pause timer|Reset timer", "Action_ControlTimer_SelectionChange", "Action:")
-		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "TimerID", "TriggerType:Timer", "", "Timer:")q
+		SubEventGUI_Add(Action, ActionGUI, "ComboBox", "TimerID", "TriggerType:Timer", "", "Timer:")
 		Action_ControlTimer_GuiShow("", "","ControlTimer_SelectionChange")
 	}
 	else if(GoToLabel = "ControlTimer_SelectionChange")
@@ -95,9 +95,9 @@ Action_ControlTimer_GuiShow(Action, ActionGUI, GoToLabel = "")
 		PreviousSelection := Action
 	}
 	else if(GoToLabel = "Placeholder_Time")
-	{
 		SubEventGUI_Placeholders(sActionGUI, "Time")
-	}
+	else if(GoToLabel = "Placeholder_Timer")
+		SubEventGUI_Placeholders(sActionGUI, "TimerID")
 }
 Action_ControlTimer_SelectionChange:
 Action_ControlTimer_GuiShow("","","ControlTimer_SelectionChange")

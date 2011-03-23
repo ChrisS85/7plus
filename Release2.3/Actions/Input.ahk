@@ -20,7 +20,7 @@ Action_Input_Execute(Action,Event)
 	global EventSchedule
 	if(!Action.tmpGuiNum)
 	{
-		result := UserInputBox(Action)
+		result := UserInputBox(Action,Event)
 		if(result)
 			return -1
 		else
@@ -143,7 +143,7 @@ Action_Input_GuiSubmit(Action, ActionGUI)
 	}
 }
 ;Non blocking Input box (can wait for closing in event system though)
-UserInputBox(Action, GoToLabel = "")
+UserInputBox(Action, Event, GoToLabel = "")
 {
 	static sAction
 	if(GoToLabel = "")
@@ -155,7 +155,7 @@ UserInputBox(Action, GoToLabel = "")
 		Text :=	Event.ExpandPlaceHolders(Action.Text)
 		GuiNum:=GetFreeGUINum(10)
 		StringReplace, Text, Text, ``n, `n
-		Gui,%GuiNum%:Destroy 
+		Gui,%GuiNum%:Destroy
 		Gui,%GuiNum%:Add,Text,y10,%Text% 
 		
 		if(Action.DataType = "Text" || Action.DataType = "Path" || Action.DataType = "File")
@@ -175,7 +175,7 @@ UserInputBox(Action, GoToLabel = "")
 		}
 		else if(Action.DataType = "Time")
 		{
-			Gui, %GuiNum%:Add, DateTime, x+10 yp-4 hwndEdit Choose20100101001000, Time
+			Gui, %GuiNum%:Add, DateTime, x+10 yp-4 w200 hwndEdit Choose20100101001000, Time
 			Action.tmpEdit := Edit
 		}
 		else if(Action.DataType = "Selection")
@@ -187,11 +187,17 @@ UserInputBox(Action, GoToLabel = "")
 				Action["tmpRadio" A_Index] := Radio
 			}
 		}
+		Gui, %GuiNum%:Add, Text, x+-80 hwndTest, test
+		ControlGetPos, PosX, PosY,,,,ahk_id %Test%
+		WinKill, ahk_id %Test%
+		if(PosX < 160)
+			PosX := 160
 		if(!Action.Cancel)
-			Gui, %GuiNum%:Add, Button, Default xp+120 y+10 w80 gInputBox_OK, OK
+			Gui, %GuiNum%:Add, Button, Default x%PosX% y%PosY% w80 gInputBox_OK, OK
 		if(Action.Cancel)
 		{
-			Gui, %GuiNum%:Add, Button, Default xp+30 y+10 w80 gInputBox_OK, OK
+			PosX -= 90
+			Gui, %GuiNum%:Add, Button, Default x%PosX% y%PosY% w80 gInputBox_OK, OK
 			Gui, %GuiNum%:Add, Button, x+10 w80 gInputBox_Cancel, Cancel
 		}
 		Gui,%GuiNum%:-MinimizeBox -MaximizeBox +LabelInputbox
@@ -220,7 +226,7 @@ UserInputBox(Action, GoToLabel = "")
 }
 
 InputBox_Browse:
-UserInputBox("","Browse")
+UserInputBox("","","Browse")
 return
 InputboxClose:
 InputboxEscape:

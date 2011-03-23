@@ -61,7 +61,7 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 		y += 30
 		SubEventGUI["Button_" name] := Button_%name%
 	}
-	else if(type = "DropDownList")
+	else if(type = "DropDownList" || type = "ComboBox")
 	{
 		;Select event dropdownlist
 		if(strStartsWith(text, "TriggerType:"))
@@ -85,27 +85,26 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 		}
 		if(!strEndsWith(text1,"||"))
 			text1 := SubStr(text1, 1, -1)
-		options = x%x% y%y% w%w% hwndDropDown_%name%
-		if(gLabel != "")
-			options .= " g" gLabel
-		Gui, Add, DropDownList, %options%, %text1%
-		SubEventGUI["DropDown_" name] := DropDown_%name%
+		if(type = "DropDownList")
+		{
+			options = x%x% y%y% w%w% hwndDropDown_%name%
+			if(gLabel != "")
+				options .= " g" gLabel
+			Gui, Add, DropDownList, %options%, %text1%
+			SubEventGUI["DropDown_" name] := DropDown_%name%
+		}
+		else if(type = "ComboBox")
+		{
+			options = x%x% y%y% w%w% hwndComboBox_%name%
+			if(gLabel != "")
+				options .= " g" gLabel
+			Gui, Add, ComboBox, %options%, %text1%
+			SubEventGUI["ComboBox_" name] := ComboBox_%name%
+			if(!InStr(text1, "||"))
+				ControlSetText, , % SubEvent[name], % "ahk_id " ComboBox_%name%
+		}
 		y += 30
-	}
-	else if(type = "ComboBox")
-	{
-		;Construct options
-		Loop, Parse, text, |
-			if(A_LoopField)
-				text1 .= A_LoopField "|"
-		options = x%x% y%y% w%w% hwndComboBox_%name%
-		if(gLabel != "")
-			options .= " g" gLabel
-		Gui, Add, ComboBox, %options%, %text1%
-		SubEventGUI["ComboBox_" name] := ComboBox_%name%
-		ControlSetText, , % SubEvent[name], % "ahk_id " ComboBox_%name%
-		y += 30
-	}
+	}	
 	else if(type = "Time")
 	{
 		text := SubEvent[name]

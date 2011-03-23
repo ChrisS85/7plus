@@ -901,3 +901,20 @@ GetFullPathName(SPath)
 	VarSetCapacity(lPath,A_IsUnicode ? 520 : 260,0), DllCall("GetLongPathName", Str,SPath, Str,lPath, UInt,260 ) 
 	Return lPath 
 }
+
+;This function calls a of an event on every key in it
+objDeepPerform(obj, function, Event)
+{
+	if(!IsFunc(function))
+		return
+	if(obj.HasKey("base"))
+		objDeepPerform(obj.base, function, Event)
+	enum := obj._newenum() 
+	while enum[key, value] 
+	{
+		if(IsObject(value))
+			objDeepPerform(value, function, Event)
+		else
+			obj[key] := %function%(Event, value)
+	}
+}

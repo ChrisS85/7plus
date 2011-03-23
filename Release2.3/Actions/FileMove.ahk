@@ -16,7 +16,6 @@ Action_Move_Execute(Action, Event)
 }
 Action_Move_DisplayString(Action)
 {
-	global Settings_Events
 	return Action_FileOperation_DisplayString(Action)
 }
 

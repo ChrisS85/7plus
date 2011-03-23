@@ -37,6 +37,7 @@ Action_ShowMenu_GuiShow(Action, ActionGUI, GoToLabel = "")
 	if(GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
+		;Look for menus in Settings_Events to catch unsaved menus
 		Menus := Array()
 		Loop % Settings_Events.len()
 		{

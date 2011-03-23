@@ -16,7 +16,6 @@ Action_Delete_Execute(Action, Event)
 }
 Action_Delete_DisplayString(Action)
 {
-	global Settings_Events
 	return Action_FileOperation_DisplayString(Action)
 }
 

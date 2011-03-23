@@ -2,6 +2,7 @@
 Action_Upload_Init(Action)
 {
 	global Settings_Events
+	;When creating a new upload action, try to find estimates for some settings based on existing upload actions
 	Loop % Settings_Events.len()
 	{
 		Event := Settings_Events[A_Index]

@@ -10,7 +10,6 @@ return
 #if
 HotkeyTrigger(key)
 {
-	global Events
 	;outputdebug, % "key: " A_ThisHotkey ", Event key: " Trigger.key
 	if(!key)
 		return 0

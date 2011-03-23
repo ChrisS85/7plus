@@ -16,7 +16,6 @@ Action_Copy_Execute(Action, Event)
 }
 Action_Copy_DisplayString(Action)
 {
-	global Settings_Events
 	return Action_FileOperation_DisplayString(Action)
 }
 

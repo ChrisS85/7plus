@@ -1071,7 +1071,7 @@ GUI_AddEvent()
 {
 	global Settings_Events, GUI_EventsList
 	Gui, ListView, GUI_EventsList
-	Event := EventSystem_CreateAndRegisterEvent(Settings_Events) ;Event is added to Settings_Events here
+	Event := EventSystem_RegisterEvent(Settings_Events) ;Event is added to Settings_Events here
 	LV_Modify(LV_GetNext(""), "-Select")
 	LV_Add("Select Check", "", Event.ID, Event.Trigger.DisplayString(), Event.Name)	
 	selected := TV_GetSelection()
