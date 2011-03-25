@@ -17,6 +17,8 @@ New Functions:
  * Added history function for Accessor (CTRL + UP/DOWN Arrow)
  * Enhanced the input action to support multiple data types (paths, text, numbers, selections,...) and added a condition to ControlEvent action that allows it to react to a selection. Placeholders from this action are now globally accessible in any event.
  * Added a "Copy Event" feature to the ControlEvent action. This will copy an event temporarily so it can be used in parallel. This is very useful for timers.
+ * Added CTRL+WIN+Tab: Write tab character
+ * Added CTRL+WIN+Enter: Write newline
 
 Bugfixes:
  * Fixed Registry permissions which stopped FastFolders from showing up in explorer bar
