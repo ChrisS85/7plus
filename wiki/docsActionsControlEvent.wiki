@@ -1,6 +1,7 @@
 = ControlEvent =
 
 This action is used to control other events. It is possible to trigger other events, and to enable/disable them. You can also toggle between enabled and disabled state.
+The ControlEvent also has the possibility to be executed only when a condition is fulfilled. For the meanings of those parameters, refer to the [docsConditionsIf If] condition. This is also demonstrated in the dynamic timer feature.
 
 = Tips =
 
