@@ -4,6 +4,8 @@ The ContextMenu trigger is used to add context menu entries to file context menu
 
 Use ${Context} placeholder for the list of selected files when the context menu was invoked. This is preferred over the ${SelNM} placeholder because it will also work in alternative file browsers.
 
+The context menu entries will only be visible while 7plus is running. The shell extension will stay registered though. Uninstallation of 7plus will unregister the shell extension.
+
 = Settings =
   * Name: The name that will appear in the context menu.
   * Description: The text that will show up in the explorer status bar.
