@@ -9,9 +9,7 @@ New Functions:
   * Added dropping files on Accessor keywords list
   * Added PageUp/Down to Accessor list
   * Added support for Hotkey release events (UP in Hotkey GUI)
-  * Added support for auto-updating event configuration so users can receive bugfixes and new events between version updates.
-  As a consequence of this, 7plus now uses a versioning scheme consisting of 4 numbers, where the last one represents the
-  number of applied patches since the last release.
+  * Added support for auto-updating event configuration so users can receive bugfixes and new events between version updates. As a consequence of this, 7plus now uses a versioning scheme consisting of 4 numbers, where the last one represents the number of applied patches since the last release.
   * Added descriptions for each event for better usability
   * Added "Show window size as tooltip while resizing"
   * Added CTRL+WIN+Tab: Write tab character
