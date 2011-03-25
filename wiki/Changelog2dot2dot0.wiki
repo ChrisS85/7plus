@@ -14,6 +14,8 @@ New Functions:
   number of applied patches since the last release.
   * Added descriptions for each event for better usability
   * Added "Show window size as tooltip while resizing"
+  * Added CTRL+WIN+Tab: Write tab character
+  * Added CTRL+WIN+Enter: Write newline
 
 Bugfixes:
   * Fixed CTRL+P accidently being assigned
