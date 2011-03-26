@@ -25,7 +25,7 @@ ShellContextMenu("Desktop",1)			;Calls "Next Desktop background" in Win7
 1st parameter can be "Desktop" for empty selection desktop menu, a path, or an idl
 Leave 2nd parameter empty to show context menu and extract idn by clicking on an entry (shows up in debugview)
 */ 
-ShellContextMenu(sPath,idn="") 
+ShellContextMenu(sPath,idn=0) 
 { 
 	global hAHK
 	result := DllCall(A_ScriptDir "\Explorer.dll\ExecuteContextMenuCommand", "Str", sPath, "Int", idn, "PTR", hAHK)

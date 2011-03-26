@@ -610,11 +610,12 @@ typedef struct tagGUITHREADINFO {
 */
 GetFocusedControl() 
 { 
-   guiThreadInfoSize = 8 + 6 * A_PtrSize + 32
+   guiThreadInfoSize := 8 + 6 * A_PtrSize + 16
    VarSetCapacity(guiThreadInfo, guiThreadInfoSize, 0) 
-   DllCall("RtlFillMemory" , "UIntP", guiThreadInfo, "UInt", 1 , "UChar", guiThreadInfoSize)   ; Below 0xFF, one call only is needed 
-   If not DllCall("GetGUIThreadInfo" , "UInt", 0   ; Foreground thread 
-         , "UIntP", guiThreadInfo) 
+   NumPut(GuiThreadInfoSize, GuiThreadInfo, 0)
+   ; DllCall("RtlFillMemory" , "PTR", &guiThreadInfo, "UInt", 1 , "UChar", guiThreadInfoSize)   ; Below 0xFF, one call only is needed 
+   If(DllCall("GetGUIThreadInfo" , "UInt", 0   ; Foreground thread 
+         , "PTR", &guiThreadInfo) = 0) 
    { 
       ErrorLevel := A_LastError   ; Failure 
       Return 0 

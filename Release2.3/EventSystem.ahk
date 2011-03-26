@@ -92,7 +92,8 @@ EventSystem_Startup()
 	TemporaryEvents := object("base", object("base", Array(), "HighestID", -1, "Add", "Events_Add"))
 	Events := object("base", EventsBase)
 	EventSystem_CreateBaseObjects()
-	
+	if(DebugEnabled)
+		FileDelete, %A_Temp%\7plus\EventLog.log
 	ReadMainEventsFile()
 	EventSchedule := Array()
 	Loop % Events.len()
@@ -705,7 +706,7 @@ OnTrigger(Trigger)
 
 EventScheduler()
 {
-	global Events, EventSchedule, Profiler, TemporaryEvents
+	global Events, EventSchedule, Profiler, TemporaryEvents, DebugEnabled
 	Critical, Off
 	loop
 	{
@@ -738,6 +739,8 @@ EventScheduler()
 						}
 						if(result = 0) ;Condition did not match
 						{
+							if(DebugEnabled)
+								EventLog(Event.ID ": Condition " ConditionPos ": " Event.Conditions[ConditionPos].Type " was not fulfilled.")
 							Success := 0
 							break
 						}
@@ -769,6 +772,8 @@ EventScheduler()
 		{
 			Event := EventSchedule[EventPos]
 			outputdebug % "Process event ID: " Event.ID " Name: " Event.Name
+			if(DebugEnabled)
+				EventLog("Process event ID: " Event.ID " Name: " Event.Name)
 			; outputdebug conditions fulfilled
 			Loop % Event.Actions.len()
 			{
@@ -813,4 +818,9 @@ EventScheduler()
 		Profiler.Current.EventLoop := Profiler.Current.EventLoop + A_TickCount - StartTime
 		Sleep 100
 	}
+}
+
+EventLog(text)
+{
+	FileAppend, %A_Now%: %text%, %A_Temp%\7plus\EventLog.log
 }

@@ -284,7 +284,10 @@ SetTimer, TriggerTimer, 1000
 
 ;possibly start wizard
 if (Firstrun=1)
+{
+	RegisterShellExtension(1)
 	GoSub, wizardry
+}
 FirstRun:=0
 
 ;Set this so that config files aren't saved with empty values when there was a problem with the startup procedure
@@ -324,11 +327,20 @@ OnExit(Reload=0)
 		ShouldReload := 1
 		Loop %0%
 			params .= " " (InStr(%A_Index%, " ") ? """" %A_Index% """" : %A_Index%)
-		
-		If(A_IsCompiled)
-			DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, A_ScriptFullPath, str, "/r" params, str, A_WorkingDir, int, 1)
+		if(Vista7)
+		{
+			If(A_IsCompiled)
+				DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, A_ScriptFullPath, str, "/r" params, str, A_WorkingDir, int, 1)
+			else
+				DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, A_AhkPath, str, "/r """ A_ScriptFullPath """" params, str, A_WorkingDir, int, 1)
+		}
 		else
-			DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, A_AhkPath, str, "/r """ A_ScriptFullPath """" params, str, A_WorkingDir, int, 1)
+		{
+			If(A_IsCompiled)
+				run %A_ScriptFullPath% /r %params%, %A_WorkingDir%
+			else
+				run %A_AhkPath% /r "%A_ScriptFullPath%" params, %A_WorkingDir%
+		}
 	}
 	FileRemoveDir, %A_Temp%\7plus, 1
 }
@@ -339,7 +351,6 @@ return
 
 ShowWizard()
 {
-	GoSub RegisterShellExtension
 	MsgBox, 4,,Welcome to 7plus!`nBefore we begin, would you like to see a list of features?	
 	IfMsgBox Yes
 		run http://code.google.com/p/7plus/wiki/Features,,UseErrorlevel

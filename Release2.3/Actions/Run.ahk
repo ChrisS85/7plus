@@ -48,6 +48,7 @@ Action_Run_GuiShow(Action, ActionGUI, GoToLabel = "")
 	if(GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
+		SubEventGUI_Add(Action, ActionGUI, "Text", "Text", "Enclose paths with spaces in quotes and append parameters in command field.")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Command", "", "", "Command:","Browse", "Action_Run_Browse", "Placeholders", "Action_Run_Placeholders")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "WorkingDirectory", "", "", "Working Dir:","Browse", "Action_Run_Browse_WD", "Placeholders", "Action_Run_Placeholders_WD")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "WaitForFinish", "Wait for finish", "", "")

@@ -126,6 +126,9 @@ FormatHotkey(key)
 	formatted .= RegExReplace(key, "[\*\+\^#><!~]*")
 	formatted .= InStr(key, "<") > 0 ? ", left modifier keys only" :""
 	formatted .= InStr(key, ">") > 0 ? ", right modifier keys only" :""
+	formatted := StringReplace(formatted, "LButton", "Left Mouse")
+	formatted := StringReplace(formatted, "MButton", "Middle Mouse")
+	formatted := StringReplace(formatted, "RButton", "Right Mouse")
 	return formatted
 }
 Trigger_Hotkey_GuiShow(Trigger, TriggerGUI, GoToLabel = "")

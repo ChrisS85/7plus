@@ -309,17 +309,17 @@ int _stdcall ExecuteContextMenuCommand(LPWSTR strPath, int idn, HWND hWnd)
 	#define MAX_SHELL_ID 0x7FFF
 	IShellFolder *psf = NULL;
 	IContextMenu *pCM = NULL;
-	if (wcscmp(strPath,L"Desktop") == 0)
+	if (wcscmp(strPath,L"Desktop") == 0) //if in desktop directory
 	{
 		//Get IShellFolder
 		if(!SUCCEEDED(SHGetDesktopFolder(&psf)))
 		{
-			MessageBox(NULL, L"SHGetDesktopFolder failed", NULL, NULL);
+			OutputDebugString(L"SHGetDesktopFolder failed");
 			return 0;
 		}
 		if(!SUCCEEDED(psf->CreateViewObject(0,IID_IContextMenu,(void**)&pCM)))
 		{
-			MessageBox(NULL, L"CreateViewObject failed", NULL, NULL);
+			OutputDebugString(L"CreateViewObject failed");
 			return 0;
 		}
 	}
@@ -328,7 +328,7 @@ int _stdcall ExecuteContextMenuCommand(LPWSTR strPath, int idn, HWND hWnd)
 
 	if(psf != NULL)
 		psf->Release();
-	else
+	else if(pCM == NULL)
 		return 0;
 
 	HMENU hmenu = CreatePopupMenu();
@@ -337,7 +337,11 @@ int _stdcall ExecuteContextMenuCommand(LPWSTR strPath, int idn, HWND hWnd)
 		if (SUCCEEDED(pCM->QueryContextMenu(hmenu, 0, MIN_SHELL_ID, MAX_SHELL_ID, CMF_NORMAL))) 
 		{
 			if(idn == 0)
-				idn = TrackPopupMenuEx(hmenu, TPM_RETURNCMD, 100, 100, hWnd, NULL);
+			{
+				POINT ptCursorPos;
+				GetCursorPos(&ptCursorPos);
+				idn = TrackPopupMenuEx(hmenu, TPM_RETURNCMD, ptCursorPos.x, ptCursorPos.y, hWnd, NULL);
+			}
 			if(idn!=0)
 			{
 				CMINVOKECOMMANDINFOEX info = { 0 };

@@ -3671,7 +3671,7 @@
 <Type>SendKeys</Type>
 <WriteText>0</WriteText>
 </Action></Actions>
-<Category>Picture Viewer</Category>
+<Category>Misc Hotkeys</Category>
 <Conditions>
 <Condition>
 <Negate>0</Negate>
@@ -3701,7 +3701,7 @@
 <Type>SendKeys</Type>
 <WriteText>0</WriteText>
 </Action></Actions>
-<Category>Picture Viewer</Category>
+<Category>Misc Hotkeys</Category>
 <Conditions>
 <Condition>
 <Negate>0</Negate>
@@ -4068,7 +4068,7 @@
 <Type>Volume</Type>
 <Volume>100</Volume>
 </Action></Actions>
-<Category>7plus</Category>
+<Category>Misc Hotkeys</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
@@ -4096,7 +4096,7 @@
 <Type>Volume</Type>
 <Volume>-2</Volume>
 </Action></Actions>
-<Category>7plus</Category>
+<Category>Misc Hotkeys</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
@@ -4124,7 +4124,7 @@
 <Type>Volume</Type>
 <Volume>+2</Volume>
 </Action></Actions>
-<Category>Explorer Buttons</Category>
+<Category>Misc Hotkeys</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
@@ -4133,7 +4133,7 @@
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Shows the volume window when volume down is pressed.</Description>
+<Description>Shows the volume window when volume up is pressed.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>1591</ID>
@@ -4154,7 +4154,7 @@
 <Type>ControlEvent</Type>
 <With></With>
 </Action></Actions>
-<Category>Menu</Category>
+<Category>Taskbar</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -4162,7 +4162,8 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>1599</ID>
-<Name>New event</Name>
+<Name>Dynamic Timer: tray menu item</Name>
+<OfficialEvent>5</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Menu>Tray</Menu>
@@ -4229,6 +4230,7 @@
 <Enabled>1</Enabled>
 <ID>1601</ID>
 <Name>Dynamic timer: Middle Click on Clock</Name>
+<OfficialEvent>6</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>MButton</Key>
@@ -4251,6 +4253,7 @@
 <Enabled>0</Enabled>
 <ID>1602</ID>
 <Name>Dynamic Timer: Message timer</Name>
+<OfficialEvent>8</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Restart>0</Restart>
@@ -4297,6 +4300,7 @@
 <Enabled>1</Enabled>
 <ID>1604</ID>
 <Name>Dynamic Timer: Ask for message and start message timer</Name>
+<OfficialEvent>9</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Type>None</Type>
@@ -4340,6 +4344,7 @@
 <Enabled>1</Enabled>
 <ID>1605</ID>
 <Name>Dynamic Timer: Ask for program and start Run program timer</Name>
+<OfficialEvent>11</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Type>None</Type>
@@ -4362,6 +4367,7 @@
 <Enabled>0</Enabled>
 <ID>1606</ID>
 <Name>Dynamic Timer: Run program timer</Name>
+<OfficialEvent>12</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Restart>0</Restart>
@@ -4385,6 +4391,7 @@
 <Enabled>0</Enabled>
 <ID>1607</ID>
 <Name>Dynamic Timer: Shutdown timer</Name>
+<OfficialEvent>13</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Restart>0</Restart>
@@ -4423,6 +4430,7 @@
 <Enabled>1</Enabled>
 <ID>1608</ID>
 <Name>Dynamic Timer: Start shutdown timer</Name>
+<OfficialEvent>14</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Type>None</Type>
@@ -4434,7 +4442,7 @@
 <Type>SendKeys</Type>
 <WriteText>1</WriteText>
 </Action></Actions>
-<Category>Uncategorized</Category>
+<Category>Misc Hotkeys</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -4443,6 +4451,7 @@
 <Enabled>1</Enabled>
 <ID>1609</ID>
 <Name>Write tab character</Name>
+<OfficialEvent>15</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^#Tab</Key>
@@ -4455,7 +4464,7 @@
 <Type>SendKeys</Type>
 <WriteText>1</WriteText>
 </Action></Actions>
-<Category>Uncategorized</Category>
+<Category>Misc Hotkeys</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -4464,6 +4473,7 @@
 <Enabled>1</Enabled>
 <ID>1610</ID>
 <Name>Write newline characters</Name>
+<OfficialEvent>16</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^#Enter</Key>

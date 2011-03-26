@@ -23,7 +23,7 @@ Accessor_Init()
 		( LTrim
 			<Keywords>
 			<Keyword>
-			<Command>http://dict.leo.org/ende?search={1}</Command>
+			<Command>http://dict.leo.org/ende?search=${1}</Command>
 			<Key>leo</Key>
 			</Keyword><Keyword>
 			<Command>http://google.com/search?q=${1}</Command>

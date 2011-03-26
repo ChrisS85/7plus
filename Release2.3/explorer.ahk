@@ -97,9 +97,9 @@ InTree()
 IsRenaming()
 {		
 	if(A_OSVersion="WIN_7")
-	 ControlGetFocus focussed, A
-  else
-    focussed:=XPGetFocussed()
+		ControlGetFocus focussed, A
+	else
+		focussed:=XPGetFocussed()
 	if(WinActive("ahk_group ExplorerGroup")) ;Explorer
 	{
 		if(strStartsWith(focussed,"Edit"))

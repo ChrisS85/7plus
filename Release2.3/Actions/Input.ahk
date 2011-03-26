@@ -247,9 +247,9 @@ Action_Input_Edit()
 		else if(Action.DataType = "File" || Action.DataType = "Path")
 		{
 			if(FileExist(input))
-				Control, Enable,, Button1
+				Control, Enable,, Button2
 			else
-				Control, Disable,, Button1
+				Control, Disable,, Button2
 		}
 	}
 }

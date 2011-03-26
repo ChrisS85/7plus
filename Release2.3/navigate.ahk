@@ -194,6 +194,8 @@ SetDirectory(sPath)
 		else
 			MsgBox The path %sPath% cannot be opened!
 	}
+	else if(WinActive("ahk_group DesktopGroup"))
+		Run(A_WinDir "\explorer.exe /n,/e," sPath)
 	else if (IsWinRarExtractionDialog())
 		SetWinRarDirectory(sPath)
 	else if (IsDialog())

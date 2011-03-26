@@ -544,13 +544,14 @@ FillEventsList(){
 		if((!filter || InStr(id, filter) || InStr(DisplayString, Filter) || InStr(Name, filter) || InStr(Settings_Events[A_Index].Description, Filter)) && (filter || !Category || Category = Settings_Events[A_Index].Category))
 		{
 			Gui, ListView, GUI_EventsList
-			LV_Add(((SelectedID != "" && id = SelectedID  && (scroll := 1)) || (SelectedID = "" && count = 0) ? "Select Focus" : "") (Settings_Events[A_Index].Enabled ? " Check": " "), "", id, DisplayString, name)
+			LV_Add((SelectedID != "" && id = SelectedID  && (scroll := 1) ? "Select Focus" : "") (Settings_Events[A_Index].Enabled ? " Check": " "), "", id, DisplayString, name)
 			if(scroll)
 				LV_Modify(A_Index, "Vis")
 			count++
 		}
 	}
-	
+	if(LV_GetCount("Selected") = 0 && LV_GetCount() > 0)
+		LV_Modify(1, "Select")
 	if(LV_GetCount("Selected") = 1)
 	{
 		i:=LV_GetNext("")
@@ -842,7 +843,7 @@ ShowSettings(ShowPane="") {
 			
 			SettingsTabList := "Accessor Keywords|Accessor Plugins|Explorer|Fast Folders|Explorer Tabs|FTP Profiles|Hotstrings|Windows|Misc|About"
 			; Gui, 1:Add, ListBox, x16 y20 w120 h350 gListbox vMyListBox, %TabList%
-			Gui, 1:Add, TreeView, x16 y20 w140 h420 gSettingsTreeView vSettingsTreeView -HScroll
+			Gui, 1:Add, TreeView, x16 y20 w140 h420 AltSubmit gSettingsTreeView vSettingsTreeView -HScroll
 			EventsTreeViewEntry := TV_Add("All Events", "", "Expand")
 			Loop % Events.Categories.len()
 				TV_Add(Events.Categories[A_Index], EventsTreeViewEntry, "Sort")
@@ -943,6 +944,8 @@ SettingsTreeViewEvents()
 	static PreviousSelection
 	if(SuppressTreeViewMessages)
 		return
+	if(!(A_GUIEvent = "" || A_GUIEvent = "S" || A_GUIEvent = "Normal"))
+		return
 	outputdebug tree view event
 	selected := TV_GetSelection()
 	TV_GetText(SelectedName, selected)
@@ -962,7 +965,7 @@ SettingsTreeViewEvents()
 		outputdebug events tab
 		GuiControl, 1:Show, EventsTab
 		GuiControl, 1:Text, GGroupBox, %SelectedName%
-		ControlSetText,,, ahk_id %EventFilter%
+		ControlSetText,,, ahk_id %EventFilter% ;This will trigger the refreshing of the events listview (EventFilterChange)
 	}
 	else
 	{
