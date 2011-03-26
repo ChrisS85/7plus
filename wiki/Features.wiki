@@ -16,7 +16,7 @@ Watch the videos to see how it works!
   * Automatically select first file when you enter a directory [http://www.youtube.com/watch?v=Bih7HEtpk0A (Video)]
   * Hold down right mouse button and click left to go back [http://www.youtube.com/watch?v=RZOdgDl2ujU (Video)]
   * CTRL+S: Select files by entering a file filter such as ".jpg"
-
+  * Create new context menu entries
 ==== Windows 7/Vista specific ====
   * Show favorite folders in the explorer folder band bar like Web Browser favorite bars [http://www.youtube.com/watch?v=dTIGxue6WCY (Video)]
   * Make Backspace go upwards again [http://www.youtube.com/watch?v=RZOdgDl2ujU (Video)]
