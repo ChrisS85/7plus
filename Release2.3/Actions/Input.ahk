@@ -4,6 +4,7 @@ Action_Input_Init(Action)
 	Action.Cancel := 0
 	Action.Placeholder := "Input"
 	Action.DataType := "Text"
+	Action.Validate := 1
 }	
 Action_Input_ReadXML(Action, XMLAction)
 {
@@ -14,6 +15,8 @@ Action_Input_ReadXML(Action, XMLAction)
 	Action.DataType := XMLAction.HasKey("DataType") ? XMLAction.DataType : "Text"
 	if(Action.DataType = "Selection")
 		Action.Selection := XMLAction.HasKey("Selection") ? XMLAction.Selection : "Default Selection"
+	else
+		Action.Validate := XMLAction.HasKey("Validate") ? XMLAction.Validate : 1
 }
 Action_Input_Execute(Action,Event)
 {
@@ -53,8 +56,9 @@ Action_Input_GuiShow(Action, ActionGUI, GoToLabel = "")
 		PreviousSelection := ""
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Text", "", "", "Text:", "Placeholders", "Action_Input_Placeholders_Text")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Title", "", "", "Window Title:", "Placeholders", "Action_Input_Placeholders_Title")
-		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Cancel", "Show Cancel/Close Button")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Placeholder", "", "", "Placeholder:")
+		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Cancel", "Show Cancel/Close Button")
+		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Validate", "Validate input (file, path and text only)")
 		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "DataType", "File|Number|Path|Selection|Text|Time", "Action_Input_DataType", "Data type:")
 		Action_Input_GuiShow(Action, ActionGUI, "DataType_SelectionChange")
 	}
@@ -73,7 +77,7 @@ Action_Input_GuiShow(Action, ActionGUI, GoToLabel = "")
 			
 			if(DataType = "Selection")
 			{
-				Gui, Add, ListView, % "AltSubmit -Hdr -ReadOnly -Multi hwndListView w300 h130 x" sActionGUI.x " y" sActionGUI.y, Selection
+				Gui, Add, ListView, % "AltSubmit -Hdr -ReadOnly -Multi hwndListView w300 h100 x" sActionGUI.x " y" sActionGUI.y, Selection
 				Selection := Action.Selection
 				Loop, Parse, Selection, |
 					LV_Add("Select", A_LoopField)
@@ -160,7 +164,7 @@ UserInputBox(Action, Event, GoToLabel = "")
 		
 		if(Action.DataType = "Text" || Action.DataType = "Path" || Action.DataType = "File")
 		{
-			Gui,%GuiNum%:Add, Edit, x+10 yp-4 w200 hwndEdit
+			Gui,%GuiNum%:Add, Edit, x+10 yp-4 w200 hwndEdit gAction_Input_Edit
 			Action.tmpEdit := Edit
 			if(Action.DataType = "Path" || Action.DataType = "File")
 			{
@@ -193,11 +197,11 @@ UserInputBox(Action, Event, GoToLabel = "")
 		if(PosX < 160)
 			PosX := 160
 		if(!Action.Cancel)
-			Gui, %GuiNum%:Add, Button, Default x%PosX% y%PosY% w80 gInputBox_OK, OK
+			Gui, %GuiNum%:Add, Button, % "Default x" PosX " y" PosY " w80 gInputBox_OK " (Action.Validate && (Action.DataType = "Text" || Action.DataType = "Path" || Action.DataType = "File") ? "Disabled" : ""), OK
 		if(Action.Cancel)
 		{
 			PosX -= 90
-			Gui, %GuiNum%:Add, Button, Default x%PosX% y%PosY% w80 gInputBox_OK, OK
+			Gui, %GuiNum%:Add, Button, % "Default x" PosX " y" PosY " w80 gInputBox_OK " (Action.Validate && (Action.DataType = "Text" || Action.DataType = "Path" || Action.DataType = "File") ? "Disabled" : ""), OK
 			Gui, %GuiNum%:Add, Button, x+10 w80 gInputBox_Cancel, Cancel
 		}
 		Gui,%GuiNum%:-MinimizeBox -MaximizeBox +LabelInputbox
@@ -224,7 +228,31 @@ UserInputBox(Action, Event, GoToLabel = "")
 		}
 	}
 }
-
+Action_Input_Edit:
+Action_Input_Edit()
+return
+Action_Input_Edit()
+{
+	InputBoxEventFromGUINumber(A_Gui, Event, Action)
+	if(Action.Validate)
+	{
+		ControlGetText, input, Edit1
+		if(Action.DataType = "Text")
+		{
+			if(input = "")
+				Control, Disable,, Button1
+			else
+				Control, Enable,, Button1
+		}
+		else if(Action.DataType = "File" || Action.DataType = "Path")
+		{
+			if(FileExist(input))
+				Control, Enable,, Button1
+			else
+				Control, Disable,, Button1
+		}
+	}
+}
 InputBox_Browse:
 UserInputBox("","","Browse")
 return

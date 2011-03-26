@@ -918,3 +918,17 @@ objDeepPerform(obj, function, Event)
 			obj[key] := %function%(Event, value)
 	}
 }
+
+; Write text at cursor position, overwriting selected text
+WriteText(Text) 
+{
+	global MuteClipboardList
+	MuteClipboardList := true
+	ClipboardBackup := ClipboardAll
+	Clipboard := Text
+	Send ^v
+	Sleep 100
+	Clipboard := ClipboardBackup
+	MuteClipboardList := false
+	return
+}

@@ -6,6 +6,9 @@
 <ForceClose></ForceClose>
 <Type>WindowClose</Type>
 <WindowFilter></WindowFilter>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action></Actions>
 <Category>Window Handling</Category>
@@ -15,15 +18,19 @@
 <Negate>0</Negate>
 <Type>MouseOver</Type>
 <WindowFilter></WindowFilter>
-<WindowMatchType>Program</WindowMatchType>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
+<WindowMatchType>Specific Window</WindowMatchType>
 </Condition><Condition>
-<MouseOverType>Window</MouseOverType>
+<Compare>${MC}</Compare>
 <Negate>1</Negate>
-<Type>MouseOver</Type>
-<WindowFilter>OperaWindowClass</WindowFilter>
-<WindowMatchType>Class</WindowMatchType>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>OperaWindowClass|MozillaWindowClass</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Close a window by middle clicking it's title bar.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>305</ID>
@@ -32,33 +39,6 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>MButton</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Type>MinimizeToTray</Type>
-<WindowFilter></WindowFilter>
-<WindowMatchType>UnderMouse</WindowMatchType>
-</Action></Actions>
-<Category>Window Handling</Category>
-<Conditions>
-<Condition>
-<MouseOverType>MinimizeButton</MouseOverType>
-<Negate>0</Negate>
-<Type>MouseOver</Type>
-<WindowFilter></WindowFilter>
-<WindowMatchType>Program</WindowMatchType>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<ID>306</ID>
-<Name>Right click on minimize button: Minimize to tray</Name>
-<OfficialEvent>307</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>RButton</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event><Event>
@@ -73,6 +53,7 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Activate notification windows, flashing windows in the taskbar, or toggle between the current and the previously active window. Very useful for quickly responding to chats and switching back.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>307</ID>
@@ -89,6 +70,9 @@
 <Action>Toggle always on top</Action>
 <Type>WindowState</Type>
 <WindowFilter></WindowFilter>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action><Action>
 <Action>Start timer</Action>
@@ -96,20 +80,32 @@
 <Type>ControlTimer</Type>
 </Action><Action>
 <Action>Enable Event</Action>
+<Compare></Compare>
 <EventID>309</EventID>
+<Operator>equals</Operator>
 <Type>ControlEvent</Type>
+<With></With>
 </Action><Action>
 <Action>Enable Event</Action>
+<Compare></Compare>
 <EventID>310</EventID>
+<Operator>equals</Operator>
 <Type>ControlEvent</Type>
+<With></With>
 </Action><Action>
 <Action>Trigger Event</Action>
+<Compare></Compare>
 <EventID>309</EventID>
+<Operator>equals</Operator>
 <Type>ControlEvent</Type>
+<With></With>
 </Action><Action>
 <Action>Trigger Event</Action>
+<Compare></Compare>
 <EventID>310</EventID>
+<Operator>equals</Operator>
 <Type>ControlEvent</Type>
+<With></With>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
@@ -118,9 +114,13 @@
 <Negate>0</Negate>
 <Type>MouseOver</Type>
 <WindowFilter></WindowFilter>
-<WindowMatchType>Program</WindowMatchType>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
+<WindowMatchType>Specific Window</WindowMatchType>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Right click on the titlebar of a window to toggle its "Always on top" property. This is useful for keeping a window visible so that you can easily copy data from and to it.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>308</ID>
@@ -136,19 +136,21 @@
 <Action>
 <Keys>{Esc}</Keys>
 <Type>SendKeys</Type>
+<WriteText>0</WriteText>
 </Action><Action>
 <Action>Disable Event</Action>
+<Compare></Compare>
 <EventID>311</EventID>
+<Operator>equals</Operator>
 <Type>ControlEvent</Type>
+<With></With>
 </Action><Action>
 <Action>Disable Event</Action>
+<Compare></Compare>
 <EventID>310</EventID>
+<Operator>equals</Operator>
 <Type>ControlEvent</Type>
-</Action><Action>
-<Command></Command>
-<Type>Run</Type>
-<WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
+<With></With>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
@@ -157,6 +159,7 @@
 <Type>IsContextMenuActive</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>1</DisableAfterUse>
 <Enabled>0</Enabled>
 <ID>309</ID>
@@ -170,12 +173,18 @@
 <Actions>
 <Action>
 <Action>Trigger Event</Action>
+<Compare></Compare>
 <EventID>309</EventID>
+<Operator>equals</Operator>
 <Type>ControlEvent</Type>
+<With></With>
 </Action><Action>
 <Action>Trigger Event</Action>
+<Compare></Compare>
 <EventID>310</EventID>
+<Operator>equals</Operator>
 <Type>ControlEvent</Type>
+<With></With>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
@@ -184,6 +193,7 @@
 <Type>IsContextMenuActive</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
 <ID>310</ID>
@@ -197,21 +207,31 @@
 <Actions>
 <Action>
 <Action>Disable Event</Action>
+<Compare></Compare>
 <EventID>309</EventID>
+<Operator>equals</Operator>
 <Type>ControlEvent</Type>
+<With></With>
 </Action><Action>
 <Action>Disable Event</Action>
+<Compare></Compare>
 <EventID>310</EventID>
+<Operator>equals</Operator>
 <Type>ControlEvent</Type>
+<With></With>
 </Action><Action>
 <Action>Disable Event</Action>
+<Compare></Compare>
 <EventID>311</EventID>
+<Operator>equals</Operator>
 <Type>ControlEvent</Type>
+<With></With>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
 <ID>311</ID>
@@ -230,12 +250,16 @@
 <Action>Disable always on top</Action>
 <Type>WindowState</Type>
 <WindowFilter></WindowFilter>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Active</WindowMatchType>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Removes "Always on top" window property when the window gets maximized. This is done so that you can still switch to other windows by activating them, instead of having to minimize the window which is always on top.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>316</ID>
@@ -246,14 +270,20 @@
 <Event>Window maximized</Event>
 <Type>WindowStateChange</Type>
 <WindowFilter></WindowFilter>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Active</WindowMatchType>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
-<ForceClose></ForceClose>
+<ForceClose>1</ForceClose>
 <Type>WindowClose</Type>
 <WindowFilter></WindowFilter>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action></Actions>
 <Category>Window Handling</Category>
@@ -263,9 +293,13 @@
 <Negate>0</Negate>
 <Type>MouseOver</Type>
 <WindowFilter></WindowFilter>
-<WindowMatchType>Program</WindowMatchType>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
+<WindowMatchType>Specific Window</WindowMatchType>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Right click on the close button of a window to kill its process.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>312</ID>
@@ -282,12 +316,16 @@
 <ForceClose></ForceClose>
 <Type>WindowClose</Type>
 <WindowFilter></WindowFilter>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Active</WindowMatchType>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Kill the process of the active window.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>313</ID>
@@ -304,12 +342,16 @@
 <Action>Minimize-&gt;Normal-&gt;Maximize</Action>
 <Type>WindowState</Type>
 <WindowFilter></WindowFilter>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Maximize the window under the mouse.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>314</ID>
@@ -326,12 +368,16 @@
 <Action>Maximize-&gt;Normal-&gt;Minimize</Action>
 <Type>WindowState</Type>
 <WindowFilter></WindowFilter>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Restore or minimize the window under the mouse.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>315</ID>
@@ -342,6 +388,31 @@
 <Key>!WheelDown</Key>
 <Type>Hotkey</Type>
 </Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Type>WindowSendToBottom</Type>
+<WindowFilter></WindowFilter>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
+<WindowMatchType>UnderMouse</WindowMatchType>
+</Action></Actions>
+<Category>Window Handling</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Move the window under the mouse to the bottom of the window stack.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1582</ID>
+<Name>Move window to bottom</Name>
+<OfficialEvent>986</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>#MButton</Key>
+<Type>Hotkey</Type>
+</Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
-<MinorVersion>1</MinorVersion>
+<MinorVersion>3</MinorVersion>

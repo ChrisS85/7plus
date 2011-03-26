@@ -513,6 +513,7 @@
 <Text>Filter Text</Text>
 <Title>Select Files</Title>
 <Type>Input</Type>
+<Validate>1</Validate>
 </Action><Action>
 <Clear>1</Clear>
 <Deselect>0</Deselect>
@@ -681,6 +682,7 @@
 <Action>
 <Keys>{Esc}</Keys>
 <Type>SendKeys</Type>
+<WriteText>0</WriteText>
 </Action><Action>
 <Action>Disable Event</Action>
 <Compare></Compare>
@@ -2845,6 +2847,7 @@
 <Text>Enter image filename:</Text>
 <Title>Enter filename</Title>
 <Type>Input</Type>
+<Validate>1</Validate>
 </Action><Action>
 <Clipboard>1</Clipboard>
 <FTPProfile>1</FTPProfile>
@@ -2891,6 +2894,7 @@
 <Text>Enter image filename:</Text>
 <Title>Enter filename</Title>
 <Type>Input</Type>
+<Validate>1</Validate>
 </Action><Action>
 <Clipboard>1</Clipboard>
 <FTPProfile>1</FTPProfile>
@@ -3136,6 +3140,7 @@
 </Action><Action>
 <Keys>{Down 3}{Enter}</Keys>
 <Type>SendKeys</Type>
+<WriteText>0</WriteText>
 </Action></Actions>
 <Category>CMD</Category>
 <Conditions>
@@ -3664,6 +3669,7 @@
 <Action>
 <Keys>^,</Keys>
 <Type>SendKeys</Type>
+<WriteText>0</WriteText>
 </Action></Actions>
 <Category>Picture Viewer</Category>
 <Conditions>
@@ -3693,6 +3699,7 @@
 <Action>
 <Keys>^,</Keys>
 <Type>SendKeys</Type>
+<WriteText>0</WriteText>
 </Action></Actions>
 <Category>Picture Viewer</Category>
 <Conditions>
@@ -3900,6 +3907,7 @@
 <Text>Enter parameters. Paths might need`n to be enclosed in double quotes.</Text>
 <Title>Enter Parameters</Title>
 <Type>Input</Type>
+<Validate>1</Validate>
 </Action><Action>
 <Command>${Context} ${Input}</Command>
 <RunAsAdmin>0</RunAsAdmin>
@@ -4139,103 +4147,12 @@
 </Event><Event>
 <Actions>
 <Action>
-<Menu>System</Menu>
-<Type>ShowMenu</Type>
-<X></X>
-<Y></Y>
-</Action></Actions>
-<Category>Menu</Category>
-<Conditions>
-<Condition>
-<MouseOverType>Titlebar</MouseOverType>
-<Negate>0</Negate>
-<Type>MouseOver</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
-<WindowMatchType>Specific Window</WindowMatchType>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description></Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<ID>1593</ID>
-<Name>Show system menu</Name>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>^RButton</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Action>Toggle always on top</Action>
-<Type>WindowState</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
-<WindowMatchType>Active</WindowMatchType>
-</Action></Actions>
-<Category>Menu</Category>
-<Conditions>
-</Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description></Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<ID>1594</ID>
-<Name>toggle always on top</Name>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Menu>System</Menu>
-<Name>Toggle always on top</Name>
-<Submenu></Submenu>
-<Type>MenuItem</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Cancel>0</Cancel>
-<DataType>Text</DataType>
-<Placeholder>Input</Placeholder>
-<Text>Transparency value [0-255, Off]</Text>
-<Title>Set Transparency</Title>
-<Type>Input</Type>
-</Action><Action>
-<Action>Set Transparency</Action>
-<Type>WindowState</Type>
-<Value>${Input}</Value>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
-<WindowMatchType>Active</WindowMatchType>
-</Action></Actions>
-<Category>Menu</Category>
-<Conditions>
-</Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description></Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<ID>1595</ID>
-<Name>Set transparency</Name>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Menu>System</Menu>
-<Name>Set transparency</Name>
-<Submenu></Submenu>
-<Type>MenuItem</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Text>test</Text>
-<Timeout></Timeout>
-<Title></Title>
-<Type>Message</Type>
+<Action>Trigger Event</Action>
+<Compare></Compare>
+<EventID>1601</EventID>
+<Operator>equals</Operator>
+<Type>ControlEvent</Type>
+<With></With>
 </Action></Actions>
 <Category>Menu</Category>
 <Conditions>
@@ -4249,48 +4166,9 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <Menu>Tray</Menu>
-<Name>Menu entry</Name>
+<Name>Start timer</Name>
 <Submenu></Submenu>
 <Type>MenuItem</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Cancel>0</Cancel>
-<DataType>Selection</DataType>
-<Placeholder>result</Placeholder>
-<Selection>Restart|Show Settings</Selection>
-<Text>Restart or Show Settings?</Text>
-<Title>Question</Title>
-<Type>Input</Type>
-</Action><Action>
-<Action>Trigger Event</Action>
-<Compare>${result}</Compare>
-<EventID>1</EventID>
-<Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With>Restart</With>
-</Action><Action>
-<Action>Trigger Event</Action>
-<Compare>${result}</Compare>
-<EventID>0</EventID>
-<Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With>Show Settings</With>
-</Action></Actions>
-<Category>Uncategorized</Category>
-<Conditions>
-</Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description></Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<ID>1600</ID>
-<Name>New event</Name>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>#!D</Key>
-<Type>Hotkey</Type>
 </Trigger>
 </Event><Event>
 <Actions>
@@ -4302,6 +4180,7 @@
 <Text>What type of timer would you like to start?</Text>
 <Title>Dynamic timer</Title>
 <Type>Input</Type>
+<Validate>1</Validate>
 </Action><Action>
 <Cancel>1</Cancel>
 <DataType>Time</DataType>
@@ -4309,6 +4188,7 @@
 <Text>Enter time</Text>
 <Title>Dynamic timer - Enter time</Title>
 <Type>Input</Type>
+<Validate>1</Validate>
 </Action><Action>
 <Action>Trigger Event</Action>
 <Compare>${TimerType}</Compare>
@@ -4331,7 +4211,7 @@
 <Type>ControlEvent</Type>
 <With>Shutdown timer</With>
 </Action></Actions>
-<Category>Dynamic Timer</Category>
+<Category>Taskbar</Category>
 <Conditions>
 <Condition>
 <MouseOverType>Clock</MouseOverType>
@@ -4348,7 +4228,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>1601</ID>
-<Name>Dynamic timer</Name>
+<Name>Dynamic timer: Middle Click on Clock</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>MButton</Key>
@@ -4362,7 +4242,7 @@
 <Title>Timer</Title>
 <Type>Message</Type>
 </Action></Actions>
-<Category>Dynamic Timer</Category>
+<Category>Taskbar</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -4370,7 +4250,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
 <ID>1602</ID>
-<Name>Message timer</Name>
+<Name>Dynamic Timer: Message timer</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Restart>0</Restart>
@@ -4387,6 +4267,7 @@
 <Text>Enter message text:</Text>
 <Title>Message text</Title>
 <Type>Input</Type>
+<Validate>1</Validate>
 </Action><Action>
 <Action>Copy Event</Action>
 <Compare></Compare>
@@ -4407,7 +4288,7 @@
 <TimerID>${MessageTimer}</TimerID>
 <Type>ControlTimer</Type>
 </Action></Actions>
-<Category>Dynamic Timer</Category>
+<Category>Taskbar</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -4415,7 +4296,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>1604</ID>
-<Name>Ask for message and start message timer</Name>
+<Name>Dynamic Timer: Ask for message and start message timer</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Type>None</Type>
@@ -4429,6 +4310,7 @@
 <Text>Enter program to launch</Text>
 <Title>Select program</Title>
 <Type>Input</Type>
+<Validate>1</Validate>
 </Action><Action>
 <Action>Copy Event</Action>
 <Compare></Compare>
@@ -4449,7 +4331,7 @@
 <TimerID>${RunTimer}</TimerID>
 <Type>ControlTimer</Type>
 </Action></Actions>
-<Category>Dynamic Timer</Category>
+<Category>Taskbar</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -4457,7 +4339,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>1605</ID>
-<Name>Ask for program and start Run program timer</Name>
+<Name>Dynamic Timer: Ask for program and start Run program timer</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Type>None</Type>
@@ -4471,7 +4353,7 @@
 <WaitForFinish>0</WaitForFinish>
 <WorkingDirectory></WorkingDirectory>
 </Action></Actions>
-<Category>Dynamic Timer</Category>
+<Category>Taskbar</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -4479,7 +4361,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
 <ID>1606</ID>
-<Name>Run program timer</Name>
+<Name>Dynamic Timer: Run program timer</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Restart>0</Restart>
@@ -4494,7 +4376,7 @@
 <ShutDownSelection>Shutdown</ShutDownSelection>
 <Type>Shutdown</Type>
 </Action></Actions>
-<Category>Dynamic Timer</Category>
+<Category>Taskbar</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -4502,7 +4384,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
 <ID>1607</ID>
-<Name>Shutdown timer</Name>
+<Name>Dynamic Timer: Shutdown timer</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Restart>0</Restart>
@@ -4532,7 +4414,7 @@
 <TimerID>${ShutdownTimer}</TimerID>
 <Type>ControlTimer</Type>
 </Action></Actions>
-<Category>Dynamic Timer</Category>
+<Category>Taskbar</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -4540,10 +4422,52 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>1608</ID>
-<Name>Start shutdown timer</Name>
+<Name>Dynamic Timer: Start shutdown timer</Name>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Type>None</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Keys>`t</Keys>
+<Type>SendKeys</Type>
+<WriteText>1</WriteText>
+</Action></Actions>
+<Category>Uncategorized</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event will write a tab character to the currently focused control. This is useful in text fields where pressing tab would toggle the focused control.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1609</ID>
+<Name>Write tab character</Name>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^#Tab</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Keys>`r`n</Keys>
+<Type>SendKeys</Type>
+<WriteText>1</WriteText>
+</Action></Actions>
+<Category>Uncategorized</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event will write a newline sequence to the focused control and thus start a new line. This is useful in text fields where pressing Enter would press a button.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1610</ID>
+<Name>Write newline characters</Name>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^#Enter</Key>
+<Type>Hotkey</Type>
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>

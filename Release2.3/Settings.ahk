@@ -459,6 +459,9 @@ Settings_CreateAbout(ByRef TabCount) {
 	yIt+=hText
 	Gui, 1:Add, Text, y%yIt% x%x1% , E-Mail:
 	Gui, 1:Add, Text, y%yIt% x%x2% cBlue gMail vURL_Mail, fragman@gmail.com
+	yIt+=hText
+	Gui, 1:Add, Text, y%yIt% x%x1% , Twitter:
+	Gui, 1:Add, Text, y%yIt% x%x2% cBlue gTwitter vURL_Twitter, 7_plus
 	yIt+=hText*2
 	Gui, 1:Add, Text, y%yIt% x%x1%, To support the development of this project, please donate:
 	yIt+=hText*1.5
@@ -1961,6 +1964,9 @@ run http://www.gnu.org/licenses/gpl.html
 return
 Mail:
 run mailto://fragman@gmail.com
+return
+Twitter:
+run http://www.twitter.com/7_plus
 return
 Ahk:
 run http://www.autohotkey.com

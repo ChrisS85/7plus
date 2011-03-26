@@ -10,7 +10,7 @@ Action_Volume_ReadXML(Action, XMLAction)
 {
 	Action.Action := XMLAction.Action
 	Action.Volume := XMLAction.Volume
-	Action.ShowVolume := XMLAction.ShowVolume
+	Action.ShowVolume := XMLAction.HasKey("ShowVolume") ? XMLAction.ShowVolume : 1
 }
 
 Action_Volume_Execute(Action, Event)

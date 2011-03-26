@@ -134,7 +134,7 @@ Trigger_Hotkey_GuiShow(Trigger, TriggerGUI, GoToLabel = "")
 	if(GoToLabel = "")
 	{
 		sTriggerGUI := TriggerGUI
-		SubEventGUI_Add(Trigger, TriggerGUI, "Text", "Hotkey", FormatHotkey(Trigger.Key), "", "Hotkey:")
+		SubEventGUI_Add(Trigger, TriggerGUI, "Text", "Hotkey", Trigger.Key " (" FormatHotkey(Trigger.Key) ")", "", "Hotkey:")
 		SubEventGUI_Add(Trigger, TriggerGUI, "Button", "Edit", "Edit Hotkey", "EditHotkeyTrigger", "")
 	}
 	else if(GoToLabel = "EditHotkey")
@@ -143,7 +143,7 @@ Trigger_Hotkey_GuiShow(Trigger, TriggerGUI, GoToLabel = "")
 		if(key)
 		{
 			Text_Hotkey := sTriggerGUI.Text_Hotkey
-			ControlSetText, , %key%, ahk_id %Text_Hotkey%
+			ControlSetText, , % Key " (" FormatHotkey(Key) ")", ahk_id %Text_Hotkey%
 		}
 	}
 }
@@ -157,7 +157,7 @@ Trigger_Hotkey_GuiSubmit(Trigger, TriggerGUI)
 	Text_Hotkey := TriggerGUI.Text_Hotkey
 	Button_Edit := TriggerGUI.Button_Edit
 	ControlGetText, key, , ahk_id %Text_Hotkey%
-	Trigger.Key := key
+	Trigger.Key := SubStr(key,1,InStr(key, " (") - 1)
 	WinKill, ahk_id %Desc_Hotkey%
 	WinKill, ahk_id %Text_Hotkey%
 	WinKill, ahk_id %Button_Edit%

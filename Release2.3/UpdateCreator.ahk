@@ -55,6 +55,7 @@ CreateUpdate(Platform, Version)
 	if(Version = "Binary")
 	{
 		runwait %A_ProgramFiles%\Autohotkey\Compiler\Compile_AHK.exe /nogui "%A_ScriptDir%\7plus.ahk"
+		runwait %A_ProgramFiles%\Autohotkey\Compiler\Compile_AHK.exe /nogui "%A_ScriptDir%\Uninstall.ahk"
 		Sleep 2000
 	}
 	FolderLoop(Platform, Version)

@@ -19,6 +19,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 0.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>319</ID>
@@ -38,6 +39,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -45,6 +47,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 0.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>320</ID>
@@ -74,6 +77,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 1.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>321</ID>
@@ -93,6 +97,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -100,6 +105,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 1.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>322</ID>
@@ -129,6 +135,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 2.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>323</ID>
@@ -148,6 +155,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -155,6 +163,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 3.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>324</ID>
@@ -184,6 +193,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 3.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>325</ID>
@@ -203,6 +213,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -210,6 +221,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 4.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>326</ID>
@@ -239,6 +251,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 4.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>327</ID>
@@ -258,6 +271,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -265,6 +279,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 5.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>328</ID>
@@ -294,6 +309,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 5.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>329</ID>
@@ -313,6 +329,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -320,6 +337,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 6.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>330</ID>
@@ -349,6 +367,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 6.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>331</ID>
@@ -368,6 +387,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -375,6 +395,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 7.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>332</ID>
@@ -404,6 +425,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 7.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>333</ID>
@@ -423,6 +445,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -430,6 +453,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 8.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>334</ID>
@@ -459,6 +483,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 8.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>335</ID>
@@ -478,6 +503,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -485,6 +511,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 9.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>336</ID>
@@ -514,6 +541,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 9.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>337</ID>
@@ -533,6 +561,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -540,6 +569,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 9.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>338</ID>
@@ -570,6 +600,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active explorer window in FastFolders Slot 0.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>339</ID>
@@ -590,6 +621,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -597,6 +629,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 0.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>340</ID>
@@ -627,6 +660,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active explorer window in FastFolders Slot 1.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>341</ID>
@@ -647,6 +681,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -654,6 +689,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 1.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>342</ID>
@@ -684,6 +720,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active explorer window in FastFolders Slot 2.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>343</ID>
@@ -704,6 +741,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -711,6 +749,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 2.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>344</ID>
@@ -741,6 +780,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active explorer window in FastFolders Slot 3.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>345</ID>
@@ -761,6 +801,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -768,6 +809,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 3.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>346</ID>
@@ -798,6 +840,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active explorer window in FastFolders Slot 4.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>347</ID>
@@ -818,6 +861,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -825,6 +869,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 4.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>348</ID>
@@ -855,6 +900,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active explorer window in FastFolders Slot 5.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>349</ID>
@@ -875,6 +921,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -882,6 +929,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 5.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>350</ID>
@@ -912,6 +960,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active explorer window in FastFolders Slot 6.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>351</ID>
@@ -932,6 +981,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -939,6 +989,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 6.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>352</ID>
@@ -969,6 +1020,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active explorer window in FastFolders Slot 7.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>353</ID>
@@ -989,6 +1041,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -996,6 +1049,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 7.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>354</ID>
@@ -1026,6 +1080,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active explorer window in FastFolders Slot 8.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>355</ID>
@@ -1046,6 +1101,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -1053,6 +1109,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 8.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>356</ID>
@@ -1083,6 +1140,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active explorer window in FastFolders Slot 9.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>357</ID>
@@ -1103,6 +1161,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -1110,6 +1169,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 9.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>358</ID>
@@ -1133,7 +1193,7 @@
 <Negate>0</Negate>
 <Operator>matches regular expression</Operator>
 <Type>If</Type>
-<With>(CabinetWClass|ExploreWClass|)</With>
+<With>(CabinetWClass|ExploreWClass)</With>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -1142,6 +1202,7 @@
 <With>Edit</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 0.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>359</ID>
@@ -1161,6 +1222,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -1171,6 +1233,7 @@
 <With>Edit</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 0.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>360</ID>
@@ -1194,7 +1257,7 @@
 <Negate>0</Negate>
 <Operator>matches regular expression</Operator>
 <Type>If</Type>
-<With>(CabinetWClass|ExploreWClass|)</With>
+<With>(CabinetWClass|ExploreWClass)</With>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -1203,6 +1266,7 @@
 <With>Edit</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 1.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>361</ID>
@@ -1222,6 +1286,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -1232,6 +1297,7 @@
 <With>Edit</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 1.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>362</ID>
@@ -1255,7 +1321,7 @@
 <Negate>0</Negate>
 <Operator>matches regular expression</Operator>
 <Type>If</Type>
-<With>(CabinetWClass|ExploreWClass|)</With>
+<With>(CabinetWClass|ExploreWClass)</With>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -1264,6 +1330,7 @@
 <With>Edit</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 2.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>363</ID>
@@ -1283,6 +1350,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -1293,6 +1361,7 @@
 <With>Edit</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 2.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>364</ID>
@@ -1316,7 +1385,7 @@
 <Negate>0</Negate>
 <Operator>matches regular expression</Operator>
 <Type>If</Type>
-<With>(CabinetWClass|ExploreWClass|)</With>
+<With>(CabinetWClass|ExploreWClass)</With>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -1325,6 +1394,7 @@
 <With>Edit</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 3.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>365</ID>
@@ -1344,6 +1414,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -1354,6 +1425,7 @@
 <With>Edit</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 3.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>366</ID>
@@ -1377,7 +1449,7 @@
 <Negate>0</Negate>
 <Operator>matches regular expression</Operator>
 <Type>If</Type>
-<With>(CabinetWClass|ExploreWClass|)</With>
+<With>(CabinetWClass|ExploreWClass)</With>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -1386,6 +1458,7 @@
 <With>Edit</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 4.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>367</ID>
@@ -1405,6 +1478,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -1415,6 +1489,7 @@
 <With>Edit</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 4.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>368</ID>
@@ -1438,7 +1513,7 @@
 <Negate>0</Negate>
 <Operator>matches regular expression</Operator>
 <Type>If</Type>
-<With>(CabinetWClass|ExploreWClass|)</With>
+<With>(CabinetWClass|ExploreWClass)</With>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -1447,6 +1522,7 @@
 <With>Edit</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 5.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>369</ID>
@@ -1466,6 +1542,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -1476,6 +1553,7 @@
 <With>Edit</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 5.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>370</ID>
@@ -1499,7 +1577,7 @@
 <Negate>0</Negate>
 <Operator>matches regular expression</Operator>
 <Type>If</Type>
-<With>(CabinetWClass|ExploreWClass|)</With>
+<With>(CabinetWClass|ExploreWClass)</With>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -1508,6 +1586,7 @@
 <With>Edit</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 6.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>371</ID>
@@ -1527,6 +1606,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -1537,6 +1617,7 @@
 <With>Edit</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 6.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>372</ID>
@@ -1560,7 +1641,7 @@
 <Negate>0</Negate>
 <Operator>matches regular expression</Operator>
 <Type>If</Type>
-<With>(CabinetWClass|ExploreWClass|)</With>
+<With>(CabinetWClass|ExploreWClass)</With>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -1569,6 +1650,7 @@
 <With>Edit</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 7.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>373</ID>
@@ -1588,6 +1670,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -1598,6 +1681,7 @@
 <With>Edit</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 7.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>374</ID>
@@ -1621,7 +1705,7 @@
 <Negate>0</Negate>
 <Operator>matches regular expression</Operator>
 <Type>If</Type>
-<With>(CabinetWClass|ExploreWClass|)</With>
+<With>(CabinetWClass|ExploreWClass)</With>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -1630,6 +1714,7 @@
 <With>Edit</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 8.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>375</ID>
@@ -1649,6 +1734,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -1659,6 +1745,7 @@
 <With>Edit</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 8.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>376</ID>
@@ -1666,8 +1753,8 @@
 <OfficialEvent>377</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Message></Message>
-<Type>OnMessage</Type>
+<Key>!Numpad8</Key>
+<Type>Hotkey</Type>
 </Trigger>
 </Event><Event>
 <Actions>
@@ -1682,7 +1769,7 @@
 <Negate>0</Negate>
 <Operator>matches regular expression</Operator>
 <Type>If</Type>
-<With>(CabinetWClass|ExploreWClass|)</With>
+<With>(CabinetWClass|ExploreWClass)</With>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -1691,6 +1778,7 @@
 <With>Edit</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 9.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>377</ID>
@@ -1710,6 +1798,7 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -1720,6 +1809,7 @@
 <With>Edit</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 9.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>378</ID>
@@ -1732,4 +1822,4 @@
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
-<MinorVersion>1</MinorVersion>
+<MinorVersion>3</MinorVersion>

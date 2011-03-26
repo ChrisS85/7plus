@@ -29,6 +29,7 @@
 <With>(DirectUIHWND3|SysListView321)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Append selected files to clipboard, instead of replacing current files on clipboard. This event will cut ALL the files on the clipboard.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>2</ID>
@@ -68,6 +69,7 @@
 <With>(DirectUIHWND3|SysListView321)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Append selected files to clipboard, instead of replacing current files on clipboard. This event will copy ALL the files on the clipboard.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>3</ID>
@@ -83,7 +85,9 @@
 <Action>
 <Path>Upward</Path>
 <Type>SetDirectory</Type>
-<WindowFilter></WindowFilter>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Active</WindowMatchType>
 </Action></Actions>
 <Category>Explorer</Category>
@@ -105,6 +109,7 @@
 <With>DirectUIHWND3</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Make backspace go upwards in file dialogs, like in the good ol' XP.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>6</ID>
@@ -119,6 +124,7 @@
 <Actions>
 <Action>
 <Command>cmd.exe /k cd /D "${P}\"</Command>
+<RunAsAdmin>0</RunAsAdmin>
 <Type>Run</Type>
 <WaitForFinish>0</WaitForFinish>
 <WorkingDirectory></WorkingDirectory>
@@ -130,13 +136,14 @@
 <Negate>0</Negate>
 <Operator>matches regular expression</Operator>
 <Type>If</Type>
-<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+<With>(CabinetWClass|ExploreWClass)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Open CMD in the directory of the active explorer window.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>9</ID>
-<Name>Run CMD in current directory</Name>
+<Name>Run CMD  in current directory</Name>
 <OfficialEvent>10</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -163,6 +170,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Copy the names of the selected files to the clipboard.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>227</ID>
@@ -176,7 +184,12 @@
 </Event><Event>
 <Actions>
 <Action>
-<Type></Type>
+<Append>0</Append>
+<Clear>1</Clear>
+<Content>${SelNM}</Content>
+<Cut>0</Cut>
+<InsertType>Text</InsertType>
+<Type>Clipboard</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -188,6 +201,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Copy the paths of the selected files to the clipboard.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>228</ID>
@@ -218,6 +232,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Append the names of the selected files to the clipboard.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>229</ID>
@@ -248,6 +263,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Append the paths of the selected files to the clipboard.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>230</ID>
@@ -278,6 +294,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Create a new text file in the directory of the currently active explorer/desktop.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>231</ID>
@@ -308,6 +325,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Create a new folder in the directory of the currently active explorer/desktop.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>232</ID>
@@ -322,6 +340,7 @@
 <Actions>
 <Action>
 <Command>"%WinDir%\explorer.exe" /n,/e,${P}</Command>
+<RunAsAdmin>0</RunAsAdmin>
 <Type>Run</Type>
 <WaitForFinish>0</WaitForFinish>
 <WorkingDirectory></WorkingDirectory>
@@ -330,6 +349,7 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Run explorer on double click on empty desktop space in the most recent directory.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>235</ID>
@@ -344,13 +364,16 @@
 <Action>
 <Path>Upward</Path>
 <Type>SetDirectory</Type>
-<WindowFilter></WindowFilter>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Active</WindowMatchType>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Make explorer go upwards on double click in empty filelist area.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>237</ID>
@@ -372,6 +395,7 @@
 <Type>FilterList</Type>
 </Action><Action>
 <Command>"C:\Program Files\Paint.NET\PaintDotNet.exe" ${SelNQ}</Command>
+<RunAsAdmin>0</RunAsAdmin>
 <Type>Run</Type>
 <WaitForFinish>0</WaitForFinish>
 <WorkingDirectory></WorkingDirectory>
@@ -386,6 +410,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Open selected image files in an image editor (Paint.NET by default).</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>300</ID>
@@ -408,6 +433,7 @@
 <Type>FilterList</Type>
 </Action><Action>
 <Command>"C:\Program Files\Notepad++\notepad++.exe" ${SelNQ}</Command>
+<RunAsAdmin>0</RunAsAdmin>
 <Type>Run</Type>
 <WaitForFinish>0</WaitForFinish>
 <WorkingDirectory></WorkingDirectory>
@@ -422,6 +448,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Open selected non-image files in a text editor (Notepad++ by default).</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>301</ID>
@@ -436,16 +463,21 @@
 <Actions>
 <Action>
 <Cancel>1</Cancel>
+<DataType>Text</DataType>
+<Placeholder>Input</Placeholder>
 <Text>Filter Text</Text>
 <Title>Select Files</Title>
 <Type>Input</Type>
+<Validate>1</Validate>
 </Action><Action>
 <Clear>1</Clear>
 <Deselect>0</Deselect>
 <Filter>${Input}</Filter>
 <Type>SelectFiles</Type>
 <Wildcard>1</Wildcard>
-<WindowFilter></WindowFilter>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Active</WindowMatchType>
 </Action></Actions>
 <Category>Explorer</Category>
@@ -458,6 +490,7 @@
 <With>(CabinetWClass|ExploreWClass)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Select files in the active explorer window by entering a part of the filename.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>304</ID>
@@ -473,6 +506,9 @@
 <Action>
 <Type>WindowActivate</Type>
 <WindowFilter></WindowFilter>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action><Action>
 <Button>Right</Button>
@@ -494,6 +530,9 @@
 <Negate>1</Negate>
 <Type>WindowActive</Type>
 <WindowFilter></WindowFilter>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Condition><Condition>
 <Compare>${MC}</Compare>
@@ -503,6 +542,7 @@
 <With>(ExploreWClass|CabinetWClass)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event makes it possible to right click on files in inactive explorer windows.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>318</ID>
@@ -513,6 +553,101 @@
 <Key>RButton</Key>
 <Type>Hotkey</Type>
 </Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Type>RestoreSelection</Type>
+</Action></Actions>
+<Category>Explorer</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>IsRenaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(DirectUIHWND3|SysListView321)</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Restores the previous file selection. This is very useful if you need to select many files and accidently click somewhere wrong.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1581</ID>
+<Name>Restore selection</Name>
+<OfficialEvent>985</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^+Z</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Action>Toggle show hidden files</Action>
+<Type>ViewMode</Type>
+</Action></Actions>
+<Category>Explorer</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>IsRenaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Toggles the "Show hidden files" explorer setting.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>980</ID>
+<Name>Toggle hidden files</Name>
+<OfficialEvent>981</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^!H</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Command>cmd.exe /k cd /D "%Desktop%"</Command>
+<RunAsAdmin>0</RunAsAdmin>
+<Type>Run</Type>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory></WorkingDirectory>
+</Action></Actions>
+<Category>Explorer</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(WorkerW|Progman)</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Open CMD in desktop directory when desktop window is active.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1583</ID>
+<Name>Run CMD in desktop directory</Name>
+<OfficialEvent>987</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>#C</Key>
+<Type>Hotkey</Type>
+</Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
-<MinorVersion>1</MinorVersion>
+<MinorVersion>3</MinorVersion>

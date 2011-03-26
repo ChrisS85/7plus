@@ -4,6 +4,7 @@
 <Actions>
 <Action>
 <Command>cmd.exe /k cd /D "${TitlePath}\"</Command>
+<RunAsAdmin>0</RunAsAdmin>
 <Type>Run</Type>
 <WaitForFinish>0</WaitForFinish>
 <WorkingDirectory></WorkingDirectory>
@@ -11,10 +12,12 @@
 <Category>File Dialog</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Open CMD in the current directory of the active file dialog window.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>596</ID>
@@ -38,13 +41,21 @@
 <Category>File Dialog</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
 <Type>IsRenaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(DirectUIHWND2|SysListView321)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Append selected files to clipboard, instead of replacing the current files on the clipboard.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>597</ID>
@@ -68,13 +79,21 @@
 <Category>File Dialog</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
 <Type>IsRenaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(DirectUIHWND2|SysListView321)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Append selected files to clipboard, instead of replacing the current files on the clipboard. The clipboard will be set to perform a paste operation.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>598</ID>
@@ -90,12 +109,15 @@
 <Action>
 <Path>Upward</Path>
 <Type>SetDirectory</Type>
-<WindowFilter></WindowFilter>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Active</WindowMatchType>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -109,6 +131,7 @@
 <With>DirectUIHWND2</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Make backspace go upwards in file dialogs, like in the good ol' XP.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>600</ID>
@@ -138,10 +161,12 @@
 <Type>If</Type>
 <With>DirectUIHWND2</With>
 </Condition><Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Copy the names of the selected files to the clipboard.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>816</ID>
@@ -171,10 +196,12 @@
 <Type>If</Type>
 <With>DirectUIHWND2</With>
 </Condition><Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Copy the paths of the selected files to the clipboard.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>817</ID>
@@ -204,10 +231,12 @@
 <Type>If</Type>
 <With>DirectUIHWND2</With>
 </Condition><Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Append the names of the selected files to the clipboard.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>818</ID>
@@ -237,10 +266,12 @@
 <Type>If</Type>
 <With>DirectUIHWND2</With>
 </Condition><Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Append the paths of the selected files to the clipboard.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>819</ID>
@@ -254,13 +285,14 @@
 </Event><Event>
 <Actions>
 <Action>
-<Filename></Filename>
+<Filename>Neues Textdokument.txt</Filename>
 <Rename>1</Rename>
 <Type>NewFile</Type>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -268,6 +300,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Create a new text file in the directory of the currently active file dialog.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>826</ID>
@@ -281,13 +314,14 @@
 </Event><Event>
 <Actions>
 <Action>
-<FolderName></FolderName>
+<FolderName>Neuer Ordner</FolderName>
 <Rename>1</Rename>
 <Type>NewFolder</Type>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition><Condition>
@@ -295,6 +329,7 @@
 <Type>IsRenaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Create a new folder in the directory of the currently active file dialog.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>827</ID>
@@ -317,6 +352,7 @@
 <Type>FilterList</Type>
 </Action><Action>
 <Command>"C:\Program Files\Paint.NET\PaintDotNet.exe" ${SelNQ}</Command>
+<RunAsAdmin>0</RunAsAdmin>
 <Type>Run</Type>
 <WaitForFinish>0</WaitForFinish>
 <WorkingDirectory></WorkingDirectory>
@@ -324,10 +360,12 @@
 <Category>File Dialog</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Open selected image files in an image editor (Paint.NET by default).</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>895</ID>
@@ -350,6 +388,7 @@
 <Type>FilterList</Type>
 </Action><Action>
 <Command>"C:\Program Files\Notepad++\notepad++.exe" ${SelNQ}</Command>
+<RunAsAdmin>0</RunAsAdmin>
 <Type>Run</Type>
 <WaitForFinish>0</WaitForFinish>
 <WorkingDirectory></WorkingDirectory>
@@ -357,10 +396,12 @@
 <Category>File Dialog</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
 <Type>IsDialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Open selected non-image files in a text editor (Notepad++ by default).</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>896</ID>
@@ -373,4 +414,4 @@
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
-<MinorVersion>1</MinorVersion>
+<MinorVersion>3</MinorVersion>
