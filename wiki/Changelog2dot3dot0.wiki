@@ -35,5 +35,6 @@ Bugfixes:
 Changes:
  * 7plus now uses the task scheduler instead of autorun in Vista and 7 to avoid UAC dialogs
  * All tooltips and some message boxes have been replaced by nicer looking notification windows
+ * Added an introduction page that is shown on first run. It contains some tips and some basic settings like Autorun.
 
 If you like this program and want to support its development, please consider donating!
