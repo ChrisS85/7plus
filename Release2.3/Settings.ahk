@@ -1319,6 +1319,8 @@ GUI_EventsList_Export()
 		FileSelectFile, file, S19, , Export Events file, Event files (*.xml)
 		if(file)
 		{
+			if(!strEndsWith(file, ".xml"))
+				file .= ".xml"
 			Events := Array()
 			Loop % Settings_Events.len()
 			{
