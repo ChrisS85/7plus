@@ -29,12 +29,6 @@ Stack_Push(stack,item)
 		stack.Move(x,1)
 	}
 }
-; Win+v:Clipboard manager menu
-; #if ClipboardManager && !IsFullscreen()
-; #v::
-	; ClipboardManagerMenu()
-; return
-; #if
 
 ClipboardManagerMenu()
 {
