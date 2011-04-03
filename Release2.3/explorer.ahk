@@ -259,7 +259,7 @@ UnregisterSelectionChangedEvents(hwnd)
 ExplorerSelectionChanged(ExplorerCOMObject)
 {
 	global RegisteredSelectionChangedWindows
-	Critical
+	; Critical ;This apparently makes it stop working and blocks the explorer window somehow
 	outputdebug ExplorerSelectionChanged
 	if(RegisteredSelectionChangedWindows.IgnoreNextEvent > 0)
 	{
@@ -276,7 +276,7 @@ ExplorerSelectionChanged(ExplorerCOMObject)
 		if(RegisteredSelectionChangedWindowsItem.SelectionHistory.len() > 10)
 			RegisteredSelectionChangedWindowsItem.SelectionHistory.Delete(1)
 	}
-	Critical, Off
+	; Critical, Off
 }
 RestoreExplorerSelection()
 {
@@ -285,17 +285,21 @@ RestoreExplorerSelection()
 	if(hwnd)
 	{
 		RegisteredSelectionChangedWindowsItem := RegisteredSelectionChangedWindows.SubItem("hwnd",hwnd)
+		if(!IsObject(RegisteredSelectionChangedWindowsItem))
+			outputdebug % "Explorer window " hwnd " is not registered!"
 		if(RegisteredSelectionChangedWindowsItem.SelectionHistory.len() > 1)
 		{		
-			outputdebug restore selection
+			outputdebug % "Explorer window " hwnd "restore selection"
 			Selection := RegisteredSelectionChangedWindowsItem.SelectionHistory[RegisteredSelectionChangedWindowsItem.SelectionHistory.len() - 1]
 			; A SelectionChanged event will be fired 2 times that needs to be suppressed? 
 			;Why is it fired 2 times instead of one time for each file? -> Probably because of timing
 			RegisteredSelectionChangedWindows.IgnoreNextEvent := 2 
-			outputdebug % "expecting " RegisteredSelectionChangedWindows.IgnoreNextEvent " events."
+			outputdebug % "Explorer window " hwnd " expecting " RegisteredSelectionChangedWindows.IgnoreNextEvent " selection events."
 			SelectFiles(Selection,1,0,1,1,hwnd)
 			RegisteredSelectionChangedWindowsItem.SelectionHistory.Delete(RegisteredSelectionChangedWindowsItem.SelectionHistory.len())
 		}
+		else
+			outputdebug % "Explorer window " hwnd " is registered but has no history"
 	}
 }
 FixExplorerConfirmationDialogs()

@@ -93,6 +93,8 @@ ExpandPlaceholder(Placeholder)
 			focussed:=XPGetFocussed()
 		return focussed
 	}
+	else if(Placeholder = "WinVer")
+		return A_OSVersion
 	else if(Placeholder = "U" || strStartsWith(Placeholder,"M")) ;Mouse submenu
 	{
 		if(strlen(Placeholder > 1) && InStr(Placeholder, "A") = 2)

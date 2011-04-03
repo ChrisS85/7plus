@@ -12,15 +12,8 @@ Action_NewFile_Init(Action)
 Action_NewFile_ReadXML(Action, XMLAction)
 {
 	global Vista7
-	Action.Filename := XMLAction.Filename
+	Action.Filename := XMLAction.HasKey("Filename") ? XMLAction.Filename : Action.Filename
 	Action.Rename := XMLAction.Rename
-	if(!Action.Filename)
-	{
-		if(Vista7)
-			Action.Filename:=TranslateMUI("notepad.exe",470) ".txt" ;"New Textfile" ".txt"
-		else
-			Action.Filename:=TranslateMUI("shell32.dll",8587) " " TranslateMUI("notepad.exe",469) ".txt" ;"New" "Textfile" ".txt"
-	}
 }
 
 Action_NewFile_Execute(Action, Event)

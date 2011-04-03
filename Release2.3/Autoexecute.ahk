@@ -86,6 +86,10 @@ Menu, tray, add  ; Creates a separator line.
 Menu, tray, add, Settings, SettingsHandler  ; Creates a new menu item.
 menu, tray, Default, Settings
 
+;This needs to be executed before EventSystem_Startup() because NewFile/Folder action relies on it
+if(Vista7)
+	AcquireExplorerConfirmationDialogStrings()
+	
 ;Init event system
 outputdebug starting event system
 EventSystem_Startup()
@@ -249,8 +253,6 @@ TabContainerList.TabWidth := 100
 TabContainerList.InActiveHeightDifference := 2
 TabContainerList.MinWidth := 40
 
-if(Vista7)
-	AcquireExplorerConfirmationDialogStrings()
 
 if(A_OSVersion="WIN_7")
 	CreateInfoGui()
@@ -288,7 +290,6 @@ if (Firstrun=1)
 	RegisterShellExtension(1)
 	GoSub, wizardry
 }
-FirstRun:=0
 
 ;Set this so that config files aren't saved with empty values when there was a problem with the startup procedure
 ProgramStartupFinished := true

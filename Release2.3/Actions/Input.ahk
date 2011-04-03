@@ -179,8 +179,14 @@ UserInputBox(Action, Event, GoToLabel = "")
 		}
 		else if(Action.DataType = "Time")
 		{
-			Gui, %GuiNum%:Add, DateTime, x+10 yp-4 w200 hwndEdit Choose20100101001000, Time
-			Action.tmpEdit := Edit
+			Gui, %GuiNum%:Add, Edit, x+2 yp-4 w30 hwndHours Number, 00
+			Gui, %GuiNum%:Add, Text, x+2 yp+4, :
+			Gui, %GuiNum%:Add, Edit, x+2 yp-4 w30 hwndMinutes Number, 10
+			Gui, %GuiNum%:Add, Text, x+2 yp+4, :
+			Gui, %GuiNum%:Add, Edit, x+2 yp-4 w30 hwndSeconds Number, 00
+			Action.tmpHours := Hours
+			Action.tmpHours := Minutes
+			Action.tmpSeconds := Seconds
 		}
 		else if(Action.DataType = "Selection")
 		{
@@ -282,7 +288,12 @@ InputBoxOK()
 	if(Action.DataType = "Text" || Action.DataType = "Number" || Action.DataType = "Path" || Action.DataType = "File")
 		ControlGetText, input, Edit1
 	else if(Action.DataType = "Time")
-		ControlGetText, input, SysDateTimePick321
+	{
+		ControlGetText, Hours, Edit1
+		ControlGetText, Minutes, Edit2
+		ControlGetText, Seconds, Edit3
+		input := (SubStr("00" Hours, -1) ":" SubStr("00" Minutes, -1) ":" SubStr("00" Seconds, -1))
+	}
 	else if(Action.DataType = "Selection")
 	{
 		

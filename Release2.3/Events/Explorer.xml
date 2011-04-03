@@ -29,7 +29,7 @@
 <With>(DirectUIHWND3|SysListView321)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Append selected files to clipboard, instead of replacing current files on clipboard. This event will cut ALL the files on the clipboard.</Description>
+<Description>Append selected files to clipboard, instead of replacing current files on clipboard. This event will copy ALL the files on the clipboard.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>2</ID>
@@ -69,7 +69,7 @@
 <With>(DirectUIHWND3|SysListView321)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Append selected files to clipboard, instead of replacing current files on clipboard. This event will copy ALL the files on the clipboard.</Description>
+<Description>Append selected files to clipboard, instead of replacing current files on clipboard. This event will cut ALL the files on the clipboard.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>3</ID>
@@ -277,7 +277,6 @@
 </Event><Event>
 <Actions>
 <Action>
-<Filename>Neues Textdokument.txt</Filename>
 <Rename>1</Rename>
 <Type>NewFile</Type>
 </Action></Actions>
@@ -308,7 +307,6 @@
 </Event><Event>
 <Actions>
 <Action>
-<FolderName>Neuer Ordner</FolderName>
 <Rename>1</Rename>
 <Type>NewFolder</Type>
 </Action></Actions>
@@ -394,7 +392,7 @@
 <Separator></Separator>
 <Type>FilterList</Type>
 </Action><Action>
-<Command>"C:\Program Files\Paint.NET\PaintDotNet.exe" ${SelNQ}</Command>
+<Command>"%ProgramFiles%\Paint.NET\PaintDotNet.exe" ${SelNQ}</Command>
 <RunAsAdmin>0</RunAsAdmin>
 <Type>Run</Type>
 <WaitForFinish>0</WaitForFinish>
@@ -432,7 +430,7 @@
 <Separator>`n</Separator>
 <Type>FilterList</Type>
 </Action><Action>
-<Command>"C:\Program Files\Notepad++\notepad++.exe" ${SelNQ}</Command>
+<Command>"%ProgramFiles%\Notepad++\notepad++.exe" ${SelNQ}</Command>
 <RunAsAdmin>0</RunAsAdmin>
 <Type>Run</Type>
 <WaitForFinish>0</WaitForFinish>

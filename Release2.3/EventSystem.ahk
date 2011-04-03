@@ -294,7 +294,7 @@ WriteMainEventsFile()
 
 ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 {
-	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, ConfigPath
+	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, ConfigPath, Debug
 	FileRead, xml, %path%
 	XMLObject := XML_Read(xml)
 	Major := XMLObject.MajorVersion
@@ -586,18 +586,18 @@ WriteEventsFile(Events, path)
 			xmlEvent.OfficialEvent := Event.OfficialEvent
 		
 		;Enable the lines below to save events with an "official" tag that allows to identify them in update processes
-		if(!Event.OfficialEvent)
-		{
-			;Find an unused Event ID to be used as Official Event ID
-			Loop
-			{
-				if(Events.IndexOfSubItem("OfficialEvent", A_Index))
-					continue ;Alread in use
-				xmlEvent.OfficialEvent := A_Index ;Not used
-				Event.OfficialEvent := A_Index
-				break
-			}
-		}
+		;~ if(!Event.OfficialEvent)
+		;~ {
+			;~ ;Find an unused Event ID to be used as Official Event ID
+			;~ Loop
+			;~ {
+				;~ if(Events.IndexOfSubItem("OfficialEvent", A_Index))
+					;~ continue ;Alread in use
+				;~ xmlEvent.OfficialEvent := A_Index ;Not used
+				;~ Event.OfficialEvent := A_Index
+				;~ break
+			;~ }
+		;~ }
 		
 		xmlTrigger := Object()
 		xmlEvent.Trigger := xmlTrigger
@@ -822,5 +822,5 @@ EventScheduler()
 
 EventLog(text)
 {
-	FileAppend, %A_Now%: %text%, %A_Temp%\7plus\EventLog.log
+	FileAppend, %A_Now%: %text%`n, %A_Temp%\7plus\EventLog.log
 }

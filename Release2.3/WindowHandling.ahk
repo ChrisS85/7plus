@@ -388,40 +388,6 @@ FlashWindows()
 	return
 }
 
-; RButton on title bar -> toggle always on top
-; #if ((z:=MouseHittest())=2 && HKToggleAlwaysOnTop) || (z=20 && HKKillWindows)|| (z=8 && HKTrayMin)
-; ~RButton::
-; If we hit something, we swallow the click, and need that toggle var therefore
-; If (z=2)
-; {  
-	; MouseGetPos, , , z
-	; WinActivate ahk_id %z%
-	; WinSet, AlwaysOnTop, toggle, ahk_id %z%
-	; Loop 50
-	; {	
-		; Sleep 10
-		; if(IsContextMenuActive())
-		; {
-			; outputdebug found context menu
-			; SendInput {Escape} ;Escape is needed to suppress the annoying menu on titlebar right click     
-			; break
-		; }
-	; }
-; }
-; else if(z=20)
-; {
-	; MouseGetPos, , , z
-	; CloseKill(z)  	
-; }
-; else if(z=8)
-; {
-	; MouseGetPos, , , z
-	; WinTraymin(z)
-; }
-	
-; Return
-; #if
-
 ; Alt+LButton Window dragging, slightly modified by Fragman
 
 ; This script modified from the original: http://www.autohotkey.com/docs/scripts/EasyWindowDrag.htm

@@ -1,12 +1,53 @@
 ;---------------------------------------------------------------------------------------------------------------
 ; The following functions create the GUI and are only called once at startup
 ;---------------------------------------------------------------------------------------------------------------
+Settings_CreateIntroduction(ByRef TabCount) {
+	global
+	local yIt,x1,x2,x,y
+	x1:=xBase
+	yIt:=yBase
+	x2:=x1+180
+	Gui, 1:Add, Tab2, x176 y14 w460 h350 vIntroductionTab
+	TabCount++
+	AddTab(0, "","SysTabControl32" TabCount)
+	Gui, 1:Add, Text, x%x1% y%yIt%, 
+	(
+Welcome to 7plus! If you are new to this program, here are some tips:
+
+ - Be sure to check out the events settings page (or more specifically, the subpages for specific categories).
+   The event system allows to create all kinds of functions (hotkeys, timers, context menu entries...).
+   If you look for a specific feature, use the search field on that page. To edit an event, just double-click it.
+   Use the help buttons in the "Edit Event" and "Edit Subevent" windows for help on specific triggers/conditions/actions.
+   
+ - You should also check out the Accessor settings. The Accessor is a launcher program that can be used 
+   to launch programs with the keyboard (and much more!).
+   
+ - For explorer features, check out the Explorer, Fast Folders and Explorer Tabs pages,
+   in addition to the explorer-related events.
+ 
+Finally, here are some settings that you're likely to change at the beginning:
+	)	
+	yIt+=checkboxstep * 10
+	if(!IsPortable)
+	{
+		Gui, 1:Add, Checkbox, x%x1% y%yIt% vAutorun, Autorun 7plus on windows startup
+		yIt+=checkboxstep
+	}
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHideTrayIcon, Hide Tray Icon (press WIN + H (default settings) to show settings!)
+	yIt+=checkboxstep
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vAutoUpdate, Automatically look for updates on startup
+	yIt+=checkboxstep
+	y:=yIt+TextBoxCheckBoxOffset
+	Gui, 1:Add, Text, x%x1% y%y%, Run as admin:
+	Gui, 1:Add, DropDownList, x%x2% y%yIt% w%wTBMedium% vRunAsAdmin, Always/Ask|Never
+	yIt+=textboxstep
+	Gui, 1:Add, Text, x%x1% y%yIt%, Required for explorer buttons, Autoupdate and for accessing programs which are running as admin.`nAlso make sure that 7plus has write access to its config files when not running as admin.	
+}
 Settings_CreateEvents(ByRef TabCount) {
 	global
 	local yIt,x1,x2,x,y
 	outputdebug createevents() start
-	xHelp:=xBase
-	x1:=xHelp+10
+	x1:=xBase+10
 	x2 := x1 + 460
 	yIt:=yBase
 	Gui, 1:Add, Tab2, x176 y14 w460 h350 vEventsTab, 
@@ -43,8 +84,7 @@ Settings_CreateEvents(ByRef TabCount) {
 Settings_CreateAccessorKeywords(ByRef TabCount) {
 	global
 	local yIt,x1,x2,x,y
-	xHelp:=xBase
-	x1:=xHelp+10
+	x1:=xBase+10
 	x2 := x1 + 460
 	yIt:=yBase
 	Gui, 1:Add, Tab2, x176 y14 w460 h350 vAccessorKeywordsTab, 
@@ -68,8 +108,7 @@ Settings_CreateAccessorKeywords(ByRef TabCount) {
 Settings_CreateAccessor(ByRef TabCount) {
 	global
 	local yIt,x1,x2,x,y
-	xHelp:=xBase
-	x1:=xHelp+10
+	x1:=xBase+10
 	x2 := x1 + 460
 	yIt:=yBase
 	Gui, 1:Add, Tab2, x176 y14 w460 h350 vAccessorPluginsTab, 
@@ -412,21 +451,6 @@ Settings_CreateMisc(ByRef TabCount) {
 	Gui, 1:Add, Text, x%x1% y%y%, Fullscreen detection exclude list
 	Gui, 1:Add, Edit, x%x2% y%yIt% w%wTBHuge% R1 vFullscreenExclude
 	yIt+=TextBoxStep
-	if(!IsPortable)
-	{
-		yIt+=checkboxstep
-		Gui, 1:Add, Checkbox, x%x1% y%yIt% vAutorun, Autorun 7plus on windows startup
-	}
-	yIt+=checkboxstep
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHideTrayIcon, Hide Tray Icon (press WIN + H (default settings) to show settings!)
-	yIt+=checkboxstep
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vAutoUpdate, Automatically look for updates on startup
-	yIt+=checkboxstep
-	y:=yIt+TextBoxCheckBoxOffset
-	Gui, 1:Add, Text, x%x1% y%y%, Run as admin:
-	Gui, 1:Add, DropDownList, x%x2% y%yIt% w%wTBMedium% vRunAsAdmin, Always/Ask|Never
-	yIt+=textboxstep
-	Gui, 1:Add, Text, x%x1% y%yIt%, Required for explorer buttons, Autoupdate and for accessing programs which are running as admin.`nAlso make sure that 7plus has write access to its config files when not running as admin.	
 }
 Settings_CreateAbout(ByRef TabCount) {
 	global
@@ -492,6 +516,15 @@ Settings_CreateAbout(ByRef TabCount) {
 ;---------------------------------------------------------------------------------------------------------------
 ; The following functions set the GUI values and are called each time the GUI is shown
 ;---------------------------------------------------------------------------------------------------------------
+Settings_SetupIntroduction() {
+	global
+	GuiControl, 1:,HideTrayIcon,% HideTrayIcon = 1
+	GuiControl, 1:,AutoUpdate,% AutoUpdate = 1
+	;Figure out if Autorun is enabled
+	if(!IsPortable)
+		GuiControl, 1:, Autorun,% IsAutorunEnabled()
+	GuiControl, 1:Choose, RunAsAdmin, %RunAsAdmin%
+}
 Settings_SetupEvents() {
 	global
 	WasCritical := A_IsCritical
@@ -578,11 +611,13 @@ RecreateTreeView()
 	TV_GetText(Category, selected)
 	SuppressTreeViewMessages := true
 	TV_Delete()
+	TV_Add("Introduction") ;Note: Treeview is also created once in initial setup
 	EventsTreeViewEntry := TV_Add("All Events", "", "Expand Select Vis" )
 	Loop % Settings_Events.Categories.len()
 		TV_Add(Settings_Events.Categories[A_Index], EventsTreeViewEntry, "Sort" (Category = Settings_Events.Categories[A_Index] ? " Select Vis" : ""))
 	Loop, Parse, SettingsTabList, |
-		TV_Add(A_LoopField)
+		if(A_LoopField != "Introduction")
+			TV_Add(A_LoopField)
 	FillEventsList()
 	SuppressTreeViewMessages := false
 	if(!WasCritical)
@@ -782,16 +817,9 @@ Settings_SetupMisc() {
 	GuiControl, 1:, FullscreenExclude, %FullscreenExclude%
 	GuiControl, 1:,JoyControl,% JoyControl = 1
 	GuiControl, 1:,WordDelete,% WordDelete = 1
-	GuiControl, 1:,HideTrayIcon,% HideTrayIcon = 1
-	GuiControl, 1:,AutoUpdate,% AutoUpdate = 1
-	;Figure out if Autorun is enabled
-	if(!IsPortable)
-		GuiControl, 1:, Autorun,% IsAutorunEnabled()
-	GuiControl, 1:Choose, RunAsAdmin, %RunAsAdmin%
 }
 Settings_SetupAbout() {
-	global
-	
+	global	
 }
 
 AddTab(IconNumber, TabName, TabControl) {
@@ -803,7 +831,7 @@ AddTab(IconNumber, TabName, TabControl) {
 	SendMessage, 0x1307, 999, &TCITEM, %TabControl%  ; 0x1307 is TCM_INSERTITEM
 }
 SettingsHandler:
-ShowSettings()
+ShowSettings(FirstRun ? "Introduction" : "")
 return
 ShowSettings(ShowPane="") {
 	global
@@ -841,14 +869,16 @@ ShowSettings(ShowPane="") {
 			wButton:=30
 			hCheckbox:=16 
 			
-			SettingsTabList := "Accessor Keywords|Accessor Plugins|Explorer|Fast Folders|Explorer Tabs|FTP Profiles|Hotstrings|Windows|Misc|About"
-			; Gui, 1:Add, ListBox, x16 y20 w120 h350 gListbox vMyListBox, %TabList%
+			SettingsTabList := "Introduction|Accessor Keywords|Accessor Plugins|Explorer|Fast Folders|Explorer Tabs|FTP Profiles|Hotstrings|Windows|Misc|About"
+			;Note: Treeview entries get overwritten in RecreateTreeView()
 			Gui, 1:Add, TreeView, x16 y20 w140 h420 AltSubmit gSettingsTreeView vSettingsTreeView -HScroll
+			TV_Add("Introduction", "", "First")
 			EventsTreeViewEntry := TV_Add("All Events", "", "Expand")
 			Loop % Events.Categories.len()
 				TV_Add(Events.Categories[A_Index], EventsTreeViewEntry, "Sort")
 			Loop, Parse, SettingsTabList, |
-				TV_Add(A_LoopField)
+				if(A_LoopField != "Introduction")
+					TV_Add(A_LoopField)
 			
 			Gui, 1:Add, GroupBox, x176 y14 w580 h420 vGGroupBox , Events
 			Gui, 1:Add, Button, x495 y440 w70 h23 vBtnOK gOK, OK
@@ -856,6 +886,7 @@ ShowSettings(ShowPane="") {
 			Gui, 1:Add, Button, x660 y440 w80 h23 vBtnApply gApply, Apply
 			Gui, 1:Add, Text, x16 y445 vTutLabel, Click on ? to see video tutorial help!
 			Gui, 1:Add, Text, y445 x330 vWait, Applying settings, please wait!
+			Settings_CreateIntroduction(TabCount)
 			Settings_CreateEvents(TabCount)
 			Settings_CreateAccessorKeywords(TabCount)
 			Settings_CreateAccessor(TabCount)
@@ -878,6 +909,7 @@ ShowSettings(ShowPane="") {
 		;---------------------------------------------------------------------------------------------------------------
 		; Setup Control Status
 		;---------------------------------------------------------------------------------------------------------------
+		Settings_SetupIntroduction()
 		Settings_SetupEvents()
 		Settings_SetupAccessorKeywords()
 		Settings_SetupAccessor()

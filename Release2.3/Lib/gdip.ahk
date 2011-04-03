@@ -1592,18 +1592,30 @@ Gdip_CreateBitmap(Width, Height, Format=0x26200A) ;64
 
 Gdip_CreateBitmapFromClipboard() ;64
 {
-	if !DllCall("OpenClipboard", "PTR", 0)
+	if DllCall("OpenClipboard", "PTR", 0)
+	{
+		if !DllCall("IsClipboardFormatAvailable", "uint", 8)
+		{
+			DllCall("CloseClipboard")
+			return -2
+		}
+		if !hBitmap := DllCall("GetClipboardData", "uint", 2, "Ptr")
+		{
+			DllCall("CloseClipboard")
+			return -3
+		}
+		if !pBitmap := Gdip_CreateBitmapFromHBITMAP(hBitmap)
+		{
+			DllCall("CloseClipboard")
+			return -4
+		}
+		if !DllCall("CloseClipboard")
+			return -5
+		DeleteObject(hBitmap)
+		return pBitmap
+	}
+	else
 		return -1
-	if !DllCall("IsClipboardFormatAvailable", "uint", 8)
-		return -2
-	if !hBitmap := DllCall("GetClipboardData", "uint", 2, "Ptr")
-		return -3
-	if !pBitmap := Gdip_CreateBitmapFromHBITMAP(hBitmap)
-		return -4
-	if !DllCall("CloseClipboard")
-		return -5
-	DeleteObject(hBitmap)
-	return pBitmap
 }
 
 Gdip_SetBitmapToClipboard(pBitmap)

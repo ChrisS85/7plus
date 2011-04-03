@@ -4,7 +4,7 @@
 <Actions>
 <Action>
 <Clipboard>1</Clipboard>
-<FTPProfile></FTPProfile>
+<FTPProfile>1</FTPProfile>
 <Silent>0</Silent>
 <SourceFiles>${SelNNEM}</SourceFiles>
 <TargetFile>${Input}</TargetFile>
@@ -15,6 +15,7 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Upload the selected files to the FTP server defined in FTP profile 1 by clicking on the "Upload" button in explorer. Make sure to enter FTP login data for FTP profile 1.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>978</ID>
@@ -31,7 +32,6 @@
 </Event><Event>
 <Actions>
 <Action>
-<Filename>Neues Textdokument.txt</Filename>
 <Rename>1</Rename>
 <Type>NewFile</Type>
 </Action></Actions>
@@ -39,6 +39,7 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
+<Description>Create a new text file by clicking on the "New text file" button in explorer.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>979</ID>
@@ -54,4 +55,4 @@
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
-<MinorVersion>1</MinorVersion>
+<MinorVersion>3</MinorVersion>

@@ -11,7 +11,7 @@ Action_ShowSettings_Execute(Action, Event)
 	if(WinExist("7plus Settings"))
 		WinActivate 7plus Settings
 	else
-		ShowSettings()
+		GoSub SettingsHandler ;ShowSettings shouldn't be called here directly because Settingshandler performs an additional check for FirstRun
 	return 1
 } 
 Action_ShowSettings_DisplayString(Action)

@@ -300,11 +300,11 @@ SubEventGUI_Placeholders(SubEventGUI, name, ClickedMenu="")
 		Menu, Placeholders_Mouse, add, ${MYU} - Mouse Y coordinate`, relative to window under mouse, PlaceholderHandler
 		
 		Menu, Placeholders_System, add, ${Clip} - Clipboard contents, PlaceholderHandler
-		Menu, Placeholders_System, add, ${Input} - Result of previous input action, PlaceholderHandler
 		Menu, Placeholders_System, add, ${MessageResult} - Result of previous SendMessage action (Send only!), PlaceholderHandler
 		Menu, Placeholders_System, add, ${wParam} - wParam value if this condition/action was triggered by OnMessage trigger, PlaceholderHandler
 		Menu, Placeholders_System, add, ${lParam} - lParam value if this condition/action was triggered by OnMessage trigger, PlaceholderHandler
 		Menu, Placeholders_System, add, ${Context} - List of selected files(with paths) from Contextmenu trigger`, separated by newlines, PlaceholderHandler
+		Menu, Placeholders_System, add, ${WinVer} - Windows version(WIN_7`, WIN_VISTA`, WIN_XP`, WIN_2003`,...), PlaceholderHandler
 		
 		Menu, Placeholders_Windows, add, ${A} - Active window handle, PlaceholderHandler
 		Menu, Placeholders_Windows, add, ${Class} - Active window class, PlaceholderHandler

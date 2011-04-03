@@ -177,8 +177,8 @@ _Notify_:
   DllCall("AnimateWindow","UInt",WinExist(),"Int",SI,"UInt","0x00040008") 
  Else 
   Gui, %GN%:Show, NA, NotifyGui 
- Gui, %GN2%:Show, NA 
- WinSet, AlwaysOnTop, On 
+ Gui, %GN2%:Show, NA +AlwaysOnTop
+ ; WinSet, AlwaysOnTop, On 
 
  If ((Duration < 0) OR (Duration = "-0")) 
   Exit := GN 

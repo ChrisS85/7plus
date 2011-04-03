@@ -6,20 +6,14 @@ Action_NewFolder_Init(Action)
 		Action.FolderName:=TranslateMUI(shell32muipath,16859) ;"New Folder"
 	else
 		Action.FolderName:=TranslateMUI("shell32.dll",30320) ;"New Folder"
+	msgbox % shell32muipath " " Action.Foldername
 	Action.Rename := true
 }
 Action_NewFolder_ReadXML(Action, XMLAction)
 {
 	global shell32muipath,Vista7
-	Action.Foldername := XMLAction.Foldername
+	Action.Foldername := XMLAction.HasKey("FolderName") ? XMLAction.Foldername : Action.FolderName
 	Action.Rename := XMLAction.Rename
-	if(!Action.Foldername)
-	{
-		if(Vista7)
-			Action.FolderName:=TranslateMUI(shell32muipath,16859) ;"New Folder"
-		else
-			Action.FolderName:=TranslateMUI("shell32.dll",30320) ;"New Folder"
-	}
 }
 Action_NewFolder_Execute(Action, Event)
 {

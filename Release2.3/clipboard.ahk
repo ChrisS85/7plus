@@ -2,10 +2,14 @@
 ;To use the clipboard without triggering these features, set MuteClipboardList:=true before writing to clipboard
 OnClipboardChange:
 if(MuteClipboardList)
+{
+	FileAppend, %A_Now%: Clipboard changed to %Clipboard% but it's muted`n, %A_Temp%\7plus\Log.log
 	return
+}
 if(WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup")|| IsDialog())
-	CreateFile()
+	CreateFileFromClipboard()
 text:=ReadClipboardText()
+FileAppend, %A_Now%: Clipboard changed to %text%`n, %A_Temp%\7plus\Log.log
 if(text)
 	ClipboardList.Push(text)
 return
@@ -125,12 +129,12 @@ ClipboardMenuClicked(index)
 }
 
 ;Creates a file for pasting text/image in explorer
-CreateFile()
+CreateFileFromClipboard()
 {
 	global temp_img, temp_txt, CF_HDROP, MuteClipboardList
 	;outputdebug CreateFile
 	if(!MuteClipboardList)
-	{	 
+	{
 		MuteClipboardList:=true
 		if(!DllCall("IsClipboardFormatAvailable", "Uint", CF_HDROP))
 		{			
@@ -153,7 +157,7 @@ CreateFile()
 		{
 			outputdebug a file is already in the clipboard
 		}	
-    MuteClipboardList:=false
+		MuteClipboardList:=false
 	}
 }
 ;Read real text (=not filenames, when CF_HDROP is in clipboard) from clipboard
@@ -171,31 +175,19 @@ ReadClipboardText()
 	return text
 }
 
-;Read image from clipboard and return a pointer to a bitmap
-ReadClipboardImage()
-{
-	if(DllCall("IsClipboardFormatAvailable", "Uint", 2))
-	{
-		DllCall("OpenClipboard", "Ptr", 0)
-		hBM:=DllCall("GetClipboardData", "Uint", 2, "Ptr")
-		pBitmap := Gdip_CreateBitmapFromHBITMAP(hBM)
-		Gdip_DisposeImage(hBM)
-		DllCall("CloseClipboard")
-		return pBitmap
-	}
-}
-
 ;Reads an image from clipboard, saves it to a file, and puts CF_HDROP structure in clipboard for file pasting
 WriteClipboardImageToFile(path,Quality="")
 {
 	global ImageQuality
 	if(!Quality)
 		Quality:=ImageQuality
-	pBitmap:=ReadClipboardImage()
-	if(!pBitmap)
-		return -1
-	Gdip_SaveBitmapToFile(pBitmap, path, ImageQuality)
-	return 1
+	pBitmap:=Gdip_CreateBitmapFromClipboard()
+	if(pBitmap > 0)
+	{
+		Gdip_SaveBitmapToFile(pBitmap, path, ImageQuality)
+		return 1
+	}
+	return -1
 }
 
 WriteClipboardTextToFile(path)

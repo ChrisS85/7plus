@@ -371,7 +371,6 @@ GetFocussedFile()
 }
 GetCurrentFolder(hwnd=0, DisplayName=0)
 {
-	global MuteClipboardList
 	If (WinActive("ahk_group ExplorerGroup")||hwnd)
 	{	
 		if(!hwnd)

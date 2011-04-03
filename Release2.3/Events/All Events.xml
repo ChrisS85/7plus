@@ -74,7 +74,7 @@
 <With>(DirectUIHWND3|SysListView321)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Append selected files to clipboard, instead of replacing current files on clipboard. This event will cut ALL the files on the clipboard.</Description>
+<Description>Append selected files to clipboard, instead of replacing current files on clipboard. This event will copy ALL the files on the clipboard.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>2</ID>
@@ -114,7 +114,7 @@
 <With>(DirectUIHWND3|SysListView321)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Append selected files to clipboard, instead of replacing current files on clipboard. This event will copy ALL the files on the clipboard.</Description>
+<Description>Append selected files to clipboard, instead of replacing current files on clipboard. This event will cut ALL the files on the clipboard.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>3</ID>
@@ -322,7 +322,6 @@
 </Event><Event>
 <Actions>
 <Action>
-<Filename>Neues Textdokument.txt</Filename>
 <Rename>1</Rename>
 <Type>NewFile</Type>
 </Action></Actions>
@@ -353,7 +352,6 @@
 </Event><Event>
 <Actions>
 <Action>
-<FolderName>Neuer Ordner</FolderName>
 <Rename>1</Rename>
 <Type>NewFolder</Type>
 </Action></Actions>
@@ -439,7 +437,7 @@
 <Separator></Separator>
 <Type>FilterList</Type>
 </Action><Action>
-<Command>"C:\Program Files\Paint.NET\PaintDotNet.exe" ${SelNQ}</Command>
+<Command>"%ProgramFiles%\Paint.NET\PaintDotNet.exe" ${SelNQ}</Command>
 <RunAsAdmin>0</RunAsAdmin>
 <Type>Run</Type>
 <WaitForFinish>0</WaitForFinish>
@@ -477,7 +475,7 @@
 <Separator>`n</Separator>
 <Type>FilterList</Type>
 </Action><Action>
-<Command>"C:\Program Files\Notepad++\notepad++.exe" ${SelNQ}</Command>
+<Command>"%ProgramFiles%\Notepad++\notepad++.exe" ${SelNQ}</Command>
 <RunAsAdmin>0</RunAsAdmin>
 <Type>Run</Type>
 <WaitForFinish>0</WaitForFinish>
@@ -940,7 +938,7 @@
 <FlashingWindows>1</FlashingWindows>
 <Type>Accessor</Type>
 </Action></Actions>
-<Category>Accessor</Category>
+<Category>Misc Hotkeys</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
@@ -2999,7 +2997,7 @@
 <Action>
 <Type>Clipmenu</Type>
 </Action></Actions>
-<Category>Clipboard Manager</Category>
+<Category>Misc Hotkeys</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -3450,7 +3448,6 @@
 </Event><Event>
 <Actions>
 <Action>
-<Filename>Neues Textdokument.txt</Filename>
 <Rename>1</Rename>
 <Type>NewFile</Type>
 </Action></Actions>
@@ -3479,7 +3476,6 @@
 </Event><Event>
 <Actions>
 <Action>
-<FolderName>Neuer Ordner</FolderName>
 <Rename>1</Rename>
 <Type>NewFolder</Type>
 </Action></Actions>
@@ -3516,7 +3512,7 @@
 <Separator></Separator>
 <Type>FilterList</Type>
 </Action><Action>
-<Command>"C:\Program Files\Paint.NET\PaintDotNet.exe" ${SelNQ}</Command>
+<Command>"%ProgramFiles%\Paint.NET\PaintDotNet.exe" ${SelNQ}</Command>
 <RunAsAdmin>0</RunAsAdmin>
 <Type>Run</Type>
 <WaitForFinish>0</WaitForFinish>
@@ -3552,7 +3548,7 @@
 <Separator>`n</Separator>
 <Type>FilterList</Type>
 </Action><Action>
-<Command>"C:\Program Files\Notepad++\notepad++.exe" ${SelNQ}</Command>
+<Command>"%ProgramFiles%\Notepad++\notepad++.exe" ${SelNQ}</Command>
 <RunAsAdmin>0</RunAsAdmin>
 <Type>Run</Type>
 <WaitForFinish>0</WaitForFinish>
@@ -3667,7 +3663,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<Keys>^,</Keys>
+<Keys>^.</Keys>
 <Type>SendKeys</Type>
 <WriteText>0</WriteText>
 </Action></Actions>
@@ -3681,6 +3677,12 @@
 <WindowFilterExecutable></WindowFilterExecutable>
 <WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Specific Window</WindowMatchType>
+</Condition><Condition>
+<Compare>${WinVer}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>WIN_XP</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Rotate images with R in windows picture viewer.</Description>
@@ -3711,6 +3713,12 @@
 <WindowFilterExecutable></WindowFilterExecutable>
 <WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Specific Window</WindowMatchType>
+</Condition><Condition>
+<Compare>${WinVer}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>WIN_XP</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Rotate images with L in windows picture viewer.</Description>
@@ -3756,7 +3764,6 @@
 </Event><Event>
 <Actions>
 <Action>
-<Filename>Neues Textdokument.txt</Filename>
 <Rename>1</Rename>
 <Type>NewFile</Type>
 </Action></Actions>
@@ -3935,7 +3942,6 @@
 <FileTypes>exe,bat,cmd</FileTypes>
 <Name>Run with parameters...</Name>
 <SingleFileOnly>1</SingleFileOnly>
-<SingleFileOnly>0</SingleFileOnly>
 <SubMenu></SubMenu>
 <Type>ContextMenu</Type>
 </Trigger>
@@ -4149,7 +4155,7 @@
 <Action>
 <Action>Trigger Event</Action>
 <Compare></Compare>
-<EventID>1601</EventID>
+<EventID>1599</EventID>
 <Operator>equals</Operator>
 <Type>ControlEvent</Type>
 <With></With>
@@ -4158,10 +4164,10 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description></Description>
+<Description>This event starts a dynamic timer when the "Start timer" menu entry from the 7plus tray menu is selected.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>1599</ID>
+<ID>1597</ID>
 <Name>Dynamic Timer: tray menu item</Name>
 <OfficialEvent>5</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -4186,55 +4192,45 @@
 <Cancel>1</Cancel>
 <DataType>Time</DataType>
 <Placeholder>TimerTime</Placeholder>
-<Text>Enter time</Text>
+<Text>Enter time [HH:MM:SS]:</Text>
 <Title>Dynamic timer - Enter time</Title>
 <Type>Input</Type>
 <Validate>1</Validate>
 </Action><Action>
 <Action>Trigger Event</Action>
 <Compare>${TimerType}</Compare>
-<EventID>1604</EventID>
+<EventID>1602</EventID>
 <Operator>equals</Operator>
 <Type>ControlEvent</Type>
 <With>Message Timer</With>
 </Action><Action>
 <Action>Trigger Event</Action>
 <Compare>${TimerType}</Compare>
-<EventID>1605</EventID>
+<EventID>1603</EventID>
 <Operator>equals</Operator>
 <Type>ControlEvent</Type>
 <With>Run program timer</With>
 </Action><Action>
 <Action>Trigger Event</Action>
 <Compare>${TimerType}</Compare>
-<EventID>1608</EventID>
+<EventID>1606</EventID>
 <Operator>equals</Operator>
 <Type>ControlEvent</Type>
 <With>Shutdown timer</With>
 </Action></Actions>
 <Category>Taskbar</Category>
 <Conditions>
-<Condition>
-<MouseOverType>Clock</MouseOverType>
-<Negate>0</Negate>
-<Type>MouseOver</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
-<WindowMatchType>Specific Window</WindowMatchType>
-</Condition></Conditions>
+</Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event asks for the type of timer that shall be started and its time and then starts the appropriate event that configures and starts the matching timer.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>1601</ID>
-<Name>Dynamic timer: Middle Click on Clock</Name>
+<ID>1599</ID>
+<Name>Dynamic timer: Main</Name>
 <OfficialEvent>6</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Key>MButton</Key>
-<Type>Hotkey</Type>
+<Type>None</Type>
 </Trigger>
 </Event><Event>
 <Actions>
@@ -4251,7 +4247,7 @@
 <Description>This timer is triggered with a dynamic time set by an input action.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
-<ID>1602</ID>
+<ID>1600</ID>
 <Name>Dynamic Timer: Message timer</Name>
 <OfficialEvent>8</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -4276,7 +4272,7 @@
 <Compare></Compare>
 <DeleteAfterUse>1</DeleteAfterUse>
 <EvaluateOnCopy>1</EvaluateOnCopy>
-<EventID>1602</EventID>
+<EventID>1600</EventID>
 <Operator>equals</Operator>
 <Placeholder>MessageTimer</Placeholder>
 <Type>ControlEvent</Type>
@@ -4298,7 +4294,7 @@
 <Description>This event asks for a message and starts the message timer.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>1604</ID>
+<ID>1602</ID>
 <Name>Dynamic Timer: Ask for message and start message timer</Name>
 <OfficialEvent>9</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -4320,7 +4316,7 @@
 <Compare></Compare>
 <DeleteAfterUse>1</DeleteAfterUse>
 <EvaluateOnCopy>1</EvaluateOnCopy>
-<EventID>1606</EventID>
+<EventID>1604</EventID>
 <Operator>equals</Operator>
 <Placeholder>RunTimer</Placeholder>
 <Type>ControlEvent</Type>
@@ -4342,7 +4338,7 @@
 <Description>This event asks for the program to be launched and starts the Run program timer</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>1605</ID>
+<ID>1603</ID>
 <Name>Dynamic Timer: Ask for program and start Run program timer</Name>
 <OfficialEvent>11</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -4365,7 +4361,7 @@
 <Description>This timer runs the program selected by the user.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
-<ID>1606</ID>
+<ID>1604</ID>
 <Name>Dynamic Timer: Run program timer</Name>
 <OfficialEvent>12</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -4389,7 +4385,7 @@
 <Description>This timer shuts down the computer after the specified time.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
-<ID>1607</ID>
+<ID>1605</ID>
 <Name>Dynamic Timer: Shutdown timer</Name>
 <OfficialEvent>13</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -4406,7 +4402,7 @@
 <Compare></Compare>
 <DeleteAfterUse>1</DeleteAfterUse>
 <EvaluateOnCopy>1</EvaluateOnCopy>
-<EventID>1607</EventID>
+<EventID>1605</EventID>
 <Operator>equals</Operator>
 <Placeholder>ShutdownTimer</Placeholder>
 <Type>ControlEvent</Type>
@@ -4428,7 +4424,7 @@
 <Description>This event starts the Shutdown timer.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>1608</ID>
+<ID>1606</ID>
 <Name>Dynamic Timer: Start shutdown timer</Name>
 <OfficialEvent>14</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -4438,23 +4434,69 @@
 </Event><Event>
 <Actions>
 <Action>
-<Keys>`t</Keys>
-<Type>SendKeys</Type>
-<WriteText>1</WriteText>
+<Action>Trigger Event</Action>
+<Compare></Compare>
+<EventID>1599</EventID>
+<Operator>equals</Operator>
+<Type>ControlEvent</Type>
+<With></With>
 </Action></Actions>
-<Category>Misc Hotkeys</Category>
+<Category>Taskbar</Category>
 <Conditions>
-</Conditions>
+<Condition>
+<MouseOverType>Clock</MouseOverType>
+<Negate>0</Negate>
+<Type>MouseOver</Type>
+<WindowFilter></WindowFilter>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
+<WindowMatchType>Specific Window</WindowMatchType>
+</Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event will write a tab character to the currently focused control. This is useful in text fields where pressing tab would toggle the focused control.</Description>
+<Description>This event starts a dynamic timer when the taskbar clock is clicked with the middle mouse button.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <ID>1609</ID>
-<Name>Write tab character</Name>
-<OfficialEvent>15</OfficialEvent>
+<Name>Dynamic Timer: Middle mouse click over clock</Name>
+<OfficialEvent>17</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Key>^#Tab</Key>
+<Key>MButton</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Action>Trigger Event</Action>
+<Compare></Compare>
+<EventID>1599</EventID>
+<Operator>equals</Operator>
+<Type>ControlEvent</Type>
+<With></With>
+</Action></Actions>
+<Category>Taskbar</Category>
+<Conditions>
+<Condition>
+<MouseOverType>Clock</MouseOverType>
+<Negate>0</Negate>
+<Type>MouseOver</Type>
+<WindowFilter></WindowFilter>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
+<WindowMatchType>Specific Window</WindowMatchType>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event starts a dynamic timer when the taskbar clock is clicked with the middle mouse button.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1609</ID>
+<Name>Dynamic Timer: Middle mouse click over clock</Name>
+<OfficialEvent>17</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>MButton</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event><Event>
@@ -4479,7 +4521,72 @@
 <Key>^#Enter</Key>
 <Type>Hotkey</Type>
 </Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Keys>^k</Keys>
+<Type>SendKeys</Type>
+<WriteText>0</WriteText>
+</Action></Actions>
+<Category>Misc Hotkeys</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>ShImgVw:</With>
+</Condition><Condition>
+<Compare>${WinVer}</Compare>
+<Negate>0</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>WIN_XP</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Rotate images with R in windows picture viewer.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1614</ID>
+<Name>Picture viewer: Rotate image right with R</Name>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>R</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Keys>^l</Keys>
+<Type>SendKeys</Type>
+<WriteText>0</WriteText>
+</Action></Actions>
+<Category>Misc Hotkeys</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>ShImgVw:</With>
+</Condition><Condition>
+<Compare>${WinVer}</Compare>
+<Negate>0</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>WIN_XP</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Rotate images with L in windows picture viewer.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1615</ID>
+<Name>Picture viewer: Rotate image left with L</Name>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>L</Key>
+<Type>Hotkey</Type>
+</Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
 <MinorVersion>3</MinorVersion>
-<PatchVersion>1</PatchVersion>

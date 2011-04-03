@@ -171,7 +171,7 @@ ShellMessage( nCode, wParam, lParam)
 				ExplorerPath:=GetCurrentFolder()
 				
 			;Paste text/image as file file creation
-			CreateFile()
+			CreateFileFromClipboard()
 		}
 		if(WinActive("ahk_group ExplorerGroup"))
 		{
