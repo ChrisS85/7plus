@@ -9,7 +9,7 @@ Trigger_Timer_ReadXML(Trigger, XMLTrigger)
 	Trigger.Time := XMLTrigger.Time
 	Trigger.ShowProgress := XMLTrigger.ShowProgress
 	Trigger.Restart := XMLTrigger.Restart
-	Timer.Text := XMLTrigger.Text
+	Trigger.Text := XMLTrigger.Text
 }
 
 Trigger_Timer_Enable(Trigger, Event)

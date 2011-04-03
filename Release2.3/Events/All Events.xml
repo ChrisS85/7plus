@@ -4254,6 +4254,7 @@
 <Trigger>
 <Restart>0</Restart>
 <ShowProgress>1</ShowProgress>
+<Text>${TimerMessage}</Text>
 <Time>10000</Time>
 <Type>Timer</Type>
 </Trigger>
@@ -4368,6 +4369,7 @@
 <Trigger>
 <Restart>0</Restart>
 <ShowProgress>1</ShowProgress>
+<Text>Run ${TimerProgram}</Text>
 <Time>10000</Time>
 <Type>Timer</Type>
 </Trigger>
@@ -4392,6 +4394,7 @@
 <Trigger>
 <Restart>0</Restart>
 <ShowProgress>1</ShowProgress>
+<Text>Shutdown</Text>
 <Time>600000</Time>
 <Type>Timer</Type>
 </Trigger>
