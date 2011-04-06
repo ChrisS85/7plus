@@ -9,7 +9,26 @@ GroupAdd, TaskbarGroup, ahk_class DV2ControlHost
 GroupAdd, TaskbarDesktopGroup, ahk_group DesktopGroup
 GroupAdd, TaskbarDesktopGroup, ahk_group TaskbarGroup
 
-CommunicateWithRunningInstance()
+;Get windows version
+RegRead, vista7, HKLM, SOFTWARE\Microsoft\Windows NT\CurrentVersion, CurrentVersion
+vista7 := vista7 >= 6
+
+;Check for proper AHK version (Unicode and bitness)
+if(!A_IsUnicode)
+{
+	Msgbox Not running on Unicode build of Autohotkey_L. Please use a unicode version!
+	ExitApp ;Too many incompatibilities here
+}
+if(A_PtrSize = 4 && DllCall("IsWow64Process"))
+	Msgbox 32bit version of 7plus is running on an x64 operating system.`nSome features are not going to work. Please use an x64 version of 7plus!
+
+;Depending on the command line parameters supplied, this instance might send event triggers to another instance which is already running.
+;In addition, IsPortable is possibly set here
+ProcessCommandLineParameters() ;Possible exit point
+
+;Create temp directory in which temporary files will be stored.
+;hwnd.txt is used for finding the main 7plus window to allow sending messages to it. 
+;This mechanism is used by the ShellExtension and by the updater.
 FileCreateDir %A_Temp%\7plus
 
 ;Try to use config file from script dir in portable mode or when it wasn't neccessary to copy it to appdata yet
@@ -43,36 +62,28 @@ IniRead, ProfilingEnabled, %IniPath%, General, ProfilingEnabled , 0
 if(DebugEnabled)
 	DebuggingStart()
 outputdebug 7plus Starting...
+
+;Some performance monitoring
 if(ProfilingEnabled)
 {
 	Profiler := Object("Total", Object("StartTime", A_TickCount, "EventLoop", 0, "ShellMessage", 0, "HookProc", 0), "Current", Object("StartTime", A_TickCount, "EventLoop", 0, "ShellMessage", 0, "HookProc", 0))
-	; SetTimer, ResetCurrentProfiling, 10000
 	SetTimer, ShowProfiling, 1000
 }
-;If the current config path is set to the program directory but there is no write access, %AppData%\7plus needs to be used.
-;If this is the first time (i.e. NoAdminSettingsTransfered = 0), all config files need to be copied to the new config path
-if((IsPortable && !WriteAccess(A_ScriptDir "\Accessor.xml")) || ConfigPath = A_AppData "\7plus")
-{
-	if(IsPortable)
-		MsgBox No file access to settings files in program directory. 7plus will not be able to store its settings. Please move 7plus to a folder with write permissions, run it as administrator, or grant write permissions to this directory.
-	else
-	{
-		ConfigPath := A_AppData "\7plus"
-		if(!FileExist(ConfigPath))
-			FileCreateDir, %ConfigPath%
-	}
-}
 
+;If the current config path is set to the program directory but there is no write access because UAC is activated and 7plus is running as user,
+;7plus cannot store its settings and warns the user about it
+if((IsPortable && !WriteAccess(ConfigPath "\Accessor.xml")))
+	MsgBox No file access to settings files in 7plus directory. 7plus will not be able to store its settings. Please move 7plus to a folder with write permissions, run it as administrator, or grant write permissions to this directory.
+
+;The patch version describes the index of the latest applied event patch. It starts with 0 on every release.
 IniRead, PatchVersion, %IniPath%, General, PatchVersion, 0
 
-if(!FileExist(ConfigPath "\Events.xml") && FileExist(A_ScriptDir "\Events\All Events.xml")) ;Fresh install, copy default events file into config directory
+;Fresh install, copy default events file into config directory
+if(!FileExist(ConfigPath "\Events.xml") && FileExist(A_ScriptDir "\Events\All Events.xml")) 
 {
 	FileCopy, %A_ScriptDir%\Events\All Events.xml, %ConfigPath%\Events.xml
-	ApplyUpdateFixes()
+	ApplyFreshInstallSteps()
 }
-;Get windows version
-RegRead, vista7, HKLM, SOFTWARE\Microsoft\Windows NT\CurrentVersion, CurrentVersion
-vista7 := vista7 >= 6
 
 ;initialize gdi+
 outputdebug starting gdip
@@ -83,13 +94,13 @@ OnExit, ExitSub
 
 ;Menu entries need to be shown before events are loaded
 Menu, tray, add  ; Creates a separator line.
-Menu, tray, add, Settings, SettingsHandler  ; Creates a new menu item.
+Menu, tray, add, Settings, SettingsHandler
 menu, tray, Default, Settings
 
 ;This needs to be executed before EventSystem_Startup() because NewFile/Folder action relies on it
 if(Vista7)
 	AcquireExplorerConfirmationDialogStrings()
-	
+
 ;Init event system
 outputdebug starting event system
 EventSystem_Startup()
@@ -105,6 +116,9 @@ if(AutoUpdate)
 outputdebug PostUpdate
 PostUpdate()
 
+;Check if the user did a manual upgrade by extracting an archive over the previous 7plus installation
+if(CompareVersion(XMLMajorVersion, MajorVersion, XMLMinorVersion, MinorVersion, XMLBugfixVersion, BugfixVersion) = -1)
+	ApplyUpdateFixes()
 
 CreateTabWindow()
 
@@ -144,6 +158,8 @@ API_SetWinEventHook(0x8001,0x800B,0,HookProcAdr,0,0,0) ;Make sure not to registe
 API_SetWinEventHook(0x0016,0x0016,0,HookProcAdr,0,0,0) ;EVENT_SYSTEM_MINIMIZESTART
 ; API_SetWinEventHook(0x000E,0x000E,0,HookProcAdr,0,0,0)
 API_SetWinEventHook(0x000A,0x000B,0,HookProcAdr,0,0,0) ;EVENT_SYSTEM_MOVESIZESTART
+if(Vista7 && (ClipboardListenerRegistered := DllCall("AddClipboardFormatListener", "PTR", hAHK)))
+	OnMessage(0x031D, "OnClipboardChange")
 DetectHiddenWindows, On
 
 IniRead, HKPlacesBar, %IniPath%, Explorer, HKPlacesBar, 0
@@ -443,16 +459,17 @@ WriteClipboard()
 		XMLObject.List.append(ClipboardList[A_Index])
 	XML_Save(XMLObject,ConfigPath "\Clipboard.xml")
 }
-CommunicateWithRunningInstance()
+ProcessCommandLineParameters()
 {
 	global
 	local Count, x, y
 	DetectHiddenWindows, On	
-	FileRead, hwnd, %A_Temp%\7plus\hwnd.txt
+	FileRead, hwnd, %A_Temp%\7plus\hwnd.txt ;if existing, hwnd.txt contains the window handle of another running instance
 	Loop %0%
 	{
 		SplitPath, 1,x,y
-		if(strStartsWith(%A_Index%,"-id"))
+		;TODO: Change this format to "-id Number" for compatibility with Explorer Button trigger? (See EventSystem_Startup())
+		if(strStartsWith(%A_Index%,"-id")) ;Generic event trigger, send to running instance
 		{
 			if(WinExist("ahk_id " hwnd))
 			{
@@ -461,7 +478,7 @@ CommunicateWithRunningInstance()
 				ExitApp
 			}
 		}
-		else if(strStartsWith(%A_Index%,"-ContextID"))
+		else if(strStartsWith(%A_Index%,"-ContextID")) ;Trigger from legacy context menu mechanism (used for My Computer menu), send to running instance
 		{
 			if(WinExist("ahk_id " hwnd))
 			{
@@ -470,9 +487,9 @@ CommunicateWithRunningInstance()
 				ExitApp
 			}
 		}
-		else if(%A_Index% = "-Portable")
+		else if(%A_Index% = "-Portable") ;Portable mode
 			IsPortable := true
-		else if(y)
+		else if(y) ;Path supplied as parameter, set explorer directory to this path
 		{
 			x = %1%
 			SetDirectory(x)

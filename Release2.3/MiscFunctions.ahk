@@ -138,7 +138,7 @@ MouseHitTest()
 }
 IsConnected(URL="http://code.google.com/p/7plus/")
 {
-	return DllCall("Wininet.dll\InternetCheckConnection", "Str", URL,0,0)
+	return DllCall("Wininet.dll\InternetCheckConnection", "Str", URL,"UInt", 1, "UInt",0, "UInt")
 }
 /*! TheGood (modified a bit by Fragman)
     Checks if a window is in fullscreen mode. 

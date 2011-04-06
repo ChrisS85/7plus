@@ -50,21 +50,17 @@ AutoUpdate()
 }
 PostUpdate()
 {
-	global MajorVersion,MinorVersion,BugfixVersion, ConfigPath, IsPortable, Events
-	if(FileExist(A_TEMP "\7plus\Updater.exe")) ;TODO:Change here and below for 2.3.0 to A_TEMP
+	global MajorVersion,MinorVersion,BugfixVersion, ConfigPath, IsPortable, Events, XMLMajorVersion, XMLMinorVersion, XMLBugfixVersion
+	;If there is an Updater.exe in 7plus temp directory, it is likely that an update was performed.
+	if(FileExist(A_TEMP "\7plus\Updater.exe"))
 	{
+		;Check if the version from the Updater.exe in temp directory matches the version of the current instance. If yes, an update has been performed.
 		IniRead, tmpMajorVersion, %A_TEMP%\7plus\Version.ini,Version,MajorVersion
 		IniRead, tmpMinorVersion, %A_TEMP%\7plus\Version.ini,Version,MinorVersion
 		IniRead, tmpBugfixVersion, %A_TEMP%\7plus\Version.ini,Version,BugfixVersion
-		if(tmpMajorVersion=MajorVersion && tmpMinorVersion = MinorVersion && tmpBugfixVersion = BugfixVersion)
+		if(CompareVersion(tmpMajorVersion, MajorVersion, tmpMinorVersion, MinorVersion, tmpBugfixVersion, BugfixVersion) = 0)
 		{
 			ApplyUpdateFixes()
-			if(FileExist(A_Temp "\7plus\ReleasePatch\" MajorVersion "." MinorVersion "." BugfixVersion ".0.xml")) ;apply release patch, without showing messages
-			{
-				ReadEventsFile(Events, A_Temp "\7plus\ReleasePatch\" MajorVersion "." MinorVersion "." BugfixVersion ".0.xml")
-				PatchVersion := 0
-				WriteMainEventsFile()
-			}
 			if(FileExist(A_ScriptDir "\Changelog.txt"))
 			{
 				MsgBox,4,, Update successful. View Changelog?
@@ -76,12 +72,41 @@ PostUpdate()
 	}
 	FileDelete %A_TEMP%\7plus\Version.ini
 }
+ApplyFreshInstallSteps()
+{
+	ApplyUpdateFixes()
+}
+
+;This function is called in 3 cases:
+;A) Fresh installation
+;B) After autoupdate has finished and 7plus is started again
+;C) If the user manually extracted a newer version
 ApplyUpdateFixes()
 {
-	global MajorVersion, MinorVersion, BugfixVersion, Vista7
+	global MajorVersion, MinorVersion, BugfixVersion, XMLMajorVersion, XMLMinorVersion, XMLBugfixVersion, Vista7, Events
+	;On fresh installation, the versions are identical since a new Events.xml is used and no events patch needs to be applied
+	;After autoupdate has finished, the XML version is lower and the events are patched
+	;After manually overwriting 7plus, the XML version is lower and the events are patched
+	if(CompareVersion(XMLMajorVersion, MajorVersion, XMLMinorVersion, MinorVersion, XMLBugfixVersion, BugfixVersion) = -1)
+	{		
+		;apply release patch without showing messages
+		if(FileExist(A_ScriptDir "\Events\ReleasePatch\" MajorVersion "." MinorVersion "." BugfixVersion ".0.xml")) 
+		{
+			;This will also set the XML version variables. 
+			;In case this is triggered by an autoupdate, it will make sure that case C) won't be recognized afterwards.
+			;This requires that the version is specified in the patch.
+			ReadEventsFile(Events, A_ScriptDir "\Events\ReleasePatch\" MajorVersion "." MinorVersion "." BugfixVersion ".0.xml")
+			
+			;Upgrade from previous version resets the Patch version to 0
+			PatchVersion := 0
+			
+			;Save the patched file immediately
+			WriteMainEventsFile()
+		}
+	}
 	if(MajorVersion "." MinorVersion "." BugfixVersion = "2.3.0")
 	{
-		;Register shell extension
+		;Register shell extension quietly
 		RegisterShellExtension(1)
 		;Switch to new autorun method
 		RegRead, key, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus

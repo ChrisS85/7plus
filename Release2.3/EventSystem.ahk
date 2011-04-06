@@ -87,23 +87,43 @@
 EventSystem_Startup()
 {
 	global Events, EventSchedule, TemporaryEvents
+	
+	;TODO: Why does this need to be here?
 	Action_Upload_ReadFTPProfiles()
+	
+	;Create list object for events
 	EventsBase := object("base", Array(), "Categories", Array(), "GlobalPlaceholders", Array(), "HighestID", -1, "CreateEvent", "EventSystem_CreateEvent", "Add", "Events_Add", "Remove", "Events_Remove", "SubItem", "Events_SubItem", "indexOfSubItem", "Events_indexOfSubItem")
-	TemporaryEvents := object("base", object("base", Array(), "HighestID", -1, "Add", "Events_Add"))
 	Events := object("base", EventsBase)
+	
+	;Temporary events are not visible in settings GUI and won't be saved. See ControlEvent -> Copy Event for usage example.
+	TemporaryEvents := object("base", object("base", Array(), "HighestID", -1, "Add", "Events_Add"))
+	
+	;Create base objects for triggers, conditions and actions
 	EventSystem_CreateBaseObjects()
+	
+	;Event log logs the execution flow of events
 	if(DebugEnabled)
 		FileDelete, %A_Temp%\7plus\EventLog.log
+	
+	;Load main events file. This will create event objects for all stored event configs in Events object.
 	ReadMainEventsFile()
+	
+	;EventSchedule (contains copies of the event objects in the Events list ) is a list of events that are currently being processed.
 	EventSchedule := Array()
+	
+	;Make sure the subevents can enabled themselves
 	Loop % Events.len()
 	{
 		Event := Events[A_Index]	
 		if(Event.Enabled)
 			Event.Enable()
 	}
+	
+	;Trigger events with 7plusStart trigger
 	Trigger := EventSystem_CreateSubEvent("Trigger","7plusStart")
 	OnTrigger(Trigger)
+	
+	;If 7plus was started with a commandline parameter through an Explorer Button trigger, process it here.
 	if(1 = "-id")
 	{
 		Trigger := EventSystem_CreateSubEvent("Trigger", "ExplorerButton")
@@ -111,7 +131,10 @@ EventSystem_Startup()
 		Trigger.ID := ID
 		OnTrigger(Trigger)
 	}
+	
+	;Setup the message handler for receiving triggers from other instances of 7plus (and possibly other programs) and from the Shell extension.
 	OnMessage(55555, "TriggerFromOtherInstance")
+	
 	;Make sure that non-elevated processes can send this trigger message to the elevated 7plus process.
 	;Keyword: UIPI
 	DllCall("ChangeWindowMessageFilter", "UInt", 55555, "UInt", 1) 
@@ -294,13 +317,13 @@ WriteMainEventsFile()
 
 ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 {
-	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, ConfigPath, Debug
+	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, XMLMajorVersion, XMLMinorVersion, XMLBugfixVersion, ConfigPath, Debug
 	FileRead, xml, %path%
 	XMLObject := XML_Read(xml)
-	Major := XMLObject.MajorVersion
-	Minor := XMLObject.MinorVersion
-	Bugfix := XMLObject.BugfixVersion
-	if(CompareVersion(major,MajorVersion,minor,MinorVersion,bugfix,BugfixVersion) > 0)
+	XMLMajorVersion := XMLObject.MajorVersion
+	XMLMinorVersion := XMLObject.MinorVersion
+	XMLBugfixVersion := XMLObject.BugfixVersion
+	if(CompareVersion(XMLMajorVersion,MajorVersion,XMLMinorVersion,MinorVersion,XMLBugfixVersion,BugfixVersion) > 0)
 		Msgbox Events file was made with a newer version of 7plus. Compatibility is not guaranteed. Please update, or use at own risk!
 	
 	if(Update)

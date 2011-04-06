@@ -1,19 +1,27 @@
 ;Called when clipboard changes, used for "Paste text/image as file" functionality and for clipboard manager
 ;To use the clipboard without triggering these features, set MuteClipboardList:=true before writing to clipboard
 OnClipboardChange:
-if(MuteClipboardList)
-{
-	FileAppend, %A_Now%: Clipboard changed to %Clipboard% but it's muted`n, %A_Temp%\7plus\Log.log
-	return
-}
-if(WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup")|| IsDialog())
-	CreateFileFromClipboard()
-text:=ReadClipboardText()
-FileAppend, %A_Now%: Clipboard changed to %text%`n, %A_Temp%\7plus\Log.log
-if(text)
-	ClipboardList.Push(text)
+if(!ClipboardListenerRegistered)
+	OnClipboardChange()
 return
 
+#t::msgbox % ExploreObj(ClipboardList)
+OnClipboardChange()
+{
+	global MuteClipboardList, ClipboardList
+	if(MuteClipboardList)
+	{
+		FileAppend, %A_Now%: Clipboard changed to %Clipboard% but it's muted`n, %A_Temp%\7plus\Log.log
+		return
+	}
+	if(WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup")|| IsDialog())
+		CreateFileFromClipboard()
+	text:=ReadClipboardText()
+	FileAppend, %A_Now%: Clipboard changed to %text%`n, %A_Temp%\7plus\Log.log
+	if(text)
+		ClipboardList.Push(text)
+	return
+}
 ;Stack Push function for clipboard manager stack
 Stack_Push(stack,item)
 {

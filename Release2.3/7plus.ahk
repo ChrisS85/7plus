@@ -20,8 +20,6 @@ MajorVersion := 2
 MinorVersion := 3
 BugfixVersion := 0
 ComObjError(0)
-if(!A_IsUnicode)
-	Msgbox Not running on Unicode build of Autohotkey_L. Please use a unicode version!
 #include %A_ScriptDir%\Autoexecute.ahk ;include first to avoid issues with autoexecute ending too soon because of labels
 #include %A_ScriptDir%\lib\Array.ahk
 #include %A_ScriptDir%\lib\binreadwrite.ahk

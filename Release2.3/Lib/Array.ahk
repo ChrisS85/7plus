@@ -195,9 +195,11 @@ Array_Move(arr,i,j)
 		return 1
 	x:=arr[i]
 	arr.Delete(i)
-	if(i<j)
+	; I believe the following if is wrong, possibly revert if there are any array problems with the move function
+	; if(i<j)
 		arr.Insert(j,x)
-	else
-		arr.Insert(j-1,x)
+	; else
+		; arr.Insert(j-1,x)
+	; }
 	return 1
 }
