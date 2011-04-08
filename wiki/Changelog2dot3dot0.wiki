@@ -33,8 +33,11 @@ Bugfixes:
  * Fixed FastFolders numpad keys triggering directory change in file dialog boxes with the filename box selected
  * Improved Accessor performance and added a few related plugin settings
  * Fixed an invalid key combination in "Picture viewer: Rotate image right with R" event and added versions of the Picture viewer events for XP
+
 Changes:
  * 7plus now uses the task scheduler instead of autorun in Vista and 7 to avoid UAC dialogs
  * All tooltips and some message boxes have been replaced by nicer looking notification windows
  * Added an introduction page that is shown on first run. It contains some tips and some basic settings like Autorun.
+ * Added uninstall information for the 7plus uninstaller to the registry.
+ * 7plus now recognizes if a newer version was extracted manually over an older version and will perform the required update steps.
 If you like this program and want to support its development, please consider donating!
