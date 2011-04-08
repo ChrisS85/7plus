@@ -149,18 +149,23 @@ RegisterShellExtension(Silent=1)
 }
 UnregisterShellExtension(Silent=1)
 {
-	global Vista7
-	if(Vista7)
-		uacrep := DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, "regsvr32", str, "/s /u """ A_ScriptDir "\ShellExtension.dll""", str, A_ScriptDir, int, 1)
-	else
-		run regsvr32 /s /u "%A_ScriptDir%\ShellExtension.dll"
-	If(uacrep = 42) ;UAC Prompt confirmed, application may run as admin
+	global IsPortable, Vista7
+	if(!IsPortable)
 	{
-		if(!Silent)
-			MsgBox Shell extension successfully deinstalled. All 7plus context menu entries should now be gone.
+		if(Vista7)
+			uacrep := DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, "regsvr32", str, "/s /u """ A_ScriptDir "\ShellExtension.dll""", str, A_ScriptDir, int, 1)
+		else
+			run regsvr32 /s /u "%A_ScriptDir%\ShellExtension.dll"
+		If(uacrep = 42) ;UAC Prompt confirmed, application may run as admin
+		{
+			if(!Silent)
+				MsgBox Shell extension successfully deinstalled. All 7plus context menu entries should now be gone.
+		}
+		else ;Always show error
+			MsgBox Unable to deinstall the context menu shell extension. Please grant Admin permissions!
 	}
-	else ;Always show error
-		MsgBox Unable to deinstall the context menu shell extension. Please grant Admin permissions!
+	else if(!Silent)
+		MsgBox Context menu shell extension can only be used in non-portable mode for now.
 }
 Trigger_ContextMenu_GuiSubmit(Trigger, TriggerGUI)
 {

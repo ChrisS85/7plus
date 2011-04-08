@@ -61,9 +61,9 @@ CreateUpdate(Platform, Version)
 	if(Version = "Binary")
 	{
 		runwait %A_ProgramFiles%\Autohotkey\Compiler\Compile_AHK.exe /nogui "%A_ScriptDir%\7plus.ahk"
-		Sleep 1000
+		Sleep 1500
 		runwait %A_ProgramFiles%\Autohotkey\Compiler\Compile_AHK.exe /nogui "%A_ScriptDir%\Uninstall.ahk"
-		Sleep 1000
+		Sleep 1500
 	}
 	;Copy all other files
 	FolderLoop(Platform, Version)
@@ -77,7 +77,7 @@ CreateUpdate(Platform, Version)
 	
 	;Compile updater
 	runwait %A_ProgramFiles%\Autohotkey\Compiler\Compile_AHK.exe /nogui "%A_ScriptDir%\Updater.ahk"
-	sleep 1000
+	sleep 2000
 	if(!FileExist(A_Scriptdir "\updater.exe"))
 		msgbox updater.exe doesn't exist!
 	;Cleanup and move resulting files
@@ -158,7 +158,7 @@ FolderLoop(Platform, Version)
 			continue
 		if A_LoopFileFullPath contains DefaultConfig\
 			continue
-		if A_LoopFileFullPath contains ShellExtension\
+		if A_LoopFileFullPath contains ShellExtension
 			continue
 		if(InStr(A_LoopFileFullPath, "ReleasePatch\") && !InStr(A_LoopFileName, 7plusVersion)) ;Skip release patches for wrong 7plus version
 			continue

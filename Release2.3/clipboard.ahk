@@ -5,7 +5,6 @@ if(!ClipboardListenerRegistered)
 	OnClipboardChange()
 return
 
-#t::msgbox % ExploreObj(ClipboardList)
 OnClipboardChange()
 {
 	global MuteClipboardList, ClipboardList

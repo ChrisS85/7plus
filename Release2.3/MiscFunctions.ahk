@@ -933,3 +933,21 @@ WriteText(Text)
 	MuteClipboardList := false
 	return
 }
+
+AddUninstallInformation()
+{
+	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, IsPortable
+	if(IsPortable)
+		return
+	RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7plus, DisplayName, 7plus V.%MajorVersion%.%MinorVersion%.%BugfixVersion%.%PatchVersion%
+	RegWrite, REG_DWORD, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7plus, NoModify, 1
+	RegWrite, REG_DWORD, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7plus, NoRepair, 1
+	RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7plus, UninstallString, 1, "%A_ScriptDir%\Uninstall.exe"
+}
+
+RemoveUninstallInformation()
+{
+	if(IsPortable)
+		return
+	RegDelete, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7plus
+}

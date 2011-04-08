@@ -40,7 +40,7 @@ IfMsgBox Yes
 					WinClose ahk_id %this_id%
 			}
 		}
-		run, regsvr32.exe /u "%A_ScriptDir%\ShellExtension.dll"
+		run, regsvr32.exe /u /s "%A_ScriptDir%\ShellExtension.dll"
 		FileAppend, :Repeat`r`nrmdir /S /Q "%A_ScriptDir%"`r`nif exist "%A_ScriptDir%" goto Repeat`r`n, DeleteDir.bat
 		Run, %A_ScriptDir%/DeleteDir.bat,,hide
 	}

@@ -87,7 +87,7 @@ ApplyUpdateFixes()
 	;On fresh installation, the versions are identical since a new Events.xml is used and no events patch needs to be applied
 	;After autoupdate has finished, the XML version is lower and the events are patched
 	;After manually overwriting 7plus, the XML version is lower and the events are patched
-	if(CompareVersion(XMLMajorVersion, MajorVersion, XMLMinorVersion, MinorVersion, XMLBugfixVersion, BugfixVersion) = -1)
+	if(XMLMajorVersion != "" && CompareVersion(XMLMajorVersion, MajorVersion, XMLMinorVersion, MinorVersion, XMLBugfixVersion, BugfixVersion) = -1)
 	{		
 		;apply release patch without showing messages
 		if(FileExist(A_ScriptDir "\Events\ReleasePatch\" MajorVersion "." MinorVersion "." BugfixVersion ".0.xml")) 
@@ -104,10 +104,11 @@ ApplyUpdateFixes()
 			WriteMainEventsFile()
 		}
 	}
+	;Register shell extension quietly
+	RegisterShellExtension(1)
+	AddUninstallInformation()
 	if(MajorVersion "." MinorVersion "." BugfixVersion = "2.3.0")
 	{
-		;Register shell extension quietly
-		RegisterShellExtension(1)
 		;Switch to new autorun method
 		RegRead, key, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus
 		if(Vista7 && key != "")
