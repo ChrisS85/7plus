@@ -19,6 +19,7 @@ New Functions:
  * Added a "Copy Event" feature to the ControlEvent action. This will copy an event temporarily so it can be used in parallel. This is very useful for timers.
  * Added CTRL+WIN+Tab: Write tab character
  * Added CTRL+WIN+Enter: Write newline
+ * Added a file switcher for SciTE4AutoHotkey that works exactly like the one for Notepad++
 
 Bugfixes:
  * Fixed Registry permissions which stopped FastFolders from showing up in explorer bar
