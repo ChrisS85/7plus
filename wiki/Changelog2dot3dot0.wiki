@@ -34,6 +34,7 @@ Bugfixes:
  * Fixed FastFolders numpad keys triggering directory change in file dialog boxes with the filename box selected
  * Improved Accessor performance and added a few related plugin settings
  * Fixed an invalid key combination in "Picture viewer: Rotate image right with R" event and added versions of the Picture viewer events for XP
+ * Fixed clipboard manager not updating sometimes (Not fixed on XP due to OS limitation)
 
 Changes:
  * 7plus now uses the task scheduler instead of autorun in Vista and 7 to avoid UAC dialogs
