@@ -62,9 +62,11 @@ CreateUpdate(Platform, Version)
 	{
 		runwait %A_ProgramFiles%\Autohotkey\Compiler\Compile_AHK.exe /nogui "%A_ScriptDir%\7plus.ahk"
 		Sleep 1500
-		runwait %A_ProgramFiles%\Autohotkey\Compiler\Compile_AHK.exe /nogui "%A_ScriptDir%\Uninstall.ahk"
-		Sleep 1500
+		
 	}
+	;Uninstaller is always compiled
+	runwait %A_ProgramFiles%\Autohotkey\Compiler\Compile_AHK.exe /nogui "%A_ScriptDir%\Uninstall.ahk"
+	Sleep 1500
 	;Copy all other files
 	FolderLoop(Platform, Version)
 	;Zip them
@@ -113,6 +115,8 @@ FolderLoop(Platform, Version)
 		if(A_LoopFileName="AU3_Spy.exe")
 			continue
 		if(A_LoopFileName="7+-128.ico")
+			continue
+		if(A_LoopFileName="Uninstall.ico")
 			continue
 		if(A_LoopFileName="Donate.ico")
 			continue
@@ -175,20 +179,24 @@ WriteUpdater()
 	FileAppend, if(!A_IsCompiled)`n,																				%A_scriptdir%\Updater.ahk	;Make sure that only the compiled version can be executed
 	FileAppend, `tExitApp`n,																						%A_scriptdir%\Updater.ahk
 	FileAppend, SetWorkingDir `%A_Temp`%\7plus`n,																	%A_scriptdir%\Updater.ahk
-	FileAppend, IniRead`, ConfigPath`, `%A_Temp`%\7plus\Update.ini`, Update`, ConfigPath`, `%A_AppData`%\7plus, 	%A_scriptdir%\Updater.ahk
-	FileAppend, IniRead`, ScriptDir`, `%A_Temp`%\7plus\Update.ini`, Update`, ScriptDir`, `%A_ProgramFiles`%\7plus, 	%A_scriptdir%\Updater.ahk
+	FileAppend, IniRead`, ConfigPath`, `%A_Temp`%\7plus\Update.ini`, Update`, ConfigPath`, `%A_AppData`%\7plus`n, 	%A_scriptdir%\Updater.ahk
+	FileAppend, IniRead`, ScriptDir`, `%A_Temp`%\7plus\Update.ini`, Update`, ScriptDir`, `%A_ProgramFiles`%\7plus`n,%A_scriptdir%\Updater.ahk
 	FileAppend, Progress zh0 fs18`, Updating, please wait.`n,														%A_scriptdir%\Updater.ahk
 	FileAppend, FileInstall`, %A_scriptdir%\Update.zip`, Update.zip`,1`n,											%A_scriptdir%\Updater.ahk	;%A_scriptdir% mustn't be dynamic for FileInstall -> no quotes
 	FileAppend, FileInstall`, %A_scriptdir%\7za.exe`, 7za.exe`,1`n,													%A_scriptdir%\Updater.ahk	;%A_scriptdir% mustn't be dynamic for FileInstall -> no quotes
-	FileAppend, runwait 7za.exe x -y Update.zip`, `%A_Temp`%\7plus\Update`, hide`n,									%A_scriptdir%\Updater.ahk	
-	FileAppend, FileMoveDir`, `%A_Temp`%\7plus\Update\Patches`, `%ConfigPath`%\Patches`, 2, 						%A_scriptdir%\Updater.ahk
-	FileAppend, FileMove`, `%A_Temp`%\7plus\Update`, `%ScriptDir`%`, 2, 											%A_scriptdir%\Updater.ahk
+	FileAppend, runwait 7za.exe x Update.zip -y -o`%A_Temp`%\7plus\Update`, `%A_Temp`%\7plus`, hide`n,				%A_scriptdir%\Updater.ahk	
+	FileAppend, FileMoveDir`, `%A_Temp`%\7plus\Update\Patches`, `%ConfigPath`%\Patches`, 2`n, 						%A_scriptdir%\Updater.ahk	
+    ; First move all the files (but not the folders):
+    FileAppend, FileMove`, `%A_Temp`%\7plus\Update`, `%ScriptDir`%`, 1`n, 											%A_scriptdir%\Updater.ahk
+    ; Now move all the folders:
+    FileAppend, Loop`, `%A_Temp`%\7plus\Update\*.*`, 2`n,															%A_scriptdir%\Updater.ahk
+    FileAppend, FileMoveDir`, `%A_LoopFileFullPath`%`, `%ScriptDir`%\`%A_LoopFileName`%`, 2`n,						%A_scriptdir%\Updater.ahk
 	FileAppend, FileDelete 7za.exe`n,																				%A_scriptdir%\Updater.ahk
 	FileAppend, FileDelete Update.zip`n,																			%A_scriptdir%\Updater.ahk
-	; FileAppend, FileMoveDir `%A_Temp`%\7plus\Update\ReleasePatch`,`%A_Temp`%\7plus\ReleasePatch`, 2`n,				%A_scriptdir%\Updater.ahk
-	FileAppend, if(FileExist(ScriptDir "7plus.ahk"))`n,																%A_scriptdir%\Updater.ahk
+	FileAppend, FileMoveDir `%A_Temp`%\7plus\Update\ReleasePatch`,`%A_Temp`%\7plus\ReleasePatch`, 2`n,				%A_scriptdir%\Updater.ahk
+	FileAppend, if(FileExist(ScriptDir "\7plus.ahk"))`n,																%A_scriptdir%\Updater.ahk
 	FileAppend, `trun `%ScriptDir`%\7plus.ahk`n,																	%A_scriptdir%\Updater.ahk
-	FileAppend, else if(FileExist(ScriptDir "7plus.exe"))`n,														%A_scriptdir%\Updater.ahk
+	FileAppend, else if(FileExist(ScriptDir "\7plus.exe"))`n,														%A_scriptdir%\Updater.ahk
 	FileAppend, `trun `%ScriptDir`%\7plus.exe`n,																	%A_scriptdir%\Updater.ahk
-	FileAppend, ExitApp`n,																							%A_scriptdir%\Updater.ahk
+	FileAppend, ExitApp,																							%A_scriptdir%\Updater.ahk
 }

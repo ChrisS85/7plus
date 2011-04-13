@@ -13,7 +13,8 @@ IfMsgBox Yes
 			Process, Close, %pid%
 		}
 		FileRemoveDir, %A_Temp%\7plus, 1
-		FileRemoveDir, %A_AppData%\7plus, 1
+		FileRemoveDir, %A_AppData%\7plus, 1		
+		run, regsvr32.exe /u /s "%A_ScriptDir%\ShellExtension.dll"
 		RegDelete, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus
 		RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick, 0
 		RegDelete, HKCU, Software\7plus
@@ -25,6 +26,7 @@ IfMsgBox Yes
 			RegDelete, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_ScriptDir%\7plus.exe
 		else
 			RegDelete, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_ScriptDir%\7plus.ahk
+		RemoveUninstallInformation()
 		Msgbox 7plus was uninstalled successfully. Please report any possible errors or problems that caused you to uninstall it.
 		
 		;Close explorer windows that may have a handle on the current directory
@@ -40,7 +42,6 @@ IfMsgBox Yes
 					WinClose ahk_id %this_id%
 			}
 		}
-		run, regsvr32.exe /u /s "%A_ScriptDir%\ShellExtension.dll"
 		FileAppend, :Repeat`r`nrmdir /S /Q "%A_ScriptDir%"`r`nif exist "%A_ScriptDir%" goto Repeat`r`n, DeleteDir.bat
 		Run, %A_ScriptDir%/DeleteDir.bat,,hide
 	}
@@ -245,4 +246,11 @@ RemoveAllButtons(function="")
 				RegDelete, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%numberfolder%
 		}
 	}
+}
+
+RemoveUninstallInformation()
+{
+	if(IsPortable)
+		return
+	RegDelete, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7plus
 }

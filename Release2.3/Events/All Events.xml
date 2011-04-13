@@ -322,6 +322,7 @@
 </Event><Event>
 <Actions>
 <Action>
+<Filename>Neues Textdokument.txt</Filename>
 <Rename>1</Rename>
 <Type>NewFile</Type>
 </Action></Actions>
@@ -352,6 +353,7 @@
 </Event><Event>
 <Actions>
 <Action>
+<FolderName>Neuer Ordner</FolderName>
 <Rename>1</Rename>
 <Type>NewFolder</Type>
 </Action></Actions>
@@ -785,6 +787,7 @@
 <Trigger>
 <Restart>0</Restart>
 <ShowProgress>0</ShowProgress>
+<Text></Text>
 <Time>2000</Time>
 <Type>Timer</Type>
 </Trigger>
@@ -3448,6 +3451,7 @@
 </Event><Event>
 <Actions>
 <Action>
+<Filename>Neues Textdokument.txt</Filename>
 <Rename>1</Rename>
 <Type>NewFile</Type>
 </Action></Actions>
@@ -3476,6 +3480,7 @@
 </Event><Event>
 <Actions>
 <Action>
+<FolderName>Neuer Ordner</FolderName>
 <Rename>1</Rename>
 <Type>NewFolder</Type>
 </Action></Actions>
@@ -3764,6 +3769,7 @@
 </Event><Event>
 <Actions>
 <Action>
+<Filename>Neues Textdokument.txt</Filename>
 <Rename>1</Rename>
 <Type>NewFile</Type>
 </Action></Actions>
@@ -3884,7 +3890,7 @@
 <WaitForFinish>0</WaitForFinish>
 <WorkingDirectory></WorkingDirectory>
 </Action></Actions>
-<Category>Explorer</Category>
+<Category>CMD</Category>
 <Conditions>
 <Condition>
 <Compare>${Class}</Compare>
@@ -4471,40 +4477,6 @@
 </Event><Event>
 <Actions>
 <Action>
-<Action>Trigger Event</Action>
-<Compare></Compare>
-<EventID>1599</EventID>
-<Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
-</Action></Actions>
-<Category>Taskbar</Category>
-<Conditions>
-<Condition>
-<MouseOverType>Clock</MouseOverType>
-<Negate>0</Negate>
-<Type>MouseOver</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
-<WindowMatchType>Specific Window</WindowMatchType>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event starts a dynamic timer when the taskbar clock is clicked with the middle mouse button.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<ID>1609</ID>
-<Name>Dynamic Timer: Middle mouse click over clock</Name>
-<OfficialEvent>17</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>MButton</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
 <Keys>`r`n</Keys>
 <Type>SendKeys</Type>
 <WriteText>1</WriteText>
@@ -4552,6 +4524,7 @@
 <Enabled>1</Enabled>
 <ID>1614</ID>
 <Name>Picture viewer: Rotate image right with R</Name>
+<OfficialEvent>15</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>R</Key>
@@ -4585,11 +4558,55 @@
 <Enabled>1</Enabled>
 <ID>1615</ID>
 <Name>Picture viewer: Rotate image left with L</Name>
+<OfficialEvent>18</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>L</Key>
 <Type>Hotkey</Type>
 </Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Paths>${SelNM}</Paths>
+<Type>FlatView</Type>
+</Action><Action>
+<Text>^test</Text>
+<Timeout>5</Timeout>
+<Title></Title>
+<TrayToolTip>0</TrayToolTip>
+<Type>Tooltip</Type>
+</Action></Actions>
+<Category>Explorer</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>IsRenaming</Type>
+</Condition><Condition>
+<Compare>${WinVer}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>WIN_XP</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event shows the contents of all selected folders in a flat view.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1616</ID>
+<Name>Show flat view of selected files</Name>
+<OfficialEvent>19</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>+Enter</Key>
+<Type>Hotkey</Type>
+</Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
 <MinorVersion>3</MinorVersion>
+<PatchVersion>0</PatchVersion>

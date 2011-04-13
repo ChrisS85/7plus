@@ -34,6 +34,7 @@ AutoUpdate()
 						IniWrite, %ConfigPath%, %A_Temp%\7plus\Update.ini, Update, ConfigPath
 						IniWrite, %A_ScriptDir%, %A_Temp%\7plus\Update.ini, Update, ScriptDir
 						Run %A_Temp%\7plus\Updater.exe,,UseErrorlevel
+						OnExit
 						ExitApp
 					}
 					else

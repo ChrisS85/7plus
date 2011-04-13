@@ -142,10 +142,6 @@ Settings_CreateExplorer(ByRef TabCount) {
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKInvertSelection, CTRL + I: Invert selection
 	yIt+=checkboxstep
 	
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghExplorer1dot1 vURL_Explorer1dot12, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKFlattenDirectory, SHIFT + Enter: Show selected directories in flat view (Vista/7 only)
-	yIt+=checkboxstep
-	
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghSelectFirstFile vURL_SelectFirstFile, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKSelectFirstFile, Explorer automatically selects the first file when you enter a directory
 	yIt+=checkboxstep	
@@ -198,11 +194,7 @@ Settings_CreateFastFolders(ByRef TabCount) {
 	TabCount++
 	AddTab(0, "","SysTabControl32" TabCount)
 	
-	; Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders1 vURL_FastFolders1, ?		
-	; Gui, 1:Add, Checkbox, x%x1% y%yIt% gFastFolders,Use Fast Folders
-	; yIt+=checkboxstep	
 	x:=x1 ;+xCheckboxTextOffset
-	; xhelp+=xCheckboxTextOffset
 	y:=yIt ;+yCheckboxTextOffset
 	Gui, 1:Add, Text, x%x% y%y% R2, In explorer and file dialogs you can store a path in one of ten slots by pressing CTRL`nand a numpad number key (default settings), and restore it by pressing the numpad number key again
 	yIt+=checkboxstep*1.5
@@ -226,12 +218,6 @@ Settings_CreateFastFolders(ByRef TabCount) {
 	}
 	else
 		Gui, 1:Add, Text, x%x% y%yIt%, Explorer bar functions don't work in portable mode and require admin priviledges!
-	; Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders2 vURL_FastFolders22, ?
-	; Gui, 1:Add, Checkbox, x%x% y%yIt% vHKFFMenu, Middle mouse button: Show Fast Folders move/copy menu
-	; yIt+=checkboxstep
-	; y:=yIt+yCheckboxTextOffset
-	; x+=xCheckboxTextOffset
-	; Gui, 1:Add, Text, x%x% y%y% R3, When clicking with middle mouse button in a supported file view, a menu`nwith the stored Fast Folders will show up. Clicking an entry will move all`nselected files into that directory, holding CTRL while clicking will copy the files.
 }
 Settings_CreateTabs(ByRef TabCount) {
 	global
@@ -347,19 +333,6 @@ Settings_CreateWindows(ByRef TabCount) {
 	TabCount++
 	AddTab(0, "","SysTabControl32" TabCount)
 	yIt:=yBase
-	/*
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar3, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKTitleClose, Middle click on title bar: Close program
-	yIt+=checkboxstep	
-	
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKToggleAlwaysOnTop, Right click on title bar: Toggle "Always on top"
-	yIt+=checkboxstep			
-	
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window1, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKKillWindows, Alt+F5/Right click on close button: Force-close active window (kill process)
-	yIt+=checkboxstep		
-	*/
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghSlideWindow vURL_SlideWindow, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKSlideWindows gSlideWindow, WIN + SHIFT + Arrow keys: Slide Window function
 	yIt+=checkboxstep	
@@ -369,26 +342,9 @@ Settings_CreateWindows(ByRef TabCount) {
 	yIt+=checkboxstep*2.5
 	Gui, 1:Add, Checkbox, x%x% y%yIt% vSlideWinHide, Hide Slide Windows in taskbar and from ALT + TAB
 	yIt+=checkboxstep
-	/*
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghCapslock vURL_Capslock, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKFlashWindow, Capslock: Activate flashing window (blinking on taskbar, e.g. instant messengers, ...)
-	yIt+=checkboxstep
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghCapslock vURL_Capslock1, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKToggleWindows, Capslock: Switch between current and previous window
-	yIt+=checkboxstep
-	*/
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow1dot1 vURL_Window1dot1, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKAltDrag, ALT+Left Mouse Drag: Move windows
 	yIt+=checkboxstep
-	/*
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow1dot1 vURL_Window1dot11, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKAltMinMax, ALT + Mouse wheel: Minimize/Maximize/Restore window under mouse
-	yIt+=checkboxstep
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow1dot1 vURL_Window1dot12, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKTrayMin, Right click minimize button or WIN + SHIFT + Arrow key in taskbar direction: Minimize to tray
-	yIt+=checkboxstep
-	y:=yIt+TextBoxCheckBoxOffset
-	*/
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window3, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% gFlip3D, Mouse in upper left corner: Toggle Aero Flip 3D (Vista/7 only)
 	x:=xBase+362
@@ -679,7 +635,6 @@ Settings_SetupExplorer() {
 	local temp
 	GuiControl, 1:, HKMouseGestures,% HKMouseGestures = 1
 	GuiControl, 1:, HKInvertSelection,% HKInvertSelection = 1
-	GuiControl, 1:, HKFlattenDirectory,% HKFlattenDirectory = 1
 	if(A_OSVersion!="WIN_7")
 		GuiControl, 1:disable, HKShowSpaceAndSize
 	

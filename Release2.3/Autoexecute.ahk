@@ -175,7 +175,6 @@ IniRead, HKAutoCheck, %IniPath%, Explorer, HKAutoCheck, 1
 IniRead, ScrollUnderMouse, %IniPath%, Explorer, ScrollUnderMouse, 1
 IniRead, HKInvertSelection, %IniPath%, Explorer, HKInvertSelection, 1
 IniRead, HKOpenInNewFolder, %IniPath%, Explorer, HKOpenInNewFolder, 1
-IniRead, HKFlattenDirectory, %IniPath%, Explorer, HKFlattenDirectory, 1
 IniRead, RecallExplorerPath, %IniPath%, Explorer, RecallExplorerPath, 1
 IniRead, AlignExplorer, %IniPath%, Explorer, AlignExplorer, 1
 
@@ -342,22 +341,7 @@ OnExit(Reload=0)
 	if(Reload)
 	{
 		ShouldReload := 1
-		Loop %0%
-			params .= " " (InStr(%A_Index%, " ") ? """" %A_Index% """" : %A_Index%)
-		if(Vista7)
-		{
-			If(A_IsCompiled)
-				DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, A_ScriptFullPath, str, "/r" params, str, A_WorkingDir, int, 1)
-			else
-				DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, A_AhkPath, str, "/r """ A_ScriptFullPath """" params, str, A_WorkingDir, int, 1)
-		}
-		else
-		{
-			If(A_IsCompiled)
-				run %A_ScriptFullPath% /r %params%, %A_WorkingDir%
-			else
-				run %A_AhkPath% /r "%A_ScriptFullPath%" params, %A_WorkingDir%
-		}
+		run % (A_IsCompiled ? A_ScriptFullPath : A_AhkPath) " /r """ A_ScriptFullPath """" (IsPortable ? " -Portable" : ""), %A_WorkingDir%
 	}
 	FileRemoveDir, %A_Temp%\7plus, 1
 }
@@ -402,7 +386,6 @@ WriteIni()
 	IniWrite, %ScrollUnderMouse%, %IniPath%, Explorer, ScrollUnderMouse
 	IniWrite, %HKInvertSelection%, %IniPath%, Explorer, HKInvertSelection
 	IniWrite, %HKOpenInNewFolder%, %IniPath%, Explorer, HKOpenInNewFolder
-	IniWrite, %HKFlattenDirectory%, %IniPath%, Explorer, HKFlattenDirectory
 	IniWrite, %RecallExplorerPath%, %IniPath%, Explorer, RecallExplorerPath
 	IniWrite, %AlignExplorer%, %IniPath%, Explorer, AlignExplorer
 	

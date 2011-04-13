@@ -5,7 +5,7 @@
 #include %A_ScriptDir%\Accessor\Notepad++.ahk
 #include %A_ScriptDir%\Accessor\Notes.ahk
 #include %A_ScriptDir%\Accessor\ProgramLauncher.ahk
-; #include %A_ScriptDir%\Accessor\SciTE4AutoHotkey.ahk
+#include %A_ScriptDir%\Accessor\SciTE4AutoHotkey.ahk
 #include %A_ScriptDir%\Accessor\WindowSwitcher.ahk
 #include %A_ScriptDir%\Accessor\Uninstall.ahk
 #include %A_ScriptDir%\Accessor\URL.ahk
@@ -13,7 +13,7 @@
 Accessor_Init()
 {
 	global AccessorPlugins, Accessor, ConfigPath
-	AccessorPluginsList := "WindowSwitcher,FileSystem,Google,Calc,ProgramLauncher,NotepadPlusPlus,Notes,FastFolders,Uninstall,URL,Weather" ;The order here partly determines the order in the window, so choose carefully
+	AccessorPluginsList := "WindowSwitcher,FileSystem,Google,Calc,ProgramLauncher,NotepadPlusPlus,SciTE4Autohotkey,Notes,FastFolders,Uninstall,URL,Weather" ;The order here partly determines the order in the window, so choose carefully
 	AccessorPlugins := Array()
 	Accessor := Object("Base", Object("OnExit", "Accessor_OnExit", "History", Array()))
 	FileRead, xml, %ConfigPath%\Accessor.xml

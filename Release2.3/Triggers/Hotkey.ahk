@@ -137,7 +137,8 @@ Trigger_Hotkey_GuiShow(Trigger, TriggerGUI, GoToLabel = "")
 	if(GoToLabel = "")
 	{
 		sTriggerGUI := TriggerGUI
-		SubEventGUI_Add(Trigger, TriggerGUI, "Text", "Hotkey", Trigger.Key " (" FormatHotkey(Trigger.Key) ")", "", "Hotkey:")
+		formatted := FormatHotkey(Trigger.Key)
+		SubEventGUI_Add(Trigger, TriggerGUI, "Text", "Hotkey", Trigger.Key (formatted = "" ? "" : " (" FormatHotkey(Trigger.Key) ")"), "", "Hotkey:")
 		SubEventGUI_Add(Trigger, TriggerGUI, "Button", "Edit", "Edit Hotkey", "EditHotkeyTrigger", "")
 	}
 	else if(GoToLabel = "EditHotkey")

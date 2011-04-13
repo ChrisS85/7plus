@@ -12,6 +12,19 @@ Accessor_SciTE4AutoHotkey_Init(ByRef SciTE4AutoHotkey, Settings)
 	SciTE4AutoHotkey.Settings.FuzzySearch := Settings.HasKey("FuzzySearch") ? Settings.FuzzySearch : 1
 	SciTE4AutoHotkey.Description := "Activate a specific SciTE4AutoHotkey tab by typing a part of its name. This plugin restores the text `nwhich was previously entered when the current tab was last active. `nThis way you can quicly switch between the most used tabs."
 	SciTE4AutoHotkey.HasSettings := True
+	
+	;Scite4Autohotkey uses a COM automation object that allows to remote control it. 
+	;However, it does not register this object for all users when using the portable version of SciTE4AHK.
+	;To make this version work, 7plus registers the COM object manually on startup and deregisters it on exit.
+	RegRead, IsRegistered, HKCR, Scite4AHK.Application
+	Scite4Autohotkey.IsRegistered := !(A_IsAdmin && ErrorLevel)
+	; msgbox % "IsRegistered: " Scite4Autohotkey.IsRegistered " ErrorLevel: "
+	if(!Scite4Autohotkey.IsRegistered)
+	{
+		; msgbox write
+		RegWrite, REG_SZ, HKCR, Scite4AHK.Application,, Scite4AHK.Application
+		RegWrite, REG_SZ, HKCR, Scite4AHK.Application\CLSID,, {D7334085-22FB-416E-B398-B5038A5A0784}
+	}
 }
 Accessor_SciTE4AutoHotkey_ShowSettings(SciTE4AutoHotkey, PluginSettings, PluginGUI)
 {
@@ -75,6 +88,9 @@ Accessor_SciTE4AutoHotkey_OnAccessorClose(SciTE4AutoHotkey, Accessor)
 Accessor_SciTE4AutoHotkey_OnExit(SciTE4AutoHotkey)
 {
 	DestroyIcon(SciTE4AutoHotkey.Icon)
+	;If the SciTE4AutoHotkey COM object was registered temporarily by 7plus, it needs to be deregistered on exit.
+	if(!SciTE4AutoHotkey.IsRegistered)
+		RegDelete, HKCR, Scite4AHK.Application
 }
 Accessor_SciTE4AutoHotkey_FillAccessorList(SciTE4AutoHotkey, Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet)
 {
@@ -94,7 +110,7 @@ Accessor_SciTE4AutoHotkey_FillAccessorList(SciTE4AutoHotkey, Accessor, Filter, L
 		{
 			Path := SciTE4AutoHotkey.List1[A_Index]
 			SplitPath, Path, Name
-			Accessor.List.append(Object("Title",Name,"Path",Path, "Type","SciTE", "Detail1", "SciTE4AutoHotkey", "Icon", IconCount))
+			Accessor.List.append(Object("Title",Name,"Path",Path, "Type","SciTE4AutoHotkey", "Detail1", "SciTE4AutoHotkey", "Icon", IconCount))
 		}
 		return
 	}
@@ -106,11 +122,11 @@ Accessor_SciTE4AutoHotkey_FillAccessorList(SciTE4AutoHotkey, Accessor, Filter, L
 		SplitPath, Path, Name
 		pos := InStr(Name, Filter)
 		if(pos = 1)
-			Accessor.List.append(Object("Title",Name,"Path",Path, "Type","SciTE", "Detail1", "NP++", "Icon", IconCount))
+			Accessor.List.append(Object("Title",Name,"Path",Path, "Type","SciTE4AutoHotkey", "Detail1", "SciTE4AutoHotkey", "Icon", IconCount))
 		else if(pos > 1)
-			InStrList.append(Object("Title",Name,"Path",Path, "Type","SciTE", "Detail1", "SciTE4AutoHotkey", "Icon", IconCount))
+			InStrList.append(Object("Title",Name,"Path",Path, "Type","SciTE4AutoHotkey", "Detail1", "SciTE4AutoHotkey", "Icon", IconCount))
 		else if(SciTE4AutoHotkey.Settings.FuzzySearch && FuzzySearch(Name,Filter) < 0.3)
-			FuzzyList.append(Object("Title",Name,"Path",Path, "Type","SciTE", "Detail1", "SciTE4AutoHotkey", "Icon", IconCount))
+			FuzzyList.append(Object("Title",Name,"Path",Path, "Type","SciTE4AutoHotkey", "Detail1", "SciTE4AutoHotkey", "Icon", IconCount))
 	}
 	Accessor.List.Extend(InStrList)
 	Accessor.List.Extend(FuzzyList)
@@ -119,6 +135,7 @@ Accessor_SciTE4AutoHotkey_FillAccessorList(SciTE4AutoHotkey, Accessor, Filter, L
 Accessor_SciTE4AutoHotkey_PerformAction(SciTE4AutoHotkey, Accessor, AccessorListEntry)
 {
 	global AccessorEdit
+	outputdebug perform
 	if(WinExist("ahk_class SciTEWindow") = Accessor.PreviousWindow)
 	{
 		GUINum := Accessor.GUINum
@@ -135,8 +152,7 @@ Accessor_SciTE4AutoHotkey_PerformAction(SciTE4AutoHotkey, Accessor, AccessorList
 			}
 		}
 	}
-	else
-		ActivateSciTE4AutoHotkeyTab(SciTE4AutoHotkey.List1.indexOf(AccessorListEntry.Path))
+	ActivateSciTE4AutoHotkeyTab(SciTE4AutoHotkey.List1.indexOf(AccessorListEntry.Path))
 	return
 }
 Accessor_SciTE4AutoHotkey_ListViewEvents(SciTE4AutoHotkey, AccessorListEntry)
@@ -189,6 +205,7 @@ ActivateSciTE4AutoHotkeyTab(Index)
 		return
 	scite := ComObjActive("SciTE4AHK.Application")
 	scite.SwitchToTab(Index - 1) ; the index is zero-based
+	WinActivate, % "ahk_id " scite.SciTEHandle
 }
 GetListOfOpenSciTE4AutoHotkeyTabs()
 {
@@ -199,7 +216,7 @@ GetListOfOpenSciTE4AutoHotkeyTabs()
 	scite := ComObjActive("SciTE4AHK.Application")
 	tabs := scite.Tabs.Array 
 	; tabs is a SafeArray containing the file names 
-	Loop, % tabs.MaxIndex() + 1 
+	Loop, % scite.tabs.Count
 	   list.append(tabs[A_Index-1])
 	return list
 }

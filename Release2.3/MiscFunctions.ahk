@@ -934,6 +934,19 @@ WriteText(Text)
 	return
 }
 
+;Finds a non-existing filename for Filepath by appending a number in brackets to the name
+FindFreeFileName(FilePath)
+{
+	SplitPath, FilePath,, dir, extension, filename
+	Testpath := FilePath
+	i:=1 ;Find free filename
+	while FileExist(TestPath)
+	{
+		i++
+		Testpath:=dir "\" filename " (" i ")." extension
+	}
+	return TestPath
+}
 AddUninstallInformation()
 {
 	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, IsPortable
