@@ -164,6 +164,8 @@ FolderLoop(Platform, Version)
 			continue
 		if A_LoopFileFullPath contains ShellExtension
 			continue
+		if A_LoopFileFullPath contains tests\
+			continue
 		if(InStr(A_LoopFileFullPath, "ReleasePatch\") && !InStr(A_LoopFileName, 7plusVersion)) ;Skip release patches for wrong 7plus version
 			continue
 		FileCreateDir %A_Temp%\7plusUpdateCreator\%A_LoopFileDir%

@@ -27,13 +27,13 @@ AutoUpdate()
 						IniRead, Link, %A_Temp%\7plus\Version.ini, Version,Link
 					else
 						IniRead, Link, %A_Temp%\7plus\Version.ini, Version,LinkSource
-					URLDownloadToFile, %link%?x=%rand%,%A_Temp%\7plus\Updater.exe
+					URLDownloadToFile, %link%?x=%rand%,%A_Temp%\7plus\Update.exe
 					if(!Errorlevel)
 					{
 						;Write config path and script dir location to temp file to let updater know
 						IniWrite, %ConfigPath%, %A_Temp%\7plus\Update.ini, Update, ConfigPath
 						IniWrite, %A_ScriptDir%, %A_Temp%\7plus\Update.ini, Update, ScriptDir
-						Run %A_Temp%\7plus\Updater.exe,,UseErrorlevel
+						Run %A_Temp%\7plus\Update.exe,,UseErrorlevel
 						OnExit
 						ExitApp
 					}
@@ -52,10 +52,10 @@ AutoUpdate()
 PostUpdate()
 {
 	global MajorVersion,MinorVersion,BugfixVersion, ConfigPath, IsPortable, Events, XMLMajorVersion, XMLMinorVersion, XMLBugfixVersion
-	;If there is an Updater.exe in 7plus temp directory, it is likely that an update was performed.
-	if(FileExist(A_TEMP "\7plus\Updater.exe"))
+	;If there is an Update.exe in 7plus temp directory, it is likely that an update was performed.
+	if(FileExist(A_TEMP "\7plus\Update.exe"))
 	{
-		;Check if the version from the Updater.exe in temp directory matches the version of the current instance. If yes, an update has been performed.
+		;Check if the version from the Update.exe in temp directory matches the version of the current instance. If yes, an update has been performed.
 		IniRead, tmpMajorVersion, %A_TEMP%\7plus\Version.ini,Version,MajorVersion
 		IniRead, tmpMinorVersion, %A_TEMP%\7plus\Version.ini,Version,MinorVersion
 		IniRead, tmpBugfixVersion, %A_TEMP%\7plus\Version.ini,Version,BugfixVersion
@@ -69,7 +69,7 @@ PostUpdate()
 					run %A_ScriptDir%\Changelog.txt,, UseErrorlevel
 			}
 		}		
-		FileDelete %A_TEMP%\7plus\Updater.exe
+		FileDelete %A_TEMP%\7plus\Update.exe
 	}
 	FileDelete %A_TEMP%\7plus\Version.ini
 }
