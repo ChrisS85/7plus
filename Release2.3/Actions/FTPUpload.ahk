@@ -122,6 +122,11 @@ Action_Upload_Execute(Action, Event)
 	if(files.len() > 0)
 	{
 		Action_Upload_GetFTPVariables(Action.FTPProfile, Hostname, Port, User, Password, URL)
+		if(!Hostname || Hostname = "Hostname.com")
+		{
+			Notify("FTP profile not set", "The FTP profile was not created yet or is invalid. Click here to enter a valid FTP login.", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",Vista7 ? 78 : 110)
+			return 0
+		}
 		decrypted:=Decrypt(Password)
 		cliptext=
 		; connect to FTP server 
