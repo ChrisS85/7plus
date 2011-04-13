@@ -42,4 +42,6 @@ Changes:
  * Added an introduction page that is shown on first run. It contains some tips and some basic settings like Autorun.
  * Added uninstall information for the 7plus uninstaller to the registry.
  * 7plus now recognizes if a newer version was extracted manually over an older version and will perform the required update steps.
+ * The Flat view function is now an event.
+
 If you like this program and want to support its development, please consider donating!
