@@ -943,7 +943,7 @@ FindFreeFileName(FilePath)
 	while FileExist(TestPath)
 	{
 		i++
-		Testpath:=dir "\" filename " (" i ")." extension
+		Testpath:=dir "\" filename " (" i ")" (extension = "" ? "" : "." extension)
 	}
 	return TestPath
 }

@@ -433,6 +433,7 @@ SelectFiles(Select,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)
 {
 	If (hWnd||(hWnd:=WinActive("ahk_class CabinetWClass"))||(hWnd:=WinActive("ahk_class ExploreWClass")))
 	{
+		SplitPath, Select, Select ;Make sure only names are used
 		for Item in ComObjCreate("Shell.Application").Windows
 		{
 			if (Item.hwnd = hWnd)

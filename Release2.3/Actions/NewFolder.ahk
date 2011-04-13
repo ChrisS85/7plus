@@ -31,14 +31,11 @@ Action_NewFolder_Execute(Action, Event)
 	if(strEndsWith(path, "\"))
 		path := SubStr(path, 1, StrLen(path) - 1)
 	name := Event.ExpandPlaceholders(Action.Foldername)
-	Testpath := path "\" name
-	i:=1 ;Find free Foldername
-	while InStr(FileExist(Testpath), "D") 
-	{
-		i++
-		Testpath:=path "\" name " (" i ")"
-	}
+	TestPath := FindFreeFileName(path "\" name)
 	FileCreateDir, %TestPath% ;Create Folder and then select it and rename it
+	
+	;if folder wasn't created, it's possible that it happens because the user is on a network share/drive and logged in with wrong credentials.
+	;Let CMD handle directory creation then.
 	if(!InStr(FileExist(Testpath), "D"))
 	{
 		SplitPath, TestPath,,,,,Drive
@@ -59,10 +56,7 @@ Action_NewFolder_Execute(Action, Event)
 	Sleep 50
 	if(WinActive("ahk_group DesktopGroup")) ;Desktop needs more time for refresh and selecting an item is handled by typing its name
 		Sleep 1000
-	if(i=1)
-		SelectFiles(name)
-	else
-		SelectFiles(name " (" i ")")
+	SelectFiles(TestPath)
 	if(Action.Rename)
 	{
 		Sleep 50

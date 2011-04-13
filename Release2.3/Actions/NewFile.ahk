@@ -31,14 +31,7 @@ Action_NewFile_Execute(Action, Event)
 	SetFocusToFileView()
 	path := GetCurrentFolder()
 	name := Event.ExpandPlaceholders(Action.Filename)
-	SplitPath, name,, , extension, filename
-	Testpath := path "\" name
-	i:=1 ;Find free filename
-	while FileExist(TestPath)
-	{
-		i++
-		Testpath:=path "\" filename " (" i ")." extension
-	}
+	Testpath := FindFreeFileName(path "\" name)
 	FileAppend, %A_Space%, %TestPath%	;Create file and then select it and rename it
 	outputdebug % "Testpath" Testpath " exist: " FileExist(TestPath)
 	if(!FileExist(TestPath))
@@ -52,10 +45,7 @@ Action_NewFile_Execute(Action, Event)
 	Sleep 50
 	if(WinActive("ahk_group DesktopGroup")) ;Desktop needs more time for refresh and selecting an item is handled by typing its name
 		Sleep 1000
-	if(i=1)
-		SelectFiles(filename "." extension)
-	else
-		SelectFiles(filename " (" i ")." extension)
+	SelectFiles(Testpath)
 	if(Action.Rename)
 	{
 		Sleep 50
