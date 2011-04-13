@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<Module>
+  <ModulePrefs title="remote content example" />
+  <Content type="html"> 
+  <![CDATA[
+   <script type="text/javascript" src="http://host1.easypolls.net/ext/scripts/emPoll.js?p=4da5f78c47228ee02aa64882"></script><a class="OPP-powered-by" href="http://www.objectplanet.com/opinio/" style="text-decoration:none;"><div style="font: 9px arial; color: gray;">survey solutions</div></a>
+  ]]> 
+  </Content>
+</Module>
