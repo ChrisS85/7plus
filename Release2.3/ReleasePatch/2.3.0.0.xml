@@ -1,0 +1,1021 @@
+<MajorVersion>2</MajorVersion>
+<MinorVersion>3</MinorVersion>
+<BugfixVersion>0</BugfixVersion>
+<PatchVersion>0</PatchVersion>
+<Message>- Fixed Win+C not opening the desktop folder when desktop is active
+- Fixed WIN+Insert not having the default FTP server assigned
+- Fixed Explorer Band Upload button not having the default FTP server assigned
+- Fixed a wrong action in a toggle always on top event
+- Fixed a wrong description in append files to clipboard events
+- Made default image/text editor paths use placeholders
+- Made Picture Viewer hotkeys work in XP
+- Changed some categories</Message>
+<Events>
+<Event>
+<Category>Misc Hotkeys</Category>
+<OfficialEvent>318</OfficialEvent>
+</Event><Event>
+<Category>Misc Hotkeys</Category>
+<OfficialEvent>384</OfficialEvent>
+</Event><Event>
+<Description>Append selected files to clipboard, instead of replacing current files on clipboard. This event will copy ALL the files on the clipboard.</Description>
+<OfficialEvent>3</OfficialEvent>
+</Event><Event>
+<Description>Append selected files to clipboard, instead of replacing current files on clipboard. This event will cut ALL the files on the clipboard.</Description>
+<OfficialEvent>4</OfficialEvent>
+</Event><Event>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition></Conditions>
+<OfficialEvent>10</OfficialEvent>
+</Event><Event>
+<OfficialEvent>380</OfficialEvent>
+<Actions>
+<Action>
+<Area>Window</Area>
+<Quality>95</Quality>
+<TargetFile>Screenshot.jpg</TargetFile>
+<TargetFolder>%Temp%</TargetFolder>
+<Type>Screenshot</Type>
+</Action><Action>
+<Cancel>1</Cancel>
+<Text>Enter image filename:</Text>
+<Title>Enter filename</Title>
+<Type>Input</Type>
+</Action><Action>
+<Clipboard>1</Clipboard>
+<FTPProfile>1</FTPProfile>
+<Silent>0</Silent>
+<SourceFiles>%temp%\Screenshot.jpg</SourceFiles>
+<TargetFile>${Input}</TargetFile>
+<TargetFolder></TargetFolder>
+<Type>Upload</Type>
+</Action><Action>
+<Overwrite>0</Overwrite>
+<Silent>1</Silent>
+<SourceFile>%temp%\Screenshot.jpg</SourceFile>
+<TargetFile></TargetFile>
+<TargetPath></TargetPath>
+<Type>Delete</Type>
+</Action></Actions>
+</Event><Event>
+<Actions>
+<Action>
+<Clipboard>1</Clipboard>
+<FTPProfile>1</FTPProfile>
+<Silent>0</Silent>
+<SourceFiles>${SelNNEM}</SourceFiles>
+<TargetFile>${Input}</TargetFile>
+<TargetFolder></TargetFolder>
+<Type>Upload</Type>
+</Action></Actions>
+<OfficialEvent>979</OfficialEvent>
+</Event><Event>
+<Actions>
+<Action>
+<Keys>{Esc}</Keys>
+<Type>SendKeys</Type>
+</Action><Action>
+<Action>Disable Event</Action>
+<EventID>311</EventID>
+<Type>ControlEvent</Type>
+</Action><Action>
+<Action>Disable Event</Action>
+<EventID>310</EventID>
+<Type>ControlEvent</Type>
+</Action></Actions>
+<OfficialEvent>310</OfficialEvent>
+</Event><Event>
+<Category>Misc Hotkeys</Category>
+<OfficialEvent>962</OfficialEvent>
+</Event><Event>
+<Category>Misc Hotkeys</Category>
+<OfficialEvent>963</OfficialEvent>
+</Event><Event>
+<Actions>
+<Action>
+<Action>Keep list entries from</Action>
+<ExitOnEmptyList>1</ExitOnEmptyList>
+<Filter>(.*\.jpg|.*\.bmp|.*\.png|.*\.gif)</Filter>
+<List>${SelNQ}</List>
+<Operator>that match regular expression</Operator>
+<Separator></Separator>
+<Type>FilterList</Type>
+</Action><Action>
+<Command>"%ProgramFiles%\Paint.NET\PaintDotNet.exe" ${SelNQ}</Command>
+<RunAsAdmin>0</RunAsAdmin>
+<Type>Run</Type>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory></WorkingDirectory>
+</Action></Actions>
+<OfficialEvent>301</OfficialEvent>
+</Event><Event>
+<Actions>
+<Action>
+<Action>Remove list entries from</Action>
+<ExitOnEmptyList>1</ExitOnEmptyList>
+<Filter>(.*\.jpg|.*\.bmp|.*\.png|.*\.gif)</Filter>
+<List>${SelNQ}</List>
+<Operator>that match regular expression</Operator>
+<Separator>`n</Separator>
+<Type>FilterList</Type>
+</Action><Action>
+<Command>"%ProgramFiles%\Notepad++\notepad++.exe" ${SelNQ}</Command>
+<RunAsAdmin>0</RunAsAdmin>
+<Type>Run</Type>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory></WorkingDirectory>
+</Action></Actions>
+<OfficialEvent>302</OfficialEvent>
+</Event><Event>
+<Actions>
+<Action>
+<Action>Keep list entries from</Action>
+<ExitOnEmptyList>1</ExitOnEmptyList>
+<Filter>(.*\.jpg|.*\.bmp|.*\.png|.*\.gif)</Filter>
+<List>${SelNQ}</List>
+<Operator>that match regular expression</Operator>
+<Separator></Separator>
+<Type>FilterList</Type>
+</Action><Action>
+<Command>"%ProgramFiles%\Paint.NET\PaintDotNet.exe" ${SelNQ}</Command>
+<RunAsAdmin>0</RunAsAdmin>
+<Type>Run</Type>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory></WorkingDirectory>
+</Action></Actions>
+<OfficialEvent>896</OfficialEvent>
+</Event><Event>
+<Actions>
+<Action>
+<Action>Remove list entries from</Action>
+<ExitOnEmptyList>1</ExitOnEmptyList>
+<Filter>(.*\.jpg|.*\.bmp|.*\.png|.*\.gif)</Filter>
+<List>${SelNQ}</List>
+<Operator>that match regular expression</Operator>
+<Separator>`n</Separator>
+<Type>FilterList</Type>
+</Action><Action>
+<Command>"%ProgramFiles%\Notepad++\notepad++.exe" ${SelNQ}</Command>
+<RunAsAdmin>0</RunAsAdmin>
+<Type>Run</Type>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory></WorkingDirectory>
+</Action></Actions>
+<OfficialEvent>897</OfficialEvent>
+</Event><Event>
+<Actions>
+<Action>
+<Action>Set volume</Action>
+<ShowVolume>1</ShowVolume>
+<Type>Volume</Type>
+<Volume>+5</Volume>
+</Action></Actions>
+<OfficialEvent>960</OfficialEvent>
+</Event><Event>
+<Actions>
+<Action>
+<Action>Set volume</Action>
+<ShowVolume>1</ShowVolume>
+<Type>Volume</Type>
+<Volume>-5</Volume>
+</Action></Actions>
+<OfficialEvent>961</OfficialEvent>
+</Event><Event>
+<Actions>
+<Action>
+<Keys>^.</Keys>
+<Type>SendKeys</Type>
+<WriteText>0</WriteText>
+</Action></Actions>
+<Category>Misc Hotkeys</Category>
+<Conditions>
+<Condition>
+<Negate>0</Negate>
+<Type>WindowActive</Type>
+<WindowFilter></WindowFilter>
+<WindowFilterClass>Photo_Lightweight_Viewer</WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
+<WindowMatchType>Specific Window</WindowMatchType>
+</Condition><Condition>
+<Compare>${WinVer}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>WIN_XP</With>
+</Condition></Conditions>
+<OfficialEvent>962</OfficialEvent>
+</Event><Event>
+<Actions>
+<Action>
+<Keys>^,</Keys>
+<Type>SendKeys</Type>
+<WriteText>0</WriteText>
+</Action></Actions>
+<Category>Misc Hotkeys</Category>
+<Conditions>
+<Condition>
+<Negate>0</Negate>
+<Type>WindowActive</Type>
+<WindowFilter></WindowFilter>
+<WindowFilterClass>Photo_Lightweight_Viewer</WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
+<WindowMatchType>Specific Window</WindowMatchType>
+</Condition><Condition>
+<Compare>${WinVer}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>WIN_XP</With>
+</Condition></Conditions>
+<OfficialEvent>963</OfficialEvent>
+</Event><Event>
+<Actions>
+<Action>
+<Command>cmd.exe /k cd /D "%Desktop%"</Command>
+<RunAsAdmin>0</RunAsAdmin>
+<Type>Run</Type>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory></WorkingDirectory>
+</Action></Actions>
+<Category>CMD</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(WorkerW|Progman)</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Open CMD in desktop directory when desktop window is active.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1583</ID>
+<Name>Run CMD in desktop directory</Name>
+<OfficialEvent>987</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>#C</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Cancel>1</Cancel>
+<DataType>Text</DataType>
+<Placeholder>Input</Placeholder>
+<Text>Enter parameters. Paths might need`n to be enclosed in double quotes.</Text>
+<Title>Enter Parameters</Title>
+<Type>Input</Type>
+<Validate>1</Validate>
+</Action><Action>
+<Command>${Context} ${Input}</Command>
+<RunAsAdmin>0</RunAsAdmin>
+<Type>Run</Type>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory>${P}</WorkingDirectory>
+</Action></Actions>
+<Category>Context Menu</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description></Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1584</ID>
+<Name>Run with parameters</Name>
+<OfficialEvent>988</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Computer>0</Computer>
+<Description>Runs an executable file with parameters</Description>
+<Desktop>0</Desktop>
+<Directory>0</Directory>
+<DirectoryBackground>0</DirectoryBackground>
+<FileTypes>exe,bat,cmd</FileTypes>
+<Name>Run with parameters...</Name>
+<SingleFileOnly>1</SingleFileOnly>
+<SubMenu></SubMenu>
+<Type>ContextMenu</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Files>${Context}</Files>
+<Type>ImageConverter</Type>
+</Action></Actions>
+<Category>Context Menu</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Opens a dialog for batch image conversion.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1585</ID>
+<Name>Batch image converter</Name>
+<OfficialEvent>989</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Computer>0</Computer>
+<Description>Opens a dialog for batch image conversion.</Description>
+<Desktop>0</Desktop>
+<Directory>0</Directory>
+<DirectoryBackground>0</DirectoryBackground>
+<FileTypes>BMP,DIB,RLE,JPG,JPEG,JPE,JFIF,GIF,TIF,TIFF,PNG</FileTypes>
+<Name>Convert Images</Name>
+<SingleFileOnly>0</SingleFileOnly>
+<SubMenu></SubMenu>
+<Type>ContextMenu</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Files>${Context}</Files>
+<Type>MD5</Type>
+</Action></Actions>
+<Category>Context Menu</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Opens a dialog that displays MD5 checksums of the selected files.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1586</ID>
+<Name>MD5 Checksums</Name>
+<OfficialEvent>990</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Computer>0</Computer>
+<Description>Opens a dialog that displays MD5 checksums of the selected files.</Description>
+<Desktop>0</Desktop>
+<Directory>0</Directory>
+<DirectoryBackground>0</DirectoryBackground>
+<FileTypes>*</FileTypes>
+<Name>MD5 Checksum(s)</Name>
+<SingleFileOnly>0</SingleFileOnly>
+<SubMenu></SubMenu>
+<Type>ContextMenu</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Clipboard>1</Clipboard>
+<FTPProfile>1</FTPProfile>
+<Silent>0</Silent>
+<SourceFiles>${Context}</SourceFiles>
+<TargetFile></TargetFile>
+<TargetFolder></TargetFolder>
+<Type>Upload</Type>
+</Action></Actions>
+<Category>Context Menu</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Uploads the selected files to an FTP server.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1587</ID>
+<Name>Context Menu Upload</Name>
+<OfficialEvent>991</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Computer>0</Computer>
+<Description>Uploads the selected files to an FTP server</Description>
+<Desktop>0</Desktop>
+<Directory>0</Directory>
+<DirectoryBackground>0</DirectoryBackground>
+<FileTypes>*</FileTypes>
+<Name>Upload</Name>
+<SingleFileOnly>0</SingleFileOnly>
+<SubMenu></SubMenu>
+<Type>ContextMenu</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Action>Toggle show hidden files</Action>
+<Type>ViewMode</Type>
+</Action></Actions>
+<Category>Context Menu</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Toggles the visibility of hidden files.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1588</ID>
+<Name>Toggle Hidden Files</Name>
+<OfficialEvent>992</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Computer>0</Computer>
+<Description>Toggles the visibility of hidden files</Description>
+<Desktop>0</Desktop>
+<Directory>0</Directory>
+<DirectoryBackground>1</DirectoryBackground>
+<FileTypes></FileTypes>
+<Name>Toggle hidden files</Name>
+<SingleFileOnly>0</SingleFileOnly>
+<SubMenu></SubMenu>
+<Type>ContextMenu</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Action>Toggle mute/unmute</Action>
+<ShowVolume>1</ShowVolume>
+<Type>Volume</Type>
+<Volume>100</Volume>
+</Action></Actions>
+<Category>Misc Hotkeys</Category>
+<Conditions>
+<Condition>
+<Negate>1</Negate>
+<Type>IsFullScreen</Type>
+<UseExcludeList>1</UseExcludeList>
+<UseIncludeList>1</UseIncludeList>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Shows the volume window when Mute button is pressed.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1589</ID>
+<Name>Show volume window</Name>
+<OfficialEvent>993</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>Volume_Mute</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Action>Set volume</Action>
+<ShowVolume>1</ShowVolume>
+<Type>Volume</Type>
+<Volume>-2</Volume>
+</Action></Actions>
+<Category>Misc Hotkeys</Category>
+<Conditions>
+<Condition>
+<Negate>1</Negate>
+<Type>IsFullScreen</Type>
+<UseExcludeList>1</UseExcludeList>
+<UseIncludeList>1</UseIncludeList>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Shows the volume window when volume down is pressed.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1590</ID>
+<Name>Show volume window</Name>
+<OfficialEvent>994</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>Volume_Down</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Action>Set volume</Action>
+<ShowVolume>1</ShowVolume>
+<Type>Volume</Type>
+<Volume>+2</Volume>
+</Action></Actions>
+<Category>Misc Hotkeys</Category>
+<Conditions>
+<Condition>
+<Negate>1</Negate>
+<Type>IsFullScreen</Type>
+<UseExcludeList>1</UseExcludeList>
+<UseIncludeList>1</UseIncludeList>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Shows the volume window when volume up is pressed.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1591</ID>
+<Name>Show volume window</Name>
+<OfficialEvent>995</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>Volume_Up</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Action>Trigger Event</Action>
+<Compare></Compare>
+<EventID>1599</EventID>
+<Operator>equals</Operator>
+<Type>ControlEvent</Type>
+<With></With>
+</Action></Actions>
+<Category>Taskbar</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event starts a dynamic timer when the "Start timer" menu entry from the 7plus tray menu is selected.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1597</ID>
+<Name>Dynamic Timer: tray menu item</Name>
+<OfficialEvent>5</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Menu>Tray</Menu>
+<Name>Start timer</Name>
+<Submenu></Submenu>
+<Type>MenuItem</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Cancel>1</Cancel>
+<DataType>Selection</DataType>
+<Placeholder>TimerType</Placeholder>
+<Selection>Message timer|Shutdown timer|Run program timer</Selection>
+<Text>What type of timer would you like to start?</Text>
+<Title>Dynamic timer</Title>
+<Type>Input</Type>
+<Validate>1</Validate>
+</Action><Action>
+<Cancel>1</Cancel>
+<DataType>Time</DataType>
+<Placeholder>TimerTime</Placeholder>
+<Text>Enter time [HH:MM:SS]:</Text>
+<Title>Dynamic timer - Enter time</Title>
+<Type>Input</Type>
+<Validate>1</Validate>
+</Action><Action>
+<Action>Trigger Event</Action>
+<Compare>${TimerType}</Compare>
+<EventID>1602</EventID>
+<Operator>equals</Operator>
+<Type>ControlEvent</Type>
+<With>Message Timer</With>
+</Action><Action>
+<Action>Trigger Event</Action>
+<Compare>${TimerType}</Compare>
+<EventID>1603</EventID>
+<Operator>equals</Operator>
+<Type>ControlEvent</Type>
+<With>Run program timer</With>
+</Action><Action>
+<Action>Trigger Event</Action>
+<Compare>${TimerType}</Compare>
+<EventID>1606</EventID>
+<Operator>equals</Operator>
+<Type>ControlEvent</Type>
+<With>Shutdown timer</With>
+</Action></Actions>
+<Category>Taskbar</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event asks for the type of timer that shall be started and its time and then starts the appropriate event that configures and starts the matching timer.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1599</ID>
+<Name>Dynamic timer: Main</Name>
+<OfficialEvent>6</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>None</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Text>${TimerMessage}</Text>
+<Timeout></Timeout>
+<Title>Timer</Title>
+<Type>Message</Type>
+</Action></Actions>
+<Category>Taskbar</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This timer is triggered with a dynamic time set by an input action.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>0</Enabled>
+<ID>1600</ID>
+<Name>Dynamic Timer: Message timer</Name>
+<OfficialEvent>8</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Restart>0</Restart>
+<ShowProgress>1</ShowProgress>
+<Text>${TimerMessage}</Text>
+<Time>10000</Time>
+<Type>Timer</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Cancel>1</Cancel>
+<DataType>Text</DataType>
+<Placeholder>TimerMessage</Placeholder>
+<Text>Enter message text:</Text>
+<Title>Message text</Title>
+<Type>Input</Type>
+<Validate>1</Validate>
+</Action><Action>
+<Action>Copy Event</Action>
+<Compare></Compare>
+<DeleteAfterUse>1</DeleteAfterUse>
+<EvaluateOnCopy>1</EvaluateOnCopy>
+<EventID>1600</EventID>
+<Operator>equals</Operator>
+<Placeholder>MessageTimer</Placeholder>
+<Type>ControlEvent</Type>
+<With></With>
+</Action><Action>
+<Action>Set time</Action>
+<Time>${TimerTime}</Time>
+<TimerID>${MessageTimer}</TimerID>
+<Type>ControlTimer</Type>
+</Action><Action>
+<Action>Start timer</Action>
+<TimerID>${MessageTimer}</TimerID>
+<Type>ControlTimer</Type>
+</Action></Actions>
+<Category>Taskbar</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event asks for a message and starts the message timer.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1602</ID>
+<Name>Dynamic Timer: Ask for message and start message timer</Name>
+<OfficialEvent>9</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>None</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Cancel>1</Cancel>
+<DataType>File</DataType>
+<Placeholder>TimerProgram</Placeholder>
+<Text>Enter program to launch</Text>
+<Title>Select program</Title>
+<Type>Input</Type>
+<Validate>1</Validate>
+</Action><Action>
+<Action>Copy Event</Action>
+<Compare></Compare>
+<DeleteAfterUse>1</DeleteAfterUse>
+<EvaluateOnCopy>1</EvaluateOnCopy>
+<EventID>1604</EventID>
+<Operator>equals</Operator>
+<Placeholder>RunTimer</Placeholder>
+<Type>ControlEvent</Type>
+<With></With>
+</Action><Action>
+<Action>Set time</Action>
+<Time>${TimerTime}</Time>
+<TimerID>${RunTimer}</TimerID>
+<Type>ControlTimer</Type>
+</Action><Action>
+<Action>Start timer</Action>
+<TimerID>${RunTimer}</TimerID>
+<Type>ControlTimer</Type>
+</Action></Actions>
+<Category>Taskbar</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event asks for the program to be launched and starts the Run program timer</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1603</ID>
+<Name>Dynamic Timer: Ask for program and start Run program timer</Name>
+<OfficialEvent>11</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>None</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Command>${TimerProgram}</Command>
+<RunAsAdmin>0</RunAsAdmin>
+<Type>Run</Type>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory></WorkingDirectory>
+</Action></Actions>
+<Category>Taskbar</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This timer runs the program selected by the user.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>0</Enabled>
+<ID>1604</ID>
+<Name>Dynamic Timer: Run program timer</Name>
+<OfficialEvent>12</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Restart>0</Restart>
+<ShowProgress>1</ShowProgress>
+<Text>Run ${TimerProgram}</Text>
+<Time>10000</Time>
+<Type>Timer</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<ForceClose>0</ForceClose>
+<ShutDownSelection>Shutdown</ShutDownSelection>
+<Type>Shutdown</Type>
+</Action></Actions>
+<Category>Taskbar</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This timer shuts down the computer after the specified time.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>0</Enabled>
+<ID>1605</ID>
+<Name>Dynamic Timer: Shutdown timer</Name>
+<OfficialEvent>13</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Restart>0</Restart>
+<ShowProgress>1</ShowProgress>
+<Text>Shutdown</Text>
+<Time>600000</Time>
+<Type>Timer</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Action>Copy Event</Action>
+<Compare></Compare>
+<DeleteAfterUse>1</DeleteAfterUse>
+<EvaluateOnCopy>1</EvaluateOnCopy>
+<EventID>1605</EventID>
+<Operator>equals</Operator>
+<Placeholder>ShutdownTimer</Placeholder>
+<Type>ControlEvent</Type>
+<With></With>
+</Action><Action>
+<Action>Set time</Action>
+<Time>${TimerTime}</Time>
+<TimerID>${ShutdownTimer}</TimerID>
+<Type>ControlTimer</Type>
+</Action><Action>
+<Action>Start timer</Action>
+<TimerID>${ShutdownTimer}</TimerID>
+<Type>ControlTimer</Type>
+</Action></Actions>
+<Category>Taskbar</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event starts the Shutdown timer.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1606</ID>
+<Name>Dynamic Timer: Start shutdown timer</Name>
+<OfficialEvent>14</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>None</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Action>Trigger Event</Action>
+<Compare></Compare>
+<EventID>1599</EventID>
+<Operator>equals</Operator>
+<Type>ControlEvent</Type>
+<With></With>
+</Action></Actions>
+<Category>Taskbar</Category>
+<Conditions>
+<Condition>
+<MouseOverType>Clock</MouseOverType>
+<Negate>0</Negate>
+<Type>MouseOver</Type>
+<WindowFilter></WindowFilter>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
+<WindowMatchType>Specific Window</WindowMatchType>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event starts a dynamic timer when the taskbar clock is clicked with the middle mouse button.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1609</ID>
+<Name>Dynamic Timer: Middle mouse click over clock</Name>
+<OfficialEvent>17</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>MButton</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Keys>`t</Keys>
+<Type>SendKeys</Type>
+<WriteText>1</WriteText>
+</Action></Actions>
+<Category>Misc Hotkeys</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event will write a tab character to the currently focused control. This is useful in text fields where pressing tab would toggle the focused control.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1609</ID>
+<Name>Write tab character</Name>
+<OfficialEvent>15</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^#Tab</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Keys>`r`n</Keys>
+<Type>SendKeys</Type>
+<WriteText>1</WriteText>
+</Action></Actions>
+<Category>Misc Hotkeys</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event will write a newline sequence to the focused control and thus start a new line. This is useful in text fields where pressing Enter would press a button.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1610</ID>
+<Name>Write newline characters</Name>
+<OfficialEvent>16</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^#Enter</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Action>Trigger Event</Action>
+<Compare></Compare>
+<EventID>1599</EventID>
+<Operator>equals</Operator>
+<Type>ControlEvent</Type>
+<With></With>
+</Action></Actions>
+<Category>Taskbar</Category>
+<Conditions>
+<Condition>
+<MouseOverType>Clock</MouseOverType>
+<Negate>0</Negate>
+<Type>MouseOver</Type>
+<WindowFilter></WindowFilter>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
+<WindowMatchType>Specific Window</WindowMatchType>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event starts a dynamic timer when the taskbar clock is clicked with the middle mouse button.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1609</ID>
+<Name>Dynamic Timer: Middle mouse click over clock</Name>
+<OfficialEvent>17</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>MButton</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Keys>^k</Keys>
+<Type>SendKeys</Type>
+<WriteText>0</WriteText>
+</Action></Actions>
+<Category>Misc Hotkeys</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>ShImgVw:</With>
+</Condition><Condition>
+<Compare>${WinVer}</Compare>
+<Negate>0</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>WIN_XP</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Rotate images with R in windows picture viewer.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1614</ID>
+<Name>Picture viewer: Rotate image right with R</Name>
+<OfficialEvent>15</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>R</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Keys>^l</Keys>
+<Type>SendKeys</Type>
+<WriteText>0</WriteText>
+</Action></Actions>
+<Category>Misc Hotkeys</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>ShImgVw:</With>
+</Condition><Condition>
+<Compare>${WinVer}</Compare>
+<Negate>0</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>WIN_XP</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Rotate images with L in windows picture viewer.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1615</ID>
+<Name>Picture viewer: Rotate image left with L</Name>
+<OfficialEvent>18</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>L</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Paths>${SelNM}</Paths>
+<Type>FlatView</Type>
+</Action><Action>
+<Text>^test</Text>
+<Timeout>5</Timeout>
+<Title></Title>
+<TrayToolTip>0</TrayToolTip>
+<Type>Tooltip</Type>
+</Action></Actions>
+<Category>Explorer</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>IsRenaming</Type>
+</Condition><Condition>
+<Compare>${WinVer}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>WIN_XP</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event shows the contents of all selected folders in a flat view.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1616</ID>
+<Name>Show flat view of selected files</Name>
+<OfficialEvent>19</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>+Enter</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event></Events>
+<Remove></Remove>
