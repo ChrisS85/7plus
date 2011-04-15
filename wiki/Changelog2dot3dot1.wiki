@@ -1,0 +1,15 @@
+= 7plus Version 2.3.0 Changelog =
+
+This is a minor bugfix release.
+
+New Functions:
+ * Added directory context menu item for flat view
+
+Bugfixes:
+ * Fixed missing \ when copying paths of network shares
+ * Fixed not being able to navigate to network drives
+
+Changes:
+
+
+If you like this program and want to support its development, please consider donating!
