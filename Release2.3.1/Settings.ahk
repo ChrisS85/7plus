@@ -1,3 +1,4 @@
+#include %A_ScriptDir%\WindowsSettings.ahk
 ;---------------------------------------------------------------------------------------------------------------
 ; The following functions create the GUI and are only called once at startup
 ;---------------------------------------------------------------------------------------------------------------
@@ -363,16 +364,57 @@ Settings_CreateWindows(ByRef TabCount) {
 	Gui, 1:Add, Text, x%x% y%y%, Middle click on empty taskbar: Taskbar properties
 	yIt+=checkboxstep	
 	
-	if(!IsPortable)
-	{
-		Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar2, ?
-		Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKActivateBehavior, Left click on task group button (7 only): cycle through windows	
-		yIt+=checkboxstep
-	}
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window2, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKToggleWallpaper, Middle mouse click on desktop: Toggle wallpaper (7 only)
 	yIt+=checkboxstep
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vShowResizeTooltip, Show window size as tooltip while resizing
+}
+Settings_CreateWindowsSettings(ByRef TabCount) {
+	global
+	local yIt,x1,x,y
+	xHelp:=xBase
+	x1:=xHelp
+	Gui, 1:Add, Tab2, x176 y14 w460 h350 vWindowsSettingsTab, 
+	TabCount++
+	AddTab(0, "","SysTabControl32" TabCount)
+	yIt:=yBase
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vShowAllTray, Show all tray notification icons
+	yIt+=checkboxstep
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vRemoveUserDir, Remove user directory from directory tree
+	yIt+=checkboxstep
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vRemoveWMP, Remove Windows Media Player context menu entries
+	yIt+=checkboxstep
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vRemoveOpenWith, Remove "Open With Webservice" dialogs
+	yIt+=checkboxstep
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vRemoveCrashReporting, Remove crash reporting dialog
+	yIt+=checkboxstep
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vShowExtensions, Show file extensions
+	yIt+=checkboxstep
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vShowHiddenFiles, Show hidden files
+	yIt+=checkboxstep
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vShowSystemFiles, Show system files
+	yIt+=checkboxstep	
+	if(Vista7)
+	{		
+		Gui, 1:Add, Checkbox, x%x1% y%yIt% vDisableUAC, Disable UAC
+		yIt+=checkboxstep
+	}
+	if(A_OSVersion = "WIN_XP")
+	{
+		Gui, 1:Add, Checkbox, x%x1% y%yIt% vClassicView, Use classic explorer view
+		yIt+=checkboxstep	
+	}
+	else if(A_OSVersion != "WIN_XP" && A_OSVersion != "WIN_VISTA")
+	{		
+		Gui, 1:Add, Checkbox, x%x1% y%yIt% vRemoveLibraries, Remove explorer libraries
+		yIt+=checkboxstep
+		Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKActivateBehavior, Left click on task group button: cycle through windows	
+		yIt+=checkboxstep
+		y:=yIt+TextBoxTextOffset
+		Gui, 1:Add, Text, x%x1% y%y%, Taskbar thumbnail hover time [ms]:
+		Gui, 1:Add, Edit, x+10 y%yIt% w%wTBShort% R1 vHoverTime
+		yIt+=textboxstep
+	}
 }
 Settings_CreateMisc(ByRef TabCount) {
 	global
@@ -756,13 +798,30 @@ Settings_SetupWindows() {
 		GuiControl, 1:disable, HKToggleWallpaper
 	}
 	GuiControl, 1:, HKMiddleClose, % HKMiddleClose = 1
-	if(!IsPortable)
-	{
-		RegRead, HKActivateBehavior, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick
-		GuiControl, 1:, HKActivateBehavior, % HKActivateBehavior = 1
-	}
 	GuiControl, 1:, HKToggleWallpaper, % HKToggleWallpaper = 1
 	GuiControl, 1:, ShowResizeTooltip, % ShowResizeTooltip = 1
+}
+
+Settings_SetupWindowsSettings() {
+	global	
+	GuiControl, 1:, ShowAllTray, % WindowsSettings_Get_ShowAllTray()
+	GuiControl, 1:, RemoveUserDir, %  WindowsSettings_Get_RemoveUserDir()
+	GuiControl, 1:, RemoveWMP, %  WindowsSettings_Get_RemoveWMP()
+	GuiControl, 1:, RemoveOpenWith, % WindowsSettings_Get_RemoveOpenWith()
+	GuiControl, 1:, RemoveCrashReporting, % WindowsSettings_Get_RemoveCrashReporting()
+	GuiControl, 1:, ShowExtensions, % WindowsSettings_Get_ShowExtensions()
+	GuiControl, 1:, ShowHiddenFiles, % WindowsSettings_Get_ShowHiddenFiles()
+	GuiControl, 1:, ShowSystemFiles, % WindowsSettings_Get_ShowSystemFiles()
+	if(Vista7)
+		GuiControl, 1:, DisableUAC, %  WindowsSettings_Get_DisableUAC()
+	if(A_OSVersion = "WIN_XP")
+		GuiControl, 1:, ClassicView, %  WindowsSettings_Get_ClassicView()
+	else if(A_OSVersion != "WIN_XP" && A_OSVersion != "WIN_VISTA")
+	{
+		GuiControl, 1:, RemoveLibraries, % WindowsSettings_Get_RemoveLibraries()
+		GuiControl, 1:, HKActivateBehavior, % WindowsSettings_Get_ActivateBehavior()
+		GuiControl, 1:, HoverTime, % WindowsSettings_Get_HoverTime()
+	}
 }
 Settings_SetupMisc() {
 	global
@@ -824,7 +883,7 @@ ShowSettings(ShowPane="") {
 			wButton:=30
 			hCheckbox:=16 
 			
-			SettingsTabList := "Introduction|Accessor Keywords|Accessor Plugins|Explorer|Fast Folders|Explorer Tabs|FTP Profiles|Hotstrings|Windows|Misc|About"
+			SettingsTabList := "Introduction|Accessor Keywords|Accessor Plugins|Explorer|Fast Folders|Explorer Tabs|FTP Profiles|Hotstrings|Windows|Windows Settings|Misc|About"
 			;Note: Treeview entries get overwritten in RecreateTreeView()
 			Gui, 1:Add, TreeView, x16 y20 w140 h420 AltSubmit gSettingsTreeView vSettingsTreeView -HScroll
 			TV_Add("Introduction", "", "First")
@@ -851,6 +910,7 @@ ShowSettings(ShowPane="") {
 			Settings_CreateFTPProfiles(TabCount)
 			Settings_CreateHotstrings(TabCount)
 			Settings_CreateWindows(TabCount)
+			Settings_CreateWindowsSettings(TabCount)
 			Settings_CreateMisc(TabCount)
 			Settings_CreateAbout(TabCount)			
 			SettingsInitialized := true
@@ -874,6 +934,7 @@ ShowSettings(ShowPane="") {
 		Settings_SetupFTPProfiles()
 		Settings_SetupHotstrings()
 		Settings_SetupWindows()
+		Settings_SetupWindowsSettings()
 		Settings_SetupMisc()
 		Settings_SetupAbout()
 
@@ -2020,9 +2081,10 @@ ApplySettings(Close = 0)
 			RestorePlacesBar()
 	}
 	
+	Settings_WindowsSettings_Submit(1)
 	;Store variables which can be stored directly
 	Gui 1:Submit, NoHide
-	
+	Settings_WindowsSettings_Submit(0)
 	;SaveEvents relies on SettingsActive to be false so that enabling/dissabling the events doesn't refresh them in settings window
 	SettingsActive := false
 	GUI_SaveEvents()
@@ -2129,6 +2191,39 @@ ApplySettings(Close = 0)
 		GoSub Cancel
 	Return
 }
+
+Settings_WindowsSettings_Submit(PreSubmit)
+{
+	global
+	static  PreRemoveWMP, PreHKActivateBehavior, PreDisableUAC, PreRemoveLibraries
+	if(PreSubmit)
+	{
+		PreRemoveWMP := RemoveWMP
+		PreHKActivateBehavior := HKActivateBehavior
+		PreDisableUAC := DisableUAC
+		PreRemoveLibraries := RemoveLibraries
+	}
+	else
+	{
+		RequiredAction := 0
+		RequiredAction |= WindowsSettings_ShowAllTray(ShowAllTray)
+		RequiredAction |= WindowsSettings_RemoveUserDir(RemoveUserDir)
+		if(RemoveWMP != PreRemoveWMP)
+			RequiredAction |= WindowsSettings_RemoveWMP(RemoveWMP)
+		RequiredAction |= WindowsSettings_RemoveOpenWith(RemoveOpenWith)
+		RequiredAction |= WindowsSettings_RemoveCrashReporting(RemoveCrashReporting)
+		RequiredAction |= WindowsSettings_ShowExtensions(ShowExtensions)
+		RequiredAction |= WindowsSettings_ShowHiddenFiles(ShowHiddenFiles)
+		RequiredAction |= WindowsSettings_ShowSystemFiles(ShowSystemFiles)
+		if(DisableUAC != PreDisableUAC)
+				RequiredAction |= WindowsSettings_DisableUAC(DisableUAC)
+		RequiredAction |= WindowsSettings_ClassicView(ClassicView)
+		RequiredAction |= WindowsSettings_RemoveLibraries(RemoveLibraries)
+		RequiredAction |= WindowsSettings_ActivateBehavior(HKActivateBehavior)
+		RequiredAction |= WindowsSettings_HoverTime(HoverTime)
+	}
+}
+
 
 GuiEscape:
 Cancel:
