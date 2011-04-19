@@ -4,7 +4,7 @@ Il s'agit d'une condition très polyvalente qui peut être utilisée pour beauco
 
 || *Opérateur* || *Description* ||
 || Égaux ||Prend la valeur VRAI si les deux valeurs sont égales. ||
-||Est la plus grande que||Prend la valeur true si la première valeur est supérieure à la seconde. Si une ou les deux valeurs sont non numériques, elles sont comparées par ordre alphabétique. ||
+||Est la plus grande que||Prend la valeur VRAI si la première valeur est supérieure à la seconde. Si une ou les deux valeurs sont non numériques, elles sont comparées par ordre alphabétique. ||
 ||Est plus faible que||Prend la valeur VRAI si la première valeur est inférieure à la seconde. Si une ou les deux valeurs sont non numériques, elles sont comparées par ordre alphabétique. ||
 ||Contient||Prend la valeur VRAI si la première valeur contient la deuxième valeur. ||
 ||Expression régulière||Prend la valeur VRAI si la première valeur correspond à l'expression régulière spécifiée dans la deuxième valeur. Pour en savoir plus sur les expressions régulières, voir [http://www.autohotkey.com/docs/misc/RegEx-QuickRef.htm ici]. ||
