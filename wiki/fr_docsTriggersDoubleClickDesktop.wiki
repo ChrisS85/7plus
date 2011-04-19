@@ -1,0 +1,7 @@
+= DoubleClickDesktop =
+
+Ce déclencheur est activé lorsque vous double-cliquez sur une zone vide du Bureau.
+
+= Astuces =
+
+Vous voudrez probablement utiliser cela pour lancer un programme. Par défaut, l'explorateur est lancé dans le dernier répertoire ouvert.
