@@ -1,0 +1,9 @@
+= ExplorerDoubleClickSpace =
+
+Ce déclencheur est activé lorsque vous double-cliquez sur une zone vide dans la liste de fichiers explorer.
+
+
+= Astuces =
+
+Par défaut, cela sert à remonter d'un niveau dans explorer quand vous double-cliquez là.
+Vous pourrait aussi le rendre spécifique à un dossier, comme le lancement d'un programme spécifique.
