@@ -1,0 +1,13 @@
+= Raccourci =
+
+Le raccourci est utilisé pour déclencher des actions quand une touche spécifique est pressée.
+
+Il y a différentes options dans la définition d'un raccourci :
+  * ~ (Natif) : Cela signifie que la touche sera encore visible par d'autres programmes lorsqu'elle est pressée.
+  * `*` (Joker) : Cela signifie que la touche sera également acceptée quand un modificateur tel que ALT est pressée.
+  * < (Gauche uniquement) : Cela est utilisé avec les raccourcis qui utilisent un modificateur comme ALT. Cela signifie que seuls les modificateurs gauche sont acceptés.
+  * > (Droite uniquement) : Cela est utilisé avec les raccourcis qui utilisent un modificateur comme ALT. Cela signifie que seuls les modificateurs droite sont acceptés.
+
+
+= Astuces =
+  * Il vous arrivera souvent de vouloir vérifier qu'un raccourci ne va pas empiéter sur un raccourci utilisé par d'autres programmes. Cela signifie que le raccourci doit être actif que sous certaines conditions. En utilisant les conditions, pour pouvez forcer le fonctionnement ou non du raccourci si un programme est actif, par exemple.
