@@ -1,0 +1,3 @@
+= None =
+
+Ce déclencheur ne peut être activé que par l'action d'un évènement [fr_docsActionsControlEvent ControlEvent].
