@@ -1,0 +1,3 @@
+= 7plusStart =
+
+Ce déclencheur est activé lorsque 7Plus est démarré
