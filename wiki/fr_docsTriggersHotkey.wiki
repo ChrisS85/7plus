@@ -1,4 +1,4 @@
-= Raccourci =
+= Hotkey =
 
 Le raccourci est utilisé pour déclencher des actions quand une touche spécifique est pressée.
 
