@@ -1,0 +1,14 @@
+= ControlEvent =
+
+Cette action est utilisée pour contrôler d'autres événements. Il est possible de déclencher d'autres événements et de les activer/désactiver. Vous pouvez également basculer entre état activé et désactivé.
+Le ControlEvent a également la capacité d'être exécuté uniquement lorsqu'une condition est remplie. Pour la signification de ces paramètres, consultez la condition [fr_docsConditionsIf If]. C'est également démontré dans la fonctionnalité de timer dynamique.
+
+= Copy Event =
+
+Une particularité de cette action est sa capacité à copier un autre événement. Ceci est utilisé si un événement a besoin d'être exécutées en parallèle. La plupart des événements supportent cette conception, mais certains, comme les timer, ne peuvent être exécuté qu'une fois à la fois. En copiant l'événement, une copie temporaire est créée, qui n’apparaît pas dans la fenêtre Paramètres et n'est pas enregistrées. Il est possible de la faire supprimer, après exécution, comme l'action « Supprimer après usage ».
+Il y a également une option qui permettra d'évaluer tous les espaces réservés dans l'évènement copié durant la copie. En utilisant cette option, on peut s'assurer que l'événement ne verra pas les changements à venir des valeurs de l'espace réservé.
+L'utilisation de cette fonctionnalité est démontrée dans la fonction timer dynamique.
+
+= Astuces =
+
+Si un évènement n'est censé être actif que lors d'une action, il est préférable d'utiliser un déclencheur [fr_docsTriggersNone None], ainsi il ne sera pas déclenché dans d'autres circonstances.
