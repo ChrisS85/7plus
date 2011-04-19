@@ -1,0 +1,3 @@
+= ExplorerPathChanged =
+
+Ce déclencheur est activé lorsque le chemin d'accès de la fenêtre courante change.
