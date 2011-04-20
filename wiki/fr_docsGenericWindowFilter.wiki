@@ -1,0 +1,14 @@
+= WindowFilter =
+
+Un filtre de fenêtre se compose de deux contrôles qui sont réutilisés dans de nombreux déclencheurs/conditions et actions pour sélectionner un type de fenêtre spécifique.
+
+Tout d'abord, vous pouvez sélectionner par ce que vous voulez filtrer/limiter les fenêtres. Ici, les options sont :
+  * Program: Entrez le nom du programme, tel que Notepad.exe. Ce n'est pas unique, il pourraient y avoir d'autres processus portant le même nom d'exécutable.
+  * Class: Entrez un nom de classe de fenêtre, qui est spécifique à un certain type de fenêtre. Il est question du nom ici. Pour découvrir les noms de classe de fenêtre, voir [fr_docsExamplesGetClassName ici].
+  * Title: Entrez une partie du titre de la fenêtre.
+  * Active: Utilise simplement la fenêtre active.
+  * UnderMouse: Utilise la fenêtre qui est actuellement sous la souris.
+
+= Astuces =
+  * Notez que lorsqu'il y a plusieurs fenêtres correspondantes, seule la première à correspondre est utilisée.
+  * Les choses comme le bureau ou la barre des tâches sont également considérés comme des fenêtres par le système.
