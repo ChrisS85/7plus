@@ -30,7 +30,7 @@ Voici une liste des Placeholders de 7plus. Certaines actions définissent égale
 ||${MYU}||Coordonnée Y de la souris, relative à la fenêtre sous la souris||
 ||${Clip}||Contenus du presse-papiers||
 ||${Input}||Résultat de l'action [fr_docsActionsInput input] précédente||
-||${MessageResult}||Résultat de l'action [docsActionsSendMessage SendMessage] (Send seulement !)||
+||${MessageResult}||Résultat de l'action [fr_docsActionsSendMessage SendMessage] (Send seulement !)||
 ||${wParam}||Valeur de wParam si la condition/action est déclenchée par un [fr_docsTriggersOnMessage déclencheur OnMessage]||
 ||${lParam}||Valeur de lParam si la condition/action est déclenchée par un [fr_docsTriggersOnMessage déclencheur OnMessage]||
 ||${A}||Handle de la fenêtre active||
