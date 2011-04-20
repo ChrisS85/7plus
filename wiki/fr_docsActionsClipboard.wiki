@@ -1,0 +1,16 @@
+= Clipboard =
+
+Cette action est écrit dans le presse-papiers. Il peut écrire du texte, placez les fichiers dans le presse-papiers afin qu'ils puissent être collés dans gestionnaires de fichiers, et il peut aussi écrire le contenu d'un fichier dans le presse-papiers.
+
+Selon ce que vous sélectionnez, le champ « Contenu » est soit le texte qui est censé être écrit dans le presse-papiers, soit un chemin vers un fichier.
+
+Dans la plupart des cas, vous souhaiterez vider le presse-papiers, pour qu'il ne reste plus rien d'autres programmes. La plupart du temps il fonctionnera sans le vidage, mais certains programmes peuvent avoir des problèmes si vous ne le faîtes pas.
+Sinon vous pouvez sélectionner Ajouter au presse-papiers, auquel cas le texte ou les fichiers seront ajoutés aux fichiers/texte qui sont déjà présents dans le presse-papiers. Cela n'est pas supporté pour les fichiers image, car cela n'a pas de sens.
+Pour les fichiers, vous pouvez choisir de les placer dans le presse-papiers comme une opération de couper, afin qu'ils soient déplacés lorsque vous les collez au lieu d'être copiés.
+
+If you want to use a ${SelN} [docsGenericPlaceholders placeholder] to copy files, make sure to use ${SelNM}, as this is the only supported one for this action for now!
+Si vous souhaitez utiliser un [fr_docsGenericPlaceholders placeholder] ${SelN} pour copier des fichiers, assurez-vous d'utiliser ${SelNM}, car il s'agit de la seule action prise en charge pour cela pour l'instant !
+
+= Exemples d'utilisation =
+  * 7plus utilise cette action pour copier les chemins d'accès des fichiers sélectionnés dans le presse-papiers.
+  * Voir [fr_docsExamplesGetClassName Comment obtenir le nom des classes].
