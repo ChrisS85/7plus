@@ -9,7 +9,7 @@ Voici une liste des Placeholders de 7plus. Certaines actions définissent égale
 ||${DateTimeLongDate}||Date au format long (Friday, April 23, 2010)||
 ||${DateTimeShortDate}||Date au format court (02/29/10)||
 ||${DateTimeTime}||Heure (5:26 PM)||
-||${DateTime`[`Format`]`}||Other `[`Format`]`, voir [http://www.autohotkey.com/docs/commands/FormatTime.htm ici]||
+||${DateTime`[`Format`]`}||Autres `[`Format`]`, voir [http://www.autohotkey.com/docs/commands/FormatTime.htm ici]||
 ||${P}||Chemin de la dernière fenêtre active||
 ||${PP}||Chemin précédent à la dernière fenêtre||
 |||| *Fichiers sélectionnés dans l'Explorateur, quelques exemples ci-dessous||
