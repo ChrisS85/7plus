@@ -7,5 +7,5 @@ Si le composant timer est visible, il affichera le nom de l'événement, sauf si
 
 = Astuces =
 
-  * Il est possible de contrôler un timer avec une action [docsActionsControlTimer ControlTimer].
+  * Il est possible de contrôler un timer avec une action [fr_docsActionsControlTimer ControlTimer].
   * Vous pouvez facilement ajouter un timer en cliquant-droit sur l'icône de 7plus dans la barre des tâches et en sélectionnant « Add timer ».
