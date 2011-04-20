@@ -1,0 +1,9 @@
+= OnMessage =
+
+Ce déclencheur est activé lorsque 7plus reçoit un message de fenêtre. Les programmes s'envoient ce type de message pour communiquer entre eux. Vous aurez probablement envie d'utiliser cela si vous savez déjà comment fonctionnent les messages Windows. Pour l'utiliser, spécifier simplement le numéro de message sur lequel il doit être utilisé.
+
+
+= Astuces =
+
+  * Vous pouvez également entrer "Shellhook" pour le déclencher lorsqu'un message Shellhook est reçu. Windows envoie le message shellhook pour notifier les programmes sur différents évènements shell, tels qu'un programme est activé ou détruit.
+  * Lorsque vous utilisez ce déclencheur, vous pouvez également utiliser les  [fr_docsGenericPlaceholders placeholders] ${lParam} et ${wParam}. En Shellhooks, lParam contient habituellement la fenêtre d'où le message est émis et wParam contient un nombre qui spécifie le type d'action qui s'est passée.
