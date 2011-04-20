@@ -1,0 +1,7 @@
+= WindowActivated =
+
+Ce déclencheur est activé lorsqu'une fenêtre spécifique est activée.
+Utilisez les contrôles de [fr_docsGenericWindowFilter WindowFilter] afin de limiter le déclencheur à un type spécifique de fenêtre, ou sélectionner simplement "Active" pour le rendre actif sur toutes les fenêtres.
+
+= Astuces =
+Si vous avez besoin de manipuler la fenêtre, utilisez simplement encore "Active" dans d'autres contrôles WindowFilter.
