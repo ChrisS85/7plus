@@ -8,4 +8,4 @@ Cette action envoie un message à un autre programme. C'est l'équivalent de [fr
 ||wParam||Un paramètre de message. Sa signification dépend du message qui est envoyé.||
 ||lParam||Un paramètre de message. Sa signification dépend du message qui est envoyé.||
 ||[fr_docsGenericWindowFilter Contrôles WindowFilter]||Choisissez la fenêtre cible avec celui-ci.||
-||Control||Vous pouvez également envoyer un message à un contrôle dans une fenêtre. Dans ce cas, entrez un [fr_docsGenericClassNN ClassNN] ou le texte du contrôle ici. Si c'est vide, le message sera envoyer vers la fenêtre entière.||
+||Control||Vous pouvez également envoyer un message à un contrôle dans une fenêtre. Dans ce cas, entrez un ClassNN ou le texte du contrôle ici. Si c'est vide, le message sera envoyer vers la fenêtre entière.||
