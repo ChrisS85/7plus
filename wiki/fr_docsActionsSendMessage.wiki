@@ -3,7 +3,7 @@
 Cette action envoie un message à un autre programme. C'est l'équivalent de [fr_docsTriggersOnMessage OnMessage], qui réagit aux messages reçus. Cela est utilisé pour contrôler les autres programmes.
 
 || *Paramètres* || *Description* ||
-||Send Mode||"Post" envoie le message sans attendre un retour, alors que "Send" attend une réponse du destinataire. Selon le message à envoyer, vous devrez peut-être utiliser l'un de ces paramètres. Si vous utilisez "Send", vous pouvez utiliser ${MessageResult} [fr_docsGenericPlaceholder placeholder] par la suite.||
+||Send Mode||"Post" envoie le message sans attendre un retour, alors que "Send" attend une réponse du destinataire. Selon le message à envoyer, vous devrez peut-être utiliser l'un de ces paramètres. Si vous utilisez "Send", vous pouvez utiliser ${MessageResult} [fr_docsGenericPlaceholders placeholder] par la suite.||
 ||Message||Un numéro identifiant le message à envoyer.||
 ||wParam||Un paramètre de message. Sa signification dépend du message qui est envoyé.||
 ||lParam||Un paramètre de message. Sa signification dépend du message qui est envoyé.||
