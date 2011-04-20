@@ -378,38 +378,49 @@ Settings_CreateWindowsSettings(ByRef TabCount) {
 	TabCount++
 	AddTab(0, "","SysTabControl32" TabCount)
 	yIt:=yBase
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vShowAllTray, Show all tray notification icons
+	Gui, 1:Add, Text, x%x1% y%yIt%, Explorer:
 	yIt+=checkboxstep
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vRemoveUserDir, Remove user directory from directory tree
 	yIt+=checkboxstep
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vRemoveWMP, Remove Windows Media Player context menu entries
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vRemoveWMP, Remove Windows Media Player context menu entries (Play, Add to playlist, Buy music)
 	yIt+=checkboxstep
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vRemoveOpenWith, Remove "Open With Webservice" dialogs
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vRemoveOpenWith, Remove "Open With Webservice or choose program" dialogs for unknown file extensions
 	yIt+=checkboxstep
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vRemoveCrashReporting, Remove crash reporting dialog
-	yIt+=checkboxstep
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vShowExtensions, Show file extensions
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vShowExtensions, Always show file extensions
 	yIt+=checkboxstep
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vShowHiddenFiles, Show hidden files
 	yIt+=checkboxstep
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vShowSystemFiles, Show system files
-	yIt+=checkboxstep	
-	if(Vista7)
-	{		
-		Gui, 1:Add, Checkbox, x%x1% y%yIt% vDisableUAC, Disable UAC
-		yIt+=checkboxstep
-	}
+	yIt+=checkboxstep
 	if(A_OSVersion = "WIN_XP")
 	{
 		Gui, 1:Add, Checkbox, x%x1% y%yIt% vClassicView, Use classic explorer view
 		yIt+=checkboxstep	
 	}
-	else if(A_OSVersion != "WIN_XP" && A_OSVersion != "WIN_VISTA")
+	if(A_OSVersion != "WIN_XP" && A_OSVersion != "WIN_VISTA")
 	{		
-		Gui, 1:Add, Checkbox, x%x1% y%yIt% vRemoveLibraries, Remove explorer libraries
+		Gui, 1:Add, Checkbox, x%x1% y%yIt% vRemoveLibraries, Remove explorer libraries (from directory tree and context menus)
 		yIt+=checkboxstep
+	}
+	yIt+=checkboxstep
+	Gui, 1:Add, Text, x%x1% y%yIt%, Windows:
+	yIt+=checkboxstep	
+	if(A_OSVersion != "WIN_XP" && A_OSVersion != "WIN_VISTA")
+	{		
 		Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKActivateBehavior, Left click on task group button: cycle through windows	
 		yIt+=checkboxstep
+	}
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vShowAllTray, Show all tray notification icons
+	yIt+=checkboxstep
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vRemoveCrashReporting, Remove crash reporting dialog
+	yIt+=checkboxstep
+	if(Vista7)
+	{		
+		Gui, 1:Add, Checkbox, x%x1% y%yIt% vDisableUAC, Disable UAC
+		yIt+=checkboxstep
+	}
+	if(A_OSVersion != "WIN_XP" && A_OSVersion != "WIN_VISTA")
+	{		
 		y:=yIt+TextBoxTextOffset
 		Gui, 1:Add, Text, x%x1% y%y%, Taskbar thumbnail hover time [ms]:
 		Gui, 1:Add, Edit, x+10 y%yIt% w%wTBShort% R1 vHoverTime
