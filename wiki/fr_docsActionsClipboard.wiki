@@ -8,7 +8,6 @@ Dans la plupart des cas, vous souhaiterez vider le presse-papiers, pour qu'il ne
 Sinon vous pouvez sélectionner Ajouter au presse-papiers, auquel cas le texte ou les fichiers seront ajoutés aux fichiers/texte qui sont déjà présents dans le presse-papiers. Cela n'est pas supporté pour les fichiers image, car cela n'a pas de sens.
 Pour les fichiers, vous pouvez choisir de les placer dans le presse-papiers comme une opération de couper, afin qu'ils soient déplacés lorsque vous les collez au lieu d'être copiés.
 
-If you want to use a ${SelN} [docsGenericPlaceholders placeholder] to copy files, make sure to use ${SelNM}, as this is the only supported one for this action for now!
 Si vous souhaitez utiliser un [fr_docsGenericPlaceholders placeholder] ${SelN} pour copier des fichiers, assurez-vous d'utiliser ${SelNM}, car il s'agit de la seule action prise en charge pour cela pour l'instant !
 
 = Exemples d'utilisation =
