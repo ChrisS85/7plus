@@ -1,0 +1,41 @@
+= Placeholders =
+
+Les Placeholders sont un concept important dans le système d'événement, car ils vous permettent de définir dynamiquement les paramètres des conditions et des actions. Les Placeholders sont formatés comme ceci : ${Placeholder}
+Vous pouvez utiliser des Placeholders partout où vous voyez un bouton Placeholder.
+Voici une liste des Placeholders de 7plus. Certaines actions définissent également des Placeholders personnalisés, jetez un oeil dans la documentation de l'action pour en savoir plus. Dans la plupart des cas, ils sont également mentionnés dans la boîte de dialogue de configuration.
+
+|| *Placeholder* || *Description* ||
+||${DateTime}||Date et heure (4:55 PM Saturday, November 27, 2010)||
+||${DateTimeLongDate}||Date au format long (Friday, April 23, 2010)||
+||${DateTimeShortDate}||Date au format court (02/29/10)||
+||${DateTimeTime}||Heure (5:26 PM)||
+||${DateTime`[`Format`]`}||Other `[`Format`]`, voir [http://www.autohotkey.com/docs/commands/FormatTime.htm ici]||
+||${P}||Chemin de la dernière fenêtre active||
+||${PP}||Chemin précédent à la dernière fenêtre||
+|||| *Fichiers sélectionnés dans l'Explorateur, quelques exemples ci-dessous||
+||${Sel1}||Chemin d'accès du premier fichier sélectionné||
+||${Sel2DQ}||Dossier du premier fichier sélectionné, cité||
+||${Sel3N}||Nom du 3ème fichier sélectionné, sans extension||
+||${Sel4NE}||Nom du 4ème fichier sélectionné, avec extension||
+||${SelN}||Chemins d'accès de tous les fichiers sélectionnés, séparés par un espace||
+||${SelNNEM}||Noms+extensions de tous les fichiers sélectionnés, séparés par une nouvelle ligne||
+||${U}||Handle de la fenêtre sous la souris||
+||${MC}||Classe de la fenêtre sous la souris||
+||${MNN}||ClassNN of control under mouse||
+||${MX}||Coordonnée X de la souris||
+||${MY}||Coordonnée Y de la souris||
+||${MXA}||Coordonnée X de la souris, relative à la fenêtre active||
+||${MYA}||Coordonnée Y de la souris, relative à la fenêtre active||
+||${MXU}||Coordonnée X de la souris, relative à la fenêtre sous la souris||
+||${MYU}||Coordonnée Y de la souris, relative à la fenêtre sous la souris||
+||${Clip}||Contenus du presse-papiers||
+||${Input}||Résultat de l'action [fr_docsActionsInput input] précédente||
+||${MessageResult}||Résultat de l'action [docsActionsSendMessage SendMessage] (Send seulement !)||
+||${wParam}||Valeur de wParam si la condition/action est déclenchée par un [fr_docsTriggersOnMessage déclencheur OnMessage]||
+||${lParam}||Valeur de lParam si la condition/action est déclenchée par un [fr_docsTriggersOnMessage déclencheur OnMessage]||
+||${A}||Handle de la fenêtre active||
+||${Class}||Classe de la fenêtre active||
+||${Title}||Titre de la fenêtre active||
+||${Control}||Contrôle ciblé sur [docsGenericClassNN ClassNN]||
+||${TitlePath}||Chemin d'accès dans le titre de la fenêtre active||
+||${TitleFilename}||Chemin d'accès et nom dans le titre de la fenêtre active||
