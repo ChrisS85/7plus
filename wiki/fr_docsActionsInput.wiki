@@ -1,0 +1,13 @@
+= Input =
+
+Cette action affiche une boîte de dialogue d'entrée et demande une valeur à l'utilisateur. Le type de valeur peut être spécifié, il est possible d'utiliser des types (fichier)chemin, texte, nombre, sélection ou temps. Il est possible de réagir aux sélections à l'aide de l'action [fr_docsActionsControlEvent ControlEvent].
+Vous pouvez spécifier le titre de la fenêtre et un message texte pour l'utilisateur. En outre vous pouvez également définir si un bouton Annuler doit être utilisé, qui annule toutes les actions de cet évènement.
+
+Le résultat de l'action entrée est stocké dans le placeholder spécifié de l'action. Ce placeholder a une portée globale, ce qui signifie qu'il peut être utilisé par d'autres évènements et sera disponible lors de l'exécution du programme, sauf s'il est remplacé.
+
+= Exemples d'utilisation =
+  * L'utilisation des types sélection et temps est démontrée dans la fonctionnalité de timer dynamique.
+  * 7plus utilise ceci pour interroger les noms de fichiers de la fonction upload de capture d'écran et dans le filtre de sélection de fichier CTRL + S pour laisser l'utilisateur entrer une chaîne de filtrage.
+
+= Avant 2.3.0 =
+La valeur entrée est ensuite accessible via le [fr_docsGenericPlaceholders placeholder] ${Input}. N'oubliez pas que la portée d'un placeholder est limitée à l'événement courrant, donc les événements déclenchés par le biais de cet événement ne seront pas capables de le voir.
