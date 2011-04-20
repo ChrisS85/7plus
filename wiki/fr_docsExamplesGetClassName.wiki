@@ -1,0 +1,11 @@
+= Comment obtenir le nom des classes d'une fenêtre spécifique =
+
+Cet exemple montre comment faire un outil pour comprendre la classe d'une fenêtre spécifique. La classe de fenêtre est simplement un nom qui est attribué à un type spécifique de fenêtre.
+
+  * Ajouter un nouvel évènement.
+  * Utilisez un déclencheur Hotkey pour obtenir le nom de la classe.
+  * Ajouter une action [fr_docsActionsClipboard clipboard].
+  * Définir le "Content" à "${Class}".
+  * Appliquez tous les changements.
+
+Lorsque le raccourci est pressé, la classe de la fenêtre active est copiée dans le presse-papiers, et vous pouvez l'utiliser maintenant dans les contrôles [fr_docsGenericWindowFilter Window filter].
