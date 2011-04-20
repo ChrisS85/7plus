@@ -1,0 +1,3 @@
+= ControlTimer =
+
+Cette action peut contrôler les déclencheurs de [fr_docsTriggersTimer timer]. Il est possible de démarrer/pause/stop/reset les timers, basculer entre l'état démarré et pause et de modifier le temps du déclencheur de timer.
