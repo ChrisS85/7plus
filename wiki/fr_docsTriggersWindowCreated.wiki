@@ -1,0 +1,7 @@
+= WindowCreated =
+
+Ce déclencheur est activé lorsqu'une fenêtre est créée. Vous pouvez le limiter à des fenêtres spécifiques en utilisant les contrôles [fr_docsGenericWindowFilter Window filter].
+
+= Astuces =
+
+  * Une utilisation possible est d'empêcher l'utilisation de certains programmes, tels que le gestionnaire des tâches pour les systèmes exécutant en mode kiosque. Pour ce faire, ajoutez une action [fr_docsActionsWindowClose WindowClose], éventuellement avec le paramètre défini à Force-close.
