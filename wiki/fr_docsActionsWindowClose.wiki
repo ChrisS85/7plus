@@ -1,0 +1,6 @@
+= WindowClose =
+
+Cette action peut fermer d'autres fenêtres. Les contrôles [fr_docsGenericWindowFilter Window filter] sont utilisées pour spécifier la fenêtre à être fermée. Il est également possible de forcer la fermeture de fenêtre, pour d'assure qu'elle soit bien fermée au lieu de montrer des boîtes de dialogue de confirmation, etc.
+
+= Exemples d'utilisation =
+  * 7plus utilise cette action pour fermer les programmes lorsqu'ils sont cliqué (bouton milieu) sur leur barre de titre.
