@@ -1,0 +1,3 @@
+= WindowStateChange =
+
+Ce déclencheur est activé lorsque l'état d'une fenêtre change. Actuellement minimiser et maximiser sont les évènements pris en charge. Vous pouvez utiliser les contrôles [fr_docsGenericWindowFilter window filter] pour limiter le déclencheur à des fenêtres spécifiques.
