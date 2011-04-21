@@ -3,5 +3,5 @@
 Cette condition vérifie s'il y a une application en plein écran s'exécutant à l'avant-plan. Il peut utiliser une liste d'inclusion et d'exclusion des noms de classe de fenêtre qui peuvent être saisies dans la catégorie Misc des paramètres. Un programme présent dans la liste d'inclusion est toujours reconnu comme une application en plein écran, alors qu'un programme présent dans la liste d'exclusion est toujours reconnu comme un programme normal.
 
 = Astuces =
-  * This condition is used to disable hotkeys that you don't want to use when fullscreen applications such as games are running, because the triggered event might disrupt the fullscreen application.Cette condition est utilisée pour désactiver les raccourcis clavier que vous ne souhaitez pas utiliser lorsque des applications sont éxécutées en plein écran tels que les jeux, car l'événement déclenché pourrait perturber l'application en plein écran.
+  * Cette condition est utilisée pour désactiver les raccourcis clavier que vous ne souhaitez pas utiliser lorsque des applications sont exécutées en plein écran tels que les jeux, car l'événement déclenché pourrait perturber l'application en plein écran.
   * Pour comprendre les noms de classe, voir [fr_docsExamplesGetClassName ce tutoriel].
