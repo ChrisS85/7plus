@@ -1,0 +1,3 @@
+= IsRenaming =
+
+Cette condition vérifie si l'Explorer actif est actuellement en train de renommer un fichier. Il renverra faux si aucun explorer n'est actif, donc l'utiliser signifie vérifier si l'Explorer actif n'est pas nécessaire.
