@@ -1,0 +1,13 @@
+= KeyIsDown =
+
+Cette condition prend la valeur vrai si la touche spécifiée est actuellement pressée.
+Les touches utilisables peuvent être consultées [http://www.autohotkey.com/docs/KeyList.htm ici].
+
+L'état physique de la touche est l'état réel des touches étant pressées par l'utilisateur, alors que l'état logique de la touche est utilisé par la plupart des programmes. Cela signifie qu'un programme peut recevoir un évènement "touche pressée" alors que physiquement la touche n'est pas enfoncée. Dans la plupart des cas, l'état physique de la clé est l'approche souhaitée.
+
+Basculer l'état peut être utilisé pour les touches comme Capslock, Roll et Num. Dans ce cas, la condition prend la valeur vrai si la touche basculée est activée.
+
+= Exemples d'utilisation =
+  * Cela peut être utilisé pour modifier le comportement de certains événements. Vous pouvez avoir un évènement réalisant différentes tâches lorsqu'une touche comme Shift est pressée.
+  * Cette condition peut également être employée pour combiner des touches normales. Par exemple, vous pouvez faire un déclencheur d'évènement lorsque les touches Home et Insert sont pressées. Ce n'est pas possible avec seulement le déclencheur [fr_docsTriggersHotkey Hotkey].
+  * Si vous utilisez parfois Capslock, mais que vous oubliez souvent de le désactiver ou l'activez accidentellement, vous pouvez lancer un événement [fr_docsTriggersTimer timer] lorsque Capslock est activé. Le timer désactive alors Capslock après une courte période s'il est toujours activé.
