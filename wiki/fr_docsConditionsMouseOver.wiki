@@ -1,0 +1,5 @@
+= MouseOver =
+
+Cette condition est utilisée pour vérifier si la souris est sur une fenêtre spécifique, ou sur une partie d'une fenêtre, comme sur une barre de titre. Pour vérifier la partie d'une fenêtre, sélectionnez-le dans la propriété "Mouse Over", ou sélectionnez "Window" pour utiliser des contrôles [docsGenericWindowFilter window filter] et limiter à des fenêtres spécifiques. Utiliser l'option « UnderMouse » est évidemment redondant dans ce cas.
+
+7plus utilise cette condition pour exécuter diverses actions lorsque vous cliquez-droit ou milieu sur la barre de titre, minimiser et le bouton fermer.
