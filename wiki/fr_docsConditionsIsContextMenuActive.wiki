@@ -1,0 +1,4 @@
+= IsContextMenuActive =
+
+Cette condition prend la valeur vrai si un menu contextuel par défaut (de fenêtre) est actuellement affiché.
+Pour l'instant, il n'a pas de support pour les menus contextuels personnalisés. Si vous avez un besoin particulier pour des menus contextuels personnalisés, veuillez informer fragman.
