@@ -1,0 +1,3 @@
+= IsDialog =
+
+Cette condition prend la valeur vrai si une boîte de dialogue de sélection de fichier est actuellement active.
