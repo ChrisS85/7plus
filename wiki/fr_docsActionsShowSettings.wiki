@@ -1,0 +1,3 @@
+= ShowSettings =
+
+Cette action affiche la boîte de dialogue des Paramètres de 7plus, ou l'active si elle est déjà affichée.
