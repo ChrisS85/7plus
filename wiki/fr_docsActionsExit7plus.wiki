@@ -1,0 +1,3 @@
+= Exit7plus =
+
+Cette action ferme 7plus.
