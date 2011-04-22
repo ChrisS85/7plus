@@ -1,0 +1,6 @@
+= WindowActive =
+
+Cette condition est utilisée pour limiter les événements à des certains programmes. Il comporte des commandes de [fr_docsGenericWindowFilter window filter] qui sont utilisées pour limiter les fenêtres à certains types. L'utilisation du filtre fenêtre "Active" est bien évidemment redondant ici.
+
+= Scénarios d'usage =
+  * Cette condition est principalement utilisée pour limiter les raccourcis à certains programmes, mais bien entendu il y a d'autres utilisations possibles.
