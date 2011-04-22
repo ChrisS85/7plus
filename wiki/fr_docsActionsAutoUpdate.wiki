@@ -1,0 +1,3 @@
+= AutoUpdate =
+
+Cette action vérifie les mises à jour 7plus. Utile si vous ne voulez pas avoir 7plus mis à jour au démarrage et que vous préférez le faire manuellement.
