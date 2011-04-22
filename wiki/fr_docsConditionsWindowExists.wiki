@@ -1,0 +1,3 @@
+= WindowExists =
+
+Cette condition vérifie si une fenêtre spécifique existe. Les fenêtres trouvées sont déterminées par les contrôles [fr_docsGenericWindowFilter window filter].
