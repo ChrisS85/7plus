@@ -2323,7 +2323,7 @@ EnableAutorun()
 {
 	global Vista7
 	if(IsAutorunEnabled())
-		return
+		DisableAutorun() ;Better re-enable it if paths have changed
 	if(!Vista7)
 	{
 		if(A_IsCompiled)

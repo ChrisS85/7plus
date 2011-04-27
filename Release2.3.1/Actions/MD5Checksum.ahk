@@ -66,7 +66,7 @@ MD5Dialog(Files)
 	outputdebug files %files%
 	if(!IsObject(Files))
 		Files := ToArray(Files)
-	if(!Files.len() > 0)
+	if(!(Files.len() > 0))
 	{
 		Msgbox MD5 Checksums: Invalid Files specified!
 		return 0

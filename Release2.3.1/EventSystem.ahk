@@ -159,7 +159,7 @@ TriggerFromOtherInstance(wParam, lParam)
 		FileDelete, % A_Temp "\7plus\files.txt"
 		outputdebug files %files%
 		;if it failed (because static context menu is used), try to get it from explorer window
-		Events.GlobalPlaceholders.Context := files ? files : GetSelectedFiles()
+		Events.GlobalPlaceholders.Context := files ? files : ArrayToList(GetSelectedFiles())
 		
 		Trigger := EventSystem_CreateSubEvent("Trigger", "Trigger")
 		Trigger.TargetID := wParam
