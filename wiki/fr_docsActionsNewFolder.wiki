@@ -1,0 +1,3 @@
+= NewFolder =
+
+Cette action crée un nouveau dossier dans une fenêtre active de l'explorateur. Vous pouvez spécifier le nom du dossier et si vous voulez que l'explorateur soit en mode renommage. Si le dossier existe déjà, un (Nombre) est attaché à la fin du nom.
