@@ -58,6 +58,8 @@ Action_ShortenURL_GuiSubmit(Action, ActionGUI)
 	SubEventGUI_GUISubmit(Action, ActionGUI)
 } 
 
+;Shortens a URL using goo.gl service
+;Written By Flak
 googl(url) 
 { 
   static apikey:="AIzaSyBXD-RmnD2AKzQcDHGnzZh4humG-7Rpdmg" 
