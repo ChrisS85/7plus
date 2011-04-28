@@ -1,0 +1,3 @@
+= FastFoldersRecall =
+
+Cette action définit le répertoire de la fenêtre active de l'explorateur sur le dossier affecté au slot FastFolders spécifié ici.
