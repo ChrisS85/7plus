@@ -2,9 +2,9 @@
 
 Il s'agit d'une action qui est utilisée pour retirer des éléments d'une liste.
 || *Paramètre* || *Description* ||
-||Action||Choisissez soit de supprimer, soit de conserver des entrées de la liste qui correspondent à la condition ci-dessous||
+||Action||Choisissez soit de supprimer, soit de conserver des entrées de la liste qui correspondent à la condition ci-dessous.||
 ||List||La liste qui est censée être filtrée. Dans la plupart des cas, c'est un [fr_docsGenericPlaceholders placeholder] "${Sel}"-type. Il suffit d'utiliser le même placeholder plus bas dans la liste d'actions pour utiliser la liste filtrée.||
-||Operator||Voir [fr_docsConditionsIf If]||
+||Operator||Voir [fr_docsConditionsIf If].||
 ||Filter||Chaque élément de la liste est comparé à cette valeur à l'aide de l'opérateur sélectionné.||
 ||Separator||Caractère(s) séparateur par lequel la liste doit être séparée par la suite. Si la liste est composée d'entrées citées séparées par un espace (souvent utilisé pour les chemins d'accès multiples), cette option est ignorée.||
 ||Stop action si toutes les entrées de la liste ont été supprimées.||Si c'est activé, et il n'y a aucune entrées de la liste restantes après cette opération, l’évènement courant est abandonné.||
