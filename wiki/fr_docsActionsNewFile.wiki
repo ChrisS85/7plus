@@ -1,4 +1,4 @@
 = NewFile =
 
 Cette action crée un nouveau fichier dans une fenêtre active de l'explorateur.
-Vous pouvez spécifier le nom du fichier et si vous voulez que l'explorateur soit en mode renommage. Si le fichier existe déjà, un (Nombre) est attaché à la fin du nom de fichier.
+Vous pouvez spécifier le nom du fichier et si vous voulez que l'explorateur soit en mode renommage. Si le fichier existe déjà, un (Nombre) est attaché à la fin du nom.
