@@ -1,0 +1,13 @@
+= SelectFiles =
+
+Cette action sélectionne les fichiers correspondant à un filtre dans l'Explorateur. Le *Filtre* est une liste d'entrées séparée par des virgules. Vous pouvez aussi utiliser les caractères de remplacement, par exemple "*.jpg,*.png" pour sélectionner tous les fichiers jpg et png.
+Il existe quelques propriétés :
+|| *Paramètre* || *Description* ||
+|| Clear selection first || S'il n'est pas sélectionné, les éléments correspondants seront ajoutés à la sélection en cours.||
+|| Deselect files || Si sélectionné, les fichiers correspondants seront retirés de la sélection courante au lieu d'être sélectionnés.||
+||Automatically add wildcards to start and end||If selected, a file will also match if the filter contains only a substring of its name without wildcards.Si sélectionné, un fichier correspondra également si le filtre contient uniquement une sous-chaîne de son nom sans caractères génériques. En gros, il transforme "filter" en "`*`filter`*`".||
+
+Vous pouvez utiliser les contrôles [fr_docsGenericWindowFilter window filter] pour spécifier la fenêtre de l'Explorateur, mais généralement vous aurez envie de le laisser à "Active".
+
+= Exemple d'utilisation =
+  * 7plus utilise cela en combinaison avec l'action [fr_docsActionsInput input], pour laisser l'utilisateur entrer un filtre par lequel les fichiers sont sélectionnés.
