@@ -1,0 +1,8 @@
+= SetDirectory =
+
+Cette action modifie le répertoire d'une fenêtre de l'Explorateur. Vous pouvez utiliser les contrôles [fr_docsActionsWindowFilter windows filter] pour sélectionner la fenêtre de l'Explorateur. Le chemin d'accès est spécifié en chemin, soit en entrant directement un chemin fixe ou par [fr_docsGenericPlaceholders placeholder], soit en entrant "backward", "forward" ou "upward" pour naviguer dans cette direction.
+
+= Exemples d'utilisation =
+Cela peut servir à créer des raccourcis qui qui dirige l'explorateur à des répertoires spécifiques. Il est similaire à [fr_docsActionsFastFoldersRecall FastFoldersRecall], mais il fonctionne avec n'importe quel dossier et n'est pas limité par des slots.
+
+Dans 7plus, cette action est utilisée pour aller au dossier parent quand un double-clic sur un espace vide de l'Explorateur est détectée.
