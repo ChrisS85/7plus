@@ -5,7 +5,7 @@ Il existe quelques propriétés :
 || *Paramètre* || *Description* ||
 || Clear selection first || S'il n'est pas sélectionné, les éléments correspondants seront ajoutés à la sélection en cours.||
 || Deselect files || Si sélectionné, les fichiers correspondants seront retirés de la sélection courante au lieu d'être sélectionnés.||
-||Automatically add wildcards to start and end||If selected, a file will also match if the filter contains only a substring of its name without wildcards.Si sélectionné, un fichier correspondra également si le filtre contient uniquement une sous-chaîne de son nom sans caractères génériques. En gros, il transforme "filter" en "`*`filter`*`".||
+||Automatically add wildcards to start and end||Si sélectionné, un fichier correspondra également si le filtre contient uniquement une sous-chaîne de son nom sans caractères génériques. En gros, il transforme "filter" en "`*`filter`*`".||
 
 Vous pouvez utiliser les contrôles [fr_docsGenericWindowFilter window filter] pour spécifier la fenêtre de l'Explorateur, mais généralement vous aurez envie de le laisser à "Active".
 
