@@ -1,0 +1,3 @@
+= FastFoldersClear =
+
+Cette action efface le dossier affecté au slot FastFolders spécifié ici.
