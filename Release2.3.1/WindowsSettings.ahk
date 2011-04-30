@@ -175,12 +175,10 @@ WindowsSettings_DisableUAC(DisableUAC)
 {
 	global Vista7
 	if(Vista7)
-		if(DisableUAC != PreDisableUAC)
-		{
-			RegWrite, REG_DWORD, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System, EnableLUA, % DisableUAC = 1 ? 0 : 1
-			RestartWindows := true
-		}
-	return RestartWindows
+	{
+		RegWrite, REG_DWORD, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System, EnableLUA, % DisableUAC = 1 ? 0 : 1
+		return 1
+	}
 }
 
 WindowsSettings_ClassicView(ClassicView)
@@ -210,7 +208,7 @@ WindowsSettings_ActivateBehavior(ActivateBehavior)
 	if(A_OSVersion != "WIN_XP" && A_OSVersion != "WIN_VISTA")
 	{
 		RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick, % ActivateBehavior
-		return true
+		return 2
 	}
 }
 

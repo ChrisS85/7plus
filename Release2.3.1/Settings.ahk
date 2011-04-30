@@ -2095,7 +2095,7 @@ ApplySettings(Close = 0)
 	Settings_WindowsSettings_Submit(1)
 	;Store variables which can be stored directly
 	Gui 1:Submit, NoHide
-	Settings_WindowsSettings_Submit(0)
+	Action := Settings_WindowsSettings_Submit(0)
 	;SaveEvents relies on SettingsActive to be false so that enabling/dissabling the events doesn't refresh them in settings window
 	SettingsActive := false
 	GUI_SaveEvents()
@@ -2176,18 +2176,6 @@ ApplySettings(Close = 0)
 			EnableAutorun()
 		else
 			DisableAutorun()
-		
-		RegRead, temp, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick
-		RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick, %HKActivateBehavior%
-		if(temp!=HKActivateBehavior)
-		{
-			MsgBox, 4, Restart Explorer, You need to restart explorer to apply a setting. Do you want to do this now?
-			IfMsgBox Yes
-			{
-				Runwait, taskkill /im explorer.exe /f, , Hide
-				Run, %a_windir%\explorer.exe
-			}
-		}
 	}
 	if(HideTrayIcon)
 	{
@@ -2197,6 +2185,21 @@ ApplySettings(Close = 0)
 	else
 		Menu, Tray, Icon
 	WriteIni()
+	if(Action & 1)
+	{
+		MsgBox, 4, Restart Windows, You need to restart windows to apply a setting. Do you want to do this now?
+		IfMsgBox Yes
+			Shutdown, 2
+	}
+	else if(Action & 2)
+	{
+		MsgBox, 4, Restart Explorer, You need to restart explorer to apply a setting. Do you want to do this now?
+		IfMsgBox Yes
+		{
+			Runwait, taskkill /im explorer.exe /f, , Hide
+			Run, %a_windir%\explorer.exe
+		}
+	}
 	GuiControl, 1:Hide, Wait
 	if(Close)
 		GoSub Cancel
