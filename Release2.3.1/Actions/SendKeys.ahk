@@ -1,11 +1,14 @@
 Action_SendKeys_Init(Action)
 {
 	Action.Category := "Input"
+	Action.WriteText := False
+	Action.KeyDelay := 0
 }
 Action_SendKeys_ReadXML(Action, XMLAction)
 {
 	Action.Keys := XMLAction.Keys
-	Action.WriteText := XMLAction.HasKey("WriteText") ? XMLAction.WriteText : 0
+	Action.WriteText := XMLAction.HasKey("WriteText") ? XMLAction.WriteText : Action.WriteText
+	Action.KeyDelay := XMLAction.HasKey("KeyDelay") ? XMLAction.KeyDelay : Action.KeyDelay
 }
 Action_SendKeys_Execute(Action,Event)
 {
@@ -16,7 +19,12 @@ Action_SendKeys_Execute(Action,Event)
 		WriteText(Text)
 	}
 	else
-		Send %keys%
+	{
+		Backup := A_KeyDelay
+		SetKeyDelay % Action.KeyDelay
+		SendEvent %keys%
+		SetKeyDelay % Backup
+	}
 	return 1
 } 
 Action_SendKeys_DisplayString(Action)
@@ -30,6 +38,7 @@ Action_SendKeys_GuiShow(Action, ActionGUI, GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Keys", "", "", "Keys to send:", "Placeholders", "Action_SendKeys_Placeholders", "Key names", "Action_SendKeys_KeyNames")
+		SubEventGUI_Add(Action, ActionGUI, "Edit", "KeyDelay", "", "", "Key delay:")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "WriteText", "Write text directly (useful for newlines, tabs etc.)")
 	}
 	else if(GoToLabel = "Placeholders")

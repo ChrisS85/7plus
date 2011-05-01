@@ -1,6 +1,6 @@
 Action_ToggleWallpaper_Init(Action)
 {
-	Action.Category := "Windows"
+	Action.Category := "Window"
 }
 Action_ToggleWallpaper_ReadXML(Action, XMLAction)
 {

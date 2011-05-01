@@ -571,7 +571,7 @@ else
 }
 return
 #if
-
+/*
 #if !IsFullScreen()
 ^MButton::
 +MButton::
@@ -603,7 +603,7 @@ if(!Handled)
 }
 return 
 #if
-
+*/
 OpenInNewFolder()
 {
 	global MiddleOpenFolder, UseTabs
@@ -630,7 +630,7 @@ OpenInNewFolder()
 ToggleWallpaper()
 {
 	global
-	if(!IsMouseOverDesktop() || !HKToggleWallpaper || A_OSVersion != "WIN_7")
+	if(!IsMouseOverDesktop() || A_OSVersion != "WIN_7")
 		return false
 	ShellContextMenu("Desktop",1)
 	return true

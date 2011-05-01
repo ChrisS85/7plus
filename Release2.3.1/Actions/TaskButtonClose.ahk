@@ -1,6 +1,6 @@
 Action_TaskButtonClose_Init(Action)
 {
-	Action.Category := "Windows"
+	Action.Category := "Window"
 }
 Action_TaskButtonClose_ReadXML(Action, XMLAction)
 {

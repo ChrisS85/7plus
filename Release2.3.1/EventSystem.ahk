@@ -92,7 +92,9 @@
 
 EventSystem_Startup()
 {
-	global Events, EventSchedule, TemporaryEvents
+	global Events, EventSchedule, TemporaryEvents, IniPath, ShowEvents
+	
+	IniRead, ShowEvents, %IniPath%, General, ShowEvents, 0
 	
 	;TODO: Why does this need to be here?
 	Action_Upload_ReadFTPProfiles()
@@ -735,7 +737,7 @@ OnTrigger(Trigger)
 
 EventScheduler()
 {
-	global Events, EventSchedule, Profiler, TemporaryEvents, DebugEnabled
+	global Events, EventSchedule, Profiler, TemporaryEvents, DebugEnabled, ShowEvents
 	Critical, Off
 	loop
 	{
@@ -819,12 +821,16 @@ EventScheduler()
 				if(result = 0) ;Action was cancelled, stop all further actions
 				{
 					Event.Actions := Array()
+					if(ShowEvents)
+						Notify("Event Cancelled", "The execution of event" Event.ID ": " Event.Name " was cancelled", "5", "GC=555555 TC=White MC=White",24)
 					break
 				}
 				else if(result = -1) ;Action needs more time to finish, check back in next main loop
 					break
 				else
 					Event.Actions.Delete(1)
+				if(ShowEvents)
+					Notify("Event Executed", "The event" Event.ID ": " Event.Name " was executed", "5", "GC=555555 TC=White MC=White",24)
 			}
 			if(Event.Actions.len() = 0) ;No more actions in this event, consider it processed and remove it from queue
 			{
