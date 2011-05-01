@@ -25,6 +25,9 @@
 #include %A_ScriptDir%\Conditions\IsRenaming.ahk
 #include %A_ScriptDir%\Conditions\KeyIsDown.ahk
 #include %A_ScriptDir%\Conditions\MouseOver.ahk
+#include %A_ScriptDir%\Conditions\MouseOverFileList.ahk
+#include %A_ScriptDir%\Conditions\MouseOverTaskList.ahk
+#include %A_ScriptDir%\Conditions\MouseOverTabButton.ahk
 #include %A_ScriptDir%\Conditions\WindowActive.ahk
 #include %A_ScriptDir%\Conditions\WindowExists.ahk
 
@@ -211,7 +214,7 @@ EventSystem_CreateBaseObjects()
 	global
 	local tmpobject
 	EventSystem_Triggers := "ContextMenu,DoubleClickDesktop,DoubleClickTaskbar,ExplorerButton,ExplorerDoubleClickSpace,ExplorerPathChanged,Hotkey,None,MenuItem,OnMessage,Timer,Trigger,WindowActivated, WindowClosed, WindowCreated,WindowStateChange,7plusStart"
-	EventSystem_Conditions := "MouseOver,If,IsContextMenuActive,IsDialog,IsFullScreen,KeyIsDown,IsRenaming,WindowActive,WindowExists"
+	EventSystem_Conditions := "If,IsContextMenuActive,IsDialog,IsFullScreen,KeyIsDown,IsRenaming,MouseOver,MouseOverFileList,MouseOverTabButton,MouseOverTaskList,WindowActive,WindowExists"
 	EventSystem_Actions := "Accessor,AutoUpdate,Clipboard,Clipmenu,ControlEvent,ControlTimer,Copy,Delete,Exit7plus,FastFoldersClear,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FilterList,FlashingWindows,FlatView,FocusControl,ImageConverter,Input,MD5,Message,Move,MouseClick,MouseCloseTab,NewFile,NewFolder,OpenInNewFolder,PlaySound,Restart7plus,RestoreSelection,Run,RunOrActivate,Screenshot,SelectFiles,SetWindowTitle,SendKeys,SendMessage,SetDirectory,ShortenURL,ShowMenu,ShowSettings,Shutdown,TaskButtonClose,ToggleWallpaper,Tooltip,Upload,ViewMode,Volume,Wait,WindowActivate,WindowClose,WindowHide,WindowMove,WindowResize,WindowSendToBottom,WindowShow,WindowState,Write"
 	Trigger_Categories := object("Explorer", Array(), "Hotkeys", Array(), "Other", Array(), "System", Array(), "Window", Array(), "7plus", Array())
 	Condition_Categories := object("Explorer", Array(), "Mouse", Array(), "Other", Array(), "Window", Array())

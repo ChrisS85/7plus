@@ -1,4 +1,4 @@
-<BugfixVersion>0</BugfixVersion>
+<BugfixVersion>1</BugfixVersion>
 <Events>
 <Event>
 <Actions>
@@ -680,6 +680,7 @@
 </Event><Event>
 <Actions>
 <Action>
+<KeyDelay>0</KeyDelay>
 <Keys>{Esc}</Keys>
 <Type>SendKeys</Type>
 <WriteText>0</WriteText>
@@ -3139,6 +3140,7 @@
 <X>40</X>
 <Y>40</Y>
 </Action><Action>
+<KeyDelay>0</KeyDelay>
 <Keys>{Down 3}{Enter}</Keys>
 <Type>SendKeys</Type>
 <WriteText>0</WriteText>
@@ -3668,6 +3670,7 @@
 </Event><Event>
 <Actions>
 <Action>
+<KeyDelay>0</KeyDelay>
 <Keys>^.</Keys>
 <Type>SendKeys</Type>
 <WriteText>0</WriteText>
@@ -3704,6 +3707,7 @@
 </Event><Event>
 <Actions>
 <Action>
+<KeyDelay>0</KeyDelay>
 <Keys>^,</Keys>
 <Type>SendKeys</Type>
 <WriteText>0</WriteText>
@@ -4477,28 +4481,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<Keys>`r`n</Keys>
-<Type>SendKeys</Type>
-<WriteText>1</WriteText>
-</Action></Actions>
-<Category>Misc Hotkeys</Category>
-<Conditions>
-</Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event will write a newline sequence to the focused control and thus start a new line. This is useful in text fields where pressing Enter would press a button.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<ID>1610</ID>
-<Name>Write newline characters</Name>
-<OfficialEvent>16</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>^#Enter</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
+<KeyDelay>0</KeyDelay>
 <Keys>^k</Keys>
 <Type>SendKeys</Type>
 <WriteText>0</WriteText>
@@ -4533,6 +4516,30 @@
 </Event><Event>
 <Actions>
 <Action>
+<KeyDelay>0</KeyDelay>
+<Keys>`r`n</Keys>
+<Type>SendKeys</Type>
+<WriteText>1</WriteText>
+</Action></Actions>
+<Category>Misc Hotkeys</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event will write a newline sequence to the focused control and thus start a new line. This is useful in text fields where pressing Enter would press a button.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1610</ID>
+<Name>Write newline characters</Name>
+<OfficialEvent>16</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^#Enter</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<KeyDelay>0</KeyDelay>
 <Keys>^l</Keys>
 <Type>SendKeys</Type>
 <WriteText>0</WriteText>
@@ -4569,12 +4576,6 @@
 <Action>
 <Paths>${SelNM}</Paths>
 <Type>FlatView</Type>
-</Action><Action>
-<Text>^test</Text>
-<Timeout>5</Timeout>
-<Title></Title>
-<TrayToolTip>0</TrayToolTip>
-<Type>Tooltip</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -4606,7 +4607,121 @@
 <Key>+Enter</Key>
 <Type>Hotkey</Type>
 </Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Type>OpenInNewFolder</Type>
+</Action></Actions>
+<Category>Uncategorized</Category>
+<Conditions>
+<Condition>
+<Negate>1</Negate>
+<Type>IsFullScreen</Type>
+<UseExcludeList>1</UseExcludeList>
+<UseIncludeList>1</UseIncludeList>
+</Condition><Condition>
+<Negate>0</Negate>
+<Type>MouseOverFileList</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Opens the explorer folder under the mouse in a new window or tab.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1619</ID>
+<Name>Open folder in new window/tab</Name>
+<OfficialEvent>22</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>MButton</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Type>TaskButtonClose</Type>
+</Action></Actions>
+<Category>Uncategorized</Category>
+<Conditions>
+<Condition>
+<Negate>1</Negate>
+<Type>IsFullScreen</Type>
+<UseExcludeList>1</UseExcludeList>
+<UseIncludeList>1</UseIncludeList>
+</Condition><Condition>
+<Negate>0</Negate>
+<Type>MouseOverTaskList</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Closes the window belonging to the taskbar button under the mouse.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1620</ID>
+<Name>Close window of task button under mouse</Name>
+<OfficialEvent>23</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>MButton</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Type>ToggleWallpaper</Type>
+</Action></Actions>
+<Category>Uncategorized</Category>
+<Conditions>
+<Condition>
+<Negate>1</Negate>
+<Type>IsFullScreen</Type>
+<UseExcludeList>1</UseExcludeList>
+<UseIncludeList>1</UseIncludeList>
+</Condition><Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(WorkerW|Progman)</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Toggles the wallpaper using the list of wallpapers defined in Windows (7 or later). Same as the desktop context menu option.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1621</ID>
+<Name>Toggle Wallpaper (Mouse over desktop)</Name>
+<OfficialEvent>24</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>MButton</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Type>MouseCloseTab</Type>
+</Action></Actions>
+<Category>Uncategorized</Category>
+<Conditions>
+<Condition>
+<Negate>1</Negate>
+<Type>IsFullScreen</Type>
+<UseExcludeList>1</UseExcludeList>
+<UseIncludeList>1</UseIncludeList>
+</Condition><Condition>
+<Negate>0</Negate>
+<Type>MouseOverTabButton</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Closes the explorer tab under the mouse.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1622</ID>
+<Name>Close explorer tab under mouse</Name>
+<OfficialEvent>25</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>MButton</Key>
+<Type>Hotkey</Type>
+</Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
 <MinorVersion>3</MinorVersion>
-<PatchVersion>0</PatchVersion>

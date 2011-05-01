@@ -265,53 +265,6 @@ MouseMax()
 	; return true
 ; }
 
-;Middle click on taskbutton->close task
-TaskButtonClose()
-{
-	global
-	if(HKMiddleClose && IsMouseOverTaskList())
-	{
-		/*
-		if(A_OSVersion="WIN_7")
-			Send {Shift down}
-		*/
-		click right
-		while(!IsContextMenuActive() && A_OSVersion!="WIN_7")
-			sleep 10
-		if(A_OsVersion="WIN_7") ;wait until the menu has slided out
-		{
-			prevx:=0
-			prevy:=0
-			x:=1
-			y:=1
-			while(true)
-			{
-				if(IsContextMenuActive())
-				{
-					Send {Esc}
-					return true
-				}
-				if(WinActive("ahk_class DV2ControlHost"))
-					break
-				Sleep 10
-			}
-			while(prevx!=x || prevy!=y)
-			{
-				prevx:=x
-				prevy:=y
-				WinGetPos x,y,,,ahk_class DV2ControlHost
-				Sleep 10
-			}
-		}
-		/*
-		if(A_OSVersion="WIN_7")
-			Send {Shift up}
-		*/
-		Send {up}{enter}
-		return true
-	}
-	return false
-}
 
 ; Flash Windows activation
 ; Current/Previous Window toggle

@@ -8,12 +8,8 @@ XPGetFocussed()
     ControlGet hwnd, Hwnd, , %A_LoopField%, A 
     hwnd += 0   ; Convert from hexa to decimal 
     if(hwnd=ctrlHwnd)
-    {
-      outputdebug focussed %A_LoopField%
       return A_LoopField
-    } 
   } 
-  outputdebug nothing focussed
 }
 
 IsMouseOverDesktop()
@@ -67,10 +63,7 @@ IsMouseOverFileList()
 		ControlGetPos , cX, cY, Width, Height, DirectUIHWND2, A
 		outputdebug x %MouseX% y %mousey% x%cx% y%cy% w%width% h%height%
 		if(IsInArea(MouseX,MouseY,cX,cY,Width,Height)) ;Checking for area because rename might be in process and mouse might be over edit control
-		{
-			outputdebug over filelist
 			return true
-		}
 	}
 	else if(winclass="CabinetWClass" || winclass="ExploreWClass" || z=2) ;Old dialogs or Vista/XP
 	{
@@ -606,8 +599,8 @@ return
 */
 OpenInNewFolder()
 {
-	global MiddleOpenFolder, UseTabs
- 	if(!MiddleOpenFolder||!WinActive("ahk_group ExplorerGroup")||!IsMouseOverFileList())
+	global UseTabs, MiddleOpenFolder
+ 	if(!WinActive("ahk_group ExplorerGroup")||!IsMouseOverFileList())
  		return false	
 	selected:=GetSelectedFiles(0)
 	Send {LButton}
