@@ -173,6 +173,7 @@ FolderLoop(Platform, Version)
 	}
 	FileCopy, %A_ScriptDir%\%Platform%\*, %A_Temp%\7plusUpdateCreator, 1
 }
+
 ;Write the script which is executed on the client side
 WriteUpdater()
 {
@@ -186,6 +187,7 @@ WriteUpdater()
 	FileAppend, Progress zh0 fs18`, Updating, please wait.`n,														%A_scriptdir%\Updater.ahk
 	FileAppend, FileInstall`, %A_scriptdir%\Update.zip`, Update.zip`,1`n,											%A_scriptdir%\Updater.ahk	;%A_scriptdir% mustn't be dynamic for FileInstall -> no quotes
 	FileAppend, FileInstall`, %A_scriptdir%\7za.exe`, 7za.exe`,1`n,													%A_scriptdir%\Updater.ahk	;%A_scriptdir% mustn't be dynamic for FileInstall -> no quotes
+	FileAppend, run regsvr32 /s "`%A_ScriptDir`%\ShellExtension.dll"`n,											%A_scriptdir%\Updater.ahk	;Unregister context menu shell extension. It will get reregistered in PostUpdate()
 	FileAppend, runwait 7za.exe x Update.zip -y -o`%A_Temp`%\7plus\Update`, `%A_Temp`%\7plus`, hide`n,				%A_scriptdir%\Updater.ahk	
 	FileAppend, FileMoveDir`, `%A_Temp`%\7plus\Update\Patches`, `%ConfigPath`%\Patches`, 2`n, 						%A_scriptdir%\Updater.ahk	
     ; First move all the files (but not the folders):
