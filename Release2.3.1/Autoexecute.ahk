@@ -371,12 +371,13 @@ WriteIni()
 	FileDelete, %IniPath%
 	
 	IniWrite, %DebugEnabled%, %IniPath%, General, DebugEnabled
-	IniWrite, %DebugEnabled%, %IniPath%, General, ProfilingEnabled
+	IniWrite, %ProfilingEnabled%, %IniPath%, General, ProfilingEnabled
+	IniWrite, %ShowEvents%, %IniPath%, General, ShowEvents
 	IniWrite, %ImgName%, %IniPath%, Explorer, Image
 	IniWrite, %TxtName%, %IniPath%, Explorer, Text
 	IniWrite, %HKPlacesBar%, %IniPath%, Explorer, HKPlacesBar
 	IniWrite, %HKCleanFolderBand%, %IniPath%, Explorer, HKCleanFolderBand
-	IniWrite, %HKFolderBand%, %IniPath%, Explorer, HKFolderBand	
+	IniWrite, %HKFolderBand%, %IniPath%, Explorer, HKFolderBand
 	
 	IniWrite, %HKSelectFirstFile%, %IniPath%, Explorer, HKSelectFirstFile
 	IniWrite, %HKImproveEnter%, %IniPath%, Explorer, HKImproveEnter

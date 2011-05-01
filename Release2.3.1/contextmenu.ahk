@@ -29,4 +29,6 @@ ShellContextMenu(sPath,idn=0)
 { 
 	global hAHK
 	result := DllCall(A_ScriptDir "\Explorer.dll\ExecuteContextMenuCommand", "Str", sPath, "Int", idn, "PTR", hAHK)
+	if(Errorlevel != 0)
+		Msgbox Error Calling ExecuteContextMenuCommand() in Explorer.dll!
 } 

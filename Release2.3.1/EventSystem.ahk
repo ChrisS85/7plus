@@ -166,8 +166,8 @@ TriggerFromOtherInstance(wParam, lParam)
 		;Read list of selected files written by shell extension
 		if(FileExist(A_Temp "\7plus\files.txt"))
 			FileRead, files, % "*t " A_Temp "\7plus\files.txt"
-		FileDelete, % A_Temp "\7plus\files.txt"
 		outputdebug files %files%
+		FileDelete, % A_Temp "\7plus\files.txt"
 		;if it failed (because static context menu is used), try to get it from explorer window
 		Events.GlobalPlaceholders.Context := files ? files : ArrayToList(GetSelectedFiles())
 		

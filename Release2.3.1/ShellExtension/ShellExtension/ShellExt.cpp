@@ -300,11 +300,12 @@ HRESULT CShellExt::Initialize ( LPCITEMIDLIST pidlFolder, LPDATAOBJECT pDO, HKEY
 
 	MatchingEntries.clear();
 	//look for matching extensions
+	bool FirstIteration = true;
 	for(unsigned int i = 0; i < ContextMenuEntries.size(); i++)
 	{
 		if(ContextMenuEntries[i].SingleFileOnly && uNumFiles > 1)
 			continue;
-		bool Show = true;		
+		bool Show = true;
 		//Check if all files match
 		for ( UINT uFile = 0; uFile < uNumFiles; uFile++ )
 		{
@@ -323,7 +324,7 @@ HRESULT CShellExt::Initialize ( LPCITEMIDLIST pidlFolder, LPDATAOBJECT pDO, HKEY
 				 if(i==0)
 					Files.push_back(szFile);
 			}
-			if(i==0)
+			if(FirstIteration && !Background)
 				Files.push_back(szFile);
 			//ContextMenu on directory
 			bool Directory = DirectoryExists(szFile);
@@ -365,7 +366,8 @@ HRESULT CShellExt::Initialize ( LPCITEMIDLIST pidlFolder, LPDATAOBJECT pDO, HKEY
 			}
 			//if we arrive here, nothing matched and this context menu extension shouldn't be shown
 			Show = false;
-		}
+		}		
+		FirstIteration = false;
 		if(Show)
 			MatchingEntries.push_back(i);      
     }
