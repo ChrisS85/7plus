@@ -6,9 +6,13 @@ New Functions:
  * Added directory context menu item for flat view
  * Added URL shortener (WIN+S with URL in clipboard)
  * Added a settings page with generic windows settings (No bloat, only important ones!)
+ * Added KeyDelay setting for SendKeys action
+ * Added ShowEvents option (available only through manual editing of Settings.ini in [General] category) to show execution order of events
+
 Bugfixes:
  * Fixed missing \ when copying paths of network shares
  * Fixed not being able to navigate to network drives
+ * Reimplemented middle mouse button features in event system to avoid some problems with this button.
 
 Changes:
 
