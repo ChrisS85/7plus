@@ -12,7 +12,7 @@ New Functions:
 Bugfixes:
  * Fixed missing \ when copying paths of network shares
  * Fixed not being able to navigate to network drives
- * Reimplemented middle mouse button features in event system to avoid some problems with this button.
+ * Reimplemented middle mouse button features in event system to avoid some problems with this button. As a result of this, a few additional conditions were added.
 
 Changes:
 
