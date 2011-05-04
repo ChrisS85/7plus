@@ -168,133 +168,6 @@ SetFocusToFileView()
 	return
 }
 
-;Called when active explorer changes its path
-ExplorerPathChanged(from, to)
-{
-	global vista7, HKSelectFirstFile
-	RegisterSelectionChangedEvents()
-	;focus first file
-	if(HKSelectFirstFile)
-	{
-		SplitPath, to, name, dir,,,drive
-		x:=GetSelectedFiles()
-		if(!x && dir && (!vista7||SubStr(to, 1 ,40)!="::{26EE0668-A00A-44D7-9371-BEB064C98683}"))
-		{
-			if(A_OSVersion="WIN_7")
-			{
-				ControlGetFocus focussed, A
-				ControlFocus DirectUIHWND3, A
-				ControlSend DirectUIHWND3, {Home}{Space},A
-			}
-			else
-			{
-				focussed:=XPGetFocussed()
-				ControlFocus SysListView321, A
-				ControlSend SysListView321, {Home},A
-			}
-			Sleep 50 ;Better wait some time
-			ControlFocus %focussed%, A
-		}
-	}
-}
-
-;Registers an explorer window for SelectionChanged events. Called when explorer changes path and when new windows are activated/created
-RegisterSelectionChangedEvents()
-{
-	global RegisteredSelectionChangedWindows
-	; Find hwnd window
-	for Item in ComObjCreate("Shell.Application").Windows
-	{
-		if((index := RegisteredSelectionChangedWindows.indexOfSubItem("hwnd",(hwnd := Item.hWnd))) = 0)
-		{			
-			doc:=Item.Document
-			if(!doc)
-				continue
-			Path := doc.Folder.Self.path
-			if(!Path)
-				continue
-			Selection := GetSelectedFiles(0,hwnd)
-			outputdebug register explorer %hwnd%
-			ComObjConnect(doc, "Explorer")
-			RegisteredSelectionChangedWindows.append(Object("hwnd", hwnd, "doc", doc, "SelectionHistory", Array(Selection), "Path", Path))
-		}
-		else ;explorer window is already registered, lets see if its view changed
-		{
-			doc:=Item.Document
-			if(!doc)
-				continue			
-			Path := doc.Folder.Self.path
-			if(!Path)
-				continue
-			if(RegisteredSelectionChangedWindows[index].Path != Path) ;Compare by path since the COM wrapper objects are different
-			{
-				Selection := GetSelectedFiles(0,hwnd)
-				outputdebug register new view
-				ComObjConnect(doc, "Explorer")
-				RegisteredSelectionChangedWindows[index].SelectionHistory := Array(Selection) ;Recreate array to remove selection history from previous folder
-				RegisteredSelectionChangedWindows[index].Path := Path
-				RegisteredSelectionChangedWindows[index].doc := doc
-			}
-		}
-	}
-}
-
-;Unregister an explorer window for SelectionChanged events
-UnregisterSelectionChangedEvents(hwnd)
-{
-	global RegisteredSelectionChangedWindows
-	i := RegisteredSelectionChangedWindows.indexOfSubItem("hwnd", hwnd)
-	if(i > 0)
-		RegisteredSelectionChangedWindows.Delete(i)
-}
-
-;Called when selection changes in an explorer window. If the shell is restarted, old windows won't be recognized anymore.
-ExplorerSelectionChanged(ExplorerCOMObject)
-{
-	global RegisteredSelectionChangedWindows
-	; Critical ;This apparently makes it stop working and blocks the explorer window somehow
-	outputdebug ExplorerSelectionChanged
-	if(RegisteredSelectionChangedWindows.IgnoreNextEvent > 0)
-	{
-		RegisteredSelectionChangedWindows.IgnoreNextEvent := RegisteredSelectionChangedWindows.IgnoreNextEvent - 1
-		outputdebug % "expecting " RegisteredSelectionChangedWindows.IgnoreNextEvent " more events."
-		return
-	}
-	RegisteredSelectionChangedWindowsItem := RegisteredSelectionChangedWindows.indexOfSubItem("doc", ExplorerCOMObject)
-	if(RegisteredSelectionChangedWindowsItem != 0)
-	{
-		outputdebug found explorer history
-		RegisteredSelectionChangedWindowsItem := RegisteredSelectionChangedWindows[RegisteredSelectionChangedWindowsItem]
-		RegisteredSelectionChangedWindowsItem.SelectionHistory.append(ToArray(GetSelectedFiles(0, RegisteredSelectionChangedWindowsItem.hwnd)))
-		if(RegisteredSelectionChangedWindowsItem.SelectionHistory.len() > 10)
-			RegisteredSelectionChangedWindowsItem.SelectionHistory.Delete(1)
-	}
-	; Critical, Off
-}
-RestoreExplorerSelection()
-{
-	global RegisteredSelectionChangedWindows
-	hwnd := WinActive("ahk_group ExplorerGroup")
-	if(hwnd)
-	{
-		RegisteredSelectionChangedWindowsItem := RegisteredSelectionChangedWindows.SubItem("hwnd",hwnd)
-		if(!IsObject(RegisteredSelectionChangedWindowsItem))
-			outputdebug % "Explorer window " hwnd " is not registered!"
-		if(RegisteredSelectionChangedWindowsItem.SelectionHistory.len() > 1)
-		{		
-			outputdebug % "Explorer window " hwnd "restore selection"
-			Selection := RegisteredSelectionChangedWindowsItem.SelectionHistory[RegisteredSelectionChangedWindowsItem.SelectionHistory.len() - 1]
-			; A SelectionChanged event will be fired 2 times that needs to be suppressed? 
-			;Why is it fired 2 times instead of one time for each file? -> Probably because of timing
-			RegisteredSelectionChangedWindows.IgnoreNextEvent := 2 
-			outputdebug % "Explorer window " hwnd " expecting " RegisteredSelectionChangedWindows.IgnoreNextEvent " selection events."
-			SelectFiles(Selection,1,0,1,1,hwnd)
-			RegisteredSelectionChangedWindowsItem.SelectionHistory.Delete(RegisteredSelectionChangedWindowsItem.SelectionHistory.len())
-		}
-		else
-			outputdebug % "Explorer window " hwnd " is registered but has no history"
-	}
-}
 FixExplorerConfirmationDialogs()
 {
 	global
@@ -692,48 +565,20 @@ FlatView(files)
 	Fileappend,%searchString%, %Path%
 	SetDirectory(Path)
 }
-CreateInfoGui()
+InitInfoGui()
 {
-	global FreeSpace, SelectedFileSize,shell32MUIpath,freetext
-	Gui, 2: font, s9, Segoe UI 
-	Gui, 2: Add, Text, x60 y0 w70 h12 vFreeSpace, %A_Space%
-	Gui, 2: Add, Text, x0 y0 w60 h12 vSelectedFileSize, %A_Space%
-	Gui, 2: -Caption  +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs
-	Gui, 2: Color, FFFFFF
-	Gui 2: +LastFound
-	WinSet, TransColor, FFFFFF
+	global ExplorerWindows
 	freetext:=TranslateMUI(shell32MUIpath,12336) ;Aquire a translated version of "free"outputdebug freetext %freetext%
 	freetext:=SubStr(freetext,InStr(freetext," ",0,0)+1)
+	ExplorerWindows.InfoGuiStuff := Object("FreeText", freetext)
 }
-DestroyInfoGui()
-{
-	Gui 2:Destroy
-}
-ShouldShowInfo()
+ShouldShowInfo(ExplorerWindow)
 {
 	global 7plus_Blocked
-	if(!WinActive("ahk_group ExplorerGroup"))
-		return false
 	if(7plus_Blocked)
 		return false
-	ControlGet, visible, visible, , msctls_statusbar321, A ;Check if status bar is visible
+	ControlGet, visible, visible, , msctls_statusbar321, % "ahk_id " ExplorerWindow.hwnd ;Check if status bar is visible
 	if(!visible)
-		return false
-	Gui 2: +LastFound
-	WinGetPos , X, Y, Width, Height,A
-	WinGetClass,class
-	x1:= GetVisibleWindowAtPoint(X+Width-370,Y+Height-26,class) 
-	x2:= GetVisibleWindowAtPoint(X+Width-370+141,Y+Height-26,class) 
-	y1:=GetVisibleWindowAtPoint(X+Width-370+131,Y+Height-26+18,class)				;window border doesn't seem to count to window?
-	y2:=GetVisibleWindowAtPoint(X+Width-370+131,Y+Height-26+18,class) 
-	list:="ExplorerWClass,CabinetWClass"
-	if x1 not in %list%
-		return false
-	if x2 not in %list%
-		return false
-	if y1 not in %list%
-		return false
-	if y2 not in %list%
 		return false
 	return true
 }
@@ -741,14 +586,15 @@ ShouldShowInfo()
 UpdateInfos:
 UpdateInfos()
 return
-UpdateInfos(force=0)
+;TODO: Continue here and rework the update code. Maybe move it inside the Explorer window class.
+UpdateInfos(ExplorerWindow)
 {
 	global freetext, newstring, freestring
 	static selectedfiles1, currentfolder1
-	if(WinActive("ahk_group ExplorerGroup") && !IsContextMenuActive())
+	Loop % ExplorerWindows.len()
 	{
 		files:=GetSelectedFiles()
-		path:=GetCurrentFolder()		
+		path:=GetCurrentFolder()
 		if(files=selectedfiles1 && path=currentfolder1 && !force)
 			return
 		selectedfiles1:=files
@@ -854,23 +700,8 @@ UpdateInfos(force=0)
 				newstring:=text
 			}
 		}
+		UpdateInfoPosition()
 	}
-	else
-	{
-		text=%A_Space%
-		if(text!=newstring)
-		{
-			GuiControl 2:Text, SelectedFileSize, %A_Space%
-			newstring:=text
-		}
-		text=%A_Space%
-		if(text!=freestring)
-		{
-			GuiControl 2:Text, FreeSpace, %A_Space%
-			freestring:=text
-		}
-	}
-	UpdateInfoPosition()
 	return
 }
 
@@ -894,4 +725,254 @@ UpdateInfoPosition()
 		Gui, 2:Hide
 }
 
+;Find all explorer windows, register them in ExplorerWindows array and set up events and info gui
+RegisterExplorerWindows()
+{
+	global ExplorerWindows, ExplorerWindow
+	WinGet, hWndList, List, ahk_group ExplorerGroup
+	Loop % hwndList0
+	{
+		if(!ExplorerWindows.IndexOfSubItem("hwnd", hWndList%A_Index%))
+			ExplorerWindows.append(new ExplorerWindow(hwndList%A_Index%))
+	}
+}
+;Registers all explorer windows for SelectionChanged events. Called when explorer changes path
+RegisterSelectionChangedEvents()
+{
+	global ExplorerWindows
+	Loop % ExplorerWindows.len()
+		ExplorerWindows[A_Index].RegisterSelectionChangedEvent()
+}
+/*
+;Unregister an explorer window for SelectionChanged events
+UnregisterSelectionChangedEvents(hwnd)
+{
+	global RegisteredSelectionChangedWindows
+	i := RegisteredSelectionChangedWindows.indexOfSubItem("hwnd", hwnd)
+	if(i > 0)
+		RegisteredSelectionChangedWindows.Delete(i)
+}
+*/
+RestoreExplorerSelection()
+{
+	global ExplorerWindows
+	hwnd := WinActive("ahk_group ExplorerGroup")
+	if(hwnd)
+	{
+		ExplorerWindow := ExplorerWindows.SubItem("hWnd",hwnd)
+		if(!IsObject(ExplorerWindow.Selection.History))
+			outputdebug % "Explorer window " hwnd " is not registered!"
+		if(ExplorerWindow.Selection.History.len() > 1)
+		{		
+			outputdebug % "Explorer window " hwnd "restore selection"
+			Selection := ExplorerWindow.Selection.History[ExplorerWindow.Selection.History.len() - 1]
+			; A SelectionChanged event will be fired 2 times that needs to be suppressed? 
+			;Why is it fired 2 times instead of one time for each file? -> Probably because of timing
+			ExplorerWindow.Selection.IgnoreNextEvent := 2 
+			outputdebug % "Explorer window " hwnd " expecting " ExplorerWindow.Selection.IgnoreNextEvent " selection events."
+			SelectFiles(Selection,1,0,1,1,hwnd)
+			ExplorerWindow.Selection.History.Delete(ExplorerWindow.Selection.History.len())
+		}
+		else
+			outputdebug % "Explorer window " hwnd " is registered but has no history"
+	}
+}
 
+;===============;
+;Explorer related Events;
+;===============;
+
+;Called when an explorer window is activated.
+ExplorerActivated(hwnd)
+{
+	global TabContainerList, TabNum, TabWindow, SuppressTabEvents, HKShowSpaceAndSize, ExplorerWindows, ExplorerWindow
+	if(!ExplorerWindows.IndexOfSubItem("hwnd",hwnd))
+		ExplorerWindows.Append(new ExplorerWindow(hwnd))
+	RegisterSelectionChangedEvents()
+	;Explorer info stuff
+	; if(A_OSVersion="WIN_7" && HKShowSpaceAndSize)
+	; {
+		; UpdateInfos(1)
+		; SetTimer, UpdateInfos, 100
+	; }
+	if(SuppressTabEvents)
+		return
+	if(TabContainerList.active=hwnd) ;If active hwnd is set to this window already, activation shall be handled elsewhere
+		return
+	DecToHex(hwnd)
+	if(TabContainer:=TabContainerList.ContainsHWND(hwnd))
+	{
+		TabContainerOld:=TabContainerList.ContainsHWND(TabContainerList.active)
+		;outputdebug set active
+		OldTab:=TabContainer.active
+		TabContainerList.active:=hwnd
+		TabContainer.active:=hwnd
+		
+		if(TabContainer!=TabContainerOld)
+			UpdateTabs()
+		UpdatePosition(TabNum, TabWindow)
+		
+		;SetTimer, UpdatePosition, 100
+	}
+}
+;Called when an explorer window gets deactivated.
+ExplorerDeactivated(hwnd)
+{
+	global TabContainerList, TabNum, TabWindow,SuppressTabEvents, HKShowSpaceAndSize
+	hwnd:=WinExist("A")
+	if(hwnd=TabWindow)
+		return
+	; if(HKShowSpaceAndSize && A_OsVersion = "WIN_7")
+		; UpdateInfoPosition()
+	if(SuppressTabEvents)
+		return
+	TabContainerList.active:=0
+	UpdatePosition(TabNum, TabWindow)
+	;SetTimer, UpdatePosition, Off
+}
+;Called when an explorer window gets destroyed.
+ExplorerDestroyed(hwnd)
+{
+	global TabContainerList,TabWindowClose, ExplorerWindows
+	outputdebug ExplorerDestroyed()
+	if(index := ExplorerWindows.IndexOfSubItem("hwnd", hwnd))
+		ExplorerWindows.Remove(index) ;This will destroy the info gui as well
+	TabContainer:=TabContainerList.ContainsHWND(hwnd)
+	if(!TabContainer)
+		return
+	if(TabWindowClose = 0)
+		CloseTab(hwnd,TabContainer)
+	else if(TabWindowClose = 1)
+		TabContainer.CloseAllTabs()
+	return
+}
+;Called when active explorer changes its path.
+ExplorerPathChanged(from, to)
+{
+	global vista7, HKSelectFirstFile
+	RegisterSelectionChangedEvents() ;Need to reregister for this event
+	;focus first file
+	if(HKSelectFirstFile)
+	{
+		SplitPath, to, name, dir,,,drive
+		x:=GetSelectedFiles()
+		if(!x && dir && (!vista7||SubStr(to, 1 ,40)!="::{26EE0668-A00A-44D7-9371-BEB064C98683}"))
+		{
+			if(A_OSVersion="WIN_7")
+			{
+				ControlGetFocus focussed, A
+				ControlFocus DirectUIHWND3, A
+				ControlSend DirectUIHWND3, {Home}{Space},A
+			}
+			else
+			{
+				focussed:=XPGetFocussed()
+				ControlFocus SysListView321, A
+				ControlSend SysListView321, {Home},A
+			}
+			Sleep 50 ;Better wait some time
+			ControlFocus %focussed%, A
+		}
+	}
+}
+;Called when selection changes in an explorer window. If the shell is restarted, old windows won't be recognized anymore.
+ExplorerSelectionChanged(ExplorerCOMObject)
+{
+	global ExplorerWindows
+	; Critical ;This apparently makes it stop working and blocks the explorer window somehow
+	outputdebug ExplorerSelectionChanged
+	Loop % ExplorerWindows.Len()
+	{
+		if(ExplorerWindows[A_Index].Selection.COMObject = ExplorerCOMObject)
+		{
+			index := A_Index
+			break
+		}
+	}
+	if(!index)
+		return
+	if(ExplorerWindows[A_Index].Selection.IgnoreNextEvent > 0)
+	{
+		ExplorerWindows[A_Index].Selection.IgnoreNextEvent := ExplorerWindows[A_Index].Selection.IgnoreNextEvent - 1
+		outputdebug % "expecting " ExplorerWindows[A_Index].Selection.IgnoreNextEvent " more events."
+		return
+	}
+	ExplorerWindows[A_Index].Selection.History.append(ToArray(GetSelectedFiles(0, ExplorerWindows[A_Index].hwnd)))
+	if(ExplorerWindows[A_Index].Selection.History.len() > 10)
+		ExplorerWindows[A_Index].Selection.History.Delete(1)
+	UpdateInfos(ExplorerWindow) ;Update the info GUI to reflect selection change
+	; Critical, Off
+}
+
+class ExplorerWindow
+{
+    var hWnd := 0
+	var Path := ""
+    __New(hWnd, Path="")
+    {
+        this.hWnd := hWnd
+		this.Path := Path ? Path : GetCurrentFolder(hWnd)
+		this.InfoGUI := this.CreateInfoGUI()
+		Selection := Object()
+		this.RegisterSelectionChangedEvent()
+    }
+	__Delete()
+	{
+		DestroyInfoGUI()
+	}
+	CreateInfoGui()
+	{
+		GuiNum := GetFreeGuiNum(10)
+		Gui, %GuiNum%: font, s9, Segoe UI 
+		Gui, %GuiNum%: Add, Text, x60 y0 w70 h12, %A_Space%
+		Gui, %GuiNum%: Add, Text, x0 y0 w60 h12, %A_Space%
+		Gui, %GuiNum%: -Caption  +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs
+		Gui, %GuiNum%: Color, FFFFFF
+		Gui, %GuiNum%: +LastFound
+		WinSet, TransColor, FFFFFF
+		AttachToolWindow(this.hWnd, GuiNum, true)
+		return Object("GuiNum", GuiNum, "hwnd", WinExist())
+	}
+	DestroyInfoGUI()
+	{
+		Gui % this.InfoGui.GuiNum ":Destroy"
+	}
+	RegisterSelectionChangedEvent()
+	{
+		global ExplorerWindows
+		for Item in ComObjCreate("Shell.Application").Windows
+		{
+			if(Item.hWnd != this.hWnd)
+				continue
+			if(!ExplorerWindows[index].Selection.COMObject) ;New explorer window
+			{
+				doc:=Item.Document
+				if(!doc)
+					return 0
+				ComObjConnect(doc, "Explorer")
+				ExplorerWindows[index].Selection.COMObject := doc
+				ExplorerWindows[index].Selection.History := Array(this.GetSelectedFiles(0))
+			}
+			else ;explorer window is already registered, lets see if its view changed
+			{
+				doc:=Item.Document
+				if(!doc)
+					continue			
+				Path := doc.Folder.Self.path
+				if(!Path)
+					continue
+				if(this.Path != Path) ;Compare by path since the COM wrapper objects are different
+				{
+					ComObjConnect(doc, "Explorer")
+					ExplorerWindows[index].Selection.COMObject := doc
+					ExplorerWindows[index].Selection.History := Array(this.GetSelectedFiles(0)) ;Recreate array to remove selection history from previous folder
+					ExplorerWindows[index].Path := Path
+				}
+			}
+		}
+	}
+	GetSelectedFiles(FullName)
+	{
+		return ToArray(GetSelectedFiles(FullName, this.hWnd))
+	}
+}

@@ -246,7 +246,6 @@ Loop 10
 	FastFolders.append(Object("Path", x, "Title", y))
 }
 
-RegisteredSelectionChangedWindows := Array()
 
 IniRead, UseTabs, %IniPath%, Tabs, UseTabs, 1
 IniRead, NewTabPosition, %IniPath%, Tabs, NewTabPosition, 1
@@ -255,6 +254,8 @@ IniRead, ActivateTab, %IniPath%, Tabs, ActivateTab, 1
 IniRead, TabWindowClose, %IniPath%, Tabs, TabWindowClose, 1
 IniRead, OnTabClose, %IniPath%, Tabs, OnTabClose, 1
 IniRead, MiddleOpenFolder, %IniPath%, Tabs, MiddleOpenFolder, 1
+ExplorerWindows := Array()
+RegisterExplorerWindows()
 TabContainerList := TabContainerList()
 if(Vista7)
 	TabContainerList.Font := "Segoe UI"

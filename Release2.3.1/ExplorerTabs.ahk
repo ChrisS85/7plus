@@ -372,68 +372,6 @@ NoTabUpdate:=false
 UpdateTabs()
 return
 
-ExplorerActivated(hwnd)
-{
-	global TabContainerList, TabNum, TabWindow, SuppressTabEvents, HKShowSpaceAndSize
-	RegisterSelectionChangedEvents()
-	;Explorer info stuff
-	if(A_OSVersion="WIN_7" && HKShowSpaceAndSize)
-	{
-		UpdateInfos(1)
-		SetTimer, UpdateInfos, 100
-	}
-	if(SuppressTabEvents)
-		return
-	if(TabContainerList.active=hwnd) ;If active hwnd is set to this window already, activation shall be handled elsewhere
-		return
-	DecToHex(hwnd)
-	if(TabContainer:=TabContainerList.ContainsHWND(hwnd))
-	{
-		TabContainerOld:=TabContainerList.ContainsHWND(TabContainerList.active)
-		;outputdebug set active
-		OldTab:=TabContainer.active
-		TabContainerList.active:=hwnd
-		TabContainer.active:=hwnd
-		
-		if(TabContainer!=TabContainerOld)
-			UpdateTabs()
-		UpdatePosition(TabNum, TabWindow)
-		
-		;SetTimer, UpdatePosition, 100
-	}
-}
-/*
-ExplorerDeactivated:
-ExplorerDeactivated()
-return
-*/
-ExplorerDeactivated(hwnd)
-{
-	global TabContainerList, TabNum, TabWindow,SuppressTabEvents, HKShowSpaceAndSize
-	hwnd:=WinExist("A")
-	if(hwnd=TabWindow)
-		return
-	if(HKShowSpaceAndSize && A_OsVersion = "WIN_7")
-		UpdateInfoPosition()
-	if(SuppressTabEvents)
-		return
-	TabContainerList.active:=0
-	UpdatePosition(TabNum, TabWindow)
-	;SetTimer, UpdatePosition, Off
-}
-ExplorerDestroyed(hwnd)
-{
-	global TabContainerList,TabWindowClose
-	outputdebug ExplorerDestroyed()
-	TabContainer:=TabContainerList.ContainsHWND(hwnd)
-	if(!TabContainer)
-		return
-	if(TabWindowClose = 0)
-		CloseTab(hwnd,TabContainer)
-	else if(TabWindowClose = 1)
-		TabContainer.CloseAllTabs()
-	return
-}
 TabContainerList_CloseAllInactiveTabs(TabContainerList)
 {
 	len := TabContainerList.len()

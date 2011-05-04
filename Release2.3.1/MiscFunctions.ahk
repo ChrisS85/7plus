@@ -964,3 +964,34 @@ RemoveUninstallInformation()
 		return
 	RegDelete, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7plus
 }
+
+AttachToolWindow(hParent, GUINumber, AutoClose)
+{
+		global ToolWindows
+		if(!IsObject(ToolWindows))
+			ToolWindows := Object()
+		if(!WinExist("ahk_id " hParent))
+			return false
+		Gui %GUINumber%: +LastFoundExist
+		if(!(hGui := WinExist()))
+			return false
+		DllCall("SetWindowLong", "Ptr", hGui, "int", -8, "PTR", hParent) ;This line actually sets the owner behavior
+		ToolWindows.Insert(Object("hParent", hParent, "hGui", hGui,"AutoClose", AutoClose))
+		return true
+}
+
+DeAttachToolWindow(GUINumber)
+{
+	global ToolWindows
+	Gui %GUINumber%: +LastFoundExist
+	if(!(hGui := WinExist()))
+		return false
+	Loop % ToolWindows.MaxIndex()
+	{
+		if(ToolWindows[A_Index].hGui = hGui)
+		{
+			DllCall("SetWindowLong", "Ptr", hGui, "int", -8, "PTR", 0) ;Remove tool window behavior
+			ToolWindows.Remove(A_Index)
+		}
+	}
+}

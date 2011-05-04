@@ -168,10 +168,10 @@ Trigger_Timer_Disable(Trigger, Event)
 		GUINum := Trigger.tmpGUINum
 		if(GUINum)
 		{
-			Trigger.tmpGUINum := ""
-			Trigger.tmpProgress := ""
-			Trigger.tmpText := ""
-			Trigger.tmpEventName := ""
+			Trigger.Remove("tmpGUINum")
+			Trigger.Remove("tmpProgress")
+			Trigger.Remove("tmpText")
+			Trigger.Remove("tmpEventName")
 			GUI, %GUINum%:Destroy
 		}
 	}

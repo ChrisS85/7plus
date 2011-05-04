@@ -89,30 +89,30 @@ ResizeWindowTooltip(reset = false)
 }
 
 ;See http://msdn.microsoft.com/en-us/library/ms644991(VS.85).aspx
-ShellMessage( nCode, wParam, lParam)
+ShellMessage( wParam, lParam, Msg)
 {
 	WasCritical := A_IsCritical
 	Critical
 	ListLines, Off
-	global ExplorerPath, HKShowSpaceAndSize, BlinkingWindows, wtmwParam, SuppressTabEvents, UseTabs, PreviousWindow, PreviousExplorerPath,WindowList,Accessor, RecentCreateCloseEvents,Profiler
+	global ExplorerPath, HKShowSpaceAndSize, BlinkingWindows, wtmlParam, SuppressTabEvents, UseTabs, PreviousWindow, PreviousExplorerPath,WindowList,Accessor, RecentCreateCloseEvents,Profiler,ToolWindows
 	StartTime := A_TickCount
 	Trigger := EventSystem_CreateSubEvent("Trigger", "OnMessage")
-	Trigger.Message := nCode
-	Trigger.wParam := wParam
+	Trigger.Message := wParam
 	Trigger.lParam := lParam
+	Trigger.Msg := Msg
 	OnTrigger(Trigger)
-	If	(nCode=1||nCode=2) ;Window Created/Closed
+	If	(wParam=1||wParam=2) ;Window Created/Closed
 	{
 		;Keep a list of recently received create/close messages, because they can be sent multiple times and we only want one.
 		if(!IsObject(RecentCreateCloseEvents))
 			RecentCreateCloseEvents := Array()
 		SetTimer, ClearRecentCreateCloseEvents, -300
-		if(!RecentCreateCloseEvents.HasKey(wParam))			
+		if(!RecentCreateCloseEvents.HasKey(lParam))			
 		{
-			RecentCreateCloseEvents[wParam] := 1		
-			Trigger := nCode = 1 ? EventSystem_CreateSubEvent("Trigger","WindowCreated") : EventSystem_CreateSubEvent("Trigger","WindowClosed")
-			class:=WinGetClass("ahk_Id " wParam)
-			Trigger.Window := wParam
+			RecentCreateCloseEvents[lParam] := 1		
+			Trigger := wParam = 1 ? EventSystem_CreateSubEvent("Trigger","WindowCreated") : EventSystem_CreateSubEvent("Trigger","WindowClosed")
+			class:=WinGetClass("ahk_Id " lParam)
+			Trigger.Window := lParam
 			OnTrigger(Trigger)
 			;Keep a list of windows and their required info stored. This allows to identify windows which were closed recently.
 			if(!WindowList)
@@ -136,32 +136,44 @@ ShellMessage( nCode, wParam, lParam)
 			;      and won't happen unless multiple windows are closed rapidly.
 			enum = WindowList._newEnum()
 			while enum[hwnd, value]
-				if(hwnd != wParam && !WindowList.HasKey(hwnd))
+				if(hwnd != lParam && !WindowList.HasKey(hwnd))
 					WindowList.Remove(hwnd)
+		}
+		if(wParam=2)
+		{
+			Loop % ToolWindows.MaxIndex()
+			{
+				if(ToolWindows[A_Index].hParent = lParam && ToolWindows[A_Index].AutoClose)
+				{
+					WinClose % "ahk_id " ToolWindows[A_Index].hGui
+					ToolWindows.Remove(A_Index)
+					break
+				}
+			}
 		}
 	}	
 	;Blinking windows detection, add new blinking windows
-	else if(nCode=32774)
+	else if(wParam=32774)
 	{
-		class:=WinGetClass("ahk_id " wParam)
+		class:=WinGetClass("ahk_id " lParam)
 		; outputdebug blinking window %class%
-		if(BlinkingWindows.indexOf(wParam)=0)
+		if(BlinkingWindows.indexOf(lParam)=0)
 		{			
-			BlinkingWindows.Append(wParam)
+			BlinkingWindows.Append(lParam)
 			ct:=BlinkingWindows.len()
 		}
 	}	
 	;Window Activation
-	else if(nCode=4||nCode=32772) ;HSHELL_WINDOWACTIVATED||HSHELL_RUDEAPPACTIVATED
+	else if(wParam=4||wParam=32772) ;HSHELL_WINDOWACTIVATED||HSHELL_RUDEAPPACTIVATED
 	{
 		Trigger := Object("base", TriggerBase)
 		Trigger.Type := "WindowActivated"
 		OnTrigger(Trigger)
 		;Blinking windows detection, remove activated windows
-		if(x:=BlinkingWindows.indexOf(wParam))
+		if(x:=BlinkingWindows.indexOf(lParam))
 			BlinkingWindows.Delete(x)
-		DecToHex(wParam)
-		class:=WinGetClass("ahk_id " wParam)
+		DecToHex(lParam)
+		class:=WinGetClass("ahk_id " lParam)
 		if(Accessor.GUINum && WinGetTitle("A") != Accessor.WindowTitle)
 			AccessorClose()
 		;If we change from another program to explorer/desktop/dialog
@@ -177,13 +189,13 @@ ShellMessage( nCode, wParam, lParam)
 		{
 			if(WinExist("ahk_id " PreviousWindow " ahk_group ExplorerGroup"))
 				ExplorerDeactivated(PreviousWindow)
-			ExplorerActivated(wParam)
+			ExplorerActivated(lParam)
 		}
 		Else ;Right now this is called on every window switch, but it shouldn't hurt much
-			ExplorerDeactivated(wParam)		
+			ExplorerDeactivated(lParam)		
 	}
 	;Redraw is fired on Explorer path change
-	else if(nCode=6)
+	else if(wParam=6)
 	{
 		;Detect changed path		
 		if(WinActive("ahk_group ExplorerGroup")||IsDialog())

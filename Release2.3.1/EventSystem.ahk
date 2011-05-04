@@ -38,6 +38,7 @@
 #include %A_ScriptDir%\Actions\ControlEvent.ahk
 #include %A_ScriptDir%\Actions\ControlTimer.ahk
 #include %A_ScriptDir%\Actions\Exit7plus.ahk
+#include %A_ScriptDir%\Actions\ExplorerReplaceDialog.ahk
 #include %A_ScriptDir%\Actions\FastFoldersClear.ahk
 #include %A_ScriptDir%\Actions\FastFoldersMenu.ahk
 #include %A_ScriptDir%\Actions\FastFoldersRecall.ahk
@@ -215,7 +216,7 @@ EventSystem_CreateBaseObjects()
 	local tmpobject
 	EventSystem_Triggers := "ContextMenu,DoubleClickDesktop,DoubleClickTaskbar,ExplorerButton,ExplorerDoubleClickSpace,ExplorerPathChanged,Hotkey,None,MenuItem,OnMessage,Timer,Trigger,WindowActivated, WindowClosed, WindowCreated,WindowStateChange,7plusStart"
 	EventSystem_Conditions := "If,IsContextMenuActive,IsDialog,IsFullScreen,KeyIsDown,IsRenaming,MouseOver,MouseOverFileList,MouseOverTabButton,MouseOverTaskList,WindowActive,WindowExists"
-	EventSystem_Actions := "Accessor,AutoUpdate,Clipboard,Clipmenu,ControlEvent,ControlTimer,Copy,Delete,Exit7plus,FastFoldersClear,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FilterList,FlashingWindows,FlatView,FocusControl,ImageConverter,Input,MD5,Message,Move,MouseClick,MouseCloseTab,NewFile,NewFolder,OpenInNewFolder,PlaySound,Restart7plus,RestoreSelection,Run,RunOrActivate,Screenshot,SelectFiles,SetWindowTitle,SendKeys,SendMessage,SetDirectory,ShortenURL,ShowMenu,ShowSettings,Shutdown,TaskButtonClose,ToggleWallpaper,Tooltip,Upload,ViewMode,Volume,Wait,WindowActivate,WindowClose,WindowHide,WindowMove,WindowResize,WindowSendToBottom,WindowShow,WindowState,Write"
+	EventSystem_Actions := "Accessor,AutoUpdate,Clipboard,Clipmenu,ControlEvent,ControlTimer,Copy,Delete,ExplorerReplaceDialog,Exit7plus,FastFoldersClear,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FilterList,FlashingWindows,FlatView,FocusControl,ImageConverter,Input,MD5,Message,Move,MouseClick,MouseCloseTab,NewFile,NewFolder,OpenInNewFolder,PlaySound,Restart7plus,RestoreSelection,Run,RunOrActivate,Screenshot,SelectFiles,SetWindowTitle,SendKeys,SendMessage,SetDirectory,ShortenURL,ShowMenu,ShowSettings,Shutdown,TaskButtonClose,ToggleWallpaper,Tooltip,Upload,ViewMode,Volume,Wait,WindowActivate,WindowClose,WindowHide,WindowMove,WindowResize,WindowSendToBottom,WindowShow,WindowState,Write"
 	Trigger_Categories := object("Explorer", Array(), "Hotkeys", Array(), "Other", Array(), "System", Array(), "Window", Array(), "7plus", Array())
 	Condition_Categories := object("Explorer", Array(), "Mouse", Array(), "Other", Array(), "Window", Array())
 	Action_Categories := object("Explorer", Array(), "FastFolders", Array(), "File", Array(), "Window", Array(), "Input", Array(), "System", Array(), "7plus", Array(), "Other", Array())
@@ -861,4 +862,26 @@ EventScheduler()
 EventLog(text)
 {
 	FileAppend, %A_Now%: %text%`n, %A_Temp%\7plus\EventLog.log
+}
+
+;Finds the event and action of a running event of specified type by its gui number
+;This function assumes that the gui number is stored as "tmpGUINum" in the action of the specified type.
+;The action should remove the value after it has finished so the gui number may be used again by other actions in this event.
+EventFromGUINumber(number, type, ByRef Event, ByRef Action)
+{
+	global EventSchedule
+	Loop % EventSchedule.len()
+	{
+		pos := A_Index
+		Loop % EventSchedule[pos].Actions.len()
+		{
+			if(EventSchedule[pos].Actions[A_Index].Type = type && EventSchedule[pos].Actions[A_Index].tmpGUINum = number)
+			{
+				Event := EventSchedule[pos]
+				Action := EventSchedule[pos].Actions[A_Index]
+				return EventSchedule[pos]
+			}
+		}
+	}
+	return 0
 }

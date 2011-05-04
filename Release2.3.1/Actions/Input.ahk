@@ -20,7 +20,6 @@ Action_Input_ReadXML(Action, XMLAction)
 }
 Action_Input_Execute(Action,Event)
 {
-	global EventSchedule
 	if(!Action.tmpGuiNum)
 	{
 		result := UserInputBox(Action,Event)
@@ -39,7 +38,10 @@ Action_Input_Execute(Action,Event)
 		If(WinExist("ahk_id " InputBox_hwnd)) ;Box not closed yet, need more processing time
 			return -1
 		else
+		{
+			Action.Remove("tmpGUINum") ;Remove so other actions in this event may reuse this GUI number
 			return Action.tmpResult != "Cancel" ;Box closed, all fine
+		}
 	}
 } 
 Action_Input_DisplayString(Action)
@@ -239,7 +241,7 @@ Action_Input_Edit()
 return
 Action_Input_Edit()
 {
-	InputBoxEventFromGUINumber(A_Gui, Event, Action)
+	EventFromGUINumber(A_Gui, "Input", Event, Action)
 	if(Action.Validate)
 	{
 		ControlGetText, input, Edit1
@@ -273,7 +275,7 @@ return
 InputBoxCancel()
 {
 	global Events
-	InputBoxEventFromGUINumber(A_Gui, Event, Action)
+	EventFromGUINumber(A_Gui, "Input", Event, Action)
 	if(!Action.Cancel)
 		return
 	Action.tmpResult := "Cancel"
@@ -283,7 +285,7 @@ InputBoxCancel()
 InputBoxOK()
 {
 	global Events
-	InputBoxEventFromGUINumber(A_Gui, Event, Action)
+	EventFromGUINumber(A_Gui, "Input", Event, Action)
 	Action.tmpResult := "OK"
 	if(Action.DataType = "Text" || Action.DataType = "Number" || Action.DataType = "Path" || Action.DataType = "File")
 		ControlGetText, input, Edit1
@@ -313,24 +315,4 @@ InputBoxOK()
 		Action.Placeholder := "Input"
 	Events.GlobalPlaceholders[Action.Placeholder] := input
 	Gui, Destroy
-}
-
-;Finds the event and action of an input box action by its gui number
-InputBoxEventFromGUINumber(number, ByRef Event, ByRef Action)
-{
-	global EventSchedule
-	Loop % EventSchedule.len()
-	{
-		pos := A_Index
-		Loop % EventSchedule[pos].Actions.len()
-		{
-			if(EventSchedule[pos].Actions[A_Index].Type = "Input" && EventSchedule[pos].Actions[A_Index].tmpGUINum = number)
-			{
-				Event := EventSchedule[pos]
-				Action := EventSchedule[pos].Actions[A_Index]
-				return EventSchedule[pos]
-			}
-		}
-	}
-	return 0
 }
