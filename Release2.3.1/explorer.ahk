@@ -170,23 +170,19 @@ SetFocusToFileView()
 
 FixExplorerConfirmationDialogs()
 {
-	global
+	global ExplorerConfirmationDialogTitle, ExplorerConfirmationDialogButton
 	;Check if titles were acquired and if this is a proper dialog
-	if(ExplorerConfirmationDialogTitle1 && z:=IsExplorerConfirmationDialog())
+	if(ExplorerConfirmationDialogTitle.len() > 0 && z:=IsExplorerConfirmationDialog())
 	{
 		if(z=2 || z=6)
-		{
-			Control, Check , , Button4, A	
-		}
+			Control, Check , , Button4, A
 		else if (z=5)
-		{
 			Control, Check , , Button5, A
-		}
 		else
 		{
 			;just check both, lazyness and low number seem to warrant it :D
-			Control, Check , , %ExplorerConfirmationDialogButton1%, A	
-			Control, Check , , %ExplorerConfirmationDialogButton2%, A
+			Control, Check , , % ExplorerConfirmationDialogButton[1], A
+			Control, Check , , % ExplorerConfirmationDialogButton[2], A
 		}
 	}
 }
@@ -197,48 +193,18 @@ IsExplorerConfirmationDialog()
 	if(WinActive("ahk_class #32770"))
 	{
 		WinGetTitle, title, A
-		loop 6
-			if(strStartsWith(title,a:=ExplorerConfirmationDialogTitle%A_INDEX%))
-			{
-				x:=ExplorerConfirmationDialogTitle%A_INDEX%
+		loop % ExplorerConfirmationDialogTitle.len()
+			if(strStartsWith(title, ExplorerConfirmationDialogTitle[A_INDEX]))
 				return A_Index
-			}
 	}
 	return 0
 }
 
 AcquireExplorerConfirmationDialogStrings()
 {
-	global shell32MUIpath
-	VarSetCapacity(buffer, 85*2)
-	length:=DllCall("GetUserDefaultLocaleName","UIntP",buffer,"UInt",85)
-	if(A_IsUnicode)
-		locale := StrGet(buffer)
-	shell32MUIpath:=A_WinDir "\winsxs\*_microsoft-windows-*resources*" locale "*" ;\x86_microsoft-windows-shell32.resources_31bf3856ad364e35_6.1.7600.16385_de-de_b08f46c44b512da0\shell32.dll.mui
-	loop %shell32MUIpath%,2,0
-	{
-		if(FileExist(A_LoopFileFullPath "\shell32.dll.mui"))
-		{
-			shell32MUIpath:=A_LoopFileFullPath "\shell32.dll.mui"
-			found:=true
-			break
-		}
-	}
-	if(found)
-	{
-		global ExplorerConfirmationDialogTitle1:=TranslateMUI(shell32MUIpath,16705)
-		global ExplorerConfirmationDialogTitle2:=TranslateMUI(shell32MUIpath,16877)
-		global ExplorerConfirmationDialogTitle3:=TranslateMUI(shell32MUIpath,16875)
-		global ExplorerConfirmationDialogTitle4:=TranslateMUI(shell32MUIpath,16876)
-		global ExplorerConfirmationDialogTitle5:=TranslateMUI(shell32MUIpath,16706)
-		global ExplorerConfirmationDialogTitle6:=TranslateMUI(shell32MUIpath,16864)
-		global ExplorerConfirmationDialogButton1:=strStripRight(TranslateMUI(shell32MUIpath,16928),"%")
-		global ExplorerConfirmationDialogButton2:=strStripRight(TranslateMUI(shell32MUIpath,17039),"%")
-		global ExplorerConfirmationDialogButton3:=TranslateMUI(shell32MUIpath,16663)
-		return true
-	}
-	Outputdebug Failed to acquire translated Explorer dialog names
-	return false
+	global
+	ExplorerConfirmationDialogTitle := Array(TranslateMUI(Shell32MUIPath,16705), TranslateMUI(Shell32MUIPath,16877), TranslateMUI(Shell32MUIPath,16875), TranslateMUI(Shell32MUIPath,16875), TranslateMUI(Shell32MUIPath,16706), TranslateMUI(Shell32MUIPath,16864))
+	ExplorerConfirmationDialogButton:=Array(strStripRight(TranslateMUI(Shell32MUIPath,16928),"%"), strStripRight(TranslateMUI(Shell32MUIPath,17039),"%"), TranslateMUI(Shell32MUIPath,16663))
 }
 
 ;Mouse "gestures" (hold left/right and click right/left)
@@ -565,173 +531,15 @@ FlatView(files)
 	Fileappend,%searchString%, %Path%
 	SetDirectory(Path)
 }
-InitInfoGui()
-{
-	global ExplorerWindows
-	freetext:=TranslateMUI(shell32MUIpath,12336) ;Aquire a translated version of "free"outputdebug freetext %freetext%
-	freetext:=SubStr(freetext,InStr(freetext," ",0,0)+1)
-	ExplorerWindows.InfoGuiStuff := Object("FreeText", freetext)
-}
-ShouldShowInfo(ExplorerWindow)
-{
-	global 7plus_Blocked
-	if(7plus_Blocked)
-		return false
-	ControlGet, visible, visible, , msctls_statusbar321, % "ahk_id " ExplorerWindow.hwnd ;Check if status bar is visible
-	if(!visible)
-		return false
-	return true
-}
-
-UpdateInfos:
-UpdateInfos()
-return
-;TODO: Continue here and rework the update code. Maybe move it inside the Explorer window class.
-UpdateInfos(ExplorerWindow)
-{
-	global freetext, newstring, freestring
-	static selectedfiles1, currentfolder1
-	Loop % ExplorerWindows.len()
-	{
-		files:=GetSelectedFiles()
-		path:=GetCurrentFolder()
-		if(files=selectedfiles1 && path=currentfolder1 && !force)
-			return
-		selectedfiles1:=files
-		currentfolder1:=path
-		totalsize:=0
-		count:=0
-		realfiles:=0 ;check if only folders are selected
-		Loop, Parse, files, `n,`r
-		{
-			FileGetSize, size, %A_LoopField%
-			if(realfiles=0)	  		
-				realfiles:=!InStr(FileExist(A_LoopField), "D")
-			totalsize+=size
-			count++
-		}
-		
-		DriveSpaceFree, free, %Path%
-		freeunit:=6
-		totalunit:=0
-		if(totalsize!=0)
-		{
-			while(totalsize>1024 && totalunit<12)
-			{
-				totalsize/=1024.0
-				totalunit+=3
-			}
-			while(totalsize<1&&totalunit>=0)
-			{
-				totalsize*=1024.0
-				totalunit=3
-			}
-		}
-		if(free!=0)
-		{
-			while(free>1024 && freeunit<12)
-			{
-				free/=1024.0
-				freeunit+=3
-			}
-			while(free<1&&freeunit>=0)
-			{
-				free*=1024.0
-				freeunit-=3
-			}
-		}
-		if(freeunit=0) 
-			freeunit=B
-		else if(freeunit=3) 
-			freeunit=KB
-		else if(freeunit=6) 
-			freeunit=MB
-		else if(freeunit=9)
-			freeunit=GB
-		else if(freeunit=12)
-			freeunit=TB
-		if(totalunit=0)
-			totalunit=B
-		else if(totalunit=3)
-			totalunit=KB
-		else if(totalunit=6)
-			totalunit=MB
-		else if(totalunit=9)
-			totalunit=GB
-		else if(totalunit=12)
-			totalunit=TB
-		if(free)
-		{
-			SetFormat float,0.2
-			free+=0
-			text=%free%%freeunit% %freetext%
-			if(text!=freestring)
-			{
-				GuiControl 2:Text, FreeSpace, %free%%freeunit% %freetext%
-				freestring:=text
-			}
-		}
-		else
-		{
-			text=%A_Space%
-			if(text!=freestring)
-			{
-				GuiControl 2:Text, FreeSpace, %A_Space%
-				freestring:=text
-			}
-		}
-		if(count && realfiles)
-		{
-			SetFormat float,0.2
-			totalsize+=0
-			text=%totalsize%%totalunit%
-			if(text!=newstring)
-			{
-				GuiControl 2:Text, SelectedFileSize, %totalsize%%totalunit%
-				newstring:=text
-			}
-		}
-		else
-		{
-			text=%A_Space%
-			if(text!=newstring)
-			{
-				GuiControl 2:Text, SelectedFileSize, %A_Space%
-				newstring:=text
-			}
-		}
-		UpdateInfoPosition()
-	}
-	return
-}
-
-MoveExplorer:
-UpdateInfoPosition()
-;UpdatePosition(TabNum,TabWindow)
-return
-UpdateInfoPosition()
-{
-	Gui, 2: -Caption  +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs
-	if(ShouldShowInfo())
-	{
-		WinGetPos , X, Y, Width, Height, A
-		ControlGetPos , , cY, , cHeight, msctls_statusbar321, A
-		InfoX:=X+Width-370
-		InfoY:=Y+cY+cHeight/2-6 ;+Height-26
-		if(Width>540)
-			Gui, 2:Show, AutoSize NA x%InfoX% y%InfoY%
-	}
-	else
-		Gui, 2:Hide
-}
 
 ;Find all explorer windows, register them in ExplorerWindows array and set up events and info gui
 RegisterExplorerWindows()
 {
 	global ExplorerWindows, ExplorerWindow
 	WinGet, hWndList, List, ahk_group ExplorerGroup
-	Loop % hwndList0
+	Loop % hwndList
 	{
+		; msgbox loop
 		if(!ExplorerWindows.IndexOfSubItem("hwnd", hWndList%A_Index%))
 			ExplorerWindows.append(new ExplorerWindow(hwndList%A_Index%))
 	}
@@ -788,13 +596,7 @@ ExplorerActivated(hwnd)
 	global TabContainerList, TabNum, TabWindow, SuppressTabEvents, HKShowSpaceAndSize, ExplorerWindows, ExplorerWindow
 	if(!ExplorerWindows.IndexOfSubItem("hwnd",hwnd))
 		ExplorerWindows.Append(new ExplorerWindow(hwnd))
-	RegisterSelectionChangedEvents()
-	;Explorer info stuff
-	; if(A_OSVersion="WIN_7" && HKShowSpaceAndSize)
-	; {
-		; UpdateInfos(1)
-		; SetTimer, UpdateInfos, 100
-	; }
+	RegisterSelectionChangedEvents() ;Is this needed? only as backup probably
 	if(SuppressTabEvents)
 		return
 	if(TabContainerList.active=hwnd) ;If active hwnd is set to this window already, activation shall be handled elsewhere
@@ -822,8 +624,6 @@ ExplorerDeactivated(hwnd)
 	hwnd:=WinExist("A")
 	if(hwnd=TabWindow)
 		return
-	; if(HKShowSpaceAndSize && A_OsVersion = "WIN_7")
-		; UpdateInfoPosition()
 	if(SuppressTabEvents)
 		return
 	TabContainerList.active:=0
@@ -845,6 +645,14 @@ ExplorerDestroyed(hwnd)
 	else if(TabWindowClose = 1)
 		TabContainer.CloseAllTabs()
 	return
+}
+ExplorerMoved(hwnd)
+{
+	global UseTabs, HKShowSpaceAndSize, TabNum, TabWindow,ExplorerWindows
+	if(UseTabs)
+		UpdatePosition(TabNum,TabWindow)
+	if(HKShowSpaceAndSize && A_OsVersion = "WIN_7")
+		ExplorerWindows.SubItem("hwnd", hwnd).InfoGUI.UpdateInfoPosition()
 }
 ;Called when active explorer changes its path.
 ExplorerPathChanged(from, to)
@@ -880,7 +688,6 @@ ExplorerSelectionChanged(ExplorerCOMObject)
 {
 	global ExplorerWindows
 	; Critical ;This apparently makes it stop working and blocks the explorer window somehow
-	outputdebug ExplorerSelectionChanged
 	Loop % ExplorerWindows.Len()
 	{
 		if(ExplorerWindows[A_Index].Selection.COMObject = ExplorerCOMObject)
@@ -891,52 +698,93 @@ ExplorerSelectionChanged(ExplorerCOMObject)
 	}
 	if(!index)
 		return
-	if(ExplorerWindows[A_Index].Selection.IgnoreNextEvent > 0)
+	if(ExplorerWindows[index].Selection.IgnoreNextEvent > 0)
 	{
-		ExplorerWindows[A_Index].Selection.IgnoreNextEvent := ExplorerWindows[A_Index].Selection.IgnoreNextEvent - 1
-		outputdebug % "expecting " ExplorerWindows[A_Index].Selection.IgnoreNextEvent " more events."
+		ExplorerWindows[index].Selection.IgnoreNextEvent := ExplorerWindows[index].Selection.IgnoreNextEvent - 1
+		outputdebug % "expecting " ExplorerWindows[index].Selection.IgnoreNextEvent " more events."
 		return
 	}
-	ExplorerWindows[A_Index].Selection.History.append(ToArray(GetSelectedFiles(0, ExplorerWindows[A_Index].hwnd)))
-	if(ExplorerWindows[A_Index].Selection.History.len() > 10)
-		ExplorerWindows[A_Index].Selection.History.Delete(1)
-	UpdateInfos(ExplorerWindow) ;Update the info GUI to reflect selection change
+	ExplorerWindows[index].Selection.History.append(ToArray(GetSelectedFiles(0, ExplorerWindows[index].hwnd)))
+	if(ExplorerWindows[index].Selection.History.len() > 10)
+		ExplorerWindows[index].Selection.History.Delete(1)
+	ExplorerWindows[index].InfoGUI.UpdateInfos(ExplorerWindows[index]) ;Update the info GUI to reflect selection change
 	; Critical, Off
 }
-
-class ExplorerWindow
+class InfoGUI
 {
-    var hWnd := 0
-	var Path := ""
-    __New(hWnd, Path="")
-    {
-        this.hWnd := hWnd
-		this.Path := Path ? Path : GetCurrentFolder(hWnd)
-		this.InfoGUI := this.CreateInfoGUI()
-		Selection := Object()
-		this.RegisterSelectionChangedEvent()
-    }
-	__Delete()
-	{
-		DestroyInfoGUI()
-	}
-	CreateInfoGui()
+	__New(hParent)
 	{
 		GuiNum := GetFreeGuiNum(10)
+		this.GuiNum := GuiNum
 		Gui, %GuiNum%: font, s9, Segoe UI 
 		Gui, %GuiNum%: Add, Text, x60 y0 w70 h12, %A_Space%
 		Gui, %GuiNum%: Add, Text, x0 y0 w60 h12, %A_Space%
-		Gui, %GuiNum%: -Caption  +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs
+		Gui, %GuiNum%: -Caption  +LastFound +ToolWindow
 		Gui, %GuiNum%: Color, FFFFFF
 		Gui, %GuiNum%: +LastFound
 		WinSet, TransColor, FFFFFF
-		AttachToolWindow(this.hWnd, GuiNum, true)
-		return Object("GuiNum", GuiNum, "hwnd", WinExist())
+		AttachToolWindow(hParent, GuiNum, true)
+		this.hWnd := WinExist()
+		this.hParent := hParent
 	}
-	DestroyInfoGUI()
+	__Delete()
 	{
-		Gui % this.InfoGui.GuiNum ":Destroy"
+		Gui % this.GuiNum ":Destroy"
 	}
+	UpdateInfos(ExplorerWindow)
+	{
+		global ExplorerWindows
+		totalsize:=0
+		realfiles:=false ;check if only folders are selected
+		History :=ExplorerWindow.Selection.History[ExplorerWindow.Selection.History.len()]
+		Loop % History.len()
+		{
+			FileGetSize, size, % History[A_Index]
+			if(!realfiles)
+				realfiles:=!InStr(FileExist(History[A_Index]), "D")
+			totalsize+=size
+		}
+		DriveSpaceFree, free, % ExplorerWindow.Path
+		free := FormatFileSize(free * 1048576)
+		GuiControl % this.GUINum ":Text", Static1, % free " " ExplorerWindows.InfoGUI_FreeText
+		if(realfiles)
+		{
+			totalsize := FormatFileSize(totalsize)
+			GuiControl % this.GUINum ":Text", Static2, %totalsize%
+		}
+		else
+			GuiControl % this.GUINum ":Text", Static2, %A_Space%
+		this.UpdateInfoPosition()
+	}
+	UpdateInfoPosition()
+	{
+		ControlGet, visible, visible, , msctls_statusbar321, % "ahk_id " this.hParent ;Check if status bar is visible
+		if(visible)
+		{
+			WinGetPos , X, Y, Width, Height, % "ahk_id " this.hParent
+			ControlGetPos , , cY, , cHeight, msctls_statusbar321, % "ahk_id " this.hParent
+			InfoX:=X+Width-370
+			InfoY:=Y+cY+cHeight/2-6 ;+Height-26
+			if(Width>540)
+				Gui, % this.GuiNum ": Show", AutoSize NA x%InfoX% y%InfoY%
+		}
+		else
+			Gui, % this.GuiNum ": Hide"
+	}
+}
+
+;TODO: Figure out how to receive explorer close event and proper path change
+class ExplorerWindow
+{	
+    __New(hWnd, Path="")
+    {
+		global InfoGUI
+        this.hWnd := hWnd
+		this.Path := Path ? Path : GetCurrentFolder(hWnd)
+		this.InfoGUI := new InfoGUI(hWnd)
+		this.Selection := Object()
+		this.RegisterSelectionChangedEvent()
+    }
 	RegisterSelectionChangedEvent()
 	{
 		global ExplorerWindows
@@ -944,14 +792,14 @@ class ExplorerWindow
 		{
 			if(Item.hWnd != this.hWnd)
 				continue
-			if(!ExplorerWindows[index].Selection.COMObject) ;New explorer window
+			if(!this.Selection.COMObject) ;New explorer window
 			{
 				doc:=Item.Document
 				if(!doc)
 					return 0
 				ComObjConnect(doc, "Explorer")
-				ExplorerWindows[index].Selection.COMObject := doc
-				ExplorerWindows[index].Selection.History := Array(this.GetSelectedFiles(0))
+				this.Selection.COMObject := doc
+				this.Selection.History := Array(this.GetSelectedFiles(0))
 			}
 			else ;explorer window is already registered, lets see if its view changed
 			{
@@ -964,9 +812,9 @@ class ExplorerWindow
 				if(this.Path != Path) ;Compare by path since the COM wrapper objects are different
 				{
 					ComObjConnect(doc, "Explorer")
-					ExplorerWindows[index].Selection.COMObject := doc
-					ExplorerWindows[index].Selection.History := Array(this.GetSelectedFiles(0)) ;Recreate array to remove selection history from previous folder
-					ExplorerWindows[index].Path := Path
+					this.Selection.COMObject := doc
+					this.Selection.History := Array(this.GetSelectedFiles(0)) ;Recreate array to remove selection history from previous folder
+					this.Path := Path
 				}
 			}
 		}
@@ -976,3 +824,4 @@ class ExplorerWindow
 		return ToArray(GetSelectedFiles(FullName, this.hWnd))
 	}
 }
+; #t::msgbox % ExploreObj(ExplorerWindows)

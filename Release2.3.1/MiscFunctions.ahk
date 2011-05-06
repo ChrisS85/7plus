@@ -889,7 +889,7 @@ FormatFileSize(Bytes, Decimals=2, Prefixes="B,KB,MB,GB,TB,PB,EB,ZB,YB")
 	StringSplit, Prefix, Prefixes, `,
 	Loop, Parse, Prefixes, `,
 		if(Bytes < e := 1024**A_Index)
-			return % Round(Bytes/(e/1024), decimals) . " " . Prefix%A_Index%
+			return % Round(Bytes/(e/1024), decimals) Prefix%A_Index%
 }
 ExploreObj(Obj, NewRow="`n", Equal="  =  ", Indent="`t", Depth=12, CurIndent="") { 
     for k,v in Obj 
@@ -992,6 +992,25 @@ DeAttachToolWindow(GUINumber)
 		{
 			DllCall("SetWindowLong", "Ptr", hGui, "int", -8, "PTR", 0) ;Remove tool window behavior
 			ToolWindows.Remove(A_Index)
+		}
+	}
+}
+
+LocateShell32MUI()
+{
+	global shell32MUIpath
+	VarSetCapacity(buffer, 85*2)
+	length:=DllCall("GetUserDefaultLocaleName","UIntP",buffer,"UInt",85)
+	if(A_IsUnicode)
+		locale := StrGet(buffer)
+	shell32MUIpath:=A_WinDir "\winsxs\*_microsoft-windows-*resources*" locale "*" ;\x86_microsoft-windows-shell32.resources_31bf3856ad364e35_6.1.7600.16385_de-de_b08f46c44b512da0\shell32.dll.mui
+	loop %shell32MUIpath%,2,0
+	{
+		if(FileExist(A_LoopFileFullPath "\shell32.dll.mui"))
+		{
+			shell32MUIpath:=A_LoopFileFullPath "\shell32.dll.mui"
+			found:=true
+			break
 		}
 	}
 }

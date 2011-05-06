@@ -27,12 +27,8 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 	else if(event=0x8001 && UseTabs) ;EVENT_OBJECT_DESTROY
 	{
 		DecToHex(hwnd)
-		if(TabContainerList.ContainsHWND(hwnd))		
-		{
-			UnregisterSelectionChangedEvents(hwnd)
-			; outputdebug tab closed
+		if(TabContainerList.ContainsHWND(hwnd))
 			ExplorerDestroyed(hwnd)
-		}
 	}
 	else if(event=0x800B) ;EVENT_OBJECT_LOCATIONCHANGE
 	{
@@ -44,13 +40,8 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 			Trigger.Event := "Window maximized"
 			OnTrigger(Trigger)
 		}
-		if(WinActive("ahk_group ExplorerGroup"))
-		{
-			if(UseTabs)
-				UpdatePosition(TabNum,TabWindow)
-			if(HKShowSpaceAndSize && A_OsVersion = "WIN_7")
-				UpdateInfoPosition()
-		}
+		if(InStr("CabinetWClass,ExploreWClass", WinGetClass("ahk_id " hwnd)))
+			ExplorerMoved(hwnd)
 	}	
 	else if(event = 0x000A && ShowResizeTooltip)
 	{

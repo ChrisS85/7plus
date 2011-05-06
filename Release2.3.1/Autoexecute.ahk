@@ -98,8 +98,9 @@ Menu, tray, add, Settings, SettingsHandler
 menu, tray, Default, Settings
 
 ;This needs to be executed before EventSystem_Startup() because NewFile/Folder action relies on it
-if(Vista7)
-	AcquireExplorerConfirmationDialogStrings()
+if(LocateShell32MUI())
+	if(Vista7)
+		AcquireExplorerConfirmationDialogStrings()
 
 ;Init event system
 outputdebug starting event system
@@ -255,6 +256,8 @@ IniRead, TabWindowClose, %IniPath%, Tabs, TabWindowClose, 1
 IniRead, OnTabClose, %IniPath%, Tabs, OnTabClose, 1
 IniRead, MiddleOpenFolder, %IniPath%, Tabs, MiddleOpenFolder, 1
 ExplorerWindows := Array()
+ExplorerWindows.InfoGUI_FreeText := TranslateMUI(shell32MUIpath,12336) ;Aquire a translated version of "free"
+ExplorerWindows.InfoGUI_FreeText:=SubStr(ExplorerWindows.InfoGUI_FreeText,InStr(ExplorerWindows.InfoGUI_FreeText," ",0,0)+1)
 RegisterExplorerWindows()
 TabContainerList := TabContainerList()
 if(Vista7)
@@ -268,10 +271,6 @@ TabContainerList.height := 20
 TabContainerList.TabWidth := 100
 TabContainerList.InActiveHeightDifference := 2
 TabContainerList.MinWidth := 40
-
-
-if(A_OSVersion="WIN_7")
-	CreateInfoGui()
 
 LoadHotstrings()
 
