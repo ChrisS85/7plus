@@ -10,10 +10,13 @@ MsgNum := DllCall( "RegisterWindowMessage", Str,"SHELLHOOK" )
 OnMessage( MsgNum, "ShellMessage" ) 
 Return 
 
-DecToHex( ByRef lParam ) 
-{ 
+DecToHex( ByRef lParam )
+{
+	f := A_FormatInteger
    SetFormat, Integer, Hex 
-   Return lParam += 0 
+   lParam += 0
+   SetFormat, Integer, %f%
+   Return lParam
 } 
 
 FilterMenu() 

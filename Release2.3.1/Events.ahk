@@ -31,21 +31,21 @@ Events_Remove(Events, Event, UpdateGUI=true)
 }
 
 ;Events overrides SubItem function so that it can redirect negative IDs to TemporaryEvents
-Events_SubItem(Events, subitem, val, opts="", startpos=1)
+Events_SubItem(Events, subitem, val)
 {
 	global TemporaryEvents
 	if(subitem = "ID" && val < 0)
-		return TemporaryEvents.SubItem(subitem, val, opts, startpos)
+		return TemporaryEvents.SubItem(subitem, val)
 	else
-		return Array_SubItem(Events,subitem, val, opts, startpos)
+		return Array_SubItem(Events,subitem, val)
 }
 
 ;Events overrides indexOfSubItem function so that it can redirect negative IDs to TemporaryEvents
-Events_indexOfSubItem(Events, subitem, val, opts="", startpos=1)
+Events_indexOfSubItem(Events, subitem, val)
 {
 	global TemporaryEvents
 	if(subitem = "ID" && val < 0)
-		return TemporaryEvents.indexOfSubItem(subitem, val, opts, startpos)
+		return TemporaryEvents.indexOfSubItem(subitem, val)
 	else
-		return Array_indexOfSubItem(Events,subitem, val, opts, startpos)
+		return Array_indexOfSubItem(Events,subitem, val)
 }

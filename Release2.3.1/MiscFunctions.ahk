@@ -331,9 +331,10 @@ max(x,y)
 }
 DecToHex( ByRef var ) 
 { 
+	f := A_FormatInteger
    SetFormat, Integer, Hex 
    var += 0
-   SetFormat, Integer, Dec
+   ; SetFormat, Integer, %f%
    return var
 } 
 strStartsWith(string,start)
@@ -768,7 +769,7 @@ uriEncode(str, full=0) {
    If RegExMatch(str, "^\w+:/{0,2}", pr) 
       StringTrimLeft, str, str, StrLen(pr) 
    StringReplace, str, str, `%, `%25, All 
-   Loop 
+   Loop
       If RegExMatch(str, full ? "i)[^a-zA-Z0-9_\.~%/:]" : "i)[^a-zA-Z0-9_\.~%/:?&=]", char) 
          StringReplace, str, str, %char%, % "%" . SubStr(Asc(char),3), All 
       Else Break 
@@ -968,6 +969,7 @@ RemoveUninstallInformation()
 AttachToolWindow(hParent, GUINumber, AutoClose)
 {
 		global ToolWindows
+		outputdebug AttachToolWindow %GUINumber% to %hParent%
 		if(!IsObject(ToolWindows))
 			ToolWindows := Object()
 		if(!WinExist("ahk_id " hParent))
@@ -977,6 +979,7 @@ AttachToolWindow(hParent, GUINumber, AutoClose)
 			return false
 		DllCall("SetWindowLong", "Ptr", hGui, "int", -8, "PTR", hParent) ;This line actually sets the owner behavior
 		ToolWindows.Insert(Object("hParent", hParent, "hGui", hGui,"AutoClose", AutoClose))
+		Gui %GUINumber%: Show, NA
 		return true
 }
 

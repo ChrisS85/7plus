@@ -121,8 +121,6 @@ PostUpdate()
 if(CompareVersion(XMLMajorVersion, MajorVersion, XMLMinorVersion, MinorVersion, XMLBugfixVersion, BugfixVersion) = -1)
 	ApplyUpdateFixes()
 
-CreateTabWindow()
-
 ;On first run, wizard is used to setup values
 IniRead, FirstRun, %IniPath%, General, FirstRun , 1
 
@@ -255,22 +253,7 @@ IniRead, ActivateTab, %IniPath%, Tabs, ActivateTab, 1
 IniRead, TabWindowClose, %IniPath%, Tabs, TabWindowClose, 1
 IniRead, OnTabClose, %IniPath%, Tabs, OnTabClose, 1
 IniRead, MiddleOpenFolder, %IniPath%, Tabs, MiddleOpenFolder, 1
-ExplorerWindows := Array()
-ExplorerWindows.InfoGUI_FreeText := TranslateMUI(shell32MUIpath,12336) ;Aquire a translated version of "free"
-ExplorerWindows.InfoGUI_FreeText:=SubStr(ExplorerWindows.InfoGUI_FreeText,InStr(ExplorerWindows.InfoGUI_FreeText," ",0,0)+1)
-RegisterExplorerWindows()
-TabContainerList := TabContainerList()
-if(Vista7)
-	TabContainerList.Font := "Segoe UI"
-Else
-	TabContainerList.Font := "Tahoma"
-TabContainerList.FontSize := 12
-TabContainerList.hPadding := 4
-TabContainerList.vPadding := 2
-TabContainerList.height := 20
-TabContainerList.TabWidth := 100
-TabContainerList.InActiveHeightDifference := 2
-TabContainerList.MinWidth := 40
+InitExplorerWindows()
 
 LoadHotstrings()
 
@@ -335,7 +318,7 @@ OnExit(Reload=0)
 		WriteClipboard()
 		Action_Upload_WriteFTPProfiles()
 		SlideWindows_Exit()
-		TabContainerList.CloseAllInactiveTabs()
+		CloseAllInactiveTabs()
 		SaveHotstrings()
 	}
 	if(Reload)

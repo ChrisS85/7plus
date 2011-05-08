@@ -3,6 +3,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 	global HKShowSpaceAndSize,HKAutoCheck,TabNum,TabWindow,TabContainerList,UseTabs, Vista7, ResizeWindow, ShowResizeTooltip, Profiler
 	ListLines, Off
 	StartTime := A_TickCount
+	hwnd += 0
 	;On dialog popup, check if its an explorer confirmation dialog
 	if(event=0x00008002) ;EVENT_OBJECT_SHOW
 	{
@@ -26,9 +27,8 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 	}
 	else if(event=0x8001 && UseTabs) ;EVENT_OBJECT_DESTROY
 	{
-		DecToHex(hwnd)
-		if(TabContainerList.ContainsHWND(hwnd))
-			ExplorerDestroyed(hwnd)
+		; DecToHex(hwnd)
+		; if(TabContainerList.ContainsHWND(hwnd))
 	}
 	else if(event=0x800B) ;EVENT_OBJECT_LOCATIONCHANGE
 	{
@@ -85,7 +85,7 @@ ShellMessage( wParam, lParam, Msg)
 	WasCritical := A_IsCritical
 	Critical
 	ListLines, Off
-	global ExplorerPath, HKShowSpaceAndSize, BlinkingWindows, wtmlParam, SuppressTabEvents, UseTabs, PreviousWindow, PreviousExplorerPath,WindowList,Accessor, RecentCreateCloseEvents,Profiler,ToolWindows
+	global ExplorerPath, HKShowSpaceAndSize, BlinkingWindows, wtmlParam, SuppressTabEvents, UseTabs, PreviousWindow, PreviousExplorerPath,WindowList,Accessor, RecentCreateCloseEvents,Profiler,ToolWindows, ExplorerWindows, LastWindow, LastWindowClass
 	StartTime := A_TickCount
 	Trigger := EventSystem_CreateSubEvent("Trigger", "OnMessage")
 	Trigger.Message := wParam
@@ -94,13 +94,14 @@ ShellMessage( wParam, lParam, Msg)
 	OnTrigger(Trigger)
 	If	(wParam=1||wParam=2) ;Window Created/Closed
 	{
+		lParam += 0
 		;Keep a list of recently received create/close messages, because they can be sent multiple times and we only want one.
 		if(!IsObject(RecentCreateCloseEvents))
 			RecentCreateCloseEvents := Array()
 		SetTimer, ClearRecentCreateCloseEvents, -300
-		if(!RecentCreateCloseEvents.HasKey(lParam))			
+		if(!RecentCreateCloseEvents.HasKey(lParam))
 		{
-			RecentCreateCloseEvents[lParam] := 1		
+			RecentCreateCloseEvents[lParam] := 1
 			Trigger := wParam = 1 ? EventSystem_CreateSubEvent("Trigger","WindowCreated") : EventSystem_CreateSubEvent("Trigger","WindowClosed")
 			class:=WinGetClass("ahk_Id " lParam)
 			Trigger.Window := lParam
@@ -111,7 +112,7 @@ ShellMessage( wParam, lParam, Msg)
 			WinGet, hwnds, list,,, Program Manager
 			Loop, %hwnds%
 			{
-				hwnd := hwnds%A_Index%
+				hwnd := hwnds%A_Index%+0
 				WinGetTitle, title, ahk_id %hwnd%
 				if(IsObject(WindowList[hwnd]))
 					WindowList[hwnd].title := title
@@ -132,6 +133,8 @@ ShellMessage( wParam, lParam, Msg)
 		}
 		if(wParam=2)
 		{
+			; if(ExplorerWindows.SubItem("hwnd",lParam))
+				; ExplorerDestroyed(lParam)
 			Loop % ToolWindows.MaxIndex()
 			{
 				if(ToolWindows[A_Index].hParent = lParam && ToolWindows[A_Index].AutoClose)
@@ -146,6 +149,7 @@ ShellMessage( wParam, lParam, Msg)
 	;Blinking windows detection, add new blinking windows
 	else if(wParam=32774)
 	{
+		lParam += 0
 		class:=WinGetClass("ahk_id " lParam)
 		; outputdebug blinking window %class%
 		if(BlinkingWindows.indexOf(lParam)=0)
@@ -157,13 +161,14 @@ ShellMessage( wParam, lParam, Msg)
 	;Window Activation
 	else if(wParam=4||wParam=32772) ;HSHELL_WINDOWACTIVATED||HSHELL_RUDEAPPACTIVATED
 	{
+		lParam += 0
 		Trigger := Object("base", TriggerBase)
 		Trigger.Type := "WindowActivated"
 		OnTrigger(Trigger)
 		;Blinking windows detection, remove activated windows
 		if(x:=BlinkingWindows.indexOf(lParam))
 			BlinkingWindows.Delete(x)
-		DecToHex(lParam)
+		; DecToHex(lParam)
 		class:=WinGetClass("ahk_id " lParam)
 		if(Accessor.GUINum && WinGetTitle("A") != Accessor.WindowTitle)
 			AccessorClose()
@@ -176,33 +181,33 @@ ShellMessage( wParam, lParam, Msg)
 			;Paste text/image as file file creation
 			CreateFileFromClipboard()
 		}
-		if(WinActive("ahk_group ExplorerGroup"))
-		{
-			if(WinExist("ahk_id " PreviousWindow " ahk_group ExplorerGroup"))
-				ExplorerDeactivated(PreviousWindow)
-			ExplorerActivated(lParam)
-		}
-		Else ;Right now this is called on every window switch, but it shouldn't hurt much
-			ExplorerDeactivated(lParam)		
+		if(InStr("CabinetWClass,ExploreWClass", LastWindowClass) && LastWindowClass && !ExplorerWindows.TabContainerList.TabCreationInProgress && !ExplorerWindows.TabContainerList.TabActivationInProgress)
+			ExplorerDeactivated(LastWindow)
+		LastWindow := lParam
+		LastWindowClass := WinGetClass("ahk_id " lParam)
+		if(InStr("CabinetWClass,ExploreWClass", LastWindowClass) && LastWindowClass && !ExplorerWindows.TabContainerList.TabCreationInProgress && !ExplorerWindows.TabContainerList.TabActivationInProgress)
+			ExplorerActivated(LastWindow)
 	}
 	;Redraw is fired on Explorer path change
 	else if(wParam=6)
 	{
+		lParam += 0
 		;Detect changed path		
-		if(WinActive("ahk_group ExplorerGroup")||IsDialog())
+		if(InStr("CabinetWClass,ExploreWClass", WinGetClass("ahk_id " lParam)))
 		{
-			newpath:=GetCurrentFolder()
-			if(newpath && newpath!=ExplorerPath)
-			{
-				outputdebug Explorer path changed from %ExplorerPath% to %newpath%
-				ExplorerPathChanged(ExplorerPath, newpath)
-				PreviousExplorerPath := ExplorerPath
-				ExplorerPath := newpath
-				Trigger := EventSystem_CreateSubEvent("Trigger","ExplorerPathChanged")
-				OnTrigger(Trigger)
-				if(UseTabs && !SuppressTabEvents && hwnd:=WinActive("ahk_group ExplorerGroup"))
-					UpdateTabs()
-			}
+			ExplorerPathChanged(ExplorerWindows.SubItem("hwnd", lParam))
+			; newpath:=GetCurrentFolder()
+			; if(newpath && newpath!=ExplorerPath)
+			; {
+				; outputdebug Explorer path changed from %ExplorerPath% to %newpath%
+				; ExplorerPathChanged(ExplorerPath, newpath)
+				; PreviousExplorerPath := ExplorerPath
+				; ExplorerPath := newpath
+				; Trigger := EventSystem_CreateSubEvent("Trigger","ExplorerPathChanged")
+				; OnTrigger(Trigger)
+				; if(UseTabs && !SuppressTabEvents && hwnd:=WinActive("ahk_group ExplorerGroup"))
+					; UpdateTabs()
+			; }
 		}
 	}
 	Profiler.Total.ShellMessage := Profiler.Total.ShellMessage + A_TickCount - StartTime

@@ -531,19 +531,45 @@ FlatView(files)
 	Fileappend,%searchString%, %Path%
 	SetDirectory(Path)
 }
-
+InitExplorerWindows()
+{
+	global ExplorerWindows, Vista7, shell32MUIpath
+	ExplorerWindows := Array()
+	RegisterExplorerWindows()
+	TabContainerList := Array()
+	if(Vista7)
+		TabContainerList.Font := "Segoe UI"
+	Else
+		TabContainerList.Font := "Tahoma"
+	TabContainerList.FontSize := 12
+	TabContainerList.hPadding := 4
+	TabContainerList.vPadding := 2
+	TabContainerList.height := 20
+	TabContainerList.TabWidth := 100
+	TabContainerList.InActiveHeightDifference := 2
+	TabContainerList.MinWidth := 40
+	ExplorerWindows.TabContainerList := TabContainerList
+	ExplorerWindows.InfoGUI_FreeText := TranslateMUI(shell32MUIpath,12336) ;Aquire a translated version of "free"
+	ExplorerWindows.InfoGUI_FreeText:=SubStr(ExplorerWindows.InfoGUI_FreeText,InStr(ExplorerWindows.InfoGUI_FreeText," ",0,0)+1)
+}
 ;Find all explorer windows, register them in ExplorerWindows array and set up events and info gui
 RegisterExplorerWindows()
 {
 	global ExplorerWindows, ExplorerWindow
+	; for item in ComObjCreate("Shell.Application").Windows
+		; ComObjConnect(item, "Explorer")
+	; ShellWindows := ComObjCreate("Shell.Application").Windows
+	; ComObjConnect(ShellWindows, "Explorer")
 	WinGet, hWndList, List, ahk_group ExplorerGroup
 	Loop % hwndList
 	{
-		; msgbox loop
-		if(!ExplorerWindows.IndexOfSubItem("hwnd", hWndList%A_Index%))
-			ExplorerWindows.append(new ExplorerWindow(hwndList%A_Index%))
+		if(!ExplorerWindows.IndexOfSubItem("hwnd", hWndList%A_Index%+0))
+			ExplorerWindows.append(new ExplorerWindow(hwndList%A_Index%+0))
 	}
+	
+	SetTimer, WaitForClose, 1000
 }
+
 ;Registers all explorer windows for SelectionChanged events. Called when explorer changes path
 RegisterSelectionChangedEvents()
 {
@@ -564,7 +590,7 @@ UnregisterSelectionChangedEvents(hwnd)
 RestoreExplorerSelection()
 {
 	global ExplorerWindows
-	hwnd := WinActive("ahk_group ExplorerGroup")
+	hwnd := WinActive("ahk_group ExplorerGroup")+0
 	if(hwnd)
 	{
 		ExplorerWindow := ExplorerWindows.SubItem("hWnd",hwnd)
@@ -593,78 +619,100 @@ RestoreExplorerSelection()
 ;Called when an explorer window is activated.
 ExplorerActivated(hwnd)
 {
-	global TabContainerList, TabNum, TabWindow, SuppressTabEvents, HKShowSpaceAndSize, ExplorerWindows, ExplorerWindow
+	global TabNum, TabWindow, SuppressTabEvents, HKShowSpaceAndSize, ExplorerWindows, ExplorerWindow
 	if(!ExplorerWindows.IndexOfSubItem("hwnd",hwnd))
 		ExplorerWindows.Append(new ExplorerWindow(hwnd))
 	RegisterSelectionChangedEvents() ;Is this needed? only as backup probably
-	if(SuppressTabEvents)
-		return
-	if(TabContainerList.active=hwnd) ;If active hwnd is set to this window already, activation shall be handled elsewhere
-		return
-	DecToHex(hwnd)
-	if(TabContainer:=TabContainerList.ContainsHWND(hwnd))
+	; if(SuppressTabEvents)
+		; return
+	; if(TabContainerList.active=hwnd) ;If active hwnd is set to this window already, activation shall be handled elsewhere
+		; return
+	; DecToHex(hwnd)
+	; if(TabContainer:=TabContainerList.ContainsHWND(hwnd))
+	; {
+		; TabContainerOld:=TabContainerList.ContainsHWND(TabContainerList.active)
+		; ; outputdebug set active
+		; OldTab:=TabContainer.active
+		; TabContainerList.active:=hwnd
+		; TabContainer.active:=hwnd
+		
+		; if(TabContainer!=TabContainerOld)
+			; UpdateTabs()
+		; UpdatePosition(TabNum, TabWindow)
+		
+		; ;SetTimer, UpdatePosition, 100
+	; }
+}
+WaitForClose:
+DetectHiddenWindows, On
+Loop % ExplorerWindows.len()
+{
+	if(!WinExist("ahk_id " ExplorerWindows[A_Index].hwnd))
 	{
-		TabContainerOld:=TabContainerList.ContainsHWND(TabContainerList.active)
-		;outputdebug set active
-		OldTab:=TabContainer.active
-		TabContainerList.active:=hwnd
-		TabContainer.active:=hwnd
-		
-		if(TabContainer!=TabContainerOld)
-			UpdateTabs()
-		UpdatePosition(TabNum, TabWindow)
-		
-		;SetTimer, UpdatePosition, 100
+		ExplorerDestroyed(ExplorerWindows[A_Index].hwnd)
+		break
 	}
 }
+return
 ;Called when an explorer window gets deactivated.
 ExplorerDeactivated(hwnd)
 {
 	global TabContainerList, TabNum, TabWindow,SuppressTabEvents, HKShowSpaceAndSize
-	hwnd:=WinExist("A")
-	if(hwnd=TabWindow)
-		return
-	if(SuppressTabEvents)
-		return
-	TabContainerList.active:=0
-	UpdatePosition(TabNum, TabWindow)
-	;SetTimer, UpdatePosition, Off
+	; hwnd:=WinExist("A")
+	; if(hwnd=TabWindow)
+		; return
+	; if(SuppressTabEvents)
+		; return
+	; TabContainerList.active:=0
+	; UpdatePosition(TabNum, TabWindow)
+	; ;SetTimer, UpdatePosition, Off
 }
+;TODO: Continue here, implement delete method and check draw timer deactivation
 ;Called when an explorer window gets destroyed.
 ExplorerDestroyed(hwnd)
 {
 	global TabContainerList,TabWindowClose, ExplorerWindows
-	outputdebug ExplorerDestroyed()
+	outputdebug explorer destroyed
+	TabContainer:=ExplorerWindows.SubItem("hwnd", hwnd+0).TabContainer
 	if(index := ExplorerWindows.IndexOfSubItem("hwnd", hwnd))
 		ExplorerWindows.Remove(index) ;This will destroy the info gui as well
-	TabContainer:=TabContainerList.ContainsHWND(hwnd)
+	if(ExplorerWindows.TabContainerList.TabCloseInProgress)
+	{
+		ExplorerWindows.TabContainerList.TabCloseInProgress := false
+		return
+	}
 	if(!TabContainer)
 		return
 	if(TabWindowClose = 0)
-		CloseTab(hwnd,TabContainer)
+		TabContainer.CloseTab(hwnd)
 	else if(TabWindowClose = 1)
 		TabContainer.CloseAllTabs()
 	return
 }
 ExplorerMoved(hwnd)
 {
-	global UseTabs, HKShowSpaceAndSize, TabNum, TabWindow,ExplorerWindows
-	if(UseTabs)
-		UpdatePosition(TabNum,TabWindow)
+	global UseTabs, HKShowSpaceAndSize, ExplorerWindows
+	ExplorerWindow := ExplorerWindows.SubItem("hwnd", hwnd)
+	if(UseTabs && !ExplorerWindows.TabContainerList.TabActivationInProgress)
+		ExplorerWindow.TabContainer.UpdatePosition()
 	if(HKShowSpaceAndSize && A_OsVersion = "WIN_7")
-		ExplorerWindows.SubItem("hwnd", hwnd).InfoGUI.UpdateInfoPosition()
+		ExplorerWindow.InfoGUI.UpdateInfoPosition()
 }
 ;Called when active explorer changes its path.
-ExplorerPathChanged(from, to)
+ExplorerPathChanged(ExplorerWindow)
 {
-	global vista7, HKSelectFirstFile
-	RegisterSelectionChangedEvents() ;Need to reregister for this event
+	global vista7, HKSelectFirstFile, UseTabs
+	ExplorerWindow.RegisterSelectionChangedEvent() ;This will also refresh the path in ExplorerWindow
+	ExplorerWindow.DisplayName := GetCurrentFolder(ExplorerWindow.hwnd, 1)
+	Path := ExplorerWindow.Path
+	if(UseTabs)
+		ExplorerWindow.TabContainer.UpdateTabs()
 	;focus first file
 	if(HKSelectFirstFile)
 	{
-		SplitPath, to, name, dir,,,drive
+		SplitPath, Path, name, dir,,,drive
 		x:=GetSelectedFiles()
-		if(!x && dir && (!vista7||SubStr(to, 1 ,40)!="::{26EE0668-A00A-44D7-9371-BEB064C98683}"))
+		if(!x && dir && (!vista7||SubStr(Path, 1 ,40)!="::{26EE0668-A00A-44D7-9371-BEB064C98683}"))
 		{
 			if(A_OSVersion="WIN_7")
 			{
@@ -724,8 +772,8 @@ class InfoGUI
 		Gui, %GuiNum%: +LastFound
 		WinSet, TransColor, FFFFFF
 		AttachToolWindow(hParent, GuiNum, true)
-		this.hWnd := WinExist()
-		this.hParent := hParent
+		this.hWnd := WinExist() +0
+		this.hParent := hParent+0
 	}
 	__Delete()
 	{
@@ -739,9 +787,9 @@ class InfoGUI
 		History :=ExplorerWindow.Selection.History[ExplorerWindow.Selection.History.len()]
 		Loop % History.len()
 		{
-			FileGetSize, size, % History[A_Index]
+			FileGetSize, size, % ExplorerWindow.Path "\" History[A_Index]
 			if(!realfiles)
-				realfiles:=!InStr(FileExist(History[A_Index]), "D")
+				realfiles:=!InStr(FileExist(ExplorerWindow.Path "\" History[A_Index]), "D")
 			totalsize+=size
 		}
 		DriveSpaceFree, free, % ExplorerWindow.Path
@@ -779,8 +827,9 @@ class ExplorerWindow
     __New(hWnd, Path="")
     {
 		global InfoGUI
-        this.hWnd := hWnd
+		this.hWnd := hWnd
 		this.Path := Path ? Path : GetCurrentFolder(hWnd)
+		this.DisplayName := GetCurrentFolder(hWnd, 1)
 		this.InfoGUI := new InfoGUI(hWnd)
 		this.Selection := Object()
 		this.RegisterSelectionChangedEvent()
@@ -824,4 +873,4 @@ class ExplorerWindow
 		return ToArray(GetSelectedFiles(FullName, this.hWnd))
 	}
 }
-; #t::msgbox % ExploreObj(ExplorerWindows)
+#t::msgbox % ExploreObj(ExplorerWindows)
