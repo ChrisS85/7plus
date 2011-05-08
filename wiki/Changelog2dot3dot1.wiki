@@ -15,6 +15,6 @@ Bugfixes:
  * Reimplemented middle mouse button features in event system to avoid some problems with this button. As a result of this, a few additional conditions were added.
 
 Changes:
-Huge code rewrite for some key portions related to explorer. As a result, status bar enhancements and explorer tabs are now visible on all explorer windows at once.
+ * Huge code rewrite for some key portions related to explorer. As a result, status bar enhancements and explorer tabs are now visible on all explorer windows at once.
 
 If you like this program and want to support its development, please consider donating!
