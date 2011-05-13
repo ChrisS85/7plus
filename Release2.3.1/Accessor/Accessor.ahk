@@ -1,3 +1,45 @@
+Class CAccessorPlugin
+{
+	__New(Settings)
+	{
+	}
+	ShowSettings(PluginSettings, PluginGUI)
+	{
+	}
+	IsInSinglePluginContext(Filter, LastFilter)
+	{
+	}
+	GetDisplayStrings(AccessorListEntry, ByRef Title, ByRef Path, ByRef Detail1, ByRef Detail2)
+	{
+	}
+	OnAccessorOpen(Accessor)
+	{
+	}
+	OnAccessorClose(Accessor)
+	{
+	}
+	OnExit()
+	{
+	}
+	FillAccessorList(Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet)
+	{
+	}
+	PerformAction(Accessor, AccessorListEntry)
+	{
+	}
+	ListViewEvents(AccessorListEntry)
+	{
+	}
+	EditEvents(AccessorListEntry, Filter, LastFilter)
+	{
+	}
+	OnKeyDown()
+	{
+	}
+	SetupContextMenu(Calc, AccessorListEntry)
+	{
+	}
+}
 #include %A_ScriptDir%\Accessor\Calc.ahk
 #include %A_ScriptDir%\Accessor\FastFolders.ahk
 #include %A_ScriptDir%\Accessor\FileSystem.ahk
