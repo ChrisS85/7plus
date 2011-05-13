@@ -133,7 +133,8 @@ ShellMessage( wParam, lParam, Msg)
 		}
 		if(wParam=2)
 		{
-			; if(ExplorerWindows.SubItem("hwnd",lParam))
+			if(InStr("CabinetWClass,ExploreWClass", WinGetClass("ahk_id " lParam)))
+				GoSub WaitForClose
 				; ExplorerDestroyed(lParam)
 			Loop % ToolWindows.MaxIndex()
 			{

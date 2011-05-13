@@ -38,7 +38,7 @@ Shell_GoUpward()
 	else
 		Send {Backspace}
 }
-ShellNavigate(Path, hWnd=0) 
+ShellNavigate(Path, hWnd=0)
 {
 	if(hWnd||(hWnd:=WinExist("ahk_class CabinetWClass"))||(hWnd:=WinExist("ahk_class ExploreWClass")))
 		DllCall(A_ScriptDir "\Explorer.dll\SetPath", "Ptr", hwnd, "Str", Path, "Cdecl")
@@ -292,7 +292,7 @@ IsDialog(window=0,ListViewSelected = False)
 GetSelectedFiles(FullName=1, hwnd=0)
 {
 	global MuteClipboardList,Vista7
-	If (WinActive("ahk_group ExplorerGroup"))
+	If (WinActive("ahk_group ExplorerGroup") || (WinExist("ahk_id " hwnd) && InStr("CabinetWClass,ExploreWClass", WinGetClass("ahk_id " hwnd))))
 	{
 		if(!hwnd)
 			hWnd:=WinExist("A")
@@ -560,13 +560,13 @@ ShellFolder(hWnd=0,returntype=0)
 					while(pos <= count)
 					{
 						path :=doc.selectedItems.item(pos-1).Path ;= (returntype=3 ? sFolder "\" COM_Invoke(doc.SelectedItems, "Item", A_Index-1).Name "`n" : COM_Invoke(doc.SelectedItems, "Item", A_Index-1).Name "`n")
-						if(path != "")
-						{
+						; if(path != "") ;This check can block the SelectionChanged event because it fails sometimes here
+						; {
 							if(returntype=4)
 								SplitPath, path , path
 							sSelect := sSelect path "`n"
 							pos++
-						}
+						; }
 					}
 					StringReplace, sSelect, sSelect, \\ , \, 1 
 					;The lines below fix network paths

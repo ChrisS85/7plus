@@ -676,16 +676,15 @@ ExplorerDestroyed(hwnd)
 	TabContainer:=ExplorerWindows.SubItem("hwnd", hwnd+0).TabContainer
 	if(index := ExplorerWindows.IndexOfSubItem("hwnd", hwnd))
 		ExplorerWindows.Remove(index) ;This will destroy the info gui as well
-	if(ExplorerWindows.TabContainerList.TabCloseInProgress)
+	if(ExplorerWindows.TabContainerList.TabCloseInProgress) ;If this is set, then this event was caused by a tab closing action and must not trigger further tab close functions
 	{
 		ExplorerWindows.TabContainerList.TabCloseInProgress := false
 		return
 	}
 	if(!TabContainer)
 		return
-	if(TabWindowClose = 0)
-		TabContainer.CloseTab(hwnd)
-	else if(TabWindowClose = 1)
+	TabContainer.TabClosed(hwnd)
+	if(TabWindowClose = 1)
 		TabContainer.CloseAllTabs()
 	return
 }
@@ -702,6 +701,7 @@ ExplorerMoved(hwnd)
 ExplorerPathChanged(ExplorerWindow)
 {
 	global vista7, HKSelectFirstFile, UseTabs
+	outputdebug ExplorerPathChanged
 	ExplorerWindow.RegisterSelectionChangedEvent() ;This will also refresh the path in ExplorerWindow
 	ExplorerWindow.DisplayName := GetCurrentFolder(ExplorerWindow.hwnd, 1)
 	Path := ExplorerWindow.Path
@@ -736,6 +736,8 @@ ExplorerSelectionChanged(ExplorerCOMObject)
 {
 	global ExplorerWindows
 	; Critical ;This apparently makes it stop working and blocks the explorer window somehow
+	Critical, Off
+	outputdebug explorer selection changed
 	Loop % ExplorerWindows.Len()
 	{
 		if(ExplorerWindows[A_Index].Selection.COMObject = ExplorerCOMObject)
@@ -746,16 +748,20 @@ ExplorerSelectionChanged(ExplorerCOMObject)
 	}
 	if(!index)
 		return
+	outputdebug com object found
 	if(ExplorerWindows[index].Selection.IgnoreNextEvent > 0)
 	{
 		ExplorerWindows[index].Selection.IgnoreNextEvent := ExplorerWindows[index].Selection.IgnoreNextEvent - 1
 		outputdebug % "expecting " ExplorerWindows[index].Selection.IgnoreNextEvent " more events."
 		return
 	}
+	outputdebug nothing to ignore
 	ExplorerWindows[index].Selection.History.append(ToArray(GetSelectedFiles(0, ExplorerWindows[index].hwnd)))
 	if(ExplorerWindows[index].Selection.History.len() > 10)
 		ExplorerWindows[index].Selection.History.Delete(1)
+	outputdebug history updated
 	ExplorerWindows[index].InfoGUI.UpdateInfos(ExplorerWindows[index]) ;Update the info GUI to reflect selection change
+	outputdebug explorer selection change end
 	; Critical, Off
 }
 class InfoGUI

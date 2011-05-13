@@ -1017,3 +1017,13 @@ LocateShell32MUI()
 		}
 	}
 }
+
+;Append two paths together and treat possibly double or missing backslashes
+AppendPaths(Base,child)
+{
+	if(!Base)
+		return child
+	if(!child)
+		return Base
+	return strTrimRight(Base, "\") "\" strTrimLeft(child, "\")
+}

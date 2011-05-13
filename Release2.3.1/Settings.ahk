@@ -314,16 +314,16 @@ Settings_CreateHotstrings(ByRef TabCount) {
 	LV_ModifyCol(1, 0)
     LV_ModifyCol(2, 100)
 	LV_ModifyCol(3, "AutoHdr")
-	Gui, 1:Add, Button, x%x2% y%yIt% w90 vGUI_Hotstrings_Add gGUI_Hotstrings_Add, Add hotstring
+	Gui, 1:Add, Button, x%x2% y%yIt% w90 vGUI_Hotstrings_Add gGUI_Hotstrings_Add, Add HotString
 	yIt += textboxstep
-	Gui, 1:Add, Button, x%x2% y%yIt% w90 vGUI_Hotstrings_Delete gGUI_Hotstrings_Delete, Remove hotstring
+	Gui, 1:Add, Button, x%x2% y%yIt% w90 vGUI_Hotstrings_Delete gGUI_Hotstrings_Delete, Remove HotString
 	yIt += textboxstep
-	Gui, 1:Add, Button, x%x2% y%yIt% w90 vGUI_Hotstrings_RegexHelp gGUI_Hotstrings_RegexHelp, RegEx help
+	Gui, 1:Add, Button, x%x2% y%yIt% w90 vGUI_Hotstrings_RegexHelp gGUI_Hotstrings_RegexHelp, RegEx Help
 	Gui, 1:Add, Text, x%x1% y+144, hotstring:
 	Gui, 1:Add, Edit, x+27 y+-17 w380 vGUI_HotstringsKey gGUI_HotstringsTextChange
 	Gui, 1:Add, Text, x%x1% y+10, value:
 	Gui, 1:Add, Edit, x+41 y+-17 w380 vGUI_HotstringsValue gGUI_HotstringsTextChange
-	Gui, 1:Add, Text, x%x1% y+10, Hotstrings are used to expand abbreviations and acronyms, such as "btw" -> "by the way". They support regular`nexpressions in PCRE format. If you want a hotstring to trigger only when typed as a seperate word, prepend \b`nand append \s.  For case-insensitive hotstrings, put i) at the start. You can also use keys like {Enter}.
+	Gui, 1:Add, Text, x%x1% y+10, HotStrings are used to expand abbreviations and acronyms, such as "btw" -> "by the way". They support regular`nexpressions in PCRE format. If you want a HotString to trigger only when typed as a seperate word, prepend \b`nand append \s.  For case-insensitive HotStrings, put i) at the start. You can also use keys like {Enter}.
 }
 Settings_CreateWindows(ByRef TabCount) {
 	global

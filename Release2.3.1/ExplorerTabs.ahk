@@ -645,6 +645,33 @@ Class CTabContainer
 		ExplorerWindows.TabContainerList.TabCloseInProgress := false
 		outputdebug tab close event timeout
 	}
+	;Called when a tab is closed manually (close button, alt+f4, ...)
+	TabClosed(hwnd)
+	{
+		global ExplorerWindows, OnTabClose
+		outputdebug tab closed manually %hwnd%
+		Tab := this.Tabs.SubItem("hwnd", hwnd)
+		if(!Tab)
+			return false
+		if(hwnd=this.active)
+		{
+			if(OnTabClose=1)
+				this.CycleTabs(-1)
+			else if(OnTabClose=2)
+				this.CycleTabs(1)
+		}
+		
+		if(this.tabs.len()=2)
+		{
+			;Remove all references to the Tab Container so that its delete routine may be called
+			ExplorerWindows.TabContainerList.Delete(ExplorerWindows.TabContainerList.indexOf(this))
+			Loop % this.tabs.len()
+				ExplorerWindows.SubItem("hwnd", this.tabs[A_Index].hwnd+0).Remove("TabContainer")
+		}
+		Else
+			this.tabs.Delete(this.tabs.IndexOf(Tab))
+		this.UpdateTabs()
+	}
 }
 CreateTab(hwnd, path=-1,Activate=-1)
 {

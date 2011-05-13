@@ -434,6 +434,8 @@ CreateDIBSection(w, h, hdc="", bpp=32, ByRef ppvBits=0) ;64
 
 PrintWindow(hwnd, hdc, Flags=0)
 {
+	DllCall("RedrawWindow", "Ptr", hwnd, "UInt", 0, "UInt", 0, "UInt",  0x0001|0x0080|0x0200|0x0100)
+	Sleep 1000
 	return DllCall("PrintWindow", "uint", hwnd, "uint", hdc, "uint", Flags)
 }
 
@@ -455,14 +457,14 @@ DestroyIcon(hIcon)
 
 PaintDesktop(hdc)
 {
-	return DllCall("PaintDesktop", "uint", hdc)
+	return DllCall("PaintDesktop", "PTR", hdc)
 }
 
 ;#####################################################################################
 
 CreateCompatibleBitmap(hdc, w, h)
 {
-	return DllCall("gdi32\CreateCompatibleBitmap", "uint", hdc, "int", w, "int", h)
+	return DllCall("gdi32\CreateCompatibleBitmap", "PTR", hdc, "int", w, "int", h)
 }
 
 ;#####################################################################################
@@ -478,7 +480,7 @@ CreateCompatibleBitmap(hdc, w, h)
 
 CreateCompatibleDC(hdc=0) ;64
 {
-   return DllCall("CreateCompatibleDC", "uint", hdc)
+   return DllCall("CreateCompatibleDC", "PTR", hdc)
 }
 
 ;#####################################################################################
