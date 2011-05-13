@@ -2,6 +2,8 @@
 Below is a list of features. You can enable/disable each feature one by one in the settings dialog.
 Watch the videos to see how it works!
 
+As 7plus is highly configurable, it is possible to create your own features as well by combining different triggers, conditions and actions. The list below only covers the most popular features, there are also numerous small other tweaks.
+
 == Explorer ==
   * Store favorite folders and recall them for _very_ fast navigation [http://www.youtube.com/watch?v=dTIGxue6WCY (Video 1)] [http://www.youtube.com/watch?v=cC6cnG87j2M (Video 2)]
   * Upload files, screenshots and clipboard content directly to an FTP server with just one hotkey [http://www.youtube.com/watch?v=d01Mjiny_E8 (Video)]
