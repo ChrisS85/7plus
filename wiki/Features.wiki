@@ -40,6 +40,7 @@ As 7plus is highly configurable, it is possible to create your own features as w
   * Change the desktop wallpaper by middle clicking on the desktop (Win7 only) [http://www.youtube.com/watch?v=JJ-kqjRY910 (Video)]
   * Cycle through windows by clicking on a task group button (Win7 only) [http://www.youtube.com/watch?v=v__ZiHFt7NE (Video)]
 == Misc ==
+  * Accessor, a launcher tool similar to Programs like Launchy or Exekutor with many plugins to launch programs, browse file system, uninstall software, ...
   * Paste previous clipboard text entries by pressing WIN+V [http://www.youtube.com/watch?v=Yq8HXOuSEiU (Video)]
   * Use a Joypad/Gamepad to remote control the mouse, keyboard and zoom [http://www.youtube.com/watch?v=MZiK7E98hOU (Video)]
   * Open current folder in CMD by pressing WIN+C and enable CTRL+V to paste and ALT+F4 in CMD [http://www.youtube.com/watch?v=irMu69t3kEg (Video)]
