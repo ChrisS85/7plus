@@ -129,6 +129,7 @@ Action_Upload_Execute(Action, Event)
 		}
 		decrypted:=Decrypt(Password)
 		cliptext=
+		result := 1
 		; connect to FTP server 
 		FTP := FTP_Init()
 		FTP.Port := Port
@@ -141,14 +142,23 @@ Action_Upload_Execute(Action, Event)
 		}
 		else
 		{
-			; create a new directory 'testing' 
-			if(TargetFolder != "" && !ftp.CreateDirectory(TargetFolder))
+			; create a new directory
+			if(TargetFolder != "" && ftp.SetCurrentDirectory(TargetFolder) != true)
 			{
-				if(!Action.Silent)
-					Notify("FTP Error", "Couldn't create target directory. Check permissions!", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",Vista7 ? 78 : 110)
-				result := 0
+				if(ftp.CreateDirectory(TargetFolder) != true)
+				{
+					if(!Action.Silent)
+						Notify("FTP Error", "Couldn't create target directory. Check permissions!", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",Vista7 ? 78 : 110)
+					result := 0
+				}
+				else if(ftp.SetCurrentDirectory(TargetFolder) != true)
+				{
+					if(!Action.Silent)
+						Notify("FTP Error", "Couldn't switch to created target directory. Check permissions!", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",Vista7 ? 78 : 110)
+					result := 0
+				}
 			}
-			else
+			if(result != 0)
 			{
 				success := 0
 				FTP.NumFiles := files.len()
