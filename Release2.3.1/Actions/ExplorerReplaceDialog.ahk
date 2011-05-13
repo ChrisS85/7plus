@@ -95,10 +95,10 @@ Class CReplaceDialog
 		this.ReplaceString := ControlGetText("","ahk_id " this.hWith)
 		this.InString := ControlGetText("", "ahk_id " this.hIn)
 		this.InSelectedFiles := ControlGet("Checked","","","ahk_id " this.hInSelectedFiles)
-		this.CaseSensitive := ControlGetText("", "ahk_id " this.hCaseSensitive)
-		this.Regex := ControlGetText("", "ahk_id " this.hRegex)
-		this.IncludeDirectories := ControlGetText("", "ahk_id " this.hIncludeDirectories)
-		this.IncludeSubdirectories := ControlGetText("", "ahk_id " this.hIncludeSubdirectories)
+		this.CaseSensitive := ControlGet("Checked","","", "ahk_id " this.hCaseSensitive)
+		this.Regex := ControlGet("Checked","","", "ahk_id " this.hRegex)
+		this.IncludeDirectories := ControlGet("Checked","", "", "ahk_id " this.hIncludeDirectories)
+		this.IncludeSubdirectories := ControlGet("Checked", "", "", "ahk_id " this.hIncludeSubdirectories)
 		this.CollidingAction := ControlGetText("", "ahk_id " this.hCollidingAction)
 		this.SearchResults := Array()
 		LV_Delete()
@@ -128,10 +128,8 @@ Class CReplaceDialog
 	{
 		if(this.InSelectedFiles && Root = this.DirectoryTree) ;Base directory, skip files which are not in selection
 			Selection := ToArray(GetSelectedFiles(1, this.Parent))
-		msgbox % exploreObj(selection)
-		msgbox % GetSelectedFiles(1, this.Parent)
 		items := 0
-		Loop % AppendPaths(AppendPaths(Root.Path, Root.Name), "*"), 1, % this.IncludeSubdirectories
+		Loop % AppendPaths(AppendPaths(Root.Path, Root.Name), "*"), 1, 0
 		{
 			File := Array()
 			SplitPath, A_LoopFileLongPath,,Path
@@ -201,9 +199,13 @@ Class CReplaceDialog
 	;tests a filename for replacement
 	ProcessFilename(File)
 	{
+		if(this.CaseSensitive)
+			StringCaseSense, On
 		NewFilename := StringReplace(File.Name, this.SearchString, this.ReplaceString, "All")
+		outputdebug errorlevel %errorlevel%
 		if(!Errorlevel)
 			File.NewFilename := NewFilename
+		StringCaseSense, Off
 		return !ErrorLevel
 	}
 	FileContentSearch()
