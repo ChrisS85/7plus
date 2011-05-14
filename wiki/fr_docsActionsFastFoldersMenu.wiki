@@ -1,0 +1,5 @@
+#labels u
+= FastFoldersMenu =
+
+Cette action affiche un menu contextuel avec tous les chemins d'accès aux FastFolders.
+S'il y a des fichiers sélectionnés lorsque le menu est affiché et la touche CTRL est pressée lorsqu'une entrée est choisie, les fichiers sélectionnés sont copiés dans ce dossier. De même, lorsque SHIFT est pressé, les fichiers sont déplacés vers ce répertoire. Par ailleurs, la fenêtre de l'explorateur actif navigue vers ce répertoire.
