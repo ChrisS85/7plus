@@ -1,4 +1,3 @@
-#labels u
 = FastFoldersMenu =
 
 Cette action affiche un menu contextuel avec tous les chemins d'accès aux FastFolders.
