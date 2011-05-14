@@ -1,0 +1,3 @@
+= FastFoldersStore =
+
+Cette action stocke le répertoire spécifié ici dans l'emplacement souhaité FastFolders.
