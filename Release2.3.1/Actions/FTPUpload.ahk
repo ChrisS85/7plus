@@ -165,11 +165,11 @@ Action_Upload_Execute(Action, Event)
 				Loop % files.len()
 				{
 					FullPath := files[A_Index]
-					result := FTP.InternetWriteFile(FullPath, TargetFolder (TargetFolder ? "/" : "") targets[A_Index], "Action_Upload_Progress")
+					result := FTP.InternetWriteFile(FullPath,  targets[A_Index], "Action_Upload_Progress")
 					if(!success && result)
 						success := result
 					if(result=0 && !Action.Silent)
-						Notify("Couldn't upload file", "Couldn't upload " TargetFolder (TargetFolder ? "/" : "") targets[A_Index] " properly. Make sure you have write rights and the path exists", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",Vista7 ? 78 : 110)
+						Notify("Couldn't upload file", "Couldn't upload "  targets[A_Index] " properly. Make sure you have write rights and the path exists", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",Vista7 ? 78 : 110)
 					else if(result != 0 && URL && Action.Clipboard)
 						cliptext .= (A_Index = 1 ? "" : "`r`n") URL "/" TargetFolder (TargetFolder ? "/" : "") StringReplace(targets[A_Index], " ", "%20", 1)
 				}
@@ -185,8 +185,6 @@ Action_Upload_Execute(Action, Event)
 				result := 1
 			}
 		}
-		; Loop % RegisteredSelectionChangedWindows.len()
-			; COMObjConnect(RegisteredSelectionChangedWindows[A_Index].doc, "Explorer")
 		return result
 	}
 }
