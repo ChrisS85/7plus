@@ -186,9 +186,9 @@ GetWindowInfo()
 			Continue
 
 		WinGet, es, ExStyle, ahk_id %wid%
-		Parent := DecToHex( Parent := GetParent(wid) )
+		Parent := Parent := GetParent(wid)
 		WinGet, Style_parent, Style, ahk_id %Parent%
-		Owner := DecToHex( Owner := GetWindow(wid, 4) ) ; GW_OWNER = 4
+		Owner := Owner := GetWindow(wid, 4) ; GW_OWNER = 4
 		WinGet, Style_Owner, Style, ahk_id %Owner%
 
 		If (((es & WS_EX_TOOLWINDOW)  and !(Parent)) ; filters out program manager, etc
@@ -205,7 +205,7 @@ GetWindowInfo()
 		WinGet, PID, PID, ahk_id %wid%
 		FullPath := GetModuleFileNameEx(PID)
 		WinGetClass, Win_Class, ahk_id %wid%
-		hw_popup := DecToHex( hw_popup := DllCall("GetLastActivePopup", "Ptr", wid))
+		hw_popup := hw_popup := DllCall("GetLastActivePopup", "Ptr", wid)
 
 		Dialog := 0 ; init/reset
 		If (Parent and ! Style_parent)

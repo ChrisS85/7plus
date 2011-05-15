@@ -8,11 +8,16 @@ Action_ExplorerReplaceDialog_ReadXML(Action, XMLAction)
 Action_ExplorerReplaceDialog_Execute(Action, Event)
 {
 	global ExplorerWindows, CReplaceDialog
-	ReplaceDialog := new CReplaceDialog(Action, Event)
-	if(IsObject(ReplaceDialog))
+	if(IsObject(ExplorerWindows.SubItem("hwnd", WinActive("ahk_group ExplorerGroup")).ReplaceDialog))
+		Gui, % ExplorerWindows.SubItem("hwnd", WinActive("ahk_group ExplorerGroup")).ReplaceDialog.GUINum ":Show"
+	else
 	{
-		ExplorerWindows.SubItem("hwnd", ReplaceDialog.Parent).ReplaceDialog := ReplaceDialog
-		return 1
+		ReplaceDialog := new CReplaceDialog(Action, Event)
+		if(IsObject(ReplaceDialog))
+		{
+			ExplorerWindows.SubItem("hwnd", ReplaceDialog.Parent).ReplaceDialog := ReplaceDialog
+			return 1
+		}
 	}
 	return 0
 } 
@@ -52,20 +57,20 @@ Class CReplaceDialog
 		Gui, % this.GUINum ":Add",Edit, x66 y84 w216 hwndhIn
 		AddToolTip(hIn, "You may use wildcards here and use "","" as delimiter. Example: ""*.txt,text*""")
 		Gui, % this.GUINum ":Add",Checkbox, x291 y87 hwndhInSelectedFiles, In selected files only
-		Gui, % this.GUINum ":Add",Checkbox, x10 y121 hwndhCaseSensitive, Case sensitive
-		Gui, % this.GUINum ":Add",Checkbox, x10 y144 hwndhRegex, Use regular expressions
-		Gui, % this.GUINum ":Add",Checkbox, x153 y121 hwndhIncludeDirectories, Include directories
-		Gui, % this.GUINum ":Add",Checkbox, x153 y144 hwndhIncludeSubdirectories, Include subdirectories
-		Gui, % this.GUINum ":Add", Text, x10 y172, Action for colliding filenames:
-		Gui, % this.GUINum ":Add", DropDownList, x153 y168 hwndhCollidingAction, Append (Number)||Skip
-		Gui, % this.GUINum ":Add", ListView, x10 y200 w402 h310 hwndhListView gExplorerReplaceDialogListView Grid AltSubmit Checked NoSort ReadOnly, Old File|Path|New File
-		LV_ModifyCol(1, 150)
-		LV_ModifyCol(2, 100)
-		LV_ModifyCol(3, 145)		
-		Gui, % this.GUINum ":Add",Button, x10 y520 w75 h23 gExplorerReplaceDialogRegEx, RegEx Help
-		Gui, % this.GUINum ":Add",Button, x175 y520 w75 h23 gExplorerReplaceDialogSearch Default, Search
-		Gui, % this.GUINum ":Add",Button, x256 y520 w75 h23 Disabled gExplorerReplaceDialogReplace hwndhReplaceButton, Replace
-		Gui, % this.GUINum ":Add",Button, x337 y520 w75 h23 gExplorerReplaceDialogCancel, Cancel
+		Gui, % this.GUINum ":Add",Checkbox, x420 y36 hwndhCaseSensitive, Case sensitive
+		Gui, % this.GUINum ":Add",Checkbox, x420 y59 hwndhRegex, Use regular expressions
+		Gui, % this.GUINum ":Add",Checkbox, x563 y36 hwndhIncludeDirectories, Include directories
+		Gui, % this.GUINum ":Add",Checkbox, x563 y59 hwndhIncludeSubdirectories, Include subdirectories
+		Gui, % this.GUINum ":Add", Text, x420 y87, Action for colliding filenames:
+		Gui, % this.GUINum ":Add", DropDownList, x563 y83 hwndhCollidingAction, Append (Number)||Skip
+		Gui, % this.GUINum ":Add", ListView, x10 y120 w672 h310 hwndhListView gExplorerReplaceDialogListView Grid AltSubmit Checked NoSort ReadOnly, Old File|Path|New File
+		LV_ModifyCol(1, 234)
+		LV_ModifyCol(2, 200)
+		LV_ModifyCol(3, 234)		
+		Gui, % this.GUINum ":Add",Button, x10 y440 w75 h23 gExplorerReplaceDialogRegEx, RegEx Help
+		Gui, % this.GUINum ":Add",Button, x445 y440 w75 h23 gExplorerReplaceDialogSearch Default, Search
+		Gui, % this.GUINum ":Add",Button, x526 y440 w75 h23 Disabled gExplorerReplaceDialogReplace hwndhReplaceButton, Replace
+		Gui, % this.GUINum ":Add",Button, x607 y440 w75 h23 hwndhCancel gExplorerReplaceDialogCancel, Cancel
 		this.hFiles := hFiles
 		this.hFilenames := hFilenames
 		this.hReplace := hReplace
@@ -78,8 +83,10 @@ Class CReplaceDialog
 		this.hIncludeSubdirectories := hIncludeSubdirectories
 		this.hCollidingAction := hCollidingAction
 		this.hReplaceButton := hReplaceButton
+		this.hCancel := hCancel
 		Gui, % this.GUINum ":-Resize -MaximizeBox -MinimizeBox +ToolWindow +LastFound +LabelExplorerReplaceDialog"
 		Gui, % this.GUINum ":Show", AutoSize, Rename / Replace
+		this.hWnd := WinExist()
 		ControlFocus , , ahk_id %hReplace%
 		AttachToolWindow(this.Parent, this.GUINum, True)
 	}
@@ -112,6 +119,8 @@ Class CReplaceDialog
 		LV_Delete()
 		if(this.Regex && !this.CaseSensitive && InStr(this.SearchString, "i)") != 1) ;Case sensitive for regex is done here to save some time
 			this.SearchString := "i)" this.SearchString
+		WinSetTitle, % "ahk_id " this.hWnd,,Searching...,
+		ControlSetText,, Stop, % "ahk_id " this.hCancel
 		if(this.Filenames)
 		{
 			this.DirectoryTree := Array()
@@ -122,35 +131,72 @@ Class CReplaceDialog
 			this.DirectoryTree.Path := Path
 			this.DirectoryTree.Name := Name
 			this.CreateFilenameSearchTree(this.DirectoryTree)
-			this.CheckForDuplicates(this.DirectoryTree, AppendPaths(this.DirectoryTree.Path, this.DirectoryTree.Name), Array())
-			this.FlattenTree(this.DirectoryTree)
-			Loop % this.SearchResults.len()
-				LV_Add("Check", this.SearchResults[A_Index].Name, strTrimLeft(this.SearchResults[A_Index].Path,BasePath), this.SearchResults[A_Index].FixedNewFilename ? this.SearchResults[A_Index].FixedNewFilename : this.SearchResults[A_Index].NewFilename)
+			if(!this.Stop)
+			{
+				this.CheckForDuplicates(this.DirectoryTree, AppendPaths(this.DirectoryTree.Path, this.DirectoryTree.Name), Array())
+				if(!this.Stop)
+				{
+					this.FlattenTree(this.DirectoryTree)
+					if(!this.Stop)
+					{
+						Loop % this.SearchResults.len()
+						{
+							if(this.Stop)
+								break
+							LV_Add("Check", this.SearchResults[A_Index].Name, strTrimLeft(this.SearchResults[A_Index].Path,BasePath), this.SearchResults[A_Index].FixedNewFilename ? this.SearchResults[A_Index].FixedNewFilename : this.SearchResults[A_Index].NewFilename)
+						}
+					}
+				}
+			}
 		}
 		else
 		{
 			this.BasePath := ExplorerWindows.SubItem("hwnd", this.Parent).Path
 			this.FileContentSearch()
-			Loop % this.SearchResults.len()
+			if(!this.Stop)
 			{
-				index := A_Index
-				Loop % this.SearchResults[A_Index].Lines.len()
-					LV_Add("Check", strTrimLeft(this.SearchResults[A_Index].Path,this.BasePath), this.SearchResults[index].Lines[A_Index].Line, RegexReplace(this.SearchResults[index].Lines[A_Index].Text, "D)(*ANYCRLF)\R$",""), RegexReplace(this.SearchResults[index].Lines[A_Index].NewText, "D)(*ANYCRLF)\R$",""))
+				Loop % this.SearchResults.len()
+				{
+					if(this.Stop)
+						break
+					index := A_Index
+					Loop % this.SearchResults[A_Index].Lines.len()
+					{
+						if(this.Stop)
+							break
+						LV_Add("Check", strTrimLeft(this.SearchResults[A_Index].Path,this.BasePath), this.SearchResults[index].Lines[A_Index].Line, RegexReplace(this.SearchResults[index].Lines[A_Index].Text, "D)(*ANYCRLF)\R$",""), RegexReplace(this.SearchResults[index].Lines[A_Index].NewText, "D)(*ANYCRLF)\R$",""))
+					}
+				}
 			}
+		}
+		if(this.Stop)
+		{
+			this.Remove("SearchResults")
+			this.Remove("DirectoryTree")
+			this.Remove("BasePath")
+			LV_Delete()
+			Control, Disable,,, % "ahk_id " this.hReplaceButton
+			this.Remove("Stop")
 		}
 		if(this.SearchResults.len() > 0)
 			Control, Enable,,, % "ahk_id " this.hReplaceButton
+		WinSetTitle, % "ahk_id " this.hWnd,,Rename / Replace
+		ControlSetText,, Cancel, % "ahk_id " this.hCancel
 	}
 	
 	; Directory structure must be kept. To archive this, a directory tree object ("DirectoryTree") is created recursively here.
 	; This allows to rename the files by using a wide search and constructing the current paths from the tree.
 	CreateFilenameSearchTree(Root)
 	{
+		if(this.Stop)
+			return 0
 		if(this.InSelectedFiles && Root = this.DirectoryTree) ;Base directory, skip files which are not in selection
 			Selection := ToArray(GetSelectedFiles(1, this.Parent))
 		items := 0
 		Loop % AppendPaths(AppendPaths(Root.Path, Root.Name), "*"), 1, 0
 		{
+			if(this.Stop)
+				return 0
 			File := Array()
 			SplitPath, A_LoopFileLongPath,,Path
 			File.Path := Path
@@ -191,6 +237,8 @@ Class CReplaceDialog
 	{
 		Loop % Root.len()
 		{
+			if(this.Stop)
+				return 0
 			if(Root[A_Index].NewFilename)
 				this.SearchResults.Append(Root[A_Index])
 			if(Root[A_Index].Directory)
@@ -205,6 +253,8 @@ Class CReplaceDialog
 		len := Root.len()
 		Loop % len
 		{
+			if(this.Stop)
+				return 0
 			OldPath := AppendPaths(RootPath, Root[index].Name)
 			NewPath := Root[index].NewFilename ? AppendPaths(RootPath, Root[index].NewFilename) : OldPath
 			if(this.CollidingAction = "Append (Number)")
@@ -237,6 +287,8 @@ Class CReplaceDialog
 	{
 		Loop % Root.len()
 		{
+			if(this.Stop)
+				return 0
 			OldPath := AppendPaths(RootPath, Root[A_Index].Name)
 			NewPath := AppendPaths(RootPath, Root[A_Index].FixedNewFilename ? Root[A_Index].FixedNewFilename : Root[A_Index].NewFilename)
 			if(Root[A_Index].Enabled && Root[A_Index].NewFilename)
@@ -300,6 +352,8 @@ Class CReplaceDialog
 		items := 0
 		Loop % AppendPaths(this.BasePath, "*"), 0, % this.IncludeSubdirectories
 		{
+			if(this.Stop)
+				return 0
 			File := Object()
 			File.Path := A_LoopFileLongPath
 			File.Lines := Array()
@@ -317,10 +371,16 @@ Class CReplaceDialog
 				File.cp := "CP0" 
 			while(!f.AtEOF)
 			{
+				if(this.Stop)
+				{
+					f.Close()
+					return 0
+				}
 				Line := f.ReadLine()
 				if(this.ProcessLine(File, Line, A_Index))
 					this.SearchResults.Append(File)
 			}
+			f.Close()
 		}
 	}
 	PerformFileContentReplace()
@@ -341,6 +401,11 @@ Class CReplaceDialog
 			;Generate new file content
 			while(!f.AtEOF)
 			{
+				if(this.Stop)
+				{
+					f.Close()
+					return 0
+				}
 				Line := f.ReadLine()
 				if(InStr(Lines, "," A_Index))
 					output .= this.SearchResults[index].Lines.SubItem("Line", A_Index).NewText
@@ -390,11 +455,23 @@ Class CReplaceDialog
 	}
 	Replace()
 	{
-		global ExplorerWindows
+		global ExplorerWindows		
+		WinSetTitle, % "ahk_id " this.hWnd,,Searching...,
 		if(this.Filenames)
 			this.PerformFileNameReplace(this.DirectoryTree, AppendPaths(this.DirectoryTree.Path, this.DirectoryTree.Name))
 		else
 			this.PerformFileContentReplace()
+		if(this.Stop)
+		{
+			this.Remove("SearchResults")
+			this.Remove("DirectoryTree")
+			this.Remove("BasePath")
+			this.Remove("Stop")
+			LV_Delete()
+			WinSetTitle, % "ahk_id " this.hWnd,,Rename / Replace
+			ControlSetText,, Cancel, % "ahk_id " this.hCancel
+			Control, Disable,,, % "ahk_id " this.hReplaceButton
+		}
 		ExplorerWindows.SubItem("hwnd", this.Parent).Remove("ReplaceDialog")
 	}
 }
@@ -405,10 +482,16 @@ Loop % ExplorerWindows.len()
 		Control, Disable,,, % "ahk_id " ExplorerWindows[A_Index].ReplaceDialog.hIncludeDirectories
 		Control, Disable,,, % "ahk_id " ExplorerWindows[A_Index].ReplaceDialog.hCollidingAction
 		LV_ModifyCol(1,100, "File")
-		LV_ModifyCol(2,35, "Line")
-		LV_ModifyCol(3,150, "Text")
+		LV_ModifyCol(2,38, "Line")
+		LV_ModifyCol(3,265, "Text")
 		if(LV_GetCount("Col") = 3)
-			LV_InsertCol(4,150, "Replaced Text")
+		{
+			LV_Delete()
+			ExplorerWindows[A_Index].ReplaceDialog.Remove("SearchResults")
+			ExplorerWindows[A_Index].ReplaceDialog.Remove("DirectoryTree")
+			ExplorerWindows[A_Index].ReplaceDialog.Remove("BasePath")
+			LV_InsertCol(4,265, "Replaced Text")
+		}
 	}
 return
 ExplorerReplaceDialogFilenames:
@@ -418,10 +501,15 @@ Loop % ExplorerWindows.len()
 		Control, Enable,,, % "ahk_id " ExplorerWindows[A_Index].ReplaceDialog.hIncludeDirectories
 		Control, Enable,,, % "ahk_id " ExplorerWindows[A_Index].ReplaceDialog.hCollidingAction
 		if(LV_GetCount("Col") = 4)
+		{
+			LV_Delete()
+			ExplorerWindows[A_Index].ReplaceDialog.Remove("SearchResults")
+			ExplorerWindows[A_Index].ReplaceDialog.Remove("BasePath")
 			LV_DeleteCol(4)
-		LV_ModifyCol(1,150, "Old File")
-		LV_ModifyCol(2,100, "Path")
-		LV_ModifyCol(3,145, "New File")
+		}
+		LV_ModifyCol(1,234, "Old File")
+		LV_ModifyCol(2,200, "Path")
+		LV_ModifyCol(3,234, "New File")
 	}
 return
 ExplorerReplaceDialogListView:
@@ -435,10 +523,24 @@ Loop % ExplorerWindows.len()
 		ExplorerWindows[A_Index].ReplaceDialog.Search()
 return
 ExplorerReplaceDialogCancel:
+Loop % ExplorerWindows.len()
+{
+	if(ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
+	{
+		if(ControlGetText("","ahk_id " ExplorerWindows[A_Index].ReplaceDialog.hCancel) = "Stop")
+			ExplorerWindows[A_Index].ReplaceDialog.Stop := true
+		else
+			ExplorerWindows[A_Index].Remove("ReplaceDialog")
+	}
+}
+return
 ExplorerReplaceDialogClose:
 Loop % ExplorerWindows.len()
 	if(ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
+	{
+		ExplorerWindows[A_Index].ReplaceDialog.Stop := true
 		ExplorerWindows[A_Index].Remove("ReplaceDialog")
+	}
 return
 ExplorerReplaceDialogReplace:
 Loop % ExplorerWindows.len()
