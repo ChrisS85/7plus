@@ -1027,3 +1027,58 @@ AppendPaths(Base,child)
 		return Base
 	return strTrimRight(Base, "\") "\" strTrimLeft(child, "\")
 }
+
+AddToolTip(con,text,Modify = 0)
+{
+	Static TThwnd,GuiHwnd
+	l_DetectHiddenWindows:=A_DetectHiddenWindows
+	If (!TThwnd)
+	{
+		Gui,+LastFound
+		GuiHwnd:=WinExist()
+		TThwnd:=CreateTooltipControl(GuiHwnd)
+		Varsetcapacity(TInfo,6*4+6*A_PtrSize,0)
+		Numput(6*4+6*A_PtrSize,TInfo, "UInt")
+		Numput(1|16,TInfo,4, "UInt")
+		Numput(GuiHwnd,TInfo,8, "PTR")
+		Numput(GuiHwnd,TInfo,8+A_PtrSize, "PTR")
+		;Numput(&text,TInfo,36)
+		Detecthiddenwindows,on
+		Sendmessage,1028,0,&TInfo,,ahk_id %TThwnd%
+		SendMessage,1048,0,300,,ahk_id %TThwnd%
+	}
+	Varsetcapacity(TInfo,6*4+6*A_PtrSize,0)
+	Numput(6*4+6*A_PtrSize,TInfo, "UInt")
+	Numput(1|16,TInfo,4, "UInt")
+	Numput(GuiHwnd,TInfo,8, "PTR")
+	Numput(con,TInfo,8+A_PtrSize, "PTR")
+	VarSetCapacity(ANSItext, StrPut(text, ""))
+    StrPut(text, &ANSItext, "")
+	Numput(&ANSIText,TInfo,6*4+3*A_PtrSize, "PTR")
+
+	Detecthiddenwindows,on
+	If (Modify)
+		SendMessage,1036,0,&TInfo,,ahk_id %TThwnd%
+	Else {
+		Sendmessage,1028,0,&TInfo,,ahk_id %TThwnd%
+		SendMessage,1048,0,300,,ahk_id %TThwnd%
+	}
+	DetectHiddenWindows %l_DetectHiddenWindows%
+}
+CreateTooltipControl(hwind)
+{
+	Ret:=DllCall("CreateWindowEx"
+	,"Uint",0
+	,"Str","TOOLTIPS_CLASS32"
+	,"PTR",0
+	,"Uint",2147483648 | 3
+	,"Uint",-2147483648
+	,"Uint",-2147483648
+	,"Uint",-2147483648
+	,"Uint",-2147483648
+	,"PTR",hwind
+	,"PTR",0
+	,"PTR",0
+	,"PTR",0, "PTR")
+	Return Ret
+}

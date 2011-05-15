@@ -47,15 +47,17 @@ Class CReplaceDialog
 		Gui, % this.GUINum ":Add",Edit, x66 y35 w346 hwndhReplace
 		Gui, % this.GUINum ":Add",Text, x10 y62, With:
 		Gui, % this.GUINum ":Add",Edit, x66 y60 w346 hwndhWith
+		AddToolTip(hWith, "Use $1, $2, ...$(10)... for accessing regex subpatterns in the replace string")
 		Gui, % this.GUINum ":Add",Text, x10 y88, In:
 		Gui, % this.GUINum ":Add",Edit, x66 y84 w216 hwndhIn
-		Gui, % this.GUINum ":Add",Checkbox, x291 y87 gExplorerReplaceDialogInSelectedFiles hwndhInSelectedFiles, In selected files only
+		AddToolTip(hIn, "You may use wildcards here and use "","" as delimiter. Example: ""*.txt,text*""")
+		Gui, % this.GUINum ":Add",Checkbox, x291 y87 hwndhInSelectedFiles, In selected files only
 		Gui, % this.GUINum ":Add",Checkbox, x10 y121 hwndhCaseSensitive, Case sensitive
 		Gui, % this.GUINum ":Add",Checkbox, x10 y144 hwndhRegex, Use regular expressions
 		Gui, % this.GUINum ":Add",Checkbox, x153 y121 hwndhIncludeDirectories, Include directories
 		Gui, % this.GUINum ":Add",Checkbox, x153 y144 hwndhIncludeSubdirectories, Include subdirectories
 		Gui, % this.GUINum ":Add", Text, x10 y172, Action for colliding filenames:
-		Gui, % this.GUINum ":Add", DropDownList, x153 y168 hwndhCollidingAction, Ask||Append (Number)|Skip
+		Gui, % this.GUINum ":Add", DropDownList, x153 y168 hwndhCollidingAction, Append (Number)||Skip
 		Gui, % this.GUINum ":Add", ListView, x10 y200 w402 h310 hwndhListView gExplorerReplaceDialogListView Grid AltSubmit Checked NoSort ReadOnly, Old File|Path|New File
 		LV_ModifyCol(1, 150)
 		LV_ModifyCol(2, 100)
@@ -94,6 +96,12 @@ Class CReplaceDialog
 		this.SearchString := ControlGetText("","ahk_id " this.hReplace)
 		this.ReplaceString := ControlGetText("","ahk_id " this.hWith)
 		this.InString := ControlGetText("", "ahk_id " this.hIn)
+		if(this.InString)
+		{
+			this.InString := RegexReplace(this.InString, "(\\|\.|\?|\+|\[|\{|\||\(|\)|\^|\$)", "\$1") ;Escaping
+			this.InString := RegexReplace(this.InString, "\*", ".*?") ;Wildcard
+			this.InString := "^" RegexReplace(this.InString, ",", "$|^") "$" ;start and end of line
+		}
 		this.InSelectedFiles := ControlGet("Checked","","","ahk_id " this.hInSelectedFiles)
 		this.CaseSensitive := ControlGet("Checked","","", "ahk_id " this.hCaseSensitive)
 		this.Regex := ControlGet("Checked","","", "ahk_id " this.hRegex)
@@ -102,6 +110,8 @@ Class CReplaceDialog
 		this.CollidingAction := ControlGetText("", "ahk_id " this.hCollidingAction)
 		this.SearchResults := Array()
 		LV_Delete()
+		if(this.Regex && !this.CaseSensitive && InStr(this.SearchString, "i)") != 1) ;Case sensitive for regex is done here to save some time
+			this.SearchString := "i)" this.SearchString
 		if(this.Filenames)
 		{
 			this.DirectoryTree := Array()
@@ -112,14 +122,24 @@ Class CReplaceDialog
 			this.DirectoryTree.Path := Path
 			this.DirectoryTree.Name := Name
 			this.CreateFilenameSearchTree(this.DirectoryTree)
+			this.CheckForDuplicates(this.DirectoryTree, AppendPaths(this.DirectoryTree.Path, this.DirectoryTree.Name), Array())
 			this.FlattenTree(this.DirectoryTree)
 			Loop % this.SearchResults.len()
-				LV_Add("Check", this.SearchResults[A_Index].Name, strTrimLeft(this.SearchResults[A_Index].Path,BasePath), this.SearchResults[A_Index].NewFilename)
-			if(this.SearchResults.len() > 0)
-				Control, Enable,,, % "ahk_id " this.hReplaceButton
+				LV_Add("Check", this.SearchResults[A_Index].Name, strTrimLeft(this.SearchResults[A_Index].Path,BasePath), this.SearchResults[A_Index].FixedNewFilename ? this.SearchResults[A_Index].FixedNewFilename : this.SearchResults[A_Index].NewFilename)
 		}
 		else
+		{
+			this.BasePath := ExplorerWindows.SubItem("hwnd", this.Parent).Path
 			this.FileContentSearch()
+			Loop % this.SearchResults.len()
+			{
+				index := A_Index
+				Loop % this.SearchResults[A_Index].Lines.len()
+					LV_Add("Check", strTrimLeft(this.SearchResults[A_Index].Path,this.BasePath), this.SearchResults[index].Lines[A_Index].Line, RegexReplace(this.SearchResults[index].Lines[A_Index].Text, "D)(*ANYCRLF)\R$",""), RegexReplace(this.SearchResults[index].Lines[A_Index].NewText, "D)(*ANYCRLF)\R$",""))
+			}
+		}
+		if(this.SearchResults.len() > 0)
+			Control, Enable,,, % "ahk_id " this.hReplaceButton
 	}
 	
 	; Directory structure must be kept. To archive this, a directory tree object ("DirectoryTree") is created recursively here.
@@ -137,6 +157,8 @@ Class CReplaceDialog
 			File.Name := A_LoopFileName
 			File.Directory := InStr(FileExist(A_LoopFileLongPath), "D")
 			if(IsObject(Selection) && Selection.IndexOf(A_LoopFileLongPath) = 0) ;If selection exists and this file is not in it, skip it
+				continue
+			if(this.InString && !RegexMatch(A_LoopFileName,this.InString))
 				continue
 			if((File.Directory && ((this.IncludeDirectories && this.ProcessFilename(File)) + (this.IncludeSubdirectories &&this.CreateFilenameSearchTree(File))) > 0 ) || (!File.Directory && this.ProcessFilename(File))) ;If File should be processed itself or contains other files which are processed
 			{
@@ -176,6 +198,39 @@ Class CReplaceDialog
 		}
 	}
 	
+	;This function checks for duplicates and modifies the new filenames appropriately
+	CheckForDuplicates(Root, RootPath, PathsList)
+	{
+		index := 1
+		len := Root.len()
+		Loop % len
+		{
+			OldPath := AppendPaths(RootPath, Root[index].Name)
+			NewPath := Root[index].NewFilename ? AppendPaths(RootPath, Root[index].NewFilename) : OldPath
+			if(this.CollidingAction = "Append (Number)")
+			{
+				SplitPath, NewPath,, dir, extension, filename
+				i:=1 ;Find free filename
+				while(FileExist(NewPath) || PathsList.IndexOf(NewPath)) ;Check for existing files on hdd and for target files from this rename operation
+				{
+					i++
+					NewPath:=dir "\" filename " (" i ")" (extension = "" ? "" : "." extension)
+				}
+				if(i > 1)
+					Root[index].FixedNewFilename := filename " (" i ")" (extension = "" ? "" : "." extension)
+			}
+			if(this.CollidingAction = "Skip" && FileExist(NewPath) || PathsList.IndexOf(NewPath))
+			{
+				Root.Remove(Index)
+				continue
+			}
+			PathsList.append(NewPath)
+			if(Root[index].Directory)
+				this.CheckForDuplicates(Root[index], NewPath, PathsList)
+			index++
+		}
+	}
+	
 	;This function performs the actual renaming
 	;TODO check overwrite modes here and adjust paths based on rename success
 	PerformFileNameReplace(Root, RootPath)
@@ -183,7 +238,7 @@ Class CReplaceDialog
 		Loop % Root.len()
 		{
 			OldPath := AppendPaths(RootPath, Root[A_Index].Name)
-			NewPath := AppendPaths(RootPath, Root[A_Index].NewFilename)
+			NewPath := AppendPaths(RootPath, Root[A_Index].FixedNewFilename ? Root[A_Index].FixedNewFilename : Root[A_Index].NewFilename)
 			if(Root[A_Index].Enabled && Root[A_Index].NewFilename)
 			{
 				if(!Root[A_Index].Directory)
@@ -192,25 +247,114 @@ Class CReplaceDialog
 					FileMoveDir, %OldPath%, %NewPath%, 0
 			}
 			if(Root[A_Index].Directory)
-				this.PerformFileNameReplace(Root[A_Index], Root[A_Index].NewFilename ? NewPath : OldPath)
+				this.PerformFileNameReplace(Root[A_Index], Root[A_Index].Enabled && Root[A_Index].NewFilename ? NewPath : OldPath)
 		}
 	}
 	
 	;tests a filename for replacement
 	ProcessFilename(File)
 	{
-		if(this.CaseSensitive)
-			StringCaseSense, On
-		NewFilename := StringReplace(File.Name, this.SearchString, this.ReplaceString, "All")
-		outputdebug errorlevel %errorlevel%
-		if(!Errorlevel)
-			File.NewFilename := NewFilename
-		StringCaseSense, Off
-		return !ErrorLevel
+		if(this.Regex)
+		{			
+			NewFilename := RegexReplace(File.Name, this.SearchString, this.ReplaceString, Count) ;Case insensitivity is handled before
+			if(Count)
+				File.NewFilename := NewFilename
+			return Count > 0
+		}
+		else
+		{
+			if(this.CaseSensitive)
+				StringCaseSense, On
+			NewFilename := StringReplace(File.Name, this.SearchString, this.ReplaceString, "All")
+			if(!Errorlevel)
+				File.NewFilename := NewFilename
+			StringCaseSense, Off
+			return !ErrorLevel
+		}
+	}
+	;Tests if a specific line should be replaced
+	ProcessLine(File, Text, LineNumber)
+	{
+		if(this.Regex)
+		{			
+			NewText := RegexReplace(Text, this.SearchString, this.ReplaceString, Count) ;Case insensitivity is handled before
+			if(Count)
+				File.Lines.Append(Object("Line", LineNumber, "Text", Text, "NewText", NewText, "Enabled", true))
+			return Count > 0
+		}
+		else
+		{
+			if(this.CaseSensitive)
+				StringCaseSense, On
+			NewText := StringReplace(Text, this.SearchString, this.ReplaceString, "All")
+			if(!Errorlevel)
+				File.Lines.Append(Object("Line", LineNumber, "Text", Text, "NewText", NewText, "Enabled", true))
+			StringCaseSense, Off
+			return !ErrorLevel
+		}
 	}
 	FileContentSearch()
 	{
-	
+		if(this.InSelectedFiles) ;skip files which are not in selection
+			Selection := ToArray(GetSelectedFiles(1, this.Parent))
+		items := 0
+		Loop % AppendPaths(this.BasePath, "*"), 0, % this.IncludeSubdirectories
+		{
+			File := Object()
+			File.Path := A_LoopFileLongPath
+			File.Lines := Array()
+			if(IsObject(Selection) && Selection.IndexOf(A_LoopFileLongPath) = 0) ;If selection exists and this file is not in it, skip it
+				continue
+			if(this.InString && !RegexMatch(A_LoopFileName,this.InString)) ;Check filter regex
+				continue
+			f := FileOpen(A_LoopFileLongPath, "r")			
+			;Detect file encoding
+			if f.Pos == 3 
+				File.cp := "UTF-8"
+			else if f.Pos == 2 
+				File.cp := "UTF-16 "
+			else 
+				File.cp := "CP0" 
+			while(!f.AtEOF)
+			{
+				Line := f.ReadLine()
+				if(this.ProcessLine(File, Line, A_Index))
+					this.SearchResults.Append(File)
+			}
+		}
+	}
+	PerformFileContentReplace()
+	{
+		Loop % this.SearchResults.len()
+		{
+			index := A_Index
+			Lines := ""
+			output := ""
+			Loop % this.SearchResults[index].Lines.len() ;Small loop to speed it up a bit for large files
+			{
+				if(this.SearchResults[index].Lines[A_Index].Enabled)
+					Lines .= "," this.SearchResults[index].Lines[A_Index].Line
+			}
+			if(Lines = "")
+				continue
+			f := FileOpen(this.SearchResults[index].Path, "r") 			
+			;Generate new file content
+			while(!f.AtEOF)
+			{
+				Line := f.ReadLine()
+				if(InStr(Lines, "," A_Index))
+					output .= this.SearchResults[index].Lines.SubItem("Line", A_Index).NewText
+				else
+					output .= Line
+			}
+			f.Close()
+			
+			;Write the replaced text back into the file
+			FileDelete, % this.SearchResults[index].Path
+			f := FileOpen(this.SearchResults[index].Path, "rw", this.SearchResults[index].cp)
+			f.Write(output)
+			f.Close()
+		}
 	}
 	ListViewEvent()
 	{
@@ -231,13 +375,26 @@ Class CReplaceDialog
 		}
 		else
 		{
-		
+			if(A_GUIEvent = "I") ;Check/Uncheck
+			{
+				if(ErrorLevel == "C") ;Check
+					Enabled := true
+				else if(ErrorLevel == "c") ;Uncheck
+					Enabled := false
+				 LV_GetText(Path, A_EventInfo, 1)
+				 LV_GetText(LineNumber, A_EventInfo, 2)
+				 Result := this.SearchResults.SubItem("Path", AppendPaths(this.BasePath,Path)).Lines.SubItem("Line", LineNumber)
+				Result.Enabled := Enabled
+			}
 		}
 	}
 	Replace()
 	{
 		global ExplorerWindows
-		this.PerformFileNameReplace(this.DirectoryTree, AppendPaths(this.DirectoryTree.Path, this.DirectoryTree.Name))
+		if(this.Filenames)
+			this.PerformFileNameReplace(this.DirectoryTree, AppendPaths(this.DirectoryTree.Path, this.DirectoryTree.Name))
+		else
+			this.PerformFileContentReplace()
 		ExplorerWindows.SubItem("hwnd", this.Parent).Remove("ReplaceDialog")
 	}
 }
@@ -265,16 +422,6 @@ Loop % ExplorerWindows.len()
 		LV_ModifyCol(1,150, "Old File")
 		LV_ModifyCol(2,100, "Path")
 		LV_ModifyCol(3,145, "New File")
-	}
-return
-ExplorerReplaceDialogInSelectedFiles:
-Loop % ExplorerWindows.len()
-	if(ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
-	{
-		if(ControlGet("Checked", "", "", "ahk_id " ExplorerWindows[A_Index].ReplaceDialog.hInSelectedFiles))
-			Control, Disable,,, % "ahk_id " ExplorerWindows[A_Index].ReplaceDialog.hIn
-		else
-			Control, Enable,,, % "ahk_id " ExplorerWindows[A_Index].ReplaceDialog.hIn
 	}
 return
 ExplorerReplaceDialogListView:

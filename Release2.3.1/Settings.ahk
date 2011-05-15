@@ -40,9 +40,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 	yIt+=checkboxstep
 	y:=yIt+TextBoxCheckBoxOffset
 	Gui, 1:Add, Text, x%x1% y%y%, Run as admin:
-	Gui, 1:Add, DropDownList, x%x2% y%yIt% w%wTBMedium% vRunAsAdmin, Always/Ask|Never
-	yIt+=textboxstep
-	Gui, 1:Add, Text, x%x1% y%yIt%, Required for explorer buttons, Autoupdate and for accessing programs which are running as admin.`nAlso make sure that 7plus has write access to its config files when not running as admin.	
+	Gui, 1:Add, DropDownList, x%x2% y%yIt% w%wTBMedium% vRunAsAdmin hwndhAdmin, Always/Ask|Never
+	AddToolTip(hAdmin, "Required for explorer buttons, Autoupdate and for accessing programs which are running as admin. Also make sure that 7plus has write access to its config files when not running as admin.")
 }
 Settings_CreateEvents(ByRef TabCount) {
 	global
@@ -84,7 +83,7 @@ Settings_CreateEvents(ByRef TabCount) {
 }
 Settings_CreateAccessorKeywords(ByRef TabCount) {
 	global
-	local yIt,x1,x2,x,y
+	local yIt,x1,x2,x,y, hKeywords, hCommands
 	x1:=xBase+10
 	x2 := x1 + 460
 	yIt:=yBase
@@ -101,10 +100,11 @@ Settings_CreateAccessorKeywords(ByRef TabCount) {
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_AccessorKeywords_Delete gGUI_AccessorKeywords_Delete, Delete keyword
 	yIt += textboxstep + 4
 	Gui, 1:Add, Text, x%x1% y+190, Keyword:
-	Gui, 1:Add, Edit, x+27 y+-17 w380 vGUI_AccessorKeywordsKey gGUI_AccessorKeywordsTextChange
+	Gui, 1:Add, Edit, x+27 y+-17 w380 vGUI_AccessorKeywordsKey gGUI_AccessorKeywordsTextChange hwndhKeywords
+	AddToolTip(hKeywords, "The keyword which is typed into accessor at the start of the query, i.e. ""Google""")
 	Gui, 1:Add, Text, x%x1% y+10, Command:
-	Gui, 1:Add, Edit, x+21 y+-17 w380 vGUI_AccessorKeywordsCommand gGUI_AccessorKeywordsTextChange
-	Gui, 1:Add, Text, x%x1% y+10, URL plugin can use parameters: hKey: "google" Command: "www.google.com/search?q=${1}" `nEntered Text: "google 7plus" result: "www.google.com/search?q=7plus"
+	Gui, 1:Add, Edit, x+21 y+-17 w380 vGUI_AccessorKeywordsCommand gGUI_AccessorKeywordsTextChange hwndhCommands
+	AddToolTip(hCommands, "You can use parameters here which are inserted into the command at specific places. This is currently only supported by the URL plugin. Example: Keyword: ""google"" Command: ""www.google.com/search?q=${1}"" Entered Text: ""google 7plus"" result: ""www.google.com/search?q=7plus""")
 }
 Settings_CreateAccessor(ByRef TabCount) {
 	global
@@ -126,7 +126,7 @@ Settings_CreateAccessor(ByRef TabCount) {
 }
 Settings_CreateExplorer(ByRef TabCount) {
 	global
-	local yIt,x1,x2,x
+	local yIt,x1,x2,x,hScrollUnderMouse
 	Gui, 1:Add, Tab2, x176 y14 w460 h350 vExplorerTab, 
 	TabCount++
 	AddTab(0, "","SysTabControl32" TabCount)
@@ -150,7 +150,8 @@ Settings_CreateExplorer(ByRef TabCount) {
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKImproveEnter, Files which are only focussed but not selected can be executed by pressing enter
 	yIt+=checkboxstep		
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghScrollUnderMouse vURL_ScrollUnderMouse, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vScrollUnderMouse, Scroll explorer scrollbars with mouse over them
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vScrollUnderMouse hwndhScrollUnderMouse, Scroll explorer scrollbars with mouse over them
+	AddToolTip(hScrollUnderMouse, "This makes it possible to scroll the file tree or the file list when another part of the explorer window is focused.")
 	yIt+=checkboxstep
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghShowSpaceAndSize vURL_ShowSpaceAndSize, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKShowSpaceAndSize, Show free space and size of selected files in status bar like in XP (7 only)
@@ -187,7 +188,7 @@ Settings_CreateExplorer(ByRef TabCount) {
 }
 Settings_CreateFastFolders(ByRef TabCount) {
 	global
-	local yIt,x1,x,y
+	local yIt,x1,x,y, hCleanFolderBand, hRemoveAllExplorerButtons
 	yIt:=yBase
 	xHelp:=xBase
 	x1:=xHelp+10
@@ -205,17 +206,14 @@ Settings_CreateFastFolders(ByRef TabCount) {
 		Gui, 1:Add, Checkbox, x%x% y%yIt% vHKFolderBand, Integrate Fast Folders into explorer folder band bar (Vista/7 only)	
 		yIt+=checkboxstep
 		Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders2 vURL_FastFolders2, ?
-		Gui, 1:Add, Checkbox, x%x% y%yIt% vHKCleanFolderBand, Remove windows folder band buttons (Vista/7 only)
+		Gui, 1:Add, Checkbox, x%x% y%yIt% vHKCleanFolderBand hwndhCleanFolderBand, Remove windows folder band buttons (Vista/7 only)
 		yIt+=checkboxstep
-		x+=xCheckboxTextOffset
-		y:=yIt+yCheckboxTextOffset
-		Gui, 1:Add, Text, x%x% y%y% R2 vFolderBandDescription, If you use the folder band as a favorites bar like in browsers, it is recommended that you get rid`nof the buttons predefined by windows whereever possible (such as Slideshow, Add to Library,...)
-		x-=xCheckboxTextOffset
-		yIt+=checkboxstep*1.5
+		AddToolTip(hCleanFolderBand, "If you use the folder band as a favorites bar like in browsers, it is recommended that you get rid of the buttons predefined by windows whereever possible (such as Slideshow, Add to Library,...)")
 		Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghFastFolders2 vURL_FastFolders21, ?
 		Gui, 1:Add, Checkbox, x%x% y%yIt% vHKPlacesBar, Integrate Fast Folders into open/save dialog places bar (First 5 Entries)
 		yIt+=checkboxstep
-		Gui, 1:Add, Button, x%x% y%yIt% gRemoveAllExplorerButtons, Remove custom Explorer buttons
+		Gui, 1:Add, Button, x%x% y%yIt% gRemoveAllExplorerButtons hwndhRemoveAllExplorerButtons, Remove custom Explorer buttons
+		AddToolTip(hRemoveAllExplorerButtons, "By doing this all custom buttons in the explorer folder band bar will be removed. This is useful if an error occurred and some buttons get duplicated. Once you press OK or Apply in this dialog, the buttons created with an ExplorerButton trigger will reappear. To make the FastFolder buttons reappear, save a directory to a FastFolder slot by pressing CTRL+Numpad[0-9] (Default keys)")
 	}
 	else
 		Gui, 1:Add, Text, x%x% y%yIt%, Explorer bar functions don't work in portable mode and require admin priviledges!
@@ -327,7 +325,7 @@ Settings_CreateHotstrings(ByRef TabCount) {
 }
 Settings_CreateWindows(ByRef TabCount) {
 	global
-	local yIt,x1,x,y
+	local yIt,x1,x,y, hSlideWindows
 	xHelp:=xBase
 	x1:=xHelp+10
 	Gui, 1:Add, Tab2, x176 y14 w460 h350 vWindowsTab, 
@@ -335,16 +333,14 @@ Settings_CreateWindows(ByRef TabCount) {
 	AddTab(0, "","SysTabControl32" TabCount)
 	yIt:=yBase
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghSlideWindow vURL_SlideWindow, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKSlideWindows gSlideWindow, WIN + SHIFT + Arrow keys: Slide Window function
-	yIt+=checkboxstep	
-	y:=yIt+yCheckboxTextOffset
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKSlideWindows gSlideWindow hwndhSlideWindows, WIN + SHIFT + Arrow keys: Slide Window function
+	AddToolTip(hSlideWindows, "A Slide Window is moved off screen, it will not be shown until you activate it through task bar / ALT + TAB or move the mouse to the border where it was hidden. It will then slide into the screen, and slide out again when the mouse leaves the window or when another window gets activated. Deactivate this mode by moving the window or pressing WIN+SHIFT+Arrow key in another direction.")
+	yIt+=checkboxstep
 	x:=x1+xCheckboxTextOffset
-	Gui, 1:Add, Text, x%x% y%y% R4, A Slide Window is moved off screen, it will not be shown until you activate it through task bar /`nALT + TAB or move the mouse to the border where it was hidden. It will then slide into the screen,`nand slide out again when the mouse leaves the window or when another window gets activated.`nDeactivate this mode by moving the window or pressing WIN+SHIFT+Arrow key in another direction.
-	yIt+=checkboxstep*2.5
 	Gui, 1:Add, Checkbox, x%x% y%yIt% vSlideWinHide, Hide Slide Windows in taskbar and from ALT + TAB
 	yIt+=checkboxstep
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow1dot1 vURL_Window1dot1, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKAltDrag, ALT+Left Mouse Drag: Move windows
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKAltDrag, ALT+Left Mouse Drag anywhere on a window: Move window
 	yIt+=checkboxstep
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window3, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% gFlip3D, Mouse in upper left corner: Toggle Aero Flip 3D (Vista/7 only)
@@ -358,12 +354,6 @@ Settings_CreateWindows(ByRef TabCount) {
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar1, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKMiddleClose, Middle click on taskbuttons: close task
 	yIt+=checkboxstep
-	
-	x:=x1+xCheckboxTextOffset
-	y:=yIt+yCheckBoxTextOffset
-	Gui, 1:Add, Text, x%x% y%y%, Middle click on empty taskbar: Taskbar properties
-	yIt+=checkboxstep	
-	
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window2, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKToggleWallpaper, Middle mouse click on desktop: Toggle wallpaper (7 only)
 	yIt+=checkboxstep
@@ -429,7 +419,7 @@ Settings_CreateWindowsSettings(ByRef TabCount) {
 }
 Settings_CreateMisc(ByRef TabCount) {
 	global
-	local yIt,x1
+	local yIt,x1, hWordDelete
 	Gui, 1:Add, Tab2, x176 y14 w460 h350 vMiscTab, 
 	TabCount++
 	AddTab(0, "","SysTabControl32" TabCount)
@@ -440,8 +430,8 @@ Settings_CreateMisc(ByRef TabCount) {
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vJoyControl, Use joystick/gamepad as remote control when not in fullscreen (optimized for XBOX360 gamepad)
 	yIt+=checkboxstep
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWordDelete vURL_WordDelete, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vWordDelete, Make CTRL+Backspace and CTRL+Delete work in all textboxes
-	
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vWordDelete hwndhWordDelete, Make CTRL+Backspace and CTRL+Delete work in all textboxes
+	AddToolTip(hWordDelete, "Many text boxes in windows have the problem that it's not possible to use CTRL+Backspace to delete a word. Instead, it will write a square character. Enabling this will fix it.")
 	yIt+=2*checkboxstep
 	y:=yIt+TextBoxTextOffset
 	x2:=x1+180
@@ -452,9 +442,11 @@ Settings_CreateMisc(ByRef TabCount) {
 	Gui, 1:Add, Text, x%x1% y%y%, Default image extension:
 	Gui, 1:Add, Edit, x%x2% y%yIt% w%wTBShort% R1 vImageExtension
 	yIt+=TextBoxStep
+	Gui, 1:Add, Text, x%x1% y%yIt%, Many features of 7plus check if there is a fullscreen window active.`nYou can add window class names to include and exclude filters here to influence the fullscreen recognition.
+	yIt+=CheckboxStep * 1.5
 	y:=yIt+TextBoxTextOffset
 	Gui, 1:Add, Text, x%x1% y%y%, Fullscreen detection include list
-	Gui, 1:Add, Edit, x%x2% y%yIt% w%wTBHuge% R1 vFullscreenInclude
+	Gui, 1:Add, Edit, x%x2% y%yIt% w%wTBHuge% R1 vFullscreenInclude	
 	yIt+=TextBoxStep
 	y:=yIt+TextBoxTextOffset
 	Gui, 1:Add, Text, x%x1% y%y%, Fullscreen detection exclude list
