@@ -388,6 +388,7 @@ Return
 
 #if IsMouseOverTaskList() ;Can't add the conditions below here right now, because IsDoubleClick seems to fail when called in the #if condition
 LButton::
+outputdebug lbutton
 if(IsDoubleClick() && IsMouseOverFreeTaskListSpace())
 {
 	outputdebug doubleclicktaskbar
@@ -396,10 +397,10 @@ if(IsDoubleClick() && IsMouseOverFreeTaskListSpace())
 }
 else
 {
-	Send {LButton Down}
+	Click Left Down
 	while(GetKeyState("LButton", "P"))
 		Sleep 50
-	Send {LButton Up}
+	Click Left Up
 }
 return
 #if

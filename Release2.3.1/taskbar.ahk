@@ -112,7 +112,7 @@ IsMouseOverFreeTaskListSpace()
 		return x<0
 	}
 	IsRunning:=true
-	Send {RButton}
+	Click Right
 	result:=0
 	x:=0
 	while(x<50)

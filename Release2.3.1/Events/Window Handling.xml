@@ -1,4 +1,4 @@
-<BugfixVersion>0</BugfixVersion>
+<BugfixVersion>1</BugfixVersion>
 <Events>
 <Event>
 <Actions>
@@ -134,6 +134,7 @@
 </Event><Event>
 <Actions>
 <Action>
+<KeyDelay>0</KeyDelay>
 <Keys>{Esc}</Keys>
 <Type>SendKeys</Type>
 <WriteText>0</WriteText>
@@ -241,6 +242,7 @@
 <Trigger>
 <Restart>0</Restart>
 <ShowProgress>0</ShowProgress>
+<Text></Text>
 <Time>2000</Time>
 <Type>Timer</Type>
 </Trigger>

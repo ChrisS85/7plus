@@ -1,4 +1,4 @@
-<BugfixVersion>0</BugfixVersion>
+<BugfixVersion>1</BugfixVersion>
 <Events>
 <Event>
 <Actions>
@@ -277,6 +277,7 @@
 </Event><Event>
 <Actions>
 <Action>
+<Filename>Neues Textdokument.txt</Filename>
 <Rename>1</Rename>
 <Type>NewFile</Type>
 </Action></Actions>
@@ -307,6 +308,7 @@
 </Event><Event>
 <Actions>
 <Action>
+<FolderName>Neuer Ordner</FolderName>
 <Rename>1</Rename>
 <Type>NewFolder</Type>
 </Action></Actions>
@@ -619,11 +621,8 @@
 </Event><Event>
 <Actions>
 <Action>
-<Command>cmd.exe /k cd /D "%Desktop%"</Command>
-<RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
-<WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
+<Paths>${SelNM}</Paths>
+<Type>FlatView</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -632,18 +631,56 @@
 <Negate>0</Negate>
 <Operator>matches regular expression</Operator>
 <Type>If</Type>
-<With>(WorkerW|Progman)</With>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>IsRenaming</Type>
+</Condition><Condition>
+<Compare>${WinVer}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>WIN_XP</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Open CMD in desktop directory when desktop window is active.</Description>
+<Description>This event shows the contents of all selected folders in a flat view.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
-<ID>1583</ID>
-<Name>Run CMD in desktop directory</Name>
-<OfficialEvent>987</OfficialEvent>
+<ID>1616</ID>
+<Name>Show flat view of selected files</Name>
+<OfficialEvent>19</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Key>#C</Key>
+<Key>+Enter</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Type>ExplorerReplaceDialog</Type>
+</Action></Actions>
+<Category>Explorer</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>IsRenaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event shows the Explorer Rename/Replace dialog which is used to replace text in filenames and files.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1623</ID>
+<Name>Show Explorer Rename/Replace dialog</Name>
+<OfficialEvent>20</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^H</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event></Events>

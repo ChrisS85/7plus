@@ -8,7 +8,6 @@ GroupAdd, TaskbarGroup, ahk_class BaseBar
 GroupAdd, TaskbarGroup, ahk_class DV2ControlHost
 GroupAdd, TaskbarDesktopGroup, ahk_group DesktopGroup
 GroupAdd, TaskbarDesktopGroup, ahk_group TaskbarGroup
-
 ;Get windows version
 RegRead, vista7, HKLM, SOFTWARE\Microsoft\Windows NT\CurrentVersion, CurrentVersion
 vista7 := vista7 >= 6

@@ -15,6 +15,8 @@ Accessor_FileSystem_IsInSinglePluginContext(FileSystem, Filter, LastFilter)
 {
 	Filter := ExpandPathPlaceholders(Filter)
 	SplitPath, Filter, name, dir,,,drive
+	if((x := InStr(dir, ":") ) != 0 && x != 2) ;Colon may only be drive separator
+		return false
 	return dir != "" && !InStr(Filter, "://") ;Don't match URLs
 }
 Accessor_FileSystem_GetDisplayStrings(FileSystem, AccessorListEntry, ByRef Title, ByRef Path, ByRef Detail1, ByRef Detail2)

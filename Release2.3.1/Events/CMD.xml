@@ -1,4 +1,4 @@
-<BugfixVersion>0</BugfixVersion>
+<BugfixVersion>1</BugfixVersion>
 <Events>
 <Event>
 <Actions>
@@ -124,6 +124,7 @@
 <X>40</X>
 <Y>40</Y>
 </Action><Action>
+<KeyDelay>0</KeyDelay>
 <Keys>{Down 3}{Enter}</Keys>
 <Type>SendKeys</Type>
 <WriteText>0</WriteText>
@@ -149,6 +150,36 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^V</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Command>cmd.exe /k cd /D "%Desktop%"</Command>
+<RunAsAdmin>0</RunAsAdmin>
+<Type>Run</Type>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory></WorkingDirectory>
+</Action></Actions>
+<Category>CMD</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(WorkerW|Progman)</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Open CMD in desktop directory when desktop window is active.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1583</ID>
+<Name>Run CMD in desktop directory</Name>
+<OfficialEvent>987</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>#C</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event></Events>

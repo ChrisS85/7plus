@@ -10,7 +10,7 @@ return
 #if
 HotkeyTrigger(key)
 {
-	;outputdebug, % "key: " A_ThisHotkey ", Event key: " Trigger.key
+	outputdebug, % "key: " A_ThisHotkey ", Event key: " Trigger.key
 	if(!key)
 		return 0
 	if(!IsObject(Trigger := HotkeyShouldFire(A_ThisHotkey)))

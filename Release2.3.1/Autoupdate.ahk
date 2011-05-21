@@ -118,6 +118,13 @@ ApplyUpdateFixes()
 			EnableAutorun()
 		}				
 	}
+	if(MajorVersion "." MinorVersion "." BugfixVersion = "2.4.0")
+	{
+		;Remove some old files that were renamed
+		FileDelete, %A_ScriptDir%\Events\ExplorerButtons.xml
+		FileDelete, %A_ScriptDir%\Events\FastFolders.xml
+		FileDelete, %A_ScriptDir%\Events\WindowHandling.xml
+	}
 }
 AutoUpdate_CheckPatches()
 {

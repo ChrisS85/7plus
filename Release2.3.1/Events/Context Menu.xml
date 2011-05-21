@@ -1,4 +1,4 @@
-<BugfixVersion>0</BugfixVersion>
+<BugfixVersion>1</BugfixVersion>
 <Events>
 <Event>
 <Actions>
@@ -157,6 +157,35 @@
 <DirectoryBackground>1</DirectoryBackground>
 <FileTypes></FileTypes>
 <Name>Toggle hidden files</Name>
+<SingleFileOnly>0</SingleFileOnly>
+<SubMenu></SubMenu>
+<Type>ContextMenu</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Paths>${Context}</Paths>
+<Type>FlatView</Type>
+</Action></Actions>
+<Category>Context Menu</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event adds a context menu on directories to show them in a flat view.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1624</ID>
+<Name>Flat View in directory menus</Name>
+<OfficialEvent>21</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Computer>0</Computer>
+<Description>Shows the contents of the selected folders in a flat view.</Description>
+<Desktop>0</Desktop>
+<Directory>1</Directory>
+<DirectoryBackground>0</DirectoryBackground>
+<FileTypes></FileTypes>
+<Name>Flat View</Name>
 <SingleFileOnly>0</SingleFileOnly>
 <SubMenu></SubMenu>
 <Type>ContextMenu</Type>

@@ -103,19 +103,19 @@ return
 ;Mouse buttons have separate press and release triggers, so they can be held for dragging etc.
 Joy1::
 SetMouseDelay, -1  ; Makes movement smoother.
-MouseClick, left,,, 1, 0, D  ; Hold down the left mouse button.
+Click Left Down  ; Hold down the left mouse button.
 SetTimer, WaitForLeftButtonUp, 10
 return
 
 Joy2::
 SetMouseDelay, -1  ; Makes movement smoother.
-MouseClick, right,,, 1, 0, D  ; Hold down the right mouse button.
+Click Right Down  ; Hold down the right mouse button.
 SetTimer, WaitForRightButtonUp, 10
 return
 
 Joy3::
 SetMouseDelay, -1  ; Makes movement smoother.
-MouseClick, middle,,, 1, 0, D  ; Hold down the right mouse button.
+Click Middle Down  ; Hold down the right mouse button.
 SetTimer, WaitForMiddleButtonUp, 10
 return
 
@@ -133,7 +133,7 @@ if GetKeyState("Joy1")
 ; Otherwise, the button has been released.
 SetTimer, WaitForLeftButtonUp, off
 SetMouseDelay, -1  ; Makes movement smoother.
-MouseClick, left,,, 1, 0, U  ; Release the mouse button.
+Click Left Up  ; Release the mouse button.
 return
 
 WaitForRightButtonUp:
@@ -142,7 +142,7 @@ if GetKeyState("Joy2")
 ; Otherwise, the button has been released.
 SetTimer, WaitForRightButtonUp, off
 SetMouseDelay, -1  ; Makes movement smoother.
-MouseClick, right,,, 1, 0, U  ; Release the mouse button.
+Click Right Up  ; Release the mouse button.
 return
 
 WaitForMiddleButtonUp:
@@ -151,5 +151,5 @@ if GetKeyState("Joy3")
 ; Otherwise, the button has been released.
 SetTimer, WaitForMiddleButtonUp, off
 SetMouseDelay, -1  ; Makes movement smoother.
-MouseClick, middle,,, 1, 0, U  ; Release the mouse button.
+Click Middle Up  ; Release the mouse button.
 return

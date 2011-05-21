@@ -17,8 +17,8 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ;SetFormat, Integer, D
 MajorVersion := 2
-MinorVersion := 3
-BugfixVersion := 1
+MinorVersion := 4
+BugfixVersion := 0
 ComObjError(0)
 #include %A_ScriptDir%\Autoexecute.ahk ;include first to avoid issues with autoexecute ending too soon because of labels
 #include %A_ScriptDir%\lib\Array.ahk

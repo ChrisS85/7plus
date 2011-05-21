@@ -168,6 +168,14 @@ FolderLoop(Platform, Version)
 			continue
 		if(InStr(A_LoopFileFullPath, "ReleasePatch\") && !InStr(A_LoopFileName, 7plusVersion)) ;Skip release patches for wrong 7plus version
 			continue
+		if(A_LoopFileExt = "xml") ;Remove german folder/file names
+		{
+			FileRead, content, %A_LoopFileFullPath%
+			StringReplace, content, content,<Filename>Neues Textdokument.txt</Filename>`r`n
+			StringReplace, content, content,<FolderName>Neuer Ordner</FolderName>`r`n
+			FileDelete, %A_LoopFileFullPath%
+			FileAppend, %content%, %A_LoopFileFullPath%
+		}
 		FileCreateDir %A_Temp%\7plusUpdateCreator\%A_LoopFileDir%
 		FileCopy, %A_LoopFileLongPath%, %A_Temp%\7plusUpdateCreator\%A_LoopFileFullPath%, 1
 	}

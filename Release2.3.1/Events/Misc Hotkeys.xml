@@ -1,4 +1,4 @@
-<BugfixVersion>0</BugfixVersion>
+<BugfixVersion>1</BugfixVersion>
 <Events>
 <Event>
 <Actions>
@@ -49,6 +49,7 @@
 </Event><Event>
 <Actions>
 <Action>
+<KeyDelay>0</KeyDelay>
 <Keys>^.</Keys>
 <Type>SendKeys</Type>
 <WriteText>0</WriteText>
@@ -85,6 +86,7 @@
 </Event><Event>
 <Actions>
 <Action>
+<KeyDelay>0</KeyDelay>
 <Keys>^,</Keys>
 <Type>SendKeys</Type>
 <WriteText>0</WriteText>
@@ -205,62 +207,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<Action>Trigger Event</Action>
-<Compare></Compare>
-<EventID>1599</EventID>
-<Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
-</Action></Actions>
-<Category>Taskbar</Category>
-<Conditions>
-<Condition>
-<MouseOverType>Clock</MouseOverType>
-<Negate>0</Negate>
-<Type>MouseOver</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
-<WindowMatchType>Specific Window</WindowMatchType>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event starts a dynamic timer when the taskbar clock is clicked with the middle mouse button.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<ID>1609</ID>
-<Name>Dynamic Timer: Middle mouse click over clock</Name>
-<OfficialEvent>17</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>MButton</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Keys>`r`n</Keys>
-<Type>SendKeys</Type>
-<WriteText>1</WriteText>
-</Action></Actions>
-<Category>Misc Hotkeys</Category>
-<Conditions>
-</Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event will write a newline sequence to the focused control and thus start a new line. This is useful in text fields where pressing Enter would press a button.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<ID>1610</ID>
-<Name>Write newline characters</Name>
-<OfficialEvent>16</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>^#Enter</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
+<KeyDelay>0</KeyDelay>
 <Keys>^k</Keys>
 <Type>SendKeys</Type>
 <WriteText>0</WriteText>
@@ -286,6 +233,7 @@
 <Enabled>1</Enabled>
 <ID>1614</ID>
 <Name>Picture viewer: Rotate image right with R</Name>
+<OfficialEvent>15</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>R</Key>
@@ -294,6 +242,30 @@
 </Event><Event>
 <Actions>
 <Action>
+<KeyDelay>0</KeyDelay>
+<Keys>`r`n</Keys>
+<Type>SendKeys</Type>
+<WriteText>1</WriteText>
+</Action></Actions>
+<Category>Misc Hotkeys</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event will write a newline sequence to the focused control and thus start a new line. This is useful in text fields where pressing Enter would press a button.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1610</ID>
+<Name>Write newline characters</Name>
+<OfficialEvent>16</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^#Enter</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<KeyDelay>0</KeyDelay>
 <Keys>^l</Keys>
 <Type>SendKeys</Type>
 <WriteText>0</WriteText>
@@ -319,6 +291,7 @@
 <Enabled>1</Enabled>
 <ID>1615</ID>
 <Name>Picture viewer: Rotate image left with L</Name>
+<OfficialEvent>18</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>L</Key>

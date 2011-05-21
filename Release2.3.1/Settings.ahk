@@ -1330,7 +1330,23 @@ GUI_EventsList_Import()
 GUI_EventsList_Export()
 {
 	global Settings_Events
-	outputdebug GUI_EventsList_Export() listview
+	;Uncomment the following lines to export all events separated by category to Events\Category.xml instead
+	;
+	; Loop % Settings_Events.Categories.len()
+	; {
+		; Category := Settings_Events.Categories[A_Index]
+		; Events := Array()
+		; Loop % Settings_Events.len()
+		; {
+			; if(Settings_Events[A_Index].Category = Category)
+				; Events.append(Settings_Events[A_Index])
+		; }
+		; if(Events.len() > 0)
+			; WriteEventsFile(Events, A_ScriptDir "\Events\" Category ".xml")
+	; }
+	; WriteEventsFile(Events, A_ScriptDir "\Events\All Events.xml")
+	; return
+	;
 	Gui, ListView, GUI_EventsList
 	count := LV_GetCount("Selected")
 	if(count > 0)
