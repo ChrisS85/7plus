@@ -1157,7 +1157,7 @@ GUI_RemoveEvent()
 			if((!IsPortable && A_IsAdmin) || (Settings_Events[pos].Trigger.Type != "ExplorerButton" && Settings_Events[pos].Trigger.Type != "ContextMenu"))
 			{
 				Category := Settings_Events[pos].Category
-				Settings_Events.Delete(pos)		
+				deleted += Settings_Events.Delete(Settings_Events[pos], false)		
 				LV_Delete(ListPos)
 				continue
 			}
@@ -1170,29 +1170,8 @@ GUI_RemoveEvent()
 		ListPos := min(max(ListPos, 1), count)
 		LV_Modify(ListPos, "Select")
 	}
-	deleted := false	
-	pos := 1
-	Loop % Settings_Events.Categories.len()
-	{
-		found := false
-		Category := Settings_Events.Categories[pos]
-		Loop % Settings_Events.len()
-		{
-			if(Settings_Events[A_Index].Category = Category)
-			{
-				found := true
-				break
-			}
-		}
-		if(!found)
-		{
-			Settings_Events.Categories.Delete(pos)
-			deleted := true
-		}
-		else
-			pos++
-	}
-	if(deleted)
+	outputdebug deleted %deleted%
+	if(deleted) ;If a category was deleted
 		RecreateTreeView()
 }
 GUI_EventsList_Edit:
@@ -1218,7 +1197,7 @@ GUI_EventsList_Edit(Add = 0)
 	Suspend, On
 	event:=GUI_EditEvent(Settings_Events[pos].DeepCopy())
 	Suspend, Off
-	if(event && (IsPortable || !A_IsAdmin) && Event.Trigger.Type = "ExplorerButton")
+	if(event && (IsPortable || !A_IsAdmin) && Event.Trigger.Type = "ExplorerButton") ;Explorer buttons may not be added in portable/non-admin mode
 	{
 		Msgbox ExplorerButton trigger events may not be modified in portable or non-admin mode, as this might cause inconsistencies with the registry.
 		if(Add)
@@ -1233,15 +1212,6 @@ GUI_EventsList_Edit(Add = 0)
 			event.Category := "Uncategorized"
 		if(!Settings_Events.Categories.indexOf(event.Category))
 			Settings_Events.Categories.append(event.Category)
-		;remove empty categories
-		loop % Settings_Events.Categories.len()
-		{
-			if(Settings_Events.IndexOfSubItem("Category", Settings_Events.Categories[A_Index]) = 0)
-			{
-				Settings_Events.Categories.Delete(A_Index)
-				break
-			}
-		}
 		Settings_SetupEvents() ;Refresh listview		
 	}
 	else if(Add)
@@ -1383,17 +1353,19 @@ GUI_SaveEvents()
 	;Disable all events first (without setting enabled to false, so triggers can decide what they want to do themselves)
 	Loop % Events.len()
 		Events[A_Index].Trigger.Disable(Events[A_Index])	
-	;Remove deleted events and refresh the copies to consider recent changes (such as timer state)
+	;Remove events that were deleted in settings window and refresh the settings copies to consider recent changes in the original events (such as timer state)
+	pos := 1
+	Settings_Events.IsSettings := true
 	Loop % Events.len()
 	{
-		if(!Settings_Events.SubItem("ID", Events[A_Index].id)) ;separate destroy routine instead of simple disable is needed for removed events because of hotkey/timer discrepancy
+		if(!Settings_Events.SubItem("ID", Events[pos].id)) ;separate destroy routine instead of simple disable is needed for removed events because of hotkey/timer discrepancy
 		{
-			Events.Remove(Events[A_Index],false)
+			Events_Delete(Events, Events[pos],false)
 			continue
 		}
-		Events[A_Index].Trigger.PrepareReplacement(Events[A_Index], Settings_Events.SubItem("ID", Events[A_Index].id))
+		Events[pos].Trigger.PrepareReplacement(Events[pos], Settings_Events.SubItem("ID", Events[pos].id))
+		pos++
 	}
-	
 	;Replace the original events with the copies
 	Events := Settings_Events.DeepCopy()
 	;Update enabled state
@@ -1594,7 +1566,6 @@ GUI_SaveAccessorPluginSettings()
 {
 	global AccessorPlugins, Settings_AccessorPlugins	
 	outputdebug save accessor settings
-	;Remove deleted events and refresh the copies to consider recent changes (such as timer state)
 	Loop % AccessorPlugins.len()
 	{
 		Plugin := AccessorPlugins[A_Index]

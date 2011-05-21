@@ -11,23 +11,34 @@ Events_Add(Events, Event)
 }
 
 ;This function needs to be used to remove events, to allow syncing with settings window
-Events_Remove(Events, Event, UpdateGUI=true) 
+Events_Delete(Events, Event, UpdateGUI=true) 
 {
-	global Settings_Events, TemporaryEvents
+	global Settings_Events, TemporaryEvents	
+	index := Events.indexOfSubItem("ID", Event.ID)
+	if(!index)
+		return
+	Event := Events[index]	
 	if(Events != TemporaryEvents && Event.ID < 0)
 	{
-		Events_Remove(TemporaryEvents, Event, UpdateGUI)
+		Events_Delete(TemporaryEvents, Event, UpdateGUI)
 		return
 	}
-	index := Events.indexOfSubItem("ID", Event.ID)
 	Events[index].Delete()
-	Events.Delete(index)
-	if(Settings_Events && Events != Settings_Events)
+	Events.Remove(index)
+	if(Settings_Events && Events != Settings_Events) ;Remove the event on the settings page too
 	{
-		Settings_Events.Delete(Settings_Events.indexOfSubItem("ID", Event.ID))
+		Settings_Events.Delete(Settings_Events.SubItem("ID", Event.ID), false)
 		if(UpdateGUI)
 			Settings_SetupEvents()
 	}
+	Events.HighestID := -1 ;Decrease HighestID to prevent ID changes when "reimporting" all events from the gui
+	Loop % Events.len()
+		if(Events[A_Index].ID > Events.HighestID)
+			Events.HighestID := Events[A_Index].ID
+	if(index := Events.IndexOfSubItem("Category", Event.Category))
+		return false
+	Events.Categories.Remove(Events.Categories.IndexOf(Event.Category))
+	return true
 }
 
 ;Events overrides SubItem function so that it can redirect negative IDs to TemporaryEvents

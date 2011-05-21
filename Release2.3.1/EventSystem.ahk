@@ -104,7 +104,7 @@ EventSystem_Startup()
 	Action_Upload_ReadFTPProfiles()
 	
 	;Create list object for events
-	EventsBase := object("base", Array(), "Categories", Array(), "GlobalPlaceholders", Array(), "HighestID", -1, "CreateEvent", "EventSystem_CreateEvent", "Add", "Events_Add", "Remove", "Events_Remove", "SubItem", "Events_SubItem", "indexOfSubItem", "Events_indexOfSubItem")
+	EventsBase := object("base", Array(), "Categories", Array(), "GlobalPlaceholders", Array(), "HighestID", -1, "CreateEvent", "EventSystem_CreateEvent", "Add", "Events_Add", "Delete", "Events_Delete", "SubItem", "Events_SubItem", "indexOfSubItem", "Events_indexOfSubItem")
 	Events := object("base", EventsBase)
 	
 	;Temporary events are not visible in settings GUI and won't be saved. See ControlEvent -> Copy Event for usage example.
@@ -178,6 +178,7 @@ TriggerFromOtherInstance(wParam, lParam)
 	}
 	Critical, Off
 }
+^!h::msgbox % Settings_Events.HighestID
 ;Creates an event and registers it for lEvents list (-->Assigns an ID that is based on the max ID of the default Events list and its settings copy, and increases HighestID count of lEvents and adds it to lEvents)
 EventSystem_RegisterEvent(lEvents, Event = "", Enable = 1)
 {
@@ -559,7 +560,7 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 			{
 				if(Update) ;Should be true if we are here
 					Update.Message := Update.Message "`n- Removed Event: " Events[index].Name
-				Events.Delete(Index)
+				Events.Delete(Events[index], false)
 			}
 		}
 	}
@@ -621,18 +622,18 @@ WriteEventsFile(Events, path)
 			xmlEvent.OfficialEvent := Event.OfficialEvent
 		
 		;Enable the lines below to save events with an "official" tag that allows to identify them in update processes
-		if(!Event.OfficialEvent)
-		{
-			;Find an unused Event ID to be used as Official Event ID
-			Loop
-			{
-				if(Events.IndexOfSubItem("OfficialEvent", A_Index))
-					continue ;Alread in use
-				xmlEvent.OfficialEvent := A_Index ;Not used
-				Event.OfficialEvent := A_Index
-				break
-			}
-		}
+		; if(!Event.OfficialEvent)
+		; {
+			; ;Find an unused Event ID to be used as Official Event ID
+			; Loop
+			; {
+				; if(Events.IndexOfSubItem("OfficialEvent", A_Index))
+					; continue ;Alread in use
+				; xmlEvent.OfficialEvent := A_Index ;Not used
+				; Event.OfficialEvent := A_Index
+				; break
+			; }
+		; }
 		
 		xmlTrigger := Object()
 		xmlEvent.Trigger := xmlTrigger
@@ -844,10 +845,7 @@ EventScheduler()
 				if(Event.DisableAfterUse && index)
 					OriginalEvent.SetEnabled(false)
 				if(Event.DeleteAfterUse && index)
-				{
-					OriginalEvent.Delete()
-					Events.Remove(OriginalEvent)
-				}
+					Events.Delete(OriginalEvent)
 				outputdebug % "Finished execution of event ID: " event.id " Name:" event.name
 				continue
 			}

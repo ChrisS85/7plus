@@ -309,6 +309,7 @@ OnExit(Reload=0)
 	static ShouldReload
 	if(ShouldReload) ;If set, code below has already been executed by a previous call to this function
 		return
+	outputdebug OnExit()
 	if(ProgramStartupFinished)
 	{
 		EventSystem_End()
