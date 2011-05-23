@@ -1,7 +1,7 @@
 = Delete =
 Cette action supprime un ou plusieurs fichiers du répertoire cible.
 
-|| *Parameter* || *Description* ||
+|| *Paramètre* || *Description* ||
 ||Source file(s)||Fichiers à supprimer. Ce qui peut être soit un seul fichier/nom de dossier, ou une liste de noms complet, avec guillemet, séparés par des espaces, ou une liste de noms de fichiers complet séparés par un saut de ligne. Si un placeholder ${Sel}-type doit être utilisé, il est suggéré d'utiliser soit ${SelNQ} ou ${SelNM}.||
 ||Silent||Si défini, 7plus n'affichera pas la fenêtre de progression. Sur les opérations courtes, ce ne sera pas visible quelque soit ce paramètre.||
 
