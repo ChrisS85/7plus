@@ -4,7 +4,7 @@ Cette action peut télécharger plusieurs fichiers sur un serveur FTP et copier 
 || *Paramètre* || *Description* ||
 ||Source file(s)||Un ou plusieurs fichiers à télécharger. Plusieurs fichiers doivent être cité et séparés par des espaces ou non cités et séparés par des sauts de ligne. Utiliser ${SelNQ} ou ${SelNM} pour les fichiers sélectionnés dans l'Explorateur si vous le devez.||
 ||Hostname||Le nom d'hôte du serveur ftp. Ne précéder pas avec "`ftp://`" ou similaire, utilisez juste "hostname.com".||
-||Port||Habituelement 21.||
+||Port||Habituellement 21.||
 ||Username||Nom d'utilisateur FTP.||
 ||Password||Mot de passe FTP.||
 ||Target folder||Sous-dossier cible sur le serveur FTP dans lequel les fichiers doivent être téléchargées.||
