@@ -7,4 +7,4 @@ Cette action supprime un ou plusieurs fichiers du répertoire cible.
 
 = Exemple d'utilisation =
   * Cette action peut-être utilisé pour vider régulièrement les répertoires temporaires.
-  * Il est également possible de définir que la touche 'Suppr' ne supprime pas certains fichiers par une combinaison de déclencheur [fr_docsTriggersHotkey hotkey], une condition [fr_docsConditionsIf if] pour vérifier certains fichiers et cette action de suppression.
+  * Il est également possible de définir que la touche 'Suppr' ne supprime pas certains fichiers par une combinaison du déclencheur [fr_docsTriggersHotkey hotkey], une condition [fr_docsConditionsIf if] pour vérifier certains fichiers et cette action de suppression.
