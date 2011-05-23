@@ -1,0 +1,24 @@
+= Upload =
+Cette action peut télécharger plusieurs fichiers sur un serveur FTP et copier les liens dans le presse-papiers par la suite.
+
+|| *Paramètre* || *Description* ||
+||Source file(s)||Un ou plusieurs fichiers à télécharger. Plusieurs fichiers doivent être cité et séparés par des espaces ou non cités et séparés par des sauts de ligne. Utiliser ${SelNQ} ou ${SelNM} pour les fichiers sélectionnés dans l'Explorateur si vous le devez.||
+||Hostname||Le nom d'hôte du serveur ftp. Ne précéder pas avec "`ftp://`" ou similaire, utilisez juste "hostname.com".||
+||Port||Habituelement 21.||
+||Username||Nom d'utilisateur FTP.||
+||Password||Mot de passe FTP.||
+||Target folder||Sous-dossier cible sur le serveur FTP dans lequel les fichiers doivent être téléchargées.||
+||Target files||Laissez vide pour utiliser les noms de fichier originaux, ou entrer le nom de fichier (sans extension) ou l'extension (commençant par ".") pour remplacer cette partie du nom du fichier original.||
+||URL||URL à laquelle les fichiers sont accessibles. Ceci est nécessaire uniquement si les liens doivent être copiés dans le presse-papiers.||
+||Silent||Si défini, aucune notification sera affichée quand le téléchargement est fini ou échoué. If set, no notification will be seen when upload is finished or failed. Sinon, une info-bulle s'affiche et un bip sonore sera joué.||
+||Copy links to clipboard||Si défini et l'URL spécifiée, en cas de succès les liens vers les fichiers seront copiés dans le presse-papiers.||
+
+= Exemples d'usage =
+  * 7plus utilise ceci pour télécharger les fichiers sélectionnés de l'Explorateur lorsque CTRL+U est pressé (paramètre par défaut), pour prendre des captures d'écran et les télécharger avec Alt/Win+Insert (paramètre par défaut) et pour télécharger des images ou du texte du presse-papiers avec le raccourci Win+SUPPR (paramètre par défaut).
+  * Vous pouvez également utiliser ceci pour télécharger automatiquement les sauvegardes de fichiers sur un serveur sur une base chronométrée en utilisant un [fr_docsTriggersTimer timer] et un [fr_docsGenericPlaceholders placeholder] ${DateTime}.
+  * En combinant la fonction de téléchargement CTRL+U avec une [fr_docsConditionsIf condition if], vous pouvez télécharger sur des serveurs différents selon l'emplacement des fichiers source. Cela pourrait être utile si vous êtes web développeur et avez besoin de télécharger des fichiers de différents projets.
+
+= Notes =
+  * Pour utiliser les fonctionnalités FTP intégrées, vous devez entrer vos données de compte FTP dans chacun de ces événements.
+  * Lorsque vous créez une nouvelle action de téléchargement, les données FTP de l'action précédente de téléchargement sont présélectionnées pour plus de commodité.
+  * Les mots de passe sont stockés cryptés.
