@@ -5,7 +5,7 @@ Cette action déplace un ou plusieurs fichiers dans un répertoire de destinatio
 ||Source file(s)||Fichiers à déplacer. Ce qui peut être soit un seul nom de fichier/dossier, soit une liste de noms cités et séparés par des espaces, ou une liste de noms de fichiers séparés par des sauts de ligne. Si un ${Sel}-type [fr_docsGenericPlaceholders placeholder] doit être utilisé, il est conseillé d'utiliser soit ${SelNQ} ou ${SelNM}.||
 ||Target path||Répertoire de la cible du déplacement. Si cela est vide, les fichiers seront déplacés dans le même répertoire. Cela signifie qu'un nouveau nom doit être définie, essentiellement résultant du Renommage.||
 ||Target file(s)||Noms des fichiers cible. Si cela est vide, les noms des fichiers originaux sont utilisés lorsque le répertoire est défini. Il est possible de ne spécifier qu'un nom de fichier sans extension pour garder l'extension du fichier original. Si un fichier cible existe déjà et "Overwrite" est désactivée, un (nombre) sera ajouté à la fin du nom de fichier.||
-||Silent||If set, 7plus will not show the windows progress dialog. On short operations it won't be visible regardless of this setting.Si défini, 7plus n'affichera pas la boîte de progression Windows. Sur les opérations courtes, ce ne sera pas visible quelque soit ce paramètre.||
+||Silent||Si défini, 7plus n'affichera pas la boîte de progression Windows. Sur les opérations courtes, ce ne sera pas visible quelque soit ce paramètre.||
 ||Overwrite||Si défini, les fichiers déjà existants seront écrasés.||
 
 = Exemples d'utilisation =
