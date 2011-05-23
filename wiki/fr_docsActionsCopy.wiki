@@ -9,4 +9,4 @@ Cette action copie un ou plusieurs fichiers dans un répertoire de destination.
 ||Overwrite||Si défini, les fichiers déjà existant seront écrasés.||
 
 = Exemple d'utilisation =
-  * Cette action peut être utilisée pour faire régulièrement des sauvegardes de vos fichiers importants. Combiner simplement un déclencheur[fr_docsTriggersTimer timer] et copier les fichiers. Vous souhaiterez peut-être utiliser un [fr_docsGenericPlaceholders placeholder] date pour le nom de dossier cible.
+  * Cette action peut être utilisée pour faire régulièrement des sauvegardes de vos fichiers importants. Combiner simplement un déclencheur [fr_docsTriggersTimer timer] et copier les fichiers. Vous souhaiterez peut-être utiliser un [fr_docsGenericPlaceholders placeholder] date pour le nom de dossier cible.
