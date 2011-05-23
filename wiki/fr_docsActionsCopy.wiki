@@ -1,0 +1,12 @@
+= Copy =
+Cette action copie un ou plusieurs fichiers dans un répertoire de destination.
+
+|| *Paramètre* || *Description* ||
+||Source file(s)||Fichiers à copier. Ce qui peut être soit un seul fichier/nom de dossier, ou une liste de noms complet, avec guillemet, séparés par des espaces, ou une liste de noms de fichiers complet séparés par un saut de ligne. Si un [fr_docsGenericPlaceholders placeholder] ${Sel}-type doit être utilisé, il est suggéré d'utiliser soit ${SelNQ} ou ${SelNM}.||
+||Target path||Répertoire de la cible de la copie. Si cela est vide, les fichiers seront copiés dans le même répertoire. Cela signifie qu'un nouveau nom doit être défini.||
+||Target file(s)||Noms de fichier cible. Si cela est vide, les noms de fichiers originaux sont utilisés lorsque le répertoire est défini. Il est possible de ne spécifier qu'un nom de fichier sans extension pour garder l'extension du fichier original. Si un fichier cible existe déjà et "Overwrite" est désactivée, (chiffre) sera ajouté à la fin du nom de fichier.||
+||Silent||Si défini, 7plus n'affichera pas la fenêtre de progression. Sur les opérations courtes, ce ne sera pas visible quelque soit ce paramètre.||
+||Overwrite||Si défini, les fichiers déjà existant seront écrasés.||
+
+= Exemple d'utilisation =
+  * Cette action peut être utilisée pour faire régulièrement des sauvegardes de vos fichiers importants. Combiner simplement un déclencheur[fr_docsTriggersTimer timer] et copier les fichiers. Vous souhaiterez peut-être utiliser un [fr_docsGenericPlaceholders placeholder] date pour le nom de dossier cible.
