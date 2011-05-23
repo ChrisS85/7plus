@@ -1,0 +1,10 @@
+= Delete =
+Cette action supprime un ou plusieurs fichiers du répertoire cible.
+
+|| *Parameter* || *Description* ||
+||Source file(s)||Fichiers à supprimer. Ce qui peut être soit un seul fichier/nom de dossier, ou une liste de noms complet, avec guillemet, séparés par des espaces, ou une liste de noms de fichiers complet séparés par un saut de ligne. Si un placeholder ${Sel}-type doit être utilisé, il est suggéré d'utiliser soit ${SelNQ} ou ${SelNM}.||
+||Silent||Si défini, 7plus n'affichera pas la fenêtre de progression. Sur les opérations courtes, ce ne sera pas visible quelque soit ce paramètre.||
+
+= Exemple d'utilisation =
+  * Cette action peut-être utilisé pour vider régulièrement les répertoires temporaires.
+  * Il est également possible de définir que la touche [Suppr]ne supprime pas certains fichiers par une combinaison de déclencheur [fr_docsTriggersHotkey hotkey], une condition [fr_docsConditionsIf if] pour vérifier certains fichiers et cette action de suppression.
