@@ -1,0 +1,11 @@
+= MouseClick =
+Cette action est utilisée pour envoyer des cliques de souris.
+
+|| *Paramètre* || *Description* ||
+||Button||Le bouton de la souris qui est utilisé.||
+||X||X/position horizontale de la souris, en pixels.||
+||Y||Y/position verticale de la souris, en pixels.||
+||Relative to current window||Si défini, l'origine de X et Y est le coin supérieur gauche de la fenêtre active. Sinon, c'est le coin supérieur gauche de l'écran.||
+||Restore current position||Si défini, la souris sera déplacée vers la position qu'elle avait avant que cette action a été lancé. Si non défini, elle restera à la position du clic.||
+
+Si X et Y sont vide, la souris est cliqué à sa position actuelle.
