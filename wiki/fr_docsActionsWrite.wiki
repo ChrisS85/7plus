@@ -1,0 +1,12 @@
+= Write =
+This action writes text or image to a file.
+
+|| *Paramètre* || *Description* ||
+||Content||Le contenu qui sera écrit dans le fichier. Si vous utilisez le [fr_docsGenericPlaceholders placeholder] ${Clip} et s'il y a une image dans le presse-papiers, il permettra de sauver cette image dans le fichier et utilisera l'extension d'image précisée séparément.||
+||Target||Chemin et le nom du fichier cible. Si une image est enregistrée, l'extension d'image spécifiée séparément est utilisée comme extension.||
+||Image Quality||Valeur comprise entre 1 et 100 qui spécifie la qualité d'une image qui est enregistré. Inutiles pour sauver du contenu textuel.||
+||Append text to file||Si défini, le texte est ajouté au fichier cible s'il existe déjà. Sinon, le fichier est écrasé.||
+||Image extension||Si une image est enregistrée, cette extension de fichier est utilisé.||
+
+= Usage examples =
+  * Vous pouvez l'utiliser pour sauvegarder le contenu du presse-papiers, tels que du texte ou des images, ou enregistrer des données diverses, tels que les programmes actifs, ainsi que la date.
