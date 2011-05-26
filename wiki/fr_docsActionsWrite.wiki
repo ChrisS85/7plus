@@ -8,5 +8,5 @@ This action writes text or image to a file.
 ||Append text to file||Si défini, le texte est ajouté au fichier cible s'il existe déjà. Sinon, le fichier est écrasé.||
 ||Image extension||Si une image est enregistrée, cette extension de fichier est utilisé.||
 
-= Usage examples =
+= Exemples d'utilisation =
   * Vous pouvez l'utiliser pour sauvegarder le contenu du presse-papiers, tels que du texte ou des images, ou enregistrer des données diverses, tels que les programmes actifs, ainsi que la date.
