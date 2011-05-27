@@ -1,0 +1,10 @@
+= PlaySound =
+Cette action joue un son. Vous pouvez entrer le nom du fichier d'un son, ou utiliser l'une des valeurs suivantes:
+
+||`*`-1||Simple beep. Si la carte son n'est pas disponible, le son est généré en utilisant le haut-parleur.||
+||`*`16||Main (stop/error)||
+||`*`32||Question||
+||`*`48||Exclamation||
+||`*`64||Asterisque (info)||
+
+Si vous entrez un chemin vers un fichier inexistant, vous pouvez vous arrêter un son en cours de lecture.
