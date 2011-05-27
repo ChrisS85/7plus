@@ -1,0 +1,6 @@
+= WindowActivate =
+Cette action active une fenêtre. Utilisez les [fr_docsGenericWindowFilter contrôles WindowFilter] pour la sélectionner.
+
+= Exemples d'utilisation =
+  * Vous pouvez l'utiliser pour assigner des [fr_docsTriggersHotkey hotkeys] à différents programmes que vous utilisez souvent, ainsi vous pourrez les activer rapidement.
+  * Ceci est également utilisable pour le contrôle d'autres programmes.
