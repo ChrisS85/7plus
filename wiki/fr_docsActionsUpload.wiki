@@ -13,7 +13,7 @@ Cette action peut télécharger plusieurs fichiers sur un serveur FTP et copier 
 ||Silent||Si défini, aucune notification sera affichée quand le téléchargement est fini ou échoué. If set, no notification will be seen when upload is finished or failed. Sinon, une info-bulle s'affiche et un bip sonore sera joué.||
 ||Copy links to clipboard||Si défini et l'URL spécifiée, en cas de succès les liens vers les fichiers seront copiés dans le presse-papiers.||
 
-= Exemples d'usage =
+= Exemples d'utilisation =
   * 7plus utilise ceci pour télécharger les fichiers sélectionnés de l'Explorateur lorsque CTRL+U est pressé (paramètre par défaut), pour prendre des captures d'écran et les télécharger avec Alt/Win+Insert (paramètre par défaut) et pour télécharger des images ou du texte du presse-papiers avec le raccourci Win+SUPPR (paramètre par défaut).
   * Vous pouvez également utiliser ceci pour télécharger automatiquement les sauvegardes de fichiers sur un serveur sur une base chronométrée en utilisant un [fr_docsTriggersTimer timer] et un [fr_docsGenericPlaceholders placeholder] ${DateTime}.
   * En combinant la fonction de téléchargement CTRL+U avec une [fr_docsConditionsIf condition if], vous pouvez télécharger sur des serveurs différents selon l'emplacement des fichiers source. Cela pourrait être utile si vous êtes web développeur et avez besoin de télécharger des fichiers de différents projets.
