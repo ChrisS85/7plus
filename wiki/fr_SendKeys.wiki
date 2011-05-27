@@ -1,3 +1,0 @@
-= SendKeys =
-Cette action envoie une entrée clavier au système. Il peut être utilisé pour contrôler des programmes en leurs envoyant des raccourcis clavier, confirmant les boîtes de dialogue, etc.
-Si des caractères sont à envoyer, il suffit de les saisir directement ici. Si vous avez besoin d'envoyer des raccourcis clavier ou des touches de symbole, s'il vous plaît se référer à la documenatation [http://www.autohotkey.com/docs/commands/Send.htm ici] pour une liste des noms de touche.
