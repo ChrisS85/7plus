@@ -1,0 +1,5 @@
+= ToolTip =
+Cette action montre une info-bulle sous le curseur de la souris, ou une info-bulle du système tray. Vous pouvez spécifier le texte, un délai au terme duquel l'info-bulle disparaît, et si vous l'utilisez comme une info-bulle du système tray vous pouvez également définir un titre.
+
+= Exemple d'utilisation =
+Comme l'[docsActionsMessage action message], ce sera probablement plus utiles d'afficher l'information ou de donner des notifications.
