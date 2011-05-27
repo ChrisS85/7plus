@@ -1,0 +1,6 @@
+= SetWindowTitle =
+Cette action définit le titre d'une fenêtre. Utiliser les contrôles [fr_docsGenericWindowFilter window filter] pour sélectionner une fenêtre, et entrer un nouveau titre en tant que paramètre.
+
+Vous pouvez utiliser ${Title} pour obtenir le titre de la fenêtre active. Cela peut être utilisé pour ajouté quelque chose au titre, comme l'heure par exemple.
+
+Certains programmes peuvent se comporter de manière erratique en utilisant cette fonction, quand ils ajoutent eux même quelque chose à leur titre, donc les textes peuvent s'accumuler.
