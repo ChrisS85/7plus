@@ -1,0 +1,4 @@
+= WindowHide =
+Cette action cache une fenêtre. Il sera toujours en cours d'exécution, mais pas visible pour l'utilisateur. Ceci est utile pour des fenêtres que vous ne voulez pas voir, comme les confirmations de mise à jour qui vous demandent pour redémarrer.
+UUtilisez les [fr_docsGenericWindowFilter contrôles WindowFilter] pour sélectionner la fenêtre.
+Pour afficher plus tard une fenêtre cachée, utiliser [fr_docsActionsWindowShow WindowShow].
