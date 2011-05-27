@@ -1,0 +1,7 @@
+= Shutdown =
+Cette action peut lancer l'arrêt du PC, le redémarrage, fermeture de session, hibernation ou passer en mode veille.
+Vous pouvez également sélectionner si vous voulez que Windows force la fermeture de toutes les applications si elles ne réagissent pas.
+
+= Exemples d'utilisation =
+  * Vous voudrez peut-être mettre cela sur un [fr_docsTriggersHotkey hotkey] si votre clavier n'a pas ce type de touche, ou vous voulez la réaffecter.
+  * Une autre possibilité est de le combiner avec un [fr_docsTriggersTimer déclencheur timer], pour arrêter le PC après un certain temps.
