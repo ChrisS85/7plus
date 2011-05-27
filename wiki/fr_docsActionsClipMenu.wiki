@@ -1,0 +1,6 @@
+= ClipMenu =
+Cette action affiche le menu gestionnaire de presse-papiers, qui est un menu contextuel contenant les 10 dernières entrées de texte du Presse-papiers pour un accès facile.
+
+Ils sont conservés entre les redémarrages de Windows et 7plus.
+
+Vous pouvez y accéder par le clavier par le biais des touches numériques 0-9.
