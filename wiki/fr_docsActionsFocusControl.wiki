@@ -1,0 +1,5 @@
+= FocusControl =
+Cette action définit le focus du clavier à un contrôle spécifique. Il est principalement utilisé pour contrôler d'autres programmes en leur [fr_docsActionsSendKeys envoyant des entrées clavier].
+
+Vous pouvez utiliser les [fr_docsGenericWindowFilter contrôles WindowFilter] pour sélectionner la fenêtre sur laquelle le focus devrait être changé, c'est la fenêtre active dans la plupart des cas.
+De plus, vous devez entrer la ClassNN, le texte du contrôle, ou le handle de fenêtre du contrôle que vous voulez en focus.
