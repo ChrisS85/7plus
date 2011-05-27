@@ -1,0 +1,8 @@
+= Screenshot =
+Cette action prend une capture d'écran de la fenêtre active ou de l'écran, et l'enregistre dans un fichier.
+Vous pouvez également définir la qualité d'image souhaitée.
+
+= Exemple d'utilisation =
+  * Dans 7plus c'est utilisé pour prendre des screenshots et directement les télécharger sur un serveur FTP, afin que vous puissiez les partager facilement avec d'autres.
+  * Vous pouvez également l'utiliser en local si vous laissez la fonction FTP et l'enregistrer dans un dossier de votre choix. Vous pouvez utiliser une [fr_docsActionsInput action input] ou un [fr_docsGenericPlaceholders placeholder] ${DateTime} pour lui donner un nom unique.
+  * Une autre combinaison possible est l'utilisation d'un [fr_docsTriggersTimer déclencheur timer], pour suivre ce qui se passe sur un ordinateur.
