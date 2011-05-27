@@ -1,0 +1,5 @@
+= FlashingWindows =
+Cette action permet d'activer les fenêtres qui clignotent sur la barre des tâches, activer certaines fenêtres de notification de différents programmes, ou basculer entre la fenêtre courante et précédente.
+
+= Exemple d'utilisation =
+  * 7plus met cette action sur la touche Caps Lock (paramètre par défaut), pour basculer facilement entre différents programmes.
