@@ -1,5 +1,5 @@
 = Message =
 Cette action affiche une boîte de message. Vous pouvez définir le titre de la fenêtre et entrez le texte du message. De plus, vous pouvez spécifier un délai au bout duquel la boîte de message est fermée.
 
-= Exemple d'usage =
+= Exemple d'utilisation =
   * Il existe de nombreuses utilisations, les plus communes sont probablement en combinaison avec un [fr_docsTriggersTimer déclencheur timer] (intéressé par un timer de pizza?) ou pour afficher une information.
