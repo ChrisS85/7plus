@@ -1,0 +1,2 @@
+= WindowShow =
+Cette action affiche une fenêtre qui a été précédemment [fr_docsActionsWindowHide cachée]. Utilisez les [fr_docsGenericWindowFilter contrôles WindowFilter] pour la sélectionner.
