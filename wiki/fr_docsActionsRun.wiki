@@ -1,0 +1,8 @@
+= Run =
+Cette action lance un programme, ouvre un fichier avec son programme associé ou ouvre une URL.
+La commande doit être entre guillemets si vous voulez ajouter des arguments de ligne de commande.
+Vous pouvez également définir le répertoire de travail et, éventuellement, si 7plus doit attendre que le programme ait fini de s'exécuter.
+
+= Exemples d'utilisation =
+  * C'est le plus souvent utilisé en cobinaison avec un [fr_docsTriggersHotkey déclencheur hotkey]. Vous pouvez attribuer des raccourcis clavier pour lancer des programmes de cette façon.
+  * En utilisant des [fr_docsGenericPlaceholders placeholders], vous pouvez créer de nombreuses actions utiles contextuelles, comme l'exécution d'une comparaison de fichiers sur des fichiers sélectionnés dans l'explorateur, ou exécuter un script/compiler du code à partir de votre éditeur de texte (si il a le chemin d'accès complet dans son titre de fenêtre alors ${PT} peut être utilisé).
