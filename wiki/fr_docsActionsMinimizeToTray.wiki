@@ -1,0 +1,7 @@
+= MinimizeToTray =
+Cette action peut réduire une fenêtre dans la barre d'état système. Ceci est utile pour masquer des fenêtres que vous ne voulez pas voir tout le temps, mais les garder toujours accessibles.
+Utilisez simplement les [fr_docsGenericWindowFilter contrôles WindowFilter] pour sélectionner la fenêtre.
+
+= Exemples d'utilisation =
+  * Dans 7plus vous pouvez faire un clic droit sur ​​le bouton de réduction d'une fenêtre pour la réduire dans la barre d'état système.
+  * Sinon, vous pourriez vouloir mettre en place un [fr_docsTriggersHotkey déclencheur hotkey] pour le minimiser.
