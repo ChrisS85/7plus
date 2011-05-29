@@ -1,0 +1,19 @@
+= 7plus Version 2.4.0 Changelog =
+
+New Functions:
+ * Added search and replace dialog for file names and file contents
+ * Added directory context menu item for flat view
+ * Added URL shortener (WIN+S with URL in clipboard)
+ * Added a settings page with generic windows settings (No bloat, only important ones!)
+ * Added KeyDelay setting for SendKeys action
+ * Added ShowEvents option (available only through manual editing of Settings.ini in [General] category) to show execution order of events
+
+Bugfixes:
+ * Fixed missing \ when copying paths of network shares
+ * Fixed not being able to navigate to network drives
+ * Reimplemented middle mouse button features in event system to avoid some problems with this button. As a result of this, a few additional conditions were added.
+
+Changes:
+ * Huge code rewrite for some key portions related to explorer. As a result, status bar enhancements and explorer tabs are now visible on all explorer windows at once.
+
+If you like this program and want to support its development, please consider donating!
