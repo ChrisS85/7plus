@@ -271,8 +271,8 @@ Settings_CreateFTPProfiles(ByRef TabCount) {
 	TabCount++
 	AddTab(0, "","SysTabControl32" TabCount)
 	
-	Gui, 1:Add, Text, x%x1% y%yIt% R3, You can define FTP profiles for use with the upload action here. `nTarget folder and filename are set separately for each event.
-	yIt+=CheckboxStep*2
+	Gui, 1:Add, Text, x%x1% y%yIt% R3, You can define FTP profiles for use with the upload action here.
+	yIt+=CheckboxStep
 	Gui, Add, DropDownList, x%x1% y%yIt% w200 vFTPProfilesDropDownList gFTPProfilesDropDownList,
 	Gui, Add, Button, x+10 w80 gFTPProfiles_Add, Add profile
 	Gui, Add, Button, x+10 w80 vFTPProfiles_Delete gFTPProfiles_Delete, Delete profile
@@ -297,6 +297,8 @@ Settings_CreateFTPProfiles(ByRef TabCount) {
 	y:=yIt+yCheckboxTextOffset
 	Gui, Add, Text, x%x1% y%yIt%, URL:
 	Gui, Add, Edit, x%x2% y%y% w200 vFTPProfiles_URL,
+	yIt += TextboxStep
+	Gui, 1:Add, Text, x%x1% y%yIt% R3, Target folder and filename are set separately for each event that uses the FTP upload function on the Events page.
 }
 Settings_CreateHotstrings(ByRef TabCount) {
 	global
@@ -2131,14 +2133,14 @@ ApplySettings(Close = 0)
 		TaskbarLaunchPath:=""
 
 	;Store Aero Flip time
-	GuiControlGet, flip,1:,Mouse in upper left corner: Toggle Aero Flip 3D
-	if(flip && Vista7)
-		SetTimer, hovercheck, 10
-	else
-	{
-		AeroFlipTime:=-1
-		SetTimer, hovercheck, Off
-	}
+	; GuiControlGet, flip,1:,Mouse in upper left corner: Toggle Aero Flip 3D
+	; if(flip && Vista7)
+		; SetTimer, hovercheck, 10
+	; else
+	; {
+		; AeroFlipTime:=-1
+		; SetTimer, hovercheck, Off
+	; }
 
 	;Store double click desktop
 	GuiControlGet, enabled, 1:, DoubleClickDesktop

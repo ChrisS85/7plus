@@ -10,6 +10,7 @@
 #include %A_ScriptDir%\Triggers\Hotkey.ahk
 #include %A_ScriptDir%\Triggers\MenuItem.ahk
 #include %A_ScriptDir%\Triggers\OnMessage.ahk
+#include %A_ScriptDir%\Triggers\ScreenCorner.ahk
 #include %A_ScriptDir%\Triggers\Trigger.ahk
 #include %A_ScriptDir%\Triggers\Timer.ahk
 #include %A_ScriptDir%\Triggers\WindowActivated.ahk
@@ -32,6 +33,7 @@
 #include %A_ScriptDir%\Conditions\WindowExists.ahk
 
 #include %A_ScriptDir%\Actions\Accessor.ahk
+#include %A_ScriptDir%\Actions\AeroFlip.ahk
 #include %A_ScriptDir%\Actions\Autoupdate.ahk
 #include %A_ScriptDir%\Actions\Clipboard.ahk
 #include %A_ScriptDir%\Actions\Clipmenu.ahk
@@ -215,9 +217,9 @@ EventSystem_CreateBaseObjects()
 {
 	global
 	local tmpobject
-	EventSystem_Triggers := "ContextMenu,DoubleClickDesktop,DoubleClickTaskbar,ExplorerButton,ExplorerDoubleClickSpace,ExplorerPathChanged,Hotkey,None,MenuItem,OnMessage,Timer,Trigger,WindowActivated, WindowClosed, WindowCreated,WindowStateChange,7plusStart"
+	EventSystem_Triggers := "ContextMenu,DoubleClickDesktop,DoubleClickTaskbar,ExplorerButton,ExplorerDoubleClickSpace,ExplorerPathChanged,Hotkey,None,MenuItem,OnMessage,ScreenCorner,Timer,Trigger,WindowActivated, WindowClosed, WindowCreated,WindowStateChange,7plusStart"
 	EventSystem_Conditions := "If,IsContextMenuActive,IsDialog,IsFullScreen,KeyIsDown,IsRenaming,MouseOver,MouseOverFileList,MouseOverTabButton,MouseOverTaskList,WindowActive,WindowExists"
-	EventSystem_Actions := "Accessor,AutoUpdate,Clipboard,Clipmenu,ControlEvent,ControlTimer,Copy,Delete,ExplorerReplaceDialog,Exit7plus,FastFoldersClear,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FilterList,FlashingWindows,FlatView,FocusControl,ImageConverter,Input,MD5,Message,Move,MouseClick,MouseCloseTab,NewFile,NewFolder,OpenInNewFolder,PlaySound,Restart7plus,RestoreSelection,Run,RunOrActivate,Screenshot,SelectFiles,SetWindowTitle,SendKeys,SendMessage,SetDirectory,ShortenURL,ShowMenu,ShowSettings,Shutdown,TaskButtonClose,ToggleWallpaper,Tooltip,Upload,ViewMode,Volume,Wait,WindowActivate,WindowClose,WindowHide,WindowMove,WindowResize,WindowSendToBottom,WindowShow,WindowState,Write"
+	EventSystem_Actions := "Accessor,AutoUpdate,Clipboard,Clipmenu,ControlEvent,ControlTimer,Copy,Delete,ExplorerReplaceDialog,Exit7plus,FastFoldersClear,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FilterList,FlashingWindows,FlatView,FocusControl,ImageConverter,Input,MD5,Message,Move,MouseClick,MouseCloseTab,NewFile,NewFolder,OpenInNewFolder,PlaySound,Restart7plus,RestoreSelection,Run,RunOrActivate,Screenshot,SelectFiles,SetWindowTitle,SendKeys,SendMessage,SetDirectory,ShortenURL,ShowAeroFlip,ShowMenu,ShowSettings,Shutdown,TaskButtonClose,ToggleWallpaper,Tooltip,Upload,ViewMode,Volume,Wait,WindowActivate,WindowClose,WindowHide,WindowMove,WindowResize,WindowSendToBottom,WindowShow,WindowState,Write"
 	Trigger_Categories := object("Explorer", Array(), "Hotkeys", Array(), "Other", Array(), "System", Array(), "Window", Array(), "7plus", Array())
 	Condition_Categories := object("Explorer", Array(), "Mouse", Array(), "Other", Array(), "Window", Array())
 	Action_Categories := object("Explorer", Array(), "FastFolders", Array(), "File", Array(), "Window", Array(), "Input", Array(), "System", Array(), "7plus", Array(), "Other", Array())
@@ -706,40 +708,25 @@ OnTrigger(Trigger)
 	global Events,EventSchedule, TemporaryEvents
 	;Find matching triggers
 	Loop % Events.len()
-	{
-		Event := Events[A_Index]
-		GoSub OnTrigger_TestEvent
-	}
+		TriggerSingleEvent(Events[A_Index], Trigger)
 	Loop % TemporaryEvents.len()	
-	{
-		Event := TemporaryEvents[A_Index]
-		GoSub OnTrigger_TestEvent
-	}
+		TriggerSingleEvent(TemporaryEvents[A_Index], Trigger)
 	return
-	;I hate GoTo/GoSubs, but now it's here and it won't go away :(
-	OnTrigger_TestEvent:	
+}
+;Tests if an event matches to a trigger and may be appended to event schedule (and appends it)
+;This function can also be used to specifically trigger a single event
+TriggerSingleEvent(Event, Trigger)
+{
+	global EventSchedule
 	;Order of this if condition is important here, because Event.Trigger.Matches() can disable the event for timers
 	if(Event.Enabled && (Event.Trigger.Type = Trigger.Type && Event.Trigger.Matches(Trigger, Event)) || (Trigger.Type = "Trigger" && Event.ID = Trigger.TargetID))
 	{
 		;Test if the event is already running and mustn't be run multiple times
-		running := false
-		if(Event.OneInstance)
-		{
-			Loop % EventSchedule.len()
-			{
-				if(EventSchedule[A_Index].ID = Event.ID)
-				{
-					running := true
-					break
-				}
-			}
-		}		
-		if(!running)
+		if(!Event.OneInstance || !EventSchedule.IndexOfSubItem("ID", Event.ID))
 			EventSchedule.append(Event.DeepCopy())
 	}
 	return
 }
-
 EventScheduler()
 {
 	global Events, EventSchedule, Profiler, TemporaryEvents, DebugEnabled, ShowEvents

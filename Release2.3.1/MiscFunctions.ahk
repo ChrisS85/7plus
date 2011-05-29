@@ -885,7 +885,7 @@ FileMD5( sFile="", cSz=4 ) { ; www.autohotkey.com/forum/viewtopic.php?p=275910#2
   N := NumGet( MD5_CTX,87+A_Index,"Char"), MD5 .= SubStr(Hex,N>>4,1) . SubStr(Hex,N&15,1) 
  Return MD5
 }
-FormatFileSize(Bytes, Decimals=2, Prefixes="B,KB,MB,GB,TB,PB,EB,ZB,YB")
+FormatFileSize(Bytes, Decimals=1, Prefixes="B,KB,MB,GB,TB,PB,EB,ZB,YB")
 {
 	StringSplit, Prefix, Prefixes, `,
 	Loop, Parse, Prefixes, `,

@@ -205,11 +205,7 @@ if(!(ImageQuality > 0 && ImageQuality <= 100))
 IniRead, ImageExtension, %IniPath%, Misc, ImageExtension,png
 IniRead, PreviousExplorerPath, %IniPath%, Misc, PreviousExplorerPath,C:
 IniRead, ExplorerPath, %IniPath%, Misc, ExplorerPath,C:
-
-if((AeroFlipTime>=0&&Vista7)||HKSlideWindows)
-{
-	SetTimer, hovercheck, 10
-}
+SetTimer, MouseMovePolling, 50
 ;Clipboard manager list (is some sort of fixed size stack which removes oldest entry on add/insert/push)
 ClipboardList := Array()
 ClipboardList.push := "Stack_Push"

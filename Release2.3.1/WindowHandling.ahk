@@ -1,28 +1,82 @@
 ;Check screen borders/corners for Aero Flip 3D and Slide Windows
-hovercheck:
-ListLines, Off
-HoverCheck()
-ListLines, On
+MouseMovePolling:
+MouseMovePolling()
 return
 
-HoverCheck()
+MouseMovePolling()
 {
-	global HKSlideWindows,Vista7,MouseX,MouseY,AeroFlipTime
+	global HKSlideWindows,Vista7,MouseX,MouseY,AeroFlipTime, Events
+	static corner, hoverstart, ScreenCornerEvents ;Corner = 1234 (upper left, upper right, lower right, lower left), other values = not in corner
 	static lastx,lasty
+	;Get total size of all screens
+	SysGet, VirtualX, 76
+	SysGet, VirtualY, 77
+	SysGet, VirtualW, 78
+	SysGet, VirtualH, 79
 	CoordMode, Mouse, Screen
-	MouseGetPos, MouseX,MouseY,win,control
-	WinGetClass, class, ahk_id %win%
-	x:=IsFullscreen("A",false,false)
-	if(!x)
+	MouseGetPos, MouseX,MouseY,win
+	outputdebug virtualx %virtualx% virtualw %virtualw% mousex %mousex%
+	if(!IsFullscreen("A",false,false))
 	{
 		if(MouseX != lastx || MouseY != lasty)
 			SlideWindows_OnMouseMove(MouseX,MouseY)
 		SlideWindows_CheckWindowState()
+		if(corner = 1 && MouseX = VirtualX && MouseY = VirtualY
+		||corner = 2 && MouseX = VirtualX + VirtualW - 1 && MouseY = VirtualY
+		||corner = 3 && MouseX = VirtualX + VirtualW - 1&& MouseY = VirtualY + VirtualH - 1
+		||corner = 4 && MouseX = VirtualX && MouseY = VirtualY + VirtualH - 1)
+		{
+			index := 1
+			Loop % ScreenCornerEvents.len() ;Check if any of the events belonging to this corner have reached the time limit yet
+			{
+				if(ScreenCornerEvents[index].Time < A_TickCount - hoverstart)
+				{
+					outputdebug found event
+					Trigger := EventSystem_CreateSubEvent("Trigger","ScreenCorner")
+					Trigger.Corner := Corner
+					TriggerSingleEvent(Events.SubItem("ID", ScreenCornerEvents[index].ID), Trigger) ;Trigger the single event and remove it from the list so it only gets triggered once
+					ScreenCornerEvents.Remove(index)
+				}
+				else
+					index++
+			}
+		}
+		else
+		{
+			if(MouseX = VirtualX && MouseY = VirtualY)
+				corner := 1
+			else if(MouseX = VirtualX + VirtualW - 1 && MouseY = VirtualY)
+				corner := 2
+			else if(MouseX = VirtualX + VirtualW - 1 && MouseY = VirtualY + VirtualH - 1)
+				corner := 3
+			else if(MouseX = VirtualX && MouseY = VirtualY + VirtualH - 1)
+				corner := 4
+			else
+			{
+				corner := ""
+				ScreenCornerEvents :=""
+				hoverstart := ""
+			}
+			if(corner != "") ;Create an array of matching events to save some cpu time on later checks
+			{
+				ScreenCornerEvents := Array()
+				Loop % Events.len()
+				{
+					if(Events[A_Index].Trigger.Type = "ScreenCorner" && Events[A_Index].Trigger.Corner = Corner)
+						ScreenCornerEvents.append(Object("time", Events[A_Index].Trigger.Time, "Id", Events[A_Index].ID))
+				}
+				hoverstart := A_TickCount
+			}
+		}
+		; if (Vista7  && (MouseX != lastx || MouseY != lasty) && MouseX=0 && MouseY=0 && !WinActive("ahk_class Flip3D"))
+		; { 
+			; z:=-(AeroFlipTime*1000+1)
+			; SetTimer, hovering, %z%
+		; }	
 	}
-	if (Vista7 && !x && (MouseX != lastx || MouseY != lasty) && MouseX=0 && MouseY=0 && !WinActive("ahk_class Flip3D"))
-	{ 
-		z:=-(AeroFlipTime*1000+1)
-		SetTimer, hovering, %z%
+	else
+	{
+		corner := ""
 	}
 	lastx := MouseX
 	lasty := MouseY
@@ -167,20 +221,20 @@ ControlDeleteFix()
 	return
 }
 ;Hovering timer for Aero Flip 3D
-hovering: 	
-if (GetKeyState("LButton") || GetKeyState("RButton") || WinActive("ahk_class Flip3D")) 
-	return 
-if(MouseX!=0||MouseY!=0)
-	return 
-if(IsFullscreen("A",false,false))
-	return
-DllCall("Dwmapi.dll\DwmIsCompositionEnabled","IntP",Aero_On)
-if(Aero_On)
-	Send ^#{Tab} 
-Else
-	Send ^!{Tab}
-SetTimer, hovering, off
-return
+; hovering: 	
+; if (GetKeyState("LButton") || GetKeyState("RButton") || WinActive("ahk_class Flip3D")) 
+	; return 
+; if(MouseX!=0||MouseY!=0)
+	; return 
+; if(IsFullscreen("A",false,false))
+	; return
+; DllCall("Dwmapi.dll\DwmIsCompositionEnabled","IntP",Aero_On)
+; if(Aero_On)
+	; Send ^#{Tab} 
+; Else
+	; Send ^!{Tab}
+; SetTimer, hovering, off
+; return
 
 ;Key remappers for Aero Flip 3D
 #IfWinActive, ahk_class Flip3D 
