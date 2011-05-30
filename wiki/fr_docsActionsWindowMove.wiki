@@ -1,0 +1,8 @@
+= WindowMove =
+Cette action déplace une fenetre. Sélectionnez la avec les [docsGenericWindowFilter contrôles WindowFilter].
+
+|| *Paramètre* || *Description* ||
+||X||X/Position horizontale. Entrez une valeur en pixels ou en % de l'écran. Vous pouvez également préfixer avec + ou - pour la déplacer par rapport à sa position actuelle.||
+||Y||Y/position verticale. Entrez une valeur en pixels ou en % de l'écran. Vous pouvez également préfixer avec + ou - pour la déplacer par rapport à sa position actuelle.||
+||Use X center of window||Si défini, la coordonnée X spécifie la position du centre de la fenêtre pour être déplacé au lieu du coin supérieur gauche.||
+||Use Y center of window||Si défini, la coordonnée Y spécifie la position du centre de la fenêtre pour être déplacé au lieu du coin supérieur gauche.||
