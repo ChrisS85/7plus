@@ -1,0 +1,7 @@
+= Liste des déclencheurs (Triggers) =
+  * [fr_docsTriggersDoubleClickTaskbar DoubleClickTaskbar]
+  * [fr_docsTriggersDoubleClickDesktop DoubleClickDesktop]
+  * [fr_docsTriggersExplorerPathChanged ExplorerPathChanged]
+  * [fr_docsTriggersExplorerDoubleClickSpace ExplorerDoubleClickSpace]
+  * [fr_docsTriggers7plusStart 7plusStart]
+  * [fr_docsTriggersHotkey Hotkey]
