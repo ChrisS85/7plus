@@ -1,0 +1,6 @@
+= WindowState =
+Cette action peut modifier différentes choses sur une fenêtre. Elle peut agrandir, réduire et restaurer une fenêtre, ou basculer entre ces états dans différents ordres. Il peut également définir et activer la propriété "Toujours au dessus " d'une fenêtre. Sélectionner la fenêtre avec les [fr_docsActionsWindowFilter contrôles WindowFilter].
+
+= Exemples d'utilisation =
+  * 7plus utilise cette technique pour passer Toujours visible quand la barre de titre d'un programme a été cliqué droit.
+  * Il est également utilisé dans 7plus pour maximiser/restaurer/réduire la fenêtre sous la souris avec ALT + RouletteSouris.
