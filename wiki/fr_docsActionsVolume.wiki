@@ -1,0 +1,11 @@
+= Volume =
+Cette action contrôle le volume audio de votre système.
+Vous pouvez muet/écouter, activer l'état muet, et régler le volume directement.
+Le volume est indiqué en % allant de 0 à 100.
+Si vous ajoutez un + ou - à la valeur, le volume actuel sera augmenté ou diminué de cette valeur.
+
+Si vous sélectionnez "Afficher le volume", un OSD du volume apparaît qui permet aussi de basculer l'état ​​muet.
+
+= Exemples d'utilisation =
+  * Cela peut être utiliser sur les [fr_docsTriggersHotkey déclencheurs hotkey] si vous n'avez pas de tels boutons de votre clavier.
+  * 7plus utilise ça ainsi vous pouvez augmenter ou diminuer le volume avec la molette de la souris sur la barre des tâches.
