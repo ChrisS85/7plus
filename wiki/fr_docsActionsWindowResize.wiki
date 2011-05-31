@@ -1,5 +1,5 @@
 = WindowResize =
-Cette action redimensionne une fenêtre. Utilisez les [docsGenericWindowFilter contrôles WindowFilter] pour les sélectionner.
+Cette action redimensionne une fenêtre. Utilisez les [fr_docsGenericWindowFilter contrôles WindowFilter] pour les sélectionner.
 
 || *Paramètre* || *Description* ||
 ||Width||La nouvelle largeur de la fenêtre. Vous pouvez y entrer en pixels ou en % de la taille de l'écran. En outre vous pouvez la préfixer avec  +/-/`*` ou / pour changer sa taille par rapport à l'actuelle.||
