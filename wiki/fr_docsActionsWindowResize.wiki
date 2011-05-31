@@ -1,0 +1,8 @@
+= WindowResize =
+Cette action redimensionne une fenêtre. Utilisez les [docsGenericWindowFilter contrôles WindowFilter] pour les sélectionner.
+
+|| *Paramètre* || *Description* ||
+||Width||La nouvelle largeur de la fenêtre. Vous pouvez y entrer en pixels ou en% de la taille de l'écran. En outre vous pouvez la préfixer avec  +/-/*/ or / pour changer sa taille par rapport à l'actuelle.||
+||Height||La nouvelle hauteur de la fenêtre. Vous pouvez y entrer en pixels ou en% de la taille de l'écran. En outre vous pouvez la préfixer avec  +/-/*/ or / pour changer sa taille par rapport à l'actuelle.||
+||Use X center of window||Si défini, la largeur de la fenêtre sera redimensionnée autour du centre de la fenêtre. Cela signifie qu'il se développera de manière uniforme sur la gauche et à droite.||
+||Use Y center of window||Si défini, la hauteur de la fenêtre sera redimensionnée autour du centre de la fenêtre. Cela signifie qu'il se développera de manière uniforme sur le haut et le bas.||
