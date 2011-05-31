@@ -1,5 +1,5 @@
 = WindowMove =
-Cette action déplace une fenetre. Sélectionnez la avec les [docsGenericWindowFilter contrôles WindowFilter].
+Cette action déplace une fenetre. Sélectionnez la avec les [fr_docsGenericWindowFilter contrôles WindowFilter].
 
 || *Paramètre* || *Description* ||
 ||X||X/Position horizontale. Entrez une valeur en pixels ou en % de l'écran. Vous pouvez également préfixer avec + ou - pour la déplacer par rapport à sa position actuelle.||
