@@ -1,0 +1,3 @@
+= ShowMenu =
+Cette action affiche un menu. Avant un menu peut être établi, des éléments de menu doivent être ajoutés par la création d'événements avec des déclencheurs [fr_docsTriggersMenuItem MenuItem]. Un menu est appelé par  la propriété "Menu", qui peut être défini par les déclencheurs MenuItem et dans les actions ShowMenu.
+Il est également possible de spécifier la position x et y du menu.
