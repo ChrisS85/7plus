@@ -1,0 +1,2 @@
+= MD5 checksum =
+Cette action affiche la fenêtre de contrôle MD5 pour les fichiers spécifiés dans le champ des paramètres uniquement.
