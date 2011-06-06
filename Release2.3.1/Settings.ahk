@@ -341,6 +341,8 @@ Settings_CreateWindows(ByRef TabCount) {
 	x:=x1+xCheckboxTextOffset
 	Gui, 1:Add, Checkbox, x%x% y%yIt% vSlideWinHide, Hide Slide Windows in taskbar and from ALT + TAB
 	yIt+=checkboxstep
+	Gui, 1:Add, Checkbox, x%x% y%yIt% vSlideWindowSideLimit, Allow only one Slide Window per screen side
+	yIt+=checkboxstep
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow1dot1 vURL_Window1dot1, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKAltDrag, ALT+Left Mouse Drag anywhere on a window: Move window
 	yIt+=checkboxstep
@@ -790,6 +792,7 @@ Settings_SetupWindows() {
 	global
 	GuiControl, 1:, HKSlideWindows, % HKSlideWindows = 1
 	GuiControl, 1:, SlideWinHide, % SlideWinHide = 1
+	GuiControl, 1:, SlideWindowSideLimit, % SlideWindowSideLimit = 1
 	GuiControl, 1:, HKAltDrag, % HKAltDrag = 1
 	GuiControl, 1:, AeroFlipTime, %AeroFlipTime%
 	;Setup Aero Flip 3D

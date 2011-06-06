@@ -1,11 +1,11 @@
-;Check screen borders/corners for Aero Flip 3D and Slide Windows
+;Check screen borders/corners for Aero Flip 3D
 MouseMovePolling:
 MouseMovePolling()
 return
 
 MouseMovePolling()
 {
-	global HKSlideWindows,Vista7,MouseX,MouseY,AeroFlipTime, Events
+	global Vista7,MouseX,MouseY,AeroFlipTime, Events, SlideWindows
 	static corner, hoverstart, ScreenCornerEvents ;Corner = 1234 (upper left, upper right, lower right, lower left), other values = not in corner
 	static lastx,lasty
 	;Get total size of all screens
@@ -15,12 +15,9 @@ MouseMovePolling()
 	SysGet, VirtualH, 79
 	CoordMode, Mouse, Screen
 	MouseGetPos, MouseX,MouseY,win
-	outputdebug virtualx %virtualx% virtualw %virtualw% mousex %mousex%
 	if(!IsFullscreen("A",false,false))
 	{
-		if(MouseX != lastx || MouseY != lasty)
-			SlideWindows_OnMouseMove(MouseX,MouseY)
-		SlideWindows_CheckWindowState()
+		SlideWindows.OnMouseMove(MouseX, MouseY)
 		if(corner = 1 && MouseX = VirtualX && MouseY = VirtualY
 		||corner = 2 && MouseX = VirtualX + VirtualW - 1 && MouseY = VirtualY
 		||corner = 3 && MouseX = VirtualX + VirtualW - 1&& MouseY = VirtualY + VirtualH - 1

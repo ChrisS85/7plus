@@ -1,6 +1,6 @@
 ; see http://msdn.microsoft.com/en-us/library/dd318066(VS.85).aspxs
 HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEventTime ){ 
-	global HKShowSpaceAndSize,HKAutoCheck,TabNum,TabWindow,TabContainerList,UseTabs, Vista7, ResizeWindow, ShowResizeTooltip, Profiler
+	global HKAutoCheck,UseTabs, Vista7, ResizeWindow, ShowResizeTooltip, Profiler, SlideWindows, WindowList
 	ListLines, Off
 	StartTime := A_TickCount
 	hwnd += 0
@@ -42,11 +42,18 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 		}
 		if(InStr("CabinetWClass,ExploreWClass", WinGetClass("ahk_id " hwnd)))
 			ExplorerMoved(hwnd)
+		SlideWindows.CheckResizeReleaseCondition()
+		if(state != -1)
+		{
+			WindowList.MovedWindow := hwnd
+			SetTimer, UpdateWindowPosition, -1000
+		}
 	}	
 	else if(event = 0x000A && ShowResizeTooltip)
 	{
 		ResizeWindow := hwnd
 		SetTimer, ResizeWindowTooltip, 50
+		SlideWindows.CheckResizeReleaseCondition()
 	}
 	else if(event = 0x000B && ShowResizeTooltip)
 	{
@@ -85,7 +92,7 @@ ShellMessage( wParam, lParam, Msg)
 	WasCritical := A_IsCritical
 	Critical
 	ListLines, Off
-	global ExplorerPath, HKShowSpaceAndSize, BlinkingWindows, wtmlParam, SuppressTabEvents, UseTabs, PreviousWindow, PreviousExplorerPath,WindowList,Accessor, RecentCreateCloseEvents,Profiler,ToolWindows, ExplorerWindows, LastWindow, LastWindowClass
+	global ExplorerPath, BlinkingWindows, WindowList, Accessor, RecentCreateCloseEvents, Profiler, ToolWindows, ExplorerWindows, LastWindow, LastWindowClass, SlideWindows
 	StartTime := A_TickCount
 	Trigger := EventSystem_CreateSubEvent("Trigger", "OnMessage")
 	Trigger.Message := wParam
@@ -103,7 +110,7 @@ ShellMessage( wParam, lParam, Msg)
 		{
 			RecentCreateCloseEvents[lParam] := 1
 			Trigger := wParam = 1 ? EventSystem_CreateSubEvent("Trigger","WindowCreated") : EventSystem_CreateSubEvent("Trigger","WindowClosed")
-			class:=WinGetClass("ahk_Id " lParam)
+			class:= wParam = 1 ? WinGetClass("ahk_Id " lParam) : WindowList[lParam].class
 			Trigger.Window := lParam
 			OnTrigger(Trigger)
 			;Keep a list of windows and their required info stored. This allows to identify windows which were closed recently.
@@ -123,29 +130,31 @@ ShellMessage( wParam, lParam, Msg)
 					WindowList[hwnd] := Object("class", class, "title", title, "Executable", exe)
 				}
 			}
-			;Remove all closed windows, except the most recently closed one.
-			;NOTE: This could prevent some window identification from working in theory, but it is extremely unlikely 
-			;      and won't happen unless multiple windows are closed rapidly.
-			enum = WindowList._newEnum()
-			while enum[hwnd, value]
-				if(hwnd != lParam && !WindowList.HasKey(hwnd))
-					WindowList.Remove(hwnd)
 		}
 		if(wParam=2)
 		{
-			if(InStr("CabinetWClass,ExploreWClass", WinGetClass("ahk_id " lParam)))
+			if(InStr("CabinetWClass,ExploreWClass", WindowList[lParam].class))
 				GoSub WaitForClose
-				; ExplorerDestroyed(lParam)
-			Loop % ToolWindows.MaxIndex()
+			else ;Code below is also executed in WaitForClose for separate Explorer handling (why can't explorer send close messages properly like a normal window??)
 			{
-				if(ToolWindows[A_Index].hParent = lParam && ToolWindows[A_Index].AutoClose)
+				Loop % ToolWindows.MaxIndex()
 				{
-					WinClose % "ahk_id " ToolWindows[A_Index].hGui
-					ToolWindows.Remove(A_Index)
-					break
+					if(ToolWindows[A_Index].hParent = lParam && ToolWindows[A_Index].AutoClose)
+					{
+						WinClose % "ahk_id " ToolWindows[A_Index].hGui
+						ToolWindows.Remove(A_Index)
+						break
+					}
 				}
+				SlideWindows.WindowClosed(lParam)
 			}
 		}
+		if(wParam = 1)
+		{
+			SlideWindows.WindowCreated(lParam)
+			;~ SlideWindows.CreatedWindow := lParam
+			;~ SetTimer, SlideWindows_WindowCreated, -100
+		} ;	SlideWindows.WindowCreated(lParam)
 	}	
 	;Blinking windows detection, add new blinking windows
 	else if(wParam=32774)
@@ -188,6 +197,7 @@ ShellMessage( wParam, lParam, Msg)
 		LastWindowClass := WinGetClass("ahk_id " lParam)
 		if(InStr("CabinetWClass,ExploreWClass", LastWindowClass) && LastWindowClass && !ExplorerWindows.TabContainerList.TabCreationInProgress && !ExplorerWindows.TabContainerList.TabActivationInProgress)
 			ExplorerActivated(LastWindow)
+		SlideWindows.WindowActivated()
 	}
 	;Redraw is fired on Explorer path change
 	else if(wParam=6)
@@ -222,3 +232,15 @@ ShellMessage( wParam, lParam, Msg)
 ClearRecentCreateCloseEvents:
 RecentCreateCloseEvents := Array()
 return
+UpdateWindowPosition:
+UpdateWindowPosition()
+return
+UpdateWindowPosition()
+{
+	global WindowList
+	WinGetPos, x, y, w, h, % "ahk_id " WindowList.MovedWindow
+	WindowList[WindowList.MovedWindow].x := x
+	WindowList[WindowList.MovedWindow].y := y
+	WindowList[WindowList.MovedWindow].w := w
+	WindowList[WindowList.MovedWindow].h := h
+}

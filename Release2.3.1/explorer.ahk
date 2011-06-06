@@ -550,8 +550,11 @@ InitExplorerWindows()
 	TabContainerList.InActiveHeightDifference := 2
 	TabContainerList.MinWidth := 40
 	ExplorerWindows.TabContainerList := TabContainerList
-	ExplorerWindows.InfoGUI_FreeText := TranslateMUI(shell32MUIpath,12336) ;Aquire a translated version of "free"
-	ExplorerWindows.InfoGUI_FreeText:=SubStr(ExplorerWindows.InfoGUI_FreeText,InStr(ExplorerWindows.InfoGUI_FreeText," ",0,0)+1)
+	if(A_OSVersion = "WIN_7")
+	{
+		ExplorerWindows.InfoGUI_FreeText := TranslateMUI(shell32MUIpath,12336) ;Aquire a translated version of "free"
+		ExplorerWindows.InfoGUI_FreeText:=SubStr(ExplorerWindows.InfoGUI_FreeText,InStr(ExplorerWindows.InfoGUI_FreeText," ",0,0)+1)
+	}
 }
 ;Find all explorer windows, register them in ExplorerWindows array and set up events and info gui
 RegisterExplorerWindows()
@@ -651,9 +654,20 @@ Loop % ExplorerWindows.len()
 	if(!WinExist("ahk_id " ExplorerWindows[A_Index].hwnd))
 	{
 		ExplorerDestroyed(ExplorerWindows[A_Index].hwnd)
+		Loop % ToolWindows.MaxIndex() ;This code from Messagehooks.ahk is added here again since explorer close events don't work properly and need to be handled this way
+		{
+			if(ToolWindows[A_Index].hParent = ExplorerWindows[A_Index].hwnd && ToolWindows[A_Index].AutoClose)
+			{
+				WinClose % "ahk_id " ToolWindows[A_Index].hGui
+				ToolWindows.Remove(A_Index)
+				break
+			}
+		}
+		SlideWindows.WindowClosed(ExplorerWindows[A_Index].hwnd)
 		break
 	}
 }
+
 return
 ;Called when an explorer window gets deactivated.
 ExplorerDeactivated(hwnd)
@@ -760,8 +774,8 @@ ExplorerSelectionChanged(ExplorerCOMObject)
 	ExplorerWindows[index].Selection.History.append(ToArray(GetSelectedFiles(0, ExplorerWindows[index].hwnd)))
 	if(ExplorerWindows[index].Selection.History.len() > 10)
 		ExplorerWindows[index].Selection.History.Delete(1)
-	outputdebug history updated
-	ExplorerWindows[index].InfoGUI.UpdateInfos(ExplorerWindows[index]) ;Update the info GUI to reflect selection change
+	if(A_OSVersion = "WIN_7")
+		ExplorerWindows[index].InfoGUI.UpdateInfos(ExplorerWindows[index]) ;Update the info GUI to reflect selection change
 	outputdebug explorer selection change end
 	; Critical, Off
 }
@@ -769,6 +783,8 @@ class InfoGUI
 {
 	__New(hParent)
 	{
+		if(A_OSVersion != "WIN_7")
+			return 0
 		GuiNum := GetFreeGuiNum(10)
 		this.GuiNum := GuiNum
 		Gui, %GuiNum%: font, s9, Segoe UI 
@@ -789,6 +805,8 @@ class InfoGUI
 	UpdateInfos(ExplorerWindow)
 	{
 		global ExplorerWindows
+		if(A_OSVersion != "WIN_7")
+			return
 		totalsize:=0
 		realfiles:=false ;check if only folders are selected
 		History :=ExplorerWindow.Selection.History[ExplorerWindow.Selection.History.len()]
@@ -837,7 +855,8 @@ class ExplorerWindow
 		this.hWnd := hWnd
 		this.Path := Path ? Path : GetCurrentFolder(hWnd)
 		this.DisplayName := GetCurrentFolder(hWnd, 1)
-		this.InfoGUI := new InfoGUI(hWnd)
+		if(A_OSVersion = "WIN_7")
+			this.InfoGUI := new InfoGUI(hWnd)
 		this.Selection := Object()
 		this.RegisterSelectionChangedEvent()
     }
@@ -880,4 +899,3 @@ class ExplorerWindow
 		return ToArray(GetSelectedFiles(FullName, this.hWnd))
 	}
 }
-#t::msgbox % ExploreObj(ExplorerWindows)

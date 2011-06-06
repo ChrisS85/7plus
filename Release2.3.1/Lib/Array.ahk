@@ -8,6 +8,7 @@ Array(p1="Ņ", p2="Ņ", p3="Ņ", p4="Ņ", p5="Ņ", p6="Ņ"){
 	  ArrBase.len := "Array_Length"
 	  ArrBase.indexOf := "Array_indexOf"
 	  ArrBase.indexOfSubItem := "Array_indexOfSubItem"
+	  ArrBase.indexOfSubItemBetween := "Array_indexOfSubItemBetween"
 	  ArrBase.SubItem := "Array_SubItem"
 	  ArrBase.contains := "Array_Contains"
 	  ArrBase.join := "Array_Join" 
@@ -43,10 +44,12 @@ Array_indexOf(arr, val, opts="", startpos=1){
 	Loop % arr.len()
 		If(A_Index>=startpos)
 			If(match := InStr(arr[A_Index], val, C)) and (P or StrLen(arr[A_Index])=StrLen(val))
+			{
 				If A
 					matches.append(A_Index)
 				Else
 					Return A_Index
+			}
 	If A
 	  Return matches
 	Else
@@ -61,9 +64,25 @@ Array_indexOfSubItem(arr, subitem, val){
 			 Return, k
 	}
 	Loop % arr.len()
-			If(IsObject(arr[A_Index]) && arr[A_Index][subitem] = val)
-				Return A_Index
-	 Return 0
+		If(IsObject(arr[A_Index]) && arr[A_Index][subitem] = val)
+			Return A_Index
+	Return 0
+}
+Array_indexOfSubItemBetween(arr, subitem, val, val2){
+	if(IsObject(val))
+	{
+		enum := arr._newEnum()
+		while enum[ k, v ]
+		  If (IsObject(v) && v[subitem] = val )
+			 Return, k
+		return 0
+	}
+	if(val2 = "")
+		val2 := val
+	Loop % arr.len()
+		If(IsObject(arr[A_Index]) && arr[A_Index][subitem] >= val && arr[A_Index][subitem] <= val2)
+			Return A_Index
+	Return 0
 }
 Array_SubItem(arr, subitem, val)
 {

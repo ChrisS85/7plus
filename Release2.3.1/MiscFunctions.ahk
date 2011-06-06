@@ -532,6 +532,51 @@ IsInArea(px,py,x,y,w,h)
 {
 	return (px>x&&py>y&&px<x+w&&py<y+h)
 }
+RectsOverlap(x1,y1,w1,h1,x2,y2,w2,h2)
+{
+	Union := RectUnion(x1,y1,w1,h1,x2,y2,w2,h2)
+	return (Union.w && Union.h && (Union.w != w1 && Union.w != w2) || (Union.h != h1 && Union.h != h2))
+}
+RectsSeparate(x1,y1,w1,h1,x2,y2,w2,h2)
+{
+	Union := RectUnion(x1,y1,w1,h1,x2,y2,w2,h2)
+	return Union.w = 0 && Union.h = 0
+}
+RectIncludesRect(x1,y1,w1,h1,ix,iy,iw,ih)
+{
+	Union := RectUnion(x1,y1,w1,h1,ix,iy,iw,ih)
+	return Union.x = ix && Union.y = iy && Union.w = iw && Union.h = ih
+}
+RectUnion(x1,y1,w1,h1,x2,y2,w2,h2)
+{
+	x3 := ""
+	y3 := ""
+	
+	;X Axis
+	if(x1 > x2 && x1 < x2 + w2)
+		x3 := x1
+	else if(x2 > x1 && x2 < x1 + w1)
+		x3 := x2
+		
+	if(y1 > y2 && y1 < y2 + h2)
+		y3 := y1
+	else if(y2 > y1 && y2 < y1 + h1)
+		y3 := y2
+	
+	if(x3 != x1 && x3 != x2) ;Not overlapping
+		w3 := 0
+	else
+		w3 := w1 - (x3 - x1) < w2 - (x3 - x2) ? w1 - (x3 - x1) : w2 - (x3 - x2) ;Choose the smaller width
+	if(y3 != y1 && y3 != y2) ;Not overlapping
+		h3 := 0
+	else
+		h3 := h1 - (y3 - y1) < h2 - (y3 - y2) ? h1 - (y3 - y1) : h2 - (y3 - y2) ;Choose the smaller height
+	if(w3 = 0)
+		h3 := 0
+	else if(h3 = 0)
+		w3 := 0
+	return Object("x", x3, "y", y3, "w", w3, "h", h3)
+}
 WinGetPlacement(hwnd, ByRef x="", ByRef y="", ByRef w="", ByRef h="", ByRef state="") 
 { 
     VarSetCapacity(wp, 44), NumPut(44, wp) 
@@ -1081,4 +1126,11 @@ CreateTooltipControl(hwind)
 	,"PTR",0
 	,"PTR",0, "PTR")
 	Return Ret
+}
+GetVirtualScreenCoordinates(ByRef x, ByRef y, ByRef w, ByRef h)
+{
+	SysGet, x, 76 ;Get virtual screen coordinates of all monitors
+	SysGet, y, 77
+	SysGet, w, 78
+	SysGet, h, 79
 }

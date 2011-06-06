@@ -189,7 +189,8 @@ stringreplace, TaskbarLaunchPath, TaskbarLaunchPath, `%A_ProgramFiles`%, %A_Prog
 ;Slide windows
 IniRead, HKSlideWindows, %IniPath%, Windows, HKSlideWindows, 1
 IniRead, SlideWinHide, %IniPath%, Windows, SlideWinHide, 1
-SlideWindows_Startup()
+IniRead, SlideWindowSideLimit, %IniPath%, Windows, SlideWindowSideLimit, 0
+SlideWindows := new CSlideWindows()
 IniRead, SlideWindowsBorder, %IniPath%, Windows, SlideWindowsBorder, 30
 IniRead, ShowResizeTooltip, %IniPath%, Windows, ShowResizeTooltip, 1
 
@@ -313,7 +314,6 @@ OnExit(Reload=0)
 		WriteIni()
 		WriteClipboard()
 		Action_Upload_WriteFTPProfiles()
-		SlideWindows_Exit()
 		CloseAllInactiveTabs()
 		SaveHotstrings()
 	}
@@ -383,6 +383,7 @@ WriteIni()
 	IniWrite, %AeroFlipTime%, %IniPath%, Windows, AeroFlipTime
 	IniWrite, %HKSlideWindows%, %IniPath%, Windows, HKSlideWindows
 	IniWrite, %SlideWinHide%, %IniPath%, Windows, SlideWinHide
+	IniWrite, %SlideWindowSideLimit%, %IniPath%, Windows, SlideWindowSideLimit
 	IniWrite, %SlideWindowsBorder%, %IniPath%, Windows, SlideWindowsBorder
 	IniWrite, %HKAltDrag%, %IniPath%, Windows, HKAltDrag
 	IniWrite, %ShowResizeTooltip%, %IniPath%, Windows, ShowResizeTooltip
