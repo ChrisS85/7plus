@@ -42,7 +42,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 		}
 		if(InStr("CabinetWClass,ExploreWClass", WinGetClass("ahk_id " hwnd)))
 			ExplorerMoved(hwnd)
-		SlideWindows.CheckResizeReleaseCondition()
+		SlideWindows.CheckResizeReleaseCondition(hwnd)
 		if(state != -1)
 		{
 			WindowList.MovedWindow := hwnd
@@ -53,7 +53,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 	{
 		ResizeWindow := hwnd
 		SetTimer, ResizeWindowTooltip, 50
-		SlideWindows.CheckResizeReleaseCondition()
+		SlideWindows.CheckResizeReleaseCondition(hwnd)
 	}
 	else if(event = 0x000B && ShowResizeTooltip)
 	{
@@ -92,7 +92,7 @@ ShellMessage( wParam, lParam, Msg)
 	WasCritical := A_IsCritical
 	Critical
 	ListLines, Off
-	global ExplorerPath, BlinkingWindows, WindowList, Accessor, RecentCreateCloseEvents, Profiler, ToolWindows, ExplorerWindows, LastWindow, LastWindowClass, SlideWindows
+	global ExplorerPath, BlinkingWindows, WindowList, Accessor, RecentCreateCloseEvents, Profiler, ToolWindows, ExplorerWindows, LastWindow, LastWindowClass, SlideWindows, CurrentWindow, PreviousWindow
 	StartTime := A_TickCount
 	Trigger := EventSystem_CreateSubEvent("Trigger", "OnMessage")
 	Trigger.Message := wParam
@@ -171,6 +171,12 @@ ShellMessage( wParam, lParam, Msg)
 	;Window Activation
 	else if(wParam=4||wParam=32772) ;HSHELL_WINDOWACTIVATED||HSHELL_RUDEAPPACTIVATED
 	{
+		if(IsAltTabWindow(lParam))
+		{
+			outputdebug lParam %lParam%
+			PreviousWindow := CurrentWindow
+			CurrentWindow := lParam
+		}
 		lParam += 0
 		Trigger := Object("base", TriggerBase)
 		Trigger.Type := "WindowActivated"

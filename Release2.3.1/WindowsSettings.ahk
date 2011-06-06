@@ -128,7 +128,7 @@ WindowsSettings_RemoveUserDir(RemoveUserDir)
 WindowsSettings_RemoveWMP(RemoveWMP)
 {
 	if(A_OSVersion = "WIN_XP")
-		run, % "regsvr32 " (RemoveWMP ?"/u " : "") "wmpshell.dll",, Hide
+		run, % "regsvr32 " (RemoveWMP ?"/u " : "") "/s wmpshell.dll",, Hide
 	else
 	{
 		if(RemoveWMP)

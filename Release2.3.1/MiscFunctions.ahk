@@ -535,7 +535,7 @@ IsInArea(px,py,x,y,w,h)
 RectsOverlap(x1,y1,w1,h1,x2,y2,w2,h2)
 {
 	Union := RectUnion(x1,y1,w1,h1,x2,y2,w2,h2)
-	return (Union.w && Union.h && (Union.w != w1 && Union.w != w2) || (Union.h != h1 && Union.h != h2))
+	return Union.w && Union.h
 }
 RectsSeparate(x1,y1,w1,h1,x2,y2,w2,h2)
 {
@@ -1133,4 +1133,32 @@ GetVirtualScreenCoordinates(ByRef x, ByRef y, ByRef w, ByRef h)
 	SysGet, y, 77
 	SysGet, w, 78
 	SysGet, h, 79
+}
+WinGetPos(WinTitle = "", WinText = "", ExcludeTitle = "", ExcludeText = "")
+{
+	WinGetPos, x, y, w, h, %WinTitle%, %WinText%, %ExcludeTitle%, %ExcludeText%
+	return Object("x", x, "y", y, "w", w, "h", h)
+}
+
+WinMove(WinTitle, Rect, WinText = "", ExcludeTitle = "", ExcludeText = "")
+{
+	WinMove, %WinTitle%, %WinText%, % Rect.x, % Rect.y, % Rect.w, % Rect.h, %ExcludeTitle%, %ExcludeText%
+}
+IsAltTabWindow(hwnd)
+{
+	if(!hwnd)
+		return false
+	WinGet, ExStyle, ExStyle, ahk_id %hwnd%
+	if(ExStyle & 0x80) ;WS_EX_TOOLWINDOW
+		return false
+	hwndWalk := DllCall("GetAncestor", "PTR", hwnd, "INT", 3, "PTR")
+
+	; See if we are the last active visible popup
+	while((hwndTry := DllCall("GetLastActivePopup", "PTR", hwndWalk, "PTR")) != hwndWalk)
+	{
+		if(DllCall("IsWindowVisible", "PTR", hwndTry)) 
+			break
+		hwndWalk := hwndTry
+	}
+	return hwndWalk = hwnd
 }

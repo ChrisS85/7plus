@@ -1,14 +1,9 @@
 ;TODO:
 ;-When a 7plus dialog is shown while a slide window was activated(not through border), it mostly happens that the window doesn't slide out.
 ;If it does, it sometimes gets activated improperly after confirming the dialog. The window is not lost anymore however. Activating it again in taskbar makes it slide in.
-;-When resizing, screen border trigger area must not get larger than available space (limited by screen size and other slide windows)
-;Move -> complete release?
-;Mouse slide -> wrong window active after slide out
 ;TODO on Return:
-;Check SystemParametersInfo for correctness
 ;FileOpen Dialog messes up on XP when sliding out
 ;Issue with window position on Clearlooks skin (offset of 3, i.e. y=3 is recognized as 0)
-;WMPShell regsvr32 executed non-silently
 ;Shift in key dialog showing in two lines
 ;
 Class CSlideWindow
@@ -36,6 +31,9 @@ Class CSlideWindow
 		this.GetChildWindows(0) ;Child windows are fetched when sliding takes place so they're more recent, but the always on top state is stored here the first time
 		WinGet, ExStyle, ExStyle, % "ahk_id " this.hwnd
 		this.WasOnTop := ExStyle & 0x8
+		this.OriginalPosition := WinGetPos("ahk_id " this.hwnd)
+		Loop % this.ChildWindows.len()
+			this.ChildWindows.OriginalPosition := WinGetPos("ahk_id " this.ChildWindows.hwnd)
 		this.SlideOut()
 	}
 	__Delete()
@@ -74,105 +72,56 @@ Class CSlideWindow
 		VirtualBottom += VirtualTop
 		
 		;Calculate target position
-		WinGetPos, x,y,w,h, % "ahk_id " this.hwnd
+		this.Position := WinGetPos("ahk_id " this.hwnd)
 		Loop % this.ChildWindows.len()
-		{
-			WinGetPos, cx, cy, cw, ch, % "ahk_id " this.ChildWindows[A_Index].hwnd
-			this.ChildWindows[A_Index].cx := cx
-			this.ChildWindows[A_Index].cy := cy
-			this.ChildWindows[A_Index].cw := cw
-			this.ChildWindows[A_Index].ch := ch
-		}
+			this.ChildWindows[A_Index].Position := WinGetPos("ahk_id " this.ChildWindows[A_Index].hwnd)
 		if(this.Direction = 1) ;Left
 		{
-			ToX := VirtualLeft
-			ToY := y
+			this.ToX := VirtualLeft
+			this.ToY := this.Position.y
 			Loop % this.ChildWindows.len()
 			{
-				this.ChildWindows[A_Index].ToX := max(ToX + this.ChildWindows[A_Index].cx - x, VirtualLeft)
-				this.ChildWindows[A_Index].ToY := this.ChildWindows[A_Index].cy
+				this.ChildWindows[A_Index].ToX := max(this.ToX + this.ChildWindows[A_Index].Position.x - this.Position.x, VirtualLeft)
+				this.ChildWindows[A_Index].ToY := this.ChildWindows[A_Index].Position.y
 			}
 		}
 		else if(this.Direction = 2) ;Top
 		{
-			ToX := x
-			ToY := VirtualTop
+			this.ToX := this.Position.x
+			this.ToY := VirtualTop
 			Loop % this.ChildWindows.len()
 			{
-				this.ChildWindows[A_Index].ToX := this.ChildWindows[A_Index].cx
-				this.ChildWindows[A_Index].ToY := max(ToY + this.ChildWindows[A_Index].cy - y, VirtualTop)
+				this.ChildWindows[A_Index].ToX := this.ChildWindows[A_Index].Position.x
+				this.ChildWindows[A_Index].ToY := max(this.ToY + this.ChildWindows[A_Index].Position.y - this.Position.y, VirtualTop)
 			}
 		}
 		else if(this.Direction = 3) ;Right
 		{
-			ToX := VirtualRight - w
-			ToY := y
+			this.ToX := VirtualRight - this.Position.w
+			this.ToY := this.Position.y
 			Loop % this.ChildWindows.len()
 			{
-				this.ChildWindows[A_Index].ToX := min(ToX + this.ChildWindows[A_Index].cx - x, VirtualRight - this.ChildWindows[A_Index].cw)
-				this.ChildWindows[A_Index].ToY := this.ChildWindows[A_Index].cy
+				this.ChildWindows[A_Index].ToX := min(this.ToX + this.ChildWindows[A_Index].Position.x - this.Position.x, VirtualRight - this.ChildWindows[A_Index].Position.w)
+				this.ChildWindows[A_Index].ToY := this.ChildWindows[A_Index].Position.y
 			}
 		}
 		else if(this.Direction = 4) ;Bottom
 		{
-			toX := x
-			toY := VirtualBottom - h
+			this.ToX := this.Position.x
+			this.ToY := VirtualBottom - this.Position.h
 			Loop % this.ChildWindows.len()
 			{
-				this.ChildWindows[A_Index].ToX := this.ChildWindows[A_Index].cx
-				this.ChildWindows[A_Index].ToY := min(ToY + this.ChildWindows[A_Index].cy - y, VirtualBottom - this.ChildWindows[A_Index].ch)
+				this.ChildWindows[A_Index].ToX := this.ChildWindows[A_Index].Position.x
+				this.ChildWindows[A_Index].ToY := min(this.ToY + this.ChildWindows[A_Index].Position.y - this.Position.y, VirtualBottom - this.ChildWindows[A_Index].Position.h)
 			}
 		}
-		Moved := true
-		while(Moved) ;While target position is not reached, move all child windows and the main window
-		{
-			Moved := false
-			diffX:=toX-x
-			diffY:=toY-y
-			StepX:=Round(absmin(dirmax(diffX*2/10,10),diffX))
-			StepY:=Round(absmin(dirmax(diffY*2/10,10),diffY))
-			if(StepX != 0 || StepY != 0)
-			{
-				x += StepX
-				y += StepY
-				WinMove, % "ahk_id " this.hwnd,, %x%, %y%
-				Moved := true
-			}
-			Loop % this.ChildWindows.len() ;Move all child windows
-			{
-				hwnd := this.ChildWindows[A_Index].hwnd
-				diffX:=this.ChildWindows[A_Index].toX-this.ChildWindows[A_Index].cx
-				diffY:=this.ChildWindows[A_Index].toY-this.ChildWindows[A_Index].cy
-				StepX:=Round(absmin(dirmax(diffX*2/10,10),diffX))
-				StepY:=Round(absmin(dirmax(diffY*2/10,10),diffY))
-			
-				WinGet, minstate , minmax, ahk_id %hwnd% ;Don't move child windows which might be hidden/minimized
-				if(minstate=-1)
-					continue
-				if(StepX = 0 && StepY = 0)
-					continue
-				this.ChildWindows[A_Index].cx += StepX
-				this.ChildWindows[A_Index].cy += StepY
-				WinMove, ahk_id %hwnd%,, % this.ChildWindows[A_Index].cx, % this.ChildWindows[A_Index].cy
-				Moved := true
-			}
-			Sleep 10
-		}
+		this.Move()
 		this.SlideState:=1
 		;Possibly activate Minimize animation again
 		if(Animate=1)
 		{
 			NumPut(1, struct, 4, "UInt")
 			DllCall("SystemParametersInfo", "UINT", 0x0049,"UINT", 8,"STR", struct,"UINT", 0x0003) ;SPI_SETANIMATION            0x0049 SPIF_SENDWININICHANGE 0x0002
-		}
-		Loop this.ChildWindows.len() ;Remove temp values
-		{
-			this.ChildWindows[A_Index].Remove("cx")
-			this.ChildWindows[A_Index].Remove("cy")
-			this.ChildWindows[A_Index].Remove("cw")
-			this.ChildWindows[A_Index].Remove("ch")
-			this.ChildWindows[A_Index].Remove("ToX")
-			this.ChildWindows[A_Index].Remove("ToY")
 		}
 	}
 	;This function slides a window outside the screen, hiding it
@@ -199,122 +148,77 @@ Class CSlideWindow
 		VirtualBottom += VirtualTop
 		
 		;Calculate target position
-		WinGetPos, x,y,w,h, % "ahk_id " this.hwnd
+		this.Position := WinGetPos("ahk_id " this.hwnd)
 		Loop % this.ChildWindows.len()
-		{
-			WinGetPos, cx, cy, cw, ch, % "ahk_id " this.ChildWindows[A_Index].hwnd
-			this.ChildWindows[A_Index].cx := cx
-			this.ChildWindows[A_Index].cy := cy
-			this.ChildWindows[A_Index].cw := cw
-			this.ChildWindows[A_Index].ch := ch
-		}
+			this.ChildWindows[A_Index].Position := WinGetPos("ahk_id " this.ChildWindows[A_Index].hwnd)
 		if(this.Direction = 1) ;Left
 		{
-			ToX := VirtualLeft - w
-			ToY := y
+			this.ToX := VirtualLeft - this.Position.w
+			this.ToY := this.Position.y
 			Loop % this.ChildWindows.len() ;Correct for offset of child windows
-				ToX := min(ToX, ToX - ((this.ChildWindows[A_Index].cx + this.ChildWindows[A_Index].cw) - (x + w)))
+				this.ToX := min(this.ToX, this.ToX - ((this.ChildWindows[A_Index].Position.x + this.ChildWindows[A_Index].Position.w) - (this.Position.x + this.Position.w)))
 			Loop % this.ChildWindows.len()
 			{
-				this.ChildWindows[A_Index].ToX := min(ToX + this.ChildWindows[A_Index].cx - x,VirtualLeft - this.ChildWindows[A_Index].cw)
-				this.ChildWindows[A_Index].ToY := this.ChildWindows[A_Index].cy
+				this.ChildWindows[A_Index].ToX := min(this.ToX + this.ChildWindows[A_Index].Position.x - this.Position.x,VirtualLeft - this.ChildWindows[A_Index].Position.w)
+				this.ChildWindows[A_Index].ToY := this.ChildWindows[A_Index].Position.y
 			}
-			this.SlideOutPos := y
-			this.SlideOutLen := h
+			this.SlideOutPos := this.Position.y
+			this.SlideOutLen := this.Position.h
 		}
 		else if(this.Direction = 2) ;Top
 		{
-			ToX := x
-			ToY := VirtualTop - h
+			this.ToX := this.Position.x
+			this.ToY := VirtualTop - this.Position.h
 			Loop % this.ChildWindows.len() ;Correct for offset of child windows
-				ToY := min(ToY, ToY - ((this.ChildWindows[A_Index].cy + this.ChildWindows[A_Index].ch) - (y + h)))
+				this.ToY := min(this.ToY, this.ToY - ((this.ChildWindows[A_Index].Position.y + this.ChildWindows[A_Index].Position.h) - (this.Position.y + this.Position.h)))
 			Loop % this.ChildWindows.len()
 			{
-				this.ChildWindows[A_Index].ToX := this.ChildWindows[A_Index].cx
-				this.ChildWindows[A_Index].ToY := min(ToY + this.ChildWindows[A_Index].cy - y,VirtualTop - this.ChildWindows[A_Index].ch)
+				this.ChildWindows[A_Index].ToX := this.ChildWindows[A_Index].Position.x
+				this.ChildWindows[A_Index].ToY := min(this.ToY + this.ChildWindows[A_Index].Position.y - this.Position.y, VirtualTop - this.ChildWindows[A_Index].Position.h)
 			}
-			this.SlideOutPos := x
-			this.SlideOutLen := w
+			this.SlideOutPos := this.Position.x
+			this.SlideOutLen := this.Position.w
 		}
 		else if(this.Direction = 3) ;Right
 		{
-			ToX := VirtualRight
-			ToY := y
+			this.ToX := VirtualRight
+			this.ToY := this.Position.y
 			Loop % this.ChildWindows.len() ;Correct for offset of child windows
-				ToX := max(ToX, ToX + (x - this.ChildWindows[A_Index].cx))
+				this.ToX := max(this.ToX, this.ToX + (this.Position.x - this.ChildWindows[A_Index].Position.x))
 			Loop % this.ChildWindows.len()
 			{
-				this.ChildWindows[A_Index].ToX := max(ToX + this.ChildWindows[A_Index].cx - x,VirtualRight)
-				this.ChildWindows[A_Index].ToY := this.ChildWindows[A_Index].cy
+				this.ChildWindows[A_Index].ToX := max(this.ToX + this.ChildWindows[A_Index].Position.x - this.Position.x,VirtualRight)
+				this.ChildWindows[A_Index].ToY := this.ChildWindows[A_Index].Position.y
 			}
-			this.SlideOutPos := y
-			this.SlideOutLen := h
+			this.SlideOutPos := this.Position.y
+			this.SlideOutLen := this.Position.h
 		}
 		else if(this.Direction = 4) ;Bottom
 		{
-			toX := x
-			toY := VirtualBottom
+			this.ToX := this.Position.x
+			this.ToY := VirtualBottom
 			Loop % this.ChildWindows.len() ;Correct for offset of child windows
-				ToY := max(ToY, ToY + (y - this.ChildWindows[A_Index].cy))
+				this.ToY := max(this.ToY, this.ToY + (this.Position.y - this.ChildWindows[A_Index].Position.y))
 			Loop % this.ChildWindows.len()
 			{
-				this.ChildWindows[A_Index].ToX := this.ChildWindows[A_Index].cx
-				this.ChildWindows[A_Index].ToY := max(ToY + this.ChildWindows[A_Index].cy - y,VirtualBottom)
+				this.ChildWindows[A_Index].ToX := this.ChildWindows[A_Index].Position.x
+				this.ChildWindows[A_Index].ToY := max(this.ToY + this.ChildWindows[A_Index].Position.y - this.Position.y,VirtualBottom)
 			}
-			this.SlideOutPos := x
-			this.SlideOutLen := w
+			this.SlideOutPos := this.Position.x
+			this.SlideOutLen := this.Position.w
 		}
-		Moved := true
-		while(Moved) ;While target position is not reached, move all child windows and the main window
-		{
-			Moved := false
-			diffX:=toX-x
-			diffY:=toY-y
-			StepX:=Round(absmin(dirmax(diffX*2/10,10),diffX))
-			StepY:=Round(absmin(dirmax(diffY*2/10,10),diffY))
-			if(StepX != 0 || StepY != 0)
-			{
-				x += StepX
-				y += StepY
-				WinMove, % "ahk_id " this.hwnd,, %x%, %y%
-				Moved := true
-			}
-			Loop % this.ChildWindows.len() ;Move all child windows
-			{
-				hwnd := this.ChildWindows[A_Index].hwnd
-				diffX:=this.ChildWindows[A_Index].toX-this.ChildWindows[A_Index].cx
-				diffY:=this.ChildWindows[A_Index].toY-this.ChildWindows[A_Index].cy
-				StepX:=Round(absmin(dirmax(diffX*2/10,10),diffX))
-				StepY:=Round(absmin(dirmax(diffY*2/10,10),diffY))
-			
-				WinGet, minstate , minmax, ahk_id %hwnd% ;Don't move child windows which might be hidden/minimized
-				if(minstate=-1)
-					continue
-				if(StepX = 0 && StepY = 0)
-					continue
-				this.ChildWindows[A_Index].cx += StepX
-				this.ChildWindows[A_Index].cy += StepY
-				WinMove, ahk_id %hwnd%,, % this.ChildWindows[A_Index].cx, % this.ChildWindows[A_Index].cy
-				Moved := true
-			}
-			Sleep 10
-		}
+		this.Move()
 		Loop this.ChildWindows.len() + 1 ;hide/minimize all child windows and main window
 		{
 			hwnd := A_Index = 1 ? this.hwnd : this.ChildWindows[A_Index - 1].hwnd
-			;DllCall("ShowWindow","Ptr", hwnd, "UINT", 6) ;#define SW_MINIMIZE         6 SW_FORCEMINIMIZE    11
+			
 			if(SlideWinHide)
 				WinHide, ahk_id %hwnd%
 			else
-				PostMessage, 0x112, 0xF020,,, ahk_id %hwnd% ;Winminimize, but apparently more reliable
-			if(A_Index > 1)
 			{
-				this.ChildWindows[A_Index - 1].Remove("cx")
-				this.ChildWindows[A_Index - 1].Remove("cy")
-				this.ChildWindows[A_Index - 1].Remove("cw")
-				this.ChildWindows[A_Index - 1].Remove("ch")
-				this.ChildWindows[A_Index - 1].Remove("ToX")
-				this.ChildWindows[A_Index - 1].Remove("ToY")
+				;~ WinMinimize ahk_id %hwnd%
+				PostMessage, 0x112, 0xF020,,, ahk_id %hwnd% ;Winminimize, but apparently more reliable
+				;~ DllCall("ShowWindow","Ptr", hwnd, "UINT", 6) ;#define SW_MINIMIZE         6 SW_FORCEMINIMIZE    11
 			}
 		}
 		this.SlideState:=0
@@ -325,6 +229,54 @@ Class CSlideWindow
 			DllCall("SystemParametersInfo", "UINT", 0x0049,"UINT", 8,"STR", struct,"UINT", 0x0003) ;SPI_SETANIMATION            0x0049 SPIF_SENDWININICHANGE 0x0002
 		}
 	}
+	;This function moves all involved windows to the stored coordinates
+	Move()
+	{
+		Moved := true
+		while(Moved) ;While target position is not reached, move all child windows and the main window
+		{
+			Moved := false
+			diffX:=this.toX-this.Position.x
+			diffY:=this.toY-this.Position.y
+			StepX:=Round(absmin(dirmax(diffX*2/10,10),diffX))
+			StepY:=Round(absmin(dirmax(diffY*2/10,10),diffY))
+			if(StepX != 0 || StepY != 0)
+			{
+				this.Position.x += StepX
+				this.Position.y += StepY
+				WinMove, % "ahk_id " this.hwnd,, % this.Position.x, % this.Position.y
+				Moved := true
+			}
+			Loop % this.ChildWindows.len() ;Move all child windows
+			{
+				hwnd := this.ChildWindows[A_Index].hwnd
+				diffX:=this.ChildWindows[A_Index].toX-this.ChildWindows[A_Index].Position.x
+				diffY:=this.ChildWindows[A_Index].toY-this.ChildWindows[A_Index].Position.y
+				StepX:=Round(absmin(dirmax(diffX*2/10,10),diffX))
+				StepY:=Round(absmin(dirmax(diffY*2/10,10),diffY))
+			
+				WinGet, minstate , minmax, ahk_id %hwnd% ;Don't move child windows which might be hidden/minimized
+				if(minstate=-1)
+					continue
+				if(StepX = 0 && StepY = 0)
+					continue
+				this.ChildWindows[A_Index].Position.x += StepX
+				this.ChildWindows[A_Index].Position.y += StepY
+				WinMove, ahk_id %hwnd%,, % this.ChildWindows[A_Index].Position.x, % this.ChildWindows[A_Index].Position.y
+				Moved := true
+			}
+			Sleep 10
+		}
+		this.Remove("Position")
+		this.Remove("ToX")
+		this.Remove("ToY")
+		Loop % this.ChildWindows.len()
+		{
+			this.ChildWindows[A_Index].Remove("Position")
+			this.ChildWindows[A_Index].Remove("ToX")
+			this.ChildWindows[A_Index].Remove("ToY")	
+		}
+	}
 	;This functions removes the "Slide window" property from a window, sliding it in and showing it
 	;If Soft is true, the window will not be moved. This is used for releasing because of window moving and resizing
 	Release(Soft = 0)
@@ -332,8 +284,20 @@ Class CSlideWindow
 		global SlideWindows
 		if(!this.hwnd) ;Make sure the slide window was actually successfully created
 			return
+		this.SlideState := 4
 		if(!Soft)
-			this.SlideIn()
+		{
+			this.Position := WinGetPos("ahk_id " this.hwnd)
+			this.ToX := this.OriginalPosition.x
+			this.ToY := this.OriginalPosition.y
+			Loop % this.ChildWindows.len()
+			{
+				this.ChildWindows[A_Index].Position := WinGetPos("ahk_id " this.ChildWindows[A_Index].hwnd)
+				this.ChildWindows[A_Index].ToX := this.ChildWindows[A_Index].OriginalPosition.x
+				this.ChildWindows[A_Index].ToY := this.ChildWindows[A_Index].OriginalPosition.y
+			}
+			this.Move()
+		}
 		WinSet, AlwaysOnTop, % this.WasOnTop ? "On" : "Off", % "ahk_id " this.hwnd
 		Loop % this.ChildWindows.len()
 			WinSet, AlwaysOnTop, % this.ChildWindows.WasOnTop ? "On" : "Off", % "ahk_id " this.ChildWindows[A_Index].hwnd
@@ -517,32 +481,14 @@ Class CSlideWindows
 		this := new CSlideWindows()
 	}
 	;This is called when a window gets resized to see if it needs to be released
-	CheckResizeReleaseCondition()
+	CheckResizeReleaseCondition(hwnd)
 	{
 		GetVirtualScreenCoordinates(VirtualLeft, VirtualTop, VirtualWidth, VirtualHeight)
-		Loop % this.len()
-		{
-			SlideWindow := this[A_Index]
-			if(SlideWindow.SlideState >= 2 && SlideWindow.SlideState <= 4) ;If currently sliding or release the window, ignore it
-				continue
-			WinGet, maxstate , minmax, % "ahk_id " SlideWindow.hwnd
-			if(maxstate=1)
-				continue
-			WinGetPos, x, y, w, h, % "ahk_id " SlideWindow.hwnd
-			if(SlideWindow.SlideState != 1) ;If the slide window is not in visible state, it might not touch the screen border. In this case, a child window should though, and it's possible to use the bounding box here
-			{
-				SlideWindow.CalculateBoundingBox(x, y, w, h)
-				w -= x
-				h -= y
-			}
-			;add one pixel to each side and see if it overlaps with the screen border. If it does, all is fine. If it doesn't, the window was resized in a way that removes the touching edge and needs to be released.
-			x -= 1
-			y -= 1
-			w += 2
-			h += 2
-			if(!RectsOverlap(VirtualLeft, VirtualTop, VirtualWidth, VirtualHeight, x, y, w, h))
-				SlideWindow.Release(1)
-		}
+		SlideWindow := this.SubItem("hwnd", hwnd)
+		if(!SlideWindow)
+			return
+		if(SlideWindow.SlideState = 0 || SlideWindow.SlideState = 1)
+			SlideWindow.Release(SlideWindow.SlideState = 1)
 	}
 	;This is called when a window gets closed to see if a slide window needs to be released
 	WindowClosed(hwnd)
@@ -698,6 +644,9 @@ GetParentWindows(hwnd)
 
 ;~ #t::
 ;~ msgbox % exploreobj(slidewindows)
+;~ return
+;~ #t::
+;~ msgbox % WinGetClass("ahk_id " CurrentWindow) " Previous: " WinGetClass("ahk_id " PreviousWindow)
 ;~ return
 ;~ #p::
 ;~ outputdebug % exploreobj(slidewindows)
