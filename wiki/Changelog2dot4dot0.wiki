@@ -15,5 +15,6 @@ Bugfixes:
 
 Changes:
  * Huge code rewrite for some key portions related to explorer. As a result, status bar enhancements and explorer tabs are now visible on all explorer windows at once.
+ * Complete rewrite of Slide Windows feature. It should be much better now, with more options, multi-monitor support, support for child windows and no windows getting lost anymore.
 
 If you like this program and want to support its development, please consider donating!
