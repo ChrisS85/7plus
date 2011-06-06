@@ -189,9 +189,11 @@ stringreplace, TaskbarLaunchPath, TaskbarLaunchPath, `%A_ProgramFiles`%, %A_Prog
 ;Slide windows
 IniRead, HKSlideWindows, %IniPath%, Windows, HKSlideWindows, 1
 IniRead, SlideWinHide, %IniPath%, Windows, SlideWinHide, 1
+IniRead, SlideWindowRequireMouseUp, %IniPath%, Windows, SlideWindowRequireMouseUp, 0
 IniRead, SlideWindowSideLimit, %IniPath%, Windows, SlideWindowSideLimit, 0
 SlideWindows := new CSlideWindows()
 IniRead, SlideWindowsBorder, %IniPath%, Windows, SlideWindowsBorder, 30
+IniRead, SlideWindowsModifier, %IniPath%, Windows, SlideWindowsModifier, Control
 IniRead, ShowResizeTooltip, %IniPath%, Windows, ShowResizeTooltip, 1
 
 IniRead, ImageExtensions, %IniPath%, Misc, ImageExtensions, jpg,png,bmp,gif,tga,tif,ico,jpeg
@@ -385,6 +387,8 @@ WriteIni()
 	IniWrite, %SlideWinHide%, %IniPath%, Windows, SlideWinHide
 	IniWrite, %SlideWindowSideLimit%, %IniPath%, Windows, SlideWindowSideLimit
 	IniWrite, %SlideWindowsBorder%, %IniPath%, Windows, SlideWindowsBorder
+	IniWrite, %SlideWindowRequireMouseUp%, %IniPath%, Windows, SlideWindowRequireMouseUp
+	IniWrite, %SlideWindowsModifier%, %IniPath%, Windows, SlideWindowsModifier
 	IniWrite, %HKAltDrag%, %IniPath%, Windows, HKAltDrag
 	IniWrite, %ShowResizeTooltip%, %IniPath%, Windows, ShowResizeTooltip
 	IniWrite, %ImageExtensions%, %IniPath%, Misc, ImageExtensions

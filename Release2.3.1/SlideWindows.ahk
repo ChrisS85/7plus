@@ -630,6 +630,7 @@ Class CSlideWindows
 	;This is called when the mouse is moved and takes care of screen border slide window activation and deactivation when the mouse leaves the window
 	OnMouseMove(x,y)
 	{
+		global SlideWindowRequireMouseUp,SlideWindowsModifier
 		GetVirtualScreenCoordinates(VirtualLeft, VirtualTop, VirtualWidth, VirtualHeight)
 		VirtualRight += VirtualLeft
 		VirtualBottom += VirtualTop
@@ -647,7 +648,7 @@ Class CSlideWindows
 			return
 		;Check if mouse position matches a slide window border and don't slide in while other slide window is on the screen
 		SlideWindow:=this.IsSlideSpaceOccupied(x,y,0,0,dir)
-		if(dir > 0 && SlideWindow && !this.indexOfSubItem("SlideState", 1))
+		if(dir > 0 && SlideWindow && (!SlideWindowRequireMouseUp || !GetKeyState("LButton", "P") || GetKeyState(SlideWindowsModifier, "P")) && !this.indexOfSubItem("SlideState", 1))
 		{
 			this.ActiveWindow := WinExist("A")
 			SlideWindow.AutoSlideOut := true
@@ -658,7 +659,7 @@ Class CSlideWindows
 		MouseGetPos, , ,win
 		win+=0
 		SlideWindow:=this.SubItem("SlideState", 1)
-		if(SlideWindow && SlideWindow.AutoSlideOut && SlideWindow.hwnd!=win && !SlideWindow.ChildWindows.IndexOfSubItem("hwnd", win) && !IsContextMenuActive())
+		if(SlideWindow && SlideWindow.AutoSlideOut && SlideWindow.hwnd!=win && !SlideWindow.ChildWindows.IndexOfSubItem("hwnd", win) && !IsContextMenuActive() && !GetKeyState(SlideWindowsModifier,"P"))
 		{
 			SlideWindow.SlideOut()
 			WinActivate % "ahk_id " this.ActiveWindow

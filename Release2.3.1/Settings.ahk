@@ -343,6 +343,16 @@ Settings_CreateWindows(ByRef TabCount) {
 	yIt+=checkboxstep
 	Gui, 1:Add, Checkbox, x%x% y%yIt% vSlideWindowSideLimit, Allow only one Slide Window per screen side
 	yIt+=checkboxstep
+	Gui, 1:Add, Checkbox, x%x% y%yIt% vSlideWindowRequireMouseUp hwndhRequireMouseUp, Require left mouse button to be up to activate slide window at screen border
+	AddToolTip(hRequireMouseUp, "This feature is used to prevent accidently activating a slide window while dragging with the mouse. It's still possible to drag something to the slide window by holding the modifier key which is set below.")
+	yIt+=checkboxstep
+	Gui, 1:Add, Text, y%yIt% x%x%, Slide Windows modifier key:
+	y:=yIt+yCheckboxTextOffset
+	x:=x1+200
+	Gui, 1:Add, DropDownList, x%x% y%y% vSlideWindowsModifier hwndhSlideModifier, Control|ALT|Shift|WIN
+	AddToolTip(hSlideModifier, "If this key is pressed, the mouse may be moved out of the currently active slide window without sliding it out. This is useful if the slide window has child windows that don't overlap with the main window. If the option above is enabled, it may also be used to drag something into a hidden slide window by moving the mouse to the screen border and holding this key.")
+	yIt+=checkboxstep
+	
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow1dot1 vURL_Window1dot1, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKAltDrag, ALT+Left Mouse Drag anywhere on a window: Move window
 	yIt+=checkboxstep
@@ -793,6 +803,8 @@ Settings_SetupWindows() {
 	GuiControl, 1:, HKSlideWindows, % HKSlideWindows = 1
 	GuiControl, 1:, SlideWinHide, % SlideWinHide = 1
 	GuiControl, 1:, SlideWindowSideLimit, % SlideWindowSideLimit = 1
+	GuiControl, 1:, SlideWindowRequireMouseUp, % SlideWindowRequireMouseUp = 1
+	GuiControl, 1:ChooseString, SlideWindowsModifier, %SlideWindowsModifier% ;| -> trigger g-label
 	GuiControl, 1:, HKAltDrag, % HKAltDrag = 1
 	GuiControl, 1:, AeroFlipTime, %AeroFlipTime%
 	;Setup Aero Flip 3D
