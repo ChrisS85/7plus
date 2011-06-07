@@ -224,7 +224,7 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 	{
 		if(Parameter = "Trigger") ;EditEventTab holds the name of the previously selected tab
 			if(Event.Trigger.GuiSubmit(SubeventGUI))
-				Event.Trigger := SubEventBackup
+				Event.Trigger := SubEventBackup ;Restore unmodified version if validation failed
 		else if(Parameter = "Conditions" || Parameter = "Actions")
 		{
 			Gui, ListView, EditEvent%Parameter%
@@ -232,7 +232,7 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 				return
 			i:=LV_GetNext("")
 			if(Event[Parameter][i].GuiSubmit(SubeventGUI))
-				Event[Parameter][i] := SubEventBackup
+				Event[Parameter][i] := SubEventBackup ;Restore unmodified version if validation failed
 		}
 		SubEventBackup := ""
 	}
@@ -421,6 +421,7 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 	}
 	else if(GoToLabel = "EditSubeventList")
 	{
+		Critical
 		ListEvent := ErrorLevel
 		Gui, ListView, EditEvent%EditEventTab%
 		SingularName := strTrimRight(EditEventTab, "s")
@@ -456,13 +457,14 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 				GuiControl, disable, EditEvent_%SingularName%_MoveUp			
 				GuiControl, disable, EditEvent%EditEventTab%Category
 				GuiControl, disable, EditEvent%EditEventTab%Type
-				if(Event[EditEventTab][A_EventInfo].GuiSubmit(SubeventGUI))
+				if(Event[EditEventTab][A_EventInfo].GuiSubmit(SubeventGUI)) ;Restore unmodified version if validation failed
 					Event[EditEventTab][A_EventInfo] := SubEventBackup
 				SubEventBackup := ""
 				SubEventGUI := ""
 				LV_Modify(A_EventInfo, "", (EditEventTab = "Conditions" && Event[EditEventTab][A_EventInfo].Negate ? "NOT " : "") Event[EditEventTab][A_EventInfo].DisplayString())
 			}
 		}
+		Critical, Off
 		return
 	}
 	else if(GoToLabel = "RemoveSubEvent")

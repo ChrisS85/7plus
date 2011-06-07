@@ -410,7 +410,7 @@ Trigger_Hotkey_GuiSubmit(Trigger, TriggerGUI)
     if(!TriggerGUI.tmpHotkey)
 	{
         MsgBox 262160, Select Hotkey Error, A key must be selected.
-        return true
+		result := true
 	}
     
 	;[===================]
@@ -419,7 +419,7 @@ Trigger_Hotkey_GuiSubmit(Trigger, TriggerGUI)
 	if(CollisionCheck(TriggerGUI.tmpHotkey, 0, ""))
 	{
 		MsgBox 262160, Select Hotkey Error, This hotkey is already in use.
-        return true
+		result := true
 	}
 	Trigger.Key := TriggerGUI.tmpHotkey
 	
@@ -445,7 +445,7 @@ Trigger_Hotkey_GuiSubmit(Trigger, TriggerGUI)
 	WinKill, % "ahk_id " TriggerGUI.tmphHotkeyLabel
 	WinKill, % "ahk_id " TriggerGUI.tmphHotkey
     ;-- Return to sender
-    return
+    return result = true
 	
 	
 	;~ Desc_Hotkey := TriggerGUI.Desc_Hotkey
