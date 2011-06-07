@@ -43,7 +43,7 @@ ComObjError(0)
 #include %A_ScriptDir%\Autoupdate.ahk
 #include %A_ScriptDir%\EventSystem.ahk
 #include %A_ScriptDir%\EditEventGUI.ahk
-#include %A_ScriptDir%\EditSubEventGUI.ahk
+;~ #include %A_ScriptDir%\EditSubEventGUI.ahk
 #include %A_ScriptDir%\WindowFinder.ahk
 #include %A_ScriptDir%\Placeholders.ahk
 #include %A_ScriptDir%\SubEventGUIBuilder.ahk
@@ -67,5 +67,5 @@ ComObjError(0)
 #include %A_ScriptDir%\JoyControl.ahk
 #include %A_ScriptDir%\ExplorerTabs.ahk
 #include %A_ScriptDir%\CustomHotkeys.ahk
-#include %A_ScriptDir%\HotkeyGUI.ahk
+;~ #include %A_ScriptDir%\HotkeyGUI.ahk
 #include %A_ScriptDir%\Profiling.ahk

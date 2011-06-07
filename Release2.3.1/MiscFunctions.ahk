@@ -1162,3 +1162,17 @@ IsAltTabWindow(hwnd)
 	}
 	return hwndWalk = hwnd
 }
+
+HWNDToClassNN(hwnd)
+{
+	win := DllCall("GetParent", "PTR", hwnd, "PTR")
+	WinGet ctrlList, ControlList, ahk_id %win%
+	; Built an array indexing the control names by their hwnd 
+	Loop Parse, ctrlList, `n 
+	{
+		ControlGet hwnd1, Hwnd, , %A_LoopField%, A 
+		hwnd1 += 0   ; Convert from hexa to decimal 
+		if(hwnd1=hwnd)
+			return A_LoopField
+	}
+}

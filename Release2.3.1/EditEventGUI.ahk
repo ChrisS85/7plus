@@ -1,7 +1,8 @@
-GUI_EditEvent(e,GoToLabel="")
+GUI_EditEvent(e,GoToLabel="", Parameter="")
 {
-	static Event, result, TriggerGUI, EditEventTab, EditEventTriggerCategory, EditEventTriggerType, EditEventConditions, EditEvent_EditCondition, EditEvent_RemoveCondition, EditEvent_AddCondition, EditEventActions, EditEvent_EditAction, EditEvent_RemoveAction, EditEvent_AddAction, EditEvent_Condition_MoveDown, EditEvent_Condition_MoveUp, EditEvent_Action_MoveUp, EditEvent_Action_MoveDown, EditEvent_Name, EditEvent_Description, EditEvent_DisableAfterUse, EditEvent_DeleteAfterUse, EditEvent_OneInstance, EditEvent_Category, EditEvent_CopyCondition, EditEvent_PasteCondition, EditEvent_CopyAction, EditEvent_PasteAction, ActionClipboard, ConditionClipboard
-	global Trigger_Categories, Settings_Events
+	static Event, result, SubeventGUI,SubEventBackup, EditEventTab, EditEventTriggerCategory, EditEventTriggerType, EditEventConditions, EditEvent_EditCondition, EditEvent_RemoveCondition, EditEvent_AddCondition, EditEventActions, EditEvent_EditAction, EditEvent_RemoveAction, EditEvent_AddAction, EditEvent_Condition_MoveDown, EditEvent_Condition_MoveUp, EditEvent_Action_MoveUp, EditEvent_Action_MoveDown, EditEvent_Name, EditEvent_Description, EditEvent_DisableAfterUse, EditEvent_DeleteAfterUse, EditEvent_OneInstance, EditEvent_Category, EditEvent_CopyCondition, EditEvent_PasteCondition, EditEvent_CopyAction, EditEvent_PasteAction, ActionClipboard, ConditionClipboard,EditConditionNegate,EditEventConditionsType,EditEventConditionsCategory,EditEventActionsType,EditEventActionsCategory
+	global Trigger_Categories, Settings_Events, Condition_Categories, Action_Categories
+	outputdebug % A_ThisLabel
 	if(GoToLabel = "")
 	{
 		;Don't show more than once
@@ -9,13 +10,13 @@ GUI_EditEvent(e,GoToLabel="")
 			return ""
 		Event := e
 		result := ""
-		TriggerGUI := ""
+		SubeventGUI := ""
 		Gui 1:+LastFoundExist
 		IfWinExist		
 			Gui, 1:+Disabled
 		Gui, 4:Default
 		Gui, +LabelEditEvent +Owner1 +ToolWindow +OwnDialogs
-		width := 500
+		width := 900
 		height := 570
 		;Gui, 4:Add, Button, ,OK
 		x := Width - 174
@@ -27,11 +28,11 @@ GUI_EditEvent(e,GoToLabel="")
 		y := 14
 		w := width - 28
 		h := height - 58
-		Gui, Add, Tab2, vEditEventTab x%x% y%y% w%w% h%h% AltSubmit,Trigger||Conditions|Actions|Options
+		Gui, Add, Tab2, vEditEventTab x%x% y%y% w%w% h%h% gEditEventTab,Trigger||Conditions|Actions|Options
 		
 		;Fill tabs
 		x := 28
-		y := 48
+		y := 40
 		
 		Gui, Add, Text, x%x% y%y%, Here you can define how this event gets triggered.
 		
@@ -41,11 +42,11 @@ GUI_EditEvent(e,GoToLabel="")
 		Gui, Add, Text, x%x% y%y%, Trigger:
 		x += 70
 		y -= 4
-		Gui, Add, DropDownList, vEditEventTriggerType gEditEventTriggerType x%x% y%y% w300
+		Gui, Add, DropDownList, vEditEventTriggerType gEditSubeventType x%x% y%y% w300
 		y -= 1
-		Gui, Add, Button, gTriggerHelp x+10 y%y%, Help
+		Gui, Add, Button, gSubeventHelp x+10 y%y%, Help
 		y -= 29
-		Gui, Add, DropDownList, vEditEventTriggerCategory gEditEventTriggerCategory x%x% y%y% w300
+		Gui, Add, DropDownList, vEditEventTriggerCategory gEditSubeventCategory x%x% y%y% w300
 		x := 28
 		y += 60
 		w := width - 54
@@ -54,57 +55,100 @@ GUI_EditEvent(e,GoToLabel="")
 		
 		Gui, Tab, Conditions
 		x := 28
-		y := 48
-		Gui, Add, Text, x%x1% y%yIt%, Here you can add additional conditions for the actions.
+		y := 40
+		Gui, Add, Text, x%x% y%y%, The conditions below must be fullfilled to allow this event to execute.
 		y := 60
-		w := width -54 - 100
+		w := 270
 		h := height - 28 - 88
-		Gui, Add, ListView, x%x% y%y% w%w% h%h% vEditEventConditions gEditEventConditions Grid -LV0x10 NoSortHdr -Multi AltSubmit, Conditions
+		Gui, Add, ListView, x%x% y%y% w%w% h%h% vEditEventConditions gEditSubeventList Grid -LV0x10 NoSortHdr -Multi AltSubmit, Conditions
 		
 		x += w + 10
 		w := 90
 		h := 23
-		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_AddCondition gEditEvent_AddCondition, Add Condition
+		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_AddCondition gAddSubevent, Add Condition
 		y += 30
-		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_RemoveCondition gEditEvent_RemoveCondition, Delete Condition
+		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_RemoveCondition gRemoveSubevent, Delete Condition
 		y += 30
-		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_EditCondition gEditEvent_EditCondition, Edit Condition
+		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_CopyCondition gCopySubevent, Copy Condition
 		y += 30
-		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_CopyCondition gEditEvent_CopyCondition, Copy Condition
+		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_PasteCondition gPasteSubevent, Paste Condition
 		y += 30
-		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_PasteCondition gEditEvent_PasteCondition, Paste Condition
+		Gui, Add, Button, x%x% y%y% w%w% vEditEvent_Condition_MoveUp gSubevent_MoveUp, Move Up
 		y += 30
-		Gui, Add, Button, x%x% y%y% w%w% vEditEvent_Condition_MoveUp gEditEvent_Condition_MoveUp, Move Up
-		y += 30
-		Gui, Add, Button, x%x% y%y% w%w% vEditEvent_Condition_MoveDown gEditEvent_Condition_MoveDown, Move Down
+		Gui, Add, Button, x%x% y%y% w%w% vEditEvent_Condition_MoveDown gSubevent_MoveDown, Move Down
 		
 		
+		x := Width - 472
+		y := Height - 530
+		Gui, Add, Text, x%x% y%y%, Here you can define the selected condition.
+		y += 20
+		Gui, Add, Checkbox, x%x% y%y% vEditConditionNegate, Negate Condition
+		y += 10
+			
+		y += 20 + 4
+		Gui, Add, Text, x%x% y%y%, Category:
+		y += 30
+		Gui, Add, Text, x%x% y%y%, Condition:
+		x += 70
+		y -= 4
+		Gui, Add, DropDownList, vEditEventConditionsType gEditSubEventType x%x% y%y% w300
+		y -= 1
+		Gui, Add, Button, gSubEventHelp x+10 y%y%, Help
+		y -= 29
+		Gui, Add, DropDownList, vEditEventConditionsCategory gEditSubEventCategory x%x% y%y% w300
+		x := Width - 472
+		y += 60
+		w := width - 454
+		h := height - 158 - 28 - 20
+		Gui, Add, GroupBox, x%x% y%y% w%w% h%h%, Options
+				
 		Gui, Tab, Actions
 		x := 28
-		y := 48
-		Gui, Add, Text, x%x1% y%yIt%, Here you can define a list of actions.
+		y := 40
+		Gui, Add, Text, x%x% y%y%, These actions will be executed when the event gets triggered.
 		y := 60
-		w := width -54 - 100
+		w := 270
 		h := height - 28 - 88
-		Gui, Add, ListView, x%x% y%y% w%w% h%h% vEditEventActions gEditEventActions Grid -LV0x10 NoSortHdr -Multi AltSubmit, Actions
+		Gui, Add, ListView, x%x% y%y% w%w% h%h% vEditEventActions gEditSubeventList Grid -LV0x10 NoSortHdr -Multi AltSubmit, Actions
 		
 		x += w + 10
 		w := 90
 		h := 23
-		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_AddAction gEditEvent_AddAction, Add Action
+		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_AddAction gAddSubevent, Add Action
 		y += 30
-		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_RemoveAction gEditEvent_RemoveAction, Delete Action
+		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_RemoveAction gRemoveSubevent, Delete Action
 		y += 30
-		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_EditAction gEditEvent_EditAction, Edit Action
+		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_CopyAction gCopySubevent, Copy Action
 		y += 30
-		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_CopyAction gEditEvent_CopyAction, Copy Action
+		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_PasteAction gPasteSubevent, Paste Action
 		y += 30
-		Gui, Add, Button, x%x% y%y% w%w% h%h% vEditEvent_PasteAction gEditEvent_PasteAction, Paste Action
-		y += 30*2
-		Gui, Add, Button, x%x% y%y% w%w% vEditEvent_Action_MoveUp gEditEvent_Action_MoveUp, Move Up
+		Gui, Add, Button, x%x% y%y% w%w% vEditEvent_Action_MoveUp gSubevent_MoveUp, Move Up
 		y += 30
-		Gui, Add, Button, x%x% y%y% w%w% vEditEvent_Action_MoveDown gEditEvent_Action_MoveDown, Move Down
+		Gui, Add, Button, x%x% y%y% w%w% vEditEvent_Action_MoveDown gSubevent_MoveDown, Move Down
 		
+		x := width - 472
+		y := height - 530
+		
+		Gui, Add, Text, x%x% y%y%, Here you can define what this action does.		
+			
+		y += 20 + 4
+		Gui, Add, Text, x%x% y%y%, Category:
+		y += 30
+		Gui, Add, Text, x%x% y%y%, Action:
+		x += 70
+		y -= 4
+		Gui, Add, DropDownList, vEditEventActionsType gEditSubEventType x%x% y%y% w300
+		y -= 1
+		Gui, Add, Button, gSubEventHelp x+10 y%y%, Help
+		y -= 29
+		Gui, Add, DropDownList, vEditEventActionsCategory gEditSubEventCategory x%x% y%y% w300
+		x := width - 472
+		y += 60
+		w := width - 454
+		
+		h := height - 158 - 28
+		Gui, Add, GroupBox, x%x% y%y% w%w% h%h%, Options
+				
 		Gui, Tab, Options
 		x := 28
 		y := 52
@@ -126,38 +170,29 @@ GUI_EditEvent(e,GoToLabel="")
 		y -= 4
 		w := 300
 		Category := Event.Category
-		outputdebug category %category%
 		Categories := "|" ArrayToList(Settings_Events.Categories, "|") "|"
-		outputdebug Categories %Categories%
 		StringReplace, Categories, Categories, |%Category%|, |%Category%||
 		Categories := strTrimLeft(Categories, "|")
 		if(!strEndsWith(Categories, "||"))
 			Categories := strTrimRight(Categories, "|")
-		outputdebug Categories %Categories%
 		Gui, Add, ComboBox, x%x% y%y% w%w% vEditEvent_Category, %Categories%
 		x := 28
 		y += 30
 		w := 200
-		if(Event.DisableAfterUse)
-			Gui, Add, Checkbox, x%x% y%y% w%w% vEditEvent_DisableAfterUse Checked, Disable after use
-		else
-			Gui, Add, Checkbox, x%x% y%y% w%w% vEditEvent_DisableAfterUse, Disable after use
+		DisableAfterUse := Event.DisableAfterUse
+		Gui, Add, Checkbox, x%x% y%y% w%w% vEditEvent_DisableAfterUse Checked%DisableAfterUse%, Disable after use
 			
 		y += 30
-		if(Event.DeleteAfterUse)
-			Gui, Add, Checkbox, x%x% y%y% w%w% vEditEvent_DeleteAfterUse Checked, Delete after use
-		else
-			Gui, Add, Checkbox, x%x% y%y% w%w% vEditEvent_DeleteAfterUse, Delete after use
+		DeleteAfterUse := Event.DeleteAfterUse
+		Gui, Add, Checkbox, x%x% y%y% w%w% vEditEvent_DeleteAfterUse Checked%DeleteAfterUse%, Delete after use
 		
 		y += 30
-		if(Event.OneInstance)
-			Gui, Add, Checkbox, x%x% y%y% vEditEvent_OneInstance Checked, Disallow this event from being run in parallel
-		else
-			Gui, Add, Checkbox, x%x% y%y% vEditEvent_OneInstance, Disallow this event from being run in parallel
-			
-		gosub FillCategories
-		gosub UpdateConditions
-		gosub UpdateActions
+		OneInstance := Event.OneInstance
+		Gui, Add, Checkbox, x%x% y%y% vEditEvent_OneInstance Checked%OneInstance%, Disallow this event from being run in parallel
+		GuiControlGet, EditEventTab ;Get it the first time manually
+		GoSub FillCategories
+		GoSub EditSubeventCategory
+		GoSub UpdateSubevent
 		Gui, Show, w%width% h%height%, Edit Event
 		
 		Gui, +LastFound
@@ -173,11 +208,37 @@ GUI_EditEvent(e,GoToLabel="")
 		Gui 1:+LastFoundExist
 		IfWinExist
 			Gui, 1:Default
-		return result	
+		return result
+	}
+	else if(GoToLabel = "EditEventTab")
+	{
+		GUI_EditEvent("","SaveTab", EditEventTab)
+		GuiControlGet,EditEventTab
+		SubEventGUI := ""
+		if(EditEventTab != "Options")
+			GUI_EditEvent("","UpdateSubEvent")
+		if(EditEventTab = "Trigger")
+			GUI_EditEvent("", "EditSubeventType")
+	}
+	else if(GoToLabel = "SaveTab")
+	{
+		if(Parameter = "Trigger") ;EditEventTab holds the name of the previously selected tab
+			if(Event.Trigger.GuiSubmit(SubeventGUI))
+				Event.Trigger := SubEventBackup
+		else if(Parameter = "Conditions" || Parameter = "Actions")
+		{
+			Gui, ListView, EditEvent%Parameter%
+			if(LV_GetCount("Selected") != 1)
+				return
+			i:=LV_GetNext("")
+			if(Event[Parameter][i].GuiSubmit(SubeventGUI))
+				Event[Parameter][i] := SubEventBackup
+		}
+		SubEventBackup := ""
 	}
 	else if(GoToLabel = "EditEventOK")
 	{
-		Event.Trigger.GuiSubmit(TriggerGUI)
+		GUI_EditEvent("","SaveTab", EditEventTab)
 		Gui, Submit, NoHide
 		Event.Name := EditEvent_Name
 		Event.Description := EditEvent_Description
@@ -208,386 +269,311 @@ GUI_EditEvent(e,GoToLabel="")
 		result := ""
 		return
 	}
-	else if(GoToLabel = "UpdateConditions")
+	else if(GoToLabel = "UpdateSubevent") ;Fill ListViews with subevents from event
 	{
-		Gui, ListView, EditEventConditions
-		i:=LV_GetNext("")
-		LV_Delete()
-		Loop % Event.Conditions.len()
+		if(EditEventTab = "Trigger") ;First call
+			Subevents := "Conditions|Actions"
+		else if(EditEventTab = "Conditions" || EditEventTab = "Actions")
+			Subevents := EditEventTab
+		Loop, Parse, Subevents,|
 		{
-			LV_Add(A_Index = i ? "Select" : "", (Event.Conditions[A_Index].Negate ? "NOT " : "") Event.Conditions[A_Index].DisplayString())
+			Gui, ListView, EditEvent%A_LoopField%
+			i:=LV_GetNext("")
+			LV_Delete()
+			Loop % Event[A_LoopField].len()
+				LV_Add(A_Index = i || (!i && A_Index = 1) ? "Select" : "", (EditEventTab = "Conditions" && Event[A_LoopField][A_Index].Negate ? "NOT " : "") Event[A_LoopField][A_Index].DisplayString())
+			GuiControl, focus, EditEvent%A_LoopField%
 		}
-		GuiControl, focus, EditEventConditions
 		return
 	}
-	else if(GoToLabel = "UpdateActions")
-	{		
-		Gui, ListView, EditEventActions
-		i:=LV_GetNext("")
-		LV_Delete()
-		Loop % Event.Actions.len()
+	else if(GoToLabel = "FillCategories") ;Updates the categories of the currently active tab
+	{
+		;~ if(EditEventTab = "Actions" || EditEventTab = "Conditions")
+		;~ {
+			;~ Gui, ListView, EditEvent%EditEventTab%
+			;~ i:=LV_GetNext("")
+		;~ }
+		Subevents := "Trigger|Conditions|Actions"
+		Loop, Parse, Subevents,|
 		{
-			LV_Add(A_Index = i ? "Select" : "", Event.Actions[A_Index].DisplayString())
+			if(A_LoopField = "Trigger")
+				enum := Trigger_Categories._newEnum()
+			else if(A_LoopField = "Conditions")
+				enum := Condition_Categories._newEnum()
+			else if(A_LoopField = "Actions")
+				enum := Action_Categories._newEnum()
+			while enum[key,value]
+			{
+				if(A_LoopField = "Trigger" && key = Event.Trigger.Category)
+					GuiControl,,EditEvent%A_LoopField%Category,%key%||
+				else
+					GuiControl,,EditEvent%A_LoopField%Category,%key%
+			}
 		}
-		GuiControl, focus, EditEventActions
 		return
 	}
-	else if(GoToLabel = "FillCategories")
+	else if(GoToLabel = "EditSubeventCategory")
 	{
-		enum := Trigger_Categories._newEnum()
-		while enum[key,value]
+		GuiControlGet, EditEvent%EditEventTab%Category
+		outputdebug % "new category: " EditEvent%EditEventTab%Category
+		;SubeventGUI contains all control hwnds for the Subevent-specific part of the gui (i.e. Triggers, Conditions, Actions). If it exists, a Subevent is currently visible.
+		if(SubeventGUI)
 		{
-			if(key = Event.Trigger.Category)
-				GuiControl,,EditEventTriggerCategory,%key%||
-			else
-				GuiControl,,EditEventTriggerCategory,%key%
+			outputdebug switching to new Subevent category
+			if(EditEventTab = "Trigger")
+				if(Event.Trigger.Category = EditEventTriggerCategory) ;selecting same item, ignore
+					return
+			if(EditEventTab = "Conditions" || EditEventTab = "Actions")
+			{
+				Gui, ListView, EditEvent%EditEventTab%
+				i:=LV_GetNext("")
+				if(i)
+					if(Event[EditEventTab][i].Category = EditEvent%EditEventTab%Category) ;selecting same item, ignore
+						return
+			}
 		}
-		gosub EditEventTriggerCategory
-		return
-	}
-	else if(GoToLabel = "EditEventTriggerCategory")
-	{
-		GuiControlGet, EditEventTriggerCategory
-		;TriggerGUI contains all control hwnds for the trigger-specific part of the gui
-		if(TriggerGUI)
+		SingularName := strTrimRight(EditEventTab, "s")
+		if(EditEventTab = "Trigger")
 		{
-			if(Event.Trigger.Category = EditEventTriggerCategory) ;selecting same item, ignore
-				return
+			category := Trigger_Categories[EditEvent%EditEventTab%Category]
+			Subevent := Event.Trigger
 		}
-		category := Trigger_Categories[EditEventTriggerCategory]
-		GuiControl,,EditEventTriggerType,|
+		else if(EditEventTab = "Conditions" || EditEventTab = "Actions")
+		{
+			category := %SingularName%_Categories[EditEvent%EditEventTab%Category]
+			Gui, ListView, EditEvent%EditEventTab%
+			i:=LV_GetNext("")
+			Subevent := Event[EditEventTab][i]
+		}
+		GuiControl,,EditEvent%EditEventTab%Type,|
 		found := false
-		Loop % category.len()
+		Loop % category.len() ;Find current type of subevent, select it and trigger the selectionchange label
 		{
 			type := category[A_Index]
-			if(Event.Trigger.type = type)
+			if(Subevent.type = type)
 			{
-				GuiControl,,EditEventTriggerType,%type%||
+				GuiControl,,EditEvent%EditEventTab%Type,%type%||
 				found := true
 			}
 			else
-				GuiControl,,EditEventTriggerType,%type%			
+				GuiControl,,EditEvent%EditEventTab%Type,%type%
 		}
+		outputdebug % "found " found " type " EditEvent%EditEventTab%Type
 		if(!found)
-		{
-			;Select first event, and create a trigger of that type (latter should maybe be done in selection label EditEventTriggerType)
-			GuiControl, Choose, EditEventTriggerType, 1
-		}	
-		gosub EditEventTriggerType	
+			GuiControl, Choose, EditEvent%EditEventTab%Type, 1
+		gosub EditSubeventType	
 		return
 	}
-	else if(GoToLabel = "EditEventTriggerType")
+	else if(GoToLabel = "EditSubeventType")
 	{
-		GuiControlGet, type,,EditEventTriggerType
-		GuiControlGet, category,,EditEventTriggerCategory
-		;At startup, TriggerGUI isn't set, and so the original trigger doesn't get overriden
-		if(TriggerGUI)
+		GuiControlGet, type,,EditEvent%EditEventTab%Type
+		GuiControlGet, category,,EditEvent%EditEventTab%Category
+		if(EditEventTab = "Conditions" || EditEventTab = "Actions")
 		{
-			;TriggerGUI contains all control hwnds for the trigger-specific part of the gui
-			if(Event.Trigger.Type = type && Event.Trigger.Category = category) ;selecting same item, ignore
-				return
-			t := Event.Trigger.Type
-			c := Event.Trigger.Category
-			Gui, Tab, Trigger
-			Event.Trigger.GuiSubmit(TriggerGUI)
-			Event.Trigger := EventSystem_CreateSubEvent("Trigger",type)
+			Gui, ListView, EditEvent%EditEventTab%
+			i:=LV_GetNext("")
+		}
+		;At startup, SubeventGUI isn't set, and so the original Subevent doesn't get overriden
+		;If it is set, the code below treats a change of type and creates a new Subevent
+		if(SubeventGUI)
+		{	
+			Gui, Tab, %EditEventTab%
+			if(EditEventTab = "Trigger")
+			{
+				;SubeventGUI contains all control hwnds for the trigger-specific part of the gui
+				if(Event.Trigger.Type = type && Event.Trigger.Category = category) ;selecting same item, ignore
+					return
+				Event.Trigger.GuiSubmit(SubeventGUI)
+				Event.Trigger := EventSystem_CreateSubevent("Trigger",type)
+			}
+			else if(EditEventTab = "Conditions" || EditEventTab = "Actions")
+			{
+				;SubeventGUI contains all control hwnds for the trigger-specific part of the gui
+				if(i)
+				{
+					if(Event[EditEventTab][i].Type = type && Event[EditEventTab][i].Category = category) ;selecting same item, ignore
+						return
+					Event[EditEventTab][i].GuiSubmit(SubeventGUI)
+					Event[EditEventTab][i] := EventSystem_CreateSubevent(EditEventTab = "Conditions" ? "Condition" : "Action", type)
+				}
+			}
 		}
 		;Show trigger-specific part of the gui and store hwnds in TriggerGUI
-		TriggerGUI := object("Type", type)
-		TriggerGUI.x := 38
-		TriggerGUI.y := 148
-		TriggerGUI.w := width - 74
-		TriggerGUI.h := height - 168 - 28 
-		TriggerGUI.GUINum := 4
-		Gui, Tab, Trigger
-		Event.Trigger.GuiShow(TriggerGUI)
+		SubeventGUI := object("Type", type)
+		SubeventGUI.x := 38 + (EditEventTab != "Trigger" ? 400 : 0)
+		SubeventGUI.y := 148 + (EditEventTab = "Conditions" ? 30 : 0)
+		SubeventGUI.w := width - 74 - (EditEventTab != "Trigger" ? 400 : 0)
+		SubeventGUI.h := height - 168 - 28
+		SubeventGUI.GUINum := 4
+		Gui, Tab, %EditEventTab%
+		if(EditEventTab = "Trigger")
+		{			
+			SubEventBackup := Event.Trigger.DeepCopy()
+			Event.Trigger.GuiShow(SubeventGUI)
+		}
+		else if(i && (EditEventTab = "Conditions" || EditEventTab = "Actions"))
+		{			
+			SubEventBackup := Event[EditEventTab][i].DeepCopy()
+			Event[EditEventTab][i].GuiShow(SubeventGUI)
+			LV_Modify(i, "", (EditEventTab = "Conditions" && Event[EditEventTab][i].Negate ? "NOT " : "") Event[EditEventTab][i].DisplayString())
+		}
 		return
 	}
-	else if(GoToLabel = "EditEventConditions")
+	else if(GoToLabel = "EditSubeventList")
 	{
-		Gui, ListView, EditEventConditions
-		if(A_GuiEvent="I" && InStr(ErrorLevel, "S", true))
+		ListEvent := ErrorLevel
+		Gui, ListView, EditEvent%EditEventTab%
+		SingularName := strTrimRight(EditEventTab, "s")
+		if(A_GuiEvent="I" && InStr(ListEvent, "S", true))
 		{
-			GuiControl, enable, EditEvent_EditCondition
-			GuiControl, enable, EditEvent_RemoveCondition
-			GuiControl, enable, EditEvent_CopyCondition
+			GuiControl, enable, EditEvent_Edit%SingularName%
+			GuiControl, enable, EditEvent_Remove%SingularName%
+			GuiControl, enable, EditEvent_Copy%SingularName%
 			i:=LV_GetNext("")
 			if(i>1)
-				GuiControl, enable, EditEvent_Condition_MoveUp
+				GuiControl, enable, EditEvent_%SingularName%_MoveUp
 			else
-				GuiControl, disable, EditEvent_Condition_MoveUp
+				GuiControl, disable, EditEvent_%SingularName%_MoveUp
 			if(i<LV_GetCount())
-				GuiControl, enable, EditEvent_Condition_MoveDown
+				GuiControl, enable, EditEvent_%SingularName%_MoveDown
 			else
-				GuiControl, disable, EditEvent_Condition_MoveDown
+				GuiControl, disable, EditEvent_%SingularName%_MoveDown
+			GuiControl, enable, EditEvent%EditEventTab%Category
+			GuiControl, enable, EditEvent%EditEventTab%Type
+			GuiControl, ChooseString, EditEvent%EditEventTab%Category, % Event[EditEventTab][A_EventInfo].Category
+			if(EditEventTab = "Conditions")
+				GuiControl, , EditConditionNegate, % Event[EditEventTab][A_EventInfo].Negate ? 1 : 0
+			GUI_EditEvent("", "EditSubEventCategory")
 		}
-		else if(A_GuiEvent="I" && InStr(ErrorLevel, "s", true))
+		else if(A_GuiEvent="I" && InStr(ListEvent, "s", true))
 		{
-			GuiControl, disable, EditEvent_EditCondition
-			GuiControl, disable, EditEvent_RemoveCondition
-			GuiControl, disable, EditEvent_CopyCondition
-			GuiControl, disable, EditEvent_Condition_MoveDown
-			GuiControl, disable, EditEvent_Condition_MoveUp
+			if(LV_GetCount("Selected") = 0)
+			{
+				GuiControl, disable, EditEvent_Edit%SingularName%
+				GuiControl, disable, EditEvent_Remove%SingularName%
+				GuiControl, disable, EditEvent_Copy%SingularName%
+				GuiControl, disable, EditEvent_%SingularName%_MoveDown
+				GuiControl, disable, EditEvent_%SingularName%_MoveUp			
+				GuiControl, disable, EditEvent%EditEventTab%Category
+				GuiControl, disable, EditEvent%EditEventTab%Type
+				if(Event[EditEventTab][A_EventInfo].GuiSubmit(SubeventGUI))
+					Event[EditEventTab][A_EventInfo] := SubEventBackup
+				SubEventBackup := ""
+				SubEventGUI := ""
+				LV_Modify(A_EventInfo, "", (EditEventTab = "Conditions" && Event[EditEventTab][A_EventInfo].Negate ? "NOT " : "") Event[EditEventTab][A_EventInfo].DisplayString())
+			}
 		}
-		else if(A_GuiEvent="DoubleClick")
-			GUI_EditEvent("","EditEvent_EditCondition")
 		return
 	}
-	else if(GoToLabel = "EditEvent_EditCondition")
+	else if(GoToLabel = "RemoveSubEvent")
 	{
-		Gui, ListView, EditEvent_EditCondition
-		if(LV_GetCount("Selected") != 1)
-			return
-		i:=LV_GetNext("")
-		WasCritical := A_IsCritical
-		Critical, Off
-		condition:=GUI_EditSubEvent(Event.Conditions[i].DeepCopy(),0)
-		if(WasCritical)
-			Critical
-		if(condition)
+		if(EditEventTab = "Conditions" || EditEventTab = "Actions")
 		{
-			condition.tmpTemporary := false
-			Event.Conditions[i] := condition ;overwrite edited condition
-			GUI_EditEvent("","UpdateConditions") ;Refresh listview
-		}
-		else if(Event.Conditions[i].tmpTemporary)
-			GUI_EditEvent("","EditEvent_RemoveCondition")
-		return
-	}
-	else if(GoToLabel = "EditEvent_RemoveCondition")
-	{
-		Gui, ListView, EditEvent_EditCondition
-		i:=LV_GetNext("")
-		Event.Conditions.Delete(i)
-		LV_Delete(i)
-		return
-	}
-	else if(GoToLabel = "EditEvent_AddCondition")
-	{
-		Gui, ListView, EditEvent_EditCondition
-		Condition := EventSystem_CreateSubEvent("Condition","If")
-		Condition.tmpTemporary := true
-		Event.Conditions.append(Condition)
-		LV_Add("Select", Condition.DisplayString())
-		GUI_EditEvent("","EditEvent_EditCondition")
-		return
-	}
-	else if(GoToLabel = "EditEvent_CopyCondition")
-	{
-		Gui, ListView, EditEvent_EditCondition
-		i:=LV_GetNext("")
-		ConditionClipboard := Event.Conditions[i].DeepCopy()
-		GuiControl, enable, EditEvent_PasteCondition
-		return
-	}
-	else if(GoToLabel = "EditEvent_PasteCondition")
-	{
-		Gui, ListView, EditEvent_EditCondition		
-		Event.Conditions.append(ConditionClipboard.DeepCopy())
-		LV_Add("Select", ConditionClipboard.DisplayString())
-		return
-	}
-	else if(GoToLabel = "EditEvent_Condition_MoveDown")
-	{
-		Gui, ListView, EditEvent_EditCondition
-		i:=LV_GetNext("")
-		Event.Conditions.swap(i,i+1)
-		LV_Modify(i+1,"Select")
-		GUI_EditEvent("","UpdateConditions") ;Refresh listview
-	}
-	else if(GoToLabel = "EditEvent_Condition_MoveUp")
-	{
-		Gui, ListView, EditEvent_EditCondition
-		i:=LV_GetNext("")
-		Event.Conditions.swap(i,i-1)
-		LV_Modify(i-1,"Select")
-		GUI_EditEvent("","UpdateConditions") ;Refresh listview
-	}
-	else if(GoToLabel = "EditEventActions")
-	{
-		Gui, ListView, EditEventActions
-		if(A_GuiEvent="I" && InStr(ErrorLevel, "S", true))
-		{
-			GuiControl, enable, EditEvent_EditAction
-			GuiControl, enable, EditEvent_RemoveAction
-			GuiControl, enable, EditEvent_CopyAction
+			Gui, ListView, EditEvent%EditEventTab%
 			i:=LV_GetNext("")
-			if(i>1)
-				GuiControl, enable, EditEvent_Action_MoveUp
-			else
-				GuiControl, disable, EditEvent_Action_MoveUp
-			if(i<LV_GetCount())
-				GuiControl, enable, EditEvent_Action_MoveDown
-			else
-				GuiControl, disable, EditEvent_Action_MoveDown
+			Event[EditEventTab].Delete(i)
+			LV_Delete(i)
 		}
-		else if(A_GuiEvent="I" && InStr(ErrorLevel, "s", true))
+		return
+	}
+	else if(GoToLabel = "AddSubevent")
+	{
+		if(EditEventTab = "Conditions" || EditEventTab = "Actions")
 		{
-			GuiControl, disable, EditEvent_EditAction
-			GuiControl, disable, EditEvent_RemoveAction
-			GuiControl, disable, EditEvent_CopyAction
-			GuiControl, disable, EditEvent_Action_MoveDown
-			GuiControl, disable, EditEvent_Action_MoveUp
+			Gui, ListView, EditEvent%EditEventTab%
+			Subevent := EventSystem_CreateSubevent(EditEventTab = "Conditions" ? "Condition" : "Action", EditEventTab = "Conditions" ? "If" : "Message")
+			Event[EditEventTab].append(Subevent)
+			LV_Add("Select", Subevent.DisplayString())
 		}
-		else if(A_GuiEvent="DoubleClick")
-			GUI_EditEvent("","EditEvent_EditAction")
 		return
 	}
-	else if(GoToLabel = "EditEvent_EditAction")
+	else if(GoToLabel = "CopySubevent")
 	{
-		Gui, ListView, EditEvent_EditAction
-		if(LV_GetCount("Selected") != 1)
-			return
-		i:=LV_GetNext("")
-		WasCritical := A_IsCritical
-		Critical, Off
-		action:=GUI_EditSubEvent(Event.Actions[i].DeepCopy(),1)
-		if(WasCritical)
-			Critical
-		if(action)
+		if(EditEventTab = "Conditions" || EditEventTab = "Actions")
 		{
-			outputdebug("Store " Event.Actions[i].WaitForFinish)
-			action.tmpTemporary := false
-			Event.Actions[i] := action ;overwrite edited action
-			GUI_EditEvent("","UpdateActions") ;Refresh listview
+			Gui, ListView, EditEvent%EditEventTab%
+			i:=LV_GetNext("")
+			SingularName := strTrimRight(EditEventTab, "s")
+			%SingularName%Clipboard := Event[EditEventTab][i].DeepCopy()
+			GuiControl, enable, EditEvent_Paste%SingularName%
 		}
-		else if(Event.Actions[i].tmpTemporary)
-			GUI_EditEvent("","EditEvent_RemoveAction") 
 		return
 	}
-	else if(GoToLabel = "EditEvent_RemoveAction")
+	else if(GoToLabel = "PasteSubevent")
 	{
-		Gui, ListView, EditEvent_EditAction
-		i:=LV_GetNext("")
-		Event.Actions.Delete(i)
-		LV_Delete(i)
+		if(EditEventTab = "Conditions" || EditEventTab = "Actions")
+		{
+			Gui, ListView, EditEvent%EditEventTab%("")
+			SingularName := strTrimRight(EditEventTab, "s")
+			Event[EditEventTab].append(%SingularName%Clipboard.DeepCopy())
+			LV_Add("Select", (EditEventTab = "Conditions" && %SingularName%Clipboard.Negate ? "NOT " : "") %SingularName%Clipboard.DisplayString())
+		}
 		return
 	}
-	else if(GoToLabel = "EditEvent_AddAction")
+	else if(GoToLabel = "MoveSubevent")
 	{
-		Gui, ListView, EditEvent_EditAction
-		Action := EventSystem_CreateSubEvent("Action","Run")
-		Action.tmpTemporary := true
-		Event.Actions.append(Action)
-		LV_Add("Select", Action.DisplayString())
-		GUI_EditEvent("","EditEvent_EditAction")
+		if(EditEventTab = "Conditions" || EditEventTab = "Actions")
+		{
+			Gui, ListView, EditEvent%EditEventTab%
+			i:=LV_GetNext("")
+			Event[EditEventTab].swap(i,i+Parameter)
+			LV_Modify(i+Parameter,"Select")
+			GUI_EditEvent("","UpdateSubevent") ;Refresh listview
+		}
+	}
+	else if(GoToLabel = "SubEventHelp")
+	{
+		if(EditEventTab = "Trigger")
+			Run http://code.google.com/p/7plus/wiki/docsTriggers%type%,, UseErrorLevel
+		else
+			Run http://code.google.com/p/7plus/wiki/docs%EditEventTab%%type%,, UseErrorLevel
 		return
 	}
-	else if(GoToLabel = "EditEvent_CopyAction")
-	{
-		Gui, ListView, EditEvent_EditAction
-		i:=LV_GetNext("")
-		ActionClipboard := Event.Actions[i].DeepCopy()
-		GuiControl, enable, EditEvent_PasteAction
-		return
-	}
-	else if(GoToLabel = "EditEvent_PasteAction")
-	{
-		Gui, ListView, EditEvent_EditAction		
-		Event.Actions.append(ActionClipboard.DeepCopy())
-		LV_Add("Select", ActionClipboard.DisplayString())
-		return
-	}
-	else if(GoToLabel = "EditEvent_Action_MoveDown")
-	{
-		Gui, ListView, EditEvent_EditAction
-		i:=LV_GetNext("")
-		Event.Actions.swap(i,i+1)
-		LV_Modify(i+1,"Select")
-		GUI_EditEvent("","UpdateActions") ;Refresh listview
-	}
-	else if(GoToLabel = "EditEvent_Action_MoveUp")
-	{
-		Gui, ListView, EditEvent_EditAction
-		i:=LV_GetNext("")
-		Event.Actions.swap(i,i-1)
-		LV_Modify(i-1,"Select")
-		GUI_EditEvent("","UpdateActions") ;Refresh listview
-	}
-	else if(GoToLabel = "TriggerHelp")
-	{
-		GuiControlGet, type,,EditEventTriggerType
-		Run http://code.google.com/p/7plus/wiki/docsTriggers%type%,,UseErrorLevel
-	}
-} 
+}
+SubEventHelp:
+GUI_EditEvent("","","SubEventHelp")
+return
 EditEventOK:
 GUI_EditEvent("","EditEventOK")
 return
-
 EditEventClose:
 EditEventEscape:
 EditEventCancel:
 GUI_EditEvent("","EditEventClose")
 return
-
-UpdateConditions:
-GUI_EditEvent("","UpdateConditions")
+EditEventTab:
+GUI_EditEvent("", "EditEventTab")
 return
-
-UpdateActions:	
-GUI_EditEvent("","UpdateActions")
+UpdateSubevent:
+GUI_EditEvent("","UpdateSubevent")
 return
-
 FillCategories:
 GUI_EditEvent("","FillCategories")
 return
-
-TriggerHelp:
-GUI_EditEvent("","TriggerHelp")
-;Called when a trigger category gets selected
-EditEventTriggerCategory:
-GUI_EditEvent("","EditEventTriggerCategory")
+EditSubeventCategory:
+GUI_EditEvent("","EditSubeventCategory")
 return
-
-EditEventTriggerType:
-GUI_EditEvent("","EditEventTriggerType")
+EditSubeventType:
+GUI_EditEvent("","EditSubeventType")
 return
-
-EditEventConditions:
-GUI_EditEvent("","EditEventConditions")
+EditSubeventList:
+GUI_EditEvent("","EditSubeventList")
 return
-EditEvent_EditCondition:
-GUI_EditEvent("","EditEvent_EditCondition")
+RemoveSubevent:
+GUI_EditEvent("","RemoveSubevent")
 return
-EditEvent_RemoveCondition:
-GUI_EditEvent("","EditEvent_RemoveCondition")
+CopySubevent:
+GUI_EditEvent("","CopySubevent")
 return
-EditEvent_CopyCondition:
-GUI_EditEvent("","EditEvent_CopyCondition")
+PasteSubevent:
+GUI_EditEvent("","PasteSubevent")
 return
-EditEvent_PasteCondition:
-GUI_EditEvent("","EditEvent_PasteCondition")
+AddSubevent:
+GUI_EditEvent("","AddSubevent")
 return
-EditEvent_AddCondition:
-GUI_EditEvent("","EditEvent_AddCondition")
+Subevent_MoveUp:
+GUI_EditEvent("","MoveSubevent", -1)
 return
-EditEvent_Condition_MoveUp:
-GUI_EditEvent("","EditEvent_Condition_MoveUp")
-return
-EditEvent_Condition_MoveDown:
-GUI_EditEvent("","EditEvent_Condition_MoveDown")
-return
-EditEventActions:
-GUI_EditEvent("","EditEventActions")
-return
-EditEvent_EditAction:
-GUI_EditEvent("","EditEvent_EditAction")
-return
-EditEvent_RemoveAction:
-GUI_EditEvent("","EditEvent_RemoveAction")
-return
-EditEvent_CopyAction:
-GUI_EditEvent("","EditEvent_CopyAction")
-return
-EditEvent_PasteAction:
-GUI_EditEvent("","EditEvent_PasteAction")
-return
-EditEvent_AddAction:
-GUI_EditEvent("","EditEvent_AddAction")
-return
-EditEvent_Action_MoveUp:
-GUI_EditEvent("","EditEvent_Action_MoveUp")
-return
-EditEvent_Action_MoveDown:
-GUI_EditEvent("","EditEvent_Action_MoveDown")
+Subevent_MoveDown:
+GUI_EditEvent("","MoveSubevent", 1)
 return
