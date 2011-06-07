@@ -1,6 +1,6 @@
 = DoubleClickTaskbar =
 
-This trigger gets activated when you double-click an empty area on the desktop. 
+This trigger gets activated when you double-click an empty area on the taskbar. 
 
 = Tips =
 
