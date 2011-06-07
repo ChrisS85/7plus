@@ -1,6 +1,6 @@
 = DoubleClickTaskbar =
 
-Ce déclencheur est activé lorsque vous double-cliquez sur une zone vide du Bureau.
+Ce déclencheur est activé lorsque vous double-cliquez sur une zone vide de la barre des tâches.
 
 = Astuces =
 
