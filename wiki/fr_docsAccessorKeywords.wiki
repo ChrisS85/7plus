@@ -1,0 +1,13 @@
+= Accessor Keywords =
+En plus des keywords définis par certains plugins, il est également possible de définir des keywords personnalisés. Les keywords se trouvent au début d'une commande Accessor et sera remplacé par une chaîne de commande définie dans les paramètres de 7plus. C'est surtout utile pour les recherches sur le Web, mais il peut également être utilisé comme un raccourci pour des programmes importants.
+
+Pour les URL qui requièrent des paramètres (des recherches essentiellement), il est possible d'utiliser des placeholders pour que les mots entrés après le keyword sera insérée à ces endroits.
+
+Exemple :
+
+|| Keyword || google ||
+|| Commande || http://google.com/search?q=${1} ||
+|| Commande Accessor || google 7plus ||
+|| URL résultant || http://google.com/search?q=7plus ||
+
+Bien sûr, plus d'un paramètre est pris en charge, dans ce cas, les paramètres après le keyword sont séparés par des espaces. Si un paramètre contient des espaces, il doit être entre guillemets.
