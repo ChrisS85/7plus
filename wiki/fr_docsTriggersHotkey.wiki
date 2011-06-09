@@ -7,6 +7,7 @@ Il y a différentes options dans la définition d'un raccourci :
   * `*` (Joker) : Cela signifie que la touche sera également acceptée quand un modificateur tel que ALT est pressée.
   * < (Gauche uniquement) : Cela est utilisé avec les raccourcis qui utilisent un modificateur comme ALT. Cela signifie que seuls les modificateurs gauche sont acceptés.
   * > (Droite uniquement) : Cela est utilisé avec les raccourcis qui utilisent un modificateur comme ALT. Cela signifie que seuls les modificateurs droite sont acceptés.
+  * UP : Cela signifie que l'événement se déclenche quand la touche est relâchée. Ceci est utile pour éviter le spamming de touche en maintenant la touche.
 
 
 = Astuces =
