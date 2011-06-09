@@ -1,0 +1,19 @@
+= Accessor =
+Accesseur est une fenêtre multi-usages introduit dans 7plus 2.1.0.
+
+http://i51.tinypic.com/10rohf9.png
+
+Il est semblable aux lanceurs comme Launchy ou Exekutor. L'utilisateur tape une commande et des résultats possibles ou des actions vont apparaître dans la liste en dessous.
+
+Il dispose d'un système de plugins pour de nombreuses tâches courantes. Voici une liste des plugins actuellement inclus :
+  * [fr_docsAccessorWindowSwitcher Window switcher]
+  * [fr_docsAccessorFileSystem Filesystem browser]
+  * [fr_docsAccessorGoogle Google]
+  * [fr_docsAccessorCalc Calculator]
+  * [fr_docsAccessorProgramLauncher Program launcher]
+  * [fr_docsAccessorNotepadPlusPlus NotepadPlusPlus tab switcher]
+  * [fr_docsAccessorNotes Notes]
+  * [fr_docsAccessorFastFolders Fast Folders]
+  * [fr_docsAccessorUninstall Uninstaller]
+  * [fr_docsAccessorURL URL]
+  * [fr_docsAccessorWeather Weather]
