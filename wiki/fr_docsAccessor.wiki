@@ -1,5 +1,5 @@
 = Accessor =
-Accesseur est une fenêtre multi-usages introduit dans 7plus 2.1.0.
+Accessor est une fenêtre multi-usages introduit dans 7plus 2.1.0.
 
 http://i51.tinypic.com/10rohf9.png
 
