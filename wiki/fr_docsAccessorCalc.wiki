@@ -1,0 +1,6 @@
+= Calculator Accessor Plugin =
+Ce plugin utilise Google Calc pour effectuer des calculs simples. Pour l'utiliser, entrer "=Expression", ex. "=7+3". 
+
+Il est également possible d'utiliser cet outil pour convertir des unités, ex. "=5g in pounds".
+
+En appuyant sur Enter, le résultat est copié dans le presse-papiers.
