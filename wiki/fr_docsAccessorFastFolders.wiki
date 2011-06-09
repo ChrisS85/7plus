@@ -1,0 +1,9 @@
+= Fast Folders Accessor Plugin =
+Ce plugin permet d'accéder aux Fast Folders stockés dans 7plus. Il suffit de taper une partie du nom du dossier et il sera montré.
+
+Vous pouvez également entrer "FastFolder" (mot-clé par défaut) pour voir tous les Fast Folder.
+
+Vous pouvez :
+  * Ouvrez le dossier dans l'explorateur ou CMD
+  * Copiez le chemin du dossier dans le presse papier
+  * Afficher le menu contextuel de l'explorateur du dossier.
