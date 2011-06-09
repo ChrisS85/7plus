@@ -1,0 +1,4 @@
+= Notes Accessor Plugin =
+Le plugin  Notes de Accessor permet de prendre rapidement des notes et de les visualiser plus tard.
+Pour ajouter une note, taper "notes Note text" (notes: keyword par défaut) et presser Enter.
+Vous pouvez également voir les notes dans la liste en dessous. Elles peuvent être supprimées en appuyant sur Suppr ou via le menu contextuel. Vous pouvez également copier la note dans le presse-papiers via le menu contextuel.
