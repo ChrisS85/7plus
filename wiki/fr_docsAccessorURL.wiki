@@ -1,0 +1,4 @@
+= URL Accessor Plugin =
+Le plugin URL permet de Saisir les URL dans Accessor et il garde aussi un historique des URL entrées. Dans ses paramètres vous pouvez définir combien la liste peut stocker de URL et si elle doit être effacée à la fin.
+
+Ce plugin est très utile en combinaison avec des [fr_docsAccessorKeywords keywords] car il permet de définir des keywords pour des recherches web. Par exemple vous pouvez taper "g 7plus" pour lancer une recherche Google sur 7plus, accéder aux pages de wikipedia, pour trouver un lieu/itinéraire sur Google Maps et bien plus.
