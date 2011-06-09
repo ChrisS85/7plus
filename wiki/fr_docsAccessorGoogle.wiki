@@ -1,0 +1,2 @@
+= Google Accessor Plugin =
+Ce plugin permet d'effectuer des recherches sur Google en tapant "g recherche » (g est le keyword par défaut de ce plugin). Les résultats apparaîtront dans la liste, et vous pouvez ouvrir la page associée ou copier son URL dans le presse papier.
