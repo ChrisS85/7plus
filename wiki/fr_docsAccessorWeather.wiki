@@ -1,0 +1,2 @@
+= Weather Accessor Plugin =
+Ce plugin peut chercher des prévisions météo pour un endroit précis en utilisant Google météo. Il suffit de taper "weather [lieu]" et vous verrez les données actuelles et les prévisions pour les 4 prochains jours. Vous pouvez également copier ces informations dans le presse-papiers.
