@@ -1,0 +1,9 @@
+= Window Switcher Accessor Plugin =
+Le but principal du plugin Accessor Window Switcher est d'activer des fenêtres en tapant une partie du titre de la fenêtre.
+En outre, il peut:
+   * Fermer des fenêtres
+   * Tuer le processus d'une fenêtre
+   * Montrer et basculer l'état "Toujours au-dessus"
+   * Montrer l'utilisation CPU du processus appartenant à une fenêtre
+   * Ouvrir le chemin du fichier exécutable d'une fenêtre dans l'explorateur ou CMD
+   * Copiez le chemin du fichier exécutable de la fenêtre
