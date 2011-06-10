@@ -7,14 +7,22 @@ New Functions:
  * Added a settings page with generic windows settings (No bloat, only important ones!)
  * Added KeyDelay setting for SendKeys action
  * Added ShowEvents option (available only through manual editing of Settings.ini in [General] category) to show execution order of events
+ * Added DoubleClick option to MosueClick action
+ * Added ClipPaste action to paste a specific entry from the clipboard manager list without showing the menu (Useful when active window must not be changed, i.e. explorer renaming)
+ * Added the ability to create new files of any type by selecting a base file in the New File action that is copied to the target destination
+ * Added screen corner triggers and made AeroFlip3D an event rather than a setting
+ * 
 
 Bugfixes:
  * Fixed missing \ when copying paths of network shares
  * Fixed not being able to navigate to network drives
  * Reimplemented middle mouse button features in event system to avoid some problems with this button. As a result of this, a few additional conditions were added.
-
+ * Fixed Alt window drag not being able to drag a window to the outer left side of the screen
+ * Fixed some access right modifications for registry keys required for explorer buttons. If they didn't show up before they should do so now. It may be necessary to disable/enable the FastFolder setting to make them show up.
 Changes:
  * Huge code rewrite for some key portions related to explorer. As a result, status bar enhancements and explorer tabs are now visible on all explorer windows at once.
  * Complete rewrite of Slide Windows feature. It should be much better now, with more options, multi-monitor support, support for child windows and no windows getting lost anymore.
+ * Redesign of the "Edit Event" and "Edit Subevent" window. There is now only one window in which everything can be edited.
+ * Moved Hotkey editing into the Trigger configuration GUI so it can be edited in the same window. Also it will now show the previously selected trigger.
 
 If you like this program and want to support its development, please consider donating!
