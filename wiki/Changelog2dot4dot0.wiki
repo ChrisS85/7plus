@@ -11,7 +11,7 @@ New Functions:
  * Added ClipPaste action to paste a specific entry from the clipboard manager list without showing the menu (Useful when active window must not be changed, i.e. explorer renaming)
  * Added the ability to create new files of any type by selecting a base file in the New File action that is copied to the target destination
  * Added screen corner triggers and made AeroFlip3D an event rather than a setting
- * Added a new hotkey event (CTRL+T) to merge all explorer windows into a single one with tabs
+ * Added a new hotkey event (CTRL+M) to merge all explorer windows into a single one with tabs
 
 Bugfixes:
  * Fixed missing \ when copying paths of network shares
