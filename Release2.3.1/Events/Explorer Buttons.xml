@@ -1,4 +1,4 @@
-<BugfixVersion>1</BugfixVersion>
+<BugfixVersion>0</BugfixVersion>
 <Events>
 <Event>
 <Actions>
@@ -32,6 +32,7 @@
 </Event><Event>
 <Actions>
 <Action>
+<BaseFile></BaseFile>
 <Filename>Neues Textdokument.txt</Filename>
 <Rename>1</Rename>
 <Type>NewFile</Type>
@@ -56,4 +57,4 @@
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
-<MinorVersion>3</MinorVersion>
+<MinorVersion>4</MinorVersion>

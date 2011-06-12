@@ -1,17 +1,3 @@
-XPGetFocussed()
-{
-  WinGet ctrlList, ControlList, A 
-  ctrlHwnd:=GetFocusedControl()
-  ; Built an array indexing the control names by their hwnd 
-  Loop Parse, ctrlList, `n 
-  {
-    ControlGet hwnd, Hwnd, , %A_LoopField%, A 
-    hwnd += 0   ; Convert from hexa to decimal 
-    if(hwnd=ctrlHwnd)
-      return A_LoopField
-  } 
-}
-
 IsMouseOverDesktop()
 {
 	MouseGetPos, , ,Window , UnderMouse
@@ -437,28 +423,6 @@ if(!Handled)
 return 
 #if
 */
-OpenInNewFolder()
-{
-	global UseTabs, MiddleOpenFolder
- 	if(!WinActive("ahk_group ExplorerGroup")||!IsMouseOverFileList())
- 		return false	
-	selected:=GetSelectedFiles(0)
-	Send {LButton}
-	Sleep 100
-	if(InStr(FileExist(undermouse:=GetSelectedFiles()), "D"))
-		dir:=true
-	if(select!=selected)
-		SelectFiles(selected,1,0,0)
-	if(!dir)
-		return false
-	if(MiddleOpenFolder = 1)
-		Run(A_WinDir "\explorer.exe /n,/e," undermouse)
-	else if(MiddleOpenFolder = 2 && UseTabs)
-		CreateTab(0,undermouse, 1)
-	else if(MiddleOpenFolder = 3 && UseTabs)
-		CreateTab(0,undermouse, 0)
-	return true
-}
 ;Middle click on desktop -> Change wallpaper
 ToggleWallpaper()
 {

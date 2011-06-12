@@ -1,4 +1,4 @@
-<BugfixVersion>1</BugfixVersion>
+<BugfixVersion>0</BugfixVersion>
 <Events>
 <Event>
 <Actions>
@@ -47,4 +47,4 @@
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
-<MinorVersion>3</MinorVersion>
+<MinorVersion>4</MinorVersion>

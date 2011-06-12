@@ -399,9 +399,9 @@ FlashWindows()
 ; http://www.howtogeek.com
 
 #if HKAltDrag && IsDraggable() && !(IsWindowUnderCursor("CabinetWClass")||IsWindowUnderCursor("ExploreWClass")||IsWindowUnderCursor("#32770"))
-~!LButton::EWD_StartDrag()
+~!LButton::StartDrag()
 #if HKAltDrag && IsDraggable() && (IsWindowUnderCursor("CabinetWClass")||IsWindowUnderCursor("ExploreWClass")||IsWindowUnderCursor("#32770"))
-!LButton::EWD_StartDrag()
+!LButton::StartDrag()
 #if
 
 
@@ -411,52 +411,53 @@ IsDraggable()
 	WinGet,style,style,ahk_id %win%
 	if(style & 0x80000000 && !(style & 0x00400000 || style & 0x00800000 || style & 0x00080000)) ;WS_POPUP && !WS_DLGFRAME && !WS_BORDER && !WS_SYSMENU
 		return false
-	if(WinGetClass("ahk_id " win)="Notepad++") ;Notepad++ uses Alt+LButton for rectangular text selection
+	WinGet, State, MinMax, ahk_id %win% 
+	if(State != 0)
+		return false
+	class := WinGetClass("ahk_id " win)
+	if(class = "Notepad++" || class = "SciTEWindow") ;Notepad++ and SciTE use Alt+LButton for rectangular text selection
+		return false
+	if(IsFullScreen())
 		return false
 	return true
 }
 
-EWD_StartDrag()
+StartDrag()
 {
 	global
-	local EWD_WinState
+	local Drag_WinState
 	CoordMode, Mouse, Screen
-	MouseGetPos, EWD_MouseStartX, EWD_MouseStartY, EWD_MouseWin
-	WinGetPos, EWD_OriginalPosX, EWD_OriginalPosY,,, ahk_id %EWD_MouseWin%
-	WinGet, EWD_WinState, MinMax, ahk_id %EWD_MouseWin% 
-	if EWD_WinState = 0  ; Only if the window isn't maximized 
-	    SetTimer, EWD_WatchMouse, 10 ; Track the mouse as the user drags it.
+	MouseGetPos, Drag_OriginalMouseX, Drag_OriginalMouseY, Drag_HWND
+	WinGetPos, Drag_OriginalWindowX, Drag_OriginalWindowY,,, ahk_id %Drag_HWND%
+	SetTimer, Drag_WatchMouse, 10
 }
 
-EWD_WatchMouse:
-EWD_WatchMouse()
+Drag_WatchMouse:
+Drag_WatchMouse()
 return
 
-EWD_WatchMouse()
+Drag_WatchMouse()
 {
-	global EWD_MouseWin, EWD_OriginalPosX,EWD_OriginalPosY,EWD_MouseStartX,EWD_MouseStartY
-	GetKeyState, EWD_LButtonState, LButton, P
-	if EWD_LButtonState = U  ; Button has been released, so drag is complete.
+	global Drag_HWND, Drag_OriginalWindowX,Drag_OriginalWindowY,Drag_OriginalMouseX,Drag_OriginalMouseY
+	GetKeyState, LButtonState, LButton, P
+	if(LButtonState = "U")  ; Button has been released, so drag is complete.
 	{
-	    SetTimer, EWD_WatchMouse, off
+	    SetTimer, Drag_WatchMouse, off
 	    return
 	}
-	GetKeyState, EWD_EscapeState, Escape, P
-	if EWD_EscapeState = D  ; Escape has been pressed, so drag is cancelled.
+	GetKeyState, EscapeState, Escape, P
+	if(EscapeState = "D")  ; Escape has been pressed, so drag is cancelled.
 	{
-	    SetTimer, EWD_WatchMouse, off
-	    WinMove, ahk_id %EWD_MouseWin%,, %EWD_OriginalPosX%, %EWD_OriginalPosY%
+	    SetTimer, Drag_WatchMouse, off
+	    WinMove, ahk_id %Drag_HWND%,, %Drag_OriginalWindowX%, %Drag_OriginalWindowY%
 	    return
 	}
-	
-	; Otherwise, reposition the window to match the change in mouse coordinates
-	; caused by the user having dragged the mouse:
 	CoordMode, Mouse, Screen
-	MouseGetPos, EWD_MouseX, EWD_MouseY
-	WinGetPos, EWD_WinX, EWD_WinY,,, ahk_id %EWD_MouseWin%
-	SetWinDelay, -1   ; Makes the below move faster/smoother.
-	if(EWD_MouseX - EWD_OriginalPosX > 10 && EWD_MouseY - EWD_OriginalPosY > 10)
-		WinMove, ahk_id %EWD_MouseWin%,, EWD_WinX + EWD_MouseX - EWD_MouseStartX, EWD_WinY + EWD_MouseY - EWD_MouseStartY
-	EWD_MouseStartX := EWD_MouseX  ; Update for the next timer-call to this subroutine.
-	EWD_MouseStartY := EWD_MouseY
+	MouseGetPos, MouseX, MouseY
+	WinGetPos, WinX, WinY,,, ahk_id %Drag_HWND%
+	SetWinDelay, -1 
+	newx := Drag_OriginalWindowX + MouseX - Drag_OriginalMouseX
+	newy := Drag_OriginalWindowY + MouseY - Drag_OriginalMouseY
+	if(abs(MouseX - Drag_OriginalMouseX) > 10 || abs(MouseY - Drag_OriginalMouseY) > 10) ;Allow alt-left clicks
+		WinMove, ahk_id %Drag_HWND%,, newx, newy
 }

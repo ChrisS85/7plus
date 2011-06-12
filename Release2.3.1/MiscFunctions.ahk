@@ -1176,3 +1176,16 @@ HWNDToClassNN(hwnd)
 			return A_LoopField
 	}
 }
+XPGetFocussed()
+{
+  WinGet ctrlList, ControlList, A 
+  ctrlHwnd:=GetFocusedControl()
+  ; Built an array indexing the control names by their hwnd 
+  Loop Parse, ctrlList, `n 
+  {
+    ControlGet hwnd, Hwnd, , %A_LoopField%, A 
+    hwnd += 0   ; Convert from hexa to decimal 
+    if(hwnd=ctrlHwnd)
+      return A_LoopField
+  } 
+}

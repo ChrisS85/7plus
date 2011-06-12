@@ -172,20 +172,13 @@ IniRead, HKMouseGestures, %IniPath%, Explorer, HKMouseGestures, 1
 IniRead, HKAutoCheck, %IniPath%, Explorer, HKAutoCheck, 1
 IniRead, ScrollUnderMouse, %IniPath%, Explorer, ScrollUnderMouse, 1
 IniRead, HKInvertSelection, %IniPath%, Explorer, HKInvertSelection, 1
-IniRead, HKOpenInNewFolder, %IniPath%, Explorer, HKOpenInNewFolder, 1
 IniRead, RecallExplorerPath, %IniPath%, Explorer, RecallExplorerPath, 1
 IniRead, AlignExplorer, %IniPath%, Explorer, AlignExplorer, 1
 
-IniRead, HKMiddleClose, %IniPath%, Windows, HKMiddleClose, 1
 IniRead, HKActivateBehavior, %IniPath%, Windows, HKActivateBehavior, 1
-IniRead, AeroFlipTime, %IniPath%, Windows, AeroFlipTime, 0.2
 IniRead, HKAltDrag, %IniPath%, Windows, HKAltDrag, 1
-IniRead, HKToggleWallpaper, %IniPath%, Windows, HKToggleWallpaper, 1
 
 IniRead, HKHoverStart, %IniPath%, Windows, HKHoverStart, 1
-;program to launch on double click on taskbar
-IniRead, TaskbarLaunchPath, %IniPath%, Windows, TaskbarLaunchPath, %A_Windir%\system32\taskmgr.exe
-stringreplace, TaskbarLaunchPath, TaskbarLaunchPath, `%A_ProgramFiles`%, %A_ProgramFiles% 
 ;Slide windows
 IniRead, HKSlideWindows, %IniPath%, Windows, HKSlideWindows, 1
 IniRead, SlideWinHide, %IniPath%, Windows, SlideWinHide, 1
@@ -250,7 +243,6 @@ IniRead, TabStartupPath, %IniPath%, Tabs, TabStartupPath, %A_SPACE%
 IniRead, ActivateTab, %IniPath%, Tabs, ActivateTab, 1
 IniRead, TabWindowClose, %IniPath%, Tabs, TabWindowClose, 1
 IniRead, OnTabClose, %IniPath%, Tabs, OnTabClose, 1
-IniRead, MiddleOpenFolder, %IniPath%, Tabs, MiddleOpenFolder, 1
 InitExplorerWindows()
 
 LoadHotstrings()
@@ -367,7 +359,6 @@ WriteIni()
 	IniWrite, %HKAutoCheck%, %IniPath%, Explorer, HKAutoCheck
 	IniWrite, %ScrollUnderMouse%, %IniPath%, Explorer, ScrollUnderMouse
 	IniWrite, %HKInvertSelection%, %IniPath%, Explorer, HKInvertSelection
-	IniWrite, %HKOpenInNewFolder%, %IniPath%, Explorer, HKOpenInNewFolder
 	IniWrite, %RecallExplorerPath%, %IniPath%, Explorer, RecallExplorerPath
 	IniWrite, %AlignExplorer%, %IniPath%, Explorer, AlignExplorer
 	
@@ -377,12 +368,8 @@ WriteIni()
 	IniWrite, %ActivateTab%, %IniPath%, Tabs, ActivateTab
 	IniWrite, %TabWindowClose%, %IniPath%, Tabs, TabWindowClose
 	IniWrite, %OnTabClose%, %IniPath%, Tabs, OnTabClose
-	IniWrite, %MiddleOpenFolder%, %IniPath%, Tabs, MiddleOpenFolder
 	
 	IniWrite, %HKActivateBehavior%, %IniPath%, Windows, HKActivateBehavior
-	IniWrite, %HKToggleWallpaper%, %IniPath%, Windows, HKToggleWallpaper
-	IniWrite, %HKMiddleClose%, %IniPath%, Windows, HKMiddleClose
-	IniWrite, %AeroFlipTime%, %IniPath%, Windows, AeroFlipTime
 	IniWrite, %HKSlideWindows%, %IniPath%, Windows, HKSlideWindows
 	IniWrite, %SlideWinHide%, %IniPath%, Windows, SlideWinHide
 	IniWrite, %SlideWindowSideLimit%, %IniPath%, Windows, SlideWindowSideLimit

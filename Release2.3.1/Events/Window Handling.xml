@@ -1,4 +1,4 @@
-<BugfixVersion>1</BugfixVersion>
+<BugfixVersion>0</BugfixVersion>
 <Events>
 <Event>
 <Actions>
@@ -415,6 +415,32 @@
 <Key>#MButton</Key>
 <Type>Hotkey</Type>
 </Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Type>ShowAeroFlip</Type>
+</Action></Actions>
+<Category>Window Handling</Category>
+<Conditions>
+<Condition>
+<Negate>1</Negate>
+<Type>IsFullScreen</Type>
+<UseExcludeList>1</UseExcludeList>
+<UseIncludeList>1</UseIncludeList>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event shows the Aero Flip 3D Task switching dialog (or the standard task switcher dialog if unavailable) when the mouse is moved to the top left corner of the screen.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<ID>1625</ID>
+<Name>Show Aero Flip 3D</Name>
+<OfficialEvent>26</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Corner>1</Corner>
+<Time>100</Time>
+<Type>ScreenCorner</Type>
+</Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
-<MinorVersion>3</MinorVersion>
+<MinorVersion>4</MinorVersion>

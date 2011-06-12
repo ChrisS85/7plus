@@ -1,4 +1,4 @@
-<BugfixVersion>1</BugfixVersion>
+<BugfixVersion>0</BugfixVersion>
 <Events>
 <Event>
 <Actions>
@@ -277,6 +277,7 @@
 </Event><Event>
 <Actions>
 <Action>
+<BaseFile></BaseFile>
 <Filename>Neues Textdokument.txt</Filename>
 <Rename>1</Rename>
 <Type>NewFile</Type>
@@ -512,6 +513,7 @@
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action><Action>
 <Button>Right</Button>
+<Double>0</Double>
 <Relative>1</Relative>
 <RestorePosition>1</RestorePosition>
 <Type>MouseClick</Type>
@@ -631,7 +633,7 @@
 <Negate>0</Negate>
 <Operator>matches regular expression</Operator>
 <Type>If</Type>
-<With>(CabinetWClass|ExploreWClass)</With>
+<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
 <Type>IsRenaming</Type>
@@ -666,7 +668,7 @@
 <Negate>0</Negate>
 <Operator>matches regular expression</Operator>
 <Type>If</Type>
-<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
+<With>(CabinetWClass|ExploreWClass)</With>
 </Condition><Condition>
 <Negate>1</Negate>
 <Type>IsRenaming</Type>
@@ -685,4 +687,4 @@
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
-<MinorVersion>3</MinorVersion>
+<MinorVersion>4</MinorVersion>

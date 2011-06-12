@@ -100,7 +100,7 @@ Trigger_ContextMenu_Matches(Trigger, Filter, Event)
 
 Trigger_ContextMenu_DisplayString(Trigger)
 {
-	return "Context menu entry: " Trigger.Name
+	return "Context menu: " Trigger.Name
 }
 
 Trigger_ContextMenu_GuiShow(Trigger, TriggerGUI)

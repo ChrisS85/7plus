@@ -92,7 +92,7 @@ return
 
 ClipboardMenuClicked(index)
 {
-	global ClipboardList,MuteClipboardList, Events, EventSchedule, Vista7
+	global ClipboardList,MuteClipboardList
 	if(ClipboardList[index])
 	{
 		ClipboardBackup:=ClipboardAll
@@ -117,15 +117,12 @@ ClipboardMenuClicked(index)
 			Sleep 20
 		}
 		else
-		{
 			Notify("Error pasting text", "Error pasting text", "5", "GC=555555 TC=White MC=White",Vista7 ? 78 : 110)
-			; ToolTip(1, "Error pasting text", "Error pasting text","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
-			; SetTimer, ToolTipClose, -10000
-		}
 		Clipboard:=ClipboardBackup
 		Clipwait,1,1
 		MuteClipboardList:=false
 	}
+	Menu, ClipboardMenu, add, 1,ClipboardHandler1
 	Menu, ClipboardMenu, DeleteAll
 }
 

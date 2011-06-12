@@ -206,10 +206,11 @@ Class CTabContainer
 		this.UpdateTabs()
 		Return
 	}
-	Add(ExplorerWindow,position="")
+	Add(ExplorerWindow,position="", Activate = 0)
 	{
 		global ExplorerWindows
-		outputdebug % "TabContainer_Add(" ExplorerWindow.hwnd ")"
+		if(!ExplorerWindow.DisplayName)
+			ExplorerWindow.DisplayName := GetCurrentFolder(ExplorerWindow.hwnd, 1)
 		tab := Object("hwnd",ExplorerWindow.hwnd, "DisplayName", ExplorerWindow.DisplayName)
 		tab.y := ExplorerWindows.TabContainerList.InActiveHeightDifference
 		tab.height := ExplorerWindows.TabContainerList.height - ExplorerWindows.TabContainerList.InActiveHeightDifference
@@ -226,6 +227,13 @@ Class CTabContainer
 			this.CalculateVerticalTabPosition(position)
 		}
 		ExplorerWindow.TabContainer := this
+		if(this.tabs.len() > 1)
+		{
+			if(Activate)
+				this.ActivateTab(position = "" ? this.Tabs.len() : position)
+			else
+				WinHide, % "ahk_id " ExplorerWindow.hwnd
+		}
 		; CalculateTabText(tab)
 		this.DrawTabWindow()
 	}
@@ -771,9 +779,9 @@ CreateTab(hwnd, path=-1,Activate=-1)
 	RegisterExplorerWindows()
 	TabContainer.CalculateVerticalTabPosition(TabContainer.tabs.IndexOfSubItem("hwnd", hwnd+0))
 	if(NewTabPosition=1)
-		TabContainer.add(ExplorerWindows.SubItem("hwnd", hwndnew+0),TabContainer.tabs.IndexOfSubItem("hwnd", hwnd+0) + 1) ;Add new tab right to the current tab
+		TabContainer.add(ExplorerWindows.SubItem("hwnd", hwndnew+0),TabContainer.tabs.IndexOfSubItem("hwnd", hwnd+0) + 1,1) ;Add new tab right to the current tab
 	else if(NewTabPosition=2)
-		TabContainer.add(ExplorerWindows.SubItem("hwnd", hwndnew+0)) ;Add new tab to end of list
+		TabContainer.add(ExplorerWindows.SubItem("hwnd", hwndnew+0),"",1) ;Add new tab to end of list
 	DetectHiddenWindows, Off
 	; TabContainer.CalculateVerticalTabPosition(TabContainer.tabs.IndexOfSubItem("hwnd", hwndnew))
 	if(Activate)

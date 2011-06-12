@@ -6,6 +6,7 @@ Action_NewFile_Init(Action)
 		Action.Filename:=TranslateMUI("notepad.exe",470) ".txt" ;"New Textfile" ".txt"
 	else
 		Action.Filename:=TranslateMUI("shell32.dll",8587) " " TranslateMUI("notepad.exe",469) ".txt" ;"New" "Textfile" ".txt"
+	Action.BaseFile := ""
 	Action.Rename := true
 }
 
@@ -14,6 +15,7 @@ Action_NewFile_ReadXML(Action, XMLAction)
 	global Vista7
 	Action.Filename := XMLAction.HasKey("Filename") ? XMLAction.Filename : Action.Filename
 	Action.Rename := XMLAction.Rename
+	Action.BaseFile := XMLAction.HasKey("BaseFile") ? XMLAction.BaseFile : Action.BaseFile
 }
 
 Action_NewFile_Execute(Action, Event)
@@ -32,13 +34,14 @@ Action_NewFile_Execute(Action, Event)
 	path := GetCurrentFolder()
 	name := Event.ExpandPlaceholders(Action.Filename)
 	Testpath := FindFreeFileName(path "\" name)
-	FileAppend, %A_Space%, %TestPath%	;Create file and then select it and rename it
-	outputdebug % "Testpath" Testpath " exist: " FileExist(TestPath)
+	BaseFile := Event.ExpandPlaceholders(Action.BaseFile)
+	if(BaseFile && FileExist(BaseFile))
+		FileCopy, %BaseFile%, %TestPath%
+	else
+		FileAppend, %A_Space%, %TestPath%	;Create file and then select it and rename it
 	if(!FileExist(TestPath))
 	{
 		Notify("Could not create new file!", "Could not create a new file here. Make sure you have the correct permissions!", "5", "GC=555555 TC=White MC=White",Vista7 ? 78 : 110)
-		; ToolTip(1, "Could not create a new file here. Make sure you have the correct permissions!", "Could not create new file!","O1 L1 P99 C1 XTrayIcon YTrayIcon I4")
-		; SetTimer, ToolTipClose, -5000
 		return 0
 	}
 	RefreshExplorer()
@@ -66,15 +69,20 @@ Action_NewFile_GuiShow(Action, ActionGUI, GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Filename", "", "", "Filename:", "Placeholders", "Action_NewFile_Placeholders")
+		SubEventGUI_Add(Action, ActionGUI, "Edit", "BaseFile", "", "", "BaseFile:", "Browse", "Action_NewFile_Browse", "Placeholders", "Action_NewFile_Placeholders")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Rename", "Start Renaming", "", "")
 	}
 	else if(GoToLabel = "Placeholders")
 		SubEventGUI_Placeholders(sActionGUI, "Filename")
+	else if(GoToLabel = "Browse")
+		SubEventGUI_SelectFile(sActionGUI, "BaseFile")
 }
 Action_NewFile_Placeholders:
 Action_NewFile_GuiShow("", "", "Placeholders")
 return
-
+Action_NewFile_Browse:
+Action_NewFile_GuiShow("", "", "Browse")
+return
 Action_NewFile_GuiSubmit(Action, ActionGUI)
 {
 	SubEventGUI_GUISubmit(Action, ActionGUI)

@@ -113,7 +113,7 @@ Trigger_Hotkey_Matches(Trigger, Filter)
 
 Trigger_Hotkey_DisplayString(Trigger)
 {
-	return "Key " FormatHotkey(Trigger.Key)
+	return FormatHotkey(Trigger.Key)
 }
 
 FormatHotkey(key)

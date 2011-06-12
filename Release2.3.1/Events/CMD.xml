@@ -1,4 +1,4 @@
-<BugfixVersion>1</BugfixVersion>
+<BugfixVersion>0</BugfixVersion>
 <Events>
 <Event>
 <Actions>
@@ -118,6 +118,7 @@
 <Actions>
 <Action>
 <Button>Right</Button>
+<Double>0</Double>
 <Relative>1</Relative>
 <RestorePosition>1</RestorePosition>
 <Type>MouseClick</Type>
@@ -184,4 +185,4 @@
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
-<MinorVersion>3</MinorVersion>
+<MinorVersion>4</MinorVersion>

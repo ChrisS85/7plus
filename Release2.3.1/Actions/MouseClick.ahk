@@ -4,15 +4,17 @@ Action_MouseClick_Init(Action)
 	Action.RestorePosition := 1
 	Action.Relative := 1
 	Action.Button := "Left"
+	Action.Double := 0
 }
 
 Action_MouseClick_ReadXML(Action, XMLAction)
 {
-	Action.Button := XMLAction.Button
-	Action.X := XMLAction.X
-	Action.Y := XMLAction.Y
-	Action.RestorePosition := XMLAction.RestorePosition
-	Action.Relative := XMLAction.Relative
+	Action.Button := XMLAction.HasKey("Button") ? XMLAction.Button : Action.Button
+	Action.X := XMLAction.HasKey("x") ? XMLAction.X : Action.X
+	Action.Y := XMLAction.HasKey("y") ? XMLAction.Y : Action.Y
+	Action.RestorePosition := XMLAction.HasKey("RestorePosition") ? XMLAction.RestorePosition : Action.RestorePosition
+	Action.Relative :=XMLAction.HasKey("Relative") ? XMLAction.Relative : Action.Relative
+	Action.Double := XMLAction.HasKey("Double") ? XMLAction.Double : Action.Double
 }
 Action_MouseClick_Execute(Action, Event)
 {
@@ -24,7 +26,8 @@ Action_MouseClick_Execute(Action, Event)
 	if(Action.Relative)
 		CoordMode, Mouse, Relative
 	Button := Action.Button	
-	Click %Button% %X%, %Y%
+	Double := Action.Double ? 2 : 1
+	Click %Button% %X%, %Y% %Double%
 	CoordMode, Mouse, Screen
 	if(Action.RestorePosition)
 		MouseMove, %mx%, %my%
@@ -46,6 +49,7 @@ Action_MouseClick_GuiShow(Action, ActionGUI, GoToLabel = "")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Y", "", "", "Y:", "Placeholders", "Action_MouseClick_Placeholders_Y")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Relative", "Relative to current window")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "RestorePosition", "Restore previous mouse position")
+		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Double", "Double click")
 	}
 	else if(GoToLabel = "Placeholders_X")
 		SubEventGUI_Placeholders(sActionGUI, "X")

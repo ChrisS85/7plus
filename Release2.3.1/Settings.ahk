@@ -48,7 +48,7 @@ Settings_CreateEvents(ByRef TabCount) {
 	local yIt,x1,x2,x,y
 	outputdebug createevents() start
 	x1:=xBase+10
-	x2 := x1 + 460
+	x2 := x1 + 530
 	yIt:=yBase
 	Gui, 1:Add, Tab2, x176 y14 w460 h350 vEventsTab, 
 	TabCount++
@@ -57,11 +57,11 @@ Settings_CreateEvents(ByRef TabCount) {
 	yIt+=54
 	Gui, 1:Add, Text, x%x1% y%yIt%, Event search:
 	yIt-=4
-	Gui, 1:Add, Edit, x+10 y%yIt% w375 hwndEventFilter gEventFilterChange
+	Gui, 1:Add, Edit, x+10 y%yIt% w445 hwndEventFilter gEventFilterChange
 	yIt += textboxstep
-	Gui, 1:Add, ListView, x%x1% y%yIt% w450 h232 vGUI_EventsList gGUI_EventsList_SelectionChange Grid -LV0x10 AltSubmit Checked, Enabled|ID|Trigger|Name
+	Gui, 1:Add, ListView, x%x1% y%yIt% w520 h232 vGUI_EventsList gGUI_EventsList_SelectionChange Grid -LV0x10 AltSubmit Checked, Enabled|ID|Trigger|Name
 	OnMessage(0x0111, "WM_COMMAND")
-	Gui, 1:Add, Edit, x%x1% y+10 w450 h60 vGUI_EventsDescription +ReadOnly
+	Gui, 1:Add, Edit, x%x1% y+10 w520 h60 vGUI_EventsDescription +ReadOnly
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Add gGUI_EventsList_Add, Add Event
 	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Remove gGUI_EventsList_Remove, Delete Event
@@ -85,12 +85,12 @@ Settings_CreateAccessorKeywords(ByRef TabCount) {
 	global
 	local yIt,x1,x2,x,y, hKeywords, hCommands
 	x1:=xBase+10
-	x2 := x1 + 460
+	x2 := x1 + 530
 	yIt:=yBase
 	Gui, 1:Add, Tab2, x176 y14 w460 h350 vAccessorKeywordsTab, 
 	TabCount++
 	AddTab(0, "","SysTabControl32" TabCount)
-	Gui, 1:Add, ListView, x%x1% y%yIt% w450 h232 vGUI_AccessorKeywordsList gGUI_AccessorKeywordsList_Events hwndhwndKeywords Grid -Multi -LV0x10 AltSubmit, ID|Key|Command
+	Gui, 1:Add, ListView, x%x1% y%yIt% w520 h232 vGUI_AccessorKeywordsList gGUI_AccessorKeywordsList_Events hwndhwndKeywords Grid -Multi -LV0x10 AltSubmit, ID|Key|Command
 	WinSet, ExStyle, +0x10, ahk_id %hwndKeywords%
 	LV_ModifyCol(1, 0)
     LV_ModifyCol(2, 100)
@@ -100,22 +100,22 @@ Settings_CreateAccessorKeywords(ByRef TabCount) {
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_AccessorKeywords_Delete gGUI_AccessorKeywords_Delete, Delete keyword
 	yIt += textboxstep + 4
 	Gui, 1:Add, Text, x%x1% y+190, Keyword:
-	Gui, 1:Add, Edit, x+27 y+-17 w380 vGUI_AccessorKeywordsKey gGUI_AccessorKeywordsTextChange hwndhKeywords
+	Gui, 1:Add, Edit, x+27 y+-17 w450 vGUI_AccessorKeywordsKey gGUI_AccessorKeywordsTextChange hwndhKeywords
 	AddToolTip(hKeywords, "The keyword which is typed into accessor at the start of the query, i.e. ""Google""")
 	Gui, 1:Add, Text, x%x1% y+10, Command:
-	Gui, 1:Add, Edit, x+21 y+-17 w380 vGUI_AccessorKeywordsCommand gGUI_AccessorKeywordsTextChange hwndhCommands
+	Gui, 1:Add, Edit, x+21 y+-17 w450 vGUI_AccessorKeywordsCommand gGUI_AccessorKeywordsTextChange hwndhCommands
 	AddToolTip(hCommands, "You can use parameters here which are inserted into the command at specific places. This is currently only supported by the URL plugin. Example: Keyword: ""google"" Command: ""www.google.com/search?q=${1}"" Entered Text: ""google 7plus"" result: ""www.google.com/search?q=7plus""")
 }
 Settings_CreateAccessor(ByRef TabCount) {
 	global
 	local yIt,x1,x2,x,y
 	x1:=xBase+10
-	x2 := x1 + 460
+	x2 := x1 + 530
 	yIt:=yBase
 	Gui, 1:Add, Tab2, x176 y14 w460 h350 vAccessorPluginsTab, 
 	TabCount++
 	AddTab(0, "","SysTabControl32" TabCount)
-	Gui, 1:Add, ListView, x%x1% y%yIt% w450 h232 vGUI_AccessorPluginsList gGUI_AccessorPluginsList_Events Grid -LV0x10 AltSubmit Checked, Enabled|ID|Name
+	Gui, 1:Add, ListView, x%x1% y%yIt% w520 h232 vGUI_AccessorPluginsList gGUI_AccessorPluginsList_Events Grid -LV0x10 AltSubmit Checked, Enabled|ID|Name
 	LV_ModifyCol(1, "Auto")
     LV_ModifyCol(2, 0)
 	LV_ModifyCol(3, "AutoHdr")
@@ -256,10 +256,6 @@ Settings_CreateTabs(ByRef TabCount) {
 	Gui, 1:Add, Text, x%x% y%y% vTabLabel3, On tab close:
 	Gui, 1:Add, DropDownList, x%x2% y%yIt% w%wTBMedium% vOnTabClose AltSubmit,activate left tab|activate right tab
 	yIt+=textboxstep
-	y:=yIt+TextBoxCheckBoxOffset
-	Gui, 1:Add, Checkbox, x%x% y%y% gOpenFolderInNew vOpenFolderInNew, Middle mouse button on folder: Open in new
-	Gui, 1:Add, DropDownList, x%x2% y%yIt% w%wTBMedium% vMiddleOpenFolder AltSubmit, window|tab|tab in background
-	yIt+=checkboxstep	
 }
 Settings_CreateFTPProfiles(ByRef TabCount) {
 	global
@@ -305,24 +301,24 @@ Settings_CreateHotstrings(ByRef TabCount) {
 	local yIt,x1,x2,x,y
 	xHelp:=xBase
 	x1:=xHelp+10
-	x2 := x1 + 460
+	x2 := x1 + 520
 	yIt:=yBase
 	Gui, 1:Add, Tab2, x176 y14 w460 h350 vHotstringsTab, 
 	TabCount++
 	AddTab(0, "","SysTabControl32" TabCount)
-	Gui, 1:Add, ListView, x%x1% y%yIt% w450 h216 vGUI_HotstringsList gGUI_HotstringsList_Events Grid -Multi -LV0x10 AltSubmit, ID|Key|Command
+	Gui, 1:Add, ListView, x%x1% y%yIt% w510 h216 vGUI_HotstringsList gGUI_HotstringsList_Events Grid -Multi -LV0x10 AltSubmit, ID|Key|Command
 	LV_ModifyCol(1, 0)
     LV_ModifyCol(2, 100)
 	LV_ModifyCol(3, "AutoHdr")
-	Gui, 1:Add, Button, x%x2% y%yIt% w90 vGUI_Hotstrings_Add gGUI_Hotstrings_Add, Add HotString
+	Gui, 1:Add, Button, x%x2% y%yIt% w100 vGUI_Hotstrings_Add gGUI_Hotstrings_Add, Add HotString
 	yIt += textboxstep
-	Gui, 1:Add, Button, x%x2% y%yIt% w90 vGUI_Hotstrings_Delete gGUI_Hotstrings_Delete, Remove HotString
+	Gui, 1:Add, Button, x%x2% y%yIt% w100 vGUI_Hotstrings_Delete gGUI_Hotstrings_Delete, Remove HotString
 	yIt += textboxstep
-	Gui, 1:Add, Button, x%x2% y%yIt% w90 vGUI_Hotstrings_RegexHelp gGUI_Hotstrings_RegexHelp, RegEx Help
-	Gui, 1:Add, Text, x%x1% y+144, hotstring:
-	Gui, 1:Add, Edit, x+27 y+-17 w380 vGUI_HotstringsKey gGUI_HotstringsTextChange
-	Gui, 1:Add, Text, x%x1% y+10, value:
-	Gui, 1:Add, Edit, x+41 y+-17 w380 vGUI_HotstringsValue gGUI_HotstringsTextChange
+	Gui, 1:Add, Button, x%x2% y%yIt% w100 vGUI_Hotstrings_RegexHelp gGUI_Hotstrings_RegexHelp, RegEx Help
+	Gui, 1:Add, Text, x%x1% y+144, HotString:
+	Gui, 1:Add, Edit, x+27 y+-17 w440 vGUI_HotstringsKey gGUI_HotstringsTextChange
+	Gui, 1:Add, Text, x%x1% y+10, Value:
+	Gui, 1:Add, Edit, x+41 y+-17 w440 vGUI_HotstringsValue gGUI_HotstringsTextChange
 	Gui, 1:Add, Text, x%x1% y+10, HotStrings are used to expand abbreviations and acronyms, such as "btw" -> "by the way". They support regular`nexpressions in PCRE format. If you want a HotString to trigger only when typed as a seperate word, prepend \b`nand append \s.  For case-insensitive HotStrings, put i) at the start. You can also use keys like {Enter}.
 }
 Settings_CreateWindows(ByRef TabCount) {
@@ -355,21 +351,6 @@ Settings_CreateWindows(ByRef TabCount) {
 	
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow1dot1 vURL_Window1dot1, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKAltDrag, ALT+Left Mouse Drag anywhere on a window: Move window
-	yIt+=checkboxstep
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window3, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% gFlip3D, Mouse in upper left corner: Toggle Aero Flip 3D (Vista/7 only)
-	x:=xBase+362
-	y:=yIt+TextBoxTextOffset
-	Gui, 1:Add, Text, x%x% y%y%, Seconds in corner:
-	x:=xBase+248+wTBLarge
-	Gui, 1:Add, Edit, 		x%x% y%yIt% w%wTBShort% R1 vAeroFlipTime	
-	y:=yIt+TextBoxButtonOffset
-	yIt+=textboxstep
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghTaskbar vURL_Taskbar1, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKMiddleClose, Middle click on taskbuttons: close task
-	yIt+=checkboxstep
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow vURL_Window2, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKToggleWallpaper, Middle mouse click on desktop: Toggle wallpaper (7 only)
 	yIt+=checkboxstep
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vShowResizeTooltip, Show window size as tooltip while resizing
 }
@@ -742,9 +723,6 @@ Settings_SetupTabs() {
 	GoSub UseTabs
 	GuiControl, 1:,ActivateTab,% ActivateTab = 1
 	GuiControl, 1:,TabWindowClose,% TabWindowClose = 1
-	GuiControl, 1:,OpenFolderInNew,% MiddleOpenFolder > 0
-	GoSub OpenFolderInNew	
-	GuiControl, 1:Choose, MiddleOpenFolder, % max(MiddleOpenFolder,1)
 }
 Settings_SetupFTPProfiles() {
 	global
@@ -806,19 +784,11 @@ Settings_SetupWindows() {
 	GuiControl, 1:, SlideWindowRequireMouseUp, % SlideWindowRequireMouseUp = 1
 	GuiControl, 1:ChooseString, SlideWindowsModifier, %SlideWindowsModifier% ;| -> trigger g-label
 	GuiControl, 1:, HKAltDrag, % HKAltDrag = 1
-	GuiControl, 1:, AeroFlipTime, %AeroFlipTime%
-	;Setup Aero Flip 3D
-	temp:=(AeroFlipTime>=0)
-	GuiControl, 1:,Mouse in upper left corner: Toggle Aero Flip 3D,% AeroFlipTime >= 0
-	GoSub Flip3D
 	if(A_OsVersion!="WIN_7")
 	{
 		if(!IsPortable)
 			GuiControl, 1:disable, HKActivateBehavior
-		GuiControl, 1:disable, HKToggleWallpaper
 	}
-	GuiControl, 1:, HKMiddleClose, % HKMiddleClose = 1
-	GuiControl, 1:, HKToggleWallpaper, % HKToggleWallpaper = 1
 	GuiControl, 1:, ShowResizeTooltip, % ShowResizeTooltip = 1
 }
 
@@ -914,7 +884,7 @@ ShowSettings(ShowPane="") {
 				if(A_LoopField != "Introduction")
 					TV_Add(A_LoopField)
 			
-			Gui, 1:Add, GroupBox, x176 y14 w580 h420 vGGroupBox , Events
+			Gui, 1:Add, GroupBox, x176 y14 w650 h420 vGGroupBox , Events
 			Gui, 1:Add, Button, x495 y440 w70 h23 vBtnOK gOK, OK
 			Gui, 1:Add, Button, x573 y440 w80 h23 vBtnCancel gCancel, Cancel
 			Gui, 1:Add, Button, x660 y440 w80 h23 vBtnApply gApply, Apply
@@ -958,7 +928,7 @@ ShowSettings(ShowPane="") {
 		Settings_SetupMisc()
 		Settings_SetupAbout()
 
-		Gui, 1:Show, x338 y159 h474 w780, 7plus Settings
+		Gui, 1:Show, x338 y159 h474 w850, 7plus Settings
 		
 		;Code for URL hand cursor, don't touch :D
 		;Hand cursor over controls where the assigned variable starts with URL_
@@ -1619,14 +1589,7 @@ GuiControl, 1:enable%enabled%, TabStartupPathBrowse
 GuiControl, 1:enable%enabled%, TabLabel1
 GuiControl, 1:enable%enabled%, TabLabel2
 GuiControl, 1:enable%enabled%, TabLabel3
-GuiControl, 1:enable%enabled%, MiddleOpenFolder
-GuiControl, 1:enable%enabled%, OpenFolderInNew
 Return
-
-OpenFolderInNew:
-GuiControlGet, enabled ,1: , OpenFolderInNew
-GuiControl, 1:enable%enabled%, MiddleOpenFolder
-return
 
 TabStartupPathBrowse:
 Gui 1:+OwnDialogs
@@ -1861,19 +1824,6 @@ GUI_SaveHotstrings()
 	Loop % Settings_Hotstrings.len()
 		AddHotstring(Settings_Hotstrings[A_Index].key, Settings_Hotstrings[A_Index].value)
 }
-
-
-Flip3D:
-GuiControlGet, enabled ,1: ,Mouse in upper left corner: Toggle Aero Flip 3D
-GuiControl, 1:enable%enabled%, AeroFlipTime
-if(enabled)
-{
-	GuiControlGet, flip ,1: ,AeroFlipTime
-	if(flip<0||flip="")
-		flip=0
-	GuiControl, 1:,AeroFlipTime,%flip%
-}
-return
 
 SlideWindow:
 GuiControlGet, enabled,1: , HKSlideWindows
@@ -2134,35 +2084,7 @@ ApplySettings(Close = 0)
 	FTPProfiles := Array()
 	Loop % Settings_FTPProfiles.len()
 		FTPProfiles.append(Settings_FTPProfiles[A_Index])
-	;Store MiddleOpenFolder
-	GuiControlGet, enabled, 1: , OpenFolderInNew
-	if(!enabled)
-		MiddleOpenFolder:=0
-	
-	;Store taskbar launch filename
-	GuiControlGet, enabled ,1: , Double click on empty taskbar: Run
-	GuiControlGet, path ,1: , TaskbarLaunchPath
-	if(enabled)
-		TaskbarLaunchPath:=path
-	else
-		TaskbarLaunchPath:=""
 
-	;Store Aero Flip time
-	; GuiControlGet, flip,1:,Mouse in upper left corner: Toggle Aero Flip 3D
-	; if(flip && Vista7)
-		; SetTimer, hovercheck, 10
-	; else
-	; {
-		; AeroFlipTime:=-1
-		; SetTimer, hovercheck, Off
-	; }
-
-	;Store double click desktop
-	GuiControlGet, enabled, 1:, DoubleClickDesktop
-	if(!enabled)
-		DoubleClickDesktop:=0
-	else
-		GuiControlGet, DoubleClickDesktop, 1:, DoubleClickDesktopPath
 	if(!(ImageQuality > 0 && ImageQuality <= 100))
 		ImageQuality := 95
 	if(!IsPortable)
