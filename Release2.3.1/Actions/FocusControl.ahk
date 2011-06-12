@@ -25,6 +25,7 @@ Action_FocusControl_DisplayString(Action)
 }
 Action_FocusControl_GuiShow(Action, ActionGUI)
 {
+	SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action can set the keyboard focus to a control .")
 	WindowFilter_GuiShow(Action,ActionGUI)
 	SubEventGUI_Add(Action, ActionGUI, "Text", "tmpText", "Enter a window handle, a ClassNN (e.g. ""Edit1""), or text of the control here.")
 	SubEventGUI_Add(Action, ActionGUI, "Edit", "TargetControl", "", "", "Target Control:")

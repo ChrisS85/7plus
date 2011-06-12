@@ -54,9 +54,9 @@ Trigger_MenuItem_GuiShow(Trigger, TriggerGUI)
 		}
 	}
 	
-	SubEventGUI_Add(Trigger, TriggerGUI, "ComboBox", "Menu", MenuString, "", "Menu:")
-	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Name", "", "", "Name:")
-	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Submenu", "", "", "Submenu:")
+	SubEventGUI_Add(Trigger, TriggerGUI, "ComboBox", "Menu", MenuString, "", "Menu:","","","","","The name of the menu to which this item gets added. If it does not exist, it is created here. You can later reference this menu name for submenus.")
+	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Name", "", "", "Name:","","","","","The name of the menu item")
+	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Submenu", "", "", "Submenu:","","","","","If you specify a menu name here, this event will not be able to get triggered. Instead it will show all MenuItem entries that use the same value as menu name as submenu.")
 }
 
 Trigger_MenuItem_GuiSubmit(Trigger, TriggerGUI)

@@ -59,8 +59,9 @@ Action_ControlTimer_GuiShow(Action, ActionGUI, GoToLabel = "")
 		sActionGUI := ActionGUI
 		sAction := Action
 		PreviousSelection := ""
+		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action controls the behavior of timer (windows).")
 		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "Action", "Set time|Start timer|Stop timer|Pause timer|Start/Pause timer|Reset timer", "Action_ControlTimer_SelectionChange", "Action:")
-		SubEventGUI_Add(Action, ActionGUI, "ComboBox", "TimerID", "TriggerType:Timer", "", "Timer:")
+		SubEventGUI_Add(Action, ActionGUI, "ComboBox", "TimerID", "TriggerType:Timer", "", "Timer:","","","","","The id of the timer event.")
 		Action_ControlTimer_GuiShow("", "","ControlTimer_SelectionChange")
 	}
 	else if(GoToLabel = "ControlTimer_SelectionChange")

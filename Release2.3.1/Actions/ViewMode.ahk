@@ -65,6 +65,7 @@ Action_ViewMode_DisplayString(Action)
 
 Action_ViewMode_GuiShow(Action, ActionGUI)
 {
+	SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action can modify various explorer settings.")
 	SubEventGUI_Add(Action, ActionGUI, "DropDownList", "Action", "Toggle show hidden files|Show hidden files|Hide hidden files|Toggle show file extensions|Show file extensions|Hide file extensions", "", "Action:")
 }
 

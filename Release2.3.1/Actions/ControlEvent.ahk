@@ -72,8 +72,7 @@ Action_ControlEvent_GuiShow(Action, ActionGUI, GoToLabel = "")
 		sActionGUI := ActionGUI
 		sAction := Action
 		PreviousSelection := ""
-		SubEventGUI_Add(Action, ActionGUI, "Text", "text1", "This action is only performed if the condition below is matched.")
-		SubEventGUI_Add(Action, ActionGUI, "Text", "text2", "Leave both text fields empty to always perform it.")
+		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action can do various stuff with other events. It is only performed if the condition below is matched. Leave both text fields empty to always perform it.")
 		Condition_If_GuiShow(Action, ActionGUI, "")
 		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "Action", "Copy Event|Disable Event|Enable Event|Toggle Enable/Disable|Trigger Event", "Action_ControlEvent_SelectionChange", "Action:")
 		SubEventGUI_Add(Action, ActionGUI, "ComboBox", "EventID", "TriggerType:", "", "Event:")

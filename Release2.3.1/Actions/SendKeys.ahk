@@ -37,6 +37,7 @@ Action_SendKeys_GuiShow(Action, ActionGUI, GoToLabel = "")
 	if(GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
+		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action sends keyboard input.")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Keys", "", "", "Keys to send:", "Placeholders", "Action_SendKeys_Placeholders", "Key names", "Action_SendKeys_KeyNames")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "KeyDelay", "", "", "Key delay:")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "WriteText", "Write text directly (useful for newlines, tabs etc.)")

@@ -54,9 +54,10 @@ Action_Message_GuiShow(Action, ActionGUI, GoToLabel = "")
 	if(GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
+		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action shows a message box.")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Text", "", "", "Text:", "Placeholders", "Action_Message_Text_Placeholders")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Title", "", "", "Window Title:", "Placeholders", "Action_Message_Title_Placeholders")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Timeout", "", "", "Timeout:")
+		SubEventGUI_Add(Action, ActionGUI, "Edit", "Timeout", "", "", "Timeout:","","","","","The message box is closed after this time.")
 	}
 	else if(GoToLabel = "Text_Placeholders")
 		SubEventGUI_Placeholders(sActionGUI, "Text")

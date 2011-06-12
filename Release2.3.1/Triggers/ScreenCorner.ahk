@@ -22,6 +22,7 @@ Trigger_ScreenCorner_DisplayString(Trigger)
 }
 Trigger_ScreenCorner_GuiShow(Trigger, TriggerGUI)
 {
+	SubEventGUI_Add(Trigger, TriggerGUI, "Text", "Desc", "This trigger is executed when the mouse hovers over a screen corner for a specified time.")
 	SubEventGUI_Add(Trigger, TriggerGUI, "DropDownList", "Corner", "1: Upper Left|2: Upper Right|3: Lower Right|4: Lower Left", "", "Corner:")	
 	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Time", "", "", "Time[ms]:")
 }

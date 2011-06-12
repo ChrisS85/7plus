@@ -56,9 +56,10 @@ Action_Input_GuiShow(Action, ActionGUI, GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
 		PreviousSelection := ""
+		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action shows a dialog asking for user input. The result is stored in a placeholder that may be used in further actions.")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Text", "", "", "Text:", "Placeholders", "Action_Input_Placeholders_Text")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Title", "", "", "Window Title:", "Placeholders", "Action_Input_Placeholders_Title")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Placeholder", "", "", "Placeholder:")
+		SubEventGUI_Add(Action, ActionGUI, "Edit", "Placeholder", "", "", "Placeholder:","","","","","The name of the placeholder in which the result is stored. This is just the name without the enclosing ${ }.")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Cancel", "Show Cancel/Close Button")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Validate", "Validate input (file, path and text only)")
 		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "DataType", "File|Number|Path|Selection|Text|Time", "Action_Input_DataType", "Data type:")

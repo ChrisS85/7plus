@@ -35,8 +35,8 @@ Action_SetDirectory_GuiShow(Action, ActionGUI, GoToLabel = "")
 	if(GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
-		SubEventGUI_Add(Action, ActionGUI, "Text", "tmpHint", "You may also enter ""Back"",""Forward"" and ""Upward"" here.")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Path", "", "", "Path:","Browse", "Action_SetDirectory_Browse", "Placeholders", "Action_SetDirectory_Placeholders")
+		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action sets the explorer directory and navigates forward/backward/up.")
+		SubEventGUI_Add(Action, ActionGUI, "Edit", "Path", "", "", "Path:","Browse", "Action_SetDirectory_Browse", "Placeholders", "Action_SetDirectory_Placeholders","You may also enter ""Back"",""Forward"" and ""Upward"" here.")
 		WindowFilter_GuiShow(Action, ActionGUI)
 	}
 	else if(GoToLabel = "Browse")

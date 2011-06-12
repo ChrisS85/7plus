@@ -76,6 +76,7 @@ Action_NewFolder_GuiShow(Action, ActionGUI, GoToLabel = "")
 	if(GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
+		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action creates a new folder in the current directory while explorer is active and goes into renaming mode.")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Foldername", "", "", "Foldername:", "Placeholders", "Action_NewFolder_Placeholders")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Rename", "Start Renaming", "", "")
 	}

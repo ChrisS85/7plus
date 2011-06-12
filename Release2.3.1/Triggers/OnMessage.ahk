@@ -40,6 +40,7 @@ Trigger_OnMessage_DisplayString(Trigger)
 
 Trigger_OnMessage_GuiShow(Trigger, TriggerGUI, GoToLabel = "")
 {
+	SubEventGUI_Add(Trigger, TriggerGUI, "Text", "Desc", "This trigger allows you to react to window messages from other programs. You can use it to trigger events in 7plus from other programs that support sending messages.")
 	SubEventGUI_Add(Trigger, TriggerGUI, "Text", "tmpMessageText", "Enter a message number here or ShellHook")
 	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Message", Trigger.Message, "", "Message:")
 	SubEventGUI_Add(Trigger, TriggerGUI, "Text", "tmpText", "This trigger allows you to use wParam and lParam placeholders in conditions/actions")

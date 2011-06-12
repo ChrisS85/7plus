@@ -28,6 +28,7 @@ Action_Wait_DisplayString(Action)
 }
 Action_Wait_GuiShow(Action, ActionGUI, GoToLabel = "")
 {
+	SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action waits by a specified amount of time. Afterwards the next event is executed.")
 	SubEventGUI_Add(Action, ActionGUI, "Edit", "Time", "", "", "Time (ms):", "", "")
 }
 Action_Wait_GuiSubmit(Action, ActionGUI)

@@ -37,6 +37,7 @@ Action_ShowMenu_GuiShow(Action, ActionGUI, GoToLabel = "")
 	if(GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
+		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action shows a menu which is made up out of events with a Menu trigger and the same name as the name specified here.")
 		;Look for menus in Settings_Events to catch unsaved menus
 		Menus := Array()
 		Loop % Settings_Events.len()

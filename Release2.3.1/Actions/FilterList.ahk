@@ -60,7 +60,7 @@ Action_FilterList_GuiShow(Action, ActionGUI, GoToLabel = "")
 	if(GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
-		SubEventGUI_Add(Action, ActionGUI, "Text", "Text", "This action removes list entries from a placeholder")
+		SubEventGUI_Add(Action, ActionGUI, "Text", "Text", "This action removes list entries from a placeholder.")
 		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "Action", "Keep list entries from|Remove list entries from","","Action:")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "List", "", "", "List:", "Placeholders","Action_FilterList_Placeholders_List")
 		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "Operator", "that are equal to|that are greater than|that are lower than|that contain|that match regular expression|that start with|that end with","","Operator:")

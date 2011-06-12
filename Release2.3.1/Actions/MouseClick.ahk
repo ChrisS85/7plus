@@ -45,9 +45,9 @@ Action_MouseClick_GuiShow(Action, ActionGUI, GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
 		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "Button", "Left||Middle|Right", "", "Button:")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "X", "", "", "X:", "Placeholders", "Action_MouseClick_Placeholders_X")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Y", "", "", "Y:", "Placeholders", "Action_MouseClick_Placeholders_Y")
-		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Relative", "Relative to current window")
+		SubEventGUI_Add(Action, ActionGUI, "Edit", "X", "", "", "X:", "Placeholders", "Action_MouseClick_Placeholders_X","","","Leave empty to click at current cursor position.")
+		SubEventGUI_Add(Action, ActionGUI, "Edit", "Y", "", "", "Y:", "Placeholders", "Action_MouseClick_Placeholders_Y","","","Leave empty to click at current cursor position.")
+		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Relative", "Position relative to active window")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "RestorePosition", "Restore previous mouse position")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Double", "Double click")
 	}

@@ -40,9 +40,10 @@ Action_Write_GuiShow(Action, ActionGUI, GoToLabel = "")
 	if(GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Content", "", "", "Content:", "Placeholders", "Action_Write_Placeholders_Content")
+		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action writes text or images (from clipboard) to files.")
+		SubEventGUI_Add(Action, ActionGUI, "Edit", "Content", "", "", "Content:", "Placeholders", "Action_Write_Placeholders_Content","","","Use ${clip} to use the clipboard content as source.")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Target", "", "", "Target:", "Browse", "Action_Write_Browse", "Placeholders", "Action_Write_Placeholders_Target")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Quality", "", "", "Image quality:")
+		SubEventGUI_Add(Action, ActionGUI, "Edit", "Quality", "", "", "Image quality:","","","","","0-100")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "ImageExtension", "", "", "Image extension:")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Append", "Append text to file")
 	}

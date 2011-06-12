@@ -43,6 +43,7 @@ Action_ShortenURL_GuiShow(Action, ActionGUI, GoToLabel = "")
 	if(GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
+		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action shortens the URL in the clipboard by using the Goo.gl service. The shortened URL can be written back to clipboard or stored in a placeholder.")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "URL", "", "", "URL:", "Placeholders", "Action_ShortenURL_Placeholders")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "WriteToPlaceholder", "", "", "hPlaceholder:")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "WriteToClipboard", "Copy shortened URL to clipboard")

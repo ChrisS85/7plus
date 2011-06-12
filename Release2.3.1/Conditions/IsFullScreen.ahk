@@ -22,8 +22,9 @@ Condition_IsFullScreen_DisplayString(Condition)
 
 Condition_IsFullScreen_GuiShow(Condition, ConditionGUI)
 {
-	SubEventGUI_Add(Condition, ConditionGUI, "Checkbox", "UseIncludeList", "Use include list")
-	SubEventGUI_Add(Condition, ConditionGUI, "Checkbox", "UseExcludeList", "Use exclude list")
+	SubEventGUI_Add(Condition, ConditionGUI, "Text", "Desc", "This condition checks if a fullscreen window is active (such as a game or a movie).")
+	SubEventGUI_Add(Condition, ConditionGUI, "Checkbox", "UseIncludeList", "Use include list","","","","","","","The include list is specified in Misc settings. All window classes on this list are always recognized as fullscreen.")
+	SubEventGUI_Add(Condition, ConditionGUI, "Checkbox", "UseExcludeList", "Use exclude list","","","","","","","The exclude list is specified in Misc settings. All window classes on this list are never recognized as fullscreen.")
 }
 
 Condition_IsFullScreen_GuiSubmit(Condition, ConditionGUI)

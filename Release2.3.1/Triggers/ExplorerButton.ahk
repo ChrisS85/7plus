@@ -67,6 +67,7 @@ Trigger_ExplorerButton_GuiShow(Trigger, TriggerGUI)
 	global
 	if(Vista7)
 	{
+		SubEventGUI_Add(Trigger, TriggerGUI, "Text", "Desc", "This button will show up in the explorer folder band bar at the top (Vista/7 only)")
 		SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Name", Trigger.Name, "", "Button Name:")
 		SubEventGUI_Add(Trigger, TriggerGUI, "Checkbox", "ShowSelected", "Show when files are selected", "", "")
 		SubEventGUI_Add(Trigger, TriggerGUI, "Button", "RemoveAllButtons", "Remove custom Explorer Buttons", "RemoveAllExplorerButtons", "")

@@ -14,7 +14,6 @@ Condition_If_Evaluate(Condition, Event)
 {
 	Compare := Event.ExpandPlaceholders(Condition.Compare)
 	With := Event.ExpandPlaceholders(Condition.With)
-	outputdebug evaluate %compare% %with%
 	if(Condition.Operator = "equals")
 		return Compare = With
 	else if(Condition.Operator = "is greater than")
@@ -41,6 +40,7 @@ Condition_If_GuiShow(Condition, ConditionGUI,GoToLabel="")
 	if(GoToLabel = "")
 	{
 		sConditionGUI := ConditionGUI
+		SubEventGUI_Add(Condition, ConditionGUI, "Text", "IfDesc", "This is a standard if condition that can evaluate all kinds of relations by comparing placeholders with values.")
 		SubEventGUI_Add(Condition, ConditionGUI, "Edit", "Compare", "", "", "Compare:", "Placeholders", "Condition_If_Placeholders_Compare")
 		SubEventGUI_Add(Condition, ConditionGUI, "DropDownList", "Operator", "equals|is greater than|is lower than|contains|matches regular expression|starts with|ends with", "", "Operator")
 		SubEventGUI_Add(Condition, ConditionGUI, "Edit", "With", "", "", "With:", "Placeholders", "Condition_If_Placeholders_With")

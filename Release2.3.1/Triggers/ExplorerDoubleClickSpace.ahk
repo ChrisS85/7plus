@@ -18,7 +18,9 @@ Trigger_ExplorerDoubleClickSpace_DisplayString(Trigger)
 }
 Trigger_ExplorerDoubleClickSpace_GuiShow(Trigger, TriggerGUI)
 {
+	SubEventGUI_Add(Trigger, TriggerGUI, "Text", "Desc", "This trigger executes when an empty space in the explorer file list is double-clicked.")
 }
 Trigger_ExplorerDoubleClickSpace_GuiSubmit(Trigger, TriggerGUI)
 {
+	SubEventGUI_GUISubmit(Trigger, TriggerGUI)
 }    

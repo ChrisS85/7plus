@@ -18,6 +18,7 @@ Action_OpenInNewFolder_DisplayString(Action)
 }
 Action_OpenInNewFolder_GuiShow(Action, ActionGUI, GoToLabel = "")
 {
+	SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action opens the explorer folder under the mouse in a new window, tab or in a tab without activating it.")
 	SubEventGUI_Add(Action, ActionGUI, "DropDownList", "Action", "Tab|Tab in Background|Window", "", "Open in new:")
 }
 Action_OpenInNewFolder_GuiSubmit(Action, ActionGUI)

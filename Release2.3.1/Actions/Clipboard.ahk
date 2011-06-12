@@ -65,6 +65,7 @@ Action_Clipboard_GuiShow(Action, ActionGUI, GoToLabel = "")
 	if(GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
+		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action writes text,text from files or files(copy/move) to the clipboard.")
 		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "InsertType", "Text|File|FileContent", "", "Write:")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Content", "", "", "Content:", "Browse", "Action_Clipboard_Browse", "Placeholders", "Action_Clipboard_Placeholders")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Clear", "Clear Clipboard first (might be neccessary)", "", "")

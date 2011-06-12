@@ -35,6 +35,7 @@ Action_SlideWindowOut_DisplayString(Action)
 }
 Action_SlideWindowOut_GuiShow(Action, ActionGUI)
 {
+	SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action slides windows out of the screen (if possible) or releases slide windows")
 	SubEventGUI_Add(Action, ActionGUI, "DropDownList", "Direction", "1: Left|2: Top|3: Right|4: Bottom", "", "Direction:")
 }
 

@@ -38,6 +38,7 @@ Action_SelectFiles_GuiShow(Action, ActionGUI, GoToLabel = "")
 	if(GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
+		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action selects files in an active explorer window.")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Filter", "", "", "Filter:", "Placeholders", "Action_SelectFiles_Placeholders_Filter")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Clear", "Clear selection first")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Deselect", "Deselect files")

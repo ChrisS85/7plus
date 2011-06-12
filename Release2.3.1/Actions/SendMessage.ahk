@@ -68,6 +68,7 @@ Action_SendMessage_GuiShow(Action, ActionGUI, GoToLabel = "")
 	if(GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
+		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action sends a window message to another window/program. This allows to trigger actions in other programs (such as winamp).")		
 		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "MessageMode", "Post|Send", "", "Message mode:")
 		SubEventGUI_Add(Action, ActionGUI, "Text", "tmpText", "Send waits for a response and allows ${MessageResult} to be used.")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Message", "", "", "Message:", "Placeholders", "Action_SendMessage_Placeholders_Message")

@@ -14,7 +14,7 @@ Action_ClipPaste_Execute(Action, Event)
 
 Action_ClipPaste_DisplayString(Action)
 {
-	return "Show Clipboard Manager Paste"
+	return "Paste clipboard history entry"
 }
 Action_ClipPaste_GuiShow(Action, ActionGUI)
 {

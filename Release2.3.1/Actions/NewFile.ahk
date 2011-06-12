@@ -68,8 +68,9 @@ Action_NewFile_GuiShow(Action, ActionGUI, GoToLabel = "")
 	if(GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
+		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action creates a new file in the current directory (text file by default) while explorer is active and goes into renaming mode. It is also possible to use any other base file as source.")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Filename", "", "", "Filename:", "Placeholders", "Action_NewFile_Placeholders")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "BaseFile", "", "", "BaseFile:", "Browse", "Action_NewFile_Browse", "Placeholders", "Action_NewFile_Placeholders")
+		SubEventGUI_Add(Action, ActionGUI, "Edit", "BaseFile", "", "", "BaseFile:", "Browse", "Action_NewFile_Browse", "Placeholders", "Action_NewFile_Placeholders","To use another file than a txt file, enter the bath to a base file here which will be copied.")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Rename", "Start Renaming", "", "")
 	}
 	else if(GoToLabel = "Placeholders")

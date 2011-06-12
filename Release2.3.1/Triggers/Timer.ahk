@@ -253,13 +253,14 @@ Trigger_Timer_DisplayString(Trigger)
 
 Trigger_Timer_GuiShow(Trigger, TriggerGUI)
 {
+	SubEventGUI_Add(Trigger, TriggerGUI, "Text", "Desc", "This trigger represents a timer that will execute this event when the timer runs out.")
 	hours := Floor(Trigger.Time / 1000 / 3600)
 	minutes := Floor((Trigger.Time / 1000 - hours * 3600)/60)
 	seconds := Floor((Trigger.Time / 1000 - hours * 3600 - minutes * 60))
 	Trigger.tmpTime := (strLen(hours) = 1 ? "0" hours : hours) (strLen(minutes) = 1 ? "0" minutes : minutes) (strLen(seconds) = 1 ? "0" seconds : seconds)
 	SubEventGUI_Add(Trigger, TriggerGUI, "Time", "tmpTime", "", "", "Start in:")
 	SubEventGUI_Add(Trigger, TriggerGUI, "Checkbox", "ShowProgress", "Show remaining time", "", "")
-	SubEventGUI_Add(Trigger, TriggerGUI, "Checkbox", "Restart", "Restart timer on zero", "", "")
+	SubEventGUI_Add(Trigger, TriggerGUI, "Checkbox", "Restart", "Restart timer on zero", "", "","","","","","If set, the event will execute when the time runs out and the timer will start again.")
 	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Text", "", "", "Window text:")
 }
 

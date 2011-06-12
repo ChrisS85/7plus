@@ -456,46 +456,6 @@ Wheel()
 ^i UP::InvertSelection(WinExist("A"))
 #if
 
-;Makes a currently active explorer window show all files contained in "files" list. Only folders are used, files are ignored.
-;files is a `n separated list of complete paths
-FlatView(files)
-{
-	if(files = "")
-		return
-		
-	Path := FindFreeFileName(A_Temp "\7plus\FlatView.search-ms")
-	searchString=
-	(
-	<?xml version="1.0"?>
-	<persistedQuery version="1.0">
-		<viewInfo viewMode="details" iconSize="16" stackIconSize="0" displayName="Test" autoListFlags="0">
-			<visibleColumns>
-				<column viewField="System.ItemNameDisplay"/>
-				<column viewField="System.ItemTypeText"/>
-				<column viewField="System.Size"/>
-				<column viewField="System.ItemFolderPathDisplayNarrow"/>
-			</visibleColumns>
-			<sortList>
-				<sort viewField="System.Search.Rank" direction="descending"/>
-				<sort viewField="System.ItemNameDisplay" direction="ascending"/>
-			</sortList>
-		</viewInfo>
-		<query>
-			<attributes/>
-			<kindList>
-				<kind name="item"/>
-			</kindList>
-			<scope>
-	)
-	Loop % files.len()
-	{ 
-		if(InStr(FileExist(files[A_Index]), "D"))
-			searchString:=searchString "<include path=""" files[A_Index] """/>"
-	}
-	searchString.="</scope></query></persistedQuery>"
-	Fileappend,%searchString%, %Path%
-	SetDirectory(Path)
-}
 InitExplorerWindows()
 {
 	global ExplorerWindows, Vista7, shell32MUIpath

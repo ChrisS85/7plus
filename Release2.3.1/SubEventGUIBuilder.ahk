@@ -1,5 +1,5 @@
 ;Adds a row of controls to a SubEvent GUI. Control handles are stored in SubEventGUI, and can be stored back and have the controls delete by SubEventGUI_GUISubmit
-SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description="", Button1Text="", Button1gLabel = "", Button2Text="", Button2gLabel = "")
+SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description="", Button1Text="", Button1gLabel = "", Button2Text="", Button2gLabel = "", Tooltip = "")
 {
 	global Settings_Events
 	x := SubEventGUI.x
@@ -24,13 +24,17 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 			if(!Button2Text)
 				w += 60
 		}
-		Gui, Add, Text, x%x% y%y% w%w% hwndText_%name% r1, %text%
+		Gui, Add, Text, x%x% y%y% w%w% hwndText_%name%, %text%
+		if(SubEventGUI.HasKey("Text_" name))
+			Msgbox Subevent GUI control already exists: %name%
 		SubEventGUI["Text_" name] := Text_%name%
 		if(description = "")
 			w -= 100
-		y -= 4
-		y += 20
-	}	
+		ControlGetPos,,,,h,,% "ahk_id " Text_%name%
+		y += h + 7
+		if(Tooltip)
+			AddToolTIp(Text_%name%, Tooltip)
+	}
 	else if(type = "Checkbox")
 	{
 		if(SubEvent[name] = 1)
@@ -41,8 +45,12 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 			if(SubEvent[name] != 0)
 				Msgbox SubEventGUI_Add(%type%,%name%, %text%, %description%) has wrong checkbox value!
 		}
-		y += 30
+		y += 30		
+		if(SubEventGUI.HasKey("Check_" name))
+			Msgbox Subevent GUI control already exists: %name%
 		SubEventGUI["Check_" name] := Check_%name%
+		if(Tooltip)
+			AddToolTIp(Check_%name%, Tooltip)
 	}
 	else if(type = "Edit")
 	{
@@ -53,13 +61,21 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 		Gui, Add, Edit, %options% , %text%
 		y -= 1
 		y += 30
+		if(SubEventGUI.HasKey("Edit_" name))
+			Msgbox Subevent GUI control already exists: %name%
 		SubEventGUI["Edit_" name] := Edit_%name%
+		if(Tooltip)
+			AddToolTIp(Edit_%name%, Tooltip)
 	}
 	else if(type = "Button")
 	{
 		Gui, Add, Button, x%x% y%y% w%w% hwndButton_%name% g%gLabel% r1 -Wrap, %text%
 		y += 30
+		if(SubEventGUI.HasKey("Button_" name))
+			Msgbox Subevent GUI control already exists: %name%
 		SubEventGUI["Button_" name] := Button_%name%
+		if(Tooltip)
+			AddToolTIp(Button_%name%, Tooltip)
 	}
 	else if(type = "DropDownList" || type = "ComboBox")
 	{
@@ -91,7 +107,11 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 			if(gLabel != "")
 				options .= " g" gLabel
 			Gui, Add, DropDownList, %options%, %text1%
+			if(SubEventGUI.HasKey("DropDown_" name))
+				Msgbox Subevent GUI control already exists: %name%
 			SubEventGUI["DropDown_" name] := DropDown_%name%
+			if(Tooltip)
+				AddToolTIp(DropDown_%name%, Tooltip)
 		}
 		else if(type = "ComboBox")
 		{
@@ -99,9 +119,13 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 			if(gLabel != "")
 				options .= " g" gLabel
 			Gui, Add, ComboBox, %options%, %text1%
+			if(SubEventGUI.HasKey("ComboBox_" name))
+				Msgbox Subevent GUI control already exists: %name%
 			SubEventGUI["ComboBox_" name] := ComboBox_%name%
 			if(!InStr(text1, "||"))
 				ControlSetText, , % SubEvent[name], % "ahk_id " ComboBox_%name%
+			if(Tooltip)
+				AddToolTIp(ComboBox_%name%, Tooltip)
 		}
 		y += 30
 	}	
@@ -110,8 +134,12 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 		text := SubEvent[name]
 		outputdebug time %text%
 		Gui, Add, DateTime, x%x% y%y% hwndTime_%name% Choose20100101%text%, Time
-		y += 30
+		y += 30		
+		if(SubEventGUI.HasKey("Time_" name))
+			Msgbox Subevent GUI control already exists: %name%
 		SubEventGUI["Time_" name] := Time_%name%
+		if(Tooltip)
+			AddToolTIp(Time_%name%, Tooltip)
 	}
 	if(Button1Text != "")
 	{				
@@ -134,7 +162,6 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 		}
 	}
 	SubEventGUI.y := y
-	z := SubEventGUI.y
 }
 SubEventGUI_GUISubmit(SubEvent, SubEventGUI)
 {

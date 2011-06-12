@@ -8,7 +8,6 @@ Condition_IsContextMenuActive_ReadXML(Condition, XMLCondition)
 Condition_IsContextMenuActive_Evaluate(Condition)
 {
 	x := IsContextMenuActive()
-	outputdebug x %x%
 	return x
 }
 Condition_IsContextMenuActive_DisplayString(Condition)

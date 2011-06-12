@@ -219,11 +219,12 @@ Action_Upload_GuiShow(Action, ActionGUI, GoToLabel = "")
 	if(GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
+		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action can upload files to FTP servers.")
 		; Action.tmpPassword := Action.Password
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "SourceFiles", "", "", "Source files:", "Browse", "Action_Upload_Browse", "Placeholders", "Action_Upload_Placeholders_SourceFiles")
 		Loop % FTPProfiles.len()
 			Profiles .= "|" A_Index ": " FTPProfiles[A_Index].Hostname
-		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "FTPProfile", Profiles, "", "FTP profile:")
+		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "FTPProfile", Profiles, "", "FTP profile:","","","","","FTP profiles are created on their specific sub page in the settings window.")
 		; SubEventGUI_Add(Action, ActionGUI, "Edit", "Hostname", "", "", "Hostname:")
 		; SubEventGUI_Add(Action, ActionGUI, "Edit", "Port", "", "", "Port:")
 		; SubEventGUI_Add(Action, ActionGUI, "Edit", "User", "", "", "Username:")
