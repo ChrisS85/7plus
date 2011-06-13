@@ -32,6 +32,7 @@
 <Description>Open CMD in C:\ when no useful directory can be extracted from the current context.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>384</ID>
 <Name>Run CMD</Name>
 <OfficialEvent>385</OfficialEvent>
@@ -72,6 +73,7 @@
 <Description>Open CMD with the path extracted from the title of the active window.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>385</ID>
 <Name>Run CMD with path from window title</Name>
 <OfficialEvent>386</OfficialEvent>
@@ -106,6 +108,7 @@
 <Description>Make it possible to close CMD with ALT+F4.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>387</ID>
 <Name>Close CMD with ALT + F4</Name>
 <OfficialEvent>388</OfficialEvent>
@@ -145,6 +148,7 @@
 <Description>Make it possible to paste text in CMD by pressing CTRL+V.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>388</ID>
 <Name>Enable CTRL+V to paste from clipboard</Name>
 <OfficialEvent>389</OfficialEvent>
@@ -175,6 +179,7 @@
 <Description>Open CMD in desktop directory when desktop window is active.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>1583</ID>
 <Name>Run CMD in desktop directory</Name>
 <OfficialEvent>987</OfficialEvent>

@@ -1,6 +1,6 @@
 GUI_EditEvent(e,GoToLabel="", Parameter="")
 {
-	static Event, result, SubeventGUI,SubEventBackup, EditEventTab, EditEventTriggerCategory, EditEventTriggerType, EditEventConditions, EditEvent_EditCondition, EditEvent_RemoveCondition, EditEvent_AddCondition, EditEventActions, EditEvent_EditAction, EditEvent_RemoveAction, EditEvent_AddAction, EditEvent_Condition_MoveDown, EditEvent_Condition_MoveUp, EditEvent_Action_MoveUp, EditEvent_Action_MoveDown, EditEvent_Name, EditEvent_Description, EditEvent_DisableAfterUse, EditEvent_DeleteAfterUse, EditEvent_OneInstance, EditEvent_Category, EditEvent_CopyCondition, EditEvent_PasteCondition, EditEvent_CopyAction, EditEvent_PasteAction, ActionClipboard, ConditionClipboard,EditConditionNegate,EditEventConditionsType,EditEventConditionsCategory,EditEventActionsType,EditEventActionsCategory
+	static Event, result, SubeventGUI,SubEventBackup, EditEventTab, EditEventTriggerCategory, EditEventTriggerType, EditEventConditions, EditEvent_EditCondition, EditEvent_RemoveCondition, EditEvent_AddCondition, EditEventActions, EditEvent_EditAction, EditEvent_RemoveAction, EditEvent_AddAction, EditEvent_Condition_MoveDown, EditEvent_Condition_MoveUp, EditEvent_Action_MoveUp, EditEvent_Action_MoveDown, EditEvent_Name, EditEvent_Description, EditEvent_DisableAfterUse, EditEvent_DeleteAfterUse, EditEvent_OneInstance, EditEvent_Category, EditEvent_CopyCondition, EditEvent_PasteCondition, EditEvent_CopyAction, EditEvent_PasteAction, ActionClipboard, ConditionClipboard,EditConditionNegate,EditEventConditionsType,EditEventConditionsCategory,EditEventActionsType,EditEventActionsCategory,EditEvent_ComplexEvent
 	global Trigger_Categories, Settings_Events, Condition_Categories, Action_Categories
 	if(GoToLabel = "")
 	{
@@ -190,6 +190,11 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 		y += 30
 		OneInstance := Event.OneInstance = 1 ? 1 : 0
 		Gui, Add, Checkbox, x%x% y%y% vEditEvent_OneInstance Checked%OneInstance%, Disallow this event from being run in parallel
+		
+		y += 30
+		ComplexEvent := Event.EventComplexityLevel = 1 ? 1 : 0
+		Gui, Add, Checkbox, x%x% y%y% vEditEvent_ComplexEvent Checked%ComplexEvent%, Advanced event (hidden from simple view)
+		
 		GuiControlGet, EditEventTab ;Get it the first time manually
 		GoSub FillCategories
 		GoSub EditSubeventCategory
@@ -257,6 +262,7 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 		Event.DisableAfterUse := EditEvent_DisableAfterUse
 		Event.DeleteAfterUse := EditEvent_DeleteAfterUse
 		Event.OneInstance := EditEvent_OneInstance
+		Event.EventComplexityLevel := EditEvent_ComplexEvent
 		result := Event
 		Gui 1:+LastFoundExist
 		IfWinExist		

@@ -24,6 +24,7 @@
 <Description></Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>1584</ID>
 <Name>Run with parameters</Name>
 <OfficialEvent>988</OfficialEvent>
@@ -53,6 +54,7 @@
 <Description>Opens a dialog for batch image conversion.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>1585</ID>
 <Name>Batch image converter</Name>
 <OfficialEvent>989</OfficialEvent>
@@ -82,6 +84,7 @@
 <Description>Opens a dialog that displays MD5 checksums of the selected files.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>1586</ID>
 <Name>MD5 Checksums</Name>
 <OfficialEvent>990</OfficialEvent>
@@ -116,6 +119,7 @@
 <Description>Uploads the selected files to an FTP server.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>1587</ID>
 <Name>Context Menu Upload</Name>
 <OfficialEvent>991</OfficialEvent>
@@ -145,6 +149,7 @@
 <Description>Toggles the visibility of hidden files.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>1588</ID>
 <Name>Toggle Hidden Files</Name>
 <OfficialEvent>992</OfficialEvent>
@@ -174,6 +179,7 @@
 <Description>This event adds a context menu on directories to show them in a flat view.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>1624</ID>
 <Name>Flat View in directory menus</Name>
 <OfficialEvent>21</OfficialEvent>

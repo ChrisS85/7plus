@@ -18,6 +18,7 @@
 <Description>Upload the selected files to the FTP server defined in FTP profile 1 by clicking on the "Upload" button in explorer. Make sure to enter FTP login data for FTP profile 1.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>978</ID>
 <Name>Upload selected files</Name>
 <OfficialEvent>979</OfficialEvent>
@@ -44,6 +45,7 @@
 <Description>Create a new text file by clicking on the "New text file" button in explorer.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>979</ID>
 <Name>New text file</Name>
 <OfficialEvent>980</OfficialEvent>

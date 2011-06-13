@@ -160,6 +160,8 @@ if(Vista7 && (ClipboardListenerRegistered := DllCall("AddClipboardFormatListener
 	OnMessage(0x031D, "OnClipboardChange")
 DetectHiddenWindows, On
 
+IniRead, ShowComplexEvents, %IniPath%, General, ShowComplexEvents, 0
+
 IniRead, HKPlacesBar, %IniPath%, Explorer, HKPlacesBar, 0
 IniRead, HKCleanFolderBand, %IniPath%, Explorer, HKCleanFolderBand, 0
 IniRead, HKFolderBand, %IniPath%, Explorer, HKFolderBand, 0
@@ -215,7 +217,7 @@ if(FileExist(ConfigPath "\Clipboard.xml"))
 		XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()		
 
 	Loop % min(XMLObject.List.len(), 10)
-		ClipboardList.append(XMLObject.List[A_Index])
+		ClipboardList.append(Decrypt(XMLObject.List[A_Index])) ;Read encrypted clipboard history
 }
 FastFolders := Array()
 Loop 10
@@ -346,12 +348,13 @@ WriteIni()
 	IniWrite, %DebugEnabled%, %IniPath%, General, DebugEnabled
 	IniWrite, %ProfilingEnabled%, %IniPath%, General, ProfilingEnabled
 	IniWrite, %ShowEvents%, %IniPath%, General, ShowEvents
+	IniWrite, %ShowComplexEvents%, %IniPath%, General, ShowComplexEvents
+	
 	IniWrite, %ImgName%, %IniPath%, Explorer, Image
 	IniWrite, %TxtName%, %IniPath%, Explorer, Text
 	IniWrite, %HKPlacesBar%, %IniPath%, Explorer, HKPlacesBar
 	IniWrite, %HKCleanFolderBand%, %IniPath%, Explorer, HKCleanFolderBand
-	IniWrite, %HKFolderBand%, %IniPath%, Explorer, HKFolderBand
-	
+	IniWrite, %HKFolderBand%, %IniPath%, Explorer, HKFolderBand	
 	IniWrite, %HKSelectFirstFile%, %IniPath%, Explorer, HKSelectFirstFile
 	IniWrite, %HKImproveEnter%, %IniPath%, Explorer, HKImproveEnter
 	IniWrite, %HKShowSpaceAndSize%, %IniPath%, Explorer, HKShowSpaceAndSize
@@ -378,6 +381,7 @@ WriteIni()
 	IniWrite, %SlideWindowsModifier%, %IniPath%, Windows, SlideWindowsModifier
 	IniWrite, %HKAltDrag%, %IniPath%, Windows, HKAltDrag
 	IniWrite, %ShowResizeTooltip%, %IniPath%, Windows, ShowResizeTooltip
+	
 	IniWrite, %ImageExtensions%, %IniPath%, Misc, ImageExtensions
 	IniWrite, %JoyControl%, %IniPath%, Misc, JoyControl
 	IniWrite, %FullscreenExclude%, %IniPath%, Misc, FullscreenExclude
@@ -407,12 +411,19 @@ WriteIni()
 }
 WriteClipboard()
 {
-	global ConfigPath, ClipboardList
+	global ConfigPath, ClipboardList, Events
 	FileDelete, %ConfigPath%\Clipboard.xml
-	XMLObject := Object("List",Array())
-	Loop % min(ClipboardList.len(), 10)
-		XMLObject.List.append(ClipboardList[A_Index])
-	XML_Save(XMLObject,ConfigPath "\Clipboard.xml")
+	Loop % Events.len() ;Check if clipboard history is actually used and don't store the history when it isn't
+	{
+		if((Events[A_Index].SubItem("Type", "Clipmenu") || Events[A_Index].SubItem("Type", "ClipPaste"))&& Events[A_Index].Enabled)
+		{
+			XMLObject := Object("List",Array())
+			Loop % min(ClipboardList.len(), 10)
+				XMLObject.List.append(Encrypt(ClipboardList[A_Index])) ;Store encrypted
+			XML_Save(XMLObject,ConfigPath "\Clipboard.xml")
+			break
+		}
+	}
 }
 ProcessCommandLineParameters()
 {

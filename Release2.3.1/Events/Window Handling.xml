@@ -33,6 +33,7 @@
 <Description>Close a window by middle clicking it's title bar.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>305</ID>
 <Name>Middle click on title: Close window under mouse</Name>
 <OfficialEvent>306</OfficialEvent>
@@ -56,6 +57,7 @@
 <Description>Activate notification windows, flashing windows in the taskbar, or toggle between the current and the previously active window. Very useful for quickly responding to chats and switching back.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>307</ID>
 <Name>Activate notification/flashing/previous window</Name>
 <OfficialEvent>308</OfficialEvent>
@@ -123,6 +125,7 @@
 <Description>Right click on the titlebar of a window to toggle its "Always on top" property. This is useful for keeping a window visible so that you can easily copy data from and to it.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>308</ID>
 <Name>Right click on titlebar: Toggle always on top</Name>
 <OfficialEvent>309</OfficialEvent>
@@ -163,6 +166,7 @@
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>1</DisableAfterUse>
 <Enabled>0</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>309</ID>
 <Name>Toggle always on top -&gt; Context menu active</Name>
 <OfficialEvent>310</OfficialEvent>
@@ -197,6 +201,7 @@
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>310</ID>
 <Name>Toggle always on top -&gt; No context menu active</Name>
 <OfficialEvent>311</OfficialEvent>
@@ -235,6 +240,7 @@
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>311</ID>
 <Name>Toggle always on top -&gt; context menu timeout</Name>
 <OfficialEvent>312</OfficialEvent>
@@ -264,6 +270,7 @@
 <Description>Removes "Always on top" window property when the window gets maximized. This is done so that you can still switch to other windows by activating them, instead of having to minimize the window which is always on top.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>316</ID>
 <Name>Remove always on top when window gets maximized</Name>
 <OfficialEvent>317</OfficialEvent>
@@ -304,6 +311,7 @@
 <Description>Right click on the close button of a window to kill its process.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>312</ID>
 <Name>Right click on close button: Force-close window</Name>
 <OfficialEvent>313</OfficialEvent>
@@ -330,6 +338,7 @@
 <Description>Kill the process of the active window.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>313</ID>
 <Name>Force-close active program</Name>
 <OfficialEvent>314</OfficialEvent>
@@ -356,6 +365,7 @@
 <Description>Maximize the window under the mouse.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>314</ID>
 <Name>Maximize window under mouse</Name>
 <OfficialEvent>315</OfficialEvent>
@@ -382,6 +392,7 @@
 <Description>Restore or minimize the window under the mouse.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>315</ID>
 <Name>Restore / Minimize window under mouse</Name>
 <OfficialEvent>316</OfficialEvent>
@@ -407,6 +418,7 @@
 <Description>Move the window under the mouse to the bottom of the window stack.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>1582</ID>
 <Name>Move window to bottom</Name>
 <OfficialEvent>986</OfficialEvent>
@@ -432,6 +444,7 @@
 <Description>This event shows the Aero Flip 3D Task switching dialog (or the standard task switcher dialog if unavailable) when the mouse is moved to the top left corner of the screen.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>1625</ID>
 <Name>Show Aero Flip 3D</Name>
 <OfficialEvent>26</OfficialEvent>

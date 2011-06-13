@@ -20,6 +20,7 @@
 <Description>Open CMD in the current directory of the active file dialog window.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>596</ID>
 <Name>Run CMD in current directory</Name>
 <OfficialEvent>597</OfficialEvent>
@@ -58,6 +59,7 @@
 <Description>Append selected files to clipboard, instead of replacing the current files on the clipboard.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>597</ID>
 <Name>Append file(s) to clipboard</Name>
 <OfficialEvent>598</OfficialEvent>
@@ -96,6 +98,7 @@
 <Description>Append selected files to clipboard, instead of replacing the current files on the clipboard. The clipboard will be set to perform a paste operation.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>598</ID>
 <Name>Append file(s) to clipboard: Cut</Name>
 <OfficialEvent>599</OfficialEvent>
@@ -134,6 +137,7 @@
 <Description>Make backspace go upwards in file dialogs, like in the good ol' XP.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>600</ID>
 <Name>Make backspace go upwards</Name>
 <OfficialEvent>601</OfficialEvent>
@@ -169,6 +173,7 @@
 <Description>Copy the names of the selected files to the clipboard.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>816</ID>
 <Name>Copy filenames to clipboard</Name>
 <OfficialEvent>817</OfficialEvent>
@@ -204,6 +209,7 @@
 <Description>Copy the paths of the selected files to the clipboard.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>817</ID>
 <Name>Copy full filepaths to clipboard</Name>
 <OfficialEvent>818</OfficialEvent>
@@ -239,6 +245,7 @@
 <Description>Append the names of the selected files to the clipboard.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>818</ID>
 <Name>Append filenames to clipboard</Name>
 <OfficialEvent>819</OfficialEvent>
@@ -274,6 +281,7 @@
 <Description>Append the paths of the selected files to the clipboard.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>819</ID>
 <Name>Append full filepaths to clipboard</Name>
 <OfficialEvent>820</OfficialEvent>
@@ -304,6 +312,7 @@
 <Description>Create a new text file in the directory of the currently active file dialog.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>826</ID>
 <Name>Create new textfile</Name>
 <OfficialEvent>827</OfficialEvent>
@@ -333,6 +342,7 @@
 <Description>Create a new folder in the directory of the currently active file dialog.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>827</ID>
 <Name>Create new folder</Name>
 <OfficialEvent>828</OfficialEvent>
@@ -369,6 +379,7 @@
 <Description>Open selected image files in an image editor (Paint.NET by default).</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>895</ID>
 <Name>Open image files in image editor</Name>
 <OfficialEvent>896</OfficialEvent>
@@ -405,6 +416,7 @@
 <Description>Open selected non-image files in a text editor (Notepad++ by default).</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>896</ID>
 <Name>Open non-image files in text editor</Name>
 <OfficialEvent>897</OfficialEvent>

@@ -210,6 +210,10 @@ EventSystem_CreateEvent()
 	Event.Name := "New event"
 	Event.Category := "Uncategorized"
 	Event.Enabled := 1
+	Event.EventComplexityLevel := 0
+	Event.OneInstance := 0
+	Event.DeleteAfterUse := 0
+	Event.DisableAfterUse := 0
 	Event.Trigger := EventSystem_CreateSubEvent("Trigger", "Hotkey")
 	Event.Conditions := Array()
 	Event.Actions := Array()
@@ -364,6 +368,7 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 		
 		if(!XMLEvent)
 			continue
+		
 		;Create new Event
 		Event := EventSystem_CreateEvent()
 		
@@ -409,18 +414,30 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 		;Disable after use
 		if(XMLEvent.HasKey("DisableAfterUse"))
 			Event.DisableAfterUse := XMLEvent.DisableAfterUse
+		else
+			Event.Remove("DisableAfterUse")
 		
 		;Delete after use
 		if(XMLEvent.HasKey("DeleteAfterUse"))
 			Event.DeleteAfterUse := XMLEvent.DeleteAfterUse
+		else
+			Event.Remove("DeleteAfterUse")
 		
 		;One Instance
 		if(XMLEvent.HasKey("OneInstance"))
 			Event.OneInstance := XMLEvent.OneInstance
+		else
+			Event.Remove("OneInstance")+
 		
 		;Official event identifier for update processes
 		if(XMLEvent.HasKey("OfficialEvent"))
 			Event.OfficialEvent := XMLEvent.OfficialEvent
+		
+		;Complexity level indicates if an event may be hidden from the user to avoid confusion(1) or if it is always shown(0)
+		if(XMLEvent.HasKey("EventComplexityLevel"))
+			Event.EventComplexityLevel := XMLEvent.EventComplexityLevel
+		else
+			Event.Remove("EventComplexityLevel")
 		
 		;Read trigger values
 		if(XMLEvent.HasKey("Trigger"))
@@ -623,13 +640,16 @@ WriteEventsFile(Events, path)
 		;One Instance
 		xmlEvent.OneInstance := Event.OneInstance
 		
+		;Complexity level
+		xmlEvent.EventComplexityLevel := Event.EventComplexityLevel
+		
 		if(Event.Officialevent)
 			xmlEvent.OfficialEvent := Event.OfficialEvent
 		
-		;Enable the lines below to save events with an "official" tag that allows to identify them in update processes
-		; if(!Event.OfficialEvent)
-		; {
-			; Find an unused Event ID to be used as Official Event ID
+		
+		;Uncomment the lines below to save events with an "official" tag that allows to identify them in update processes
+		; if(!Event.OfficialEvent) ;Find an unused Event ID to be used as Official Event ID
+		; {			
 			; Loop
 			; {
 				; if(Events.IndexOfSubItem("OfficialEvent", A_Index))
@@ -639,6 +659,7 @@ WriteEventsFile(Events, path)
 				; break
 			; }
 		; }
+		
 		
 		xmlTrigger := Object()
 		xmlEvent.Trigger := xmlTrigger

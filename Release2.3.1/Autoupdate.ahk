@@ -84,7 +84,7 @@ ApplyFreshInstallSteps()
 ;C) If the user manually extracted a newer version
 ApplyUpdateFixes()
 {
-	global MajorVersion, MinorVersion, BugfixVersion, XMLMajorVersion, XMLMinorVersion, XMLBugfixVersion, Vista7, Events
+	global MajorVersion, MinorVersion, BugfixVersion, XMLMajorVersion, XMLMinorVersion, XMLBugfixVersion, Vista7, Events, ConfigPath
 	;On fresh installation, the versions are identical since a new Events.xml is used and no events patch needs to be applied
 	;After autoupdate has finished, the XML version is lower and the events are patched
 	;After manually overwriting 7plus, the XML version is lower and the events are patched
@@ -124,6 +124,26 @@ ApplyUpdateFixes()
 		FileDelete, %A_ScriptDir%\Events\ExplorerButtons.xml
 		FileDelete, %A_ScriptDir%\Events\FastFolders.xml
 		FileDelete, %A_ScriptDir%\Events\WindowHandling.xml
+		
+		;Encrypt existing clipboard history
+		ClipboardList := Array()
+		ClipboardList.push := "Stack_Push"
+		ClipboardList := Object("Base", ClipboardList)
+		if(FileExist(ConfigPath "\Clipboard.xml"))
+		{
+			FileRead, xml, %ConfigPath%\Clipboard.xml
+			XMLObject := XML_Read(xml)
+			;Convert empty and single arrays to real array
+			if(!XMLObject.List.len())
+				XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()		
+
+			Loop % min(XMLObject.List.len(), 10)
+				ClipboardList.append(Decrypt(XMLObject.List[A_Index])) ;Read encrypted clipboard history
+			XMLObject := Object("List",Array())
+			Loop % min(ClipboardList.len(), 10)
+				XMLObject.List.append(Encrypt(ClipboardList[A_Index])) ;Store encrypted
+			XML_Save(XMLObject,ConfigPath "\Clipboard.xml")
+		}
 	}
 }
 AutoUpdate_CheckPatches()

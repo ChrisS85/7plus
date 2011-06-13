@@ -46,22 +46,22 @@ Finally, here are some settings that you're likely to change at the beginning:
 Settings_CreateEvents(ByRef TabCount) {
 	global
 	local yIt,x1,x2,x,y
-	outputdebug createevents() start
 	x1:=xBase+10
 	x2 := x1 + 530
 	yIt:=yBase
 	Gui, 1:Add, Tab2, x176 y14 w460 h350 vEventsTab, 
 	TabCount++
 	AddTab(0, "","SysTabControl32" TabCount)
-	Gui, 1:Add, Text, x%x1% y%yIt% R3, You can add events here that are triggered under certain conditions. When triggered,`nthe event can launch a series of actions. This is a very powerful tool to add `nall kinds of features, and many features from 7plus are now implemented with this system.
-	yIt+=54
-	Gui, 1:Add, Text, x%x1% y%yIt%, Event search:
+	Gui, 1:Add, Text, x%x1% y%yIt% w600, You can add events here that are triggered under certain conditions. When triggered, the event can launch a series of actions. This is a very powerful tool to add all kinds of features, and many features from 7plus are now implemented with this system.
+	yIt+=41
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vShowComplexEvents gShowAllEvents, Show all events
+	Gui, 1:Add, Text, x+198 y%yIt%, Event search:
 	yIt-=4
-	Gui, 1:Add, Edit, x+10 y%yIt% w445 hwndEventFilter gEventFilterChange
+	Gui, 1:Add, Edit, x+10 y%yIt% w150 hwndEventFilter gEventFilterChange
 	yIt += textboxstep
-	Gui, 1:Add, ListView, x%x1% y%yIt% w520 h232 vGUI_EventsList gGUI_EventsList_SelectionChange Grid -LV0x10 AltSubmit Checked, Enabled|ID|Trigger|Name
+	Gui, 1:Add, ListView, x%x1% y%yIt% w520 h263 vGUI_EventsList gGUI_EventsList_SelectionChange Grid -LV0x10 AltSubmit Checked, Enabled|ID|Trigger|Name
 	OnMessage(0x0111, "WM_COMMAND")
-	Gui, 1:Add, Edit, x%x1% y+10 w520 h60 vGUI_EventsDescription +ReadOnly
+	Gui, 1:Add, Edit, x%x1% y+10 w520 h50 vGUI_EventsDescription +ReadOnly
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Add gGUI_EventsList_Add, Add Event
 	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Remove gGUI_EventsList_Remove, Delete Event
@@ -71,7 +71,7 @@ Settings_CreateEvents(ByRef TabCount) {
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Copy gGUI_EventsList_Copy, Copy Event
 	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Paste gGUI_EventsList_Paste Disabled, Paste Event
-	yIt += textboxstep
+	yIt += textboxstep * 2
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Import gGUI_EventsList_Import, Import
 	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_EventsList_Export gGUI_EventsList_Export, Export
@@ -79,7 +79,6 @@ Settings_CreateEvents(ByRef TabCount) {
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 gGUI_EventsList_Help, Help
 	yIt += textboxstep + 4
 	y := yIt + TextBoxTextOffset
-	outputdebug createevents() stop
 }
 Settings_CreateAccessorKeywords(ByRef TabCount) {
 	global
@@ -543,12 +542,14 @@ Settings_SetupEvents() {
 	GuiControl, 1:enable, GUI_EventsList_Remove
 	GuiControl, 1:enable, GUI_EventsList_Edit
 	GuiControl, 1:enable, GUI_EventsList_Copy
+	GuiControl, 1:, ShowComplexEvents, % ShowComplexEvents = 1
 	ControlFocus, SysListView321, A
 	if(!WasCritical)
 		Critical, Off
 }
-FillEventsList(){
-	global EventFilter, Settings_Events
+FillEventsList()
+{
+	global EventFilter, Settings_Events, ShowComplexEvents
 	WasCritical := A_IsCritical
 	Critical
 	Gui, 1:Default
@@ -570,7 +571,7 @@ FillEventsList(){
 		DisplayString := Settings_Events[A_Index].Trigger.DisplayString()
 		Name := Settings_Events[A_Index].Name
 		scroll := false
-		if((!filter || InStr(id, filter) || InStr(DisplayString, Filter) || InStr(Name, filter) || InStr(Settings_Events[A_Index].Description, Filter)) && (filter || !Category || Category = Settings_Events[A_Index].Category))
+		if(((!filter || InStr(id, filter) || InStr(DisplayString, Filter) || InStr(Name, filter) || InStr(Settings_Events[A_Index].Description, Filter)) && (filter || !Category || Category = Settings_Events[A_Index].Category)) && (ShowComplexEvents || !Settings_Events[A_Index].EventComplexityLevel))
 		{
 			Gui, ListView, GUI_EventsList
 			LV_Add((SelectedID != "" && id = SelectedID  && (scroll := 1) ? "Select Focus" : "") (Settings_Events[A_Index].Enabled ? " Check": " "), "", id, DisplayString, name)
@@ -594,7 +595,7 @@ FillEventsList(){
 }
 RecreateTreeView()
 {
-	global Settings_Events, SettingsTabList, SuppressTreeViewMessages
+	global Settings_Events, SettingsTabList, SuppressTreeViewMessages, ShowComplexEvents
 	WasCritical := A_IsCritical
 	Critical
 	Gui, 1:Default
@@ -604,13 +605,23 @@ RecreateTreeView()
 	i := LV_GetNext("")
 	LV_GetText(id,i,2)
 	selected := TV_GetSelection()
-	TV_GetText(Category, selected)
+	TV_GetText(CurrentCategory, selected)
 	SuppressTreeViewMessages := true
 	TV_Delete()
 	TV_Add("Introduction") ;Note: Treeview is also created once in initial setup
 	EventsTreeViewEntry := TV_Add("All Events", "", "Expand Select Vis" )
 	Loop % Settings_Events.Categories.len()
-		TV_Add(Settings_Events.Categories[A_Index], EventsTreeViewEntry, "Sort" (Category = Settings_Events.Categories[A_Index] ? " Select Vis" : ""))
+	{
+		Category := Settings_Events.Categories[A_Index]
+		Loop % Settings_Events.len()
+		{
+			if(ShowComplexEvents || (Settings_Events[A_Index].Category = Category && !Settings_Events[A_Index].EventComplexityLevel))
+			{
+				TV_Add(Category, EventsTreeViewEntry, "Sort" (CurrentCategory = Category ? " Select Vis" : ""))
+				break
+			}
+		}
+	}
 	Loop, Parse, SettingsTabList, |
 		if(A_LoopField != "Introduction")
 			TV_Add(A_LoopField)
@@ -1047,6 +1058,10 @@ SettingsTreeViewEvents()
 EventFilterChange:
 FillEventsList()
 return
+ShowAllEvents:
+GuiControlGet,ShowComplexEvents
+RecreateTreeView()
+return
 GUI_EventsList_SelectionChange:
 GUI_EventsList_Update()
 return
@@ -1287,8 +1302,9 @@ GUI_EventsList_Import()
 GUI_EventsList_Export()
 {
 	global Settings_Events
-	;Uncomment the following lines to export all events separated by category to Events\Category.xml instead
-	;
+	
+	
+	;Uncomment the following lines to export all events separated by category to Events\Category.xml instead	
 	; Loop % Settings_Events.Categories.len()
 	; {
 		; Category := Settings_Events.Categories[A_Index]
@@ -1301,9 +1317,10 @@ GUI_EventsList_Export()
 		; if(Events.len() > 0)
 			; WriteEventsFile(Events, A_ScriptDir "\Events\" Category ".xml")
 	; }
-	; WriteEventsFile(Events, A_ScriptDir "\Events\All Events.xml")
+	; WriteEventsFile(Settings_Events, A_ScriptDir "\Events\All Events.xml")
 	; return
-	;
+	
+	
 	Gui, ListView, GUI_EventsList
 	count := LV_GetCount("Selected")
 	if(count > 0)

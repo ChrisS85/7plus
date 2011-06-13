@@ -39,6 +39,7 @@
 <Description>Take a screenshot of the currently active window and upload it to the FTP server defined in FTP profile 1. Make sure to configure the FTP profile with your FTP login data.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>379</ID>
 <Name>Upload screenshot of active window</Name>
 <OfficialEvent>380</OfficialEvent>
@@ -86,6 +87,7 @@
 <Description>Take a screenshot of the desktop and upload it to the FTP server defined in FTP profile 1. Make sure to configure the FTP profile with your FTP login data.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>380</ID>
 <Name>Upload screenshot</Name>
 <OfficialEvent>381</OfficialEvent>
@@ -121,6 +123,7 @@
 <Description>Upload the file(s) selected in the currently active explorer window to the FTP server defined in FTP profile 1. Make sure to configure the FTP profile with your FTP login data.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>381</ID>
 <Name>Explorer: Upload selected files</Name>
 <OfficialEvent>382</OfficialEvent>
@@ -154,6 +157,7 @@
 <Description>Upload the file(s) selected in the currently active file dialog window to the FTP server defined in FTP profile 1. Make sure to configure the FTP profile with your FTP login data.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>382</ID>
 <Name>File Dialog: Upload selected files</Name>
 <OfficialEvent>383</OfficialEvent>

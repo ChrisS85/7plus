@@ -22,6 +22,7 @@
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 0.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>319</ID>
 <Name>Open Fast Folders Slot 0</Name>
 <OfficialEvent>320</OfficialEvent>
@@ -50,6 +51,7 @@
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 0.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>320</ID>
 <Name>Open Fast Folders Slot 0</Name>
 <OfficialEvent>321</OfficialEvent>
@@ -80,6 +82,7 @@
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 1.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>321</ID>
 <Name>Open Fast Folders Slot 1</Name>
 <OfficialEvent>322</OfficialEvent>
@@ -108,6 +111,7 @@
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 1.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>322</ID>
 <Name>Open Fast Folders Slot 1</Name>
 <OfficialEvent>323</OfficialEvent>
@@ -138,6 +142,7 @@
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 2.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>323</ID>
 <Name>Open Fast Folders Slot 2</Name>
 <OfficialEvent>324</OfficialEvent>
@@ -166,6 +171,7 @@
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 3.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>324</ID>
 <Name>Open Fast Folders Slot 2</Name>
 <OfficialEvent>325</OfficialEvent>
@@ -196,6 +202,7 @@
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 3.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>325</ID>
 <Name>Open Fast Folders Slot 3</Name>
 <OfficialEvent>326</OfficialEvent>
@@ -224,6 +231,7 @@
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 4.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>326</ID>
 <Name>Open Fast Folders Slot 3</Name>
 <OfficialEvent>327</OfficialEvent>
@@ -254,6 +262,7 @@
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 4.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>327</ID>
 <Name>Open Fast Folders Slot 4</Name>
 <OfficialEvent>328</OfficialEvent>
@@ -282,6 +291,7 @@
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 5.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>328</ID>
 <Name>Open Fast Folders Slot 4</Name>
 <OfficialEvent>329</OfficialEvent>
@@ -312,6 +322,7 @@
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 5.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>329</ID>
 <Name>Open Fast Folders Slot 5</Name>
 <OfficialEvent>330</OfficialEvent>
@@ -340,6 +351,7 @@
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 6.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>330</ID>
 <Name>Open Fast Folders Slot 5</Name>
 <OfficialEvent>331</OfficialEvent>
@@ -370,6 +382,7 @@
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 6.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>331</ID>
 <Name>Open Fast Folders Slot 6</Name>
 <OfficialEvent>332</OfficialEvent>
@@ -398,6 +411,7 @@
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 7.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>332</ID>
 <Name>Open Fast Folders Slot 6</Name>
 <OfficialEvent>333</OfficialEvent>
@@ -428,6 +442,7 @@
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 7.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>333</ID>
 <Name>Open Fast Folders Slot 7</Name>
 <OfficialEvent>334</OfficialEvent>
@@ -456,6 +471,7 @@
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 8.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>334</ID>
 <Name>Open Fast Folders Slot 7</Name>
 <OfficialEvent>335</OfficialEvent>
@@ -486,6 +502,7 @@
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 8.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>335</ID>
 <Name>Open Fast Folders Slot 8</Name>
 <OfficialEvent>336</OfficialEvent>
@@ -514,6 +531,7 @@
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 9.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>336</ID>
 <Name>Open Fast Folders Slot 8</Name>
 <OfficialEvent>337</OfficialEvent>
@@ -544,6 +562,7 @@
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 9.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>337</ID>
 <Name>Open Fast Folders Slot 9</Name>
 <OfficialEvent>338</OfficialEvent>
@@ -572,6 +591,7 @@
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 9.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>338</ID>
 <Name>Open Fast Folders Slot 9</Name>
 <OfficialEvent>339</OfficialEvent>
@@ -603,6 +623,7 @@
 <Description>Save the path of the currently active explorer window in FastFolders Slot 0.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>339</ID>
 <Name>Save Fast Folders Slot 0</Name>
 <OfficialEvent>340</OfficialEvent>
@@ -632,6 +653,7 @@
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 0.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>340</ID>
 <Name>Save Fast Folders Slot 0</Name>
 <OfficialEvent>341</OfficialEvent>
@@ -663,6 +685,7 @@
 <Description>Save the path of the currently active explorer window in FastFolders Slot 1.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>341</ID>
 <Name>Save Fast Folders Slot 1</Name>
 <OfficialEvent>342</OfficialEvent>
@@ -692,6 +715,7 @@
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 1.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>342</ID>
 <Name>Save Fast Folders Slot 1</Name>
 <OfficialEvent>343</OfficialEvent>
@@ -723,6 +747,7 @@
 <Description>Save the path of the currently active explorer window in FastFolders Slot 2.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>343</ID>
 <Name>Save Fast Folders Slot 2</Name>
 <OfficialEvent>344</OfficialEvent>
@@ -752,6 +777,7 @@
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 2.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>344</ID>
 <Name>Save Fast Folders Slot 2</Name>
 <OfficialEvent>345</OfficialEvent>
@@ -783,6 +809,7 @@
 <Description>Save the path of the currently active explorer window in FastFolders Slot 3.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>345</ID>
 <Name>Save Fast Folders Slot 3</Name>
 <OfficialEvent>346</OfficialEvent>
@@ -812,6 +839,7 @@
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 3.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>346</ID>
 <Name>Save Fast Folders Slot 3</Name>
 <OfficialEvent>347</OfficialEvent>
@@ -843,6 +871,7 @@
 <Description>Save the path of the currently active explorer window in FastFolders Slot 4.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>347</ID>
 <Name>Save Fast Folders Slot 4</Name>
 <OfficialEvent>348</OfficialEvent>
@@ -872,6 +901,7 @@
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 4.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>348</ID>
 <Name>Save Fast Folders Slot 4</Name>
 <OfficialEvent>349</OfficialEvent>
@@ -903,6 +933,7 @@
 <Description>Save the path of the currently active explorer window in FastFolders Slot 5.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>349</ID>
 <Name>Save Fast Folders Slot 5</Name>
 <OfficialEvent>350</OfficialEvent>
@@ -932,6 +963,7 @@
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 5.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>350</ID>
 <Name>Save Fast Folders Slot 5</Name>
 <OfficialEvent>351</OfficialEvent>
@@ -963,6 +995,7 @@
 <Description>Save the path of the currently active explorer window in FastFolders Slot 6.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>351</ID>
 <Name>Save Fast Folders Slot 6</Name>
 <OfficialEvent>352</OfficialEvent>
@@ -992,6 +1025,7 @@
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 6.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>352</ID>
 <Name>Save Fast Folders Slot 6</Name>
 <OfficialEvent>353</OfficialEvent>
@@ -1023,6 +1057,7 @@
 <Description>Save the path of the currently active explorer window in FastFolders Slot 7.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>353</ID>
 <Name>Save Fast Folders Slot 7</Name>
 <OfficialEvent>354</OfficialEvent>
@@ -1052,6 +1087,7 @@
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 7.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>354</ID>
 <Name>Save Fast Folders Slot 7</Name>
 <OfficialEvent>355</OfficialEvent>
@@ -1083,6 +1119,7 @@
 <Description>Save the path of the currently active explorer window in FastFolders Slot 8.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>355</ID>
 <Name>Save Fast Folders Slot 8</Name>
 <OfficialEvent>356</OfficialEvent>
@@ -1112,6 +1149,7 @@
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 8.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>356</ID>
 <Name>Save Fast Folders Slot 8</Name>
 <OfficialEvent>357</OfficialEvent>
@@ -1143,6 +1181,7 @@
 <Description>Save the path of the currently active explorer window in FastFolders Slot 9.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
 <ID>357</ID>
 <Name>Save Fast Folders Slot 9</Name>
 <OfficialEvent>358</OfficialEvent>
@@ -1172,6 +1211,7 @@
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 9.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>358</ID>
 <Name>Save Fast Folders Slot 9</Name>
 <OfficialEvent>359</OfficialEvent>
@@ -1205,6 +1245,7 @@
 <Description>Clear the path stored in FastFolders slot 0.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>359</ID>
 <Name>Clear Fast Folders Slot 0</Name>
 <OfficialEvent>360</OfficialEvent>
@@ -1236,6 +1277,7 @@
 <Description>Clear the path stored in FastFolders slot 0.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>360</ID>
 <Name>Clear Fast Folders Slot 0</Name>
 <OfficialEvent>361</OfficialEvent>
@@ -1269,6 +1311,7 @@
 <Description>Clear the path stored in FastFolders slot 1.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>361</ID>
 <Name>Clear Fast Folders Slot 1</Name>
 <OfficialEvent>362</OfficialEvent>
@@ -1300,6 +1343,7 @@
 <Description>Clear the path stored in FastFolders slot 1.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>362</ID>
 <Name>Clear Fast Folders Slot 1</Name>
 <OfficialEvent>363</OfficialEvent>
@@ -1333,6 +1377,7 @@
 <Description>Clear the path stored in FastFolders slot 2.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>363</ID>
 <Name>Clear Fast Folders Slot 2</Name>
 <OfficialEvent>364</OfficialEvent>
@@ -1364,6 +1409,7 @@
 <Description>Clear the path stored in FastFolders slot 2.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>364</ID>
 <Name>Clear Fast Folders Slot 2</Name>
 <OfficialEvent>365</OfficialEvent>
@@ -1397,6 +1443,7 @@
 <Description>Clear the path stored in FastFolders slot 3.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>365</ID>
 <Name>Clear Fast Folders Slot 3</Name>
 <OfficialEvent>366</OfficialEvent>
@@ -1428,6 +1475,7 @@
 <Description>Clear the path stored in FastFolders slot 3.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>366</ID>
 <Name>Clear Fast Folders Slot 3</Name>
 <OfficialEvent>367</OfficialEvent>
@@ -1461,6 +1509,7 @@
 <Description>Clear the path stored in FastFolders slot 4.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>367</ID>
 <Name>Clear Fast Folders Slot 4</Name>
 <OfficialEvent>368</OfficialEvent>
@@ -1492,6 +1541,7 @@
 <Description>Clear the path stored in FastFolders slot 4.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>368</ID>
 <Name>Clear Fast Folders Slot 4</Name>
 <OfficialEvent>369</OfficialEvent>
@@ -1525,6 +1575,7 @@
 <Description>Clear the path stored in FastFolders slot 5.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>369</ID>
 <Name>Clear Fast Folders Slot 5</Name>
 <OfficialEvent>370</OfficialEvent>
@@ -1556,6 +1607,7 @@
 <Description>Clear the path stored in FastFolders slot 5.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>370</ID>
 <Name>Clear Fast Folders Slot 5</Name>
 <OfficialEvent>371</OfficialEvent>
@@ -1589,6 +1641,7 @@
 <Description>Clear the path stored in FastFolders slot 6.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>371</ID>
 <Name>Clear Fast Folders Slot 6</Name>
 <OfficialEvent>372</OfficialEvent>
@@ -1620,6 +1673,7 @@
 <Description>Clear the path stored in FastFolders slot 6.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>372</ID>
 <Name>Clear Fast Folders Slot 6</Name>
 <OfficialEvent>373</OfficialEvent>
@@ -1653,6 +1707,7 @@
 <Description>Clear the path stored in FastFolders slot 7.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>373</ID>
 <Name>Clear Fast Folders Slot 7</Name>
 <OfficialEvent>374</OfficialEvent>
@@ -1684,6 +1739,7 @@
 <Description>Clear the path stored in FastFolders slot 7.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>374</ID>
 <Name>Clear Fast Folders Slot 7</Name>
 <OfficialEvent>375</OfficialEvent>
@@ -1717,6 +1773,7 @@
 <Description>Clear the path stored in FastFolders slot 8.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>375</ID>
 <Name>Clear Fast Folders Slot 8</Name>
 <OfficialEvent>376</OfficialEvent>
@@ -1748,6 +1805,7 @@
 <Description>Clear the path stored in FastFolders slot 8.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>376</ID>
 <Name>Clear Fast Folders Slot 8</Name>
 <OfficialEvent>377</OfficialEvent>
@@ -1781,6 +1839,7 @@
 <Description>Clear the path stored in FastFolders slot 9.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>377</ID>
 <Name>Clear Fast Folders Slot 9</Name>
 <OfficialEvent>378</OfficialEvent>
@@ -1812,6 +1871,7 @@
 <Description>Clear the path stored in FastFolders slot 9.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
 <ID>378</ID>
 <Name>Clear Fast Folders Slot 9</Name>
 <OfficialEvent>379</OfficialEvent>
