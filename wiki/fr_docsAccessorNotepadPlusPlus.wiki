@@ -1,0 +1,12 @@
+= Notepad++ Tab Switcher Accessor Plugin =
+Le plugin Notepad++ tab switcher Accessor permet d'activer Notepad++ et de montrer un onglet spécifique lorsque Notepad++ est actif.
+
+Ceci est très utile pour les utilisateurs qui utilisent Notepad++ pour écrire du code et ont de nombreux onglets ouverts.
+
+Ce plugin se souviendra de la chaîne qui a déjà été saisi quand l'onglet courant a été ouvert et restauré quand Accessor ouvre tant que Notepad++ est actif. En plus de cela, la priorité des résultats de ce plugin est accrue lorsque Notepad++ a été actif lorsque Accessor était ouvert, alors ils seront affichés en haut de la liste.
+
+Le menu contextuel de ce plugin permet de :
+  * Ouvrir un fichier avec son programme attribué
+  * Ouvrir le chemin d'un fichier dans l'Explorateur/CMD
+  * Copier le chemin du fichier dans le presse papier
+  * Afficher le menu contextuel de l'explorateur du fichier
