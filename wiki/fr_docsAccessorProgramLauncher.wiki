@@ -1,0 +1,16 @@
+= Program Launcher Accessor Plugin =
+Ce plugin permet d'exécuter des programmes en tapant une partie du nom du programme.
+
+Le plugin utilise un cache dans lequel les chemins vers les programmes sont stockés. Par défaut, seuls les fichiers `*`.lnk du menu démarrer sont inclus, mais il est également possible d'ajouter des chemins d'inclusion dans les paramètres.
+
+Pour des raisons de rapidité et de clarté, il n'est pas suggéré d'inclure de grands dossiers comme Program Files ou le répertoire Windows. Au lieu de cela, ce plugin gère un cache dynamique dans lequel il stocke les programmes qui ont été exécutés lors de l'exécution du programme. De cette façon, vous pouvez exécuter un programme une fois ce plugin va le savoir dans le futur.
+Une autre façon d'ajouter un programme à ce cache est en lançant par le [fr_docsAccessorFileSystem plugin file system accessor].
+
+Ce plugin est en mesure de résoudre les fichiers `*`.lnk à leurs chemins corrects pour éviter les doublons.
+Vous pouvez également utiliser le mot-clé "run" (par défaut) pour exclure les résultats d'autres plugins dans la liste et afficher tous les programmes répertoriés.
+
+Comme le [fr_docsAccessorFileSystem plugin file system accessor], vous pouvez :
+  * Exécuter un programme avec des arguments
+  * Ouvrir le chemin de son exécutable dans l'explorateur ou CMD
+  * Copier le chemin de son exécutable dans le presse-papiers
+  * Afficher le menu contextuel du fichier exécutable
