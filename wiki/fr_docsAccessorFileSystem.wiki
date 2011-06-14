@@ -4,7 +4,7 @@ Le plugin navigateur Accessor filesystem permet de saisir les chemins et parcour
 L'appui sur Entrée soit lancer le fichier sélectionné ou ouvrir le dossier sélectionné.
 Quand il ya plus d'un résultat, TAB passera en revue les résultats. S'il ya un seul résultat, TAB agira comme la touche Entrée et ira dans le dossier.
 
-Pour afficher que certains types de fichier, vous pouvez entrer *.extensions à la fin de la chaîne, ex. "C:\Downloads\*.zip" pour afficher uniquement les fichiers zip dans le répertoire.
+Pour afficher que certains types de fichier, vous pouvez entrer `*`.extensions à la fin de la chaîne, ex. "C:\Downloads\`*`.zip" pour afficher uniquement les fichiers zip dans le répertoire.
 
 Lancer un programme par cette méthode l'ajoute au cache du [fr_docsAccessorProgramLauncher plugin de Program launcher], de sorte qu'il puisse être consulté la prochaine fois en tapant simplement une partie de son nom de fichier.
 
