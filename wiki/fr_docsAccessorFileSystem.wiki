@@ -1,0 +1,14 @@
+= Accessor File System Browser Plugin=
+Le plugin navigateur Accessor filesystem permet de saisir les chemins et parcourir des dossiers.
+
+L'appui sur Entrée soit lancer le fichier sélectionné ou ouvrir le dossier sélectionné.
+Quand il ya plus d'un résultat, TAB passera en revue les résultats. S'il ya un seul résultat, TAB agira comme la touche Entrée et ira dans le dossier.
+
+Pour afficher que certains types de fichier, vous pouvez entrer *.extensions à la fin de la chaîne, ex. "C:\Downloads\*.zip" pour afficher uniquement les fichiers zip dans le répertoire.
+
+Lancer un programme par cette méthode l'ajoute au cache du [fr_docsAccessorProgramLauncher plugin de Program launcher], de sorte qu'il puisse être consulté la prochaine fois en tapant simplement une partie de son nom de fichier.
+
+En outre, ce plugin permet de :
+  * Ouvrir le chemin d'un dossier/fichier dans l'explorateur ou CMD ou le copier vers le presse-papiers
+  * Exécuter un programme avec des arguments
+  * Afficher le menu contextuel de l'explorateur de l'élément sélectionné.
