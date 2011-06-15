@@ -1,0 +1,22 @@
+= ContextMenu =
+Le déclencheur ContextMenu est utilisé pour ajouter des entrées au menu contextuel de fichiers. Elle permet l'intégration des événements 7plus dans l'explorateur.
+
+
+Utiliser le placeholder ${Context} pour la liste des fichiers sélectionnés lorsque le menu contextuel a été invoqué. Ceci est préférable au placeholder ${SelNM} car il fonctionne également dans les explorateurs de fichiers.
+
+Les entrées du menu contextuel ne seront visibles que tant que 7plus est en marche. L'extension shell restera enregistré ainsi. La désinstallation de 7plus va annuler l'inscription de l'extension shell.
+
+= Paramètres =
+  * Name: Le nom qui apparaîtra dans le menu contextuel.
+  * Description: Le texte qui sera affiché dans la barre de l'explorateur d'état.
+  * Submenu: Si défini, le menu contextuel va contenir une entrée avec cette valeur, et l'entrée définie ici apparaît dans le sous-menu.
+  * File types: Ici, vous pouvez définir les extensions de fichier qui auront cette entrée du menu contextuel. Laisser vide pour pas de fichier, `*` pour toutes les extensions, ou utiliser une liste d'extensions séparée par des virgules (sans point). 7plus ne montre que les entrées du menu contextuel qui correspondent à tous les fichiers sélectionnés.
+  * Show in directory context menus: Si défini, il apparaîtra alors que des répertoires qui sont sélectionnés.
+  * Show in directory background context menus: Si défini, il apparaîtra si l'arrière plan d'un dossier est cliqué droit.
+  * Show in desktop context menu: Si défini, il apparaîtra dans le menu contextuel du bureau.
+  * Show in "My Computer" context menu: Si défini, il apparaîtra dans le menu contextuel du "Poste de travail".
+  * Don't show with multiple files selected: Si défini, il ne sera visible que quand il y a un seul fichier sélectionné.
+
+Register shell extension: Pour afficher des entrées du menu contextuel, 7plus doit inscrire une extension du shell qui est chargée dans l'explorateur de processus et communique avec 7plus. Normalement cela se fait automatiquement, mais si vous ne voyez pas vos entrées du menu contextuel alors vous pouvez essayer de cliquer sur ce bouton.
+
+Unregister shell extension: S'il ya des problèmes avec l'extension shell ou vous ne l'utilisez pas, vous pouvez vous désinscrire l'extension shell pour économiser quelques ressources. Des entrées du menu contextuel ne fonctionneront pas alors ! (Sauf pour celles visibles dans "Poste de travail", elles sont traitées différemment.)
