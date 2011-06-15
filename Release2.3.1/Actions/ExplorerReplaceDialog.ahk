@@ -66,7 +66,71 @@ Class CReplaceDialog
 		Gui, % this.GUINum ":Add", ListView, x10 y120 w672 h310 hwndhListView gExplorerReplaceDialogListView Grid AltSubmit Checked NoSort ReadOnly, Old File|Path|New File
 		LV_ModifyCol(1, 234)
 		LV_ModifyCol(2, 200)
-		LV_ModifyCol(3, 234)		
+		LV_ModifyCol(3, 234)
+		
+		;Quick & Dirty
+		;Filenames
+		Gui, % this.GUINum ":Add", Groupbox, x+10 y11 w300 h420 Section, Quick && Dirty
+		Gui, % this.GUINum ":Add", Text, xs+10 ys+20 hwndhInfo, Use these elements to quickly change things!
+		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhPrefix gExplorerReplaceDialogPrefix, Add prefix:
+		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhPrefixEdit
+		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhSuffix  gExplorerReplaceDialogSuffix, Add suffix:
+		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhSuffixEdit
+		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhChangeExtension  gExplorerReplaceDialogChangeExtension, Change extension:
+		Gui, % this.GUINum ":Add",Edit, xs+249 y+-16 w40 hwndhChangeExtensionEdit
+		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhTrimStart  gExplorerReplaceDialogTrimStart, Trim characters from start:
+		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhTrimStartEdit
+		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhTrimend  gExplorerReplaceDialogTrimEnd, Trim characters from end:
+		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhTrimEndEdit
+		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhInsertChars  gExplorerReplaceDialogInsertChars, Insert
+		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhInsertCharsEdit
+		Gui, % this.GUINum ":Add", Text, xs+26 y+10 hwndhInsertCharsPosText, at position
+		Gui, % this.GUINum ":Add",Edit, x+173 y+-16 w40 hwndhInsertCharsPos
+		Gui, % this.GUINum ":Add", Text, xs+26 y+10 hwndhInsertCharsDirText, relative to
+		Gui, % this.GUINum ":Add",DropDownList, x+115 y+-16 w100 hwndhInsertCharsDir, Start||End	
+		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhRemoveChars  gExplorerReplaceDialogRemoveChars, Remove
+		Gui, % this.GUINum ":Add",Edit, x+175 y+-16 w40 hwndhRemoveCharsLen
+		Gui, % this.GUINum ":Add", Text, xs+26 y+10 hwndhRemoveCharsPosText, character(s) at position
+		Gui, % this.GUINum ":Add",Edit, xs+247 y+-16 w40 hwndhRemoveCharsPos
+		Gui, % this.GUINum ":Add", Text, xs+26 y+10 hwndhRemoveCharsDirText, relative to
+		Gui, % this.GUINum ":Add",DropDownList, x+115 y+-16 w100 hwndhRemoveCharsDir, Start||End		
+		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhChangeCase  gExplorerReplaceDialogChangeCase, Change case to:
+		Gui, % this.GUINum ":Add",DropDownList, x+77 y+-16 hwndhTrimChangeCaseList w100, UPPER||lower|Start Case
+		Gui, % this.GUINum ":Add", Checkbox, xs+26 y+10 hwndhChangeCaseExtension, Include extension
+		
+		;Files
+		Gui, % this.GUINum ":Add", Text, xs+10 ys+20 hwndhWarning Hidden, Caution: The options below can find many matches!
+		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhPrefixLine gExplorerReplaceDialogPrefixLine Hidden, Add line prefix:
+		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhPrefixLineEdit Hidden
+		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhSuffixLine  gExplorerReplaceDialogSuffixLine Hidden, Add line suffix:
+		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhSuffixLineEdit Hidden
+		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhTrimLineStart  gExplorerReplaceDialogTrimLineStart Hidden, Trim characters from start of line:
+		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhTrimLineStartEdit Hidden
+		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhTrimLineEnd  gExplorerReplaceDialogTrimLineEnd Hidden, Trim characters from end of line:
+		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhTrimLineEndEdit Hidden
+		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhInsertLineChars gExplorerReplaceDialogInsertLineChars Hidden, Insert
+		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhInsertLineCharsEdit Hidden
+		Gui, % this.GUINum ":Add", Text, xs+26 y+10 hwndhInsertLineCharsPosText Hidden, at position
+		Gui, % this.GUINum ":Add",Edit, x+173 y+-16 w40 hwndhInsertLineCharsPos Hidden
+		Gui, % this.GUINum ":Add", Text, xs+26 y+10 hwndhInsertLineCharsDirText Hidden, relative to
+		Gui, % this.GUINum ":Add",DropDownList, x+115 y+-16 w100 hwndhInsertLineCharsDir Hidden, line start||line end	
+		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhRemoveLineChars gExplorerReplaceDialogRemoveLineChars Hidden, Remove
+		Gui, % this.GUINum ":Add",Edit, x+175 y+-16 w40 hwndhRemoveLineCharsLen Hidden
+		Gui, % this.GUINum ":Add", Text, xs+26 y+10 hwndhRemoveLineCharsPosText Hidden, character(s) at position
+		Gui, % this.GUINum ":Add",Edit, xs+247 y+-16 w40 hwndhRemoveLineCharsPos Hidden
+		Gui, % this.GUINum ":Add", Text, xs+26 y+10 hwndhRemoveLineCharsDirText Hidden, relative to
+		Gui, % this.GUINum ":Add",DropDownList, x+115 y+-16 w100 hwndhRemoveLineCharsDir Hidden, line start||line end		
+		
+		
+		
+		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhTabsToSpaces  gExplorerReplaceTabsToSpaces Hidden, Convert tabs to
+		Gui, % this.GUINum ":Add",Edit, x+83 y+-16 w40 hwndhTabsToSpacesEdit Hidden, 4
+		Gui, % this.GUINum ":Add", Text, x+10 y+-18 hwndhTabsToSpacesText Hidden, spaces
+		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhSpacesToTabs  gExplorerReplaceSpacesToTabs Hidden, Convert spaces to
+		Gui, % this.GUINum ":Add",Edit, x+69 y+-16 w40 hwndhSpacesToTabsEdit Hidden, 4
+		Gui, % this.GUINum ":Add", Text, x+10 y+-18 hwndhSpacesToTabsText Hidden, tabs
+		
+		
 		Gui, % this.GUINum ":Add",Button, x10 y440 w75 h23 gExplorerReplaceDialogRegEx, RegEx Help
 		Gui, % this.GUINum ":Add",Button, x445 y440 w75 h23 gExplorerReplaceDialogSearch Default, Search
 		Gui, % this.GUINum ":Add",Button, x526 y440 w75 h23 Disabled gExplorerReplaceDialogReplace hwndhReplaceButton, Replace
@@ -82,6 +146,64 @@ Class CReplaceDialog
 		this.hIncludeDirectories := hIncludeDirectories
 		this.hIncludeSubdirectories := hIncludeSubdirectories
 		this.hCollidingAction := hCollidingAction
+		
+		this.QuicknDirtyFiles := Object()
+		this.QuicknDirtyFiles.hWarning := hWarning
+		this.QuicknDirtyFiles.hPrefixLine := hPrefixLine
+		this.QuicknDirtyFiles.hPrefixLineEdit := hPrefixLineEdit
+		this.QuicknDirtyFiles.hSuffixLine := hSuffixLine
+		this.QuicknDirtyFiles.hSuffixLineEdit := hSuffixLineEdit
+		this.QuicknDirtyFiles.hTrimLineStart := hTrimLineStart
+		this.QuicknDirtyFiles.hTrimLineStartEdit := hTrimLineStartEdit
+		this.QuicknDirtyFiles.hTrimLineEnd := hTrimLineEnd
+		this.QuicknDirtyFiles.hTrimLineEndEdit := hTrimLineEndEdit
+		this.QuicknDirtyFiles.hRemoveLineChars := hRemoveLineChars
+		this.QuicknDirtyFiles.hRemoveLineCharsLen := hRemoveLineCharsLen
+		this.QuicknDirtyFiles.hRemoveLineCharsPosText := hRemoveLineCharsPosText
+		this.QuicknDirtyFiles.hRemoveLineCharsPos := hRemoveLineCharsPos
+		this.QuicknDirtyFiles.hRemoveLineCharsDirText := hRemoveLineCharsDirText
+		this.QuicknDirtyFiles.hRemoveLineCharsDir := hRemoveLineCharsDir
+		this.QuicknDirtyFiles.hInsertLineChars := hInsertLineChars
+		this.QuicknDirtyFiles.hInsertLineCharsEdit := hInsertLineCharsEdit
+		this.QuicknDirtyFiles.hInsertLineCharsPosText := hInsertLineCharsPosText
+		this.QuicknDirtyFiles.hInsertLineCharsPos := hInsertLineCharsPos
+		this.QuicknDirtyFiles.hInsertLineCharsDirText := hInsertLineCharsDirText
+		this.QuicknDirtyFiles.hInsertLineCharsDir := hInsertLineCharsDir
+		this.QuicknDirtyFiles.hTabsToSpaces := hTabsToSpaces
+		this.QuicknDirtyFiles.hTabsToSpacesEdit := hTabsToSpacesEdit
+		this.QuicknDirtyFiles.hTabsToSpacesText := hTabsToSpacesText
+		this.QuicknDirtyFiles.hSpacesToTabs := hSpacesToTabs
+		this.QuicknDirtyFiles.hSpacesToTabsEdit := hSpacesToTabsEdit
+		this.QuicknDirtyFiles.hSpacesToTabsText := hSpacesToTabsText
+		
+		this.QuicknDirtyFilenames := Object()
+		this.QuicknDirtyFilenames.hInfo := hInfo
+		this.QuicknDirtyFilenames.hPrefix := hPrefix
+		this.QuicknDirtyFilenames.hPrefixEdit := hPrefixEdit
+		this.QuicknDirtyFilenames.hSuffix := hSuffix
+		this.QuicknDirtyFilenames.hSuffixEdit := hSuffixEdit
+		this.QuicknDirtyFilenames.hChangeExtension := hChangeExtension
+		this.QuicknDirtyFilenames.hChangeExtensionEdit := hChangeExtensionEdit
+		this.QuicknDirtyFilenames.hTrimStart := hTrimStart
+		this.QuicknDirtyFilenames.hTrimStartEdit := hTrimStartEdit
+		this.QuicknDirtyFilenames.hTrimend := hTrimend
+		this.QuicknDirtyFilenames.hTrimEndEdit := hTrimEndEdit
+		this.QuicknDirtyFilenames.hRemoveChars := hRemoveChars
+		this.QuicknDirtyFilenames.hRemoveCharsLen := hRemoveCharsLen
+		this.QuicknDirtyFilenames.hRemoveCharsPosText := hRemoveCharsPosText
+		this.QuicknDirtyFilenames.hRemoveCharsPos := hRemoveCharsPos
+		this.QuicknDirtyFilenames.hRemoveCharsDirText := hRemoveCharsDirText
+		this.QuicknDirtyFilenames.hRemoveCharsDir := hRemoveCharsDir
+		this.QuicknDirtyFilenames.hInsertChars := hInsertChars
+		this.QuicknDirtyFilenames.hInsertCharsEdit := hInsertCharsEdit
+		this.QuicknDirtyFilenames.hInsertCharsPosText := hInsertCharsPosText
+		this.QuicknDirtyFilenames.hInsertCharsPos := hInsertCharsPos
+		this.QuicknDirtyFilenames.hInsertCharsDirText := hInsertCharsDirText
+		this.QuicknDirtyFilenames.hInsertCharsDir := hInsertCharsDir
+		this.QuicknDirtyFilenames.hChangeCase := hChangeCase
+		this.QuicknDirtyFilenames.hTrimChangeCaseList := hTrimChangeCaseList
+		this.QuicknDirtyFilenames.hChangeCaseExtension := hChangeCaseExtension
+		
 		this.hReplaceButton := hReplaceButton
 		this.hCancel := hCancel
 		Gui, % this.GUINum ":-Resize -MaximizeBox -MinimizeBox +ToolWindow +LastFound +LabelExplorerReplaceDialog"
@@ -479,8 +601,15 @@ ExplorerReplaceDialogFiles:
 Loop % ExplorerWindows.len()
 	if(ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
 	{
+		SetControlDelay, 0
 		Control, Disable,,, % "ahk_id " ExplorerWindows[A_Index].ReplaceDialog.hIncludeDirectories
 		Control, Disable,,, % "ahk_id " ExplorerWindows[A_Index].ReplaceDialog.hCollidingAction
+		enum := ExplorerWindows[A_Index].ReplaceDialog.QuicknDirtyFilenames._newEnum()
+		while enum[key,value]
+			Control, Hide,,,  ahk_id %value%
+		enum := ExplorerWindows[A_Index].ReplaceDialog.QuicknDirtyFiles._newEnum()
+		while enum[key,value]
+			Control, Show,,, ahk_id %value%
 		LV_ModifyCol(1,100, "File")
 		LV_ModifyCol(2,38, "Line")
 		LV_ModifyCol(3,265, "Text")
@@ -497,9 +626,16 @@ return
 ExplorerReplaceDialogFilenames:
 Loop % ExplorerWindows.len()
 	if(ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
-	{
+	{		
+		SetControlDelay, 0
 		Control, Enable,,, % "ahk_id " ExplorerWindows[A_Index].ReplaceDialog.hIncludeDirectories
 		Control, Enable,,, % "ahk_id " ExplorerWindows[A_Index].ReplaceDialog.hCollidingAction
+		enum := ExplorerWindows[A_Index].ReplaceDialog.QuicknDirtyFiles._newEnum()
+		while enum[key,value]
+			Control, Hide,,,  ahk_id %value%
+		enum := ExplorerWindows[A_Index].ReplaceDialog.QuicknDirtyFilenames._newEnum()
+		while enum[key,value]
+			Control, Show,,,  ahk_id %value%
 		if(LV_GetCount("Col") = 4)
 		{
 			LV_Delete()
@@ -511,6 +647,38 @@ Loop % ExplorerWindows.len()
 		LV_ModifyCol(2,200, "Path")
 		LV_ModifyCol(3,234, "New File")
 	}
+return
+ExplorerReplaceDialogPrefix:
+return
+ExplorerReplaceDialogSuffix:
+return
+ExplorerReplaceDialogChangeExtension:
+return
+ExplorerReplaceDialogTrimStart:
+return
+ExplorerReplaceDialogTrimEnd:
+return
+ExplorerReplaceDialogChangeCase:
+return
+ExplorerReplaceDialogRemoveChars:
+return
+ExplorerReplaceDialogInsertChars:
+return
+ExplorerReplaceDialogPrefixLine:
+return
+ExplorerReplaceDialogSuffixLine:
+return
+ExplorerReplaceDialogTrimLineStart:
+return
+ExplorerReplaceDialogTrimLineEnd:
+return
+ExplorerReplaceDialogRemoveLineChars:
+return
+ExplorerReplaceDialogInsertLineChars:
+return
+ExplorerReplaceTabsToSpaces:
+return
+ExplorerReplaceSpacesToTabs:
 return
 ExplorerReplaceDialogListView:
 Loop % ExplorerWindows.len()

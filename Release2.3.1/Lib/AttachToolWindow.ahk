@@ -8,7 +8,7 @@ AttachToolWindow(hParent, GUINumber, AutoClose)
 		Gui %GUINumber%: +LastFoundExist
 		if(!(hGui := WinExist()))
 			return false
-		DllCall("SetWindowLong", "Ptr", hGui, "int", -8, "PTR", hParent) ;This line actually sets the owner behavior
+		DllCall("SetWindowLongPtr", "Ptr", hGui, "int", -8, "PTR", hParent) ;This line actually sets the owner behavior
 		ToolWindows.Insert(Object("hParent", hParent, "hGui", hGui,"AutoClose", AutoClose))
 		hidden := A_DetectHiddenWindows
 		DetectHiddenWindows, On
@@ -38,7 +38,7 @@ DeAttachToolWindow(GUINumber)
 	{
 		if(ToolWindows[A_Index].hGui = hGui)
 		{
-			DllCall("SetWindowLong", "Ptr", hGui, "int", -8, "PTR", 0) ;Remove tool window behavior
+			DllCall("SetWindowLongPtr", "Ptr", hGui, "int", -8, "PTR", 0) ;Remove tool window behavior
 			ToolWindows.Remove(A_Index)
 			if(ToolWindows.MaxIndex() = "") ;No more tool windows, remove shell hook
 			{

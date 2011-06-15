@@ -133,7 +133,7 @@ Win_SetOwner(Hwnd, hOwner){
 	;when the the dev team lives on M&Ms and CocaCola for to long. Too bad. Live with it.
 
 	static GWL_HWNDPARENT = -8
-	return DllCall("SetWindowLong", "Ptr", Hwnd, "int", GWL_HWNDPARENT, "Ptr", hOwner)		
+	return DllCall("SetWindowLongPtr", "Ptr", Hwnd, "int", GWL_HWNDPARENT, "Ptr", hOwner)		
 }
 
 /*
@@ -177,7 +177,7 @@ Win_Subclass(Hwnd, Fun, Opt="", ByRef $WndProc="") {
 	}
 	else $WndProc := Fun
 	   
-    return DllCall("SetWindowLong", "Ptr", Hwnd, "Int", -4, "Int", $WndProc, "UInt") 
+    return DllCall("SetWindowLongPtr", "Ptr", Hwnd, "Int", -4, "Int", $WndProc, "UInt") 
 }
 
 /*

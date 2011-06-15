@@ -54,7 +54,7 @@ Settings_CreateEvents(ByRef TabCount) {
 	AddTab(0, "","SysTabControl32" TabCount)
 	Gui, 1:Add, Text, x%x1% y%yIt% w600, You can add events here that are triggered under certain conditions. When triggered, the event can launch a series of actions. This is a very powerful tool to add all kinds of features, and many features from 7plus are now implemented with this system.
 	yIt+=41
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vShowComplexEvents gShowAllEvents, Show all events
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vShowComplexEvents gShowAllEvents, Show advanced events
 	Gui, 1:Add, Text, x+198 y%yIt%, Event search:
 	yIt-=4
 	Gui, 1:Add, Edit, x+10 y%yIt% w150 hwndEventFilter gEventFilterChange

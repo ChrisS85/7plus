@@ -230,6 +230,7 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 	{
 		if(Parameter = "Trigger") ;EditEventTab holds the name of the previously selected tab
 		{
+			SetControlDelay, 0
 			if(Event.Trigger.GuiSubmit(SubeventGUI))
 				Event.Trigger := SubEventBackup ;Restore unmodified version if validation failed
 		}
@@ -244,6 +245,7 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 				GuiControlGet, EditConditionNegate
 				Event[Parameter][i].Negate := EditConditionNegate
 			}
+			SetControlDelay, 0
 			if(Event[Parameter][i].GuiSubmit(SubeventGUI))
 				Event[Parameter][i] := SubEventBackup ;Restore unmodified version if validation failed
 		}
@@ -397,6 +399,7 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 				;SubeventGUI contains all control hwnds for the trigger-specific part of the gui
 				if(Event.Trigger.Type = type && Event.Trigger.Category = category) ;selecting same item, ignore
 					return
+				SetControlDelay, 0
 				Event.Trigger.GuiSubmit(SubeventGUI)
 				Event.Trigger := EventSystem_CreateSubevent("Trigger",type)
 			}
@@ -407,6 +410,7 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 				{
 					if(!Parameter && Event[EditEventTab][i].Type = type && Event[EditEventTab][i].Category = category) ;selecting same item, ignore
 						return
+					SetControlDelay, 0
 					Event[EditEventTab][i].GuiSubmit(SubeventGUI)
 					Event[EditEventTab][i] := EventSystem_CreateSubevent(EditEventTab = "Conditions" ? "Condition" : "Action", type)
 				}
@@ -422,12 +426,14 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 		Gui, Tab, %EditEventTab%
 		if(EditEventTab = "Trigger")
 		{			
-			SubEventBackup := Event.Trigger.DeepCopy()
+			SubEventBackup := Event.Trigger.DeepCopy()			
+			SetControlDelay, 0
 			Event.Trigger.GuiShow(SubeventGUI)
 		}
 		else if(i && (EditEventTab = "Conditions" || EditEventTab = "Actions"))
 		{
 			SubEventBackup := Event[EditEventTab][i].DeepCopy()
+			SetControlDelay, 0
 			Event[EditEventTab][i].GuiShow(SubeventGUI)
 			LV_Modify(i, "", (EditEventTab = "Conditions" && Event[EditEventTab][i].Negate ? "NOT " : "") Event[EditEventTab][i].DisplayString())
 		}
@@ -481,6 +487,7 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 				GuiControlGet, EditConditionNegate
 				Event[EditEventTab][A_EventInfo].Negate := EditConditionNegate
 			}
+			SetControlDelay, 0
 			if(Event[EditEventTab][A_EventInfo].GuiSubmit(SubeventGUI)) ;Restore unmodified version if validation failed
 				Event[EditEventTab][A_EventInfo] := SubEventBackup
 			

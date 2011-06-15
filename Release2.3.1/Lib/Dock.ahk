@@ -251,7 +251,7 @@ Dock_SetZOrder:
 		;Set owned clients if they are not already set. Host may not exist here.
 		if !DllCall("GetWindowLong", "uint", Dock_aClient%A_Index%, "int", -8) and WinExist("ahk_id " Dock_HostId)
 		{
-			DllCall("SetWindowLong", "uint", Dock_aClient%A_Index%, "int", -8, "uint", Dock_HostId)
+			DllCall("SetWindowLongPtr", "uint", Dock_aClient%A_Index%, "int", -8, "uint", Dock_HostId)
 			_ := DllCall("GetWindow", "uint", Dock_HostId, "uint", 3) ;use hwndprev 
 			DllCall("SetWindowPos", "uint", Dock_aClient%A_Index%, "uint", _, "uint", 0, "uint", 0, "uint", 0, "uint", 0, "uint", 0x40 | 19 | 0x4000) ;SWP_SHOWWINDOW ..., no activate
 		}
