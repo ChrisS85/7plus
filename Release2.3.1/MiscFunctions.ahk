@@ -1022,7 +1022,7 @@ AttachToolWindow(hParent, GUINumber, AutoClose)
 		Gui %GUINumber%: +LastFoundExist
 		if(!(hGui := WinExist()))
 			return false
-		DllCall("SetWindowLong", "Ptr", hGui, "int", -8, "PTR", hParent) ;This line actually sets the owner behavior
+		DllCall("SetWindowLongPtr", "Ptr", hGui, "int", -8, "PTR", hParent) ;This line actually sets the owner behavior
 		ToolWindows.Insert(Object("hParent", hParent, "hGui", hGui,"AutoClose", AutoClose))
 		Gui %GUINumber%: Show, NA
 		return true
