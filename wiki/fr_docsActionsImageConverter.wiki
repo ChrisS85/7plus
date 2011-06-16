@@ -1,0 +1,2 @@
+= Image Converter =
+Cette action ouvre le convertisseur d'image avec les fichiers spécifiés dans le champ des paramètres. Vous pouvez utiliser le convertisseur d'image pour convertir des lots d'images dans un autre format ou les redimensionner.
