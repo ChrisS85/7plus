@@ -1,0 +1,2 @@
+= WindowSendToBottom =
+Cette action envoie une fenêtre vers le bas de la pile des fenêtres, la poussant derrière toutes les autres fenêtres.
