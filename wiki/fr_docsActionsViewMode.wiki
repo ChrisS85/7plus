@@ -1,0 +1,2 @@
+= ViewMode =
+Cette action pouvez changer des paramètres de l'Explorateur, à savoir la visibilité des fichiers et dossiers cachés et les extensions de fichier.
