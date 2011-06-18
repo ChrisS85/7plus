@@ -45,12 +45,12 @@ Class CReplaceDialog
 		if(!this.GUINum)
 			return 0
 		Gui, % this.GUINum ":Default"
-		Gui, % this.GUINum ":Add",Text, x10 y10, Replace in:
+		Gui, % this.GUINum ":Add",Text, x10 y10, Search in:
 		Gui, % this.GUINum ":Add",Radio, x77 y10 hwndhFilenames gExplorerReplaceDialogFilenames Checked, File names
 		Gui, % this.GUINum ":Add",Radio, x150 y10 hwndhFiles gExplorerReplaceDialogFiles, Files
-		Gui, % this.GUINum ":Add",Text, x10 y36, Replace:
+		Gui, % this.GUINum ":Add",Text, x10 y36, Search:
 		Gui, % this.GUINum ":Add",Edit, x66 y35 w346 hwndhReplace
-		Gui, % this.GUINum ":Add",Text, x10 y62, With:
+		Gui, % this.GUINum ":Add",Text, x10 y62, Replace:
 		Gui, % this.GUINum ":Add",Edit, x66 y60 w346 hwndhWith
 		AddToolTip(hWith, "Use $1, $2, ...$(10)... for accessing regex subpatterns in the replace string")
 		Gui, % this.GUINum ":Add",Text, x10 y88, In:
@@ -73,62 +73,63 @@ Class CReplaceDialog
 		Gui, % this.GUINum ":Add", Groupbox, x+10 y11 w300 h420 Section, Quick && Dirty
 		Gui, % this.GUINum ":Add", Text, xs+10 ys+20 hwndhInfo, Use these elements to quickly change things!
 		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhPrefix gExplorerReplaceDialogPrefix, Add prefix:
-		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhPrefixEdit
+		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhPrefixEdit Disabled
 		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhSuffix  gExplorerReplaceDialogSuffix, Add suffix:
-		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhSuffixEdit
+		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhSuffixEdit Disabled
 		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhChangeExtension  gExplorerReplaceDialogChangeExtension, Change extension:
-		Gui, % this.GUINum ":Add",Edit, xs+249 y+-16 w40 hwndhChangeExtensionEdit
+		Gui, % this.GUINum ":Add",Edit, xs+249 y+-16 w40 hwndhChangeExtensionEdit Disabled
 		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhTrimStart  gExplorerReplaceDialogTrimStart, Trim characters from start:
-		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhTrimStartEdit
+		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhTrimStartEdit Disabled
 		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhTrimend  gExplorerReplaceDialogTrimEnd, Trim characters from end:
-		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhTrimEndEdit
+		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhTrimEndEdit Disabled
 		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhInsertChars  gExplorerReplaceDialogInsertChars, Insert
-		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhInsertCharsEdit
-		Gui, % this.GUINum ":Add", Text, xs+26 y+10 hwndhInsertCharsPosText, at position
-		Gui, % this.GUINum ":Add",Edit, x+173 y+-16 w40 hwndhInsertCharsPos
+		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhInsertCharsEdit Disabled
+		Gui, % this.GUINum ":Add", Text, xs+26 y+10 hwndhInsertCharsPosText, after character
+		Gui, % this.GUINum ":Add",Edit, x+154 y+-16 w40 hwndhInsertCharsPos Disabled
 		Gui, % this.GUINum ":Add", Text, xs+26 y+10 hwndhInsertCharsDirText, relative to
-		Gui, % this.GUINum ":Add",DropDownList, x+115 y+-16 w100 hwndhInsertCharsDir, Start||End	
+		Gui, % this.GUINum ":Add",DropDownList, x+115 y+-16 w100 hwndhInsertCharsDir Disabled, Start||End	
 		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhRemoveChars  gExplorerReplaceDialogRemoveChars, Remove
-		Gui, % this.GUINum ":Add",Edit, x+175 y+-16 w40 hwndhRemoveCharsLen
-		Gui, % this.GUINum ":Add", Text, xs+26 y+10 hwndhRemoveCharsPosText, character(s) at position
-		Gui, % this.GUINum ":Add",Edit, xs+247 y+-16 w40 hwndhRemoveCharsPos
+		Gui, % this.GUINum ":Add",Edit, x+175 y+-16 w40 hwndhRemoveCharsLen Disabled
+		Gui, % this.GUINum ":Add", Text, xs+26 y+10 hwndhRemoveCharsPosText, character(s) after
+		Gui, % this.GUINum ":Add",Edit, xs+247 y+-16 w40 hwndhRemoveCharsPos Disabled
 		Gui, % this.GUINum ":Add", Text, xs+26 y+10 hwndhRemoveCharsDirText, relative to
-		Gui, % this.GUINum ":Add",DropDownList, x+115 y+-16 w100 hwndhRemoveCharsDir, Start||End		
+		Gui, % this.GUINum ":Add",DropDownList, x+115 y+-16 w100 hwndhRemoveCharsDir Disabled, Start||End		
 		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhChangeCase  gExplorerReplaceDialogChangeCase, Change case to:
-		Gui, % this.GUINum ":Add",DropDownList, x+77 y+-16 hwndhTrimChangeCaseList w100, UPPER||lower|Start Case
-		Gui, % this.GUINum ":Add", Checkbox, xs+26 y+10 hwndhChangeCaseExtension, Include extension
+		Gui, % this.GUINum ":Add",DropDownList, x+77 y+-16 hwndhChangeCaseList w100 Disabled, UPPER||lower|Start Case
+		Gui, % this.GUINum ":Add", Checkbox, xs+26 y+10 hwndhChangeCaseExtension gExplorerReplaceDialogChangeCaseExtension Disabled, Include extension
 		
 		;Files
 		Gui, % this.GUINum ":Add", Text, xs+10 ys+20 hwndhWarning Hidden, Caution: The options below can find many matches!
 		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhPrefixLine gExplorerReplaceDialogPrefixLine Hidden, Add line prefix:
-		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhPrefixLineEdit Hidden
+		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhPrefixLineEdit Hidden Disabled
 		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhSuffixLine  gExplorerReplaceDialogSuffixLine Hidden, Add line suffix:
-		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhSuffixLineEdit Hidden
+		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhSuffixLineEdit Hidden Disabled
 		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhTrimLineStart  gExplorerReplaceDialogTrimLineStart Hidden, Trim characters from start of line:
-		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhTrimLineStartEdit Hidden
+		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhTrimLineStartEdit Hidden Disabled
 		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhTrimLineEnd  gExplorerReplaceDialogTrimLineEnd Hidden, Trim characters from end of line:
-		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhTrimLineEndEdit Hidden
+		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhTrimLineEndEdit Hidden Disabled
 		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhInsertLineChars gExplorerReplaceDialogInsertLineChars Hidden, Insert
-		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhInsertLineCharsEdit Hidden
-		Gui, % this.GUINum ":Add", Text, xs+26 y+10 hwndhInsertLineCharsPosText Hidden, at position
-		Gui, % this.GUINum ":Add",Edit, x+173 y+-16 w40 hwndhInsertLineCharsPos Hidden
+		Gui, % this.GUINum ":Add",Edit, xs+189 y+-16 w100 hwndhInsertLineCharsEdit Hidden Disabled
+		Gui, % this.GUINum ":Add", Text, xs+26 y+10 hwndhInsertLineCharsPosText Hidden, after character
+		Gui, % this.GUINum ":Add",Edit, x+154 y+-16 w40 hwndhInsertLineCharsPos Hidden Disabled
 		Gui, % this.GUINum ":Add", Text, xs+26 y+10 hwndhInsertLineCharsDirText Hidden, relative to
-		Gui, % this.GUINum ":Add",DropDownList, x+115 y+-16 w100 hwndhInsertLineCharsDir Hidden, line start||line end	
+		Gui, % this.GUINum ":Add",DropDownList, x+115 y+-16 w100 hwndhInsertLineCharsDir Hidden Disabled, line start||line end	
 		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhRemoveLineChars gExplorerReplaceDialogRemoveLineChars Hidden, Remove
-		Gui, % this.GUINum ":Add",Edit, x+175 y+-16 w40 hwndhRemoveLineCharsLen Hidden
-		Gui, % this.GUINum ":Add", Text, xs+26 y+10 hwndhRemoveLineCharsPosText Hidden, character(s) at position
-		Gui, % this.GUINum ":Add",Edit, xs+247 y+-16 w40 hwndhRemoveLineCharsPos Hidden
+		Gui, % this.GUINum ":Add",Edit, x+175 y+-16 w40 hwndhRemoveLineCharsLen Hidden Disabled
+		Gui, % this.GUINum ":Add", Text, xs+26 y+10 hwndhRemoveLineCharsPosText Hidden, character(s) after
+		Gui, % this.GUINum ":Add",Edit, xs+247 y+-16 w40 hwndhRemoveLineCharsPos Hidden Disabled
 		Gui, % this.GUINum ":Add", Text, xs+26 y+10 hwndhRemoveLineCharsDirText Hidden, relative to
-		Gui, % this.GUINum ":Add",DropDownList, x+115 y+-16 w100 hwndhRemoveLineCharsDir Hidden, line start||line end		
-		
-		
-		
-		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhTabsToSpaces  gExplorerReplaceTabsToSpaces Hidden, Convert tabs to
-		Gui, % this.GUINum ":Add",Edit, x+83 y+-16 w40 hwndhTabsToSpacesEdit Hidden, 4
-		Gui, % this.GUINum ":Add", Text, x+10 y+-18 hwndhTabsToSpacesText Hidden, spaces
-		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhSpacesToTabs  gExplorerReplaceSpacesToTabs Hidden, Convert spaces to
-		Gui, % this.GUINum ":Add",Edit, x+69 y+-16 w40 hwndhSpacesToTabsEdit Hidden, 4
-		Gui, % this.GUINum ":Add", Text, x+10 y+-18 hwndhSpacesToTabsText Hidden, tabs
+		Gui, % this.GUINum ":Add",DropDownList, x+115 y+-16 w100 hwndhRemoveLineCharsDir Hidden Disabled, line start||line end
+		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhLineTabsToSpaces  gExplorerReplaceDialogLineTabsToSpaces Hidden, Convert tabs to
+		Gui, % this.GUINum ":Add",Edit, x+83 y+-16 w20 hwndhLineTabsToSpacesEdit Hidden Disabled, 4
+		Gui, % this.GUINum ":Add", Text, x+10 y+-18 hwndhLineTabsToSpacesText Hidden, spaces
+		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+10 hwndhLineSpacesToTabs  gExplorerReplaceDialogLineSpacesToTabs Hidden, Convert 
+		Gui, % this.GUINum ":Add",Edit, x+118 y+-16 w20 hwndhLineSpacesToTabsEdit Hidden Disabled, 4
+		Gui, % this.GUINum ":Add", Text, x+10 y+-18 hwndhLineSpacesToTabsText Hidden, spaces to tabs
+		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+12 hwndhChangeLineCase  gExplorerReplaceDialogChangeLineCase Hidden, Change case to:
+		Gui, % this.GUINum ":Add",DropDownList, x+77 y+-16 hwndhChangeLineCaseList w100 Disabled Hidden, UPPER||lower|Start Case
+		Gui, % this.GUINum ":Add", Checkbox, xs+10 y+8 hwndhConvertLineSeparator gExplorerReplaceDialogConvertLineSeparator Hidden, Convert line separator to:
+		Gui, % this.GUINum ":Add",DropDownList, x+37 y+-16 w100 hwndhConvertLineSeparatorList Hidden Disabled, Windows (\r\n)||Unix (\n)
 		
 		
 		Gui, % this.GUINum ":Add",Button, x10 y440 w75 h23 gExplorerReplaceDialogRegEx, RegEx Help
@@ -169,12 +170,16 @@ Class CReplaceDialog
 		this.QuicknDirtyFiles.hInsertLineCharsPos := hInsertLineCharsPos
 		this.QuicknDirtyFiles.hInsertLineCharsDirText := hInsertLineCharsDirText
 		this.QuicknDirtyFiles.hInsertLineCharsDir := hInsertLineCharsDir
-		this.QuicknDirtyFiles.hTabsToSpaces := hTabsToSpaces
-		this.QuicknDirtyFiles.hTabsToSpacesEdit := hTabsToSpacesEdit
-		this.QuicknDirtyFiles.hTabsToSpacesText := hTabsToSpacesText
-		this.QuicknDirtyFiles.hSpacesToTabs := hSpacesToTabs
-		this.QuicknDirtyFiles.hSpacesToTabsEdit := hSpacesToTabsEdit
-		this.QuicknDirtyFiles.hSpacesToTabsText := hSpacesToTabsText
+		this.QuicknDirtyFiles.hLineTabsToSpaces := hLineTabsToSpaces
+		this.QuicknDirtyFiles.hLineTabsToSpacesEdit := hLineTabsToSpacesEdit
+		this.QuicknDirtyFiles.hLineTabsToSpacesText := hLineTabsToSpacesText
+		this.QuicknDirtyFiles.hLineSpacesToTabs := hLineSpacesToTabs
+		this.QuicknDirtyFiles.hLineSpacesToTabsEdit := hLineSpacesToTabsEdit
+		this.QuicknDirtyFiles.hLineSpacesToTabsText := hLineSpacesToTabsText
+		this.QuicknDirtyFiles.hChangeLineCase := hChangeLineCase
+		this.QuicknDirtyFiles.hChangeLineCaseList := hChangeLineCaseList
+		this.QuicknDirtyFiles.hConvertLineSeparator := hConvertLineSeparator
+		this.QuicknDirtyFiles.hConvertLineSeparatorList := hConvertLineSeparatorList
 		
 		this.QuicknDirtyFilenames := Object()
 		this.QuicknDirtyFilenames.hInfo := hInfo
@@ -201,7 +206,7 @@ Class CReplaceDialog
 		this.QuicknDirtyFilenames.hInsertCharsDirText := hInsertCharsDirText
 		this.QuicknDirtyFilenames.hInsertCharsDir := hInsertCharsDir
 		this.QuicknDirtyFilenames.hChangeCase := hChangeCase
-		this.QuicknDirtyFilenames.hTrimChangeCaseList := hTrimChangeCaseList
+		this.QuicknDirtyFilenames.hChangeCaseList := hChangeCaseList
 		this.QuicknDirtyFilenames.hChangeCaseExtension := hChangeCaseExtension
 		
 		this.hReplaceButton := hReplaceButton
@@ -224,12 +229,13 @@ Class CReplaceDialog
 		this.Filenames := ControlGet("Checked","","","ahk_id " this.hFilenames)
 		this.SearchString := ControlGetText("","ahk_id " this.hReplace)
 		this.ReplaceString := ControlGetText("","ahk_id " this.hWith)
+		this.ReplaceEnabled := ControlGet("Enabled","","","ahk_id " this.hWith)
 		this.InString := ControlGetText("", "ahk_id " this.hIn)
 		if(this.InString)
 		{
 			this.InString := RegexReplace(this.InString, "(\\|\.|\?|\+|\[|\{|\||\(|\)|\^|\$)", "\$1") ;Escaping
 			this.InString := RegexReplace(this.InString, "\*", ".*?") ;Wildcard
-			this.InString := "^" RegexReplace(this.InString, ",", "$|^") "$" ;start and end of line
+			this.InString := "i)^" RegexReplace(this.InString, ",", "$|^") "$" ;start and end of line
 		}
 		this.InSelectedFiles := ControlGet("Checked","","","ahk_id " this.hInSelectedFiles)
 		this.CaseSensitive := ControlGet("Checked","","", "ahk_id " this.hCaseSensitive)
@@ -237,6 +243,29 @@ Class CReplaceDialog
 		this.IncludeDirectories := ControlGet("Checked","", "", "ahk_id " this.hIncludeDirectories)
 		this.IncludeSubdirectories := ControlGet("Checked", "", "", "ahk_id " this.hIncludeSubdirectories)
 		this.CollidingAction := ControlGetText("", "ahk_id " this.hCollidingAction)
+		
+		enum := this.QuicknDirtyFilenames._newEnum()
+		while enum[key,value]
+		{
+			key := SubStr(key, 2)
+			if(WinGetClass("ahk_id " value) = "Button")
+				this[key] := ControlGet("Checked","","", "ahk_id " value)
+			else if(WinGetClass("ahk_id " value) = "Edit")
+				this[key] := ControlGetText("", "ahk_id " value)
+			else if(WinGetClass("ahk_id " value) = "ComboBox")
+				this[key] := ControlGetText("", "ahk_id " value)
+		}
+		enum := this.QuicknDirtyFiles._newEnum()
+		while enum[key,value]
+		{
+			key := SubStr(key, 2)
+			if(WinGetClass("ahk_id " value) = "Button")
+				this[key] := ControlGet("Checked","","", "ahk_id " value)
+			else if(WinGetClass("ahk_id " value) = "Edit")
+				this[key] := ControlGetText("", "ahk_id " value)
+			else if(WinGetClass("ahk_id " value) = "ComboBox")
+				this[key] := ControlGetText("", "ahk_id " value)
+		}
 		this.SearchResults := Array()
 		LV_Delete()
 		if(this.Regex && !this.CaseSensitive && InStr(this.SearchString, "i)") != 1) ;Case sensitive for regex is done here to save some time
@@ -286,7 +315,7 @@ Class CReplaceDialog
 					{
 						if(this.Stop)
 							break
-						LV_Add("Check", strTrimLeft(this.SearchResults[A_Index].Path,this.BasePath), this.SearchResults[index].Lines[A_Index].Line, RegexReplace(this.SearchResults[index].Lines[A_Index].Text, "D)(*ANYCRLF)\R$",""), RegexReplace(this.SearchResults[index].Lines[A_Index].NewText, "D)(*ANYCRLF)\R$",""))
+						LV_Add("Check", strTrimLeft(this.SearchResults[index].Path,this.BasePath), this.SearchResults[index].Lines[A_Index].Line, RegexReplace(this.SearchResults[index].Lines[A_Index].Text, "D)(*ANYCRLF)\R$",""), RegexReplace(this.SearchResults[index].Lines[A_Index].NewText, "D)(*ANYCRLF)\R$",""))
 					}
 				}
 			}
@@ -383,7 +412,7 @@ Class CReplaceDialog
 			{
 				SplitPath, NewPath,, dir, extension, filename
 				i:=1 ;Find free filename
-				while(FileExist(NewPath) || PathsList.IndexOf(NewPath)) ;Check for existing files on hdd and for target files from this rename operation
+				while((!(OldPath == NewPath) && OldPath != NewPath) && (FileExist(NewPath) || PathsList.IndexOf(NewPath))) ;Check for existing files on hdd and for target files from this rename operation
 				{
 					i++
 					NewPath:=dir "\" filename " (" i ")" (extension = "" ? "" : "." extension)
@@ -429,43 +458,165 @@ Class CReplaceDialog
 	ProcessFilename(File)
 	{
 		if(this.Regex)
-		{			
-			NewFilename := RegexReplace(File.Name, this.SearchString, this.ReplaceString, Count) ;Case insensitivity is handled before
-			if(Count)
-				File.NewFilename := NewFilename
-			return Count > 0
+		{
+			if(this.ReplaceEnabled)
+				NewFilename := RegexReplace(File.Name, this.SearchString, this.ReplaceString, Changed) ;Case insensitivity is handled before
+			else
+				NewFilename :=  RegexMatch(File.Name, this.SearchString) > 0 ? File.Name : ""
 		}
 		else
 		{
 			if(this.CaseSensitive)
 				StringCaseSense, On
-			NewFilename := StringReplace(File.Name, this.SearchString, this.ReplaceString, "All")
-			if(!Errorlevel)
-				File.NewFilename := NewFilename
+			if(this.ReplaceEnabled)
+				NewFilename := StringReplace(File.Name, this.SearchString, this.ReplaceString, "All")
+			else
+				NewFilename := InStr(File.Name, this.SearchString) > 0 ? File.Name : ""
 			StringCaseSense, Off
-			return !ErrorLevel
 		}
+		if(NewFilename && !this.ReplaceEnabled) ;Apply Quick & Dirty operations
+		{
+			SplitPath, NewFilename,,, Extension, FilenameNoExt
+			if(this.TrimStart && this.TrimStartEdit)
+				FilenameNoExt := LTrim(FilenameNoExt, this.TrimStartEdit)
+			if(this.TrimEnd && this.TrimEndEdit)
+				FilenameNoExt := RTrim(FilenameNoExt, this.TrimEndEdit)
+			if(this.InsertChars && this.InsertCharsEdit && IsNumeric(this.InsertCharsPos) && this.InsertCharsPos >= 0)
+			{
+				if(this.InsertCharsDir = "Start")
+					FilenameNoExt := SubStr(FilenameNoExt, 1, this.InsertCharsPos) this.InsertCharsEdit SubStr(FilenameNoExt, this.InsertCharsPos + 1)
+				else ;End
+					FilenameNoExt := SubStr(FilenameNoExt, 1, this.InsertCharsPos = 0 ? StrLen(FileNameNoExt) : -this.InsertCharsPos) this.InsertCharsEdit SubStr(FilenameNoExt, -(this.InsertCharsPos - 1), this.InsertCharsPos = 0 ? 0 : StrLen(FilenameNoExt))
+			}
+			if(this.RemoveChars && IsNumeric(this.RemoveCharsLen) && this.RemoveCharsLen > 0 && this.RemoveCharsPos >= 0)
+			{
+				if(this.RemoveCharsDir = "Start")
+					FilenameNoExt := SubStr(FilenameNoExt, 1, this.RemoveCharsPos) SubStr(FilenameNoExt, this.RemoveCharsPos + this.RemoveCharsLen + 1)
+				else ;End
+					FilenameNoExt := SubStr(FilenameNoExt, 1, -(this.RemoveCharsPos + this.RemoveCharsLen)) SubStr(FilenameNoExt,-this.RemoveCharsPos+1, this.RemoveCharsPos = 0 ? 0 : StrLen(FilenameNoExt))
+			}
+			if(this.ChangeCase)
+			{
+				if(this.ChangeCaseList = "UPPER")
+					StringUpper, FilenameNoExt, FilenameNoExt
+				else if(this.ChangeCaseList = "Lower")
+					StringLower, FilenameNoExt, FilenameNoExt
+				else if(this.ChangeCaseList = "Start Case")
+					StringUpper, FilenameNoExt, FilenameNoExt, T
+				if(this.ChangeCaseExtension)
+				{
+					if(this.ChangeCaseList = "UPPER")
+						StringUpper, Extension, Extension
+					else if(this.ChangeCaseList = "Lower")
+						StringLower, Extension, Extension
+					else if(this.ChangeCaseList = "Start Case")
+						StringUpper, Extension, Extension, T
+				}
+			}
+			if(this.Prefix && this.PrefixEdit)
+				FilenameNoExt := this.PrefixEdit FilenameNoExt
+			if(this.Suffix && this.SuffixEdit)
+				FilenameNoExt := FilenameNoExt this.SuffixEdit
+			if(this.ChangeExtension && this.ChangeExtensionEdit)
+				Extension := this.ChangeExtensionEdit
+			NewFilename := FilenameNoExt "." Extension
+		}
+		if(!(File.Name == NewFilename))
+		{
+			File.NewFilename := NewFilename
+			return 1
+		}
+		return 0
 	}
 	;Tests if a specific line should be replaced
 	ProcessLine(File, Text, LineNumber)
 	{
 		if(this.Regex)
-		{			
-			NewText := RegexReplace(Text, this.SearchString, this.ReplaceString, Count) ;Case insensitivity is handled before
-			if(Count)
-				File.Lines.Append(Object("Line", LineNumber, "Text", Text, "NewText", NewText, "Enabled", true))
-			return Count > 0
+		{
+			if(this.ReplaceEnabled)
+				NewText := RegexReplace(Text, this.SearchString, this.ReplaceString, Count) ;Case insensitivity is handled before
+			else
+				NewText :=  RegexMatch(Text, this.SearchString) > 0 ? Text : ""
 		}
 		else
 		{
 			if(this.CaseSensitive)
 				StringCaseSense, On
-			NewText := StringReplace(Text, this.SearchString, this.ReplaceString, "All")
-			if(!Errorlevel)
-				File.Lines.Append(Object("Line", LineNumber, "Text", Text, "NewText", NewText, "Enabled", true))
+			if(this.ReplaceEnabled)
+				NewText := StringReplace(Text, this.SearchString, this.ReplaceString, "All")
+			else
+				NewText := InStr(Text, this.SearchString) > 0 ? Text : ""
 			StringCaseSense, Off
-			return !ErrorLevel
 		}
+		if(NewText && !this.ReplaceEnabled) ;Apply Quick & Dirty operations
+		{
+			r := InStr(Text, "`r")
+			n := InStr(Text, "`n")
+			NewText := RTrim(Text, "`r`n")
+			if(this.TrimLineStart && this.TrimLineStartEdit)
+				NewText := LTrim(NewText, this.TrimLineStartEdit)
+			if(this.TrimLineEnd && this.TrimLineEndEdit)
+				NewText := RTrim(NewText, this.TrimLineEndEdit)
+			if(this.InsertLineChars && this.InsertLineCharsEdit && IsNumeric(this.InsertLineCharsPos) && this.InsertLineCharsPos >= 0)
+			{
+				if(this.InsertLineCharsDir = "line start")
+					NewText := SubStr(NewText, 1, this.InsertLineCharsPos) this.InsertLineCharsEdit SubStr(NewText, this.InsertLineCharsPos + 1)
+				else ;End
+					NewText := SubStr(NewText, 1, this.InsertLineCharsPos = 0 ? StrLen(NewText) : -this.InsertLineCharsPos) this.InsertLineCharsEdit SubStr(NewText, -(this.InsertLineCharsPos - 1), this.InsertLineCharsPos = 0 ? 0 : StrLen(NewText))
+			}
+			if(this.RemoveLineChars && IsNumeric(this.RemoveLineCharsLen) && this.RemoveLineCharsLen > 0 && this.RemoveLineCharsPos >= 0)
+			{
+				if(this.RemoveLineCharsDir = "line start")
+					NewText := SubStr(NewText, 1, this.RemoveLineCharsPos) SubStr(NewText, this.RemoveLineCharsPos + this.RemoveLineCharsLen + 1)
+				else ;End
+					NewText := SubStr(NewText, 1, -(this.RemoveLineCharsPos + this.RemoveLineCharsLen)) SubStr(NewText,-this.RemoveLineCharsPos+1, this.RemoveLineCharsPos = 0 ? 0 : StrLen(NewText))
+			}
+			if(this.LineTabsToSpaces && IsNumeric(this.LineTabsToSpacesEdit))
+			{
+				spaces := ""
+				Loop % this.LineTabsToSpacesEdit
+					spaces .= " "
+				NewText := StringReplace(NewText, "`t", spaces, "All")
+			}
+			else if(this.LineSpacesToTabs && IsNumeric(this.LineSpacesToTabsEdit))
+			{
+				spaces := ""
+				Loop % this.LineSpacesToTabsEdit
+					spaces .= " "
+				NewText := StringReplace(NewText, spaces, "`t", "All")
+			}
+			if(this.ChangeLineCase)
+			{
+				if(this.ChangeLineCaseList = "UPPER")
+					StringUpper, NewText, NewText
+				else if(this.ChangeLineCaseList = "Lower")
+					StringLower, NewText, NewText
+				else if(this.ChangeLineCaseList = "Start Case")
+					StringUpper, NewText, NewText, T
+			}
+			if(this.PrefixLine && this.PrefixLineEdit)
+				NewText := this.PrefixLineEdit NewText
+			if(this.SuffixLine && this.SuffixLineEdit)
+				NewText := NewText this.SuffixLineEdit
+			if(this.ConvertLineSeparator && r || n)
+			{
+				if(this.ConvertLineSeparatorList = "Windows (\r\n)")
+					NewText .= "`r`n"
+				else if(this.ConvertLineSeparatorList = "Unix (\n)")
+				{
+					NewText .= "`n"
+				}
+			}
+			else
+				NewText .= (r ? "`r" : "") (n? "`n" : "")
+		}
+		
+		if(!(NewText == Text))
+		{
+			File.Lines.Append(Object("Line", LineNumber, "Text", Text, "NewText", NewText, "Enabled", true))
+			return 1
+		}
+		return 0
 	}
 	FileContentSearch()
 	{
@@ -499,10 +650,11 @@ Class CReplaceDialog
 					return 0
 				}
 				Line := f.ReadLine()
-				if(this.ProcessLine(File, Line, A_Index))
-					this.SearchResults.Append(File)
+				this.ProcessLine(File, Line, A_Index)
 			}
 			f.Close()
+			if(File.Lines.len() > 0)				
+				this.SearchResults.Append(File)
 		}
 	}
 	PerformFileContentReplace()
@@ -575,10 +727,172 @@ Class CReplaceDialog
 			}
 		}
 	}
+	
+	;Main GUI Handler for Quick & Dirty elements
+	GuiEvent(Label)
+	{
+		hwnd := "h" SubStr(Label, 22) ;Get matching hwnd var
+		if(InStr(Label, "Line"))
+		{
+			hwnd := this.QuicknDirtyFiles[hwnd]
+			count := 27-18+1
+			offset := 17
+		}
+		else
+		{
+			hwnd := this.QuicknDirtyFilenames[hwnd]
+			count := 16 - 9 + 1
+			offset := 8
+		}
+		
+		AnyChecked := 0
+		Loop % count
+		{
+			GuiControlGet, Checked, ,% "Button" (A_Index + offset)
+			AnyChecked |= Checked
+		}
+		; GuiControl, Disable%AnyChecked%, Edit1
+		GuiControl, Disable%AnyChecked%, Edit2
+		; GuiControl, Disable%AnyChecked%, Button4
+		; GuiControl, Disable%AnyChecked%, Button5
+		
+		ClassNN := HWNDToClassNN(hwnd)
+		GuiControlGet, value, ,%ClassNN%
+		
+		if(Label = "ExplorerReplaceDialogPrefix")
+			GuiControl, Enable%value%, Edit4
+		else if(Label = "ExplorerReplaceDialogSuffix")			
+			GuiControl, Enable%value%, Edit5
+		else if(Label = "ExplorerReplaceDialogChangeExtension")
+		{
+			GuiControl, Enable%value%, Edit6
+			if(value)
+				GuiControl, ,Button17,0
+		}
+		else if(Label = "ExplorerReplaceDialogTrimStart" || Label = "ExplorerReplaceDialogTrimEnd")
+		{
+			if(Label = "ExplorerReplaceDialogTrimStart")
+				GuiControl, Enable%value%,Edit7
+			else
+				GuiControl, Enable%value%,Edit8
+			if(value)
+			{
+				GuiControl,,Button14, 0 ;Insert
+				GuiControl,,Button15, 0 ;Remove				
+				GuiControl, Disable,Edit9
+				GuiControl, Disable,Edit10
+				GuiControl, Disable,ComboBox2
+				GuiControl, Disable,Edit11
+				GuiControl, Disable,Edit12
+				GuiControl, Disable,ComboBox3
+			}
+		}
+		else if(Label = "ExplorerReplaceDialogChangeCase")
+		{
+			GuiControl, Enable%value%, ComboBox4
+			GuiControl, Enable%value%, Button17
+		}
+		else if(Label = "ExplorerReplaceDialogRemoveChars" || Label = "ExplorerReplaceDialogInsertChars")
+		{
+			if(Label = "ExplorerReplaceDialogInsertChars")
+			{
+				GuiControl, Enable%value%, Edit9
+				GuiControl, Enable%value%, Edit10
+				GuiControl, Enable%value%, ComboBox2
+			}
+			else
+			{				
+				GuiControl, Enable%value%,Edit11
+				GuiControl, Enable%value%,Edit12
+				GuiControl, Enable%value%,ComboBox3
+			}
+			if(value)
+			{
+				GuiControl,,Button12, 0 ;trim start
+				GuiControl,,Button13, 0 ;trim end
+				GuiControl, Disable, Edit7
+				GuiControl, Disable, Edit8
+			}
+		}
+		else if(Label = "ExplorerReplaceDialogChangeCaseExtension")
+		{
+			if(value)
+			{
+				GuiControl,, Button11, 0
+				GuiControl, Disable, Edit6
+			}
+		}
+		else if(Label = "ExplorerReplaceDialogPrefixLine")
+			GuiControl, Enable%value%, Edit13
+		else if(Label = "ExplorerReplaceDialogSuffixLine")			
+			GuiControl, Enable%value%, Edit14
+		else if(Label = "ExplorerReplaceDialogTrimLineStart" || Label = "ExplorerReplaceDialogTrimLineEnd")
+		{
+			if(Label = "ExplorerReplaceDialogTrimLineStart")
+				GuiControl, Enable%value%,Edit15
+			else
+				GuiControl, Enable%value%,Edit16
+			if(value)
+			{
+				GuiControl,,Button22, 0 ;Insert
+				GuiControl,,Button23, 0 ;Remove				
+				GuiControl, Disable,Edit17
+				GuiControl, Disable,Edit18
+				GuiControl, Disable,ComboBox5
+				GuiControl, Disable,Edit19
+				GuiControl, Disable,Edit20
+				GuiControl, Disable,ComboBox6
+			}
+		}
+		else if(Label = "ExplorerReplaceDialogRemoveLineChars" || Label = "ExplorerReplaceDialogInsertLineChars")
+		{
+			if(Label = "ExplorerReplaceDialogInsertLineChars")
+			{
+				GuiControl, Enable%value%, Edit17
+				GuiControl, Enable%value%, Edit18
+				GuiControl, Enable%value%, ComboBox5
+			}
+			else
+			{				
+				GuiControl, Enable%value%,Edit19
+				GuiControl, Enable%value%,Edit20
+				GuiControl, Enable%value%,ComboBox6
+			}
+			if(value)
+			{
+				GuiControl,,Button20, 0 ;trim start
+				GuiControl,,Button21, 0 ;trim end
+				GuiControl, Disable, Edit15
+				GuiControl, Disable, Edit16
+			}
+		}
+		else if(Label = "ExplorerReplaceDialogLineTabsToSpaces")
+		{
+			GuiControl, Enable%value%, Edit21
+			if(value)
+			{
+				GuiControl,,Button25, 0
+				GuiControl, Disable, Edit22
+			}
+		}
+		else if(Label = "ExplorerReplaceDialogLineSpacesToTabs")
+		{
+			GuiControl, Enable%value%, Edit22			
+			if(value)
+			{
+				GuiControl,,Button24, 0
+				GuiControl, Disable, Edit21
+			}
+		}
+		else if(Label = "ExplorerReplaceDialogChangeLineCase")
+			GuiControl, Enable%value%, ComboBox7
+		else if(Label = "ExplorerReplaceDialogConvertLineSeparator")
+			GuiControl, Enable%value%, ComboBox8
+	}
 	Replace()
 	{
-		global ExplorerWindows		
-		WinSetTitle, % "ahk_id " this.hWnd,,Searching...,
+		global ExplorerWindows
+		WinSetTitle, % "ahk_id " this.hWnd,,Working...,
 		if(this.Filenames)
 			this.PerformFileNameReplace(this.DirectoryTree, AppendPaths(this.DirectoryTree.Path, this.DirectoryTree.Name))
 		else
@@ -624,62 +938,62 @@ Loop % ExplorerWindows.len()
 	}
 return
 ExplorerReplaceDialogFilenames:
+ExplorerReplaceDialogFilenames()
+return
+ExplorerReplaceDialogFilenames()
+{
+	global ExplorerWindows
+	Loop % ExplorerWindows.len()
+		if(ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
+		{		
+			SetControlDelay, 0
+			Control, Enable,,, % "ahk_id " ExplorerWindows[A_Index].ReplaceDialog.hIncludeDirectories
+			Control, Enable,,, % "ahk_id " ExplorerWindows[A_Index].ReplaceDialog.hCollidingAction
+			enum := ExplorerWindows[A_Index].ReplaceDialog.QuicknDirtyFiles._newEnum()
+			while enum[key,value]
+				Control, Hide,,,  ahk_id %value%
+			enum := ExplorerWindows[A_Index].ReplaceDialog.QuicknDirtyFilenames._newEnum()
+			while enum[key,value]
+				Control, Show,,,  ahk_id %value%
+			if(LV_GetCount("Col") = 4)
+			{
+				LV_Delete()
+				ExplorerWindows[A_Index].ReplaceDialog.Remove("SearchResults")
+				ExplorerWindows[A_Index].ReplaceDialog.Remove("BasePath")
+				LV_DeleteCol(4)
+			}
+			LV_ModifyCol(1,234, "Old File")
+			LV_ModifyCol(2,200, "Path")
+			LV_ModifyCol(3,234, "New File")
+		}
+	return
+}
+ExplorerReplaceDialogPrefix:
+ExplorerReplaceDialogSuffix:
+ExplorerReplaceDialogChangeExtension:
+ExplorerReplaceDialogTrimStart:
+ExplorerReplaceDialogTrimEnd:
+ExplorerReplaceDialogChangeCase:
+ExplorerReplaceDialogChangeCaseExtension:
+ExplorerReplaceDialogRemoveChars:
+ExplorerReplaceDialogInsertChars:
+
+ExplorerReplaceDialogPrefixLine:
+ExplorerReplaceDialogSuffixLine:
+ExplorerReplaceDialogTrimLineStart:
+ExplorerReplaceDialogTrimLineEnd:
+ExplorerReplaceDialogRemoveLineChars:
+ExplorerReplaceDialogInsertLineChars:
+ExplorerReplaceDialogLineTabsToSpaces:
+ExplorerReplaceDialogLineSpacesToTabs:
+ExplorerReplaceDialogChangeLineCase:
+ExplorerReplaceDialogConvertLineSeparator:
 Loop % ExplorerWindows.len()
 	if(ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
-	{		
-		SetControlDelay, 0
-		Control, Enable,,, % "ahk_id " ExplorerWindows[A_Index].ReplaceDialog.hIncludeDirectories
-		Control, Enable,,, % "ahk_id " ExplorerWindows[A_Index].ReplaceDialog.hCollidingAction
-		enum := ExplorerWindows[A_Index].ReplaceDialog.QuicknDirtyFiles._newEnum()
-		while enum[key,value]
-			Control, Hide,,,  ahk_id %value%
-		enum := ExplorerWindows[A_Index].ReplaceDialog.QuicknDirtyFilenames._newEnum()
-		while enum[key,value]
-			Control, Show,,,  ahk_id %value%
-		if(LV_GetCount("Col") = 4)
-		{
-			LV_Delete()
-			ExplorerWindows[A_Index].ReplaceDialog.Remove("SearchResults")
-			ExplorerWindows[A_Index].ReplaceDialog.Remove("BasePath")
-			LV_DeleteCol(4)
-		}
-		LV_ModifyCol(1,234, "Old File")
-		LV_ModifyCol(2,200, "Path")
-		LV_ModifyCol(3,234, "New File")
-	}
+		ExplorerWindows[A_Index].ReplaceDialog.GuiEvent(A_ThisLabel)
 return
-ExplorerReplaceDialogPrefix:
-return
-ExplorerReplaceDialogSuffix:
-return
-ExplorerReplaceDialogChangeExtension:
-return
-ExplorerReplaceDialogTrimStart:
-return
-ExplorerReplaceDialogTrimEnd:
-return
-ExplorerReplaceDialogChangeCase:
-return
-ExplorerReplaceDialogRemoveChars:
-return
-ExplorerReplaceDialogInsertChars:
-return
-ExplorerReplaceDialogPrefixLine:
-return
-ExplorerReplaceDialogSuffixLine:
-return
-ExplorerReplaceDialogTrimLineStart:
-return
-ExplorerReplaceDialogTrimLineEnd:
-return
-ExplorerReplaceDialogRemoveLineChars:
-return
-ExplorerReplaceDialogInsertLineChars:
-return
-ExplorerReplaceTabsToSpaces:
-return
-ExplorerReplaceSpacesToTabs:
-return
+
+
 ExplorerReplaceDialogListView:
 Loop % ExplorerWindows.len()
 	if(ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
@@ -690,6 +1004,7 @@ Loop % ExplorerWindows.len()
 	if(ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
 		ExplorerWindows[A_Index].ReplaceDialog.Search()
 return
+
 ExplorerReplaceDialogCancel:
 Loop % ExplorerWindows.len()
 {
@@ -703,6 +1018,7 @@ Loop % ExplorerWindows.len()
 }
 return
 ExplorerReplaceDialogClose:
+ExplorerReplaceDialogEscape:
 Loop % ExplorerWindows.len()
 	if(ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
 	{

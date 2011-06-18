@@ -348,6 +348,7 @@ strEndsWith(string,end)
 	return strlen(end)<=strlen(string) && Substr(string,-strlen(end)+1)=end
 }
 
+;Removes all occurences of trim at the beggining and end of string
 strTrim(string, trim)
 {
 	return strTrimLeft(strTrimRight(string,trim),trim)
@@ -385,6 +386,7 @@ strStripRight(string,strip)
 	return substr(string,1,pos)
 }
 
+;Removes all characters in string before the first occurence of strip and after the last occurence of strip in string
 strStrip(string, strip)
 {
 	return strStripLeft(strStripRight(string,strip),strip)
@@ -1022,7 +1024,11 @@ AttachToolWindow(hParent, GUINumber, AutoClose)
 		Gui %GUINumber%: +LastFoundExist
 		if(!(hGui := WinExist()))
 			return false
-		DllCall("SetWindowLongPtr", "Ptr", hGui, "int", -8, "PTR", hParent) ;This line actually sets the owner behavior
+		;SetWindowLongPtr is defined as SetWindowLong in x86
+		if(A_PtrSize = 4)
+			DllCall("SetWindowLong", "Ptr", hGui, "int", -8, "PTR", hParent) ;This line actually sets the owner behavior
+		else
+			DllCall("SetWindowLongPtr", "Ptr", hGui, "int", -8, "PTR", hParent) ;This line actually sets the owner behavior
 		ToolWindows.Insert(Object("hParent", hParent, "hGui", hGui,"AutoClose", AutoClose))
 		Gui %GUINumber%: Show, NA
 		return true
@@ -1038,7 +1044,12 @@ DeAttachToolWindow(GUINumber)
 	{
 		if(ToolWindows[A_Index].hGui = hGui)
 		{
-			DllCall("SetWindowLong", "Ptr", hGui, "int", -8, "PTR", 0) ;Remove tool window behavior
+			;SetWindowLongPtr is defined as SetWindowLong in x86
+			if(A_PtrSize = 4)
+				DllCall("SetWindowLong", "Ptr", hGui, "int", -8, "PTR", 0) ;Remove tool window behavior
+			else
+				DllCall("SetWindowLongPtr", "Ptr", hGui, "int", -8, "PTR", 0) ;Remove tool window behavior
+			DllCall("SetWindowLongPtr", "Ptr", hGui, "int", -8, "PTR", 0)
 			ToolWindows.Remove(A_Index)
 		}
 	}

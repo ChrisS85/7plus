@@ -1,8 +1,8 @@
 Suspend, On
 #SingleInstance off
 #NoTrayIcon ;Added later
-#InstallMouseHook
-#InstallKeyBdHook
+; #InstallMouseHook
+; #InstallKeyBdHook
 #MaxThreads 255
 #IfTimeout 150ms ;Might soften up mouse hook timeout problem
 #MaxHotkeysPerInterval 1000 ;Required for mouse wheel
