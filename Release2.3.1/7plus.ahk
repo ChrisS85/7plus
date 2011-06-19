@@ -43,6 +43,7 @@ ComObjError(0)
 #include %A_ScriptDir%\Autoupdate.ahk
 #include %A_ScriptDir%\EventSystem.ahk
 #include %A_ScriptDir%\EditEventGUI.ahk
+#include %A_ScriptDir%\Language.ahk
 ;~ #include %A_ScriptDir%\EditSubEventGUI.ahk
 #include %A_ScriptDir%\WindowFinder.ahk
 #include %A_ScriptDir%\Placeholders.ahk

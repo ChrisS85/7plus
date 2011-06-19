@@ -1,7 +1,7 @@
 GUI_EditEvent(e,GoToLabel="", Parameter="")
 {
 	static Event, result, SubeventGUI,SubEventBackup, EditEventTab, EditEventTriggerCategory, EditEventTriggerType, EditEventConditions, EditEvent_EditCondition, EditEvent_RemoveCondition, EditEvent_AddCondition, EditEventActions, EditEvent_EditAction, EditEvent_RemoveAction, EditEvent_AddAction, EditEvent_Condition_MoveDown, EditEvent_Condition_MoveUp, EditEvent_Action_MoveUp, EditEvent_Action_MoveDown, EditEvent_Name, EditEvent_Description, EditEvent_DisableAfterUse, EditEvent_DeleteAfterUse, EditEvent_OneInstance, EditEvent_Category, EditEvent_CopyCondition, EditEvent_PasteCondition, EditEvent_CopyAction, EditEvent_PasteAction, ActionClipboard, ConditionClipboard,EditConditionNegate,EditEventConditionsType,EditEventConditionsCategory,EditEventActionsType,EditEventActionsCategory,EditEvent_ComplexEvent
-	global Trigger_Categories, Settings_Events, Condition_Categories, Action_Categories
+	global Trigger_Categories, Settings_Events, Condition_Categories, Action_Categories, Language
 	if(GoToLabel = "")
 	{
 		;Don't show more than once
@@ -557,15 +557,16 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 	}
 	else if(GoToLabel = "SubEventHelp")
 	{
+		GuiControlGet, type,,EditEvent%EditEventTab%Type
 		if(EditEventTab = "Trigger")
-			Run http://code.google.com/p/7plus/wiki/docsTriggers%type%,, UseErrorLevel
+			Language.CurrentLanguage.OpenWikiPage("docsTriggers" type)
 		else
-			Run http://code.google.com/p/7plus/wiki/docs%EditEventTab%%type%,, UseErrorLevel
+			Language.CurrentLanguage.OpenWikiPage("docs" EditEventTab type)
 		return
 	}
 }
 SubEventHelp:
-GUI_EditEvent("","","SubEventHelp")
+GUI_EditEvent("","SubEventHelp")
 return
 EditEventOK:
 GUI_EditEvent("","EditEventOK")

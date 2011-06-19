@@ -162,6 +162,8 @@ DetectHiddenWindows, On
 
 IniRead, ShowComplexEvents, %IniPath%, General, ShowComplexEvents, 0
 
+LoadLanguage()
+
 IniRead, HKPlacesBar, %IniPath%, Explorer, HKPlacesBar, 0
 IniRead, HKCleanFolderBand, %IniPath%, Explorer, HKCleanFolderBand, 0
 IniRead, HKFolderBand, %IniPath%, Explorer, HKFolderBand, 0
@@ -349,6 +351,7 @@ WriteIni()
 	IniWrite, %ProfilingEnabled%, %IniPath%, General, ProfilingEnabled
 	IniWrite, %ShowEvents%, %IniPath%, General, ShowEvents
 	IniWrite, %ShowComplexEvents%, %IniPath%, General, ShowComplexEvents
+	IniWrite, % Language.CurrentLanguage.ShortName, %IniPath%, General, Language
 	
 	IniWrite, %ImgName%, %IniPath%, Explorer, Image
 	IniWrite, %TxtName%, %IniPath%, Explorer, Text

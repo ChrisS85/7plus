@@ -1181,8 +1181,7 @@ HWNDToClassNN(hwnd)
 	; Built an array indexing the control names by their hwnd 
 	Loop Parse, ctrlList, `n 
 	{
-		ControlGet hwnd1, Hwnd, , %A_LoopField%, A 
-		hwnd1 += 0   ; Convert from hexa to decimal 
+		ControlGet hwnd1, Hwnd, , %A_LoopField%, ahk_id %win%
 		if(hwnd1=hwnd)
 			return A_LoopField
 	}

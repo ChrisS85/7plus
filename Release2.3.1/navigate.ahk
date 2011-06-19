@@ -185,14 +185,15 @@ SetDirectory(sPath)
 		sPath .="\"
 	If (WinActive("ahk_group ExplorerGroup"))
 	{
+		;Validity checking is turned off, it is probably better to let explorer handle this
 		;Folders || Namespace || FTP || Saved search || network computers
-		if (InStr(FileExist(sPath), "D") || SubStr(sPath,1,3)="::{" || SubStr(sPath,1,6)="ftp://" || strEndsWith(sPath,".search-ms") || (strStartsWith(sPath,"\\") && !InStr(sPath,"\",false,3))) 
-		{
+		; if (InStr(FileExist(sPath), "D") || SubStr(sPath,1,3)="::{" || SubStr(sPath,1,6)="ftp://" || strEndsWith(sPath,".search-ms") || (strStartsWith(sPath,"\\") && !InStr(sPath,"\",false,3))) 
+		; {
 			hWnd:=WinExist("A")
 			ShellNavigate(sPath,hwnd)
-		}
-		else
-			MsgBox The path %sPath% cannot be opened!
+		; }
+		; else
+			; MsgBox The path %sPath% cannot be opened!
 	}
 	else if(WinActive("ahk_group DesktopGroup"))
 		Run(A_WinDir "\explorer.exe /n,/e," sPath)

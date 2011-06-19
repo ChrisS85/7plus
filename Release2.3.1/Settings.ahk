@@ -4,7 +4,7 @@
 ;---------------------------------------------------------------------------------------------------------------
 Settings_CreateIntroduction(ByRef TabCount) {
 	global
-	local yIt,x1,x2,x,y
+	local yIt,x1,x2,x,y,hAdmin, Languages
 	x1:=xBase
 	yIt:=yBase
 	x2:=x1+180
@@ -42,6 +42,12 @@ Finally, here are some settings that you're likely to change at the beginning:
 	Gui, 1:Add, Text, x%x1% y%y%, Run as admin:
 	Gui, 1:Add, DropDownList, x%x2% y%yIt% w%wTBMedium% vRunAsAdmin hwndhAdmin, Always/Ask|Never
 	AddToolTip(hAdmin, "Required for explorer buttons, Autoupdate and for accessing programs which are running as admin. Also make sure that 7plus has write access to its config files when not running as admin.")
+	yIt+=textboxstep
+	y:=yIt+TextBoxCheckBoxOffset
+	Gui, 1:Add, Text, x%x1% y%y%, Documentation language:	
+	Loop % Language.Languages.len()
+		Languages .= (A_Index = 1 ? "" : "|") Language.Languages[A_Index].FullName
+	Gui, 1:Add, DropDownList, x%x2% y%yIt% w%wTBMedium% hwndhLanguage, % Languages
 }
 Settings_CreateEvents(ByRef TabCount) {
 	global
@@ -513,12 +519,15 @@ Settings_CreateAbout(ByRef TabCount) {
 ;---------------------------------------------------------------------------------------------------------------
 Settings_SetupIntroduction() {
 	global
+	local class
 	GuiControl, 1:,HideTrayIcon,% HideTrayIcon = 1
 	GuiControl, 1:,AutoUpdate,% AutoUpdate = 1
 	;Figure out if Autorun is enabled
 	if(!IsPortable)
 		GuiControl, 1:, Autorun,% IsAutorunEnabled()
 	GuiControl, 1:Choose, RunAsAdmin, %RunAsAdmin%
+	class := HWNDToClassNN(hLanguage)
+	GuiControl, 1:ChooseString, %class%, % Language.CurrentLanguage.FullName
 }
 Settings_SetupEvents() {
 	global
@@ -1349,7 +1358,7 @@ GUI_EventsList_Export()
 	}	
 }
 GUI_EventsList_Help:
-run http://code.google.com/p/7plus/wiki/EventsOverview
+Language.CurrentLanguage.OpenWikiPage("EventsOverview")
 Return
 GUI_SaveEvents()
 {
@@ -1502,7 +1511,7 @@ DropAccessorFiles()
 	return
 }
 GUI_Accessor_Help:
-run http://code.google.com/p/7plus/wiki/docsAccessor
+Language.CurrentLanguage.OpenWikiPage("docsAccessor")
 return
 GUI_AccessorSettings:
 ShowAccessorSettings()
@@ -2058,6 +2067,7 @@ ApplySettings(Close = 0)
 	Settings_WindowsSettings_Submit(1)
 	;Store variables which can be stored directly
 	Gui 1:Submit, NoHide
+	Language.CurrentLanguage := Language.Languages.SubItem("FullName", ControlGetText("", "ahk_id " hLanguage))
 	Action := Settings_WindowsSettings_Submit(0)
 	;SaveEvents relies on SettingsActive to be false so that enabling/dissabling the events doesn't refresh them in settings window
 	SettingsActive := false
