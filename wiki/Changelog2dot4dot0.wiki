@@ -13,6 +13,7 @@ New Functions:
  * Added screen corner triggers and made AeroFlip3D an event rather than a setting
  * Added a new hotkey event (CTRL+M) to merge all explorer windows into a single one with tabs
  * Added a "Show complex events" button and categorized events by complexity. By default 7plus will now show only about half of the available events. The others can still be enabled though.
+ * French documentation language available thanks to lecuyerf! User interface translation will probably follow in the next version, possibly also with German language. Always looking for volunteers, feel free to join this project!
 
 Bugfixes:
  * Fixed missing \ when copying paths of network shares
@@ -25,6 +26,7 @@ Changes:
  * Huge code rewrite for some key portions related to explorer. As a result, status bar enhancements and explorer tabs are now visible on all explorer windows at once.
  * Complete rewrite of Slide Windows feature. It should be much better now, with more options, multi-monitor support, support for child windows and no windows getting lost anymore.
  * Redesign of the "Edit Event" and "Edit Subevent" window. There is now only one window in which everything can be edited.
- * Moved Hotkey editing into the Trigger configuration GUI so it can be edited in the same window. Also it will now show the previously selected trigger.
- * Clipboard history is now stored encrypted. In addition, if there is no event active that makes use of the clipboard history it will not be stored at all for privacy reasons.
+ * Moved hotkey editing into the trigger configuration GUI so it can be edited in the same window. Also it will now show the previously selected hotkey.
+ * Clipboard history is now stored in encrypted form. In addition, if there is no enabled event that makes use of the clipboard history it will not be stored at all for privacy reasons.
+
 If you like this program and want to support its development, please consider donating!
