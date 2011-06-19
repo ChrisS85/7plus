@@ -1,9 +1,15 @@
 Action_ExplorerReplaceDialog_Init(Action)
 {
 	Action.Category := "Explorer"
+	Action.View := "Filenames"
+	Action.SelectedFiles := 0
 }
 Action_ExplorerReplaceDialog_ReadXML(Action, XMLAction)
 {
+	if(XMLAction.HasKey("View"))
+		Action.View := XMLAction.View
+	if(XMLAction.HasKey("SelectedFiles"))
+		Action.SelectedFiles := XMLAction.SelectedFiles
 }
 Action_ExplorerReplaceDialog_Execute(Action, Event)
 {
@@ -27,9 +33,12 @@ Action_ExplorerReplaceDialog_DisplayString(Action)
 }
 Action_ExplorerReplaceDialog_GuiShow(Action, ActionGUI)
 {
+	SubEventGUI_Add(Action, ActionGUI, "DropDownList", "View", "Filenames|Files", "", "Replace in:")
+	SubEventGUI_Add(Action, ActionGUI, "Checkbox", "SelectedFiles", "In selected files")
 }
 Action_ExplorerReplaceDialog_GuiSubmit(Action, ActionGUI)
 {
+	SubEventGUI_GUISubmit(Action, ACtionGUI)
 }
 Class CReplaceDialog
 {
@@ -47,7 +56,7 @@ Class CReplaceDialog
 		Gui, % this.GUINum ":Default"
 		Gui, % this.GUINum ":Add",Text, x10 y10, Search in:
 		Gui, % this.GUINum ":Add",Radio, x77 y10 hwndhFilenames gExplorerReplaceDialogFilenames Checked, File names
-		Gui, % this.GUINum ":Add",Radio, x150 y10 hwndhFiles gExplorerReplaceDialogFiles, Files
+		Gui, % this.GUINum ":Add",Radio, x150 y10 hwndhFiles gExplorerReplaceDialogFiles Checked, Files
 		Gui, % this.GUINum ":Add",Text, x10 y36, Search:
 		Gui, % this.GUINum ":Add",Edit, x66 y35 w346 hwndhReplace
 		Gui, % this.GUINum ":Add",Text, x10 y62, Replace:
@@ -56,7 +65,7 @@ Class CReplaceDialog
 		Gui, % this.GUINum ":Add",Text, x10 y88, In:
 		Gui, % this.GUINum ":Add",Edit, x66 y84 w216 hwndhIn
 		AddToolTip(hIn, "You may use wildcards here and use "","" as delimiter. Example: ""*.txt,text*""")
-		Gui, % this.GUINum ":Add",Checkbox, x291 y87 hwndhInSelectedFiles, In selected files only
+		Gui, % this.GUINum ":Add",Checkbox, % "x291 y87 hwndhInSelectedFiles Checked" (Action.SelectedFiles = 1), In selected files only
 		Gui, % this.GUINum ":Add",Checkbox, x420 y36 hwndhCaseSensitive, Case sensitive
 		Gui, % this.GUINum ":Add",Checkbox, x420 y59 hwndhRegex, Use regular expressions
 		Gui, % this.GUINum ":Add",Checkbox, x563 y36 hwndhIncludeDirectories, Include directories
@@ -212,8 +221,14 @@ Class CReplaceDialog
 		this.hReplaceButton := hReplaceButton
 		this.hCancel := hCancel
 		Gui, % this.GUINum ":-Resize -MaximizeBox -MinimizeBox +ToolWindow +LastFound +LabelExplorerReplaceDialog"
+		
 		Gui, % this.GUINum ":Show", AutoSize, Rename / Replace
 		this.hWnd := WinExist()
+		if(Action.View = "Files")
+		{
+			GuiControl, % this.GuiNum ":Check",  Button2
+			this.GuiEvent("ExplorerReplaceDialogFiles")
+		}
 		ControlFocus , , ahk_id %hReplace%
 		AttachToolWindow(this.Parent, this.GUINum, True)
 	}
@@ -759,7 +774,52 @@ Class CReplaceDialog
 		ClassNN := HWNDToClassNN(hwnd)
 		GuiControlGet, value, ,%ClassNN%
 		
-		if(Label = "ExplorerReplaceDialogPrefix")
+		if(Label="ExplorerReplaceDIalogFiles")
+		{
+			SetControlDelay, 0
+			Control, Disable,,, % "ahk_id " this.hIncludeDirectories
+			Control, Disable,,, % "ahk_id " this.hCollidingAction
+			enum := this.QuicknDirtyFilenames._newEnum()
+			while enum[key,value]
+				Control, Hide,,,  ahk_id %value%
+			enum := this.QuicknDirtyFiles._newEnum()
+			while enum[key,value]
+				Control, Show,,, ahk_id %value%
+			LV_ModifyCol(1,100, "File")
+			LV_ModifyCol(2,38, "Line")
+			LV_ModifyCol(3,265, "Text")
+			if(LV_GetCount("Col") = 3)
+			{
+				LV_Delete()
+				this.Remove("SearchResults")
+				this.Remove("DirectoryTree")
+				this.Remove("BasePath")
+				LV_InsertCol(4,265, "Replaced Text")
+			}
+		}
+		else if(Label="ExplorerReplaceDIalogFilenames")
+		{
+			SetControlDelay, 0
+			Control, Enable,,, % "ahk_id " this.hIncludeDirectories
+			Control, Enable,,, % "ahk_id " this.hCollidingAction
+			enum := this.QuicknDirtyFiles._newEnum()
+			while enum[key,value]
+				Control, Hide,,,  ahk_id %value%
+			enum := this.QuicknDirtyFilenames._newEnum()
+			while enum[key,value]
+				Control, Show,,,  ahk_id %value%
+			if(LV_GetCount("Col") = 4)
+			{
+				LV_Delete()
+				this.Remove("SearchResults")
+				this.Remove("BasePath")
+				LV_DeleteCol(4)
+			}
+			LV_ModifyCol(1,234, "Old File")
+			LV_ModifyCol(2,200, "Path")
+			LV_ModifyCol(3,234, "New File")
+		}
+		else if(Label = "ExplorerReplaceDialogPrefix")
 			GuiControl, Enable%value%, Edit4
 		else if(Label = "ExplorerReplaceDialogSuffix")			
 			GuiControl, Enable%value%, Edit5
@@ -912,62 +972,7 @@ Class CReplaceDialog
 	}
 }
 ExplorerReplaceDialogFiles:
-Loop % ExplorerWindows.len()
-	if(ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
-	{
-		SetControlDelay, 0
-		Control, Disable,,, % "ahk_id " ExplorerWindows[A_Index].ReplaceDialog.hIncludeDirectories
-		Control, Disable,,, % "ahk_id " ExplorerWindows[A_Index].ReplaceDialog.hCollidingAction
-		enum := ExplorerWindows[A_Index].ReplaceDialog.QuicknDirtyFilenames._newEnum()
-		while enum[key,value]
-			Control, Hide,,,  ahk_id %value%
-		enum := ExplorerWindows[A_Index].ReplaceDialog.QuicknDirtyFiles._newEnum()
-		while enum[key,value]
-			Control, Show,,, ahk_id %value%
-		LV_ModifyCol(1,100, "File")
-		LV_ModifyCol(2,38, "Line")
-		LV_ModifyCol(3,265, "Text")
-		if(LV_GetCount("Col") = 3)
-		{
-			LV_Delete()
-			ExplorerWindows[A_Index].ReplaceDialog.Remove("SearchResults")
-			ExplorerWindows[A_Index].ReplaceDialog.Remove("DirectoryTree")
-			ExplorerWindows[A_Index].ReplaceDialog.Remove("BasePath")
-			LV_InsertCol(4,265, "Replaced Text")
-		}
-	}
-return
 ExplorerReplaceDialogFilenames:
-ExplorerReplaceDialogFilenames()
-return
-ExplorerReplaceDialogFilenames()
-{
-	global ExplorerWindows
-	Loop % ExplorerWindows.len()
-		if(ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
-		{		
-			SetControlDelay, 0
-			Control, Enable,,, % "ahk_id " ExplorerWindows[A_Index].ReplaceDialog.hIncludeDirectories
-			Control, Enable,,, % "ahk_id " ExplorerWindows[A_Index].ReplaceDialog.hCollidingAction
-			enum := ExplorerWindows[A_Index].ReplaceDialog.QuicknDirtyFiles._newEnum()
-			while enum[key,value]
-				Control, Hide,,,  ahk_id %value%
-			enum := ExplorerWindows[A_Index].ReplaceDialog.QuicknDirtyFilenames._newEnum()
-			while enum[key,value]
-				Control, Show,,,  ahk_id %value%
-			if(LV_GetCount("Col") = 4)
-			{
-				LV_Delete()
-				ExplorerWindows[A_Index].ReplaceDialog.Remove("SearchResults")
-				ExplorerWindows[A_Index].ReplaceDialog.Remove("BasePath")
-				LV_DeleteCol(4)
-			}
-			LV_ModifyCol(1,234, "Old File")
-			LV_ModifyCol(2,200, "Path")
-			LV_ModifyCol(3,234, "New File")
-		}
-	return
-}
 ExplorerReplaceDialogPrefix:
 ExplorerReplaceDialogSuffix:
 ExplorerReplaceDialogChangeExtension:
