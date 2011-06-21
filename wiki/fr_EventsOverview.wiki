@@ -1,0 +1,12 @@
+= Event System overview =
+Depuis la 2.0.0, 7plus dispose d'un nouveau système qui ajoute de nombreuses possibilités de personnalisation et vous permet même de créer vos propres fonctions ! Le concept de base est que vous définissez un déclencheur qui s'active dans certaines circonstances, alors vous pouvez ajouter des conditions supplémentaires qui décident si le déclencheur doit vraiment être activé, et ensuite vous pouvez ajouter une liste d'actions à réaliser. Le système est assez souple, et il y a beaucoup de combinaisons utiles.
+
+Cliquez sur les rubriques ci-dessous pour consulter individuellement les déclencheurs, conditions et actions :
+  * [fr_docsTriggersList Triggers]
+  * [fr_docsConditionsList Conditions]
+  * [fr_docsActionsList Actions]
+
+Il y a aussi d'autres choses que vous devez savoir sur les événements :
+  * [fr_docsGenericPlaceholders Placeholders]
+  * [fr_docsGenericClassNN ClassNN]
+  * [fr_docsExamplesGetClassName How to get window class names]
