@@ -1,0 +1,2 @@
+= FlatView =
+Cette action affiche tous les contenus de fichiers dans le paramètre Paths, dans une vue à plat, montrant tous les fichiers sans la structure de répertoire. Paths est une liste de chemins qui doit être ajoutée à FlatView. Le placeholder ${SelNM} est certainemnt le plus utilisé pour sélectionner des fichiers dans l'explorateur.
