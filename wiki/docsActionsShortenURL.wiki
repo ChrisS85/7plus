@@ -1,0 +1,2 @@
+= ShortenURL =
+This event shortens the URL from the URL property by using the goo.gl service and copies it to a placeholder variable and optionally to the clipboard. By default a URL from the clipboard is used.
