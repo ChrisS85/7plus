@@ -143,9 +143,6 @@ Settings_CreateExplorer(ByRef TabCount) {
 	y:=yIt+TextBoxCheckBoxOffset
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghNavigation vURL_Navigation1, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKMouseGestures, Hold right mouse and click left: Go back, Hold left mouse and click right: Go forward
-	yIt+=checkboxstep	
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghExplorer1dot1 vURL_Explorer1dot1, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKInvertSelection, CTRL + I: Invert selection
 	yIt+=checkboxstep
 	
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghSelectFirstFile vURL_SelectFirstFile, ?
@@ -337,7 +334,7 @@ Settings_CreateWindows(ByRef TabCount) {
 	yIt:=yBase
 	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghSlideWindow vURL_SlideWindow, ?
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKSlideWindows gSlideWindow hwndhSlideWindows, WIN + SHIFT + Arrow keys: Slide Window function
-	AddToolTip(hSlideWindows, "A Slide Window is moved off screen, it will not be shown until you activate it through task bar / ALT + TAB or move the mouse to the border where it was hidden. It will then slide into the screen, and slide out again when the mouse leaves the window or when another window gets activated. Deactivate this mode by moving the window or pressing WIN+SHIFT+Arrow key in another direction.")
+	AddToolTip(hSlideWindows, "A Slide Window is moved off screen and will not be shown until you activate it through task bar / ALT + TAB or move the mouse to the border where it was hidden. It will then slide into the screen, and slide out again when the mouse leaves the window or when another window gets activated. Deactivate this mode by moving the window or pressing WIN+SHIFT+Arrow key in another direction.")
 	yIt+=checkboxstep
 	x:=x1+xCheckboxTextOffset
 	Gui, 1:Add, Checkbox, x%x% y%yIt% vSlideWinHide, Hide Slide Windows in taskbar and from ALT + TAB
@@ -352,10 +349,6 @@ Settings_CreateWindows(ByRef TabCount) {
 	x:=x1+200
 	Gui, 1:Add, DropDownList, x%x% y%y% vSlideWindowsModifier hwndhSlideModifier, Control|ALT|Shift|WIN
 	AddToolTip(hSlideModifier, "If this key is pressed, the mouse may be moved out of the currently active slide window without sliding it out. This is useful if the slide window has child windows that don't overlap with the main window. If the option above is enabled, it may also be used to drag something into a hidden slide window by moving the mouse to the screen border and holding this key.")
-	yIt+=checkboxstep
-	
-	Gui, 1:Add, Text, y%yIt% x%xhelp% cBlue ghWindow1dot1 vURL_Window1dot1, ?
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vHKAltDrag, ALT+Left Mouse Drag anywhere on a window: Move window
 	yIt+=checkboxstep
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vShowResizeTooltip, Show window size as tooltip while resizing
 }
@@ -694,7 +687,6 @@ Settings_SetupExplorer() {
 	global
 	local temp
 	GuiControl, 1:, HKMouseGestures,% HKMouseGestures = 1
-	GuiControl, 1:, HKInvertSelection,% HKInvertSelection = 1
 	if(A_OSVersion!="WIN_7")
 		GuiControl, 1:disable, HKShowSpaceAndSize
 	
@@ -803,7 +795,6 @@ Settings_SetupWindows() {
 	GuiControl, 1:, SlideWindowSideLimit, % SlideWindowSideLimit = 1
 	GuiControl, 1:, SlideWindowRequireMouseUp, % SlideWindowRequireMouseUp = 1
 	GuiControl, 1:ChooseString, SlideWindowsModifier, %SlideWindowsModifier% ;| -> trigger g-label
-	GuiControl, 1:, HKAltDrag, % HKAltDrag = 1
 	if(A_OsVersion!="WIN_7")
 	{
 		if(!IsPortable)

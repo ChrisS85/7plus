@@ -58,6 +58,7 @@
 #include %A_ScriptDir%\Actions\FTPUpload.ahk
 #include %A_ScriptDir%\Actions\ImageConverter.ahk
 #include %A_ScriptDir%\Actions\Input.ahk
+#include %A_ScriptDir%\Actions\InvertSelection.ahk
 #include %A_ScriptDir%\Actions\MergeTabs.ahk
 #include %A_ScriptDir%\Actions\Message.ahk
 #include %A_ScriptDir%\Actions\MD5Checksum.ahk
@@ -229,7 +230,7 @@ EventSystem_CreateBaseObjects()
 	local tmpobject
 	EventSystem_Triggers := "ContextMenu,DoubleClickDesktop,DoubleClickTaskbar,ExplorerButton,ExplorerDoubleClickSpace,ExplorerPathChanged,Hotkey,None,MenuItem,OnMessage,ScreenCorner,Timer,Trigger,WindowActivated, WindowClosed, WindowCreated,WindowStateChange,7plusStart"
 	EventSystem_Conditions := "If,IsContextMenuActive,IsDialog,IsDragable,IsFullScreen,KeyIsDown,IsRenaming,MouseOver,MouseOverFileList,MouseOverTabButton,MouseOverTaskList,WindowActive,WindowExists"
-	EventSystem_Actions := "Accessor,AutoUpdate,Clipboard,Clipmenu,ClipPaste,ControlEvent,ControlTimer,Copy,Delete,ExplorerReplaceDialog,Exit7plus,FastFoldersClear,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FilterList,FlashingWindows,FlatView,FocusControl,ImageConverter,Input,MD5,MergeTabs,Message,Move,MouseClick,MouseCloseTab,MouseWindowDrag,MouseWindowResize,NewFile,NewFolder,OpenInNewFolder,PlaySound,Restart7plus,RestoreSelection,Run,RunOrActivate,Screenshot,SelectFiles,SetWindowTitle,SendKeys,SendMessage,SetDirectory,SlideWindowOut,ShortenURL,ShowAeroFlip,ShowMenu,ShowSettings,Shutdown,TaskButtonClose,ToggleWallpaper,Tooltip,Upload,ViewMode,Volume,Wait,WindowActivate,WindowClose,WindowHide,WindowMove,WindowResize,WindowSendToBottom,WindowShow,WindowState,Write"
+	EventSystem_Actions := "Accessor,AutoUpdate,Clipboard,Clipmenu,ClipPaste,ControlEvent,ControlTimer,Copy,Delete,ExplorerReplaceDialog,Exit7plus,FastFoldersClear,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FilterList,FlashingWindows,FlatView,FocusControl,ImageConverter,Input,InvertSelection,MD5,MergeTabs,Message,Move,MouseClick,MouseCloseTab,MouseWindowDrag,MouseWindowResize,NewFile,NewFolder,OpenInNewFolder,PlaySound,Restart7plus,RestoreSelection,Run,RunOrActivate,Screenshot,SelectFiles,SetWindowTitle,SendKeys,SendMessage,SetDirectory,SlideWindowOut,ShortenURL,ShowAeroFlip,ShowMenu,ShowSettings,Shutdown,TaskButtonClose,ToggleWallpaper,Tooltip,Upload,ViewMode,Volume,Wait,WindowActivate,WindowClose,WindowHide,WindowMove,WindowResize,WindowSendToBottom,WindowShow,WindowState,Write"
 	Trigger_Categories := object("Explorer", Array(), "Hotkeys", Array(), "Other", Array(), "System", Array(), "Window", Array(), "7plus", Array())
 	Condition_Categories := object("Explorer", Array(), "Mouse", Array(), "Other", Array(), "Window", Array())
 	Action_Categories := object("Explorer", Array(), "FastFolders", Array(), "File", Array(), "Window", Array(), "Input", Array(), "System", Array(), "7plus", Array(), "Other", Array())

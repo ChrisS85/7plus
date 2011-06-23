@@ -175,12 +175,10 @@ IniRead, HKShowSpaceAndSize, %IniPath%, Explorer, HKShowSpaceAndSize, 1
 IniRead, HKMouseGestures, %IniPath%, Explorer, HKMouseGestures, 1
 IniRead, HKAutoCheck, %IniPath%, Explorer, HKAutoCheck, 1
 IniRead, ScrollUnderMouse, %IniPath%, Explorer, ScrollUnderMouse, 1
-IniRead, HKInvertSelection, %IniPath%, Explorer, HKInvertSelection, 1
 IniRead, RecallExplorerPath, %IniPath%, Explorer, RecallExplorerPath, 1
 IniRead, AlignExplorer, %IniPath%, Explorer, AlignExplorer, 1
 
 IniRead, HKActivateBehavior, %IniPath%, Windows, HKActivateBehavior, 1
-IniRead, HKAltDrag, %IniPath%, Windows, HKAltDrag, 1
 
 IniRead, HKHoverStart, %IniPath%, Windows, HKHoverStart, 1
 ;Slide windows
@@ -364,7 +362,6 @@ WriteIni()
 	IniWrite, %HKMouseGestures%, %IniPath%, Explorer, HKMouseGestures
 	IniWrite, %HKAutoCheck%, %IniPath%, Explorer, HKAutoCheck
 	IniWrite, %ScrollUnderMouse%, %IniPath%, Explorer, ScrollUnderMouse
-	IniWrite, %HKInvertSelection%, %IniPath%, Explorer, HKInvertSelection
 	IniWrite, %RecallExplorerPath%, %IniPath%, Explorer, RecallExplorerPath
 	IniWrite, %AlignExplorer%, %IniPath%, Explorer, AlignExplorer
 	
@@ -382,7 +379,6 @@ WriteIni()
 	IniWrite, %SlideWindowsBorder%, %IniPath%, Windows, SlideWindowsBorder
 	IniWrite, %SlideWindowRequireMouseUp%, %IniPath%, Windows, SlideWindowRequireMouseUp
 	IniWrite, %SlideWindowsModifier%, %IniPath%, Windows, SlideWindowsModifier
-	IniWrite, %HKAltDrag%, %IniPath%, Windows, HKAltDrag
 	IniWrite, %ShowResizeTooltip%, %IniPath%, Windows, ShowResizeTooltip
 	
 	IniWrite, %ImageExtensions%, %IniPath%, Misc, ImageExtensions

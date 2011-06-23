@@ -5135,10 +5135,37 @@
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1632</ID>
 <Name>Mouse Window Resize</Name>
-<OfficialEvent>1</OfficialEvent>
+<OfficialEvent>32</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>~!RButton</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Type>InvertSelection</Type>
+</Action></Actions>
+<Category>Explorer</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(ExploreWClass|CabinetWClass)</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event inverts the explorer file selection.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1633</ID>
+<Name>Invert selection</Name>
+<OfficialEvent>33</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^I UP</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event></Events>

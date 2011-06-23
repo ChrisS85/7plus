@@ -452,10 +452,6 @@ Wheel()
 }
 #if
 
-#if HKInvertSelection && WinActive("ahk_group ExplorerGroup") && GetKeyState("CONTROL", "P")
-^i UP::InvertSelection(WinExist("A"))
-#if
-
 InitExplorerWindows()
 {
 	global ExplorerWindows, Vista7, shell32MUIpath
