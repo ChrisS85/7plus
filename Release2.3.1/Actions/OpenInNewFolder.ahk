@@ -31,7 +31,7 @@ OpenInNewFolder(Action)
 {
 	global UseTabs, MiddleOpenFolder
  	if(!WinActive("ahk_group ExplorerGroup")||!IsMouseOverFileList())
- 		return false	
+ 		return false
 	selected:=GetSelectedFiles(0)
 	Send {LButton}
 	Sleep 100

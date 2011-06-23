@@ -5168,6 +5168,38 @@
 <Key>^I UP</Key>
 <Type>Hotkey</Type>
 </Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<SelectedFiles>0</SelectedFiles>
+<Type>ExplorerReplaceDialog</Type>
+<View>Files</View>
+</Action></Actions>
+<Category>Explorer</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>IsRenaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event shows the explorer batch rename/replace dialog with "Replace in Files" preselected.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1634</ID>
+<Name>Explorer Replace in Files Dialog</Name>
+<OfficialEvent>34</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^+H</Key>
+<Type>Hotkey</Type>
+</Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
 <MinorVersion>4</MinorVersion>

@@ -424,14 +424,6 @@ return
 #if
 */
 ;Middle click on desktop -> Change wallpaper
-ToggleWallpaper()
-{
-	global
-	if(!IsMouseOverDesktop() || A_OSVersion != "WIN_7")
-		return false
-	ShellContextMenu("Desktop",1)
-	return true
-}
 
 ;Scroll tree list with mouse wheel
 #if (ScrollUnderMouse && ((IsWindowUnderCursor("#32770") && IsDialog()) || IsWindowUnderCursor("CabinetWClass")||IsWindowUnderCursor("ExploreWClass")) && !IsRenaming())||(Accessor.GUINum && WinActive(Accessor.WindowTitle))
