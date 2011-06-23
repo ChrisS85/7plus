@@ -196,6 +196,80 @@
 <SubMenu></SubMenu>
 <Type>ContextMenu</Type>
 </Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<SelectedFiles>1</SelectedFiles>
+<Type>ExplorerReplaceDialog</Type>
+<View>Filenames</View>
+</Action></Actions>
+<Category>Context Menu</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event adds a context menu entry to batch-replace parts of the filenames of the selected files.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1635</ID>
+<Name>Replace in filenames</Name>
+<OfficialEvent>35</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Computer>0</Computer>
+<Description>Opens the batch rename/replace dialog to replace parts of the filenames of the selected files.</Description>
+<Desktop>0</Desktop>
+<Directory>1</Directory>
+<DirectoryBackground>0</DirectoryBackground>
+<FileTypes>*</FileTypes>
+<Name>Replace in filenames</Name>
+<SingleFileOnly>0</SingleFileOnly>
+<SubMenu></SubMenu>
+<Type>ContextMenu</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<SelectedFiles>1</SelectedFiles>
+<Type>ExplorerReplaceDialog</Type>
+<View>Files</View>
+</Action></Actions>
+<Category>Context Menu</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event adds a context menu entry to replace text in the selected files.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1636</ID>
+<Name>Replace in files</Name>
+<OfficialEvent>36</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Computer>0</Computer>
+<Description>Opens the batch rename/replace dialog to batch-replace text in the selected files.</Description>
+<Desktop>0</Desktop>
+<Directory>1</Directory>
+<DirectoryBackground>0</DirectoryBackground>
+<FileTypes>*</FileTypes>
+<Name>Replace in file contents</Name>
+<SingleFileOnly>0</SingleFileOnly>
+<SubMenu></SubMenu>
+<Type>ContextMenu</Type>
+</Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
 <MinorVersion>4</MinorVersion>
