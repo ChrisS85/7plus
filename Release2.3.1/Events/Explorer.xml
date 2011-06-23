@@ -678,7 +678,9 @@
 </Event><Event>
 <Actions>
 <Action>
+<SelectedFiles>0</SelectedFiles>
 <Type>ExplorerReplaceDialog</Type>
+<View>Filenames</View>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>

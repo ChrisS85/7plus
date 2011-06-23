@@ -454,6 +454,96 @@
 <Time>100</Time>
 <Type>ScreenCorner</Type>
 </Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Type>MouseWindowDrag</Type>
+</Action></Actions>
+<Category>Window Handling</Category>
+<Conditions>
+<Condition>
+<Negate>0</Negate>
+<Type>IsDragable</Type>
+</Condition><Condition>
+<Compare>${MC}</Compare>
+<Negate>1</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass|#32770)</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event allows to drag the window under the cursor by holding ALT + Left mouse button. Alt+Left click is still possible. Explorer and dialog windows are handled in another event.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1629</ID>
+<Name>Mouse Window Drag</Name>
+<OfficialEvent>29</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>~!LButton</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Type>MouseWindowDrag</Type>
+</Action></Actions>
+<Category>Window Handling</Category>
+<Conditions>
+<Condition>
+<Negate>0</Negate>
+<Type>IsDragable</Type>
+</Condition><Condition>
+<Compare>${MC}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass|#32770)</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event allows to drag the explorer/dialog window under the mouse.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1630</ID>
+<Name>Mouse Window Drag</Name>
+<OfficialEvent>30</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!LButton</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Type>MouseWindowResize</Type>
+</Action></Actions>
+<Category>Window Handling</Category>
+<Conditions>
+<Condition>
+<Negate>0</Negate>
+<Type>IsDragable</Type>
+</Condition><Condition>
+<Compare>${MC}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass|#32770)</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event resizes the explorer/dialog window under the cursor while holding ALT+Right mouse button.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1631</ID>
+<Name>Mouse Window Resize</Name>
+<OfficialEvent>31</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!RButton</Key>
+<Type>Hotkey</Type>
+</Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
 <MinorVersion>4</MinorVersion>

@@ -1,7 +1,7 @@
 CollisionCheck(key1,filter1,exclude)
 {
 	global CustomHotkeys
-	7PlusHotkeys := "#e,^i,^t,^Tab,^+Tab,^w,#Delete,!LButton"
+	7PlusHotkeys := "#e,^i,^t,^Tab,^+Tab,^w,#Delete"
 	if(key1 = exclude) 
 		return false
 	key1_Win := InStr(key1, "#") > 0

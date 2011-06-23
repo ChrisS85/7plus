@@ -1310,24 +1310,25 @@ GUI_EventsList_Import()
 }
 GUI_EventsList_Export()
 {
-	global Settings_Events
+	global Settings_Events, MajorVersion, MinorVersion
 	
 	
 	;Uncomment the following lines to export all events separated by category to Events\Category.xml instead	
-	; Loop % Settings_Events.Categories.len()
-	; {
-		; Category := Settings_Events.Categories[A_Index]
-		; Events := Array()
-		; Loop % Settings_Events.len()
-		; {
-			; if(Settings_Events[A_Index].Category = Category)
-				; Events.append(Settings_Events[A_Index])
-		; }
-		; if(Events.len() > 0)
-			; WriteEventsFile(Events, A_ScriptDir "\Events\" Category ".xml")
-	; }
-	; WriteEventsFile(Settings_Events, A_ScriptDir "\Events\All Events.xml")
-	; return
+	Loop % Settings_Events.Categories.len()
+	{
+		Category := Settings_Events.Categories[A_Index]
+		Events := Array()
+		Loop % Settings_Events.len()
+		{
+			if(Settings_Events[A_Index].Category = Category)
+				Events.append(Settings_Events[A_Index])
+		}
+		if(Events.len() > 0)
+			WriteEventsFile(Events, A_ScriptDir "\Events\" Category ".xml")
+	}
+	WriteEventsFile(Settings_Events, A_ScriptDir "\Events\All Events.xml")
+	run % """" A_ScriptDir "\CreateEventPatch.ahk""" " """ A_ScriptDir "\Events\Old Versions\" MajorVersion "." (MinorVersion-1) "." 0 "\All Events.xml"" """ A_ScriptDir "\Events\All Events.xml"" 0" ;Create event patch, assumes that last minor version was incremented by one since last release
+	return
 	
 	
 	Gui, ListView, GUI_EventsList

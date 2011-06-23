@@ -23,6 +23,7 @@
 #include %A_ScriptDir%\Conditions\IsDialog.ahk
 #include %A_ScriptDir%\Conditions\IsFullScreen.ahk
 #include %A_ScriptDir%\Conditions\IsContextMenuActive.ahk
+#include %A_ScriptDir%\Conditions\IsDragable.ahk
 #include %A_ScriptDir%\Conditions\IsRenaming.ahk
 #include %A_ScriptDir%\Conditions\KeyIsDown.ahk
 #include %A_ScriptDir%\Conditions\MouseOver.ahk
@@ -62,6 +63,8 @@
 #include %A_ScriptDir%\Actions\MD5Checksum.ahk
 #include %A_ScriptDir%\Actions\MouseClick.ahk
 #include %A_ScriptDir%\Actions\MouseCloseTab.ahk
+#include %A_ScriptDir%\Actions\MouseWindowDrag.ahk
+#include %A_ScriptDir%\Actions\MouseWindowResize.ahk
 #include %A_ScriptDir%\Actions\NewFile.ahk
 #include %A_ScriptDir%\Actions\NewFolder.ahk
 #include %A_ScriptDir%\Actions\OpenInNewFolder.ahk
@@ -225,8 +228,8 @@ EventSystem_CreateBaseObjects()
 	global
 	local tmpobject
 	EventSystem_Triggers := "ContextMenu,DoubleClickDesktop,DoubleClickTaskbar,ExplorerButton,ExplorerDoubleClickSpace,ExplorerPathChanged,Hotkey,None,MenuItem,OnMessage,ScreenCorner,Timer,Trigger,WindowActivated, WindowClosed, WindowCreated,WindowStateChange,7plusStart"
-	EventSystem_Conditions := "If,IsContextMenuActive,IsDialog,IsFullScreen,KeyIsDown,IsRenaming,MouseOver,MouseOverFileList,MouseOverTabButton,MouseOverTaskList,WindowActive,WindowExists"
-	EventSystem_Actions := "Accessor,AutoUpdate,Clipboard,Clipmenu,ClipPaste,ControlEvent,ControlTimer,Copy,Delete,ExplorerReplaceDialog,Exit7plus,FastFoldersClear,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FilterList,FlashingWindows,FlatView,FocusControl,ImageConverter,Input,MD5,MergeTabs,Message,Move,MouseClick,MouseCloseTab,NewFile,NewFolder,OpenInNewFolder,PlaySound,Restart7plus,RestoreSelection,Run,RunOrActivate,Screenshot,SelectFiles,SetWindowTitle,SendKeys,SendMessage,SetDirectory,SlideWindowOut,ShortenURL,ShowAeroFlip,ShowMenu,ShowSettings,Shutdown,TaskButtonClose,ToggleWallpaper,Tooltip,Upload,ViewMode,Volume,Wait,WindowActivate,WindowClose,WindowHide,WindowMove,WindowResize,WindowSendToBottom,WindowShow,WindowState,Write"
+	EventSystem_Conditions := "If,IsContextMenuActive,IsDialog,IsDragable,IsFullScreen,KeyIsDown,IsRenaming,MouseOver,MouseOverFileList,MouseOverTabButton,MouseOverTaskList,WindowActive,WindowExists"
+	EventSystem_Actions := "Accessor,AutoUpdate,Clipboard,Clipmenu,ClipPaste,ControlEvent,ControlTimer,Copy,Delete,ExplorerReplaceDialog,Exit7plus,FastFoldersClear,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FilterList,FlashingWindows,FlatView,FocusControl,ImageConverter,Input,MD5,MergeTabs,Message,Move,MouseClick,MouseCloseTab,MouseWindowDrag,MouseWindowResize,NewFile,NewFolder,OpenInNewFolder,PlaySound,Restart7plus,RestoreSelection,Run,RunOrActivate,Screenshot,SelectFiles,SetWindowTitle,SendKeys,SendMessage,SetDirectory,SlideWindowOut,ShortenURL,ShowAeroFlip,ShowMenu,ShowSettings,Shutdown,TaskButtonClose,ToggleWallpaper,Tooltip,Upload,ViewMode,Volume,Wait,WindowActivate,WindowClose,WindowHide,WindowMove,WindowResize,WindowSendToBottom,WindowShow,WindowState,Write"
 	Trigger_Categories := object("Explorer", Array(), "Hotkeys", Array(), "Other", Array(), "System", Array(), "Window", Array(), "7plus", Array())
 	Condition_Categories := object("Explorer", Array(), "Mouse", Array(), "Other", Array(), "Window", Array())
 	Action_Categories := object("Explorer", Array(), "FastFolders", Array(), "File", Array(), "Window", Array(), "Input", Array(), "System", Array(), "7plus", Array(), "Other", Array())
@@ -648,17 +651,17 @@ WriteEventsFile(Events, path)
 		
 		
 		;Uncomment the lines below to save events with an "official" tag that allows to identify them in update processes
-		; if(!Event.OfficialEvent) ;Find an unused Event ID to be used as Official Event ID
-		; {			
-			; Loop
-			; {
-				; if(Events.IndexOfSubItem("OfficialEvent", A_Index))
-					; continue ;Alread in use
-				; xmlEvent.OfficialEvent := A_Index ;Not used
-				; Event.OfficialEvent := A_Index
-				; break
-			; }
-		; }
+		if(!Event.OfficialEvent) ;Find an unused Event ID to be used as Official Event ID
+		{			
+			Loop
+			{
+				if(Events.IndexOfSubItem("OfficialEvent", A_Index))
+					continue ;Alread in use
+				xmlEvent.OfficialEvent := A_Index ;Not used
+				Event.OfficialEvent := A_Index
+				break
+			}
+		}
 		
 		
 		xmlTrigger := Object()
