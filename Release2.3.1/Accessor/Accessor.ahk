@@ -55,7 +55,7 @@ Class CAccessorPlugin
 Accessor_Init()
 {
 	global AccessorPlugins, Accessor, ConfigPath
-	AccessorPluginsList := "WindowSwitcher,FileSystem,Google,Calc,ProgramLauncher,NotepadPlusPlus,SciTE4Autohotkey,Notes,FastFolders,Uninstall,URL,Weather" ;The order here partly determines the order in the window, so choose carefully
+	AccessorPluginsList := "WindowSwitcher,FileSystem,Google,Calc,ProgramLauncher,NotepadPlusPlus,SciTE4AutoHotkey,Notes,FastFolders,Uninstall,URL,Weather" ;The order here partly determines the order in the window, so choose carefully
 	AccessorPlugins := Array()
 	Accessor := Object("Base", Object("OnExit", "Accessor_OnExit", "History", Array()))
 	FileRead, xml, %ConfigPath%\Accessor.xml

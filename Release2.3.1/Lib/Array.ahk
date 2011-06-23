@@ -167,8 +167,13 @@ Array_Pop(arr){
    Return arr.delete(arr.len()) 
 } 
 Array_Delete(arr, p1="Ņ", p2="Ņ", p3="Ņ", p4="Ņ", p5="Ņ", p6="Ņ"){ 
-   While (_:=p%A_Index%)!="Ņ" && A_Index<=6 
-      arr._Remove(_) 
+	While (_:=p%A_Index%)!="Ņ" && A_Index<=6 
+	{
+		if(IsObject(_)) ;Arrays have no object keys
+			arr._Remove(arr.IndexOf(_))
+		else
+			arr._Remove(_)
+	}
    Return arr 
 } 
 

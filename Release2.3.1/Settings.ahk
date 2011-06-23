@@ -61,9 +61,9 @@ Settings_CreateEvents(ByRef TabCount) {
 	Gui, 1:Add, Text, x%x1% y%yIt% w600, You can add events here that are triggered under certain conditions. When triggered, the event can launch a series of actions. This is a very powerful tool to add all kinds of features, and many features from 7plus are now implemented with this system.
 	yIt+=41
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vShowComplexEvents gShowAllEvents, Show advanced events
-	Gui, 1:Add, Text, x+198 y%yIt%, Event search:
+	Gui, 1:Add, Text, x+150 y%yIt%, Event search:
 	yIt-=4
-	Gui, 1:Add, Edit, x+10 y%yIt% w150 hwndEventFilter gEventFilterChange
+	Gui, 1:Add, Edit, x+10 y%yIt% w160 hwndEventFilter gEventFilterChange
 	yIt += textboxstep
 	Gui, 1:Add, ListView, x%x1% y%yIt% w520 h263 vGUI_EventsList gGUI_EventsList_SelectionChange Grid -LV0x10 AltSubmit Checked, Enabled|ID|Trigger|Name
 	OnMessage(0x0111, "WM_COMMAND")
@@ -121,9 +121,6 @@ Settings_CreateAccessor(ByRef TabCount) {
 	TabCount++
 	AddTab(0, "","SysTabControl32" TabCount)
 	Gui, 1:Add, ListView, x%x1% y%yIt% w520 h232 vGUI_AccessorPluginsList gGUI_AccessorPluginsList_Events Grid -LV0x10 AltSubmit Checked, Enabled|ID|Name
-	LV_ModifyCol(1, "Auto")
-    LV_ModifyCol(2, 0)
-	LV_ModifyCol(3, "AutoHdr")
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 vGUI_AccessorSettings gGUI_AccessorSettings, Plugin Settings
 	yIt += textboxstep
 	Gui, 1:Add, Button, x%x2% y%yIt% w80 gGUI_Accessor_Help, Help
@@ -679,7 +676,10 @@ Settings_SetupAccessor() {
 		outputdebug Settings_SetupAccessor() add
 		Gui, ListView, GUI_AccessorPluginsList
 		LV_Add(Settings_AccessorPlugins[A_Index].Enabled ? "Check" : "", "", A_Index, Settings_AccessorPlugins[A_Index].Type)
-	}
+	}	
+	LV_ModifyCol(1, 60)
+    LV_ModifyCol(2, 0)
+	LV_ModifyCol(3, "AutoHdr")
 	if(!WasCritical)
 		Critical, Off
 }
@@ -1150,21 +1150,24 @@ GUI_RemoveEvent()
 	Gui, ListView, GUI_EventsList
 	count := LV_GetCount()
 	ListPos := 1
+	Events := Array()
 	Loop % count
 	{
-		if(LV_GetNext(ListPos-1) = ListPos)
+		if(LV_GetNext(A_Index-1) = A_Index)
 		{
-			LV_GetText(id,ListPos,2)			
-			pos := Settings_Events.indexOfSubItem("ID", id)
-			if((!IsPortable && A_IsAdmin) || (Settings_Events[pos].Trigger.Type != "ExplorerButton" && Settings_Events[pos].Trigger.Type != "ContextMenu"))
-			{
-				Category := Settings_Events[pos].Category
-				deleted += Settings_Events.Delete(Settings_Events[pos], false)		
-				LV_Delete(ListPos)
-				continue
-			}
+			LV_GetText(id,A_Index,2)			
+			Events.append(id)
 		}
-		ListPos++
+	}
+	Loop % Events.len()
+	{
+		Event := Settings_Events.SubItem("ID", id)
+		if((!IsPortable && A_IsAdmin) || Event.Trigger.Type != "ExplorerButton" && Event.Trigger.Type != "ContextMenu")
+		{
+			deleted += Settings_Events.Delete(Event, false) ;Settings_Events has special delete function
+			LV_Delete(ListPos)
+			continue
+		}
 	}
 	count :=  LV_GetCount()
 	if(count)
@@ -1864,7 +1867,7 @@ WM_KEYDOWN(wParam, lParam)
 			LV_Delete(i)
 		}
 		*/
-		if(A_GuiControl = "GUI_EventsList" && wParam = 0x2E) ;Delete key pressed on CustomHotkeysList
+		if(A_GuiControl = "GUI_EventsList" && wParam = 0x2E) ;Delete key pressed on events list
 			GUI_RemoveEvent()
 		else if(A_GuiControl = "GUI_EventsList")
 		{
@@ -1897,10 +1900,8 @@ WM_KEYDOWN(wParam, lParam)
 		else if(A_GuiControl = "GUI_HotstringsList" && wParam = 0x2E)
 			GUI_Hotstrings_Delete()
 	}
-	if(A_GUI = 4 && A_GuiControl = "EditEventConditions" && wParam = 0x2E)
-		GUI_EditEvent("","EditEvent_RemoveCondition")
-	if(A_GUI = 4 && A_GuiControl = "EditEventActions" && wParam = 0x2E)
-		GUI_EditEvent("","EditEvent_RemoveAction")
+	if(A_GUI = 4 && (A_GuiControl = "EditEventConditions" || A_GuiControl = "EditEventActions") && wParam = 0x2E)
+		GUI_EditEvent("","RemoveSubEvent")
 }
 WM_KEYUP(wParam, lParam)
 {
