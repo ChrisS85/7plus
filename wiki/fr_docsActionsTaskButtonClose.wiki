@@ -1,0 +1,2 @@
+= TaskButtonClose =
+Cette action ferme la fenêtre qui relève de la touche spéciale sous la souris.
