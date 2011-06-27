@@ -1,0 +1,2 @@
+= Merge Tabs =
+Cette action va fusionner toutes Explorateur Windows en une seule avec des onglets.
