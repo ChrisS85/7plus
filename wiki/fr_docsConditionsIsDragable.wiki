@@ -1,0 +1,2 @@
+= IsDragable =
+Cette condition vérifie si une fenêtre peut être glissée par les actions [fr_docsActionsMouseWindowDrag MouseWindowDrag] et [fr_docsActionsMouseWindowResize MouseWindowResize]. Il exclut automatiquement Notepad + + et Scite parce qu'ils ont un glissé par Alt+Sélection Gauche de colonne et cette touche est généralement utilisée avec ces actions.
