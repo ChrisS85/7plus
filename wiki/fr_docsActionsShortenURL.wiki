@@ -1,0 +1,2 @@
+= ShortenURL =
+Cette action raccourcit l'URL de la propriété URL en utilisant le service goo.gl et le copie dans un placeholder et éventuellement dans le presse-papier. Par défaut, une URL à partir du presse-papiers est utilisé.
