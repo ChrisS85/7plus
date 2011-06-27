@@ -2,6 +2,7 @@
   * [docsConditionsIf If]
   * [docsConditionsIsContextMenuActive IsContextMenuActive]
   * [docsConditionsIsDialog IsDialog]
+  * [docsConditionsIsDragable IsDragable]
   * [docsConditionsIsFullScreen IsFullScreen]
   * [docsConditionsIsRenaming IsRenaming]
   * [docsConditionsKeyIsDown KeyIsDown]
