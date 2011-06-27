@@ -1,0 +1,2 @@
+= MouseWindowDrag =
+Cette action permet de déplacer la fenêtre en la faisant glisser avec la souris. Il est possible d'annuler cette action en appuyant sur Echap.
