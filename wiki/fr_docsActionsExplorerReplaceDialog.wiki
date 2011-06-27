@@ -1,0 +1,3 @@
+= ExplorerReplaceDialog =
+Cette action montre la fenêtre de dialogue renommer/remplacer par lot pour la fenêtre de l'explorateur actif.
+Il est possible de définir si l'opération doit être exécutée sur les fichiers sélectionnés uniquement et si elle doit commencer par renommer ou avec l'option remplacer les fichiers présélectionnée.
