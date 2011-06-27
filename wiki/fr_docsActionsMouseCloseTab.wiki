@@ -1,0 +1,2 @@
+= MouseCloseTab =
+Cette action ferme l'onglet d'Explorateur sous la souris.
