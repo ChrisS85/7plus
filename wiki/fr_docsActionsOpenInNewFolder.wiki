@@ -1,0 +1,2 @@
+= OpenInNewFolder =
+Cette action ouvre le dossier sous la souris dans une nouvelle fenêtre, dans un onglet ou dans un onglet sans l'activer.
