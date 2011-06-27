@@ -1,0 +1,2 @@
+= ToggleWallpaper =
+Cette action permet de changer d'arière plan du bureau. Il est uniquement disponible pour Windows 7.
