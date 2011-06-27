@@ -1,0 +1,2 @@
+= Invert Selection =
+Cette action inverse la sélection de fichier de la fenêtre active de l'explorateur. Si aucune fenêtre de l'explorateur est actif, il ne fera rien.
