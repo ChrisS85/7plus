@@ -1,0 +1,2 @@
+= MouseWindowResize =
+Cette action permet de redimensionner la fenêtre en la faisant glisser avec la souris. Il est possible d'annuler cette action en appuyant sur Echap.
