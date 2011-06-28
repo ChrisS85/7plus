@@ -1,6 +1,6 @@
 = Timer =
 
-Ce déclencheur est activé après un certain temps. Il est possible d'utiliser un déclencheur visible, auquel cas 7plus affiche une petite fenêtre avec le temps restant, et certains boutons pour démarrer/pause/reset/arrêter le timer.
+Ce déclencheur est activé après un certain temps. Il est possible d'utiliser un déclencheur visible, auquel cas 7plus affiche une petite fenêtre avec le temps restant, et des boutons pour démarrer/pause/reset/arrêter le timer.
 Vous pouvez aussi le faire redémarrer automatiquement quand le temps est écoulé.
 
 Si le composant timer est visible, il affichera le nom de l'événement, sauf si vous spécifiez un nom personnalisé dans les propriétés du timer.
