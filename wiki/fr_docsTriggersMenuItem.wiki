@@ -1,7 +1,7 @@
 = MenuItem =
-Ce déclencheur représente un élément de menu dans un menu personnalisé. En créant des évènements tels des déclencheurs, les menus sont générés et peuvent être montrés avec l'action [fr_docsActionsShowMenu ShowMenu].
+Ce déclencheur représente un élément de menu dans un menu personnalisé. En créant des évènements tels des déclencheurs, les menus sont générés et peuvent être affichés avec l'action [fr_docsActionsShowMenu ShowMenu].
 
 La propriété menu fait référence au nom du menu auquel cet élément appartient.
 La propriété name est tout simplement le nom qui apparaît dans le menu.
 
-Les sous-menus peuvent être créés en créant un événement MenuItem avec un ensemble de valeurs sous-menu. Les éléments peuvent être ajoutés à ce sous-menu en définissant le nom d'élément au nom de la valeur sous-menu. L'événement définissant le sous-menu peut rester vide, car il n'est jamais exécuté.
+Les sous-menus peuvent être créés en créant un événement MenuItem avec un ensemble de valeurs sous-menu. Les éléments peuvent être ajoutés à ce sous-menu en définissant le nom de l'élément par le nom de la valeur du sous-menu. L'événement définissant le sous-menu peut rester vide, car il n'est jamais exécuté.
