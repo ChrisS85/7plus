@@ -1,6 +1,6 @@
 = Hotkey =
 
-Le raccourci est utilisé pour déclencher des actions quand une touche spécifique est pressée.
+Le raccourci (Hotkey) est utilisé pour déclencher des actions quand une touche spécifique est pressée.
 
 Il y a différentes options dans la définition d'un raccourci :
   * ~ (Natif) : Cela signifie que la touche sera encore visible par d'autres programmes lorsqu'elle est pressée.
