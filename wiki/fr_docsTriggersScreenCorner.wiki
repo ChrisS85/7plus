@@ -1,0 +1,2 @@
+= ScreenCorner =
+Ce déclencheur s'active lorsque la souris survole un coin d'écran pendant un laps de temps spécifié.
