@@ -14,6 +14,7 @@ New Functions:
  * Added a new hotkey event (CTRL+M) to merge all explorer windows into a single one with tabs
  * Added ALT+Right drag window resize
  * Added a "Show complex events" button and categorized events by complexity. By default 7plus will now show only about half of the available events. The others can still be enabled though.
+ * Added "Automatically close Windows Update reboot notification dialog"
  * French documentation language available thanks to lecuyerf! User interface translation will probably follow in the next version, possibly also with German language. Always looking for volunteers, feel free to join this project!
 
 Bugfixes:
