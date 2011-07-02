@@ -4,6 +4,8 @@ New Functions:
  * Added search and replace dialog for file names and file contents
  * Added directory context menu item for flat view
  * Added URL shortener (WIN+S with URL in clipboard)
+ * Added ImgUr.com image upload action. Anonymous image uploading is now possible. ImgUr limits it to 50 uploads/hour/API key, so please let me know if you notice that 7plus runs out of upload quota.
+ * In addition to the previous entry, default windows PrintScreen functionality was overwritten to show a reworked version of the ImageConverter window. It is now possible to take screenshots of screen/window/user area and choose whether to save the screenshot, copy it to clipboard or upload it to FTP/ImgUr.
  * Added a settings page with generic windows settings (No bloat, only important ones!)
  * Added KeyDelay setting for SendKeys action
  * Added ShowEvents option (available only through manual editing of Settings.ini in [General] category) to show execution order of events
