@@ -25,7 +25,7 @@ Bugfixes:
  * Reimplemented middle mouse button features in event system to avoid some problems with this button. As a result of this, a few additional conditions were added.
  * Fixed Alt window drag not being able to drag a window to the outer left side of the screen
  * Fixed some access right modifications for registry keys required for explorer buttons. If they didn't show up before they should do so now. It may be necessary to disable/enable the FastFolder setting to make them show up.
-
+ * Fixed colon character in Accessor.
 Changes:
  * Huge code rewrite for some key portions related to explorer. As a result, status bar enhancements and explorer tabs are now visible on all explorer windows at once.
  * Complete rewrite of Slide Windows feature. It should be much better now, with more options, multi-monitor support, support for child windows and no windows getting lost anymore.
