@@ -3,7 +3,7 @@ Events_Add(Events, Event)
 {
 	global Settings_Events, TemporaryEvents
 	Events.append(Event)
-	if(Settings_Events && Events != Settings_Events && Events != TemporaryEvents)
+	if(Settings_Events && Events != Settings_Events && Events != TemporaryEvents) ;Non-temporary and non-settings event that needs to be synced with an open settings gui
 	{
 		Settings_Events.append(Event.DeepCopy())
 		Settings_SetupEvents()

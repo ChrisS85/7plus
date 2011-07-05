@@ -254,9 +254,9 @@ RunExplorer()
 		}
 	}
 	if(RecallExplorerPath && ExplorerPath)
-		Run(A_WinDir "\explorer.exe /n,/e," ExplorerPath)
+		Run("""" ExplorerPath """")
 	Else
-		run, "%A_WinDir%\explorer.exe" "",, UseErrorLevel
+		run, C:,, UseErrorLevel
 	if(AlignExplorer && active)
 	{
 		WinWaitNotActive ahk_id %active%	
@@ -628,10 +628,13 @@ ExplorerMoved(hwnd)
 ExplorerPathChanged(ExplorerWindow)
 {
 	global vista7, HKSelectFirstFile, UseTabs
-	outputdebug ExplorerPathChanged
+	OldPath := ExplorerWindow.Path
 	ExplorerWindow.RegisterSelectionChangedEvent() ;This will also refresh the path in ExplorerWindow
-	ExplorerWindow.DisplayName := GetCurrentFolder(ExplorerWindow.hwnd, 1)
 	Path := ExplorerWindow.Path
+	if(OldPath = Path)
+		return
+	ExplorerWindow.DisplayName := GetCurrentFolder(ExplorerWindow.hwnd, 1)
+	outputdebug ExplorerPathChanged
 	if(UseTabs)
 		ExplorerWindow.TabContainer.UpdateTabs()
 	;focus first file

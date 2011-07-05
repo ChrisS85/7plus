@@ -23,6 +23,7 @@ Array(p1="Ņ", p2="Ņ", p3="Ņ", p4="Ņ", p5="Ņ", p6="Ņ"){
 	  ArrBase.pop := "Array_Pop"
 	  ArrBase.swap := "Array_Swap"
 	  ArrBase.move := "Array_Move"
+	  ArrBase.ToString := "Array_ToString"
 	}
 	arr := Object("base", ArrBase) 
 	While (_:=p%A_Index%)!="Ņ" && A_Index<=6 
@@ -30,6 +31,28 @@ Array(p1="Ņ", p2="Ņ", p3="Ņ", p4="Ņ", p5="Ņ", p6="Ņ"){
 	Return arr
 } 
 
+IsArray(arr)
+{
+	global ArrBase
+	return IsFunc(arr.len)
+	object := arr.base
+	while(object && object != ArrBase)
+	{
+		outputdebug % exploreobj(object)
+		object := object.base
+	}
+	outputdebug % exploreobj(object)
+	outputdebug % "array: " exploreobj(arrbase)
+	outputdebug % "is array ? " (object = ArrBase)
+	return object = ArrBase
+}
+Array_ToString(arr, Separator = "`n")
+{
+	string := ""
+	Loop % arr.len()
+		string .= (A_Index = 1 ? "" : Separator) arr[A_Index]
+	return string
+}
 Array_indexOf(arr, val, opts="", startpos=1){
 	if(IsObject(val))
 	{

@@ -2,6 +2,8 @@
 Event_ExpandPlaceHolders(Event,text)
 {
 	global Events
+	if(IsObject(text)) ;Internally arrays may be supplied as parameters which mustn't be expanded here
+		return text
 	;Expand local dynamic placeholders (for example ${MessageResult} defined by SendMessage action)
 	enum := Event.Placeholders._newEnum()
 	while enum[key,value]

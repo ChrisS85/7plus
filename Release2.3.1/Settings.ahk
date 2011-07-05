@@ -322,7 +322,7 @@ Settings_CreateHotstrings(ByRef TabCount) {
 }
 Settings_CreateWindows(ByRef TabCount) {
 	global
-	local yIt,x1,x,y, hSlideWindows
+	local yIt, x1, x, y, hSlideWindows, hUpdate
 	xHelp:=xBase
 	x1:=xHelp+10
 	Gui, 1:Add, Tab2, x176 y14 w460 h350 vWindowsTab, 
@@ -348,6 +348,9 @@ Settings_CreateWindows(ByRef TabCount) {
 	AddToolTip(hSlideModifier, "If this key is pressed, the mouse may be moved out of the currently active slide window without sliding it out. This is useful if the slide window has child windows that don't overlap with the main window. If the option above is enabled, it may also be used to drag something into a hidden slide window by moving the mouse to the screen border and holding this key.")
 	yIt+=checkboxstep
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vShowResizeTooltip, Show window size as tooltip while resizing
+	yIt+=checkboxstep
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vAutoCloseWindowsUpdate hwndhUpdate, Automatically close Windows Update reboot notification dialog
+	AddToolTip(hUpdate, "If you enable this setting you will not be able to open this dialog anymore. You can simply reboot windows though...")
 }
 Settings_CreateWindowsSettings(ByRef TabCount) {
 	global
@@ -801,6 +804,7 @@ Settings_SetupWindows() {
 			GuiControl, 1:disable, HKActivateBehavior
 	}
 	GuiControl, 1:, ShowResizeTooltip, % ShowResizeTooltip = 1
+	GuiControl, 1:, AutoCloseWindowsUpdate, % AutoCloseWindowsUpdate = 1
 }
 
 Settings_SetupWindowsSettings() {
@@ -1161,11 +1165,19 @@ GUI_RemoveEvent()
 	}
 	Loop % Events.len()
 	{
-		Event := Settings_Events.SubItem("ID", id)
+		Event := Settings_Events.SubItem("ID", Events[A_Index])
 		if((!IsPortable && A_IsAdmin) || Event.Trigger.Type != "ExplorerButton" && Event.Trigger.Type != "ContextMenu")
 		{
 			deleted += Settings_Events.Delete(Event, false) ;Settings_Events has special delete function
-			LV_Delete(ListPos)
+			Loop % LV_GetCount()
+			{
+				LV_GetText(id,A_Index,2)
+				if(id = Event.ID)
+				{
+					ListPos := A_Index
+					LV_Delete(A_Index)
+				}
+			}
 			continue
 		}
 	}

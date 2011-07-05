@@ -643,7 +643,7 @@ AccessorExplorerContextMenu()
 }
 AccessorRunWithArgs()
 {
-	global EventSchedule, Accessor
+	global Accessor, TemporaryEvents
 	GUINum := Accessor.GUINum
 	Gui, %GUINum%: Default
 	GUI, ListView, AccessorListView
@@ -657,7 +657,8 @@ AccessorRunWithArgs()
 	Event.Actions[1].Title := "Enter program arguments"
 	Event.Actions.append(EventSystem_CreateSubEvent("Action","Run"))
 	Event.Actions[2].Command := """" Accessor.List[id].Path """ ${Input}"
-	EventSchedule.append(Event)
+	TemporaryEvents.RegisterEvent(Event)
+	TriggerSingleEvent(Event)
 	AccessorClose()
 }
 AccessorOpenExplorer()

@@ -152,6 +152,7 @@ ShellMessage( wParam, lParam, Msg)
 		if(wParam = 1)
 		{
 			SlideWindows.WindowCreated(lParam)
+			AutoCloseWindowsUpdate(lParam)
 			;~ SlideWindows.CreatedWindow := lParam
 			;~ SetTimer, SlideWindows_WindowCreated, -100
 		} ;	SlideWindows.WindowCreated(lParam)

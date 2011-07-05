@@ -18,10 +18,11 @@ Action_Upload_Init(Action)
 			break
 	}
 	Action.Category := "File"
-	Action.TargetFolder := (OtherAction ? OtherAction.TargetFolder : "Target/Folder/or/empty")
-	Action.TargetFile := (OtherAction ? OtherAction.TargetFile : "Filename(+ optionally .extension) / or empty for original filename")
-	Action.Silent := (OtherAction ? OtherAction.Silent : 0)
-	Action.Clipboard := (OtherAction ? OtherAction.Clipboard : 1)
+	Action.SourceFiles := "${SelNM}"
+	Action.TargetFolder := (OtherAction && Settings_Events ? OtherAction.TargetFolder : "")
+	Action.TargetFile := (OtherAction && Settings_Events ? OtherAction.TargetFile : "")
+	Action.Silent := (OtherAction && Settings_Events? OtherAction.Silent : 0)
+	Action.Clipboard := (OtherAction && Settings_Events ? OtherAction.Clipboard : 1)
 }
 
 Action_Upload_ReadFTPProfiles()
@@ -222,16 +223,7 @@ Action_Upload_GuiShow(Action, ActionGUI, GoToLabel = "")
 		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action can upload files to FTP servers.")
 		; Action.tmpPassword := Action.Password
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "SourceFiles", "", "", "Source files:", "Browse", "Action_Upload_Browse", "Placeholders", "Action_Upload_Placeholders_SourceFiles")
-		Loop % FTPProfiles.len()
-			Profiles .= "|" A_Index ": " FTPProfiles[A_Index].Hostname
-		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "FTPProfile", Profiles, "", "FTP profile:","","","","","FTP profiles are created on their specific sub page in the settings window.")
-		; SubEventGUI_Add(Action, ActionGUI, "Edit", "Hostname", "", "", "Hostname:")
-		; SubEventGUI_Add(Action, ActionGUI, "Edit", "Port", "", "", "Port:")
-		; SubEventGUI_Add(Action, ActionGUI, "Edit", "User", "", "", "Username:")
-		; SubEventGUI_Add(Action, ActionGUI, "Edit", "tmpPassword", "", "", "Password")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "TargetFolder", "", "", "Target folder:", "Placeholders", "Action_Upload_Placeholders_TargetFolder")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "TargetFile", "", "", "Target files:", "Placeholders", "Action_Upload_Placeholders_TargetFile")
-		; SubEventGUI_Add(Action, ActionGUI, "Edit", "URL", "", "", "URL:")
+		ShowFTPProfileSelectionGUI(Action, ActionGUI)
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Silent", "Silent", "", "")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Clipboard", "Copy links to clipboard", "", "")
 	}
@@ -262,4 +254,14 @@ Action_Upload_GuiSubmit(Action, ActionGUI)
 	; if(Action.tmpPassword != Action.Password)
 		; Action.Password := Encrypt(Action.tmpPassword)
 	; Action.tmpPassword := ""
+}
+
+ShowFTPProfileSelectionGUI(Action, ActionGUI)
+{
+	global FTPProfiles
+	Loop % FTPProfiles.len()
+		Profiles .= "|" A_Index ": " FTPProfiles[A_Index].Hostname
+	SubEventGUI_Add(Action, ActionGUI, "DropDownList", "FTPProfile", Profiles, "", "FTP profile:","","","","","FTP profiles are created on their specific sub page in the settings window.")
+	SubEventGUI_Add(Action, ActionGUI, "Edit", "TargetFolder", "", "", "Target folder:", "Placeholders", "Action_Upload_Placeholders_TargetFolder")
+	SubEventGUI_Add(Action, ActionGUI, "Edit", "TargetFile", "", "", "Target files:", "Placeholders", "Action_Upload_Placeholders_TargetFile", "", "", "Filename(+ optionally .extension) / or empty for original filename")
 }

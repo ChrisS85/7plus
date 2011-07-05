@@ -391,3 +391,13 @@ FlashWindows()
 		WinActivate ahk_id %PreviousWindow%
 	return
 }
+
+AutoCloseWindowsUpdate(hwnd)
+{
+	global AutoCloseWindowsUpdate
+	if(WinExist("Windows Update ahk_class #32770") = hwnd)
+	{
+		WinActivate ahk_id %hwnd%
+		Send {Up}{Down 2}{Tab 2}{Enter}
+	}
+}

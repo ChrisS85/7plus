@@ -83,7 +83,7 @@ _Notify_:
    Goto, _Update_Text_
  } 
 
-
+outputdebug still here
  GN := GF 
  Loop 
   IfNotInString, NotifyList, % "|" GN 
@@ -329,34 +329,35 @@ Return
 
 ;========================================================================== 
 ;================================================ Updates the progress bar:
-_Update_Progress_:
- If (Image) 
- { 
-  If Duration is Number
-  {
-   Gui %Image%:+LastFound 
-   If WinExist() 
-    GuiControl, %Image%:,msctls_progress321,%Duration%
-  }
- } 
-Return
+	_Update_Progress_:
+	If (Image) 
+	{ 
+		If Duration is Number
+		{
+			Gui %Image%:+LastFound 
+			If WinExist() 
+				GuiControl, %Image%:,msctls_progress321,%Duration%
+		}
+	} 
+	Return
 ;========================================================================== 
 ;=================================== Updates the text (or title if no text):
-_Update_Text_:
- If (Image) 
- { 
-  If Duration
-  {
-   Gui %Image%:+LastFound 
-   If WinExist() 
-   {
-    Gui %Image%:Add, Text, hwndTextHwnd, %Duration%
-	ControlGetPos ,,, Width, Height, , ahk_id %TextHwnd%
-	WinKill ahk_id %TextHwnd%
-    GuiControl, %Image%:,static3,%Duration%
-	GuiControl, %Image%:Move,static3,W%Width%
-   }
-  }
- } 
-Return
+	_Update_Text_:
+	 If (Image) 
+	{ 
+		If Duration
+		{
+			Gui %Image%:+LastFound 
+			If WinExist() 
+			{
+				; Gui %Image%:Add, Text, hwndTextHwnd, %Duration%
+				; ControlGetPos ,,, Width, Height, , ahk_id %TextHwnd%
+				; WinKill ahk_id %TextHwnd%
+				Width := strlen(duration) * 20
+				GuiControl, %Image%:,static3,%Duration%
+				GuiControl, %Image%:Move,static3,W%Width%
+			}
+		}
+	}
+	Return
 }

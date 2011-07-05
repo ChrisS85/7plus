@@ -24,13 +24,16 @@ Action_MergeTabs_Execute(Action, Event)
 	if(ExplorerWindows.len() < 2)
 		return 0
 	TabContainer := ExplorerWindows.SubItem("hwnd", Active).TabContainer
-	if(!TabContainer)
+	;Possibly create new container
+	if(!TabContainer) 
 		TabContainer := new CTabContainer(ExplorerWindows.SubItem("hwnd", Active))
+	;Add all explorer windows to container
 	Loop % ExplorerWindows.len()
 	{
 		if(!TabContainer.tabs.SubItem("hwnd", ExplorerWindows[A_Index].hwnd))
 			TabContainer.Add(ExplorerWindows[A_Index], "", 0)
 	}
+	;Remove all redundant tab containers
 	index := 1
 	Loop % ExplorerWindows.TabContainerList.len()
 	{

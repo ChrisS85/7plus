@@ -190,7 +190,7 @@ SlideWindows := new CSlideWindows()
 IniRead, SlideWindowsBorder, %IniPath%, Windows, SlideWindowsBorder, 30
 IniRead, SlideWindowsModifier, %IniPath%, Windows, SlideWindowsModifier, Control
 IniRead, ShowResizeTooltip, %IniPath%, Windows, ShowResizeTooltip, 1
-
+IniRead, AutoCloseWindowsUpdate, %IniPath%, Windows, AutoCloseWindowsUpdate, 1
 IniRead, ImageExtensions, %IniPath%, Misc, ImageExtensions, jpg,png,bmp,gif,tga,tif,ico,jpeg
 IniRead, WordDelete, %IniPath%, Misc, WordDelete, 1
 
@@ -289,7 +289,8 @@ Suspend, Off
 outputdebug 7plus startup procedure finished, entering event loop.
 
 ;Event loop
-EventScheduler()
+SetTimer, EventScheduler, 100
+; EventScheduler()
 Return
 
 ExitSub:
@@ -380,6 +381,7 @@ WriteIni()
 	IniWrite, %SlideWindowRequireMouseUp%, %IniPath%, Windows, SlideWindowRequireMouseUp
 	IniWrite, %SlideWindowsModifier%, %IniPath%, Windows, SlideWindowsModifier
 	IniWrite, %ShowResizeTooltip%, %IniPath%, Windows, ShowResizeTooltip
+	IniWrite, %AutoCloseWindowsUpdate%, %IniPath%, Windows, AutoCloseWindowsUpdate
 	
 	IniWrite, %ImageExtensions%, %IniPath%, Misc, ImageExtensions
 	IniWrite, %JoyControl%, %IniPath%, Misc, JoyControl
@@ -454,6 +456,8 @@ ProcessCommandLineParameters()
 		}
 		else if(%A_Index% = "-Portable") ;Portable mode
 			IsPortable := true
+		else if(%A_Index% = "-iu") ;Image upload
+			ImageUploadThread(A_Index, hwnd)
 		else if(y) ;Path supplied as parameter, set explorer directory to this path
 		{
 			x = %1%

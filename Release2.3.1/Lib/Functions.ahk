@@ -185,6 +185,7 @@ Run(Target, WorkingDir = "", Mode = "", NonElevated=1) {
 	;Run under explorer process as normal user
 	if(A_IsAdmin && NonElevated)
 	{		
+		outputdebug run %target% args %args%
 		result := DllCall("Explorer.dll\ShellExecInExplorerProcess","Str",Target, "Str", Args, "Str", WorkingDir)
 		if(result >= 0 )
 			return result

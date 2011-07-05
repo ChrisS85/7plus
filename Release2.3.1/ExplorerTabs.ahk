@@ -232,7 +232,11 @@ Class CTabContainer
 			if(Activate)
 				this.ActivateTab(position = "" ? this.Tabs.len() : position)
 			else
+			{
+				;To hide the old tab without showing the hide anim, it is moved outside of the screen first
+				WinMove, % "ahk_id " ExplorerWindow.hwnd,,-10000,-10000
 				WinHide, % "ahk_id " ExplorerWindow.hwnd
+			}
 		}
 		; CalculateTabText(tab)
 		this.DrawTabWindow()
@@ -710,7 +714,7 @@ CreateTab(hwnd, path=-1,Activate=-1)
 	DetectHiddenWindows, On
 	DisableMinimizeAnim(1)	
 	;msgbox tab path: %path%
-	Run(A_WinDir "\explorer.exe /n,/e," path)
+	Run("""" path """")
 	WinWaitNotActive ahk_id %hwnd%
 	WinWaitNotActive % "ahk_id " TabContainer.TabWindow
 	WinWaitNotActive ahk_id %hwnd%

@@ -20,7 +20,12 @@ MajorVersion := 2
 MinorVersion := 4
 BugfixVersion := 0
 ComObjError(0)
+WatchDirectory("C:\test|.jpg\", "change")
 #include %A_ScriptDir%\Autoexecute.ahk ;include first to avoid issues with autoexecute ending too soon because of labels
+change(from, to)
+{
+	msgbox change %from% to %to%
+}
 #include %A_ScriptDir%\lib\Array.ahk
 #include %A_ScriptDir%\lib\binreadwrite.ahk
 #include %A_ScriptDir%\lib\Crypt.ahk
@@ -37,9 +42,9 @@ ComObjError(0)
 #include %A_ScriptDir%\lib\Win.ahk
 #include %A_ScriptDir%\lib\DllCalls.ahk
 #include %A_ScriptDir%\lib\Notify.ahk
+#include %A_ScriptDir%\lib\Struct.ahk
 
 #include %A_ScriptDir%\Accessor\Accessor.ahk
-
 #include %A_ScriptDir%\Autoupdate.ahk
 #include %A_ScriptDir%\EventSystem.ahk
 #include %A_ScriptDir%\EditEventGUI.ahk

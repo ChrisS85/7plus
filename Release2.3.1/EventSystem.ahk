@@ -57,6 +57,7 @@
 #include %A_ScriptDir%\Actions\FocusControl.ahk
 #include %A_ScriptDir%\Actions\FTPUpload.ahk
 #include %A_ScriptDir%\Actions\ImageConverter.ahk
+#include %A_ScriptDir%\Actions\ImageUpload.ahk
 #include %A_ScriptDir%\Actions\Input.ahk
 #include %A_ScriptDir%\Actions\InvertSelection.ahk
 #include %A_ScriptDir%\Actions\MergeTabs.ahk
@@ -113,11 +114,11 @@ EventSystem_Startup()
 	Action_Upload_ReadFTPProfiles()
 	
 	;Create list object for events
-	EventsBase := object("base", Array(), "Categories", Array(), "GlobalPlaceholders", Array(), "HighestID", -1, "CreateEvent", "EventSystem_CreateEvent", "Add", "Events_Add", "Delete", "Events_Delete", "SubItem", "Events_SubItem", "indexOfSubItem", "Events_indexOfSubItem")
+	EventsBase := object("base", Array(), "Categories", Array(), "GlobalPlaceholders", Array(), "HighestID", -1, "CreateEvent", "EventSystem_CreateEvent","RegisterEvent", "EventSystem_RegisterEvent", "Add", "Events_Add", "Delete", "Events_Delete", "SubItem", "Events_SubItem", "indexOfSubItem", "Events_indexOfSubItem")
 	Events := object("base", EventsBase)
 	
 	;Temporary events are not visible in settings GUI and won't be saved. See ControlEvent -> Copy Event for usage example.
-	TemporaryEvents := object("base", object("base", Array(), "HighestID", -1, "Add", "Events_Add"))
+	TemporaryEvents := object("base", object("base", Array(), "HighestID", -1, "Add", "Events_Add","RegisterEvent", "EventSystem_RegisterEvent"))
 	
 	;Create base objects for triggers, conditions and actions
 	EventSystem_CreateBaseObjects()
@@ -156,9 +157,13 @@ EventSystem_Startup()
 	;Setup the message handler for receiving triggers from other instances of 7plus (and possibly other programs) and from the Shell extension.
 	OnMessage(55555, "TriggerFromOtherInstance")
 	
-	;Make sure that non-elevated processes can send this trigger message to the elevated 7plus process.
+	;Setup the message handler for receiving image upload progress notifications
+	OnMessage(55556, "Action_ImageUpload_ProgressHandler")
+	
+	;Make sure that non-elevated processes can send this messages to the elevated 7plus process.
 	;Keyword: UIPI
 	DllCall("ChangeWindowMessageFilter", "UInt", 55555, "UInt", 1) 
+	DllCall("ChangeWindowMessageFilter", "UInt", 55556, "UInt", 1) 
 }
 TriggerFromOtherInstance(wParam, lParam)
 {
@@ -187,7 +192,6 @@ TriggerFromOtherInstance(wParam, lParam)
 	}
 	Critical, Off
 }
-^!h::msgbox % Settings_Events.HighestID
 ;Creates an event and registers it for lEvents list (-->Assigns an ID that is based on the max ID of the default Events list and its settings copy, and increases HighestID count of lEvents and adds it to lEvents)
 EventSystem_RegisterEvent(lEvents, Event = "", Enable = 1)
 {
@@ -230,7 +234,7 @@ EventSystem_CreateBaseObjects()
 	local tmpobject
 	EventSystem_Triggers := "ContextMenu,DoubleClickDesktop,DoubleClickTaskbar,ExplorerButton,ExplorerDoubleClickSpace,ExplorerPathChanged,Hotkey,None,MenuItem,OnMessage,ScreenCorner,Timer,Trigger,WindowActivated, WindowClosed, WindowCreated,WindowStateChange,7plusStart"
 	EventSystem_Conditions := "If,IsContextMenuActive,IsDialog,IsDragable,IsFullScreen,KeyIsDown,IsRenaming,MouseOver,MouseOverFileList,MouseOverTabButton,MouseOverTaskList,WindowActive,WindowExists"
-	EventSystem_Actions := "Accessor,AutoUpdate,Clipboard,Clipmenu,ClipPaste,ControlEvent,ControlTimer,Copy,Delete,ExplorerReplaceDialog,Exit7plus,FastFoldersClear,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FilterList,FlashingWindows,FlatView,FocusControl,ImageConverter,Input,InvertSelection,MD5,MergeTabs,Message,Move,MouseClick,MouseCloseTab,MouseWindowDrag,MouseWindowResize,NewFile,NewFolder,OpenInNewFolder,PlaySound,Restart7plus,RestoreSelection,Run,RunOrActivate,Screenshot,SelectFiles,SetWindowTitle,SendKeys,SendMessage,SetDirectory,SlideWindowOut,ShortenURL,ShowAeroFlip,ShowMenu,ShowSettings,Shutdown,TaskButtonClose,ToggleWallpaper,Tooltip,Upload,ViewMode,Volume,Wait,WindowActivate,WindowClose,WindowHide,WindowMove,WindowResize,WindowSendToBottom,WindowShow,WindowState,Write"
+	EventSystem_Actions := "Accessor,AutoUpdate,Clipboard,Clipmenu,ClipPaste,ControlEvent,ControlTimer,Copy,Delete,ExplorerReplaceDialog,Exit7plus,FastFoldersClear,FastFoldersMenu,FastFoldersRecall,FastFoldersStore,FilterList,FlashingWindows,FlatView,FocusControl,ImageConverter,ImageUpload,Input,InvertSelection,MD5,MergeTabs,Message,Move,MouseClick,MouseCloseTab,MouseWindowDrag,MouseWindowResize,NewFile,NewFolder,OpenInNewFolder,PlaySound,Restart7plus,RestoreSelection,Run,RunOrActivate,Screenshot,SelectFiles,SetWindowTitle,SendKeys,SendMessage,SetDirectory,SlideWindowOut,ShortenURL,ShowAeroFlip,ShowMenu,ShowSettings,Shutdown,TaskButtonClose,ToggleWallpaper,Tooltip,Upload,ViewMode,Volume,Wait,WindowActivate,WindowClose,WindowHide,WindowMove,WindowResize,WindowSendToBottom,WindowShow,WindowState,Write"
 	Trigger_Categories := object("Explorer", Array(), "Hotkeys", Array(), "Other", Array(), "System", Array(), "Window", Array(), "7plus", Array())
 	Condition_Categories := object("Explorer", Array(), "Mouse", Array(), "Other", Array(), "Window", Array())
 	Action_Categories := object("Explorer", Array(), "FastFolders", Array(), "File", Array(), "Window", Array(), "Input", Array(), "System", Array(), "7plus", Array(), "Other", Array())
@@ -652,17 +656,17 @@ WriteEventsFile(Events, path)
 		
 		
 		;Uncomment the lines below to save events with an "official" tag that allows to identify them in update processes
-		if(!Event.OfficialEvent) ;Find an unused Event ID to be used as Official Event ID
-		{			
-			Loop
-			{
-				if(Events.IndexOfSubItem("OfficialEvent", A_Index))
-					continue ;Alread in use
-				xmlEvent.OfficialEvent := A_Index ;Not used
-				Event.OfficialEvent := A_Index
-				break
-			}
-		}
+		; if(!Event.OfficialEvent) ;Find an unused Event ID to be used as Official Event ID
+		; {			
+			; Loop
+			; {
+				; if(Events.IndexOfSubItem("OfficialEvent", A_Index))
+					; continue ;Alread in use
+				; xmlEvent.OfficialEvent := A_Index ;Not used
+				; Event.OfficialEvent := A_Index
+				; break
+			; }
+		; }
 		
 		
 		xmlTrigger := Object()
@@ -743,11 +747,12 @@ OnTrigger(Trigger)
 }
 ;Tests if an event matches to a trigger and may be appended to event schedule (and appends it)
 ;This function can also be used to specifically trigger a single event
-TriggerSingleEvent(Event, Trigger)
+;To just trigger it without performing trigger matching, leave Trigger Parameter empty
+TriggerSingleEvent(Event, Trigger="")
 {
 	global EventSchedule
 	;Order of this if condition is important here, because Event.Trigger.Matches() can disable the event for timers
-	if(Event.Enabled && (Event.Trigger.Type = Trigger.Type && Event.Trigger.Matches(Trigger, Event)) || (Trigger.Type = "Trigger" && Event.ID = Trigger.TargetID))
+	if(Event.Enabled && (!IsObject(Trigger) || (Event.Trigger.Type = Trigger.Type && Event.Trigger.Matches(Trigger, Event)) || (Trigger.Type = "Trigger" && Event.ID = Trigger.TargetID)))
 	{
 		;Test if the event is already running and mustn't be run multiple times
 		if(!Event.OneInstance || !EventSchedule.IndexOfSubItem("ID", Event.ID))
@@ -755,12 +760,17 @@ TriggerSingleEvent(Event, Trigger)
 	}
 	return
 }
+EventScheduler:
+SetTimer, EventScheduler, Off
+EventScheduler()
+SetTimer, EventScheduler, 100
+return
 EventScheduler()
 {
 	global Events, EventSchedule, Profiler, TemporaryEvents, DebugEnabled, ShowEvents
 	Critical, Off
-	loop
-	{
+	; loop
+	; {
 		StartTime := A_TickCount
 		;First, check the conditions of all events in the queue to make sure an event can't influence the result of a condition check of another event.
 		EventPos := 1
@@ -868,8 +878,8 @@ EventScheduler()
 		}
 		Profiler.Total.EventLoop := Profiler.Total.EventLoop + A_TickCount - StartTime
 		Profiler.Current.EventLoop := Profiler.Current.EventLoop + A_TickCount - StartTime
-		Sleep 100
-	}
+		; Sleep 100
+	; }
 }
 
 EventLog(text)
