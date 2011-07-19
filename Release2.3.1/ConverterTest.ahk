@@ -1,32 +1,11 @@
-#include <CGUI>
+StringCaseSense,Off
+conv := new Converter()
 #include <Regex>
-Class ConverterGUI extends CGUI
+Class Converter
 {
 	__New()
 	{
-		global CFileDialog
-		this.Add("Edit", "EditPath", "x10", "")
-		this.Add("Button", "BtnBrowse", "x+10", "Browse")
-		this.Add("Edit", "EditSavePath", "x10 y+10", "")
-		this.Add("Button", "BtnSaveBrowse", "x+10", "Browse")
-		this.Add("Button", "BtnConvert", "x10 y+10", "Convert")
-		this.FileDialog := new CFileDialog()
-	}
-	BtnBrowse_ButtonClicked()
-	{
-		this.FileDialog.Mode := "Open"
-		if(this.FileDialog.Show())
-			this.EditPath.Text := this.FileDialog.Filename
-	}
-	BtnSaveBrowse_ButtonClicked()
-	{
-		this.FileDialog.Mode := "Save"
-		if(this.FileDialog.Show())
-			this.EditSavePath.Text := this.FileDialog.Filename
-	}
-	BtnConvert_ButtonClicked()
-	{
-		this.Convert(this.EditPath.Text, this.EditSavePath.Text)
+		this.Convert("C:\Users\csander\Desktop\Form1.Designer.cs", "C:\Users\csander\Desktop\Form1.ahk")
 	}
 	Convert(InPath, OutPath)
 	{
@@ -178,8 +157,3 @@ Class ConverterGUI extends CGUI
 			CurrentControl.Checked := InStr(line, "true")
 	}
 }
-ConverterGUI_BtnBrowse:
-ConverterGUI_BtnSaveBrowse:
-ConverterGUI_BtnConvert:
-CGUI.HandleEvent()
-return
