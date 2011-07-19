@@ -31,7 +31,7 @@ Class Converter
 					type := SupportedControls[type]
 					if(type)
 					{
-						Controls.Insert({Type : Type, Name : name})
+						Controls.Insert({Type : Type, Name : name, Events : {}})
 						found := true
 					}
 				}
@@ -125,7 +125,7 @@ Class Converter
 			Options := (Control.HasKey("x") ? "x" Control.x " " : "" ) (Control.HasKey("y") ? "y" Control.y " " : "" ) (Control.HasKey("width") ? "w" Control.width " " : "" ) (Control.HasKey("height") ? "h" Control.height : "" )
 			OutputFile .= "`t`tthis.Add(""" Control.Type """, """ Control.Name """, """ Options """, """ Control.Text """)`n"
 			for Property, Value in Control
-				if Property not in x,y,width,height,name,type,Text
+				if Property not in x,y,width,height,name,type,Text,HasEvents,Events
 				{
 					if Value is Number
 						OutputFile .= "`t`tthis." Control.Name "." Property " := " Value "`n"
@@ -145,15 +145,42 @@ Class Converter
 			else
 				OutputFile .= "`t`tthis." Property " := """ Value """`n"
 		}
-		OutputFile .= "`t`tthis.Show()`n"
-		OutputFile .= "`t}`n"
-		OutputFile .= "}"
+		OutputFile .= "`t`tthis.Show()`n"		
+		OutputFile .= "`t}"
+		for index, Control in Controls
+		{
+			for index2, Event in Control.Events
+			{
+				OutputFile .= "`n`t" Control.Name Event "`n`t{`n`t`t`n`t}"
+				AnyEvents := true
+			}
+		}
+		;~ if(!AnyEvents)
+			;~ OutputFile .= "`t}`n"
+		OutputFile .= "`n}`n"
+		for index, Control in Controls
+		{
+			if(Control.Events.MaxIndex() >= 1)
+				OutputFile .= Class "_" Control.Name ":`n"
+		}
+		if(AnyEvents)
+			OutputFile .= "CGUI.HandleEvent()`nreturn"
 		FileDelete, % OutPath
 		FileAppend, % OutputFile, % OutPath
 	}
 	Checkbox(CurrentControl, line)
 	{
-		if(InStr(line, "this." CurrentControl.Name ".Checked"))
-			CurrentControl.Checked := InStr(line, "true")
+		if(InStr(line, "new System.EventHandler"))
+		{
+			EventHandled := true
+			if(InStr(line, "_CheckedChanged);"))
+				CurrentControl.Events.Insert("_CheckedChanged()")
+			else
+				EventHandled := false
+			if(EventHandled)
+				CurrentControl.HasEvents := true
+		}
+		else if(InStr(line, "this." CurrentControl.Name ".Checked"))
+			CurrentControl.Checked := (InStr(line, "true") || InStr(line, "1;"))
 	}
 }
