@@ -1,3 +1,4 @@
+GUI := new ConverterGUI()
 #include <CGUI>
 #include <Regex>
 Class ConverterGUI extends CGUI
@@ -5,28 +6,31 @@ Class ConverterGUI extends CGUI
 	__New()
 	{
 		global CFileDialog
-		this.Add("Edit", "EditPath", "x10", "")
+		base.__New()
+		this.Add("Edit", "EditPath", "x10", "C:\Projekte\C#\WindowsFormsApplication1\WindowsFormsApplication1\Form1.Designer.cs")
 		this.Add("Button", "BtnBrowse", "x+10", "Browse")
-		this.Add("Edit", "EditSavePath", "x10 y+10", "")
+		this.Add("Edit", "EditSavePath", "x10 y+10", "C:\Projekte\C#\WindowsFormsApplication1\WindowsFormsApplication1\Form1.ahk")
 		this.Add("Button", "BtnSaveBrowse", "x+10", "Browse")
 		this.Add("Button", "BtnConvert", "x10 y+10", "Convert")
 		this.FileDialog := new CFileDialog()
+		this.Show("")
 	}
-	BtnBrowse_ButtonClicked()
+	BtnBrowse_Click()
 	{
 		this.FileDialog.Mode := "Open"
 		if(this.FileDialog.Show())
 			this.EditPath.Text := this.FileDialog.Filename
 	}
-	BtnSaveBrowse_ButtonClicked()
+	BtnSaveBrowse_Click()
 	{
 		this.FileDialog.Mode := "Save"
 		if(this.FileDialog.Show())
 			this.EditSavePath.Text := this.FileDialog.Filename
 	}
-	BtnConvert_ButtonClicked()
+	BtnConvert_Click()
 	{
 		this.Convert(this.EditPath.Text, this.EditSavePath.Text)
+		run % this.EditSavePath.Text
 	}
 	Convert(InPath, OutPath)
 	{
@@ -48,7 +52,7 @@ Class ConverterGUI extends CGUI
 				name := Regex.MatchSimple(line, "name", "\.Forms\.(?P<type>.*?) (?P<name>.*?)\;")
 				if(type && name)
 				{
-					SupportedControls := { TextBox : "Edit", Label : "Text", Button : "Button", CheckBox : "CheckBox", PictureBox : "Picture"}
+					SupportedControls := { TextBox : "Edit", Label : "Text", Button : "Button", CheckBox : "CheckBox", PictureBox : "Picture", ListView : "ListView", ComboBox : "ComboBox", ListBox : "ListBox", TreeView : "TreeView", GroupBox : "GroupBox", RadioButton : "Radio"}
 					type := SupportedControls[type]
 					if(type)
 					{
@@ -118,7 +122,7 @@ Class ConverterGUI extends CGUI
 							CurrentControl.height := height
 						handled := true
 					}
-					if(InStr(line, "this." CurrentControl.Name ".Location"))
+					else if(InStr(line, "this." CurrentControl.Name ".Location"))
 					{
 						x := Regex.MatchSimple(line, "x", "\.Point\((?P<x>\d+),.*?(?P<y>\d+)")
 						y := Regex.MatchSimple(line, "y", "\.Point\((?P<x>\d+),.*?(?P<y>\d+)")
@@ -128,9 +132,19 @@ Class ConverterGUI extends CGUI
 							CurrentControl.y := y
 						handled := true
 					}
-					if(InStr(line, "this." CurrentControl.Name ".Text"))
+					else if(InStr(line, "this." CurrentControl.Name ".Text"))
 					{
 						CurrentControl.Text := Regex.MatchSimple(line, "text", """(?P<text>.*)""")
+						handled := true
+					}
+					else if(InStr(line, "this." CurrentControl.Name ".Enabled"))
+					{
+						CurrentControl.Enabled := (InStr(line, "true") || InStr(line, "1;"))
+						handled := true
+					}
+					else if(InStr(line, "this." CurrentControl.Name ".Visible"))
+					{
+						CurrentControl.Enabled := (InStr(line, "true") || InStr(line, "1;"))
 						handled := true
 					}
 				}
@@ -140,7 +154,7 @@ Class ConverterGUI extends CGUI
 		}
 		
 		;Now that all info is available, write the file
-		OutputFile := "Class " Class " Extends CGUI`n{`n`t__New()`n`t{`n"
+		OutputFile := "gui := new " Class "()`n#include <CGUI>`nClass " Class " Extends CGUI`n{`n`t__New()`n`t{`n`t`tBase.__New()`n"
 		for index, Control in Controls
 		{
 			Options := (Control.HasKey("x") ? "x" Control.x " " : "" ) (Control.HasKey("y") ? "y" Control.y " " : "" ) (Control.HasKey("width") ? "w" Control.width " " : "" ) (Control.HasKey("height") ? "h" Control.height : "" )
@@ -189,6 +203,36 @@ Class ConverterGUI extends CGUI
 		FileDelete, % OutPath
 		FileAppend, % OutputFile, % OutPath
 	}
+	Button(CurrentControl, line)
+	{
+		if(InStr(line, "new System.EventHandler"))
+		{
+			EventHandled := true
+			if(InStr(line, "_Click);"))
+				CurrentControl.Events.Insert("_Click()")
+			else
+				EventHandled := false
+			if(EventHandled)
+				CurrentControl.HasEvents := true
+		}
+	}
+	Edit(CurrentControl, line)
+	{
+		if(InStr(line, "new System.EventHandler"))
+		{
+			EventHandled := true
+			if(InStr(line, "_TextChanged);"))
+				CurrentControl.Events.Insert("_TextChanged()")
+			else
+				EventHandled := false
+			if(EventHandled)
+				CurrentControl.HasEvents := true
+		}
+		else if(InStr(line, "this." CurrentControl.Name ".MultiLine"))
+			CurrentControl.Multi := (InStr(line, "true") || InStr(line, "1;"))
+		else if(InStr(line, "this." CurrentControl.Name ".UseSystemPasswordChar"))
+			CurrentControl.Password := (InStr(line, "true") || InStr(line, "1;"))
+	}
 	Checkbox(CurrentControl, line)
 	{
 		if(InStr(line, "new System.EventHandler"))
@@ -203,6 +247,97 @@ Class ConverterGUI extends CGUI
 		}
 		else if(InStr(line, "this." CurrentControl.Name ".Checked"))
 			CurrentControl.Checked := (InStr(line, "true") || InStr(line, "1;"))
+	}
+	Radio(CurrentControl, line)
+	{
+		if(InStr(line, "new System.EventHandler"))
+		{
+			EventHandled := true
+			if(InStr(line, "_CheckedChanged);"))
+				CurrentControl.Events.Insert("_CheckedChanged()")
+			else
+				EventHandled := false
+			if(EventHandled)
+				CurrentControl.HasEvents := true
+		}
+		else if(InStr(line, "this." CurrentControl.Name ".Checked"))
+			CurrentControl.Checked := (InStr(line, "true") || InStr(line, "1;"))
+	}
+	ComboBox(CurrentControl, line)
+	{
+		if(InStr(line, "new System.EventHandler"))
+		{
+			EventHandled := true
+			if(InStr(line, "_SelectedIndexChanged);"))
+				CurrentControl.Events.Insert("_SelectedIndexChanged()")
+			else
+				EventHandled := false
+			if(EventHandled)
+				CurrentControl.HasEvents := true
+		}
+		else if(InStr(line, "this." CurrentControl.Name ".DropDownStyle") && InStr(line, "DropDownList"))
+			CurrentControl.type := "DropDownList"
+	}
+	DropDownList(CurrentControl, line)
+	{
+		if(InStr(line, "new System.EventHandler"))
+		{
+			EventHandled := true
+			if(InStr(line, "_SelectedIndexChanged);"))
+				CurrentControl.Events.Insert("_SelectedIndexChanged()")
+			else
+				EventHandled := false
+			if(EventHandled)
+				CurrentControl.HasEvents := true
+		}
+	}
+	ListBox(CurrentControl, line)
+	{
+		if(InStr(line, "new System.EventHandler"))
+		{
+			EventHandled := true
+			if(InStr(line, "_SelectedIndexChanged);"))
+				CurrentControl.Events.Insert("_SelectedIndexChanged()")
+			else
+				EventHandled := false
+			if(EventHandled)
+				CurrentControl.HasEvents := true
+		}
+	}
+	ListView(CurrentControl, line)
+	{
+		if(InStr(line, "new System.EventHandler"))
+		{
+			EventHandled := true
+			if(InStr(line, "_ItemSelectionChanged);"))
+				CurrentControl.Events.Insert("_SelectionChanged(Row)")
+			else if(InStr(line, "_ItemCheckedChanged);"))
+				CurrentControl.Events.Insert("_CheckedChanged(Row)")
+			else if(InStr(line, "_MouseClick);"))
+				CurrentControl.Events.Insert("_Click(RowNumber)")
+			else if(InStr(line, "_MouseDoubleClick);"))
+				CurrentControl.Events.Insert("_DoubleClick(RowNumber)")
+			else if(InStr(line, "_ColumnClick);"))
+				CurrentControl.Events.Insert("_ColumnClick(ColumnNumber)")
+			else if(InStr(line, "_BeforeLabelEdit);"))
+				CurrentControl.Events.Insert("_EditingStart(RowNumber)")
+			else if(InStr(line, "_AfterLabelEdit);"))
+				CurrentControl.Events.Insert("_EditingEnd(RowNumber)")
+			else if(InStr(line, "_ItemActivate);"))
+				CurrentControl.Events.Insert("_ItemActivate(RowNumber)")
+			else if(InStr(line, "_KeyPress);"))
+				CurrentControl.Events.Insert("_KeyPress(Key)")
+			else if(InStr(line, "_MouseLeave);"))
+				CurrentControl.Events.Insert("_MouseLeave()")
+			else if(InStr(line, "_Enter);"))
+				CurrentControl.Events.Insert("_FocusReceived()")
+			else if(InStr(line, "_Leave);"))
+				CurrentControl.Events.Insert("_FocusLost()")
+			else
+				EventHandled := false
+			if(EventHandled)
+				CurrentControl.HasEvents := true
+		}
 	}
 }
 ConverterGUI_BtnBrowse:
