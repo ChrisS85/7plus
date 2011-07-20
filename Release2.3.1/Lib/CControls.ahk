@@ -22,6 +22,14 @@ Class CControl ;Never created directly
 			return
 		Control, Hide,,,% "ahk_id " this.hwnd
 	}
+	Enable()
+	{
+		Control, Enable,,,% "ahk_id " this.hwnd
+	}
+	Disable()
+	{
+		Control, Disable,,,% "ahk_id " this.hwnd
+	}
 	Focus()
 	{
 		global CGUI
@@ -854,5 +862,49 @@ Class CGroupBoxControl Extends CControl
 	{
 		base.__New(Name, Options, Text, GUINum)
 		this.Type := "GroupBox"
+	}
+}
+Class CStatusBarControl Extends Control
+{
+	__New(Name, Options, Text, GUINum)
+	{
+		base.__New(Name, Options, Text, GUINum)
+		this.Type := "StatusBar"
+		this.Insert("_", {})
+		this._.Parts := new this.CParts()
+	}
+	__Get(Name, Params*)
+	{
+		if(Name = "Parts")
+		{
+			if(Params.MaxIndex > 0)
+				return this._.Parts[Params*]
+			else
+				return this._.Parts
+		}
+		else if(Name = "Text")
+			return this._.Parts[1].Text
+	}
+	__Set(Name, Value, Params*)
+	{
+		if(Name = "Text")
+		{
+			this._.Parts[1].Text := Value
+			return true
+		}
+	}
+	Class CParts
+	{
+		__New()
+		{
+		}
+		__Get(Name, Params*)
+		{
+			
+		}
+		__Set(Name, Value, Params*)
+		{
+			
+		}
 	}
 }
