@@ -11,19 +11,206 @@ Class CGUI
 	It is maintained automatically and should not be used directly.
 	*/
 	static GUIList := Object()
-	/*	
-	Get only:
+	
+	;Get only:
+	/*
+	Variable: Controls
+	This object holds all controls of this GUI. The controls are stored with their window handle as key. This object is not setable
+	*/
+	/*
+	Variable: hwnd
+	The window handle of this window. This can not be set to a different value.
+	*/
+	/*
+	Variable: GUINum
+	The AHK GUI number of this window. The gui number may be used to find this window object: CGUI.GUIList[GUINum]. It's also useful for commands like GuiControl. But these commands should not be used where possible to ensure that the window object maintains the correct state.
+	*/
+	/*
+	Variable: MinMax
+	Retrieves the window's minimized/maximized state.
+	*/
+	/*
+	Variable: Instances
+	Retrieves a list of instances of the current window class.
+	*/
+	
+	/*
 	var Controls := Object()
 	var hwnd := 0
 	var GUINum := 0
 	MinMax
 	Instances ;Returns a list of instances of this window class
+	*/
 	
-	Set only:
+	;Set only:
+	/*
+	Variable: LastFound
+	Sets the window to be the last found window (though this is unnecessary in a Gui thread because it is done automatically). This is rarely needed since most properties are accessible through CGUI.
+	*/
+	/*
 	var LastFound := 0 ;Sets the window to be the last found window (though this is unnecessary in a Gui thread because it is done automatically). This is rarely needed since most properties are accessible through CGUI.
-	;These might be made getable later
+	*/
+	;Get/Set:
+	/*
+	Variable: AlwaysOnTop
+	Makes the window stay on top of all other windows.
+	*/
+	/*
+	Variable: Border
+	Provides a thin-line border around the window. This is not common.
+	*/
+	/*
+	Variable: Caption
+	Provides a title bar and a thick window border/edge.
+	*/
+	/*
+	Variable: x
+	X-position of the window on the screen
+	*/
+	/*
+	Variable: y
+	Y-position of the window on the screen
+	*/
+	/*
+	Variable: width
+	Width of the window
+	*/
+	/*
+	Variable: height
+	height of the window
+	*/
+	/*
+	Variable: Position
+	Position of the window. This object has two members, x and y. They can not be set separately here, instead use the x or y property of CGUI if you need to set only one coordinate.
+	*/
+	/*
+	Variable: Size
+	Size of the window. This object has two members, width and height. They can not be set separately here, instead use the width or height property of CGUI if you need to set only one coordinate.
+	*/
+	/*
+	Variable: Title
+	Title of the window.
+	*/
+	/*
+	Variable: ActiveControl
+	The control that is currently focused. This returns the control object that is also accessible under this.Controlname and this.Controls.ControlHWND. To set the active control, set this value to either the name of the control or to the control object.
+	*/
+	/*
+	Variable: Enabled
+	Determines wether the window is currently enabled.
+	*/
+	/*
+	Variable: Visible
+	Determines wether the window is currently visible. This can also be changed by calling this.Show() or this.Hide().
+	*/
+	/*
+	Variable: Style
+	The style of this window. Setting it works like the WinSet command. You can add a style by setting this.Style := "+0x8000000" ;(WS_DISABLED).
+	*/
+	/*
+	Variable: ExStyle
+	The extended style of this window. Setting it works like the WinSet command. You can add a style by setting this.ExStyle := "+0x8" ;(Always on top).
+	*/
+	/*
+	Variable: Resize
+	Makes the window resizable.
+	*/
+	/*
+	Variable: SysMenu
+	Provides a system menu button on the left side of the title bar.
+	*/
+	/*
+	Variable: CloseOnEscape
+	If true, pressing escape will call the PreClose() event function if defined. Otherwise, it will call Escape() if it is defined.
+	*/
+	/*
+	Variable: DestroyOnClose
+	If true, the gui will be destroyed instead of being hidden when it gets closed by the user.
+	*/
+	/*
+	Variable: TransColor
+	A color that will be made invisible/see-through on the window. Values: RGB|ColorName|Off
+	*/
+	/*
+	Variable: Transparent
+	Transparency of the window. Values: 0 = invisible, 255 = opaque, "Off" = no transparency at all (preferred over 255 for speed).
+	*/
+	/*
+	Variable: MaximizeBox
+	Enables the maximize button in the title bar. This is also included as part of Resize.
+	*/
+	/*
+	Variable: MinimizeBox
+	Enables the minimize button in the title bar.
+	*/
+	/*
+	Variable: MinSize
+	Minimum size of the window.
+	*/
+	/*
+	Variable: MaxSize
+	Maximum size of the window.
+	*/
+	/*
+	Variable: Theme
+	Determines wether controls are themed.
+	*/
+	/*
+	Variable: ToolWindow
+	Provides a narrow title bar.
+	*/
+	/*
+	Variable: Owner
+	Makes this window owned by another. This is currently not properly supported because it must be set before the window gets created.
+	*/
+	/*
+	Variable: OwnDialogs
+	OwnDialogs should be specified in each thread (such as a ButtonOK subroutine) for which subsequently displayed MsgBox, InputBox, FileSelectFile, and FileSelectFolder dialogs should be owned by the window.
+	*/
+	/*
+	Variable: Region
+	Changes the shape of a window to be the specified rectangle, ellipse, or polygon. If the parameter is blank, the window is restored to its original/default display area. See the WinSet command for details.
+	*/
 	
-	Get/Set:
+	/*
+	Event functions that can be defined in the class that extends CGUI:
+	*/
+	/*
+	Function: Size
+	Called when window size changes.
+	
+	Parameters:
+		Event - Possible values for Event:
+				o 0: The window has been restored, or resized normally such as by dragging its edges.
+				o 1: The window has been minimized.
+				o 2: The window has been maximized.
+	*/
+	/*
+	Function: ContextMenu
+	Called when a context menu is about to be invoked. This is mostly useless for now because the control can not get identified properly.
+	*/
+	/*
+	Function: DropFiles
+	Called when files were dropped on the gui. This is mostly useless for now because the control can not get identified properly.
+	*/
+	/*
+	Function: PreClose
+	Called when the window is about to be closed or when Escape was pressed and CloseOnEscape = true. If it returns true, the window is kept open. Otherwise it will be hidden or destroyed depending on the value of DestroyOnClose.
+	*/
+	/*
+	Function: PostDestroy
+	Called when the window was destroyed. Attention: Many variables and functions in this object aren't usable anymore. This function is mostly used to release additional resources or to exit the program.
+	*/
+	/*
+	Function: Escape
+	Called when escape is pressed and this.CloseOnEscape = false. The window is not automatically hidden/destroyed when this.CloseOnEscape = false.
+	*/
+	
+	
+	
+	
+	
+	/*
 	var AlwaysOnTop := 0 ;Makes the window stay on top of all other windows.
 	var Border := 0 ;Provides a thin-line border around the window. This is not common.
 	var Caption := 1 ;Provides a title bar and a thick window border/edge
@@ -41,7 +228,7 @@ Class CGUI
 	var ExStyle
 	var Resize
 	var SysMenu
-	var CloseOnEscape := 0 ;If true, pressing escape will call the Close() event function if defined. Otherwise, it will call Escape() if it is defined.
+	var CloseOnEscape := 0 ;If true, pressing escape will call the PreClose() event function if defined. Otherwise, it will call Escape() if it is defined.
 	var DestroyOnClose := 0 ;If true, the gui will be destroyed instead of being hidden when it gets closed by the user.
 	var TransColor := "Off" ;A color that will be made invisible/see-through on the window. Values: RGB|ColorName|Off
 	var Transparent := "Off" ;Transparency of the window. Values: 0 = invisible, 255 = opaque, "Off" = no transparency at all (preferred over 255 for speed).
@@ -72,6 +259,12 @@ Class CGUI
 	PreClose() ;Called when the window is about to be closed or when Escape was pressed and CloseOnEscape = true. If it returns true, the window is kept open. Otherwise it will be hidden or destroyed depending on the value of DestroyOnClose
 	PostDestroy() ;Called when the window was destroyed. Attention: Many variables and functions in this object aren't usable anymore. This function is mostly used to release additional resources or to exit the program.
 	Escape() ;Called when escape is pressed and CloseOnEscape = false. The window is not automatically hidden/destroyed when CloseOnEscape = false.
+	*/
+	
+	
+	/*
+	Constructor: __New
+	Initializes and creates the window. This should be called at the beginning of the constructor of the class that extends CGUI like this: Base.__New()
 	*/
 	__New()
 	{
