@@ -1,4 +1,4 @@
-
+#NoEnv ;Leave this here if you don't want weird ListView icon behavior (and possibly other side effects)
 /*
    Class: CGUI
    The main GUI class. User created GUIs need to extend this class and call Base.__New() in their constructor before doing anything related to this class.
@@ -75,7 +75,7 @@ Class CGUI
 	*/
 	__New()
 	{
-		global CGUI
+		global CGUI, CFont
 		start := 10 ;Let's keep some gui numbers free for other uses
 		loop {
 			Gui %start%:+LastFoundExist
@@ -92,9 +92,11 @@ Class CGUI
 			return ""
 		this.Controls := Object()
 		this.Insert("_", {}) ;Create proxy object to store some keys in it and still trigger __Get and __Set
+		this.Font := new CFont(this.GUINum)
 		CGUI.GUIList[this.GUINum] := this
 		GUI, % this.GUINum ":+LabelCGUI_ +LastFound"		
 		this.hwnd := WinExist()
+		;~ this.Base.ImageListManager := new this.CImageListManager(GUINum) ;ImageListManager is stored in the base object of a gui class so that multiple instances of a gui may reuse the same Imagelist
 	}
 	__Delete()
 	{
@@ -216,12 +218,12 @@ Class CGUI
 		Options - Font options, size etc. See http://www.autohotkey.com/docs/commands/Gui.htm#Font
 		Fontname - Name of the font. See http://www.autohotkey.com/docs/commands/Gui.htm#Font
 	*/
-	Font(Options, Fontname)
-	{
-		if(this.IsDestroyed)
-			return
-		Gui, % this.GUINum ":Font", %Options%, %Fontname%
-	}
+	;~ Font(Options, Fontname)
+	;~ {
+		;~ if(this.IsDestroyed)
+			;~ return
+		;~ Gui, % this.GUINum ":Font", %Options%, %Fontname%
+	;~ }
 	
 	/*
 	Function: Color
@@ -333,6 +335,12 @@ Class CGUI
 			Control := object("base", CCheckboxControl)
 			Control.__New(Name, Options, Text, this.GUINum, type)
 		}
+		else if(Control = "Tab" )
+		{
+			type := "Tab2"
+			Control := object("base", CTabControl)
+			Control.__New(Name, Options, Text, this.GUINum)
+		}
 		else
 		{
 			Control := "C" Control "Control"
@@ -347,14 +355,24 @@ Class CGUI
 				return
 			}
 		}
-		
-		if(IsFunc(this[Control.Name]) && ! IsLabel(this.__Class "_" Control.Name))
-			Msgbox % "Event notification function found for " Control.Name ", but the appropriate label " this.__Class "_" Control.Name " does not exist!"
 		Gui, % this.GUINum ":Add", % Control.Type, % Control.Options " hwndhControl " (IsLabel(this.__Class "_" Control.Name) ? "g" this.__Class "_" Control.Name : ""), % Control.Content ;Create the control and get its window handle and setup a g-label
 		Control.Remove("Content")
 		Control.hwnd := hControl ;Window handle is used for all further operations on this control
-		this.Controls[hControl] := Control ;Add to list of controls
+		this.Controls[Name] := Control ;Add to list of controls
 		this[Control.Name] := Control
+		;Check if the programmer missed a g-label
+		for index, Event in Control._.Events
+			if(IsFunc(this.__Class "." Control.Name "_" Event) && !IsLabel(this.__Class "_" Control.Name))
+			{
+				Msgbox % "Event notification function found for " Control.Name ", but the appropriate label " this.__Class "_" Control.Name " does not exist!"
+				break
+			}
+		
+		if(type = "Tab2")
+		{
+			Gui, % this.GUINum ":Tab"
+			Control.Type := "Tab"
+		}
 		return Control
 	}
 	__Get(Name)
@@ -393,7 +411,12 @@ Class CGUI
 			{
 				ControlGetFocus, Value, % "ahk_id " this.hwnd
 				ControlGet, Value, Hwnd,, %Value%, % "ahk_id " this.hwnd
-				Value := this.Controls[Value]
+				for Name, Control in this.Controls
+					if(Control.hwnd = Value)
+					{
+						Value := Control
+						break
+					}
 			}
 			else if(Name="Enabled")
 				Value := !(this.Style & 0x8000000) ;WS_DISABLED
@@ -435,6 +458,10 @@ Class CGUI
 			Value := this._.OwnDialogs
 		else if(Value = "" && Name = "Region")
 			Value := this._.Region
+		else if(Value = "" && Name = "WindowColor")
+			Value := this._.WindowColor
+		else if(Value = "" && Name = "ControlColor")
+			Value := this._.ControlColor
 		if(!DetectHidden)
 			DetectHiddenWindows, Off
 		if(Value != "")
@@ -487,6 +514,10 @@ Class CGUI
 				WinMove,% "ahk_id " this.hwnd,,,, % Value.width, % Value.height
 			else if(Name = "Title")
 				WinSetTitle, % "ahk_id " this.hwnd,,%Value%
+			else if(Name = "WindowColor")
+				Gui, % this.GUINum ":Color", %Value%
+			else if(Name = "ControlColor")
+				Gui, % this.GUINum ":Color",, %Value%
 			else if(Name = "ActiveControl")
 			{
 				if(!IsObject(Value))
@@ -509,6 +540,19 @@ Class CGUI
 			DetectHiddenWindows, Off
 		if(Handled)
 			return Value
+	}
+	/*
+	Function: ControlFromHWND
+	Returns the object that belongs to a control with a specific window handle.
+	Parameters:
+		HWND - The window handle.
+	*/
+	ControlFromHWND(HWND)
+	{
+		for GUINum, GUI in this.GUIList
+			for Name, Control in GUI.Controls
+				if(Control.hwnd = hwnd)
+					return Control
 	}
 	/*
 	Main event rerouting function. It identifies the associated window/control and calls the related event function if it is defined. It also handles some things on its own, such as window closing.
@@ -543,9 +587,9 @@ Class CGUI
 			}
 			else
 			{
-				for Hwnd, Control in GUI.Controls
+				for Name, Control in GUI.Controls
 				{
-					if(Control.Name = ControlName)
+					if(Name = ControlName)
 					{
 						ErrorLevel := ErrLevel
 						Control.HandleEvent()
@@ -555,7 +599,59 @@ Class CGUI
 			}
 		}
 	}
+	HandleMessage(lParam, msg, hwnd)
+	{
+		global CGUI
+		static WM_SETCURSOR := 0x20, WM_MOUSEMOVE := 0x200, h_cursor_hand
+		wParam := this ;Fix parameter offset caused by this being a class method
+		GUI := CGUI.GUIList[A_GUI]
+		if(msg = WM_SETCURSOR || msg = WM_MOUSEMOVE) ;Text control Link support, thanks Shimanov!
+		{
+			if(msg = WM_SETCURSOR)
+			{
+				If(GUI._.Hovering)
+					Return true
+			}
+			else if(msg = WM_MOUSEMOVE)
+			{
+				MouseGetPos,,,,ControlHWND, 2
+				for name, Control in GUI.Controls
+					if(Control.hwnd = ControlHWND && Control.Link)
+					{
+						ShouldHover := true
+						break
+					}
+				if(ShouldHover)
+				{
+					if(!GUI._.Hovering)
+					{
+						Control.Font.Options := "cBlue underline"
+						Gui._.LastHoveredControl := Control.hwnd
+						h_cursor_hand := DllCall("LoadCursor", "Ptr", 0, "uint", 32649, "Ptr")
+						GUI._.Hovering := true
+					}
+					GUI._.h_old_cursor := DllCall("SetCursor", "Ptr", h_cursor_hand, "Ptr")
+				}
+				; Mouse cursor doesn't hover URL text control
+				else
+				{
+					if(GUI._.Hovering)
+					{					
+						for name, Control in GUI.Controls
+							if(Control.hwnd = GUI._.LastHoveredControl && Control.Link)
+							{
+								Control.Font.Options := "norm cBlue"
+								DllCall("SetCursor", "Ptr", GUI._.h_old_cursor)
+								GUI._.Hovering := false
+								break
+							}					
+					}
+				}
+			}
+		}
+	}
 }
+
 
 ;Event handlers for gui and control events:
 CGUI_Size:
@@ -566,6 +662,55 @@ CGUI_Escape:
 CControl_Event:
 CGUI.HandleEvent()
 return
+
+Class CFont
+{
+	__New(GUINum, ControlName)
+	{
+		this.Insert("_", {})
+		this._.GUINum := GUINum
+		this._.ControlName := ControlName
+	}
+	__Set(Name, Value)
+	{
+		global CGUI
+		if(Name = "Options")
+		{
+			if(this._.ControlName) ;belonging to a control
+			{
+				GUI := CGUI.GUIList[this._.GUINum]
+				Control := GUI[this._.ControlName]
+				Gui, % this._.GUINum ":Font", %Value%
+				GuiControl, % this.GUINum ":Font", % Control.ClassNN
+				Gui, % this._.GUINum ":Font", % GUI.Font.Options ;Restore current font
+			}
+			else ;belonging to a window
+				Gui, % this._.GUINum ":Font", %Value%
+			this._[Name] := Value
+			return Value
+		}
+		else if(Name = "Font")
+		{
+			if(this._.ControlName) ;belonging to a control
+			{
+				GUI := CGUI.GUIList[this._.GUINum]
+				Control := GUI[this._.ControlName]
+				Gui, % this._.GUINum ":Font",, %Value%
+				GuiControl, % this.GUINum ":Font", % Control.ClassNN
+				Gui, % this._.GUINum ":Font",, % GUI.Font.Font ;Restore current font
+			}
+			else ;belonging to a window
+				Gui, % this._.GUINum ":Font",, %Value%
+			this._[Name] := Value
+			return Value
+		}
+	}
+	__Get(Name)
+	{
+		if(Name != "_" && this._.HasKey(Name))
+			return this._[Name]
+	}
+}
 /*
 Ideas:
 Anchor
