@@ -777,7 +777,10 @@ Class CListViewControl Extends CControl
 				Value := []
 				Loop % this.Items.Count
 					if(LV_GetNext(A_Index - 1, InStr(Name, "Checked") ? "Checked" : "") = A_Index)
-						Value.Insert(InStr(Name, "Indices") ? this.CItems.GetSortedIndex(A_Index, this.hwnd) : new this.CItems.CRow(this.CItems.GetSortedIndex(A_Index, this.hwnd), this.GUINum, this.Name))
+					{
+						Index := (this._.Items.IndependentSorting ? this.CItems.CRow.GetUnsortedIndex(A_Index, this.hwnd) : A_Index)
+						Value.Insert(InStr(Name, "Indices") ? Index : this._.Items[Index]) ;new this.CItems.CRow(this.CItems.GetSortedIndex(A_Index, this.hwnd), this.GUINum, this.Name))
+					}
 			}
 			else if(Name = "SelectedIndex" || Name = "SelectedItem" || Name = "CheckedIndex" || Name = "CheckedItem")
 			{
@@ -786,7 +789,8 @@ Class CListViewControl Extends CControl
 				Loop % this.Items.Count
 					if(LV_GetNext(A_Index - 1, InStr(Name, "Checked") ? "Checked" : "") = A_Index)
 					{
-						Value := InStr(Name, "Index") ? this.CItems.GetSortedIndex(A_Index, this.hwnd) : new this.CItems.CRow(this.CItems.GetSortedIndex(A_Index, this.hwnd), this.GUINum, this.Name)
+						Index := (this._.Items.IndependentSorting ? this.CItems.CRow.GetUnsortedIndex(A_Index, this.hwnd) : A_Index)
+						Value := InStr(Name, "Index") ? Index : this._.Items[Index] ;new this.CItems.CRow(this.CItems.GetSortedIndex(A_Index, this.hwnd), this.GUINum, this.Name))
 						break
 					}
 			}
@@ -794,9 +798,11 @@ Class CListViewControl Extends CControl
 			{
 				Gui, % this.GUINum ":Default"
 				Gui, ListView, % this.ClassNN
-				Value := this.CItems.GetSortedIndex(LV_GetNext(0, "Focused"), this.hwnd)
+				Value := LV_GetNext(0, "Focused")
+				if(this._.Items.IndependentSorting)
+					Value := this.CItems.CRow.GetUnsortedIndex(Value, this.hwnd)
 				if(Name = "FocusedItem")
-					Value := new this.CItems.CRow(Value, this.GUINum, this.Name)
+					Value := this._.Items[Value] ;new this.CItems.CRow(Value, this.GUINum, this.Name)
 			}
 			else if(Name = "IndependentSorting")
 				Value := this._.Items.IndependentSorting
@@ -832,21 +838,21 @@ Class CListViewControl Extends CControl
 				LV_Modify(0, Name = "SelectedIndices" ? "-Select" : "-Check")
 				Loop % Indices.MaxIndex()
 					if(Indices[A_Index] > 0)
-						LV_Modify(this.CItems.GetSortedIndex(Indices[A_Index], this.hwnd), Name = "SelectedIndices" ? "Select" : "Check")
+						LV_Modify(this._.Items.IndependentSorting ? this.CItems.CRow.GetSortedIndex(Indices[A_Index], this.hwnd) : Indices[A_Index], Name = "SelectedIndices" ? "Select" : "Check")
 			}
-			else if(Name = "SelectedIndices" || Name = "CheckedIndices")
+			else if(Name = "SelectedIndex" || Name = "CheckedIndex")
 			{
 				Gui, % this.GUINum ":Default"
 				Gui, ListView, % this.ClassNN
 				LV_Modify(0, Name = "SelectedIndex" ? "-Select" : "-Check")
 				if(Value > 0)
-					LV_Modify(this.CItems.GetSortedIndex(Value, this.hwnd), Name = "SelectedIndex" ? "Select" : "Check")
+					LV_Modify(this._.Items.IndependentSorting ? this.CItems.CRow.GetSortedIndex(Value, this.hwnd) : Value, Name = "SelectedIndex" ? "Select" : "Check")
 			}
 			else if(Name = "FocusedIndex")
 			{
 				Gui, % this.GUINum ":Default"
 				Gui, ListView, % this.ClassNN
-				LV_Modify(this.CItems.GetSortedIndex(Value, this.hwnd), "Focused")
+				LV_Modify(this._.Items.IndependentSorting ? this.CItems.CRow.GetSortedIndex(Value, this.hwnd) : Value, "Focused")
 			}
 			else if(Name = "Items" && IsObject(Value) && IsObject(this._.Items) && Params.MaxIndex() > 0)
 			{
@@ -898,11 +904,9 @@ Class CListViewControl Extends CControl
 			Control := GUI[this._.ControlName]
 			Gui, % Control.GUINum ":Default"
 			Gui, ListView, % Control.ClassNN
-			row := LV_Add(Options, Fields*)
-			
-			;Store the real unsorted index in the custom property lParam field of the list view item
-			this.SetlParam(row, index := LV_GetCount(), Control.hwnd)
-			this[index].Icon := ""
+			SortedIndex := LV_Add(Options, Fields*)
+			UnsortedIndex := LV_GetCount()
+			this._.Insert(UnsortedIndex, new this.CRow(SortedIndex, UnsortedIndex, this._.GUINum, Control.Name))
 		}
 		Insert(RowNumber, Options, Fields*)
 		{
@@ -913,107 +917,27 @@ Class CListViewControl Extends CControl
 			Control := GUI[this._.ControlName]
 			Gui, % Control.GUINum ":Default"
 			Gui, ListView, % Control.ClassNN
-			if(RowNumber > LV_GetCount())
-				RowNumber := LV_GetCount() + 1
-			InsertionIndex := this.GetSortedIndex(RowNumber, Control.hwnd) ;Find out where the item should be inserted into the sorted list
-			if(InsertionIndex = -1)
-				InsertionIndex := LV_GetCount() + 1
+			SortedIndex := this.IndependentSorting ? this.CRow.GetSortedIndex(RowNumber, Control.hwnd) : RowNumber ;If independent sorting is off, the RowNumber parameter of this function is interpreted as sorted index
+			if(SortedIndex = -1 || SortedIndex > LV_GetCount())
+				SortedIndex := LV_GetCount() + 1
+			
+			UnsortedIndex := this.CRow.GetUnsortedIndex(SortedIndex, Control.hwnd)
+			
 			;move all unsorted indices >= the insertion point up by one to make place for the insertion
-			Loop % LV_GetCount() - RowNumber + 1
+			Loop % LV_GetCount() - UnsortedIndex + 1
 			{
 				index := LV_GetCount() - A_Index + 1 ;loop backwards
-				sortedIndex := this.GetSortedIndex(index, Control.hwnd) - 1
-				this.SetlParam(sortedIndex, index + 1, Control.hwnd)
+				sIndex := this.CRow.GetSortedIndex(index, Control.hwnd) - 1
+				this.CRow.SetUnsortedIndex(sIndex, index + 1, Control.hwnd)
 			}
 			
-			Row := LV_Insert(InsertionIndex, Options, Fields*) - 1
-			;Store the real unsorted index in the custom property lParam field of the list view item
-			this.SetlParam(InsertionIndex, RowNumber, Control.hwnd)
+			SortedIndex := LV_Insert(SortedIndex, Options, Fields*)
+			this._.Insert(UnsortedIndex, new this.CRow(SortedIndex, UnsortedIndex, this._.GUINum, Control.Name))
 		}
 		
-		/*
-		typedef struct {
-		  UINT   mask;
-		  int    iItem;
-		  int    iSubItem;
-		  UINT   state;
-		  UINT   stateMask;
-		  LPTSTR pszText;
-		  int    cchTextMax;
-		  int    iImage;
-		  LPARAM lParam;
-		#if (_WIN32_IE >= 0x0300)
-		  int    iIndent;
-		#endif 
-		#if (_WIN32_WINNT >= 0x0501)
-		  int    iGroupId;
-		  UINT   cColumns;
-		  UINT   puColumns;
-		#endif 
-		#if (_WIN32_WINNT >= 0x0600)
-		  int    piColFmt;
-		  int    iGroup;
-		#endif 
-		} LVITEM, *LPLVITEM;
-		*/
-		SetlParam(RowNumber, lParam, hwnd)
-		{
-			if(!this.IndependentSorting)
-				return
-			VarSetCapacity(LVITEM, 13*4 + 2 * A_PtrSize, 0)
-			mask := 0x4   ; LVIF_PARAM := 0x4
-			NumPut(mask, LVITEM, 0, "UInt") 
-			NumPut(RowNumber - 1, LVITEM, 4, "Int")   ; iItem 
-			NumPut(lParam, LVITEM, 7*4 + A_PtrSize, "PTR")
-			;~ string := this.hex(LVITEM,  "UINT|INT|INT|UINT|UINT|PTR|INT|INT|PTR|INT|INT|UINT|UINT|INT|INT")
-			SendMessage, % LVM_SETITEM := (A_IsUnicode ? 0x1000 + 76 : 0x1000 + 6), 0, &LVITEM,,% "ahk_id " hwnd
-			;~ result := errorlevel
-			;~ result := DllCall("SendMessage", "PTR", hwnd, "UInt", LVM_SETITEM := (A_IsUnicode ? 0x1000 + 76 : 0x1000 + 6), "PTR", 0, "PTRP", LVITEM, "PTR")
-			;~ lParam2 := this.GetlParam(RowNumber, hwnd)
-			return ErrorLevel
-		}
-		GetlParam(RowNumber, hwnd)
-		{
-			if(!this.IndependentSorting)
-				return RowNumber
-			VarSetCapacity(LVITEM, 13*4 + 2 * A_PtrSize, 0)
-			mask := 0x4   ; LVIF_PARAM := 0x4
-			NumPut(mask, LVITEM, 0, "UInt") 
-			NumPut(RowNumber - 1, LVITEM, 4, "Int")   ; iItem 
-			;~ NumPut(lParam, LVITEM, 7*4 + A_PtrSize, "PTR")
-			;~ string := this.hex(LVITEM,  "UINT|INT|INT|UINT|UINT|PTR|INT|INT|PTR|INT|INT|UINT|UINT|INT|INT")
-			SendMessage, % LVM_GETITEM := (A_IsUnicode ? 0x1000 + 75 : 0x1000 + 5), 0, &LVITEM,,% "ahk_id " hwnd
-			;~ result := errorlevel
-			;~ result := DllCall("SendMessage", "PTR", hwnd, "UInt", LVM_GETITEM := (A_IsUnicode ? 0x1000 + 75 : 0x1000 + 5), "PTR", 0, "PTRP", LVITEM, "PTR")
-			;~ string := this.hex(LVITEM,  "UINT|INT|INT|UINT|UINT|PTR|INT|INT|PTR|INT|INT|UINT|UINT|INT|INT")
-			lParam := NumGet(LVITEM, 7*4 + A_PtrSize, "PTR")
-			return lParam
-		}
-		;Returns the sorted index (by which AHK usually accesses listviews) by searching for a custom index that is independent of sorting
-		/*
-		typedef struct tagLVFINDINFO {
-		  UINT    flags; 4
-		  LPCTSTR psz; 4-8
-		  LPARAM  lParam; 4- 8
-		  POINT   pt; 8
-		  UINT    vkDirection; 4
-		} LVFINDINFO, *LPFINDINFO;
-		*/
-		GetSortedIndex(UnsortedIndex, hwnd)
-		{
-			if(!this.IndependentSorting)
-				return UnsortedIndex
-			;Create the LVFINDINFO structure
-			VarSetCapacity(LVFINDINFO, 4*4 + 2 * A_PtrSize, 0)
-			mask := 0x1   ; LVFI_PARAM := 0x1
-			NumPut(mask, LVFINDINFO, 0, "UInt") 
-			NumPut(UnsortedIndex, LVFINDINFO, 4 + A_PtrSize, "PTR")
-			;~ string := hex(LVFINDINFO,  "UINT|INT|INT|UINT|UINT|PTR|INT|INT|PTR|INT|INT|UINT|UINT|INT|INT")
-			SendMessage, % LVM_FINDITEM := (A_IsUnicode ? 0x1000 + 83 : 0x1000 + 13), -1, &LVFINDINFO,,% "ahk_id " hwnd
-			;~ MsgReply := ErrorLevel > 0x7FFFFFFF ? -(~ErrorLevel) - 1 : ErrorLevel
-			;~ result := DllCall("SendMessage", "PTR", hwnd, "UInt", LVM_FINDITEM := (A_IsUnicode ? 0x1000 + 83 : 0x1000 + 13), "PTR", -1, "UIntP", LVITEM, "PTR") + 1
-			return ErrorLevel + 1
-		}
+		
+		
+		
 		hex(ByRef data, vars)
 		{
 			string := ""
@@ -1034,7 +958,8 @@ Class CListViewControl Extends CControl
 			Control := GUI[this._.ControlName]
 			Gui, % Control.GUINum ":Default"
 			Gui, ListView, % Control.ClassNN
-			LV_Modify(this.GetSortedIndex(RowNumber, Control.hwnd), Options, Fields*)
+			SortedIndex := this.IndependentSorting ? this.CRow.GetSortedIndex(RowNumber, Control.hwnd) : RowNumber ;If independent sorting is off, the RowNumber parameter of this function is interpreted as sorted index
+			LV_Modify(SortedIndex, Options, Fields*)
 		}
 		
 		Delete(RowNumber)
@@ -1046,11 +971,12 @@ Class CListViewControl Extends CControl
 			Control := GUI[this._.ControlName]
 			Gui, % Control.GUINum ":Default"
 			Gui, ListView, % Control.ClassNN
-			DeletionIndex := this.GetSortedIndex(RowNumber, Control.hwnd)
+			SortedIndex := this.IndependentSorting ? this.CRow.GetSortedIndex(RowNumber, Control.hwnd) : RowNumber ;If independent sorting is off, the RowNumber parameter of this function is interpreted as sorted index
+			UnsortedIndex := this.CRow.GetUnsortedIndex(SortedIndex, Control.hwnd)
 			;Decrease the unsorted indices after the deletion index by one
-			Loop % LV_GetCount() - RowNumber
-				this.SetlParam(this.GetSortedIndex(RowNumber + A_Index, Control.hwnd), RowNumber + A_Index - 1, Control.hwnd)
-			LV_Delete(DeletionIndex)
+			Loop % LV_GetCount() - UnsortedIndex
+				this.CRow.SetUnsortedIndex(this.CRow.GetSortedIndex(UnsortedIndex + A_Index, Control.hwnd), UnsortedIndex + A_Index - 1, Control.hwnd)
+			LV_Delete(SortedIndex)
 		}
 		__Get(Name)
 		{
@@ -1064,55 +990,133 @@ Class CListViewControl Extends CControl
 				if Name is Integer
 				{
 					if(Name > 0 && Name <= this.Count)
-					{
-						Row := new this.CRow(this.GetSortedIndex(Name, Control.hwnd), this._.GUINum, this._.ControlName)
-						return Row
-					}
+						return this._[this.IndependentSorting ? Name : this.CRow.GetUnsortedIndex(Name, Control.hwnd)]
 				}
 				else if(Name = "Count")
 					return this.MaxIndex()
 			}
 		}
-		__Set(Name, Value)
+		__Set(Name, Value, Params*)
 		{
 			global CGUI
 			GUI := CGUI.GUIList[this._.GUINum]
 			if(GUI.IsDestroyed)
 				return
-			if Name is Integer ;Set a single row
+			Value := Params[Params.MaxIndex()]
+			Params.Remove(Params.MaxIndex())
+			if Name is Integer
 			{
-				Control := GUI[this._.ControlName]
-				Gui, % Control.GUINum ":Default"
-				Gui, ListView, % Control.ClassNN
-				if(Name <= LV_GetCount())
-				{					
-					if(!IsObject(Value))
-					{
-						Row := Object()
-						Loop, Parse, Value, |
-							Row.Insert(A_LoopField)
-					}
-					else
-					{
-						Checked := Value.Checked
-						Row := Object()
-						Loop % Value.MaxIndex()
-							Row.Insert(Value[A_Index])
-					}
-					LV_Modify(this.GetSortedIndex(Name, Control.hwnd), (Value.Checked ? "Checked " : "") (Value.Selected ? " Select" : "") (Value.Focused ? " Focus" : ""), Row*)
+				if(!Params.MaxIndex()) ;Setting a row directly is not allowed
+					return
+				else ;Set a column or other row property
+				{			
+					Row := this[Name]
+					Row[Params*] := Value
+					return
 				}
 			}
 		}
 		
-		;CRow works with the sorted row numbers like AHK does
+		;CRow uses the unsorted row numbers internally, but it can switch to sorted row numbers depending on the setting of the listview
 		Class CRow
 		{
-			__New(RowNumber, GUINum, ControlName)
+			__New(SortedIndex, UnsortedIndex, GUINum, ControlName)
 			{
-				this.Insert("_", {})
-				this._.RowNumber := RowNumber
+				global CGUI
+				this.Insert("_", {})				
+				this._.RowNumber := UnsortedIndex
 				this._.GUINum := GUINum
 				this._.ControlName := ControlName
+				GUI := CGUI.GUIList[GUINum]
+				if(GUI.IsDestroyed)
+					return
+				Control := GUI[ControlName]				
+				;Store the real unsorted index in the custom property lParam field of the list view item so it can be reidentified later
+				this.SetUnsortedIndex(SortedIndex, UnsortedIndex, Control.hwnd)
+				this.SetIcon("")
+			}
+			/*
+			typedef struct {
+			  UINT   mask;
+			  int    iItem;
+			  int    iSubItem;
+			  UINT   state;
+			  UINT   stateMask;
+			  LPTSTR pszText;
+			  int    cchTextMax;
+			  int    iImage;
+			  LPARAM lParam;
+			#if (_WIN32_IE >= 0x0300)
+			  int    iIndent;
+			#endif 
+			#if (_WIN32_WINNT >= 0x0501)
+			  int    iGroupId;
+			  UINT   cColumns;
+			  UINT   puColumns;
+			#endif 
+			#if (_WIN32_WINNT >= 0x0600)
+			  int    piColFmt;
+			  int    iGroup;
+			#endif 
+			} LVITEM, *LPLVITEM;
+			*/
+			SetUnsortedIndex(SortedIndex, lParam, hwnd)
+			{
+				;~ if(!this.IndependentSorting)
+					;~ return
+				VarSetCapacity(LVITEM, 13*4 + 2 * A_PtrSize, 0)
+				mask := 0x4   ; LVIF_PARAM := 0x4
+				NumPut(mask, LVITEM, 0, "UInt") 
+				NumPut(SortedIndex - 1, LVITEM, 4, "Int")   ; iItem 
+				NumPut(lParam, LVITEM, 7*4 + A_PtrSize, "PTR")
+				;~ string := this.hex(LVITEM,  "UINT|INT|INT|UINT|UINT|PTR|INT|INT|PTR|INT|INT|UINT|UINT|INT|INT")
+				SendMessage, % LVM_SETITEM := (A_IsUnicode ? 0x1000 + 76 : 0x1000 + 6), 0, &LVITEM,,% "ahk_id " hwnd
+				;~ result := errorlevel
+				;~ result := DllCall("SendMessage", "PTR", hwnd, "UInt", LVM_SETITEM := (A_IsUnicode ? 0x1000 + 76 : 0x1000 + 6), "PTR", 0, "PTRP", LVITEM, "PTR")
+				;~ lParam2 := this.GetUnsortedIndex(RowNumber, hwnd)
+				return ErrorLevel
+			}
+			;Returns the sorted index (by which AHK usually accesses listviews) by searching for a custom index that is independent of sorting
+			/*
+			typedef struct tagLVFINDINFO {
+			  UINT    flags; 4
+			  LPCTSTR psz; 4-8
+			  LPARAM  lParam; 4- 8
+			  POINT   pt; 8
+			  UINT    vkDirection; 4
+			} LVFINDINFO, *LPFINDINFO;
+			*/
+			GetSortedIndex(UnsortedIndex, hwnd)
+			{
+				;~ if(!this.IndependentSorting)
+					;~ return UnsortedIndex
+				;Create the LVFINDINFO structure
+				VarSetCapacity(LVFINDINFO, 4*4 + 2 * A_PtrSize, 0)
+				mask := 0x1   ; LVFI_PARAM := 0x1
+				NumPut(mask, LVFINDINFO, 0, "UInt") 
+				NumPut(UnsortedIndex, LVFINDINFO, 4 + A_PtrSize, "PTR")
+				;~ string := hex(LVFINDINFO,  "UINT|INT|INT|UINT|UINT|PTR|INT|INT|PTR|INT|INT|UINT|UINT|INT|INT")
+				SendMessage, % LVM_FINDITEM := (A_IsUnicode ? 0x1000 + 83 : 0x1000 + 13), -1, &LVFINDINFO,,% "ahk_id " hwnd
+				;~ MsgReply := ErrorLevel > 0x7FFFFFFF ? -(~ErrorLevel) - 1 : ErrorLevel
+				;~ result := DllCall("SendMessage", "PTR", hwnd, "UInt", LVM_FINDITEM := (A_IsUnicode ? 0x1000 + 83 : 0x1000 + 13), "PTR", -1, "UIntP", LVITEM, "PTR") + 1
+				return ErrorLevel + 1
+			}
+			GetUnsortedIndex(SortedIndex, hwnd)
+			{
+				;~ if(!this.IndependentSorting)
+					;~ return SortedIndex
+				VarSetCapacity(LVITEM, 13*4 + 2 * A_PtrSize, 0)
+				mask := 0x4   ; LVIF_PARAM := 0x4
+				NumPut(mask, LVITEM, 0, "UInt") 
+				NumPut(SortedIndex - 1, LVITEM, 4, "Int")   ; iItem 
+				;~ NumPut(lParam, LVITEM, 7*4 + A_PtrSize, "PTR")
+				;~ string := this.hex(LVITEM,  "UINT|INT|INT|UINT|UINT|PTR|INT|INT|PTR|INT|INT|UINT|UINT|INT|INT")
+				SendMessage, % LVM_GETITEM := (A_IsUnicode ? 0x1000 + 75 : 0x1000 + 5), 0, &LVITEM,,% "ahk_id " hwnd
+				;~ result := errorlevel
+				;~ result := DllCall("SendMessage", "PTR", hwnd, "UInt", LVM_GETITEM := (A_IsUnicode ? 0x1000 + 75 : 0x1000 + 5), "PTR", 0, "PTRP", LVITEM, "PTR")
+				;~ string := this.hex(LVITEM,  "UINT|INT|INT|UINT|UINT|PTR|INT|INT|PTR|INT|INT|UINT|UINT|INT|INT")
+				UnsortedIndex := NumGet(LVITEM, 7*4 + A_PtrSize, "PTR")
+				return UnsortedIndex
 			}
 			_NewEnum()
 			{
@@ -1137,9 +1141,9 @@ Class CListViewControl Extends CControl
 				if(GUI.IsDestroyed)
 					return
 				Control := GUI[this._.ControlName]
-				Control._.ImageListManager.SetIcon(this._.RowNumber, Filename, IconNumberOrTransparencyColor)
-				this._.Icon := Filename ;This is mostly pointless for now since this row object gets deleted shortly after
-				this._.IconNumber := IconNumberOrTransparencyColor ;same for this
+				Control._.ImageListManager.SetIcon(this.GetSortedIndex(this._.RowNumber, Control.hwnd), Filename, IconNumberOrTransparencyColor)
+				this._.Icon := Filename
+				this._.IconNumber := IconNumberOrTransparencyColor
 			}
 			__Get(Name)
 			{
@@ -1152,7 +1156,7 @@ Class CListViewControl Extends CControl
 					{
 						if(Name > 0 && Name <= this.Count) ;Setting default listview is already done by this.Count __Get
 						{
-							LV_GetText(value, this._.RowNumber, Name)
+							LV_GetText(value, this.GetSortedIndex(this._.RowNumber, Control.hwnd), Name)
 							return value
 						}
 					}
@@ -1164,24 +1168,11 @@ Class CListViewControl Extends CControl
 						Gui, ListView, % Control.ClassNN
 						Return LV_GetCount("Column")
 					}
-					else if(Name = "Checked")
+					else if(Value := {Checked : "Checked", Focused : "Focused", "Selected" : ""}[Name])
 					{
 						Gui, % Control.GUINum ":Default"
 						Gui, ListView, % Control.ClassNN
-						CheckedRow := LV_GetNext(this._.RowNumber - 1, "Checked")
-						return checkedrow = this._.RowNumber
-					}
-					else if(Name = "Selected")
-					{
-						Gui, % Control.GUINum ":Default"
-						Gui, ListView, % Control.ClassNN
-						return LV_GetNext(this._.RowNumber - 1) = this._.RowNumber
-					}
-					else if(Name = "Focused")
-					{
-						Gui, % Control.GUINum ":Default"
-						Gui, ListView, % Control.ClassNN
-						return LV_GetNext(this._.RowNumber - 1, "Focused") = this._.RowNumber
+						return this.GetUnsortedIndex(LV_GetNext(this.GetSortedIndex(this._.RowNumber, Control.hwnd) - 1, Value), Control.hwnd) = this._.RowNumber
 					}
 					else if(Name = "Icon" || Name = "IconNumber")
 						return this._[Name]
@@ -1197,34 +1188,18 @@ Class CListViewControl Extends CControl
 					if Name is Integer
 					{
 						if(Name <= this.Count) ;Setting default listview is already done by this.Count __Get
-							LV_Modify(this._.RowNumber, "Col" Name, Value)
+							LV_Modify(this.GetSortedIndex(this._.RowNumber, Control.hwnd), "Col" Name, Value)
 						return Value
 					}
-					else if(Name = "Checked")
+					else if(Key := {Checked : "Check", Focused : "Focus", "Select" : ""}[Name])
 					{
 						Gui, % Control.GUINum ":Default"
 						Gui, ListView, % Control.ClassNN
-						LV_Modify(this._.RowNumber, (Value = 0 ? "-" : "") "Check")
-						return Value
-					}
-					else if(Name = "Selected")
-					{
-						Gui, % Control.GUINum ":Default"
-						Gui, ListView, % Control.ClassNN
-						LV_Modify(this._.RowNumber, (Value = 0 ? "-" : "") "Select")
-						return Value
-					}
-					else if(Name = "Focused")
-					{
-						Gui, % Control.GUINum ":Default"
-						Gui, ListView, % Control.ClassNN
-						LV_Modify(this._.RowNumber, (Value = 0 ? "-" : "") "Focus")
+						LV_Modify(this.GetSortedIndex(this._.RowNumber, Control.hwnd), (Value = 0 ? "-" : "") Key)
 						return Value
 					}
 					else if(Name = "Icon")
 						this.SetIcon(Value)
-					;~ else if(Name = "IconNumber")
-						;~ this.SetIcon(this._.Icon, Value)
 				}
 			}
 		}
@@ -1250,7 +1225,7 @@ Class CListViewControl Extends CControl
 				if(IsFunc(CGUI.GUIList[this.GUINum][this.Name Function]))
 				{
 					ErrorLevel := ErrLevel
-					`(CGUI.GUIList[this.GUINum])[this.Name Function](A_EventInfo)
+					`(CGUI.GUIList[this.GUINum])[this.Name Function]({DoubleClick : 1, R : 1, Normal : 1, RightClick : 1,  A : 1, E : 1}[A_GUIEvent] && this._.Items.IndependentSorting ? this.CItems.CRow.GetUnsortedIndex(A_EventInfo, this.hwnd) : A_EventInfo)
 					if(!Critical)
 						Critical, Off
 					return
@@ -1274,17 +1249,17 @@ Class CListViewControl Extends CControl
 					if(IsFunc(CGUI.GUIList[this.GUINum][this.Name Function]))
 					{
 						ErrorLevel := ErrLevel
-						`(CGUI.GUIList[this.GUINum])[this.Name Function](A_EventInfo)
+						`(CGUI.GUIList[this.GUINum])[this.Name Function](this._.Items.IndependentSorting ? this.CItems.CRow.GetUnsortedIndex(A_EventInfo, this.hwnd) : A_EventInfo)
 						if(!Critical)
 							Critical, Off
 					}
 			Mapping := {S : "_SelectionChanged", C : "_CheckedChanged", F : "_FocusedChanged"}
 			for Event, Function in Mapping
-				if(InStr(ErrLevel, Event, false))
+				if(InStr(ErrLevel, Event, false) = 1)
 					if(IsFunc(CGUI.GUIList[this.GUINum][this.Name Function]))
 					{
 						ErrorLevel := ErrLevel
-						`(CGUI.GUIList[this.GUINum])[this.Name Function](A_EventInfo)
+						`(CGUI.GUIList[this.GUINum])[this.Name Function](this._.Items.IndependentSorting ? this.CItems.CRow.GetUnsortedIndex(A_EventInfo, this.hwnd) : A_EventInfo)
 					}
 			if(!Critical)
 				Critical, Off
