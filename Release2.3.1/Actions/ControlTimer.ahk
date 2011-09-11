@@ -6,10 +6,10 @@
 
 Action_ControlTimer_ReadXML(Action, XMLAction)
 {
-	Action.TimerID := XMLAction.TimerID
-	Action.Action := XMLAction.Action
+	Action.ReadVar(XMLAction, "TimerID")
+	Action.ReadVar(XMLAction, "Action")
 	if(Action.Action = "Set time")
-		Action.Time := XMLAction.Time
+		Action.ReadVar(XMLAction, "Time")
 }
 
 Action_ControlTimer_Execute(Action, ThisEvent)

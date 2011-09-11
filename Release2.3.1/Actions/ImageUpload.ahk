@@ -8,12 +8,9 @@ Action_ImageUpload_Init(Action)
 
 Action_ImageUpload_ReadXML(Action, XMLAction)
 {
-	if(XMLAction.HasKey("Hoster"))
-		Action.Hoster := XMLAction.Hoster
-	if(XMLAction.HasKey("Files"))
-		Action.SourceFiles := XMLAction.SourceFiles
-	if(XMLAction.HasKey("CopyToClipboard"))
-		Action.CopyToClipboard := XMLAction.CopyToClipboard
+	Action.ReadVar(XMLAction, "Hoster")
+	Action.ReadVar(XMLAction, "SourceFiles")
+	Action.ReadVar(XMLAction, "CopyToClipboard")
 }
 
 Action_ImageUpload_DisplayString(Action)

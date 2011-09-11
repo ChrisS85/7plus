@@ -10,10 +10,10 @@ Action_WindowResize_Init(Action)
 Action_WindowResize_ReadXML(Action, XMLAction)
 {
 	WindowFilter_ReadXML(Action, XMLAction)
-	Action.Width := XMLAction.Width
-	Action.Height := XMLAction.Height
-	Action.CenterX := XMLAction.CenterX
-	Action.CenterY := XMLAction.CenterY
+	Action.ReadVar(XMLAction, "Width")
+	Action.ReadVar(XMLAction, "Height")
+	Action.ReadVar(XMLAction, "CenterX")
+	Action.ReadVar(XMLAction, "CenterY")
 }
 Action_WindowResize_Execute(Action,Event)
 {

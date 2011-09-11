@@ -12,10 +12,9 @@ Action_NewFile_Init(Action)
 
 Action_NewFile_ReadXML(Action, XMLAction)
 {
-	global Vista7
-	Action.Filename := XMLAction.HasKey("Filename") ? XMLAction.Filename : Action.Filename
-	Action.Rename := XMLAction.Rename
-	Action.BaseFile := XMLAction.HasKey("BaseFile") ? XMLAction.BaseFile : Action.BaseFile
+	Action.ReadVar(XMLAction, "Filename")
+	Action.ReadVar(XMLAction, "Rename")
+	Action.ReadVar(XMLAction, "BaseFile")
 }
 
 Action_NewFile_Execute(Action, Event)

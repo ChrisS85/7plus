@@ -5,8 +5,7 @@ Action_OpenInNewFolder_Init(Action)
 }
 Action_OpenInNewFolder_ReadXML(Action, XMLAction)
 {
-	if(XMLAction.HasKey("Action"))
-		Action.Action := XMLAction.Action
+	Action.ReadVar(XMLAction, "Action")
 }
 Action_OpenInNewFolder_Execute(Action, Event)
 {

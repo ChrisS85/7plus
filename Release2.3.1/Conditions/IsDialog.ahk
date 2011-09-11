@@ -5,8 +5,7 @@ Condition_IsDialog_Init(Condition)
 }
 Condition_IsDialog_ReadXML(Condition, XMLCondition)
 {
-	if(XMLCondition.HasKey("ListViewOnly"))
-		Condition.ListViewOnly := XMLCondition.ListViewOnly
+	Condition.ReadVar(XMLCondition, "ListViewOnly")
 }
 Condition_IsDialog_Evaluate(Condition)
 {

@@ -4,14 +4,16 @@ Action_WindowMove_Init(Action)
 	Action.Category := "Window"
 	Action.CenterX := 0
 	Action.CenterY := 0
+	Action.X := 0
+	Action.Y := 0
 }
 Action_WindowMove_ReadXML(Action, XMLAction)
 {
 	WindowFilter_ReadXML(Action, XMLAction)
-	Action.X := XMLAction.X
-	Action.Y := XMLAction.Y
-	Action.CenterX := XMLAction.CenterX
-	Action.CenterY := XMLAction.CenterY
+	Action.ReadVar(XMLAction, "X")
+	Action.ReadVar(XMLAction, "Y")
+	Action.ReadVar(XMLAction, "CenterX")
+	Action.ReadVar(XMLAction, "CenterY")
 }
 Action_WindowMove_Execute(Action,Event)
 {

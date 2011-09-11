@@ -8,10 +8,10 @@ Trigger_ExplorerButton_Init(Trigger)
 }
 Trigger_ExplorerButton_ReadXML(Trigger, XMLTrigger)
 {
-	Trigger.Name := XMLTrigger.Name
-	Trigger.Tooltip := XMLTrigger.Tooltip
-	Trigger.ShowSelected := XMLTrigger.ShowSelected
-	Trigger.ShowNoSelected := XMLTrigger.ShowNoSelected
+	Trigger.ReadVar(XMLTrigger, "Name")
+	Trigger.ReadVar(XMLTrigger, "Tooltip")
+	Trigger.ReadVar(XMLTrigger, "ShowSelected")
+	Trigger.ReadVar(XMLTrigger, "ShowNoSelected")
 }
 
 Trigger_ExplorerButton_Enable(Trigger, Event)

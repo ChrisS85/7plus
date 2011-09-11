@@ -8,9 +8,9 @@ Action_Volume_Init(Action)
 
 Action_Volume_ReadXML(Action, XMLAction)
 {
-	Action.Action := XMLAction.Action
-	Action.Volume := XMLAction.Volume
-	Action.ShowVolume := XMLAction.HasKey("ShowVolume") ? XMLAction.ShowVolume : 1
+	Action.ReadVar(XMLAction, "Action")
+	Action.ReadVar(XMLAction, "Volume")
+	Action.ReadVar(XMLAction, "ShowVolume")
 }
 
 Action_Volume_Execute(Action, Event)

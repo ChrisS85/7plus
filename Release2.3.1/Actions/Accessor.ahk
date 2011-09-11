@@ -11,7 +11,7 @@ Action_Accessor_Init(Action)
 }
 Action_Accessor_ReadXML(Action, XMLAction)
 {
-	Action.FlashingWindows := XMLAction.FlashingWindows
+	Action.ReadVar(XMLAction, "FlashingWindows")
 }
 Action_Accessor_Execute(Action,Event)
 {

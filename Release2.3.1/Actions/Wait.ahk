@@ -5,7 +5,7 @@ Action_Wait_Init(Action)
 }
 Action_Wait_ReadXML(Action, XMLAction)
 {
-	Action.Time := XMLAction.Time
+	Action.ReadVar(XMLAction, "Time")
 }
 Action_Wait_Execute(Action,Event)
 {

@@ -5,8 +5,8 @@ Action_FlatView_Init(Action)
 }
 
 Action_FlatView_ReadXML(Action, XMLAction)
-{
-	Action.Paths := XMLAction.HasKey("Paths") ? XMLAction.Paths : Action.Paths
+{	
+	Action.ReadVar(XMLAction, "Paths")
 }
 Action_FlatView_Execute(Action, Event)
 {

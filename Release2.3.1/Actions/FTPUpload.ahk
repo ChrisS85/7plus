@@ -81,12 +81,12 @@ Action_Upload_GetFTPVariables(id, ByRef Hostname, ByRef Port, ByRef User, ByRef 
 
 Action_Upload_ReadXML(Action, XMLAction)
 {
-	Action.SourceFiles := XMLAction.SourceFiles
-	Action.FTPProfile := XMLAction.FTPProfile
-	Action.TargetFolder := XMLAction.TargetFolder
-	Action.TargetFile := XMLAction.TargetFile
-	Action.Silent := XMLAction.Silent
-	Action.Clipboard := XMLAction.Clipboard
+	Action.ReadVar(XMLAction, "SourceFiles")
+	Action.ReadVar(XMLAction, "FTPProfile")
+	Action.ReadVar(XMLAction, "TargetFolder")
+	Action.ReadVar(XMLAction, "TargetFile")
+	Action.ReadVar(XMLAction, "Silent")
+	Action.ReadVar(XMLAction, "Clipboard")
 }
 
 Action_Upload_Execute(Action, Event)

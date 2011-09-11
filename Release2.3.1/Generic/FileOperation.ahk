@@ -3,15 +3,18 @@ Action_FileOperation_Init(Action)
 	Action.Category := "File"
 	Action.Silent := 0
 	Action.Overwrite := 0
+	Action.SourceFile := ""
+	Action.TargetPath := ""
+	Action.TargetFile := ""
 }
 
 Action_FileOperation_ReadXML(Action, XMLFileOperation)
 {
-	Action.Silent := XMLFileOperation.Silent
-	Action.Overwrite := XMLFileOperation.Overwrite
-	Action.SourceFile := XMLFileOperation.SourceFile
-	Action.TargetPath := XMLFileOperation.TargetPath
-	Action.TargetFile := XMLFileOperation.TargetFile
+	Action.ReadVar(XMLFileOperation, "Silent")
+	Action.ReadVar(XMLFileOperation, "Overwrite")
+	Action.ReadVar(XMLFileOperation, "SourceFile")
+	Action.ReadVar(XMLFileOperation, "TargetPath")
+	Action.ReadVar(XMLFileOperation, "TargetFile")
 }
 
 Action_FileOperation_DisplayString(Action)

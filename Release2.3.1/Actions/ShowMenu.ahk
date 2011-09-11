@@ -1,16 +1,16 @@
 Action_ShowMenu_Init(Action)
 {
 	Action.Category := "System"
-	Menu := ""
-	X := ""
-	Y := ""
+	Action.Menu := ""
+	Action.X := ""
+	Action.Y := ""
 }
 
 Action_ShowMenu_ReadXML(Action, XMLAction)
 {
-	Action.Menu := XMLAction.Menu
-	Action.X := XMLAction.X
-	Action.Y := XMLAction.Y
+	Action.ReadVar(XMLAction, "Menu")
+	Action.ReadVar(XMLAction, "X")
+	Action.ReadVar(XMLAction, "Y")
 }
 
 Action_ShowMenu_Execute(Action, Event)

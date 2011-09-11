@@ -177,7 +177,8 @@ outputdebug still here
   DllCall("AnimateWindow","UInt",WinExist(),"Int",SI,"UInt","0x00040008") 
  Else 
   Gui, %GN%:Show, NA, NotifyGui 
- Gui, %GN2%:Show, NA +AlwaysOnTop
+ Gui, %GN2%:+AlwaysOnTop
+ Gui, %GN2%:Show, NA
  ; WinSet, AlwaysOnTop, On 
 
  If ((Duration < 0) OR (Duration = "-0")) 

@@ -1,10 +1,11 @@
 Trigger_OnMessage_Init(Trigger)
 {
 	Trigger.Category := "System"
+	Trigger.Message := ""
 }
 Trigger_OnMessage_ReadXML(Trigger, XMLTrigger)
 {
-	Trigger.Message := XMLTrigger.Message
+	Trigger.ReadVar(XMLTrigger, "Message")
 }
 
 Trigger_OnMessage_Enable(Trigger)

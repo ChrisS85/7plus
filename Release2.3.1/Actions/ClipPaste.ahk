@@ -5,7 +5,7 @@
 }
 Action_ClipPaste_ReadXML(Action, XMLAction)
 {
-	Action.Index := XMLAction.HasKey("Index") ? XMLAction.Index : Action.Index
+	Action.ReadVar(XMLAction, "Index")
 }
 Action_ClipPaste_Execute(Action, Event)
 {

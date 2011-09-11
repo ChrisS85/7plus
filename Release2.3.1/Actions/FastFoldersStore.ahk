@@ -5,8 +5,8 @@ Action_FastFoldersStore_Init(Action)
 
 Action_FastFoldersStore_ReadXML(Action, XMLAction)
 {
-	Action.Folder := XMLAction.Folder
-	Action.Slot := XMLAction.Slot
+	Action.ReadVar(XMLAction, "Folder")
+	Action.ReadVar(XMLAction, "Slot")
 }
 Action_FastFoldersStore_Execute(Action, Event)
 {

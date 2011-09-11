@@ -9,8 +9,8 @@ WindowFilter_Init(WindowFilter)
 }
 WindowFilter_ReadXML(WindowFilterObject, XMLWindowFilter)
 {
-	WindowFilterObject.WindowMatchType := XMLWindowFilter.WindowMatchType
-	
+	WindowFilterObject.ReadVar(XMLWindowFilter, "WindowMatchType")
+	/* This support should not be needed anymore since there were some updates in between.
 	;Support for legacy window filter objects
 	if(XMLWindowFilter.HasKey("WindowFilter") && XMLWindowFilter.WindowFilter)
 	{
@@ -27,10 +27,11 @@ WindowFilter_ReadXML(WindowFilterObject, XMLWindowFilter)
 		WindowFilterObject.WindowMatchType := "Any Window"
 	else
 	{
-		WindowFilterObject.WindowFilterExecutable := XMLWindowFilter.WindowFilterExecutable
-		WindowFilterObject.WindowFilterClass := XMLWindowFilter.WindowFilterClass
-		WindowFilterObject.WindowFilterTitle := XMLWindowFilter.WindowFilterTitle
-	}
+	*/
+		WindowFilterObject.ReadVar(XMLWindowFilter, "WindowFilterExecutable")
+		WindowFilterObject.ReadVar(XMLWindowFilter, "WindowFilterClass")
+		WindowFilterObject.ReadVar(XMLWindowFilter, "WindowFilterTitle")
+	; }
 }
 ;Get a matching window handle from a WindowFilter object
 WindowFilter_Get(WindowFilter)

@@ -11,11 +11,11 @@ Action_SendMessage_Init(Action)
 Action_SendMessage_ReadXML(Action, XMLAction)
 {
 	WindowFilter_ReadXML(Action, XMLAction)
-	Action.TargetControl := XMLAction.TargetControl
-	Action.Message := XMLAction.Message
-	Action.wParam := XMLAction.wParam
-	Action.lParam := XMLAction.lParam
-	Action.MessageMode := XMLAction.MessageMode
+	Action.ReadVar(XMLAction, "TargetControl")
+	Action.ReadVar(XMLAction, "Message")
+	Action.ReadVar(XMLAction, "wParam")
+	Action.ReadVar(XMLAction, "lParam")
+	Action.ReadVar(XMLAction, "MessageMode")
 }
 Action_SendMessage_Execute(Action,Event)
 {

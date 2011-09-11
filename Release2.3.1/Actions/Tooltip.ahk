@@ -3,14 +3,16 @@ Action_ToolTip_Init(Action)
 	Action.Category := "System"
 	Action.TrayToolTip := 0
 	Action.Timeout := 5
+	Action.Tooltip := "Some Tooltip"
+	Action.Title := "Title is used for tray tooltips only."
 }
 
 Action_ToolTip_ReadXML(Action, XMLAction)
 {
-	Action.Text := XMLAction.Text
-	Action.Timeout := XMLAction.Timeout
-	Action.Title := XMLAction.Title
-	Action.TrayToolTip := XMLAction.TrayToolTip
+	Action.ReadVar(XMLAction, "Text")
+	Action.ReadVar(XMLAction, "Timeout")
+	Action.ReadVar(XMLAction, "Title")
+	Action.ReadVar(XMLAction, "TrayToolTip")
 }
 
 Action_ToolTip_Execute(Action, Event)

@@ -7,10 +7,9 @@ Action_WindowState_Init(Action)
 Action_WindowState_ReadXML(Action, XMLAction)
 {
 	WindowFilter_ReadXML(Action, XMLAction)
-	Action.Action := XMLAction.Action
-	
+	Action.ReadVar(XMLAction, "Action")
 	if(Action.Action = "Set Transparency")
-		Action.Value := XMLAction.Value
+		Action.ReadVar(XMLAction, "CenterY")
 }
 Action_WindowState_Execute(Action,Event)
 {

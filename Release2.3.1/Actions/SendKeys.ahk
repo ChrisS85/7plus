@@ -6,9 +6,9 @@ Action_SendKeys_Init(Action)
 }
 Action_SendKeys_ReadXML(Action, XMLAction)
 {
-	Action.Keys := XMLAction.Keys
-	Action.WriteText := XMLAction.HasKey("WriteText") ? XMLAction.WriteText : Action.WriteText
-	Action.KeyDelay := XMLAction.HasKey("KeyDelay") ? XMLAction.KeyDelay : Action.KeyDelay
+	Action.ReadVar(XMLAction, "Keys")
+	Action.ReadVar(XMLAction, "WriteText")
+	Action.ReadVar(XMLAction, "KeyDelay")
 }
 Action_SendKeys_Execute(Action,Event)
 {

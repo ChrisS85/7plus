@@ -5,7 +5,7 @@ Action_FastFoldersClear_Init(Action)
 
 Action_FastFoldersClear_ReadXML(Action, XMLAction)
 {
-	Action.Slot := XMLAction.Slot
+	Action.ReadVar(XMLAction, "Slot")
 }
 Action_FastFoldersClear_Execute(Action, Event)
 {

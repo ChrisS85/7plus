@@ -13,8 +13,7 @@ Class CImageConverter extends CGUI
 		this.Files := Array()
 		this.TemporaryFiles := Action.TemporaryFiles
 		this.ReuseWindow := Action.ReuseWindow
-		; this.GUINum := GetFreeGUINum(7)
-		; Gui, % this.GUINum ":Default"
+		
 		this.Add("ListView", "ListView", "-Multi NoSort r19 w300", "File|Target Filename")
 		this.ListView.IndependentSorting := true
 		this.ListView.ModifyCol(1,150)
@@ -27,6 +26,7 @@ Class CImageConverter extends CGUI
 		this.Add("Button", "btnBrowse", "x+5 ys-6 w26", "...")
 		this.Add("Text", "txtTargetFormat", "x10 ys+30", "Target Format:")
 		this.Add("DropDownList", "ddlTargetExtension", "Choose1 x+10 ys+26", "Keep Extension|bmp|dib|rle|jpg|jpeg|jpe|jfif|gif|tif|tiff|png")
+		
 		;Make sure to show quality setting only on specific items
 		for index, item in this.ddlTargetExtension.Items
 		{
@@ -81,6 +81,7 @@ Class CImageConverter extends CGUI
 		if(!IsNumeric(Action.Hoster))
 			Hosters := RegexReplace(Hosters, Action.Hoster "\|?", Action.Hoster "||")
 		this.Add("DropDownList", "ddlHoster", "x+10 y482 w140", Hosters)
+		
 		;Make ftp target directory controls enabled only when an ftp server is selected
 		for index, item in this.ddlHoster.Items
 		{
@@ -106,18 +107,9 @@ Class CImageConverter extends CGUI
 		LV_Modify(1,"Select")
 		this.CloseOnEscape := true
 		this.DestroyOnClose := true
-		; this.GUIEvent("TargetExtension")
 		this.Show("Autosize")
 		return
 	}
-	; PostDestroy()
-	; {
-		; for index, File in this.Files ;Delete temporary images (from screenshot actions and similar)
-		; {
-			; if(InStr(File, "temp\7plus\"))
-				; FileDelete, % File
-		; }
-	; }
 	PreClose()
 	{
 		global EventSchedule
@@ -151,6 +143,7 @@ Class CImageConverter extends CGUI
 		for index, File in Files
 			FileDelete, % File
 	}
+	;Adds files to the list of images
 	AddFiles(Files)
 	{
 		Files := ToArray(Files)
@@ -194,14 +187,13 @@ Class CImageConverter extends CGUI
 			Msgbox Image converter: No new files!
 		return
 	}
+	
+	;Calculates target filenames and shows them
 	FillTargetFilenames()
 	{
 		Targets := Array()
-		; GuiControlGet, TargetExtension, ComboBox1
-		; GuiControlGet, OverwriteFiles, Button", "6
 		for index, item in this.ListView.Items
 		{
-			; LV_GetText(pos,A_Index,1)
 			SplitPath(this.Files[A_Index], "", dir, Extension, Filename)
 			if(this.ddlTargetExtension.Text != "Keep extension")
 				Extension := this.ddlTargetExtension.Text
@@ -217,7 +209,6 @@ Class CImageConverter extends CGUI
 			
 			Targets[index] := TestPath
 			this.ListView.Items[A_Index][2] := Filename
-			; LV_Modify(A_Index, "Col3"Filename)
 		}
 	}
 	LoadImage()
@@ -267,16 +258,6 @@ Class CImageConverter extends CGUI
 		; DllCall("shell32\ShellExecute"uint, 0, str, "Edit"str, this.Files[Selected], str, "", str, "", int, 1)
 		run, % "edit """ this.Picture.Picture """",,UseErrorLevel
 	}
-	; Radio1_CheckedChanged()
-	; {
-		; msgbox checked changed
-		; GuiControlGet, Radio1,,Button", "2
-		; GuiControlGet, Radio2,,Button", "3
-		; GuiControl, Enable%Radio1%, Edit1
-		; GuiControl, Enable%Radio1%, Edit2
-		; GuiControl, Enable%Radio2%, Edit3
-		; GuiControl, Enable%Radio2%, Edit4
-	; }
 	editAbsWidth_TextChanged()
 	{
 		if(this.Lock<=0)
@@ -370,7 +351,7 @@ Class CImageConverter extends CGUI
 	{	
 		SplitPath(this.Picture.Picture, "", FilePath)
 		FilePath .= "\" FileName
-		pConverted := this.ConvertSingleImage(this.Picture.Picture, FilePath, this.Radio1.Checked,this.editAbsWidth.Text,this.editAbsHeight.Text,this.chkKeepAspectRatio.Checked,this.editRelWidth.Text,this.editRelHeight.Text, changed)
+		pConverted := this.ConvertSingleImage(this.Picture.Picture, FilePath, changed)
 		if(pConverted)
 		{
 			Gdip_SetBitmapToClipboard(pConverted)
@@ -400,26 +381,6 @@ Class CImageConverter extends CGUI
 	btnCancel_Click()
 	{
 		this.Close()
-	}
-	ddlWhichFiles_SelectionChanged()
-	{
-	
-	}
-	editCropLeft_TextChanged()
-	{
-	
-	}
-	editCropRight_TextChanged()
-	{
-	
-	}
-	editCropTop_TextChanged()
-	{
-	
-	}
-	editCropBottom_TextChanged()
-	{
-	
 	}
 	chkOverwriteFiles_CheckedChanged()
 	{
@@ -457,7 +418,7 @@ Class CImageConverter extends CGUI
 			Source := this.Files[A_Index]
 			SplitPath(Source,"", SourceDir)
 			Target := TemporaryFiles ? A_Temp "\7plus\Upload\" item[1] : ((this.editPath.Text ? this.editPath.Text : (this.TemporaryFiles ? FolderDialog.Folder : SourceDir)) "\" item[2])
-			pConverted := this.ConvertSingleImage(Source, Target, this.Radio1.Checked, this.editAbsWidth.Text, this.editAbsHeight.Text, this.chkKeepAspectRatio.Checked, this.editRelWidth.Text, this.editRelHeight.Text, changed)
+			pConverted := this.ConvertSingleImage(Source, Target, changed)
 			if(pConverted)
 			{
 				if((!changed && Source = Target) || Gdip_SaveBitmapToFile(pConverted, Target, this.editQuality.Text) = 0)
@@ -465,10 +426,6 @@ Class CImageConverter extends CGUI
 				else
 					FailedImages.Insert(Source)
 				Gdip_DisposeImage(pConverted)
-				
-				;Possibly delete old file
-				; if(this.chkDeleteSourceFiles.Checked && Source != Target)
-					; FileDelete, %FilePath%
 			}
 			else
 				FailedImages.Insert(Source)
@@ -497,7 +454,6 @@ Class CImageConverter extends CGUI
 		global TemporaryEvents
 		this.ConvertImages(ConvertedImages := Array(), FailedImages := Array(), this.ddlWhichFiles.Text = "Selected", 1)
 		;Let's build an event that uploads the files using the selected hoster and deletes them afterwards (if they are temporary (screenshot) files located in temp dir)
-		msgbox % exploreobj(convertedimages)
 		Event := EventSystem_CreateEvent()
 		if(IsNumeric(SubStr(this.ddlHoster.Text, 1,max(InStr(this.ddlHoster.Text, ":") - 1, 1))))
 		{
@@ -514,102 +470,21 @@ Class CImageConverter extends CGUI
 		Event.Actions.append(EventSystem_CreateSubEvent("Action","Delete"))
 		Event.Actions[2].SourceFile := ConvertedImages
 		Event.Actions[2].Silent := 1
-		; for index, Image in ConvertedImages
-		; {
-			; if(ImageConverter_WhichFiles = "All")
-			; {
-				; if(InStr(Image, "temp\7plus\"))
-				; {
-					; Action := EventSystem_CreateSubEvent("Action","Delete")
-					; Action.SourceFile := Image
-					; Action.Silent := 1
-					; Event.Actions.append(Action)
-				; }
-			; }
-		; }
 		TemporaryEvents.RegisterEvent(Event)
 		this.QueuedUploadEvent := TriggerSingleEvent(Event)
 	}
-	; Upload()
-	; {
-		; Gui, %GUINum%: Submit, NoHide
-		; ConvertedImages := Array()
-		; FailedImages := Array()
-		; Loop % LV_GetCount()
-		; {
-			; if(ImageConverter_WhichFiles = "Selected" && LV_GetNext() != A_Index)
-				; continue
-			; LV_GetText(pos,A_Index,1)		
-			; LV_GetText(FileName,A_Index,3)		
-			; SplitPath(this.Files[pos],"",FilePath)
-			; LV_GetText(FileName,A_Index,3)		
-			; FilePath .= "\" FileName
-			; pConverted := this.ConvertSingleImage(this.Files[pos], FilePath, ImageConverter_Radio1,this.editAbsWidth.Text,this.editAbsHeight.Text,this.chkKeepAspectRatio.Checked,this.editRelWidth.Text,this.editRelHeight.Text, changed)
-			; if(pConverted)
-			; {
-				; if(!changed || Gdip_SaveBitmapToFile(pConverted, A_ThisLabel = "ImageConverter_OK" ? FilePath : this.Files[pos], ImageConverter_Quality) = 0)
-					; ConvertedImages.append(A_ThisLabel = "ImageConverter_OK" ? FilePath : this.Files[pos])
-				; else
-					; FailedImages.append(A_ThisLabel = "ImageConverter_OK" ? FilePath : this.Files[pos])
-				; Gdip_DisposeImage(pConverted)
-				
-				;;Possibly delete old file
-				; if(A_ThisLabel = "ImageConverter_OK" && this.chkDeleteSourceFiles.Checked && !this.chkOverwriteFiles.Checked)
-					; FileDelete, %FilePath%
-			; }
-			; else
-				; FailedImages.append(this.Files[pos])
-		; }
-		; if(A_ThisLabel = "ImageConverter_OK")
-		; {
-			; if(FailedImages.len() > 0)
-			; {
-				; Loop % FailedImages.len()
-					; Files .= (A_Index := 1 ? "" : "`n") FailedImages[A_Index]
-				; Notify("Image Conversion failed!", "Failed to convert these files:`n" Files, 5, "GC=555555 TC=White MC=White",Vista7 ? 78 : 110)
-			; }
-			; else
-				; Notify("Image Conversion completed!", "Successfully converted " ConvertedImages.len() " files."5, "GC=555555 TC=White MC=White",Vista7 ? 145 : 22)
-		; }
-		; else if(A_ThisLabel = "ImageConverter_Upload")
-		; {
-			;;Let's build an event that uploads the files using the selected hoster and deletes them afterwards (if they are temporary (screenshot) files located in temp dir)
-			; Event := EventSystem_CreateEvent()
-			; GuiControlGet, ImageConverter_Hoster
-			; if(IsNumeric(SubStr(ImageConverter_Hoster, 1,max(InStr(ImageConverter_Hoster, ":") - 1, 1))))
-			; {
-				; GuiControlGet, ImageConverter_FTPTargetDir
-				; Event.Actions.append(EventSystem_CreateSubEvent("Action","Upload"))
-				; Event.Actions[1].SourceFiles := ConvertedImages
-				; Event.Actions[1].TargetFolder := ImageConverter_FTPTargetDir
-				; Event.Actions[1].FTPProfile := SubStr(ImageConverter_Hoster, 1,max(InStr(ImageConverter_Hoster, ":") - 1, 1))
-			; }
-			; else
-			; {
-				; Event.Actions.append(EventSystem_CreateSubEvent("Action","ImageUpload"))
-				; Event.Actions[1].Files := ConvertedImages
-			; }
-			; Loop % ConvertedImages.len()
-			; {
-				; if(ImageConverter_WhichFiles = "All")
-				; {
-					; if(InStr(ConvertedImages[A_Index], "temp\7plus\"))
-					; {
-						; Action := EventSystem_CreateSubEvent("Action","Delete")
-						; Action.SourceFile := ConvertedImages[A_Index]
-						; Action.Silent := 1
-						; Event.Actions.append(Action)
-					; }
-				; }
-			; }
-			; TemporaryEvents.RegisterEvent(Event)
-			; TriggerSingleEvent(Event)
-		; }
-		;; if(ImageConverter_WhichFiles = "All")
-		;	; GoSub ImageConverter_Cleanup
-	; }
-	ConvertSingleImage(OldFile, NewFile, ImageConverter_Radio1,absWidth,absHeight,KeepAspectRatio,RelWidth,RelHeight, ByRef changed)
+	
+	ConvertSingleImage(OldFile, NewFile, ByRef changed)
 	{
+		UseAbsoluteSizes := this.Radio1.Checked
+		Width := UseAbsoluteSizes ? this.editAbsWidth.Text : this.editRelWidth.Text
+		Height := UseAbsoluteSizes ? this.editAbsHeight.Text : this.editRelHeight.Text
+		KeepAspectRatio := this.chkKeepAspectRatio.Checked
+		CropLeft := abs(this.editCropLeft.Text)
+		CropRight := abs(this.editCropRight.Text)
+		CropTop := abs(this.editCropTop.Text)
+		CropBottom := abs(this.editCropBottom.Text)
+		Assert(OldFile && FileExist(OldFile) && Width > 0 && Height > 0)
 		Changed := false
 		pBitmap := Gdip_CreateBitmapFromFile(OldFile)
 		if(pBitmap > 0)
@@ -617,13 +492,13 @@ Class CImageConverter extends CGUI
 			SplitPath(OldFile,"","",OldExt)		
 			SplitPath(NewFile,"","",NewExt)
 			;Calculate sizes
-			w_old := Gdip_GetImageWidth(pBitmap)
-			h_old := Gdip_GetImageHeight(pBitmap)
+			w_old := Gdip_GetImageWidth(pBitmap) - (CropLeft + CropRight)
+			h_old := Gdip_GetImageHeight(pBitmap) - (CropTop + CropBottom)
 			AR_old := w_old/h_old
-			if(ImageConverter_Radio1)
+			if(UseAbsoluteSizes)
 			{
-				w_new := absWidth
-				h_new := absHeight
+				w_new := Width
+				h_new := Height
 				;Since multiple files can be processed, the aspect ratio might be different.
 				;The approach used here looks for the width or height scaling factor that is closer to 1 and applies it to the whole image.
 				if(KeepAspectRatio)
@@ -644,17 +519,17 @@ Class CImageConverter extends CGUI
 			}
 			else
 			{
-				w_new := w_old * RelWidth / 100
-				h_new := h_old * RelHeight / 100
+				w_new := w_old * Width / 100
+				h_new := h_old * Height / 100
 			}
 			
 			;Save image
-			if(w_new != w_old || h_new != h_old)
+			if(w_new != w_old || h_new != h_old || CropLeft > 0 || CropRight > 0 || CropTop > 0 || CropBottom > 0)
 			{
 				pConverted := Gdip_CreateBitmap(w_new,h_new)
 				pGraphics := Gdip_GraphicsFromImage(pConverted)			
 				Gdip_SetInterpolationMode(pGraphics, 7)
-				Gdip_DrawImage(pGraphics, pBitmap, 0, 0, w_new, h_new)
+				Gdip_DrawImage(pGraphics, pBitmap, 0, 0, w_new, h_new, CropLeft, CropTop, w_old, h_old)
 				Gdip_DeleteGraphics(pGraphics)
 				Gdip_DisposeImage(pBitmap)
 				changed := true
@@ -664,12 +539,14 @@ Class CImageConverter extends CGUI
 				pConverted := pBitmap
 				pBitmap := ""
 			}
-			if(OldExt != NewExt || (A_ThisLabel = "ImageConverter_OK" && OldFile != NewFile))
+			if(OldFile != NewFile)
 				changed := true
 			return pConverted
 		}
 		return 0
 	}
+	
+	;Not working right now
 	MessageHandler(wParam, lParam, msg, hwnd)
 	{
 		global
@@ -718,17 +595,6 @@ Class CImageConverter extends CGUI
 }
 return
 
-; ImageConverter_LoadPicture:
-; ImageConverter_FillTargetFilenames:
-; Loop % EventSchedule.len()
-; {
-	; Event := EventSchedule[A_Index]
-	; Loop % Event.Actions.len()
-		; if(Event.Actions[A_Index].tmpImageConverterClass.GUINum = A_GUI)
-			; Event.Actions[A_Index].tmpImageConverterClass[strTrimLeft(A_ThisLabel, "ImageConverter_")]()
-; }
-; return
-
 CImageConverter_chkKeepAspectRatio:
 CImageConverter_btnCopyToClipboard:
 CImageConverter_btnUpload:
@@ -753,31 +619,10 @@ CImageConverter_chkOverwriteFiles:
 CImageConverter_btnBrowse:
 CGUI.HandleEvent()
 return
-; Loop % EventSchedule.len()
-; {
-	; Event := EventSchedule[A_Index]
-	; Loop % Event.Actions.len()
-		; if(Event.Actions[A_Index].tmpImageConverterClass.GUINum = A_GUI)
-			; Event.Actions[A_Index].tmpImageConverterClass.GuiEvent(strTrimLeft(A_ThisLabel, "ImageConverter_")
-; }
-; return
-
-; ImageConverterEscape:
-; ImageConverterClose:
-; ImageConverter_Cancel:
-; Loop % EventSchedule.len()
-; {
-	; Event := EventSchedule[A_Index]
-	; Loop % Event.Actions.len()
-		; if(Event.Actions[A_Index].tmpImageConverterClass.GUINum = A_GUI)
-			; Event.Actions[A_Index].tmpImageConverterClass.GuiEvent("Cancel")
-; }
-; return
 
 ImageConverter_OpenedFileChange(from, to) ;This gets called when a file that is being watched was modified
 {
 	global CImageConverter
-	msgbox file change
 	for index, ImageConverter in CImageConverter.Instances
 	{
 		if(ImageConverter.Picture.Picture = from)
@@ -788,6 +633,7 @@ ImageConverter_OpenedFileChange(from, to) ;This gets called when a file that is 
 	; WatchDirectory(from, "")
 }
 
+;Not working right now
 ImageConverter_MessageHandler(wParam, lParam, msg, hwnd)
 {
 	global EventSchedule
@@ -799,19 +645,3 @@ ImageConverter_MessageHandler(wParam, lParam, msg, hwnd)
 				Event.Actions[A_Index].tmpImageConverterClass.MessageHandler(wParam, lParam, msg, hwnd)
 	}
 }
-
-/*
-Control ClassNN
-TargetExtension ComboBox1
-OverwriteFiles Button", "6
-DeleteSourceFiles Button", "7
-AbsWidth Edit1
-AbsHeight Edit2
-RelWidth Edit3
-RelHeight Edit4
-Hoster ComboBox3
-FTPTargetDir Edit10
-absolute/radio1 Button", "2
-relative/radio2 Button", "3
-keep aspect ratio Button", "4
-*/

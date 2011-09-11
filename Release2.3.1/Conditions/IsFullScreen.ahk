@@ -6,8 +6,8 @@
 }
 Condition_IsFullScreen_ReadXML(Condition, XMLCondition)
 {
-	Condition.UseIncludeList := XMLCondition.UseIncludeList
-	Condition.UseExcludeList := XMLCondition.UseExcludeList
+	Condition.ReadVar(XMLCondition, "UseIncludeList")
+	Condition.ReadVar(XMLCondition, "UseExcludeList")
 }
 Condition_IsFullScreen_Evaluate(Condition)
 {

@@ -1,7 +1,7 @@
 Trigger_Hotkey_Init(Trigger)
 {
 	Trigger.Category := "Hotkeys"
-	;SetTimer, RefreshHotkeyState, 200 ;Should be quick enough I suppose
+	Trigger.Key := ""
 }
 #if IsObject(Trigger := HotkeyShouldFire(A_ThisHotkey))
 HotkeyTrigger:
@@ -15,7 +15,6 @@ HotkeyTrigger(key)
 		return 0
 	if(!IsObject(Trigger := HotkeyShouldFire(A_ThisHotkey)))
 		return 0
-	;outputdebug trigger %key%
 	Trigger := EventSystem_CreateSubEvent("Trigger", "Hotkey")	
 	Trigger.Key := StringReplace(key,"$") ;Remove $ because it is not stored
 	OnTrigger(Trigger)
@@ -23,7 +22,6 @@ HotkeyTrigger(key)
 HotkeyShouldFire(key)
 {
 	global Events, EventSchedule
-	;outputdebug HotkeyShouldFire(%key%)
 	key := StringReplace(key,"$")
 	key := StringReplace(key,"~")
 	len := Events.len()
@@ -33,7 +31,6 @@ HotkeyShouldFire(key)
 		if(!enable := Event.Enabled)
 			continue
 		
-		;outputdebug, % Event.Trigger.Type ", " key ", " StringReplace(Event.Trigger.key, "~")
 		if(Event.Trigger.Type != "Hotkey" || StringReplace(Event.Trigger.Key, "~") != key)
 			continue
 		ConditionPos := 1
@@ -71,17 +68,13 @@ HotkeyShouldFire(key)
 			}
 		}
 		if(enable)
-		{
-			;outputdebug should trigger
 			return Event.Trigger
-		}
 	}
-	; outputdebug should not
 	return 0
 }
 Trigger_Hotkey_ReadXML(Trigger, XMLTrigger)
 {
-	Trigger.Key := XMLTrigger.Key
+	Trigger.ReadVar(XMLTrigger, "Key")
 }
 
 Trigger_Hotkey_Enable(Trigger)

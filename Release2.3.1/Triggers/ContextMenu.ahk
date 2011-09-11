@@ -7,22 +7,20 @@ Trigger_ContextMenu_Init(Trigger)
 	Trigger.Directory := false
 	Trigger.DirectoryBackground := false
 	Trigger.Desktop := false
-	; Trigger.Drive := false
 	Trigger.Computer := false
 	Trigger.SingleFileOnly := false
 }
 Trigger_ContextMenu_ReadXML(Trigger, XMLTrigger)
 {
-	Trigger.FileTypes := XMLTrigger.FileTypes
-	Trigger.Name := XMLTrigger.Name
-	Trigger.Description := XMLTrigger.Description
-	Trigger.Directory := XMLTrigger.Directory
-	Trigger.DirectoryBackground := XMLTrigger.DirectoryBackground
-	Trigger.Desktop := XMLTrigger.Desktop
-	; Trigger.Drive := XMLTrigger.Drive
-	Trigger.Computer := XMLTrigger.Computer
-	Trigger.SubMenu := XMLTrigger.SubMenu
-	Trigger.SingleFileOnly := XMLTrigger.SingleFileOnly
+	Trigger.ReadVar(XMLTrigger, "FileTypes")
+	Trigger.ReadVar(XMLTrigger, "Name")
+	Trigger.ReadVar(XMLTrigger, "Description")
+	Trigger.ReadVar(XMLTrigger, "Directory")
+	Trigger.ReadVar(XMLTrigger, "DirectoryBackground")
+	Trigger.ReadVar(XMLTrigger, "Desktop")
+	Trigger.ReadVar(XMLTrigger, "Computer")
+	Trigger.ReadVar(XMLTrigger, "SubMenu")
+	Trigger.ReadVar(XMLTrigger, "SingleFileOnly")
 }
 
 Trigger_ContextMenu_Enable(Trigger, Event)
@@ -32,7 +30,6 @@ Trigger_ContextMenu_Enable(Trigger, Event)
 	else
 		ahk_path := """" A_AhkPath """ """ A_ScriptFullPath """"
 	id := Event.ID
-	files := Trigger.FileTypes
 	RegWrite, REG_DWORD, HKCU, Software\7plus\ContextMenuEntries\%id%, ID, %id%
 	RegWrite, REG_SZ, HKCU, Software\7plus\ContextMenuEntries\%id%, Name, % Trigger.Name
 	RegWrite, REG_SZ, HKCU, Software\7plus\ContextMenuEntries\%id%, Description, % Trigger.Description
@@ -109,7 +106,7 @@ Trigger_ContextMenu_GuiShow(Trigger, TriggerGUI)
 	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Name", "", "", "Name:")
 	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Description", "", "", "Description:")
 	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "SubMenu", "", "", "Submenu:")
-	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "FileTypes", "", "", "File types:")
+	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "FileTypes", "", "", "File types:", "", "", "", "", "File extensions separated by comma")
 	SubEventGUI_Add(Trigger, TriggerGUI, "Checkbox", "Directory", "Show in directory context menus")
 	SubEventGUI_Add(Trigger, TriggerGUI, "Checkbox", "DirectoryBackground", "Show in directory background context menus")
 	SubEventGUI_Add(Trigger, TriggerGUI, "Checkbox", "Desktop", "Show in desktop context menu")

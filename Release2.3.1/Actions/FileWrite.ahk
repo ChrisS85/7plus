@@ -6,11 +6,11 @@ Action_Write_Init(Action)
 
 Action_Write_ReadXML(Action, XMLAction)
 {
-	Action.Content := XMLAction.Content
-	Action.Target := XMLAction.Target
-	Action.Quality := XMLAction.Quality
-	Action.Append := XMLAction.Append
-	Action.ImageExtension := XMLAction.ImageExtension
+	Action.ReadVar(XMLAction, "Content")
+	Action.ReadVar(XMLAction, "Target")
+	Action.ReadVar(XMLAction, "Quality")
+	Action.ReadVar(XMLAction, "Append")
+	Action.ReadVar(XMLAction, "ImageExtension")
 }
 
 Action_Write_Execute(Action, Event)

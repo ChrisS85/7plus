@@ -9,13 +9,13 @@
 Action_ControlEvent_ReadXML(Action, XMLAction)
 {
 	Condition_If_ReadXML(Action, XMLAction)
-	Action.EventID := XMLAction.EventID
-	Action.Action := XMLAction.Action
+	Action.ReadVar(XMLAction, "EventID")
+	Action.ReadVar(XMLAction, "Action")
 	if(Action.Action = "Copy Event")
 	{
-		Action.EvaluateOnCopy := XMLAction.EvaluateOnCopy
-		Action.Placeholder := XMLAction.Placeholder
-		Action.DeleteAfterUse := XMLAction.DeleteAfterUse
+		Action.ReadVar(XMLAction, "EvaluateOnCopy")
+		Action.ReadVar(XMLAction, "Placeholder")
+		Action.ReadVar(XMLAction, "DeleteAfterUse")
 	}
 }
 

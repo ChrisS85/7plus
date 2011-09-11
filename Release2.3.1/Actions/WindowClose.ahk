@@ -7,7 +7,7 @@ Action_WindowClose_Init(Action)
 Action_WindowClose_ReadXML(Action, XMLAction)
 {
 	WindowFilter_ReadXML(Action, XMLAction)
-	Action.ForceClose := XMLAction.ForceClose
+	Action.ReadVar(XMLAction, "ForceClose")
 }
 Action_WindowClose_Execute(Action)
 {

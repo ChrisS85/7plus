@@ -1,11 +1,12 @@
 Action_PlaySound_Init(Action)
 {
 	Action.Category := "System"
+	Action.File := "*-1"
 }
 
 Action_PlaySound_ReadXML(Action, XMLAction)
 {
-	Action.File := XMLAction.File
+	Action.ReadVar(XMLAction, "File")
 }
 
 Action_PlaySound_DisplayString(Action)
@@ -14,7 +15,7 @@ Action_PlaySound_DisplayString(Action)
 }
 Action_PlaySound_Execute(Action, Event)
 {
-	file := UnQuote(Action.File)
+	file := Event.ExpandPlaceholders(Action.File)
 	SoundPlay, % file
 	return 1
 }

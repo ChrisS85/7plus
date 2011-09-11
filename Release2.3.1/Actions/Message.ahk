@@ -1,12 +1,15 @@
 Action_Message_Init(Action)
 {
 	Action.Category := "System"
+	Action.Text := "Example Message"
+	Action.Title := "7plus"
+	Action.Timeout := 0
 }	
 Action_Message_ReadXML(Action, XMLAction)
 {
-	Action.Text := XMLAction.Text
-	Action.Title := XMLAction.Title
-	Action.Timeout := XMLAction.Timeout
+	Action.ReadVar(XMLAction, "Text")
+	Action.ReadVar(XMLAction, "Title")
+	Action.ReadVar(XMLAction, "Timeout")
 }
 Action_Message_Execute(Action,Event)
 {
@@ -57,7 +60,7 @@ Action_Message_GuiShow(Action, ActionGUI, GoToLabel = "")
 		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action shows a message box.")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Text", "", "", "Text:", "Placeholders", "Action_Message_Text_Placeholders")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Title", "", "", "Window Title:", "Placeholders", "Action_Message_Title_Placeholders")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Timeout", "", "", "Timeout:","","","","","The message box is closed after this time.")
+		SubEventGUI_Add(Action, ActionGUI, "Edit", "Timeout", "", "", "Timeout:","","","","","The message box is closed after this time.`nUse 0 or empty string to disable timeout.")
 	}
 	else if(GoToLabel = "Text_Placeholders")
 		SubEventGUI_Placeholders(sActionGUI, "Text")

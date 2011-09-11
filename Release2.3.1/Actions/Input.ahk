@@ -5,18 +5,17 @@ Action_Input_Init(Action)
 	Action.Placeholder := "Input"
 	Action.DataType := "Text"
 	Action.Validate := 1
+	Action.Selection := "Default Selection"
 }	
 Action_Input_ReadXML(Action, XMLAction)
 {
-	Action.Text := XMLAction.Text
-	Action.Title := XMLAction.Title
-	Action.Cancel := XMLAction.Cancel
-	Action.Placeholder := XMLAction.HasKey("Placeholder") ? XMLAction.Placeholder : "Input"
-	Action.DataType := XMLAction.HasKey("DataType") ? XMLAction.DataType : "Text"
-	if(Action.DataType = "Selection")
-		Action.Selection := XMLAction.HasKey("Selection") ? XMLAction.Selection : "Default Selection"
-	else
-		Action.Validate := XMLAction.HasKey("Validate") ? XMLAction.Validate : 1
+	Action.ReadVar(XMLAction, "Text")
+	Action.ReadVar(XMLAction, "Title")
+	Action.ReadVar(XMLAction, "Cancel")
+	Action.ReadVar(XMLAction, "Placeholder")
+	Action.ReadVar(XMLAction, "DataType")
+	Action.ReadVar(XMLAction, "Selection")
+	Action.ReadVar(XMLAction, "Validate")
 }
 Action_Input_Execute(Action,Event)
 {

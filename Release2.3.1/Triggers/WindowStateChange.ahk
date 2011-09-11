@@ -8,7 +8,7 @@ Trigger_WindowStateChange_Init(Trigger)
 Trigger_WindowStateChange_ReadXML(Trigger, XMLTrigger)
 {
 	WindowFilter_ReadXML(Trigger, XMLTrigger)
-	Trigger.Event := XMLTrigger.Event
+	Trigger.ReadVar(XMLTrigger, "Event")
 }
 
 Trigger_WindowStateChange_Matches(Trigger, Filter)

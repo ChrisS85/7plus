@@ -2,13 +2,11 @@ Action_ViewMode_Init(Action)
 {
 	Action.Category := "Explorer"
 	Action.Action := "Toggle show hidden files"
-	; Action.Parameter := ""
 }
 
 Action_ViewMode_ReadXML(Action, XMLAction)
 {
-	Action.Action := XMLAction.Action
-	; Action.Parameter := XMLAction.Parameter
+	Action.ReadVar(XMLAction, "Action")
 }
 
 Action_ViewMode_Execute(Action, Event)

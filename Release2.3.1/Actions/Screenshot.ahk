@@ -3,14 +3,16 @@ Action_Screenshot_Init(Action)
 	Action.Category := "System"
 	Action.Area := "Screen"
 	Action.Quality := 95
+	Action.TargetFolder := ""
+	Action.TargetFile := ""
 }
 
 Action_Screenshot_ReadXML(Action, XMLAction)
 {
-	Action.Area := XMLAction.Area
-	Action.Quality := XMLAction.Quality
-	Action.TargetFolder := XMLAction.TargetFolder
-	Action.TargetFile := XMLAction.TargetFile
+	Action.ReadVar(XMLAction, "Area")
+	Action.ReadVar(XMLAction, "Quality")
+	Action.ReadVar(XMLAction, "TargetFolder")
+	Action.ReadVar(XMLAction, "TargetFile")
 }
 ; Action_Screenshot_LButton_Block:
 ; return

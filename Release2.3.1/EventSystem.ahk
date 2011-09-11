@@ -607,7 +607,7 @@ It fails once I add the S at the beginning, i.e. ubEvent_ReadVar works while Sub
 */
 Event_ReadVar(Subevent, xml, key)
 {
-	Assert(IsObject(Subevent) && IsObject(xml) && key != "")
+	Assert(IsObject(Subevent) && IsObject(xml) && key != "", key " in " Subevent.Type " and " Subevent.ID ": " Subevent.Name)
 	if(xml.HasKey(key))
 		Subevent[key] :=  xml[key]
 }

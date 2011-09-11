@@ -5,7 +5,7 @@ Action_SlideWindowOut_Init(Action)
 }
 Action_SlideWindowOut_ReadXML(Action, XMLAction)
 {
-	Action.Direction := XMLAction.Direction
+	Action.ReadVar(XMLAction, "Direction")
 }
 Action_SlideWindowOut_Execute(Action)
 {

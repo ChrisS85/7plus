@@ -6,7 +6,7 @@ Condition_MouseOver_Init(Condition)
 }
 Condition_MouseOver_ReadXML(Condition, XMLCondition)
 {
-	Condition.MouseOverType := XMLCondition.MouseOverType
+	Condition.ReadVar(XMLCondition, "MouseOverType")
 	if(Condition.MouseOverType = "Window")
 		WindowFilter_ReadXML(Condition, XMLCondition)
 }

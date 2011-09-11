@@ -5,7 +5,7 @@ Action_SetDirectory_Init(Action)
 }
 Action_SetDirectory_ReadXML(Action, XMLAction)
 {
-	Action.Path := XMLAction.Path
+	Action.ReadVar(XMLAction, "Path")
 	WindowFilter_ReadXML(Action,XMLAction)
 }
 Action_SetDirectory_Execute(Action, Event)

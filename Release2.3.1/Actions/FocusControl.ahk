@@ -7,7 +7,7 @@ Action_FocusControl_Init(Action)
 Action_FocusControl_ReadXML(Action, XMLAction)
 {
 	WindowFilter_ReadXML(Action, XMLAction)
-	Action.TargetControl := XMLAction.TargetControl
+	Action.ReadVar(XMLAction, "TargetControl")
 }
 Action_FocusControl_Execute(Action,Event)
 {

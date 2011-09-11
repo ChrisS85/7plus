@@ -3,14 +3,15 @@ Action_Run_Init(Action)
 	Action.Category := "System"
 	Action.WaitForFinish := 0
 	Action.RunAsAdmin := 0
+	Action.Command := "cmd.exe"
+	Action.WorkingDirectory := ""
 }
 Action_Run_ReadXML(Action, XMLAction)
 {
-	Action.Command := XMLAction.Command
-	Action.WorkingDirectory := XMLAction.WorkingDirectory
-	Action.WaitForFinish := XMLAction.WaitForFinish
-	if(XMLAction.RunAsAdmin = 0 || XMLAction.RunAsAdmin = 1)
-		Action.RunAsAdmin := XMLAction.RunAsAdmin
+	Action.ReadVar(XMLAction, "Command")
+	Action.ReadVar(XMLAction, "WorkingDirectory")
+	Action.ReadVar(XMLAction, "WaitForFinish")
+	Action.ReadVar(XMLAction, "RunAsAdmin")
 }
 Action_Run_Execute(Action, Event)
 {

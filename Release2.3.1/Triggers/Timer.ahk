@@ -1,15 +1,17 @@
 Trigger_Timer_Init(Trigger)
 {
 	Trigger.Category := "System"
+	Trigger.Time := ""
+	Trigger.Text := ""
 	Trigger.ShowProgress := 0
 	Trigger.Restart := 0
 }
 Trigger_Timer_ReadXML(Trigger, XMLTrigger)
-{	
-	Trigger.Time := XMLTrigger.Time
-	Trigger.ShowProgress := XMLTrigger.ShowProgress
-	Trigger.Restart := XMLTrigger.Restart
-	Trigger.Text := XMLTrigger.Text
+{
+	Trigger.ReadVar(XMLTrigger, "Time")
+	Trigger.ReadVar(XMLTrigger, "ShowProgress")
+	Trigger.ReadVar(XMLTrigger, "Restart")
+	Trigger.ReadVar(XMLTrigger, "Text")
 }
 
 Trigger_Timer_Enable(Trigger, Event)

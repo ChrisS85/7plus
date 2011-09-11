@@ -3,12 +3,13 @@
 	Condition.Category := "Other"
 	Condition.Physical := 1
 	Condition.Toggle := 0
+	Condition.Key := ""
 }
 Condition_KeyIsDown_ReadXML(Condition, XMLCondition)
 {
-	Condition.Key := XMLCondition.Key
-	Condition.Physical := XMLCondition.Physical
-	Condition.Toggle := XMLCondition.Toggle
+	Condition.ReadVar(XMLCondition, "Key")
+	Condition.ReadVar(XMLCondition, "Physical")
+	Condition.ReadVar(XMLCondition, "Toggle")
 }
 Condition_KeyIsDown_Evaluate(Condition, Event)
 {

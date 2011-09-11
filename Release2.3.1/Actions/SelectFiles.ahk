@@ -9,10 +9,10 @@ Action_SelectFiles_Init(Action)
 }
 Action_SelectFiles_ReadXML(Action, XMLAction)
 {
-	Action.Filter := XMLAction.Filter
-	Action.Clear := XMLAction.Clear
-	Action.Deselect := XMLAction.Deselect
-	Action.Wildcard := XMLAction.Wildcard
+	Action.ReadVar(XMLAction, "Filter")
+	Action.ReadVar(XMLAction, "Clear")
+	Action.ReadVar(XMLAction, "Deselect")
+	Action.ReadVar(XMLAction, "Wildcard")
 	WindowFilter_ReadXML(Action,XMLAction)
 }
 Action_SelectFiles_Execute(Action, Event)

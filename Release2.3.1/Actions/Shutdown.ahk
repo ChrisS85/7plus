@@ -6,8 +6,8 @@ Action_Shutdown_Init(Action)
 }
 Action_Shutdown_ReadXML(Action, XMLAction)
 {
-	Action.ShutdownSelection := XMLAction.ShutdownSelection
-	Action.ForceClose := XMLAction.ForceClose
+	Action.ReadVar(XMLAction, "ShutdownSelection")
+	Action.ReadVar(XMLAction, "ForceClose")
 }
 Action_Shutdown_Execute(Action)
 {

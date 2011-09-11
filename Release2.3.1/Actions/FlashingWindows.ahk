@@ -8,9 +8,9 @@ Action_FlashingWindows_Init(Action)
 
 Action_FlashingWindows_ReadXML(Action, XMLAction)
 {
-	Action.Notifications := XMLAction.Notifications
-	Action.FlashingWindows := XMLAction.FlashingWindows
-	Action.ToggleWindows := XMLAction.ToggleWindows
+	Action.ReadVar(XMLAction, "Notifications")
+	Action.ReadVar(XMLAction, "FlashingWindows")
+	Action.ReadVar(XMLAction, "ToggleWindows")
 }
 
 Action_FlashingWindows_Execute(Action, Event)

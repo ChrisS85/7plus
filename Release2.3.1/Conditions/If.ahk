@@ -3,12 +3,13 @@
 	Condition.Category := "Other"
 	Condition.Operator := "equals"
 	Condition.Compare := "${P}"
+	Condition.With := ""
 }
 Condition_If_ReadXML(Condition, XMLCondition)
 {
-	Condition.Operator := XMLCondition.HasKey("Operator") ? XMLCondition.Operator : Condition.Operator
-	Condition.Compare := XMLCondition.HasKey("Compare") ? XMLCondition.Compare : Condition.Compare
-	Condition.With:= XMLCondition.HasKey("With") ? XMLCondition.With : Condition.With
+	Condition.ReadVar(XMLCondition, "Operator")
+	Condition.ReadVar(XMLCondition, "Compare")
+	Condition.ReadVar(XMLCondition, "With")
 }
 Condition_If_Evaluate(Condition, Event)
 {

@@ -9,12 +9,12 @@ Action_MouseClick_Init(Action)
 
 Action_MouseClick_ReadXML(Action, XMLAction)
 {
-	Action.Button := XMLAction.HasKey("Button") ? XMLAction.Button : Action.Button
-	Action.X := XMLAction.HasKey("x") ? XMLAction.X : Action.X
-	Action.Y := XMLAction.HasKey("y") ? XMLAction.Y : Action.Y
-	Action.RestorePosition := XMLAction.HasKey("RestorePosition") ? XMLAction.RestorePosition : Action.RestorePosition
-	Action.Relative :=XMLAction.HasKey("Relative") ? XMLAction.Relative : Action.Relative
-	Action.Double := XMLAction.HasKey("Double") ? XMLAction.Double : Action.Double
+	Action.ReadVar(XMLAction, "Button")
+	Action.ReadVar(XMLAction, "X")
+	Action.ReadVar(XMLAction, "Y")
+	Action.ReadVar(XMLAction, "RestorePosition")
+	Action.ReadVar(XMLAction, "Relative")
+	Action.ReadVar(XMLAction, "Double")
 }
 Action_MouseClick_Execute(Action, Event)
 {

@@ -5,7 +5,7 @@ Action_FastFoldersRecall_Init(Action)
 
 Action_FastFoldersRecall_ReadXML(Action, XMLAction)
 {
-	Action.Slot := XMLAction.Slot
+	Action.ReadVar(XMLAction, "Slot")
 }
 Action_FastFoldersRecall_Execute(Action, Event)
 {

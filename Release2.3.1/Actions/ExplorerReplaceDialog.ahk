@@ -5,11 +5,9 @@ Action_ExplorerReplaceDialog_Init(Action)
 	Action.SelectedFiles := 0
 }
 Action_ExplorerReplaceDialog_ReadXML(Action, XMLAction)
-{
-	if(XMLAction.HasKey("View"))
-		Action.View := XMLAction.View
-	if(XMLAction.HasKey("SelectedFiles"))
-		Action.SelectedFiles := XMLAction.SelectedFiles
+{	
+	Action.ReadVar(XMLAction, "View")
+	Action.ReadVar(XMLAction, "SelectedFiles")
 }
 Action_ExplorerReplaceDialog_Execute(Action, Event)
 {

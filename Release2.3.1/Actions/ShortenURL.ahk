@@ -8,10 +8,10 @@ Action_ShortenURL_Init(Action)
 }
 Action_ShortenURL_ReadXML(Action, XMLAction)
 {
-	Action.URL := XMLAction.HasKey("URL") ? XMLAction.URL : Action.URL
-	Action.Method := XMLAction.HasKey("Method") ? XMLAction.Method : Action.Method
-	Action.WriteToClipboard := MLAction.HasKey("WriteToClipboard") ? XMLAction.WriteToClipboard : Action.WriteToClipboard
-	Action.WriteToPlaceholder := MLAction.HasKey("WriteToPlaceholder") ? XMLAction.WriteToPlaceholder : Action.WriteToPlaceholder
+	Action.ReadVar(XMLAction, "URL")
+	Action.ReadVar(XMLAction, "Method")
+	Action.ReadVar(XMLAction, "WriteToClipboard")
+	Action.ReadVar(XMLAction, "WriteToPlaceholder")
 }
 Action_ShortenURL_Execute(Action, Event)
 {

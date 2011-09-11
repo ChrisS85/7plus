@@ -5,8 +5,7 @@ Action_MD5_Init(Action)
 }	
 Action_MD5_ReadXML(Action, XMLAction)
 {
-	if(XMLAction.HasKey("Files"))
-		Action.Files := XMLAction.Files
+	Action.ReadVar(XMLAction, "Files")
 }
 Action_MD5_Execute(Action,Event)
 {

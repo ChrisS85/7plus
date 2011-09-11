@@ -7,7 +7,7 @@ Action_SetWindowTitle_Init(Action)
 Action_SetWindowTitle_ReadXML(Action, XMLAction)
 {
 	WindowFilter_ReadXML(Action, XMLAction)
-	Action.Title := XMLAction.Title
+	Action.ReadVar(XMLAction, "Title")
 }
 Action_SetWindowTitle_Execute(Action,Event)
 {

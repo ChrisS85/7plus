@@ -10,12 +10,12 @@ Action_FilterList_Init(Action)
 }
 Action_FilterList_ReadXML(Action, XMLAction)
 {
-	Action.Operator := XMLAction.Operator
-	Action.List := XMLAction.List
-	Action.Filter := XMLAction.Filter
-	Action.Separator := XMLAction.Separator
-	Action.ExitOnEmptyList := XMLAction.ExitOnEmptyList
-	Action.Action := XMLAction.Action
+	Action.ReadVar(XMLAction, "Operator")
+	Action.ReadVar(XMLAction, "List")
+	Action.ReadVar(XMLAction, "Filter")
+	Action.ReadVar(XMLAction, "Separator")
+	Action.ReadVar(XMLAction, "ExitOnEmptyList")
+	Action.ReadVar(XMLAction, "Action")
 }
 Action_FilterList_Execute(Action,Event)
 {

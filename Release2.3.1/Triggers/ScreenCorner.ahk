@@ -6,8 +6,8 @@ Trigger_ScreenCorner_Init(Trigger)
 }
 Trigger_ScreenCorner_ReadXML(Trigger, XMLTrigger)
 {
-	Trigger.Corner := XMLTrigger.Corner
-	Trigger.Time := XMLTrigger.Time
+	Trigger.ReadVar(XMLTrigger, "Corner")
+	Trigger.ReadVar(XMLTrigger, "Time")
 }
 Trigger_ScreenCorner_Enable(Trigger)
 {

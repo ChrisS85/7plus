@@ -10,9 +10,8 @@ Action_NewFolder_Init(Action)
 }
 Action_NewFolder_ReadXML(Action, XMLAction)
 {
-	global shell32muipath,Vista7
-	Action.Foldername := XMLAction.HasKey("FolderName") ? XMLAction.Foldername : Action.FolderName
-	Action.Rename := XMLAction.Rename
+	Action.ReadVar(XMLAction, "Foldername")
+	Action.ReadVar(XMLAction, "Rename")
 }
 Action_NewFolder_Execute(Action, Event)
 {

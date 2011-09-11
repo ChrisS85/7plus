@@ -19,9 +19,7 @@ Action_ImageConverter_ReadXML(Action, XMLAction)
 Action_ImageConverter_Execute(Action, Event)
 {
 	global CImageConverter
-	msgbox % Action.Files
 	Files := Event.ExpandPlaceholders(Action.Files)
-	msgbox % files
 	if(Action.ReuseWindow)
 		for index, window in CImageConverter.Instances ;Find existing instance of window
 			if(window.ReuseWindow)

@@ -7,9 +7,9 @@ Trigger_MenuItem_Init(Trigger)
 }
 Trigger_MenuItem_ReadXML(Trigger, XMLTrigger)
 {
-	Trigger.Menu := XMLTrigger.Menu
-	Trigger.Name := XMLTrigger.Name
-	Trigger.Submenu := XMLTrigger.Submenu
+	Trigger.ReadVar(XMLTrigger, "Menu")
+	Trigger.ReadVar(XMLTrigger, "Name")
+	Trigger.ReadVar(XMLTrigger, "Submenu")
 }
 
 Trigger_MenuItem_Enable(Trigger)

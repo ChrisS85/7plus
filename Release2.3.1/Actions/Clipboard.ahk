@@ -10,11 +10,11 @@ Action_Clipboard_Init(Action)
 
 Action_Clipboard_ReadXML(Action, XMLAction)
 {
-	Action.InsertType := XMLAction.InsertType
-	Action.Content := XMLAction.Content
-	Action.Clear := XMLAction.Clear
-	Action.Cut := XMLAction.Cut
-	Action.Append := XMLAction.Append
+	Action.ReadVar(XMLAction, "InsertType")
+	Action.ReadVar(XMLAction, "Content")
+	Action.ReadVar(XMLAction, "Clear")
+	Action.ReadVar(XMLAction, "Cut")
+	Action.ReadVar(XMLAction, "Append")
 }
 
 Action_Clipboard_Execute(Action, Event)
