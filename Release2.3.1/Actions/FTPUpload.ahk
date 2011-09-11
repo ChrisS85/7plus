@@ -18,7 +18,7 @@ Action_Upload_Init(Action)
 			break
 	}
 	Action.Category := "File"
-	Action.SourceFiles := "${SelNM}"
+	Action.SourceFiles := "${SelNM}" ;All upload actions need to have SourceFiles property (used in ImageConverter)
 	Action.TargetFolder := (OtherAction && Settings_Events ? OtherAction.TargetFolder : "")
 	Action.TargetFile := (OtherAction && Settings_Events ? OtherAction.TargetFile : "")
 	Action.Silent := (OtherAction && Settings_Events? OtherAction.Silent : 0)

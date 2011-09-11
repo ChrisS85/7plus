@@ -1,6 +1,6 @@
 ; Array Lib - temp01 - http://www.autohotkey.com/forum/viewtopic.php?t=49736 
 ; Array is 1-based!!!
-Array(p1="Ņ", p2="Ņ", p3="Ņ", p4="Ņ", p5="Ņ", p6="Ņ"){ 
+Array(Params*){ 
 	global ArrBase 
 	If !ArrBase
 	{
@@ -26,8 +26,8 @@ Array(p1="Ņ", p2="Ņ", p3="Ņ", p4="Ņ", p5="Ņ", p6="Ņ"){
 	  ArrBase.ToString := "Array_ToString"
 	}
 	arr := Object("base", ArrBase) 
-	While (_:=p%A_Index%)!="Ņ" && A_Index<=6 
-	  arr[A_Index] := _ 
+	for Index, Param in Params
+	  arr._Insert(Param)
 	Return arr
 } 
 
@@ -38,12 +38,8 @@ IsArray(arr)
 	object := arr.base
 	while(object && object != ArrBase)
 	{
-		outputdebug % exploreobj(object)
 		object := object.base
 	}
-	outputdebug % exploreobj(object)
-	outputdebug % "array: " exploreobj(arrbase)
-	outputdebug % "is array ? " (object = ArrBase)
 	return object = ArrBase
 }
 Array_ToString(arr, Separator = "`n")
@@ -135,14 +131,18 @@ Array_Copy(arr){
    Return Array().extend(arr) 
 } 
 
-Array_Append(arr, p1="Ņ", p2="Ņ", p3="Ņ", p4="Ņ", p5="Ņ", p6="Ņ"){ 
-   Return arr.insert(arr.len()+1, p1, p2, p3, p4, p5, p6) 
+Array_Append(arr, Params*){ 
+   Return arr.insert(arr.len()+1, Params*) 
 } 
-Array_Insert(arr, index, p1="Ņ", p2="Ņ", p3="Ņ", p4="Ņ", p5="Ņ", p6="Ņ"){ 
-   While (_:=p%A_Index%)!="Ņ" && A_Index<=6 
-      arr._Insert(index + (A_Index-1), _) 
-   Return arr 
-} 
+Array_Insert(arr, index, Params*)
+{
+	if(!Params.MaxIndex())
+		arr._Insert(index)
+	else
+		for offset, param in Params
+			arr._Insert(index + (offset-1), param) 
+	Return arr 
+}
 Array_Reverse(arr){ 
    arr2 := Array() 
    Loop, % len:=arr.len() 
@@ -176,26 +176,23 @@ Array_CompareFunc(a, b, c){
    return a > b ? 1 : a = b ? 0 : -1 
 } 
 
-Array_Extend(arr, p1="Ņ", p2="Ņ", p3="Ņ", p4="Ņ", p5="Ņ", p6="Ņ"){ 
-   While (_:=p%A_Index%)!="Ņ" && A_Index<=6 
-      If IsObject(_) 
-         Loop, % _.len() 
-            arr.append(_[A_Index]) 
-      Else 
-         Loop, % %_%0 
-            arr.append(%_%%A_Index%) 
+Array_Extend(arr, Params*){ 
+	for index, Param in Params
+      If IsObject(Param) 
+         Loop, % Param.len() 
+            arr.append(Param[A_Index])
    Return arr 
 } 
 Array_Pop(arr){ 
    Return arr.delete(arr.len()) 
 } 
-Array_Delete(arr, p1="Ņ", p2="Ņ", p3="Ņ", p4="Ņ", p5="Ņ", p6="Ņ"){ 
-	While (_:=p%A_Index%)!="Ņ" && A_Index<=6 
+Array_Delete(arr, Params*){ 
+	for index, Param in Params
 	{
-		if(IsObject(_)) ;Arrays have no object keys
-			arr._Remove(arr.IndexOf(_))
+		if(IsObject(Param)) ;Arrays have no object keys
+			arr._Remove(arr.IndexOf(Param))
 		else
-			arr._Remove(_)
+			arr._Remove(Param)
 	}
    Return arr 
 } 

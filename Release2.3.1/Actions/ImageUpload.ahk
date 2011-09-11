@@ -2,7 +2,7 @@ Action_ImageUpload_Init(Action)
 {
 	Action.Category := "File"
 	Action.Hoster := "ImgUr"
-	Action.Files := "${SelNM}"
+	Action.SourceFiles := "${SelNM}" ;All upload actions need to have SourceFiles property (used in ImageConverter)
 	Action.CopyToClipboard := 1
 }
 
@@ -11,21 +11,21 @@ Action_ImageUpload_ReadXML(Action, XMLAction)
 	if(XMLAction.HasKey("Hoster"))
 		Action.Hoster := XMLAction.Hoster
 	if(XMLAction.HasKey("Files"))
-		Action.Files := XMLAction.Files
+		Action.SourceFiles := XMLAction.SourceFiles
 	if(XMLAction.HasKey("CopyToClipboard"))
 		Action.CopyToClipboard := XMLAction.CopyToClipboard
 }
 
 Action_ImageUpload_DisplayString(Action)
 {
-	return "Upload images: " Action.File
+	return "Upload images: " Action.SourceFiles
 }
 Action_ImageUpload_Execute(Action, Event)
 {
 	global Vista7
 	if(!Action.HasKey("tmpFiles"))
 	{
-		Action.tmpFiles := ToArray(Event.ExpandPlaceholders(Action.Files))
+		Action.tmpFiles := ToArray(Event.ExpandPlaceholders(Action.SourceFiles))
 		Action.tmpFailed := Array()
 		if(Action.tmpFiles.len() < 1)
 			return 0
@@ -113,12 +113,12 @@ Action_ImageUpload_GuiShow(Action, ActionGUI, GoToLabel = "")
 		sActionGUI := ActionGUI
 		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action uploads images to image hosters. Currently only ImgUr is supported, others may follow.")		
 		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "Hoster", GetImageHosterList().ToString("|"), "", "Hoster:")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Files", "", "", "Files:", "Placeholders", "Action_ImageUpload_Placeholders_Files")
+		SubEventGUI_Add(Action, ActionGUI, "Edit", "SourceFiles", "", "", "Files:", "Placeholders", "Action_ImageUpload_Placeholders_Files")
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "LinksPlaceholder", "", "", "Links Placeholder:", "", "","","","Name only, without ${}")
 		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "CopyToClipboard", "Copy links to clipboard")
 	}
 	else if(GoToLabel = "Placeholders_Files")
-		SubEventGUI_Placeholders(sActionGUI, "Files")
+		SubEventGUI_Placeholders(sActionGUI, "SourceFiles")
 }
 Action_ImageUpload_Placeholders_Files:
 Action_ImageUpload_GuiShow("", "", "Placeholders_Files")

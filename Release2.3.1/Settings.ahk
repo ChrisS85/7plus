@@ -428,8 +428,8 @@ Settings_CreateMisc(ByRef TabCount) {
 	yIt+=2*checkboxstep
 	y:=yIt+TextBoxTextOffset
 	x2:=x1+180
-	Gui, 1:Add, Text, x%x1% y%y% Number, Image compression quality:
-	Gui, 1:Add, Edit, x%x2% y%yIt% w%wTBShort% R1 vImageQuality
+	Gui, 1:Add, Text, x%x1% y%y%, Image compression quality:
+	Gui, 1:Add, Edit, x%x2% y%yIt% w%wTBShort% R1 vImageQuality Number
 	yIt+=TextBoxStep
 	y:=yIt+TextBoxTextOffset
 	Gui, 1:Add, Text, x%x1% y%y%, Default image extension:

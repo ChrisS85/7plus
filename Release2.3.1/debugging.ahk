@@ -40,6 +40,16 @@ OutputDebug(text)
 		OutputDebug %text%
 }
 
+Assert(Condition, Message="")
+{
+	if(!Condition)
+	{
+		try
+			throw Exception(Message, -1)
+		catch e
+			Msgbox % "Assertion failed at " e.File "#" e.Line ": " e.Message
+	}
+}
 ;Translates last win32 error to identifier by using errorcodes.err list in script dir
 GetLastError()
 { 

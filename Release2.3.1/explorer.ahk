@@ -752,9 +752,9 @@ class InfoGUI
 			WinGetPos , X, Y, Width, Height, % "ahk_id " this.hParent
 			ControlGetPos , , cY, , cHeight, msctls_statusbar321, % "ahk_id " this.hParent
 			InfoX:=X+Width-370
-			InfoY:=Y+cY+cHeight/2-6 ;+Height-26
+			InfoY:=Round(Y+cY+cHeight/2-6) ; +Height-26
 			if(Width>540)
-				Gui, % this.GuiNum ": Show", AutoSize NA x%InfoX% y%InfoY%
+				Gui, % this.GuiNum ":Show", AutoSize NA x%InfoX% y%InfoY%
 		}
 		else
 			Gui, % this.GuiNum ": Hide"

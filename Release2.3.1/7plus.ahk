@@ -1,3 +1,4 @@
+; watchdirectory("C:\test|clip.jpg\", "watch")
 Suspend, On
 #SingleInstance off
 #NoTrayIcon ;Added later
@@ -20,29 +21,25 @@ MajorVersion := 2
 MinorVersion := 4
 BugfixVersion := 0
 ComObjError(0)
-WatchDirectory("C:\test|.jpg\", "change")
 #include %A_ScriptDir%\Autoexecute.ahk ;include first to avoid issues with autoexecute ending too soon because of labels
-change(from, to)
-{
-	msgbox change %from% to %to%
-}
-#include %A_ScriptDir%\lib\Array.ahk
-#include %A_ScriptDir%\lib\binreadwrite.ahk
-#include %A_ScriptDir%\lib\Crypt.ahk
-#include %A_ScriptDir%\lib\Cursor.ahk
-#include %A_ScriptDir%\lib\Edit.ahk
-#include %A_ScriptDir%\lib\Functions.ahk
-#include %A_ScriptDir%\lib\gdip.ahk
-#include %A_ScriptDir%\lib\Parse.ahk
-#include %A_ScriptDir%\lib\RemoteBuf.ahk
-#include %A_ScriptDir%\lib\RichObject.ahk
-#include %A_ScriptDir%\lib\Taskbutton.ahk
-#include %A_ScriptDir%\lib\unhtml.ahk
-#include %A_ScriptDir%\lib\VA.ahk
-#include %A_ScriptDir%\lib\Win.ahk
-#include %A_ScriptDir%\lib\DllCalls.ahk
-#include %A_ScriptDir%\lib\Notify.ahk
-#include %A_ScriptDir%\lib\Struct.ahk
+#include <Array>
+#include <CGUI>
+#include <binreadwrite>
+#include <Crypt>
+#include <Cursor>
+#include <Edit>
+#include <Functions>
+#include <gdip>
+#include <Parse>
+#include <RemoteBuf>
+#include <RichObject>
+#include <Taskbutton>
+#include <unhtml>
+#include <VA>
+#include <Win>
+#include <DllCalls>
+#include <Notify>
+#include <Struct>
 
 #include %A_ScriptDir%\Accessor\Accessor.ahk
 #include %A_ScriptDir%\Autoupdate.ahk
@@ -75,3 +72,7 @@ change(from, to)
 #include %A_ScriptDir%\CustomHotkeys.ahk
 ;~ #include %A_ScriptDir%\HotkeyGUI.ahk
 #include %A_ScriptDir%\Profiling.ahk
+; watch(from, to)
+; {
+	; msgbox change
+; }

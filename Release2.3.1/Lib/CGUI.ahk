@@ -2,15 +2,15 @@
 /*
    Class: CGUI
    The main GUI class. User created GUIs need to extend this class and call Base.__New() in their constructor before doing anything related to this class.
+   
+   Variable: Accessing Controls
+   Controls may be accessed by their name by using GUI.Name or by their window handle by using GUI.Controls[hwnd] (assuming Name is a string and hwnd is a variable).
+   The difference between these two methods is that controls which are added as sub-controls to other controls are not accessible by their name through the main GUI object. They can either be accessed by hwnd like described above or by GUI.ParentControl.Controls.SubControlName (again assuming that SubControlName is a string).
 */
 Class CGUI
 {
-	/*
-	Variable: GUIList
-	This static array contains a list of all GUIs created with this library.
-	It is maintained automatically and should not be used directly.
-	*/
 	static GUIList := Object()
+	;~ _ := Object() ;Proxy object
 	/*	
 	Get only:
 	var Controls := Object()
@@ -19,41 +19,9 @@ Class CGUI
 	MinMax
 	Instances ;Returns a list of instances of this window class
 	
-	Set only:
-	var LastFound := 0 ;Sets the window to be the last found window (though this is unnecessary in a Gui thread because it is done automatically). This is rarely needed since most properties are accessible through CGUI.
-	;These might be made getable later
 	
-	Get/Set:
-	var AlwaysOnTop := 0 ;Makes the window stay on top of all other windows.
-	var Border := 0 ;Provides a thin-line border around the window. This is not common.
-	var Caption := 1 ;Provides a title bar and a thick window border/edge
-	var x	
-	var y
-	var width
-	var height
-	var Position 	;Same as x and y, Position := {x:x, y:y}
-	var Size		;Same as width and height, Size := {width:width, height:height}
-	var Title
-	var ActiveControl
-	var Enabled
-	var Visible
-	var Style
-	var ExStyle
-	var Resize
-	var SysMenu
 	var CloseOnEscape := 0 ;If true, pressing escape will call the Close() event function if defined. Otherwise, it will call Escape() if it is defined.
 	var DestroyOnClose := 0 ;If true, the gui will be destroyed instead of being hidden when it gets closed by the user.
-	var TransColor := "Off" ;A color that will be made invisible/see-through on the window. Values: RGB|ColorName|Off
-	var Transparent := "Off" ;Transparency of the window. Values: 0 = invisible, 255 = opaque, "Off" = no transparency at all (preferred over 255 for speed).
-	var MaximizeBox := 0 ;Enables the maximize button in the title bar. This is also included as part of Resize below.
-	var MinimizeBox := 1 ;Enables the minimize button in the title bar.	
-	var MinSize
-	var MaxSize
-	var Theme
-	var ToolWindow
-	var Owner
-	var OwnDialogs	
-	var Region
 		
 	Not supported:	
 	var Delimiter := "|" ;It's always | for now
@@ -76,6 +44,7 @@ Class CGUI
 	__New()
 	{
 		global CGUI, CFont
+		this.Insert("_", {})
 		start := 10 ;Let's keep some gui numbers free for other uses
 		loop {
 			Gui %start%:+LastFoundExist
@@ -91,7 +60,7 @@ Class CGUI
 		if(!this.GUINum)
 			return ""
 		this.Controls := Object()
-		this.Insert("_", {}) ;Create proxy object to store some keys in it and still trigger __Get and __Set
+		;~ this.Insert("_", {}) ;Create proxy object to store some keys in it and still trigger __Get and __Set
 		this.Font := new CFont(this.GUINum)
 		CGUI.GUIList[this.GUINum] := this
 		GUI, % this.GUINum ":+LabelCGUI_ +LastFound"		
@@ -102,6 +71,14 @@ Class CGUI
 	{
 	}
 	
+	/*
+	Function: Close
+	Closes the window exactly like the user would do when he clicks the x or presses Alt+F4. Result may depend on other factors, the window may hide or destroy itself or stay open
+	*/
+	Close()
+	{
+		PostMessage, 0x112, 0xF060,,, % "ahk_id " this.hwnd ; 0x112 = WM_SYSCOMMAND, 0xF060 = SC_CLOSE
+	}
 	/*
 	Function: Destroy
 	
@@ -303,11 +280,16 @@ Class CGUI
 					- ComboBox
 					- DropDownList
 					- ListBox
+					- TreeView
+					- Tab
+					- GroupBox
+					- Picture
+					- Progress
 		Name - The name of the control. The control can be accessed by its name directly from the GUI object, i.e. GUI.MyEdit1 or similar. Names must be unique and must not be empty.
-		Options - Default options to be used for the control. These are in default AHK syntax according to <http://www.autohotkey.com/docs/commands/Gui.htm#OtherOptions> and <http://www.autohotkey.com/docs/commands/GuiControls.htm>.
+		Options - Default options to be used for the control. These are in default AHK syntax according to <http://www.autohotkey.com/docs/commands/Gui.htm#OtherOptions> and <http://www.autohotkey.com/docs/commands/GuiControls.htm>. Do not use GUI variables (v option) and g-labels (g option).
 		Text - Text of the control. For some controls, this parameter has a special meaning. It can be a list of items or a collection of column headers separated by "|".
 	*/
-	Add(Control, Name, Options, Text)
+	Add(Control, Name, Options, Text, ControlList="")
 	{
 		global
 		local hControl, type
@@ -318,26 +300,26 @@ Class CGUI
 			Msgbox No name specified. Please supply a proper control name.
 			return
 		}
-		if(IsObject(this[Name]))
+		if(!ControlList)
+			ControlList := this
+		if(IsObject(ControlList[Name]))
 		{
 			Msgbox The control %Name% already exists. Please choose another name!
 			return
 		}
+		type := Control
 		if(Control = "DropDownList" || Control = "ComboBox" || Control = "ListBox")
 		{
-			type := Control
 			Control := object("base", CChoiceControl)
 			Control.__New(Name, Options, Text, this.GUINum, type)
 		}
 		else if(Control = "Checkbox" || Control = "Radio" )
 		{
-			type := Control
 			Control := object("base", CCheckboxControl)
 			Control.__New(Name, Options, Text, this.GUINum, type)
 		}
 		else if(Control = "Tab" )
 		{
-			type := "Tab2"
 			Control := object("base", CTabControl)
 			Control.__New(Name, Options, Text, this.GUINum)
 		}
@@ -356,10 +338,11 @@ Class CGUI
 			}
 		}
 		Gui, % this.GUINum ":Add", % Control.Type, % Control.Options " hwndhControl " (IsLabel(this.__Class "_" Control.Name) ? "g" this.__Class "_" Control.Name : ""), % Control.Content ;Create the control and get its window handle and setup a g-label
+		Control.Insert("hwnd", hControl) ;Window handle is used for all further operations on this control
+		Control.PostCreate()
 		Control.Remove("Content")
-		Control.hwnd := hControl ;Window handle is used for all further operations on this control
-		this.Controls[Name] := Control ;Add to list of controls
-		this[Control.Name] := Control
+		ControlList[Control.Name] := Control
+		this.Controls[hControl] := Control ;Add to list of controls
 		;Check if the programmer missed a g-label
 		for index, Event in Control._.Events
 			if(IsFunc(this.__Class "." Control.Name "_" Event) && !IsLabel(this.__Class "_" Control.Name))
@@ -368,13 +351,162 @@ Class CGUI
 				break
 			}
 		
-		if(type = "Tab2")
+		if(type = "Tab2") ;Fix tab name
 		{
 			Gui, % this.GUINum ":Tab"
 			Control.Type := "Tab"
 		}
+		else if(type = "ActiveX")
+		{
+			GUINum := Control.GUINum
+			classnn := Control.ClassNN
+			GuiControlGet, object, % Control.GUINum ":", % Control.ClassNN
+			Control._.Object := object
+			;~ Events := {}
+			;~ for key, value in this.base
+				;~ if(InStr(key, Control.Name "_") = 1 && IsFunc(this[key]))
+					;~ Events.Insert(SubStr(key, StrLen(Control.Name "_") + 1), Value)
+			;~ Control._.Events := {base : Events}
+			Control._.Events := new Control.CEvents(Control.GUINum, Control.Name)
+			ComObjConnect(object, Control._.Events)
+		}
 		return Control
 	}
+	
+	/*
+	Function: ControlFromHWND
+	Returns the object that belongs to a control with a specific window handle.
+	Parameters:
+		HWND - The window handle.
+	*/
+	ControlFromHWND(hwnd)
+	{
+		for GUINum, GUI in this.GUIList
+			if(GUI.Controls.HasKey(hwnd))
+				return GUI.Controls[hwnd]
+	}
+	
+	/*
+	Function: ControlFromHWND
+	Returns the object that belongs to a control with a specific window handle.
+	Parameters:
+		HWND - The window handle.
+	*/
+	ControlFromGUINumAndName(GUINum, Name)
+	{
+		return this.GUIList[GUINum][Name]
+	}
+	/*
+	Variable: GUIList
+	This static array contains a list of all GUIs created with this library.
+	It is maintained automatically and should not need to be used directly.
+	
+	Variable: IsDestroyed
+	True if the window has been destroyed and this object is not usable anymore.
+	
+	Variable: x
+	x-Position of the window.
+	
+	Variable: y
+	y-Position of the window.
+	
+	Variable: width
+	Width of the window.
+	
+	Variable: height
+	Height of the window.
+	
+	Variable: Position
+	An object containing the x and y values. They can not be set separately through this object, only both at once.
+	
+	Variable: Size
+	An object containing the width and height values. They can not be set separately through this object, only both at once.
+	
+	Variable: Title
+	The window title.
+	
+	Variable: Style
+	The window style.
+	
+	Variable: ExStyle
+	The window extended style.
+	
+	Variable: Transcolor
+	A color that will be made invisible/see-through on the window. Values: RGB|ColorName|Off
+	
+	Variable: Transparent
+	The window style.
+	
+	Variable: MinMax
+	The window state: -1: minimized / 1: maximized / 0: neither. Can not be set this way.
+	
+	Variable: ActiveControl
+	The control object that is focused. Can also be set.
+	
+	Variable: Enabled
+	If false, the user can not interact with this window. Used for creating modal windows.
+	
+	Variable: Visible
+	Sets wether the window is visible or hidden.
+	
+	Variable: AlwaysOnTop
+	If true, the window will be in front of other windows.
+	
+	Variable: Border
+	Provides a thin border around the window.
+	
+	Variable: Caption
+	Set to false to remove the title bar.
+	
+	Variable: MinimizeBox
+	Determines if the window has a minimize button in the title bar.
+	
+	Variable: MaximizeBox
+	Determines if the window has a maximize button in the title bar.
+	
+	Variable: Resize
+	Determines if the window can be resized by the user.
+	
+	Variable: SysMenu
+	If true, the window will show a it's program icon in the title bar and show its system menu there.
+	
+	Variable: Instances
+	A list of all instances of the current window class. If you inherit from CGUI you can use this to find all windows of this type.
+	
+	Variable: MinSize
+	Minimum window size when Resize is enabled.
+	
+	Variable: MaxSize
+	Maximum window size when Resize is enabled.
+	
+	Variable: Theme
+	
+	Variable: Toolwindow
+	Provides a thin title bar.
+	
+	Variable: Owner
+	Assigning a hwnd to this property makes this window owned by another so it will act like a tool window of said window. Supports any window, not just windows from this process.
+	
+	Variable: OwnerAutoClose
+	By enabling this, an owned window (which has its Owner property set to the window handle of its parent window) will automatically close itself when its parent window closes.
+	The window can use its PreClose() event to decide if it should really be closed, but the owner status will be removed anyway.
+	To archive this behaviour a shell message hook is used. If there is already such a hook present in the script, this library will intercept it and forward any messages to the original callback function.
+	
+	Variable: OwnDialogs
+	Determines if the dialogs that this window shows will be owned by it.
+	
+	Variable: Region
+	
+	Variable: WindowColor
+	
+	Variable: ControlColor
+	
+	Variable: DestroyOnClose
+	If set, the window will be destroyed when it gets closed.
+	
+	Variable: CloseOnEscape
+	If set, the window will close itself when escape is pressed.	
+	*/
 	__Get(Name)
 	{
 		global CGUI	
@@ -411,12 +543,8 @@ Class CGUI
 			{
 				ControlGetFocus, Value, % "ahk_id " this.hwnd
 				ControlGet, Value, Hwnd,, %Value%, % "ahk_id " this.hwnd
-				for Name, Control in this.Controls
-					if(Control.hwnd = Value)
-					{
-						Value := Control
-						break
-					}
+				if(this.Controls.HasKey(Value))
+					Value := this.Controls[Value]
 			}
 			else if(Name="Enabled")
 				Value := !(this.Style & 0x8000000) ;WS_DISABLED
@@ -469,6 +597,7 @@ Class CGUI
 	}
 	__Set(Name, Value)
 	{
+		global CGUI
 		DetectHidden := A_DetectHiddenWindows
 		DetectHiddenWindows, On
 		Handled := true
@@ -496,8 +625,48 @@ Class CGUI
 			}
 			else if(Name = "Owner")
 			{
-				Gui, % this.GUINum ":" (Value > 0 && Value < 100 && Value != this.GUINum ? "+" : "-") "Owner" Value
-				this._.Owner := Value
+				if(Value && WinExist("ahk_id " Value))
+				{
+					DllCall("SetWindowLong" (A_PtrSize = 4 ? "" : "Ptr"), "Ptr", this.hwnd, "int", -8, "PTR", Value) ;This line actually sets the owner behavior
+					this._.hOwner := Value
+				}
+				else
+				{
+					DllCall("SetWindowLong" (A_PtrSize = 4 ? "" : "Ptr"), "Ptr", this.hwnd, "int", -8, "PTR", 0) ;Remove tool window behavior
+					this._.Remove("hOwner")
+				}
+			}
+			else if(Name = "OwnerAutoClose" && this._.HasKey("hOwner"))
+			{
+				if(Value = 1)
+				{
+					if(!CGUI._.ShelllHook)
+					{
+						DllCall( "RegisterShellHookWindow", "Ptr", A_ScriptHWND) 
+						CGUI._.ShellHookMsg := DllCall( "RegisterWindowMessage", Str,"SHELLHOOK" ) 
+						CGUI._.ShellHook := OnMessage(CGUI._.ShellHookMsg, "CGUI_ShellMessage")
+						if(CGUI._.ShellHook = "CGUI_ShellMessage")
+							CGUI._.ShellHook := 1
+					}
+					this._.OwnerAutoClose := 1
+				}
+				else
+				{
+					if(this._.OwnerAutoClose)
+					{
+						for GUINum, GUI in CGUI.GUIList
+							if(GUI.hwnd != this.hwnd && GUI._.OwnerAutoClose)
+								found := true
+						if(!found)
+						{
+							OnMessage(CGUI._.ShellHookMsg, (CGUI._.ShellHook && CGUI._.ShellHook != 1) ? CGUI._.ShellHook : "")
+							if(!CGUI._.ShellHook)
+								DllCall("DeRegisterShellHookWindow", "Ptr", A_ScriptHWND)
+							CGUI._.Remove("ShellHook")
+						}
+					}
+					this._.OwnerAutoClose := 0
+				}
 			}
 			else if Name in Style, ExStyle, Transparent, TransColor
 				WinSet, %Name%, %Value%, % "ahk_id " this.hwnd
@@ -520,7 +689,9 @@ Class CGUI
 				Gui, % this.GUINum ":Color",, %Value%
 			else if(Name = "ActiveControl")
 			{
-				if(!IsObject(Value))
+				if(!IsObject(Value) && WinExist("ahk_id " Value))
+					Value := this.Controls[Value]
+				else if(!IsObject(Value))
 					Value := this[Value]
 				if(IsObject(Value))
 					ControlFocus,,% "ahk_id " Value.hwnd
@@ -542,18 +713,29 @@ Class CGUI
 			return Value
 	}
 	/*
-	Function: ControlFromHWND
-	Returns the object that belongs to a control with a specific window handle.
-	Parameters:
-		HWND - The window handle.
-	*/
-	ControlFromHWND(HWND)
-	{
-		for GUINum, GUI in this.GUIList
-			for Name, Control in GUI.Controls
-				if(Control.hwnd = hwnd)
-					return Control
-	}
+	Event: Introduction
+	Events are used by implementing the specific event function in the class that extends CGUI. No g-labels are required nor anything else.
+	
+	Event: ContextMenu()
+	Invoked when the user right clicks on a control of this window.
+	
+	Event: DropFiles()
+	Invoked when the user dropped files on the window.
+	
+	Event: Escape()
+	Invoked when the user pressed Escape. Having the window close itself when escape gets pressed can be easily done by setting CloseOnEscape := 1 and does not need this event.
+	
+	Event: PreClose()
+	Invoked when the window is about to close. This function can stop the closing of the window by returning true. Otherwise the window will be destroyed or hidden, depending on the setting of DestroyOnClose.
+	
+	Event: PostDestroy()
+	Invoked when the window was destroyed. It's not possible to interact with the window or its controls anymore so this event should only be used to free possible resources.
+	
+	Event: Size(Event)
+	Invoked when the window gets resized.
+	0: The window has been restored, or resized normally such as by dragging its edges.
+	1: The window has been minimized.
+	2: The window has been maximized.
 	/*
 	Main event rerouting function. It identifies the associated window/control and calls the related event function if it is defined. It also handles some things on its own, such as window closing.
 	*/
@@ -575,7 +757,10 @@ Class CGUI
 				if(IsFunc(GUI[func]))
 				{				
 					ErrorLevel := ErrLevel
-					result := `(GUI)[func]()
+					if(A_ThisLabel = "CGUI_Size")
+						result := `(GUI)[func](A_EventInfo)
+					else
+						result := `(GUI)[func]()
 				}
 				if(!this.IsDestroyed)
 				{
@@ -587,9 +772,9 @@ Class CGUI
 			}
 			else
 			{
-				for Name, Control in GUI.Controls
+				for hwnd, Control in GUI.Controls
 				{
-					if(Name = ControlName)
+					if(Control.Name = ControlName)
 					{
 						ErrorLevel := ErrLevel
 						Control.HandleEvent()
@@ -615,13 +800,7 @@ Class CGUI
 			else if(msg = WM_MOUSEMOVE)
 			{
 				MouseGetPos,,,,ControlHWND, 2
-				for name, Control in GUI.Controls
-					if(Control.hwnd = ControlHWND && Control.Link)
-					{
-						ShouldHover := true
-						break
-					}
-				if(ShouldHover)
+				if(GUI.Controls.HasKey(ControlHWND) && GUI.Controls[ControlHWND].Link)
 				{
 					if(!GUI._.Hovering)
 					{
@@ -636,15 +815,13 @@ Class CGUI
 				else
 				{
 					if(GUI._.Hovering)
-					{					
-						for name, Control in GUI.Controls
-							if(Control.hwnd = GUI._.LastHoveredControl && Control.Link)
-							{
-								Control.Font.Options := "norm cBlue"
-								DllCall("SetCursor", "Ptr", GUI._.h_old_cursor)
-								GUI._.Hovering := false
-								break
-							}					
+					{
+						if(GUI.Controls.HasKey(GUI._.LastHoveredControl) && GUI.Controls[GUI._.LastHoveredControl].Link)
+						{
+							Control.Font.Options := "norm cBlue"
+							DllCall("SetCursor", "Ptr", GUI._.h_old_cursor)
+							GUI._.Hovering := false
+						}					
 					}
 				}
 			}
@@ -663,23 +840,65 @@ CControl_Event:
 CGUI.HandleEvent()
 return
 
+/*
+Function: CGUI_ShellMessage()
+This function is used to monitor closing of the parent windows of owned GUIs. It does not need to be called directly.
+It is still possible to use a shell message hook as usual in your script as long as you initialize it before setting GUI.OwnerAutoClose := 1.
+This library will intercept all ShellMessage calls and forward it to the previously used ShellMessage callback function.
+This callback function will only be used when there are owned windows which have OwnerAutoClose activated. In all other cases it won't be used and can safely be ignored.
+*/
+CGUI_ShellMessage(wParam, lParam, msg, hwnd) 
+{ 
+   global CGUI 
+   outputdebug shellmessage %wparam% %lparam%
+   if(wParam = 2) ;Window Destroyed 
+   {
+	  Loop % CGUI.GUIList.MaxIndex() 
+	  { 
+		 if(CGUI.GUIList[A_Index]._.hOwner = lParam && CGUI.GUIList[A_Index]._.OwnerAutoClose)
+		 {
+			PostMessage, 0x112, 0xF060,,, % "ahk_id " CGUI.GUIList[A_Index].hwnd  ; 0x112 = WM_SYSCOMMAND, 0xF060 = SC_CLOSE --> this should trigger AHK CGUI_Close label so the GUI class may process the close request
+			CGUI.GUIList[A_Index]._.Remove("hOwner")
+			CGUI.GUIList[A_Index]._.Remove("OwnerAutoClose")
+			for GUINum, GUI in CGUI.GUIList
+				if(GUI._.OwnerAutoClose)
+					found := true
+			if(!found) ;No more tool windows, remove shell hook 
+			{ 
+				OnMessage(CGUI._.ShellHookMsg, (CGUI._.ShellHook && CGUI._.ShellHook != 1) ? CGUI._.ShellHook : "")
+				if(!CGUI._.ShellHook)
+					DllCall("DeRegisterShellHookWindow", "Ptr", A_ScriptHWND)
+				CGUI._.Remove("ShellHook")
+			} 
+			break 
+		 } 
+	  } 
+   } 
+   if(IsFunc(CGUI._.ShellHook)) 
+   { 
+		msgbox % "reroute to " CGUI._.ShellHook
+	  ShellHook := CGUI._.ShellHook 
+	  %ShellHook%(wParam, lParam, msg, hwnd) ;This is allowed even if the function uses less parameters 
+   } 
+}
+
 Class CFont
 {
-	__New(GUINum, ControlName)
+	__New(GUINum, hwnd)
 	{
 		this.Insert("_", {})
 		this._.GUINum := GUINum
-		this._.ControlName := ControlName
+		this._.hwnd := hwnd
 	}
 	__Set(Name, Value)
 	{
 		global CGUI
 		if(Name = "Options")
 		{
-			if(this._.ControlName) ;belonging to a control
+			if(this._.hwnd) ;belonging to a control
 			{
 				GUI := CGUI.GUIList[this._.GUINum]
-				Control := GUI[this._.ControlName]
+				Control := GUI.Controls[this._.hwnd]
 				Gui, % this._.GUINum ":Font", %Value%
 				GuiControl, % this.GUINum ":Font", % Control.ClassNN
 				Gui, % this._.GUINum ":Font", % GUI.Font.Options ;Restore current font
@@ -691,10 +910,10 @@ Class CFont
 		}
 		else if(Name = "Font")
 		{
-			if(this._.ControlName) ;belonging to a control
+			if(this._.hwnd) ;belonging to a control
 			{
 				GUI := CGUI.GUIList[this._.GUINum]
-				Control := GUI[this._.ControlName]
+				Control := GUI.Controls[this._.hwnd]
 				Gui, % this._.GUINum ":Font",, %Value%
 				GuiControl, % this.GUINum ":Font", % Control.ClassNN
 				Gui, % this._.GUINum ":Font",, % GUI.Font.Font ;Restore current font
@@ -711,13 +930,8 @@ Class CFont
 			return this._[Name]
 	}
 }
-/*
-Ideas:
-Anchor
-Dock
-ShowDialog (modal to another CGUI)
-All kinds of events, some maybe through OnMessage
-*/
-#include <CControls>
-#include <CDialogs>
+#include <gdip>
+#include <CControl>
+#include <CFileDialog>
+#include <CFolderDialog>
 #include <CEnumerator>

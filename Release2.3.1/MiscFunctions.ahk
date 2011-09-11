@@ -1205,9 +1205,10 @@ XPGetFocussed()
 ;By HotKeyIt
 ;Docs: http://www.autohotkey.com/forum/viewtopic.php?p=398565#398565
 WatchDirectory(p*){ 
+   global _Struct 
    ;Structures 
    static FILE_NOTIFY_INFORMATION:="DWORD NextEntryOffset,DWORD Action,DWORD FileNameLength,WCHAR FileName[1]" 
-   static OVERLAPPED:="ULONG_PTR Internal,ULONG_PTR InternalHigh,{{DWORD offset,DWORD offsetHigh},PVOID Pointer},HANDLE hEvent" 
+   static OVERLAPPED:="ULONG_PTR Internal,ULONG_PTR InternalHigh,{struct{DWORD offset,DWORD offsetHigh},PVOID Pointer},HANDLE hEvent" 
    ;Variables 
    static running,sizeof_FNI=65536,nReadLen:=VarSetCapacity(nReadLen,8),WatchDirectory:=RegisterCallback("WatchDirectory","F",0,0) 
    static timer,ReportToFunction,LP,nReadLen:=VarSetCapacity(LP,(260)*(A_PtrSize/2),0) 
@@ -1226,7 +1227,7 @@ WatchDirectory(p*){
             DllCall("CloseHandle","Uint",@[folder].hD),DllCall("CloseHandle","Uint",@[folder].O.hEvent) 
             ,@.Remove(folder) 
          #:=Object() 
-         DirEvents:=Struct("HANDLE[1000]") 
+         DirEvents:=new _Struct("HANDLE[1000]") 
          DllCall("KillTimer","Uint",0,"Uint",timer) 
          timer= 
          Return 0 
@@ -1283,12 +1284,12 @@ WatchDirectory(p*){
       @[LP].CNG:=(p.3?p.3:(0x1|0x2|0x4|0x8|0x10|0x40|0x100)) 
       If !reset { 
          @[LP].SetCapacity("pFNI",sizeof_FNI) 
-         @[LP].FNI:=Struct(FILE_NOTIFY_INFORMATION,@[LP].GetAddress("pFNI")) 
-         @[LP].O:=Struct(OVERLAPPED) 
+         @[LP].FNI:=new _Struct(FILE_NOTIFY_INFORMATION,@[LP].GetAddress("pFNI")) 
+         @[LP].O:=new _Struct(OVERLAPPED) 
       } 
       @[LP].O.hEvent:=DllCall("CreateEvent","Uint",0,"Int",1,"Int",0,"UInt",0) 
       If (!DirEvents) 
-         DirEvents:=Struct("HANDLE[1000]") 
+         DirEvents:=new _Struct("HANDLE[1000]") 
       DirEvents[reset?reset:#.MaxIndex()]:=@[LP].O.hEvent 
       DllCall("ReadDirectoryChangesW","UInt",@[LP].hD,"UInt",@[LP].FNI[],"UInt",sizeof_FNI 
                ,"Int",@[LP].sD,"UInt",@[LP].CNG,"UInt",0,"UInt",@[LP].O[],"UInt",0) 
@@ -1318,7 +1319,7 @@ WatchDirectory(p*){
             reconnect.Insert(LP,LP) 
       } else 
          Loop { 
-            FNI:=A_Index>1?Struct(FILE_NOTIFY_INFORMATION,FNI[]+FNI.NextEntryOffset):Struct(FILE_NOTIFY_INFORMATION,@[LP].FNI[]) 
+            FNI:=A_Index>1?(new _Struct(FILE_NOTIFY_INFORMATION,FNI[]+FNI.NextEntryOffset)):(new _Struct(FILE_NOTIFY_INFORMATION,@[LP].FNI[])) 
             If (FNI.Action < 0x6){ 
                FileName:=@[LP].dir . StrGet(FNI.FileName[""],FNI.FileNameLength/2,"UTF-16") 
                If (FNI.Action=FILE_ACTION_RENAMED_OLD_NAME) 
@@ -1346,4 +1347,14 @@ WatchDirectory(p*){
       Return 
    } 
    Return 
+}
+New(Object, Params*)
+{
+	global
+	if(IsObject(%Object%))
+	{
+		instance := {base : %Object%}
+		instance.__New(Params*)
+		return instance
+	}
 }

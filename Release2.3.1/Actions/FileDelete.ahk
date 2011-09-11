@@ -10,7 +10,6 @@ Action_Delete_ReadXML(Action, XMLAction)
 
 Action_Delete_Execute(Action, Event)
 {
-	outputdebug file delete
 	Action_FileOperation_ProcessPaths(Action, Event, sources, targets, flags)
 	ShellFileOperation(0x3, sources, "", flags)  
 	return 1

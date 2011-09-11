@@ -253,6 +253,7 @@ EventSystem_CreateBaseObjects()
 		tmpobject.Delete := "Trigger_" A_LoopField "_Delete"
 		tmpobject.PrepareCopy := "Trigger_" A_LoopField "_PrepareCopy"
 		tmpobject.PrepareReplacement := "Trigger_" A_LoopField "_PrepareReplacement"
+		tmpobject.ReadVar := "Event_ReadVar"
 		tmpobject.OnExit := "Trigger_" A_LoopField "_OnExit"
 		Trigger_%A_LoopField%_Base := object("base",tmpobject)	
 		Trigger_%A_LoopField%_Base.Type := A_LoopField
@@ -272,6 +273,7 @@ EventSystem_CreateBaseObjects()
 		tmpobject.DisplayString := "Condition_" A_LoopField "_DisplayString"
 		tmpobject.GuiShow := "Condition_" A_LoopField "_GuiShow"
 		tmpobject.GuiSubmit := "Condition_" A_LoopField "_GuiSubmit"
+		tmpobject.ReadVar := "Event_ReadVar"
 		Condition_%A_LoopField%_Base := object("base",tmpobject) ;.DeepCopy()
 		Condition_%A_LoopField%_Base.Type := A_LoopField
 		Condition_%A_LoopField%_Init(Condition_%A_LoopField%_Base)
@@ -288,6 +290,7 @@ EventSystem_CreateBaseObjects()
 		tmpobject.GuiShow := "Action_" A_LoopField "_GuiShow"
 		tmpobject.GuiSubmit := "Action_" A_LoopField "_GuiSubmit"
 		tmpobject.OnExit := "Action_" A_LoopField "_OnExit"
+		tmpobject.ReadVar := "Event_ReadVar"
 		Action_%A_LoopField%_Base := object("base", tmpobject) ;.DeepCopy()
 		Action_%A_LoopField%_Base.Type := A_LoopField
 		Action_%A_LoopField%_Init(Action_%A_LoopField%_Base)
@@ -596,8 +599,18 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 	}
 	return Events
 }
-
-
+/*
+Function: Event_ReadVar()
+Reads a property from an xml object and stores it in a subevent if it exists.
+NOTE: For some reason it is not possible to name this function SubEvent_ReadVar(). 
+It fails once I add the S at the beginning, i.e. ubEvent_ReadVar works while SubEvent_ReadVa doesn't. WTF!
+*/
+Event_ReadVar(Subevent, xml, key)
+{
+	Assert(IsObject(Subevent) && IsObject(xml) && key != "")
+	if(xml.HasKey(key))
+		Subevent[key] :=  xml[key]
+}
 WriteEventsFile(Events, path)
 {
 	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, ConfigPath
@@ -745,9 +758,10 @@ OnTrigger(Trigger)
 		TriggerSingleEvent(TemporaryEvents[A_Index], Trigger)
 	return
 }
-;Tests if an event matches to a trigger and may be appended to event schedule (and appends it)
-;This function can also be used to specifically trigger a single event
-;To just trigger it without performing trigger matching, leave Trigger Parameter empty
+;Tests if an event matches to a trigger and may be appended to event schedule (and appends it).
+;This function can also be used to specifically trigger a single event.
+;To just trigger it without performing trigger matching, leave Trigger Parameter empty.
+;It returns the event on the EventSchedule so its state can be examined later.
 TriggerSingleEvent(Event, Trigger="")
 {
 	global EventSchedule
@@ -756,9 +770,9 @@ TriggerSingleEvent(Event, Trigger="")
 	{
 		;Test if the event is already running and mustn't be run multiple times
 		if(!Event.OneInstance || !EventSchedule.IndexOfSubItem("ID", Event.ID))
-			EventSchedule.append(Event.DeepCopy())
+			EventSchedule.append(Copy := Event.DeepCopy())
 	}
-	return
+	return Copy
 }
 EventScheduler:
 SetTimer, EventScheduler, Off
