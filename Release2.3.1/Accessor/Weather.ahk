@@ -1,4 +1,4 @@
-﻿Accessor_Weather_Init(ByRef Weather, Settings)
+﻿Accessor_Weather_Init(ByRef Weather, PluginSettings)
 {
 	Weather.Settings.Keyword := "weather"
 	Weather.DefaultKeyword := "weather"

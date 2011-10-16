@@ -13,8 +13,8 @@ Action_MergeTabs_DisplayString(Action)
 }
 Action_MergeTabs_Execute(Action, Event)
 {
-	global UseTabs, ExplorerWindows, CTabContainer
-	if(!UseTabs)
+	global ExplorerWindows, CTabContainer
+	if(!Settings.Explorer.Tabs.UseTabs)
 		return 0
 	Active := WinActive("ahk_group ExplorerGroup")
 	if(!Active)

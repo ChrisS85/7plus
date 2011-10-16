@@ -13,7 +13,7 @@ Array(Params*){
 	  ArrBase.contains := "Array_Contains"
 	  ArrBase.join := "Array_Join" 
 	  ArrBase.append := "Array_Append"
-	  ArrBase.insert := "Array_Insert"
+	  ;~ ArrBase.insert := "Array_Insert"
 	  ArrBase.delete := "Array_Delete" 
 	  ArrBase.sort := "Array_sort"
 	  ArrBase.reverse := "Array_Reverse"
@@ -132,17 +132,19 @@ Array_Copy(arr){
 } 
 
 Array_Append(arr, Params*){ 
-   Return arr.insert(arr.len()+1, Params*) 
+	for index, param in Params
+		arr.insert(arr.len()+1, param) 
+	return arr
 } 
-Array_Insert(arr, index, Params*)
-{
-	if(!Params.MaxIndex())
-		arr._Insert(index)
-	else
-		for offset, param in Params
-			arr._Insert(index + (offset-1), param) 
-	Return arr 
-}
+;~ Array_Insert(arr, index, Params*)
+;~ {
+	;~ if(!Params.MaxIndex())
+		;~ arr._Insert(index)
+	;~ else
+		;~ for offset, param in Params
+			;~ arr._Insert(index + (offset-1), param) 
+	;~ Return arr 
+;~ }
 Array_Reverse(arr){ 
    arr2 := Array() 
    Loop, % len:=arr.len() 

@@ -1,6 +1,6 @@
 Class CCalc extends CAccessorPlugin
 {
-	__New(Settings)
+	__New(AccessorSettings)
 	{
 	}
 	ShowSettings(PluginSettings, PluginGUI)
@@ -40,7 +40,7 @@ Class CCalc extends CAccessorPlugin
 	{
 	}
 }
-Accessor_Calc_Init(ByRef Calc, Settings)
+Accessor_Calc_Init(ByRef Calc, PluginSettings)
 {
 	Calc.Settings.Keyword := "="
 	Calc.DefaultKeyword := "="

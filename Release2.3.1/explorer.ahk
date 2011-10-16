@@ -194,21 +194,21 @@ AcquireExplorerConfirmationDialogStrings()
 }
 
 ;Mouse "gestures" (hold left/right and click right/left)
-#if HKMouseGestures && GetKeyState("RButton") && (WinActive("ahk_group ExplorerGroup")||IsDialog()) && IsMouseOverFileList()
+#if Settings.Explorer.MouseGestures && GetKeyState("RButton") && (WinActive("ahk_group ExplorerGroup")||IsDialog()) && IsMouseOverFileList()
 LButton::
 	SuppressRButtonUp:=true
 	Shell_GoBack()
 	return
 #if
 
-#if HKMouseGestures && SuppressRButtonUp
+#if Settings.Explorer.MouseGestures && SuppressRButtonUp
 ~RButton UP::
 	SuppressRButtonUp:=false
 	Send, {Esc}
 	Return
 #if
 
-#if HKMouseGestures && GetKeyState("LButton","P") && (WinActive("ahk_group ExplorerGroup")||IsDialog()) && IsMouseOverFileList()
+#if Settings.Explorer.MouseGestures && GetKeyState("LButton","P") && (WinActive("ahk_group ExplorerGroup")||IsDialog()) && IsMouseOverFileList()
 RButton::
 	Shell_GoForward()
 	SuppressRButtonUp:=true
@@ -216,7 +216,7 @@ RButton::
 #if
 
 ;Enter:Execute focussed file
-#if HKImproveEnter && WinActive("ahk_group ExplorerGroup") && InFileList() && !IsRenaming() && !IsContextMenuActive()
+#if Settings.Explorer.ImproveEnter && WinActive("ahk_group ExplorerGroup") && InFileList() && !IsRenaming() && !IsContextMenuActive()
 Enter::
 Return::
 	files:=GetSelectedFiles()
@@ -229,14 +229,13 @@ Return::
 #if
 
 ;Function(s) to align explorer windows side by side and to launch explorer with last used directory
-#if (RecallExplorerPath && ExplorerPath != "") || AlignExplorer && WinActive("ahk_group ExplorerGroup")
+#if (Settings.Explorer.RememberPath && Settings.Explorer.CurrentPath != "") || Settings.Explorer.AlignNewExplorer && WinActive("ahk_group ExplorerGroup")
 #e::RunExplorer()
 #if
 RunExplorer()
 {
-	global AlignExplorer, RecallExplorerPath, ExplorerPath
 	active:=WinActive("ahk_group ExplorerGroup")
-	if(active && AlignExplorer)
+	if(active && Settings.Explorer.AlignNewExplorer)
 	{
 		WinRestore ahk_id %active%
 		if(A_OSVersion="WIN_7")
@@ -253,11 +252,11 @@ RunExplorer()
 			WinMove, ahk_id %active%,, %x%,%y%,%w%,%h%
 		}
 	}
-	if(RecallExplorerPath && ExplorerPath)
-		Run("""" ExplorerPath """")
+	if(Settings.Explorer.RememberPath && Settings.Explorer.CurrentPath)
+		Run("""" Settings.Explorer.CurrentPath """")
 	Else
 		run, C:,, UseErrorLevel
-	if(AlignExplorer && active)
+	if(Settings.Explorer.AlignNewExplorer && active)
 	{
 		WinWaitNotActive ahk_id %active%	
 		Loop ;Make sure new window is really active
@@ -426,7 +425,7 @@ return
 ;Middle click on desktop -> Change wallpaper
 
 ;Scroll tree list with mouse wheel
-#if (ScrollUnderMouse && ((IsWindowUnderCursor("#32770") && IsDialog()) || IsWindowUnderCursor("CabinetWClass")||IsWindowUnderCursor("ExploreWClass")) && !IsRenaming())||(Accessor.GUINum && WinActive(Accessor.WindowTitle))
+#if (Settings.Explorer.ScrollTreeUnderMouse && ((IsWindowUnderCursor("#32770") && IsDialog()) || IsWindowUnderCursor("CabinetWClass")||IsWindowUnderCursor("ExploreWClass")) && !IsRenaming())||(Accessor.GUINum && WinActive(Accessor.WindowTitle))
 WheelUp::
 WheelDown::
 Wheel()
@@ -471,7 +470,7 @@ InitExplorerWindows()
 ;Find all explorer windows, register them in ExplorerWindows array and set up events and info gui
 RegisterExplorerWindows()
 {
-	global ExplorerWindows, ExplorerWindow
+	global ExplorerWindows
 	; for item in ComObjCreate("Shell.Application").Windows
 		; ComObjConnect(item, "Explorer")
 	; ShellWindows := ComObjCreate("Shell.Application").Windows
@@ -480,7 +479,7 @@ RegisterExplorerWindows()
 	Loop % hwndList
 	{
 		if(!ExplorerWindows.IndexOfSubItem("hwnd", hWndList%A_Index%+0))
-			ExplorerWindows.append(new ExplorerWindow(hwndList%A_Index%+0))
+			ExplorerWindows.append(new CExplorerWindow(hwndList%A_Index%+0))
 	}
 	
 	SetTimer, WaitForClose, 1000
@@ -535,9 +534,9 @@ RestoreExplorerSelection()
 ;Called when an explorer window is activated.
 ExplorerActivated(hwnd)
 {
-	global TabNum, TabWindow, SuppressTabEvents, HKShowSpaceAndSize, ExplorerWindows, ExplorerWindow
+	global TabNum, TabWindow, SuppressTabEvents, ExplorerWindows
 	if(!ExplorerWindows.IndexOfSubItem("hwnd",hwnd))
-		ExplorerWindows.Append(new ExplorerWindow(hwnd))
+		ExplorerWindows.Append(new CExplorerWindow(hwnd))
 	RegisterSelectionChangedEvents() ;Is this needed? only as backup probably
 	; if(SuppressTabEvents)
 		; return
@@ -584,7 +583,7 @@ return
 ;Called when an explorer window gets deactivated.
 ExplorerDeactivated(hwnd)
 {
-	global TabContainerList, TabNum, TabWindow,SuppressTabEvents, HKShowSpaceAndSize
+	global TabContainerList, TabNum, TabWindow,SuppressTabEvents
 	; hwnd:=WinExist("A")
 	; if(hwnd=TabWindow)
 		; return
@@ -598,7 +597,7 @@ ExplorerDeactivated(hwnd)
 ;Called when an explorer window gets destroyed.
 ExplorerDestroyed(hwnd)
 {
-	global TabContainerList,TabWindowClose, ExplorerWindows
+	global TabContainerList, ExplorerWindows
 	outputdebug explorer destroyed
 	TabContainer:=ExplorerWindows.SubItem("hwnd", hwnd+0).TabContainer
 	if(index := ExplorerWindows.IndexOfSubItem("hwnd", hwnd))
@@ -611,23 +610,23 @@ ExplorerDestroyed(hwnd)
 	if(!TabContainer)
 		return
 	TabContainer.TabClosed(hwnd)
-	if(TabWindowClose = 1)
+	if(Settings.Explorer.Tabs.TabWindowClose = 1)
 		TabContainer.CloseAllTabs()
 	return
 }
 ExplorerMoved(hwnd)
 {
-	global UseTabs, HKShowSpaceAndSize, ExplorerWindows
+	global ExplorerWindows
 	ExplorerWindow := ExplorerWindows.SubItem("hwnd", hwnd)
-	if(UseTabs && !ExplorerWindows.TabContainerList.TabActivationInProgress)
+	if(Settings.Explorer.Tabs.UseTabs && !ExplorerWindows.TabContainerList.TabActivationInProgress)
 		ExplorerWindow.TabContainer.UpdatePosition()
-	if(HKShowSpaceAndSize && A_OsVersion = "WIN_7")
+	if(Settings.Explorer.AdvancedStatusBarInfo && A_OsVersion = "WIN_7")
 		ExplorerWindow.InfoGUI.UpdateInfoPosition()
 }
 ;Called when active explorer changes its path.
 ExplorerPathChanged(ExplorerWindow)
 {
-	global vista7, HKSelectFirstFile, UseTabs
+	global vista7
 	OldPath := ExplorerWindow.Path
 	ExplorerWindow.RegisterSelectionChangedEvent() ;This will also refresh the path in ExplorerWindow
 	Path := ExplorerWindow.Path
@@ -635,10 +634,10 @@ ExplorerPathChanged(ExplorerWindow)
 		return
 	ExplorerWindow.DisplayName := GetCurrentFolder(ExplorerWindow.hwnd, 1)
 	outputdebug ExplorerPathChanged
-	if(UseTabs)
+	if(Settings.Explorer.Tabs.UseTabs)
 		ExplorerWindow.TabContainer.UpdateTabs()
 	;focus first file
-	if(HKSelectFirstFile)
+	if(Settings.Explorer.AutoSelectFirstFile)
 	{
 		SplitPath, Path, name, dir,,,drive
 		x:=GetSelectedFiles()
@@ -700,7 +699,7 @@ class InfoGUI
 	{
 		if(A_OSVersion != "WIN_7")
 			return 0
-		GuiNum := GetFreeGuiNum(10)
+		GuiNum := GetFreeGuiNum(1, this.__Class)
 		this.GuiNum := GuiNum
 		Gui, %GuiNum%: font, s9, Segoe UI 
 		Gui, %GuiNum%: Add, Text, x60 y0 w70 h12, %A_Space%
@@ -753,16 +752,20 @@ class InfoGUI
 			ControlGetPos , , cY, , cHeight, msctls_statusbar321, % "ahk_id " this.hParent
 			InfoX:=X+Width-370
 			InfoY:=Round(Y+cY+cHeight/2-6) ; +Height-26
+			outputdebug % "show " this.GUINum
 			if(Width>540)
 				Gui, % this.GuiNum ":Show", AutoSize NA x%InfoX% y%InfoY%
 		}
 		else
+		{
+			outputdebug % "hide " this.GUINum
 			Gui, % this.GuiNum ": Hide"
+		}
 	}
 }
 
 ;TODO: Figure out how to receive explorer close event and proper path change
-class ExplorerWindow
+Class CExplorerWindow
 {	
     __New(hWnd, Path="")
     {

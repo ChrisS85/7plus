@@ -21,7 +21,7 @@ IfMsgBox Yes
 		RestoreFolderBandButtons()
 		RestorePlacesBar()
 		RestoreFolderBand()
-		RemoveAllButtons()
+		RemoveAllExplorerButtons()
 		if(A_IsCompiled)
 			RegDelete, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_ScriptDir%\7plus.exe
 		else
@@ -105,7 +105,7 @@ RestoreFolderBand()
 	global Vista7
 	if(!Vista7)
 		return
-	RemoveAllButtons()
+	RemoveAllExplorerButtons()
 	;remove some rights
 	runwait subinacl /subkeyreg HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes /revoke=S-1-5-32-545,,Hide
 	runwait subinacl /subkeyreg HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes /grant=S-1-5-32-545=R,,Hide
@@ -181,7 +181,7 @@ RegRename(root,key,target)
 }
 
 ;Removes all buttons created with this script. Function can be the name of a function with these arguments: func(command,title,tooltip) and it can be used to tell the script if an entry may be deleted
-RemoveAllButtons(function="")
+RemoveAllExplorerButtons(function="")
 {
 	;go into view folders (clsid)
 	Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes, 2, 0

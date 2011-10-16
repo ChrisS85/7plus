@@ -15,6 +15,8 @@ Class CSliderControl Extends CControl
 		this._.Insert("Min", 0)
 		this._.Insert("Max", 100)
 		this._.Insert("Invert", InStr(Options, "Invert"))
+		this._.Insert("Messages", {0x004E : "Notify"}) ;This control uses WM_NOTIFY with NM_SETFOCUS and NM_KILLFOCUS
+		this._.Insert("Events", ["SliderMoved"])
 	}	
 	
 	/*
@@ -29,7 +31,7 @@ Class CSliderControl Extends CControl
 	*/
 	__Get(Name, Params*)
 	{
-		global CGUI
+		;~ global CGUI
 		if(Name != "GUINum" && !CGUI.GUIList[this.GUINum].IsDestroyed)
 		{
 			DetectHidden := A_DetectHiddenWindows
@@ -57,11 +59,23 @@ Class CSliderControl Extends CControl
 				return Value
 		}
 	}
-	__Set(Name, Value, Params*)
+	__Set(Name, Params*)
 	{
-		global CGUI
+		;~ global CGUI
 		if(!CGUI.GUIList[this.GUINum].IsDestroyed)
 		{
+			;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
+			Value := Params[Params.MaxIndex()]
+			Params.Remove(Params.MaxIndex())
+			if(Params.MaxIndex())
+			{
+				Params.Insert(1, Name)
+				Name :=  Params[Params.MaxIndex()]
+				Params.Remove(Params.MaxIndex())
+				Object := this[Params*]
+				Object[Name] := Value
+				return Value
+			}
 			DetectHidden := A_DetectHiddenWindows
 			DetectHiddenWindows, On
 			Handled := true
@@ -108,16 +122,13 @@ Class CSliderControl Extends CControl
 	Additionally it is required to create a label with this naming scheme: GUIName_ControlName
 	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent(). 
 	For better readability labels may be chained since they all execute the same code.
+	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
 	
 	Event: SliderMoved()
-	Invoked when the user clicked on the control.
+	Invoked when the user clicked on the control. This control does not implement all the advanced Slider events yet. Should be easy to implement though if there is any demand.
 	*/
-	HandleEvent()
+	HandleEvent(Event)
 	{
-		global CGUI
-		if(CGUI.GUIList[this.GUINum].IsDestroyed)
-			return
-		if(IsFunc(CGUI.GUIList[this.GUINum][this.Name "_SliderMoved"]))
-			`(CGUI.GUIList[this.GUINum])[this.Name "_SliderMoved"]()
+		this.CallEvent("SliderMoved")
 	}
 }

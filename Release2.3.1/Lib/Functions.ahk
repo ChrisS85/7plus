@@ -119,6 +119,10 @@ IniRead(Filename, Section, Key, Default = "") {
 	IniRead, v, %Filename%, %Section%, %Key%, %Default%
 	Return, v
 }
+IniWrite(Value, Filename, Section, Key)
+{
+	IniWrite, %Value%, %Filename%, %Section%, %Key%
+}
 Input(Options = "", EndKeys = "", MatchList = "") {
 	Input, v, %Options%, %EndKeys%, %MatchList%
 	Return, v

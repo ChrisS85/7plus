@@ -1,10 +1,10 @@
-Accessor_FileSystem_Init(ByRef FileSystem, Settings)
+Accessor_FileSystem_Init(ByRef FileSystem, PluginSettings)
 {
 	FileSystem.KeywordOnly := false
 	FileSystem.MinChars := 2
 	FileSystem.DefaultKeyword := ""
 	FileSystem.Description := "Browse the file system by typing a path. `nUse Tab for switching through matching entries and enter to enter a folder.`nApplications launched through this method are directly added to Program Launcher cache."
-	FileSystem.Settings.UseIcons := Settings.HasKey("UseIcons") ? Settings.UseIcons : 0
+	FileSystem.Settings.UseIcons := PluginSettings.HasKey("UseIcons") ? PluginSettings.UseIcons : 0
 	FileSystem.HasSettings := True
 }
 Accessor_FileSystem_ShowSettings(FileSystem, PluginSettings, PluginGUI)

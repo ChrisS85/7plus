@@ -1,6 +1,5 @@
-Accessor_Notes_Init(ByRef Notes, Settings)
+Accessor_Notes_Init(ByRef Notes, PluginSettings)
 {
-	global ConfigPath
 	Notes.Settings.Keyword := "Note"
 	Notes.DefaultKeyword := "Note"
 	Notes.KeywordOnly := true
@@ -10,9 +9,9 @@ Accessor_Notes_Init(ByRef Notes, Settings)
 	Notes.Icon := ExtractIcon("shell32.dll", 115, 64)
 	Notes.Description := "This plugin allows to take notes and view them later."
 	Notes.HasSettings := True
-	if(!FileExist(ConfigPath "\Notes.xml"))
+	if(!FileExist(Settings.ConfigPath "\Notes.xml"))
 		return
-	FileRead, xml, %ConfigPath%\Notes.xml
+	FileRead, xml, % Settings.ConfigPath "\Notes.xml"
 	XMLObject := XML_Read(xml)
 	;Convert empty and single arrays to real array
 	if(!XMLObject.List.len())
@@ -47,12 +46,11 @@ Accessor_Notes_OnAccessorClose(Notes, Accessor)
 }
 Accessor_Notes_OnExit(Notes)
 {
-	global ConfigPath
-	FileDelete, %ConfigPath%\Notes.xml
+	FileDelete, % Settings.ConfigPath "\Notes.xml"
 	XMLObject := Object("List",Array())
 	Loop % Notes.List.len()
 		XMLObject.List.append(Object("Text",Notes.List[A_Index].Text))
-	XML_Save(XMLObject, ConfigPath "\Notes.xml")
+	XML_Save(XMLObject, Settings.ConfigPath "\Notes.xml")
 	DestroyIcon(Notes.Icon)
 }
 Accessor_Notes_FillAccessorList(Notes, Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet)

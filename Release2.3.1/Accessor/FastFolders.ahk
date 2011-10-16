@@ -1,11 +1,11 @@
-Accessor_FastFolders_Init(ByRef FastFolders, Settings)
+Accessor_FastFolders_Init(ByRef FastFolders, PluginSettings)
 {
 	FastFolders.Settings.Keyword := "FastFolders"
 	FastFolders.DefaultKeyword := "FastFolders"
 	FastFolders.KeywordOnly := false
 	FastFolders.MinChars := 1
 	FastFolders.OKName := "Open Folder"
-	FastFolders.Settings.FuzzySearch := Settings.HasKey("FuzzySearch") ? Settings.FuzzySearch : 1
+	FastFolders.Settings.FuzzySearch := PluginSettings.HasKey("FuzzySearch") ? PluginSettings.FuzzySearch : 1
 	FastFolders.Description := "Access the stored FastFolders by typing a part of a folder name."
 	FastFolders.HasSettings := True
 }

@@ -1,13 +1,13 @@
 ; see http://msdn.microsoft.com/en-us/library/dd318066(VS.85).aspxs
 HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEventTime ){ 
-	global HKAutoCheck,UseTabs, Vista7, ResizeWindow, ShowResizeTooltip, Profiler, SlideWindows, WindowList
+	global Vista7, ResizeWindow, Profiler, SlideWindows, WindowList
 	ListLines, Off
 	StartTime := A_TickCount
 	hwnd += 0
 	;On dialog popup, check if its an explorer confirmation dialog
 	if(event=0x00008002) ;EVENT_OBJECT_SHOW
 	{
-		if(HKAutoCheck && Vista7)
+		if(Settings.Explorer.AutoCheckApplyToAllFiles && Vista7)
 			FixExplorerConfirmationDialogs()		
 		Profiler.Total.HookProc += A_TickCount - StartTime
 		Profiler.Current.HookProc += A_TickCount - StartTime
@@ -25,7 +25,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 		Trigger.Event := "Window minimized"
 		OnTrigger(Trigger)
 	}
-	else if(event=0x8001 && UseTabs) ;EVENT_OBJECT_DESTROY
+	else if(event=0x8001 && Settings.Explorer.Tabs.UseTabs) ;EVENT_OBJECT_DESTROY
 	{
 		; DecToHex(hwnd)
 		; if(TabContainerList.ContainsHWND(hwnd))
@@ -49,13 +49,13 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 			SetTimer, UpdateWindowPosition, -1000
 		}
 	}	
-	else if(event = 0x000A && ShowResizeTooltip)
+	else if(event = 0x000A && Settings.Windows.ShowResizeTooltip)
 	{
 		ResizeWindow := hwnd
 		SetTimer, ResizeWindowTooltip, 50
 		SlideWindows.CheckResizeReleaseCondition(hwnd)
 	}
-	else if(event = 0x000B && ShowResizeTooltip)
+	else if(event = 0x000B && Settings.Windows.ShowResizeTooltip)
 	{
 		ResizeWindow := ""
 		SetTimer, ResizeWindowTooltip, Off
@@ -92,7 +92,7 @@ ShellMessage( wParam, lParam, Msg)
 	WasCritical := A_IsCritical
 	Critical
 	ListLines, Off
-	global ExplorerPath, BlinkingWindows, WindowList, Accessor, RecentCreateCloseEvents, Profiler, ToolWindows, ExplorerWindows, LastWindow, LastWindowClass, SlideWindows, CurrentWindow, PreviousWindow
+	global BlinkingWindows, WindowList, Accessor, RecentCreateCloseEvents, Profiler, ToolWindows, ExplorerWindows, LastWindow, LastWindowClass, SlideWindows, CurrentWindow, PreviousWindow
 	StartTime := A_TickCount
 	Trigger := EventSystem_CreateSubEvent("Trigger", "OnMessage")
 	Trigger.Message := wParam
@@ -193,7 +193,7 @@ ShellMessage( wParam, lParam, Msg)
 		if(WinActive("ahk_group ExplorerGroup")||WinActive("ahk_group DesktopGroup")||IsDialog())
 		{
 			if(!WinActive("ahk_group DesktopGroup")) ;By doing this, recall explorer path works also when double clicking desktop to launch explorer
-				ExplorerPath:=GetCurrentFolder()
+				Settings.Explorer.CurrentPath := GetCurrentFolder()
 				
 			;Paste text/image as file file creation
 			CreateFileFromClipboard()
@@ -215,15 +215,15 @@ ShellMessage( wParam, lParam, Msg)
 		{
 			ExplorerPathChanged(ExplorerWindows.SubItem("hwnd", lParam))
 			; newpath:=GetCurrentFolder()
-			; if(newpath && newpath!=ExplorerPath)
+			; if(newpath && newpath != Settings.Explorer.CurrentPath)
 			; {
 				; outputdebug Explorer path changed from %ExplorerPath% to %newpath%
-				; ExplorerPathChanged(ExplorerPath, newpath)
-				; PreviousExplorerPath := ExplorerPath
-				; ExplorerPath := newpath
+				; ExplorerPathChanged(Settings.Explorer.CurrentPath, newpath)
+				; Settings.Explorer.PreviousPath := Settings.Explorer.CurrentPath
+				; Settings.Explorer.CurrentPath := newpath
 				; Trigger := EventSystem_CreateSubEvent("Trigger","ExplorerPathChanged")
 				; OnTrigger(Trigger)
-				; if(UseTabs && !SuppressTabEvents && hwnd:=WinActive("ahk_group ExplorerGroup"))
+				; if(Settings.Explorer.Tabs.UseTabs && !SuppressTabEvents && hwnd:=WinActive("ahk_group ExplorerGroup"))
 					; UpdateTabs()
 			; }
 		}

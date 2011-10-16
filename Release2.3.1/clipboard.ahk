@@ -1,7 +1,7 @@
 ;Called when clipboard changes, used for "Paste text/image as file" functionality and for clipboard manager
 ;To use the clipboard without triggering these features, set MuteClipboardList:=true before writing to clipboard
 OnClipboardChange:
-if(!ClipboardListenerRegistered)
+if(!ApplicationState.ClipboardListenerRegistered)
 	OnClipboardChange()
 return
 
@@ -117,7 +117,7 @@ ClipboardMenuClicked(index)
 			Sleep 20
 		}
 		else
-			Notify("Error pasting text", "Error pasting text", "5", "GC=555555 TC=White MC=White",Vista7 ? 78 : 110)
+			Notify("Error pasting text", "Error pasting text", "5", "GC=555555 TC=White MC=White",NotifyIcons.Error)
 		Clipboard:=ClipboardBackup
 		Clipwait,1,1
 		MuteClipboardList:=false
@@ -129,32 +129,33 @@ ClipboardMenuClicked(index)
 ;Creates a file for pasting text/image in explorer
 CreateFileFromClipboard()
 {
-	global temp_img, temp_txt, CF_HDROP, MuteClipboardList
+	global MuteClipboardList
+	static CF_HDROP := 0xF
 	;outputdebug CreateFile
 	if(!MuteClipboardList)
 	{
 		MuteClipboardList:=true
 		if(!DllCall("IsClipboardFormatAvailable", "Uint", CF_HDROP))
-		{			
-		  If (DllCall("IsClipboardFormatAvailable", "Uint", 2) && temp_img!="" )
+		{
+			If(DllCall("IsClipboardFormatAvailable", "Uint", 2) && Settings.Explorer.PasteImageAsFileName !="" )
 			{
 				outputdebug image in clipboard			
-				x:=WriteClipboardImageToFile(temp_img,100)
-				if (x)
-					CopyToClipboard(temp_img, false)
+				PasteImageAsFilePath := A_Temp "\" Settings.Explorer.PasteImageAsFileName
+				success := WriteClipboardImageToFile(PasteImageAsFilePath, Settings.Misc.ImageQuality)
+				if(success)
+					CopyToClipboard(PasteImageAsFilePath, false)
 			}
-			else if (DllCall("IsClipboardFormatAvailable", "Uint", 1) && temp_txt!="" )
+			else if (DllCall("IsClipboardFormatAvailable", "Uint", 1) && Settings.Explorer.PasteTextAsFileName !="" )
 			{
 				outputdebug text in clipboard
-				x:=WriteClipboardTextToFile(temp_txt)
-				if (x)
-					CopyToClipboard(temp_txt, false)
+				PasteTextAsFilePath := A_Temp "\" Settings.Explorer.PasteTextAsFileName
+				success := WriteClipboardTextToFile(PasteTextAsFilePath)
+				if(success)
+					CopyToClipboard(PasteTextAsFilePath, false)
 			}
 		}
 		else
-		{
 			outputdebug a file is already in the clipboard
-		}	
 		MuteClipboardList:=false
 	}
 }
@@ -176,13 +177,12 @@ ReadClipboardText()
 ;Reads an image from clipboard, saves it to a file, and puts CF_HDROP structure in clipboard for file pasting
 WriteClipboardImageToFile(path,Quality="")
 {
-	global ImageQuality
 	if(!Quality)
-		Quality:=ImageQuality
+		Quality:=Settings.Misc.ImageQuality
 	pBitmap:=Gdip_CreateBitmapFromClipboard()
 	if(pBitmap > 0)
 	{
-		Gdip_SaveBitmapToFile(pBitmap, path, ImageQuality)
+		Gdip_SaveBitmapToFile(pBitmap, path, Settings.Misc.ImageQuality)
 		return 1
 	}
 	return -1
@@ -218,7 +218,7 @@ _DROPFILES struct: 20 characters at the start
 null-terminated filename list, and double-null termination at the end
 */
 CopyToClipboard(files, clear, cut=0){
-	global CF_HDROP
+	static CF_HDROP := 0xF
 	FileCount:=0
 	PathLength:=0
 	;Count files and total string length

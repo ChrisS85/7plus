@@ -1,7 +1,6 @@
 ;Adds a row of controls to a SubEvent GUI. Control handles are stored in SubEventGUI, and can be stored back and have the controls delete by SubEventGUI_GUISubmit
 SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description="", Button1Text="", Button1gLabel = "", Button2Text="", Button2gLabel = "", Tooltip = "")
 {
-	global Settings_Events
 	x := SubEventGUI.x
 	y := SubEventGUI.y
 	w := 200
@@ -79,15 +78,15 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 	}
 	else if(type = "DropDownList" || type = "ComboBox")
 	{
-		;Select event dropdownlist
+		;Select event dropdownlist. This only works while the settings window is open.
 		if(strStartsWith(text, "TriggerType:"))
 		{
 			Triggertype := SubStr(text, 13)
 			text := ""
-			Loop % Settings_Events.len()
+			Loop % SettingsWindow.Events.len()
 			{
-				if(!TriggerType || Settings_Events[A_Index].Trigger.Type = TriggerType)
-					text .= Settings_Events[A_Index].ID ": " Settings_Events[A_Index].Name "|"
+				if(!TriggerType || SettingsWindow.Events[A_Index].Trigger.Type = TriggerType)
+					text .= SettingsWindow.Events[A_Index].ID ": " SettingsWindow.Events[A_Index].Name "|"
 			}
 		}
 		;Construct options

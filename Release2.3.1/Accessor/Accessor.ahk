@@ -1,6 +1,6 @@
 Class CAccessorPlugin
 {
-	__New(Settings)
+	__New(PluginSettings)
 	{
 	}
 	ShowSettings(PluginSettings, PluginGUI)
@@ -54,11 +54,11 @@ Class CAccessorPlugin
 #include %A_ScriptDir%\Accessor\Weather.ahk
 Accessor_Init()
 {
-	global AccessorPlugins, Accessor, ConfigPath
+	global AccessorPlugins, Accessor
 	AccessorPluginsList := "WindowSwitcher,FileSystem,Google,Calc,ProgramLauncher,NotepadPlusPlus,SciTE4AutoHotkey,Notes,FastFolders,Uninstall,URL,Weather" ;The order here partly determines the order in the window, so choose carefully
 	AccessorPlugins := Array()
 	Accessor := Object("Base", Object("OnExit", "Accessor_OnExit", "History", Array()))
-	FileRead, xml, %ConfigPath%\Accessor.xml
+	FileRead, xml, % Settings.ConfigPath "\Accessor.xml"
 	if(!xml)
 	{
 		xml = 
@@ -149,11 +149,11 @@ Accessor_Init()
 }
 Accessor_OnExit(Accessor)
 {
-	global AccessorPlugins, ConfigPath
+	global AccessorPlugins
 	if(Accessor.GUINum)
 		AccessorClose()
 	
-	FileDelete, %ConfigPath%\Accessor.xml
+	FileDelete, % Settings.ConfigPath "\Accessor.xml"
 	XMLObject := Object()
 	Loop % AccessorPlugins.len()
 	{
@@ -163,7 +163,7 @@ Accessor_OnExit(Accessor)
 	XMLObject.Keywords := Object("Keyword",Array())
 	Loop % Accessor.Keywords.len()
 		XMLObject.Keywords.Keyword.append(Object("Key", Accessor.Keywords[A_Index].Key, "Command", Accessor.Keywords[A_Index].Command))
-	XML_Save(XMLObject, ConfigPath "\Accessor.xml")
+	XML_Save(XMLObject, Settings.ConfigPath "\Accessor.xml")
 	
 	DestroyIcon(Accessor.GenericIcons.Application)
 	DestroyIcon(Accessor.GenericIcons.File)
@@ -694,28 +694,28 @@ AccessorOpenCMD()
 	Run("cmd.exe /k cd /D """ path """")
 	AccessorClose()
 }
-GUI_EditAccessorPlugin(Settings,GoToLabel="")
+GUI_EditAccessorPlugin(TemporaryPlugin,GoToLabel="")
 {
-	static PluginSettings, result, PluginGUI, Plugin, GuiNum
-	global AccessorPlugins
+	static sTemporaryPlugin, sOriginalPlugin, result, PluginGUI, GuiNum
+	global AccessorPlugins, CSettingsWindow
 	if(GoToLabel = "")
 	{
 		;Don't show more than once
-		if(PluginSettings)
-			return ""
+		if(sTemporaryPlugin)
+			return
 		GuiNum := GetFreeGuiNum(4)
 		if(!GuiNum)
-			return ""
-		PluginSettings := Settings
+			return
+		sTemporaryPlugin := TemporaryPlugin.DeepCopy()
+		sOriginalPlugin := AccessorPlugins.SubItem("Type", sTemporaryPlugin.Type)
+		if(!sOriginalPlugin)
+			return
 		result := ""
 		PluginGUI := object("x",38,"y",80)
-		Plugin := AccessorPlugins.SubItem("Type", PluginSettings.Type)
-		outputdebug % "type " PluginSettings.type
-		Gui 1:+LastFoundExist
-		IfWinExist
-			Gui, 1:+Disabled
+		if(CSettingsWindow && !CSettingsWindow.IsDestroyed)
+			CSettingsWindow.Disable()
 		Gui, %GuiNum%:Default
-		Gui, +LabelEditAccessorPlugin +Owner1 +ToolWindow +OwnDialogs
+		Gui, +LabelEditAccessorPlugin +OwnerCSettingsWindow1 +ToolWindow +OwnDialogs
 		width := 500
 		height := 460
 		;Gui, 4:Add, Button, ,OK
@@ -730,14 +730,14 @@ GUI_EditAccessorPlugin(Settings,GoToLabel="")
 		x := 40
 		y := 18
 		
-		Gui, Add, Text, x%x% y%y%, % Plugin.Description
+		Gui, Add, Text, x%x% y%y%, % sOriginalPlugin.Description
 		
 		x := 28
 		y += 40 + 4
 		w := width - 54
 		h := height - 110
 		Gui, Add, GroupBox, x%x% y%y% w%w% h%h%, Options
-		Plugin.ShowSettings(PluginSettings.Settings, PluginGUI)
+		sOriginalPlugin.ShowSettings(sTemporaryPlugin.Settings, PluginGUI)
 		Gui, Show, w%width% h%height%, Edit Plugin
 		
 		Gui, %GuiNum%:+LastFound
@@ -750,25 +750,24 @@ GUI_EditAccessorPlugin(Settings,GoToLabel="")
 			IfWinNotExist ahk_id %EditAccessorPlugin_hWnd% 
 				break
 		}
-		Plugin := ""
-		PluginSettings := ""
+		sTemporaryPlugin := ""
+		sOriginalPlugin := ""
 		PluginGUI := ""
 		GuiNum := 0
-		Gui 1:+LastFoundExist
-		IfWinExist
-			Gui, 1:Default
+		if(CSettingsWindow && !CSettingsWindow.IsDestroyed)
+			CSettingsWindow.Enable()
 		return result
 	}
 	else if(GoToLabel = "EditAccessorPluginOK")
 	{
 		outputdebug ok %guinum%
-		Plugin.SaveSettings(PluginSettings.Settings, PluginGUI)
-		SubEventGUI_GUISubmit(PluginSettings.Settings, PluginGUI)
+		sOriginalPlugin.SaveSettings(sTemporaryPlugin.Settings, PluginGUI)
+		SubEventGUI_GUISubmit(sTemporaryPlugin.Settings, PluginGUI)
 		Gui, %GuiNum%:Submit, NoHide
-		outputdebug % " keyword: " PluginSettings.Settings.Keyword " Default: " Plugin.DefaultKeyword
-		if(PluginSettings.Settings.Keyword = "" && Plugin.DefaultKeyword != "")
-			PluginSettings.Settings.Keyword := Plugin.DefaultKeyword
-		result := PluginSettings
+		outputdebug % " keyword: " sTemporaryPlugin.Settings.Keyword " Default: " sTemporaryPlugin.DefaultKeyword
+		if(sTemporaryPlugin.Settings.Keyword = "" && sOriginalPlugin.DefaultKeyword != "")
+			sTemporaryPlugin.Settings.Keyword := sOriginalPlugin.DefaultKeyword
+		result := sTemporaryPlugin
 		Gui 1:+LastFoundExist
 		IfWinExist		
 			Gui, 1:-Disabled
@@ -789,7 +788,7 @@ GUI_EditAccessorPlugin(Settings,GoToLabel="")
 		return
 	}
 	else if(GoToLabel = "EditAccessorPluginHelp")
-		run % "http://code.google.com/p/7plus/wiki/docsAccessor" Plugin.Type ",,UseErrorLevel"
+		run % "http://code.google.com/p/7plus/wiki/docsAccessor" sTemporaryPlugin.Type ",,UseErrorLevel"
 } 
 EditAccessorPluginOK:
 outputdebug ok

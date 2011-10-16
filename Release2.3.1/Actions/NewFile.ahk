@@ -40,7 +40,7 @@ Action_NewFile_Execute(Action, Event)
 		FileAppend, %A_Space%, %TestPath%	;Create file and then select it and rename it
 	if(!FileExist(TestPath))
 	{
-		Notify("Could not create new file!", "Could not create a new file here. Make sure you have the correct permissions!", "5", "GC=555555 TC=White MC=White",Vista7 ? 78 : 110)
+		Notify("Could not create new file!", "Could not create a new file here. Make sure you have the correct permissions!", "5", "GC=555555 TC=White MC=White",NotifyIcons.Error)
 		return 0
 	}
 	RefreshExplorer()

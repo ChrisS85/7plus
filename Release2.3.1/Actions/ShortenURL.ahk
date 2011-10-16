@@ -27,7 +27,7 @@ Action_ShortenURL_Execute(Action, Event)
 			Clipboard := ShortURL			
 		if(Action.WriteToPlaceholder)
 			Events.GlobalPlaceholders[Action.WriteToPlaceholder] := ShortURL
-		Notify("URL shortened!", "URL shortened" (Action.WriteToClipboard ? " and copied to clipboard!" : "!"), 2, "GC=555555 TC=White MC=White",Vista7 ? 145 : 136)
+		Notify("URL shortened!", "URL shortened" (Action.WriteToClipboard ? " and copied to clipboard!" : "!"), 2, "GC=555555 TC=White MC=White",NotifyIcons.Success)
 		return 1
 	}
 	return 0

@@ -106,9 +106,7 @@
 
 EventSystem_Startup()
 {
-	global Events, EventSchedule, TemporaryEvents, IniPath, ShowEvents
-	
-	IniRead, ShowEvents, %IniPath%, General, ShowEvents, 0
+	global Events, EventSchedule, TemporaryEvents
 	
 	;TODO: Why does this need to be here?
 	Action_Upload_ReadFTPProfiles()
@@ -124,7 +122,7 @@ EventSystem_Startup()
 	EventSystem_CreateBaseObjects()
 	
 	;Event log logs the execution flow of events
-	if(DebugEnabled)
+	if(Settings.General.DebugEnabled)
 		FileDelete, %A_Temp%\7plus\EventLog.log
 	
 	;Load main events file. This will create event objects for all stored event configs in Events object.
@@ -195,12 +193,12 @@ TriggerFromOtherInstance(wParam, lParam)
 ;Creates an event and registers it for lEvents list (-->Assigns an ID that is based on the max ID of the default Events list and its settings copy, and increases HighestID count of lEvents and adds it to lEvents)
 EventSystem_RegisterEvent(lEvents, Event = "", Enable = 1)
 {
-	global EventBase, Events, Settings_Events, TemporaryEvents
+	global EventBase, Events, TemporaryEvents
 	;Temporary events use negative ID for find functions
 	if(lEvents = TemporaryEvents)
 		HighestID := TemporaryEvents.HighestID - 1
 	else
-		HighestID := max(Events.HighestID, Settings_Events.HighestID) + 1 ;Make sure highest ID is used from both event arrays
+		HighestID := max(Events.HighestID, SettingsActive() ? SettingsWindow.Events.HighestID : 0) + 1 ;Make sure highest ID is used from both event arrays
 	lEvents.HighestID := HighestID	
 	if(!IsObject(Event))
 		Event := EventSystem_CreateEvent()
@@ -338,19 +336,19 @@ EventSystem_CreateSubEvent(Category,Type)
 
 ReadMainEventsFile()
 {
-	global ConfigPath, Events
-	ReadEvents := ReadEventsFile(Events, ConfigPath "\Events.xml")
+	global Events
+	ReadEvents := ReadEventsFile(Events, Settings.ConfigPath "\Events.xml")
 }	
 
 WriteMainEventsFile()
 {
-	global ConfigPath, Events
-	WriteEventsFile(Events, ConfigPath "\Events.xml")
+	global Events
+	WriteEventsFile(Events, Settings.ConfigPath "\Events.xml")
 }
 
 ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 {
-	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, XMLMajorVersion, XMLMinorVersion, XMLBugfixVersion, ConfigPath, Debug
+	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, XMLMajorVersion, XMLMinorVersion, XMLBugfixVersion, Debug
 	FileRead, xml, %path%
 	XMLObject := XML_Read(xml)
 	XMLMajorVersion := XMLObject.MajorVersion
@@ -361,7 +359,7 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 	
 	if(Update)
 		Update.Message := Update.Message (XMLObject.Message? "`n" XMLObject.Message : "")
-	if(path = ConfigPath "\Events.xml") ;main config file, read patch version
+	if(path = Settings.ConfigPath "\Events.xml") ;main config file, read patch version
 		PatchVersion := XMLObject.PatchVersion ? XMLObject.PatchVersion : 0
 	
 	count := Events.len()
@@ -613,14 +611,14 @@ Event_ReadVar(Subevent, xml, key)
 }
 WriteEventsFile(Events, path)
 {
-	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, ConfigPath
+	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion
 	; return
 	;Create Events node
 	xmlObject := Object()
 	xmlObject.MajorVersion := MajorVersion
 	xmlObject.MinorVersion := MinorVersion
 	xmlObject.BugfixVersion := BugfixVersion
-	if(path = ConfigPath "\Events.xml")
+	if(path = Settings.ConfigPath "\Events.xml")
 		xmlObject.PatchVersion := PatchVersion
 	xmlObject.Events := Object()
 	xmlEvents := Array()
@@ -781,7 +779,7 @@ SetTimer, EventScheduler, 100
 return
 EventScheduler()
 {
-	global Events, EventSchedule, Profiler, TemporaryEvents, DebugEnabled, ShowEvents
+	global Events, EventSchedule, Profiler, TemporaryEvents
 	Critical, Off
 	; loop
 	; {
@@ -814,7 +812,7 @@ EventScheduler()
 						}
 						if(result = 0) ;Condition did not match
 						{
-							if(DebugEnabled)
+							if(Settings.General.DebugEnabled)
 								EventLog(Event.ID ": Condition " ConditionPos ": " Event.Conditions[ConditionPos].Type " was not fulfilled.")
 							Success := 0
 							break
@@ -847,7 +845,7 @@ EventScheduler()
 		{
 			Event := EventSchedule[EventPos]
 			outputdebug % "Process event ID: " Event.ID " Name: " Event.Name
-			if(DebugEnabled)
+			if(Settings.General.DebugEnabled)
 				EventLog("Process event ID: " Event.ID " Name: " Event.Name)
 			; outputdebug conditions fulfilled
 			Loop % Event.Actions.len()
@@ -865,16 +863,16 @@ EventScheduler()
 				if(result = 0) ;Action was cancelled, stop all further actions
 				{
 					Event.Actions := Array()
-					if(ShowEvents)
-						Notify("Event Cancelled", "The execution of event" Event.ID ": " Event.Name " was cancelled", "5", "GC=555555 TC=White MC=White",24)
+					if(Settings.General.ShowExecutingEvents)
+						Notify("Event Cancelled", "The execution of event" Event.ID ": " Event.Name " was cancelled", "5", "GC=555555 TC=White MC=White",NotifyIcons.Info)
 					break
 				}
 				else if(result = -1) ;Action needs more time to finish, check back in next main loop
 					break
 				else
 					Event.Actions.Delete(1)
-				if(ShowEvents)
-					Notify("Event Executed", "The event" Event.ID ": " Event.Name " was executed", "5", "GC=555555 TC=White MC=White",24)
+				if(Settings.General.ShowExecutingEvents)
+					Notify("Event Executed", "The event" Event.ID ": " Event.Name " was executed", "5", "GC=555555 TC=White MC=White",NotifyIcons.Info)
 			}
 			if(Event.Actions.len() = 0) ;No more actions in this event, consider it processed and remove it from queue
 			{

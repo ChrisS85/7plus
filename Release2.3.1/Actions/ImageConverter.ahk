@@ -28,7 +28,7 @@ Action_ImageConverter_Execute(Action, Event)
 				break
 			}
 	if(!ImageConverter)
-		ImageConverter := New("CImageConverter", Action)
+		ImageConverter := New CImageConverter(Action)
 	ImageConverter.AddFiles(Files)
 	return 1
 }

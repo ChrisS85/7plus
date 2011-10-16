@@ -4,16 +4,20 @@ Basic control class from which all controls extend.
 */
 Class CControl ;Never created directly
 {
-	__New(Name, Options, Text, GUINum) ;Basic constructor for all controls. The control is created in CGUI.Add()
+	__New(Name, Options, Text, GUINum) ;Basic constructor for all controls. The control is created in CGUI.AddControl()
 	{
-		global CFont
+		;~ global CFont
 		this.Insert("Name", Name)
 		this.Insert("Options", Options)
 		this.Insert("Content", Text)
 		this.Insert("GUINum", GUINum) ;Store link to gui for GuiControl purposes (and possibly others later
 		this.Insert("_", {}) ;Create proxy object to enable __Get and __Set calls for existing keys (like ClassNN which stores a cached value in the proxy)
-		this.Insert("Font", new CFont(GUINum, Name))
-		this._.Insert("RegisteredMessages", [])
+		this.Insert("Font", new CFont(GUINum))
+		this._.Insert("RegisteredEvents", {})
+	}
+	PostCreate()
+	{
+		this.Font._.hwnd := this.hwnd
 	}
 	/*
 	Function: Show
@@ -21,10 +25,10 @@ Class CControl ;Never created directly
 	*/
 	Show()
 	{
-		global CGUI
+		;~ global CGUI
 		if(CGUI.GUIList[this.GUINum].IsDestroyed)
 			return
-		Control, Show,,,% "ahk_id " this.hwnd
+		GuiControl, % this.GUINum ":Show",% this.hwnd
 	}
 	
 	/*
@@ -33,10 +37,10 @@ Class CControl ;Never created directly
 	*/
 	Hide()
 	{
-		global CGUI
+		;~ global CGUI
 		if(CGUI.GUIList[this.GUINum].IsDestroyed)
 			return
-		Control, Hide,,,% "ahk_id " this.hwnd
+		GuiControl, % this.GUINum ":Hide",% this.hwnd
 	}
 	
 	/*
@@ -45,7 +49,7 @@ Class CControl ;Never created directly
 	*/
 	Enable()
 	{
-		Control, Enable,,,% "ahk_id " this.hwnd
+		GuiControl, % this.GUINum ":Enable",% this.hwnd
 	}
 	
 	/*
@@ -54,7 +58,7 @@ Class CControl ;Never created directly
 	*/
 	Disable()
 	{
-		Control, Disable,,,% "ahk_id " this.hwnd
+		GuiControl, % this.GUINum ":Disable",% this.hwnd
 	}
 	
 	/*
@@ -63,7 +67,7 @@ Class CControl ;Never created directly
 	*/
 	Focus()
 	{
-		global CGUI
+		;~ global CGUI
 		if(CGUI.GUIList[this.GUINum].IsDestroyed)
 			return
 		ControlFocus,,% "ahk_id " this.hwnd
@@ -78,6 +82,96 @@ Class CControl ;Never created directly
 		;~ Gui, % this.GUINum ":Font", % CGUI.GUIList[this.GUINum].Font.Options, % CGUI.GUIList[this.GUINum].Font.Font ;Restore current font
 	;~ }
 	
+	
+	/*
+	Validates the text value of this control by calling a <Control.Validate> event function which needs to return the validated (or same) value.
+	This value is then used as text for the control if it differs.
+	*/
+	Validate()
+	{
+		output := this.CallEvent("Validate", this.Text)
+		if(output.Handled && output.Result != this.Text)
+			this.Text := output.result
+	}
+	/*
+	Function: RegisterEvent
+	Assigns (or unassigns) a function to a specific event of this control so that the function will be called when the event occurs.
+	This is normally not necessary because functions in the GUI class with the name ControlName_EventName()
+	will be called automatically without needing to be registered. However this can be useful if you want to handle
+	multiple events with a single function, e.g. for a group of radio controls. Right now only one registered function per event
+	is supported, let me know if you need more.
+	
+	Parameters:
+		Type - The event name for which the function should be registered. If a control normally calls "GUI.ControlName_TextChanged()", specify "TextChanged" here.
+		FunctionName - The name of the function specified in the window class that is supposed to handle the event. Specify only the name of the function, skip the class.
+	*/
+	RegisterEvent(Type, FunctionName)
+	{
+		;~ global CGUI
+		if(FunctionName)
+		{
+			;Make sure function name is valid (or tell the developer about it)
+			if(CGUI_Assert(IsFunc(this[FunctionName]) || IsFunc( `(CGUI.GUIList[this.GUINum])[FunctionName]), "Invalid function name passed to CControl.RegisterEvent()"), -2)
+				this._.RegisteredEvents[Type] := FunctionName
+		}
+		else
+			this._.RegisteredEvents.Remove(Type)
+	}
+	
+	/*
+	Calls an event with a specified name by looking up a possibly registered event handling function or calling the function with the default name.
+	Returns an object with Handled and Result keys, where Handled indicates if the function was successfully called and Result is the return value of the function.
+	*/
+	CallEvent(Name, Params*)
+	{
+		;~ global CGUI
+		if(CGUI.GUIList[this.GUINum].IsDestroyed)
+			return
+		if(this.DisableNotifications)
+			return
+		if(this._.RegisteredEvents.HasKey(Name))
+		{
+			if(IsFunc(this[this._.RegisteredEvents[Name]]))
+				return {Handled : true, Result : this[this._.RegisteredEvents[Name]](CGUI.GUIList[this.GUINum], Params*)}
+			else if(IsFunc( `(CGUI.GUIList[this.GUINum])[this._.RegisteredEvents[Name]]))
+				return {Handled : true, Result : `(CGUI.GUIList[this.GUINum])[this._.RegisteredEvents[Name]](Params*)}
+		}
+		else if(IsFunc(this[Name]))
+			return {Handled : true, Result : this[Name](CGUI.GUIList[this.GUINum], Params*)}
+		else if(IsFunc(`(CGUI.GUIList[this.GUINum])[this.Name "_" Name]))
+			return {Handled : true, Result : `(CGUI.GUIList[this.GUINum])[this.Name "_" Name](Params*)}
+		else
+			return {Handled : false}
+	}
+	/*
+	Changes the state of controls assigned to an item of another control, making them (in)visible or (de)activating them.
+	The parameters are the previously selected item object (containing a controls array of controls assigned to it and the new selected item object.
+	*/
+	ProcessSubControlState(From, To)
+	{
+		;~ global CGUI
+		if(From != To && !CGUI.GUIList[this.GUINum].IsDestroyed)
+		{
+			if(From)
+				for index, Control in From.Controls
+				{
+					if(Control._.UseEnabledState)
+						Control.Disable()
+					else
+						Control.Hide()
+				}
+			for index, Control in To.Controls
+				if(Control._.UseEnabledState)
+					Control.Enable()
+				else
+					Control.Show()
+		}
+	}
+	
+	IsValidatableControlType()
+	{
+		return CGUI_IndexOf(["Edit", "ComboBox"], this.Type)
+	}
 	/*
 	Variable: x
 	x-Position of the control.
@@ -122,6 +216,9 @@ Class CControl ;Never created directly
 	If a text is set for this value, this control will show a tooltip when the mouse hovers over it.
 	Text and Picture controls require that you define a g-label for them to make this work.
 	
+	Variable: Menu
+	If this variable contains an instance of <CMenu> and there is no ContextMenu() event handler for this control, this menu will be shown when the user right clicks on this control or presses the AppsKey while this control has focus.
+	
 	Variable: Left
 	The control left-aligns its text. This is the default setting.
 	
@@ -151,15 +248,22 @@ Class CControl ;Never created directly
 	
 	Variable: Border
 	Provides a thin-line border around the control.
+	
+	Variable: hParentControl
+	If this control is a subcontrol of another control, this variable contains the window handle of the parent control.
+	
+	Variable: DisableNotifications
+	If true, this control will not call any of its notification functions. This is useful when the controls of a window are first created and change handlers should not be called.
 	*/
 	__Get(Name, Params*) 
     { 
-        if this.__GetEx(Result, Name, Params*) 
+        if(this.__GetEx(Result, Name, Params*) )
             return Result 
     }
+	
 	__GetEx(ByRef Result, Name, Params*)
     {
-		global CGUI
+		;~ global CGUI
 		Handled := false
 		if Name not in base,_,GUINum
 			if(!CGUI.GUIList[this.GUINum].IsDestroyed)
@@ -258,11 +362,24 @@ Class CControl ;Never created directly
 			}
 		return Handled
     }
-    __Set(Name, Value)
+	
+    __Set(Name, Params*)
     {
-		global CGUI
+		;~ global CGUI
 		if(Name != "_" && !CGUI.GUIList[this.GUINum].IsDestroyed)
 		{
+			;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
+			Value := Params[Params.MaxIndex()]
+			Params.Remove(Params.MaxIndex())
+			if(Params.MaxIndex())
+			{
+				Params.Insert(1, Name)
+				Name :=  Params[Params.MaxIndex()]
+				Params.Remove(Params.MaxIndex())
+				Object := this[Params*]
+				Object[Name] := Value
+				return Value
+			}
 			DetectHidden := A_DetectHiddenWindows
 			DetectHiddenWindows, On
 			Handled := true
@@ -274,10 +391,14 @@ Class CControl ;Never created directly
 				ControlMove,, % Value.x,% Value.y,,,% "ahk_id " this.hwnd
 			else if(Name = "Size")
 				ControlMove,, % Value.width,% Value.height,% "ahk_id " this.hwnd
-			else if(Name = "Enabled")
-				Control, % (Value = 0 ? "Disable" : "Enable"),,,% "ahk_id " this.hwnd
-			else if(Name = "Visible")
-				Control,  % (Value = 0 ? "Hide" : "Show"),,,% "ahk_id " this.hwnd
+			else if(Name = "Enabled" && Value)
+				this.Enable()
+			else if(Name = "Enabled" && !Value)
+				this.Disable()
+			else if(Name = "Visible" && Value)
+				this.Show()
+			else if(Name = "Visible" && !Value)
+				this.Hide()
 			else if(Name = "Style")
 				Control, Style, %Value%,,,% "ahk_id " this.hwnd
 			else if(Name = "ExStyle")
@@ -342,26 +463,32 @@ Class CControl ;Never created directly
 		}
     }
 	
+	/*
+	Event: Introduction
+	To handle control events you need to create a function with this naming scheme in your window class: ControlName_EventName(params)
+	The parameters depend on the event and there may not be params at all in some cases.
+	Additionally it is required to create a label with this naming scheme: GUIName_ControlName
+	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent(). 
+	For better readability labels may be chained since they all execute the same code.
+	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
 	
-	ProcessSubControlState(From, To)
-	{
-		if(From != To)
-		{
-			if(From)
-				for index, Control in From.Controls
-				{
-					if(Control._.UseEnabledState)
-						Control.Disable()
-					else
-						Control.Hide()
-				}
-			for index, Control in To.Controls
-				if(Control._.UseEnabledState)
-					Control.Enable()
-				else
-					Control.Show()
-		}
-	}
+	Event: FocusEnter
+	Invoked when the control receives keyboard focus. This event does not require that the control has a matching g-label since it is implemented through window messages.
+	This event is not supported for all input-capable controls unfortunately.
+	
+	Event: FocusLeave
+	Invoked when the control loses keyboard focus. This event does not require that the control has a matching g-label since it is implemented through window messages.
+	This event is not supported for all input-capable controls unfortunately.
+	
+	Event: ContextMenu
+	Invoked when the user right clicks on the control or presses the AppsKey while this control has focus. If this event is not handled a static context menu can be shown by setting the Menu variable of this control to an instance of <CMenu>.
+	
+	Event: Validate
+	Invoked when the control is asked to validate its (textual) contents. This event is only valid for controls containing text, which are only Edit and ComboBox controls as of now.
+	
+	Parameters:
+		Text - The current text of the control that should be validated. The function can return this value if it is valid or another valid value.
+	*/	
 	
 	/*
 	Class: CImageListManager
@@ -376,9 +503,9 @@ Class CControl ;Never created directly
 			this._.hwnd := hwnd
 			this._.IconList := {}
 		}
-		SetIcon(ID, Path, IconNumber)
+		SetIcon(ID, PathOrhBitmap, IconNumber)
 		{
-			global CGUI
+			;~ global CGUI
 			GUI := CGUI.GUIList[this._.GUINum]
 			Control := GUI.Controls[this._.hwnd]
 			GUI, % this._.GUINum ":Default"
@@ -407,10 +534,10 @@ Class CControl ;Never created directly
 					SendMessage, 0x1303, 0, this._.IconList.SmallIL_ID, % Control.ClassNN, % "ahk_id " GUI.hwnd  ; 0x1109 is TVM_SETIMAGELIST					
 				}
 			}
-			if(Path != "")
+			if(FileExist(PathorhBitmap))
 			{
 				Loop % this._.IconList.MaxIndex() ;IDs and paths and whatnot are identical in both lists so one is enough here
-					if(this._.IconList[A_Index].Path = Path && this._.IconList[A_Index].IconNumber = IconNumber)
+					if(this._.IconList[A_Index].Path = PathorhBitmap && this._.IconList[A_Index].IconNumber = IconNumber)
 					{
 						Icon := this._.IconList[A_Index]
 						break
@@ -418,10 +545,26 @@ Class CControl ;Never created directly
 				
 				if(!Icon)
 				{
-					IID := IL_Add(this._.IconList.SmallIL_ID, Path, IconNumber, 1)
+					IID := IL_Add(this._.IconList.SmallIL_ID, PathorhBitmap, IconNumber, 1)
 					if(Control.Type = "ListView")
-						IID := IL_Add(this._.IconList.LargeIL_ID, Path, IconNumber, 1)
-					this._.IconList.Insert(Icon := {Path : Path, IconNumber : IconNumber, ID : IID})
+						IID := IL_Add(this._.IconList.LargeIL_ID, PathorhBitmap, IconNumber, 1)
+					this._.IconList.Insert(Icon := {Path : PathorhBitmap, IconNumber : IconNumber, ID : IID})
+				}
+			}
+			else
+			{
+				Loop % this._.IconList.MaxIndex() ;IDs and paths and whatnot are identical in both lists so one is enough here
+					if(this._.IconList[A_Index].Path = PathorhBitmap && this._.IconList[A_Index].IconNumber = IconNumber)
+					{
+						Icon := this._.IconList[A_Index]
+						break
+					}
+				if(!Icon)
+				{
+					IID := DllCall("ImageList_ReplaceIcon", "Ptr", this._.IconList.SmallIL_ID, Int, -1, "Ptr", PathorhBitmap) + 1
+					if(Control.Type = "ListView")
+						IID := DllCall("ImageList_ReplaceIcon", "Ptr", this._.IconList.LargeIL_ID, Int, -1, "Ptr", PathorhBitmap) + 1
+					this._.IconList.Insert(Icon := {Path : PathorhBitmap, IconNumber : 1, ID : IID})
 				}
 			}
 			if(Control.Type = "ListView")
@@ -437,15 +580,6 @@ Class CControl ;Never created directly
 			}
 		}
 	}
-	
-	/*
-	Event: Introduction
-	To handle control events you need to create a function with this naming scheme in your window class: ControlName_EventName(params)
-	The parameters depend on the event and there may not be params at all in some cases.
-	Additionally it is required to create a label with this naming scheme: GUIName_ControlName
-	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent(). 
-	For better readability labels may be chained since they all execute the same code.
-	*/
 }
 
 #include <CTextControl>
@@ -463,3 +597,4 @@ Class CControl ;Never created directly
 #include <CSliderControl>
 #include <CHotkeyControl>
 #include <CActiveXControl>
+#include <CSysLinkControl>

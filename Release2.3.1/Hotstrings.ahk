@@ -18,11 +18,11 @@
 */
 LoadHotstrings()
 {
-	global Hotstrings,ConfigPath
+	global Hotstrings
 	Hotstrings := Array()
-	if(!FileExist(ConfigPath "\Hotstrings.xml"))
+	if(!FileExist(Settings.ConfigPath "\Hotstrings.xml"))
 		return
-	FileRead, xml, %ConfigPath%\Hotstrings.xml
+	FileRead, xml, % Settings.ConfigPath "\Hotstrings.xml"
 	XMLObject := XML_Read(xml)
 	;Convert empty and single arrays to real array
 	if(!XMLObject.List.len())
@@ -38,12 +38,12 @@ LoadHotstrings()
 }
 SaveHotstrings()
 {
-	global Hotstrings,ConfigPath
-	FileDelete, %ConfigPath%\Hotstrings.xml
+	global Hotstrings
+	FileDelete, % Settings.ConfigPath "\Hotstrings.xml"
 	XMLObject := Object("List", Array())
 	Loop % Hotstrings.len()
 		XMLObject.List.append(Object("keyword", Hotstrings[A_Index].key, "value", Hotstrings[A_Index].value))
-	XML_Save(XMLObject, ConfigPath "\Hotstrings.xml")
+	XML_Save(XMLObject, Settings.ConfigPath "\Hotstrings.xml")
 }
 AddHotstring(key,value)
 {

@@ -1,4 +1,4 @@
-Accessor_Google_Init(ByRef Google, Settings)
+Accessor_Google_Init(ByRef Google, PluginSettings)
 {
 	Google.Settings.Keyword := "g"
 	Google.DefaultKeyword := "g"

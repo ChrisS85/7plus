@@ -60,8 +60,7 @@ Action_ControlEvent_Execute(Action, Event)
 
 Action_ControlEvent_DisplayString(Action)
 {
-	global Settings_Events
-	return Action.Action ": " Action.EventID ": " Settings_Events.SubItem("ID", Action.EventID).Name	
+	return Action.Action ": " Action.EventID ": " SettingsWindow.Events.SubItem("ID", Action.EventID).Name	
 }
 
 Action_ControlEvent_GuiShow(Action, ActionGUI, GoToLabel = "")

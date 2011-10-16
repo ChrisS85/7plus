@@ -1,6 +1,7 @@
 AutoUpdate()
 {	
-	global MajorVersion,MinorVersion,BugfixVersion, ConfigPath
+	global MajorVersion,MinorVersion,BugfixVersion
+	outputdebug AutoUpdate
 	if(IsConnected())
 	{
 		random, rand
@@ -31,7 +32,7 @@ AutoUpdate()
 					if(!Errorlevel)
 					{
 						;Write config path and script dir location to temp file to let updater know
-						IniWrite, %ConfigPath%, %A_Temp%\7plus\Update.ini, Update, ConfigPath
+						IniWrite, % Settings.ConfigPath, %A_Temp%\7plus\Update.ini, Update, ConfigPath
 						IniWrite, %A_ScriptDir%, %A_Temp%\7plus\Update.ini, Update, ScriptDir
 						Run %A_Temp%\7plus\Update.exe,,UseErrorlevel
 						OnExit
@@ -51,7 +52,8 @@ AutoUpdate()
 }
 PostUpdate()
 {
-	global MajorVersion,MinorVersion,BugfixVersion, ConfigPath, IsPortable, Events, XMLMajorVersion, XMLMinorVersion, XMLBugfixVersion
+	global MajorVersion,MinorVersion,BugfixVersion
+	outputdebug PostUpdate
 	;If there is an Update.exe in 7plus temp directory, it is likely that an update was performed.
 	if(FileExist(A_TEMP "\7plus\Update.exe"))
 	{
@@ -84,7 +86,7 @@ ApplyFreshInstallSteps()
 ;C) If the user manually extracted a newer version
 ApplyUpdateFixes()
 {
-	global MajorVersion, MinorVersion, BugfixVersion, XMLMajorVersion, XMLMinorVersion, XMLBugfixVersion, Vista7, Events, ConfigPath
+	global MajorVersion, MinorVersion, BugfixVersion, XMLMajorVersion, XMLMinorVersion, XMLBugfixVersion, Vista7, Events
 	;On fresh installation, the versions are identical since a new Events.xml is used and no events patch needs to be applied
 	;After autoupdate has finished, the XML version is lower and the events are patched
 	;After manually overwriting 7plus, the XML version is lower and the events are patched
@@ -129,9 +131,9 @@ ApplyUpdateFixes()
 		ClipboardList := Array()
 		ClipboardList.push := "Stack_Push"
 		ClipboardList := Object("Base", ClipboardList)
-		if(FileExist(ConfigPath "\Clipboard.xml"))
+		if(FileExist(Settings.ConfigPath "\Clipboard.xml"))
 		{
-			FileRead, xml, %ConfigPath%\Clipboard.xml
+			FileRead, xml, % Settings.ConfigPath "\Clipboard.xml"
 			XMLObject := XML_Read(xml)
 			;Convert empty and single arrays to real array
 			if(!XMLObject.List.len())
@@ -142,22 +144,22 @@ ApplyUpdateFixes()
 			XMLObject := Object("List",Array())
 			Loop % min(ClipboardList.len(), 10)
 				XMLObject.List.append(Encrypt(ClipboardList[A_Index])) ;Store encrypted
-			XML_Save(XMLObject,ConfigPath "\Clipboard.xml")
+			XML_Save(XMLObject, Settings.ConfigPath "\Clipboard.xml")
 		}
 	}
 }
 AutoUpdate_CheckPatches()
 {
-	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, ConfigPath, Events
+	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, Events
 	;Disable keyboard hook to increase responsiveness
-	FileCreateDir, %ConfigPath%\Patches
-	FileDelete, %ConfigPath%\PatchInfo.xml
+	FileCreateDir, % Settings.ConfigPath "\Patches"
+	FileDelete, % Settings.ConfigPath "\PatchInfo.xml"
 	if(IsConnected("http://7plus.googlecode.com/files/PatchInfo.xml?x=" rand))
 	{
-		URLDownloadToFile, http://7plus.googlecode.com/files/PatchInfo.xml?x=%rand%, %ConfigPath%\PatchInfo.xml
+		URLDownloadToFile, http://7plus.googlecode.com/files/PatchInfo.xml?x=%rand%, % Settings.ConfigPath "\PatchInfo.xml"
 		if(!Errorlevel)
 		{
-			FileRead, xml, %ConfigPath%\PatchInfo.xml
+			FileRead, xml, % Settings.ConfigPath "\PatchInfo.xml"
 			XMLObject := XML_Read(xml)
 		}
 	}
@@ -165,16 +167,16 @@ AutoUpdate_CheckPatches()
 	Loop ;Iteratively apply all available patches
 	{
 		version := MajorVersion "." MinorVersion "." BugfixVersion "." (PatchVersion + 1)
-		if(IsObject(XMLObject) && !FileExist(ConfigPath "\Patches\" version ".xml") && XMLObject.HasKey(version)) ;If a new patch is available online, download it to patches directory
+		if(IsObject(XMLObject) && !FileExist(Settings.ConfigPath "\Patches\" version ".xml") && XMLObject.HasKey(version)) ;If a new patch is available online, download it to patches directory
 		{
 			random, rand
 			PatchURL := XMLObject[version]
 			if(IsConnected(PatchURL "?x=" rand))
-				URLDownloadToFile, %PatchURL%?x=%rand%, %ConfigPath%\Patches\%version%.xml
+				URLDownloadToFile, %PatchURL%?x=%rand%, % Settings.ConfigPath "\Patches\" version ".xml"
 		}
-		if(FileExist(ConfigPath "\Patches\" version ".xml")) ;If the patch exists in patches directory (does not mean it has been downloaded now, they are stored)
+		if(FileExist(Settings.ConfigPath "\Patches\" version ".xml")) ;If the patch exists in patches directory (does not mean it has been downloaded now, they are stored)
 		{
-			ReadEventsFile(Events, ConfigPath "\Patches\" version ".xml","", Update)
+			ReadEventsFile(Events, Settings.ConfigPath "\Patches\" version ".xml","", Update)
 			PatchVersion++
 			WriteMainEventsFile()
 			patch := true
@@ -184,4 +186,23 @@ AutoUpdate_CheckPatches()
 	}
 	if(patch)
 		MsgBox, % "A Patch has been installed that updates the event configuration. Applied changes:`n" Update.Message
+}
+
+
+AddUninstallInformation()
+{
+	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, IsPortable
+	if(IsPortable)
+		return
+	RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7plus, DisplayName, 7plus V.%MajorVersion%.%MinorVersion%.%BugfixVersion%.%PatchVersion%
+	RegWrite, REG_DWORD, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7plus, NoModify, 1
+	RegWrite, REG_DWORD, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7plus, NoRepair, 1
+	RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7plus, UninstallString, 1, "%A_ScriptDir%\Uninstall.exe"
+}
+
+RemoveUninstallInformation()
+{
+	if(IsPortable)
+		return
+	RegDelete, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7plus
 }

@@ -8,14 +8,13 @@ Class CListViewControl Extends CControl
 {
 	__New(Name, ByRef Options, Text, GUINum)
 	{
-		global CGUI		
-		Events := "Click,RightClick,ItemActivated,MouseLeave,EditingStart,FocusReceived,FocusLost,ItemSelected,ItemDeselected,ItemFocused,ItemDefocused,ItemChecked",  "ItemUnChecked,SelectionChanged,CheckedChanged,FocusedChanged,KeyPress,Marquee,ScrollingStart,ScrollingEnd"
+		;~ global CGUI		
+		Events := ["Click", "RightClick", "ItemActivated", "MouseLeave", "EditingStart", "FocusReceived", "FocusLost", "ItemSelected", "ItemDeselected", "ItemFocused", "ItemDefocused", "ItemChecked", " ItemUnChecked", "SelectionChanged", "CheckedChanged", "FocusedChanged", "KeyPress", "Marquee", "ScrollingStart", "ScrollingEnd"]
 		if(!InStr(Options, "AltSubmit")) ;Automagically add AltSubmit when necessary
 		{
-			; for index, function in Events
-			Loop, Parse, Events,`,
+			for index, function in Events
 			{
-				if(IsFunc(CGUI.GUIList[GUINum][Name "_" A_LoopField]))
+				if(IsFunc(CGUI.GUIList[GUINum][Name "_" function]))
 				{
 					Options .= " AltSubmit"
 					break
@@ -25,43 +24,56 @@ Class CListViewControl Extends CControl
 		base.__New(Name, Options, Text, GUINum)
 		this._.Insert("ControlStyles", {ReadOnly : -0x200, Header : -0x4000, NoSortHdr : 0x8000, AlwaysShowSelection : 0x8, Multi : -0x4, Sort : 0x10, SortDescending : 0x20})
 		this._.Insert("ControlExStyles", {Checked : 0x4, FullRowSelect : 0x20, Grid : 0x1, AllowHeaderReordering : 0x10, HotTrack : 0x8})
-		Events := "DoubleClick,DoubleRightClick,ColumnClick,EditingEnd,Click,RightClick,ItemActivate,EditingStart,KeyPress,FocusReceived,FocusLost,Marquee,ScrollingStart,ScrollingEnd,ItemSelected,ItemDeselected,ItemFocused,ItemDefocused,ItemChecked,ItemUnChecked,SelectionChanged,CheckedChanged,FocusedChanged"
-		this._.Insert("Events", [])
-		Loop, Parse, Events, `,
-			this._.Events.Insert("Events", A_LoopField)
+		this._.Insert("Events", ["DoubleClick", "DoubleRightClick", "ColumnClick", "EditingEnd", "Click", "RightClick", "ItemActivate", "EditingStart", "KeyPress", "FocusReceived", "FocusLost", "Marquee", "ScrollingStart", "ScrollingEnd", "ItemSelected", "ItemDeselected", "ItemFocused", "ItemDefocused", "ItemChecked", "ItemUnChecked", "SelectionChanged", "CheckedChanged", "FocusedChanged"])
+		this._.Insert("Messages", {0x004E : "Notify"}) ;This control uses WM_NOTIFY with NM_SETFOCUS and NM_KILLFOCUS
 		this.Type := "ListView"
 	}
 	
 	PostCreate()
-	{		
+	{
+		Base.PostCreate()
 		this._.Insert("ImageListManager", new this.CImageListManager(this.GUINum, this.hwnd))
 		this._.Insert("Items", new this.CItems(this.GUINum, this.hwnd))
 	}
 	/*
 	Function: ModifyCol
-	Modifies a column. See AHK help on LV_ModifyCol for details.
+	Modifies a column. All parameters are optional, see AHK help on LV_ModifyCol for details.
+	
+	Parameters:
+		ColumnNumber - The number of the column to modify, one-based
+		Options - The new width. See AHK documentation.
+		ColumnTitle - The new column title.
 	*/
-	ModifyCol(ColumnNumber="", Options="", ColumnTitle="")
+	ModifyCol(Params*)
 	{
-		global CGUI
+		;~ global CGUI
 		if(CGUI.GUIList[this.GUINum].IsDestroyed)
+			return
+		if(!CGUI_Assert(!(Params.MaxIndex() > 3), "ModifyCol: This function accepts no more than 3 parameters."))
 			return
 		Gui, % this.GUINum ":Default"
 		Gui, ListView, % this.ClassNN
-		LV_ModifyCol(ColumnNumber, Options, ColumnTitle)
+		LV_ModifyCol(Params*)
 	}
 	/*
 	Function: InsertCol
 	Inserts a column. See AHK help on LV_InsertCol for details.
+	
+	Parameters:
+		ColumnNumber - The position of the new column
+		Options - The new width. See AHK documentation.
+		ColumnTitle - The new column title.
 	*/
-	InsertCol(ColumnNumber, Options="", ColumnTitle="")
+	InsertCol(Params*)
 	{
-		global CGUI
+		;~ global CGUI
 		if(CGUI.GUIList[this.GUINum].IsDestroyed)
+			return
+		if(!CGUI_Assert(!(Params.MaxIndex() > 3), "InsertCol: This function accepts no more than 3 parameters."))
 			return
 		Gui, % this.GUINum ":Default"
 		Gui, ListView, % this.ClassNN
-		LV_InsertCol(ColumnNumber, Options, ColumnTitle)
+		LV_InsertCol(Params*)
 	}
 	/*
 	Function: DeleteCol
@@ -69,7 +81,7 @@ Class CListViewControl Extends CControl
 	*/
 	DeleteCol(ColumnNumber)
 	{
-		global CGUI
+		;~ global CGUI
 		if(CGUI.GUIList[this.GUINum].IsDestroyed)
 			return
 		Gui, % this.GUINum ":Default"
@@ -120,7 +132,7 @@ Class CListViewControl Extends CControl
 	*/
 	__Get(Name, Params*)
 	{
-		global CGUI
+		;~ global CGUI
 		if(Name != "GUINum" && !CGUI.GUIList[this.GUINum].IsDestroyed)
 		{
 			DetectHidden := A_DetectHiddenWindows
@@ -135,7 +147,7 @@ Class CListViewControl Extends CControl
 				Loop % this.Items.Count
 					if(LV_GetNext(A_Index - 1, InStr(Name, "Checked") ? "Checked" : "") = A_Index)
 					{
-						Index := (this._.Items.IndependentSorting ? this.CItems.CRow.GetUnsortedIndex(A_Index, this.hwnd) : A_Index)
+						Index := (this.IndependentSorting ? this.CItems.CRow.GetUnsortedIndex(A_Index, this.hwnd) : A_Index)
 						Value.Insert(InStr(Name, "Indices") ? Index : this._.Items[Index]) ;new this.CItems.CRow(this.CItems.GetSortedIndex(A_Index, this.hwnd), this.GUINum, this.Name))
 					}
 			}
@@ -146,7 +158,7 @@ Class CListViewControl Extends CControl
 				Loop % this.Items.Count
 					if(LV_GetNext(A_Index - 1, InStr(Name, "Checked") ? "Checked" : "") = A_Index)
 					{
-						Index := (this._.Items.IndependentSorting ? this.CItems.CRow.GetUnsortedIndex(A_Index, this.hwnd) : A_Index)
+						Index := (this.IndependentSorting ? this.CItems.CRow.GetUnsortedIndex(A_Index, this.hwnd) : A_Index)
 						Value := InStr(Name, "Index") ? Index : this._.Items[Index] ;new this.CItems.CRow(this.CItems.GetSortedIndex(A_Index, this.hwnd), this.GUINum, this.Name))
 						break
 					}
@@ -156,13 +168,11 @@ Class CListViewControl Extends CControl
 				Gui, % this.GUINum ":Default"
 				Gui, ListView, % this.ClassNN
 				Value := LV_GetNext(0, "Focused")
-				if(this._.Items.IndependentSorting)
+				if(this.IndependentSorting)
 					Value := this.CItems.CRow.GetUnsortedIndex(Value, this.hwnd)
 				if(Name = "FocusedItem")
 					Value := this._.Items[Value] ;new this.CItems.CRow(Value, this.GUINum, this.Name)
 			}
-			else if(Name = "IndependentSorting")
-				Value := this._.Items.IndependentSorting
 			Loop % Params.MaxIndex()
 				if(IsObject(Value)) ;Fix unlucky multi parameter __GET
 					Value := Value[Params[A_Index]]
@@ -172,31 +182,52 @@ Class CListViewControl Extends CControl
 				return Value
 		}
 	}
-	__Set(Name, Value, Params*)
+	__Set(Name, Params*)
 	{
-		global CGUI
+		;~ global CGUI
 		if(!CGUI.GUIList[this.GUINum].IsDestroyed)
 		{
 			DetectHidden := A_DetectHiddenWindows
 			DetectHiddenWindows, On
 			Handled := true
-			if(Name = "SelectedIndices" || Name = "CheckedIndices")
+			;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
+			Value := Params[Params.MaxIndex()]
+			Params.Remove(Params.MaxIndex())
+			if(Params.MaxIndex())
+			{
+				Params.Insert(1, Name)
+				Name :=  Params[Params.MaxIndex()]
+				Params.Remove(Params.MaxIndex())
+				Object := this[Params*]
+				Object[Name] := Value
+				return Value
+			}
+			if(Name = "SelectedIndices" || Name = "CheckedIndices" || Name = "SelectedItems" || Name = "CheckedItems")
 			{
 				Gui, % this.GUINum ":Default"
 				Gui, ListView, % this.ClassNN
-				Indices := Value
-				if(!IsObject(Value))
+				if(InStr(Name, "Items"))
 				{
 					Indices := Array()
-					Loop, Parse, Value,|
-						if A_LoopField is Integer
-							Indices.Insert(A_LoopField)
+					for index, item in Value
+						Indices.Insert(item._.RowNumber)
 				}
-				LV_Modify(0, Name = "SelectedIndices" ? "-Select" : "-Check")
+				else
+				{
+					Indices := Value
+					if(!IsObject(Value))
+					{
+						Indices := Array()
+						Loop, Parse, Value,|
+							if A_LoopField is Integer
+								Indices.Insert(A_LoopField)
+					}
+				}
+				LV_Modify(0, InStr(Name, "Selected") ? "-Select" : "-Check")
 				Loop % Indices.MaxIndex()
 					if(Indices[A_Index] > 0)
-						LV_Modify(this._.Items.IndependentSorting ? this.CItems.CRow.GetSortedIndex(Indices[A_Index], this.hwnd) : Indices[A_Index], Name = "SelectedIndices" ? "Select" : "Check")
-				if(Name = "SelectedIndices")
+						LV_Modify(this.IndependentSorting ? this.CItems.CRow.GetSortedIndex(Indices[A_Index], this.hwnd) : Indices[A_Index], InStr(Name, "Selected") ? "Select" : "Check")
+				if(InStr(Name, "Selected"))
 				{
 					if(LV_GetCount("Selected") = 1)
 					{
@@ -210,15 +241,17 @@ Class CListViewControl Extends CControl
 					}
 				}
 			}
-			else if(Name = "SelectedIndex" || Name = "CheckedIndex")
+			else if(Name = "SelectedIndex" || Name = "CheckedIndex" || Name = "SelectedItem" || Name = "CheckedItem")
 			{
 				Gui, % this.GUINum ":Default"
 				Gui, ListView, % this.ClassNN
-				LV_Modify(0, Name = "SelectedIndex" ? "-Select" : "-Check")
+				if(InStr(Name, "Item"))
+					Value := Value._.RowNumber
+				LV_Modify(0, InStr(Name, "Selected") ? "-Select" : "-Check")
 				if(Value > 0)
 				{
-					LV_Modify(this._.Items.IndependentSorting ? this.CItems.CRow.GetSortedIndex(Value, this.hwnd) : Value, Name = "SelectedIndex" ? "Select" : "Check")
-					if(Name = "SelectedIndex")
+					LV_Modify(this.IndependentSorting ? this.CItems.CRow.GetSortedIndex(Value, this.hwnd) : Value, InStr(Name, "Selected") ? "Select" : "Check")
+					if(InStr(Name, "Selected"))
 					{
 						if(LV_GetCount("Selected") = 1)
 						{
@@ -233,19 +266,19 @@ Class CListViewControl Extends CControl
 					}
 				}
 			}
-			else if(Name = "FocusedIndex")
+			else if(Name = "FocusedIndex" || Name = "FocusedItem")
 			{
 				Gui, % this.GUINum ":Default"
 				Gui, ListView, % this.ClassNN
-				LV_Modify(this._.Items.IndependentSorting ? this.CItems.CRow.GetSortedIndex(Value, this.hwnd) : Value, "Focused")
+				if(InStr(Name, "Item"))
+					Value := Value._.RowNumber
+				LV_Modify(this.IndependentSorting ? this.CItems.CRow.GetSortedIndex(Value, this.hwnd) : Value, "Focused")
 			}
 			else if(Name = "Items" && IsObject(Value) && IsObject(this._.Items) && Params.MaxIndex() > 0)
 			{
 				Items := this._.Items
 				Items[Params*] := Value
 			}
-			else if(Name = "IndependentSorting")
-				this._.Items.IndependentSorting := Value
 			else if(Name = "Items")
 				Value := 0
 			else
@@ -271,16 +304,16 @@ Class CListViewControl Extends CControl
 		}
 		_NewEnum()
 		{
-			global CEnumerator
+			;~ global CEnumerator
 			return new CEnumerator(this)
 		}
 		/*
-		Function: MaxIndex()
+		Function: MaxIndex
 		Returns the number of rows.
 		*/
 		MaxIndex()
 		{
-			global CGUI
+			;~ global CGUI
 			GUI := CGUI.GUIList[this._.GUINum]
 			if(GUI.IsDestroyed)
 				return
@@ -290,31 +323,34 @@ Class CListViewControl Extends CControl
 			return LV_GetCount()
 		}
 		/*
-		Function: Add()
+		Function: Add
 		Adds a row.
 		
 		Parameters:
 			Options - Options for the new row. See AHK documentation on LV_Add().
 			Fields - Any additional parameters are used as cell text.
+			
+		Returns: The added <CRow> item
 		*/
 		Add(Options, Fields*)
 		{
-			global CGUI
+			;~ global CGUI
 			GUI := CGUI.GUIList[this._.GUINum]
 			if(GUI.IsDestroyed)
 				return
 			Control := GUI.Controls[this._.hwnd]
-			Gui, % Control.GUINum ":Default"
-			Gui, ListView, % Control.ClassNN
+			Gui, % this._.GUINum ":Default"
+			Gui, ListView, % Control.hwnd
 			SortedIndex := LV_Add(Options, Fields*)
-			UnsortedIndex := LV_GetCount()
-			this._.Insert(UnsortedIndex, new this.CRow(SortedIndex, UnsortedIndex, this._.GUINum, Control.hwnd))
+			UnsortedIndex := (UnsortedIndex := this._.MaxIndex() + 1) ? UnsortedIndex : 1
+			Row := new this.CRow(SortedIndex, UnsortedIndex, this._.GUINum, this._.hwnd)
+			this._.Insert(UnsortedIndex, Row)
 			if(InStr(Options, "Select"))
 			{
 				if(LV_GetCount("Selected") = 1)
 				{
-					Control.ProcessSubControlState(Control._.PreviouslySelectedItem, Control.SelectedItem)
-					Control._.PreviouslySelectedItem := Control.SelectedItem
+					Control.ProcessSubControlState(Control._.PreviouslySelectedItem, Row)
+					Control._.PreviouslySelectedItem := Row
 				}
 				else
 				{
@@ -322,9 +358,10 @@ Class CListViewControl Extends CControl
 					Control._.PreviouslySelectedItem := ""
 				}
 			}
+			return Row
 		}
 		/*
-		Function: Insert()
+		Function: Insert
 		Inserts a row.
 		
 		Parameters:
@@ -334,14 +371,14 @@ Class CListViewControl Extends CControl
 		*/
 		Insert(RowNumber, Options, Fields*)
 		{
-			global CGUI
+			;~ global CGUI
 			GUI := CGUI.GUIList[this._.GUINum]
 			if(GUI.IsDestroyed)
 				return
 			Control := GUI.Controls[this._.hwnd]
 			Gui, % Control.GUINum ":Default"
 			Gui, ListView, % Control.ClassNN
-			SortedIndex := this.IndependentSorting ? this.CRow.GetSortedIndex(RowNumber, Control.hwnd) : RowNumber ;If independent sorting is off, the RowNumber parameter of this function is interpreted as sorted index
+			SortedIndex := Control.IndependentSorting ? this.CRow.GetSortedIndex(RowNumber, Control.hwnd) : RowNumber ;If independent sorting is off, the RowNumber parameter of this function is interpreted as sorted index
 			if(SortedIndex = -1 || SortedIndex > LV_GetCount())
 				SortedIndex := LV_GetCount() + 1
 			
@@ -373,63 +410,70 @@ Class CListViewControl Extends CControl
 		}	
 		
 		/*
-		Function: Modify()
+		Function: Modify
 		Modifies a row.
 		
 		Parameters:
-			RowNumber - Index of the row which should be modified.
+			RowNumberOrItem - Index of the row or the item which should be modified.
 			Options - Options for the modified row. See AHK documentation on LV_Modify().
 			Fields - Any additional parameters are used as cell text.
 		*/
-		Modify(RowNumber, Options, Fields*)
+		Modify(RowNumberOrItem, Options, Fields*)
 		{
-			global CGUI
 			GUI := CGUI.GUIList[this._.GUINum]
 			if(GUI.IsDestroyed)
 				return
 			Control := GUI.Controls[this._.hwnd]
-			Gui, % Control.GUINum ":Default"
-			Gui, ListView, % Control.ClassNN
-			SortedIndex := this.IndependentSorting ? this.CRow.GetSortedIndex(RowNumber, Control.hwnd) : RowNumber ;If independent sorting is off, the RowNumber parameter of this function is interpreted as sorted index
-			LV_Modify(SortedIndex, Options, Fields*)
-			if(InStr(Options, "Select"))
-			{
-				if(LV_GetCount("Selected") = 1)
-				{
-					Control.ProcessSubControlState(Control._.PreviouslySelectedItem, Control.SelectedItem)
-					Control._.PreviouslySelectedItem := Control.SelectedItem
-				}
-				else
-				{
-					Control.ProcessSubControlState(Control._.PreviouslySelectedItem, "")
-					Control._.PreviouslySelectedItem := ""
-				}
-			}
+			if(!IsObject(RowNumberOrItem))
+				RowNumberOrItem := Control.Items[RowNumberOrItem]
+			if(IsObject(RowNumberOrItem))
+				RowNumberOrItem.Modify(Options, Fields*)
 		}
 		
 		/*
-		Function: Delete()
-		Deletes a row.
-		
-		Parameters:
-			RowNumber - Index of the row which should be deleted.
+		Function: Clear
+		Clears the ListView by deleting all rows.
 		*/
-		Delete(RowNumber)
+		Clear()
 		{
-			global CGUI
 			GUI := CGUI.GUIList[this._.GUINum]
 			if(GUI.IsDestroyed)
 				return
 			Control := GUI.Controls[this._.hwnd]
 			Gui, % Control.GUINum ":Default"
 			Gui, ListView, % Control.ClassNN
-			WasSelected := Control.Items[RowNumber].Selected
-			SortedIndex := this.IndependentSorting ? this.CRow.GetSortedIndex(RowNumber, Control.hwnd) : RowNumber ;If independent sorting is off, the RowNumber parameter of this function is interpreted as sorted index
-			UnsortedIndex := this.CRow.GetUnsortedIndex(SortedIndex, Control.hwnd)
+			LV_Delete()
+			Loop % Control._.MaxIndex()
+				Control._.Remove(A_Index, "")
+			Control.ProcessSubControlState(Control._.PreviouslySelectedItem, "")
+			Control._.PreviouslySelectedItem := ""
+		}
+		/*
+		Function: Delete
+		Deletes a row.
+		
+		Parameters:
+			RowNumberOrItem - Index of the row which should be deleted or a <CRow> object.
+		*/
+		Delete(RowNumberOrItem)
+		{
+			;~ global CGUI
+			GUI := CGUI.GUIList[this._.GUINum]
+			if(GUI.IsDestroyed)
+				return
+			Control := GUI.Controls[this._.hwnd]
+			Gui, % Control.GUINum ":Default"
+			Gui, ListView, % Control.ClassNN
+			if(IsObject(RowNumberOrItem))
+				RowNumberOrItem := RowNumberOrItem._.RowNumber
+			WasSelected := Control.Items[RowNumberOrItem].Selected
+			SortedIndex := Control.IndependentSorting ? this.CRow.GetSortedIndex(RowNumberOrItem, Control.hwnd) : RowNumberOrItem ;If independent sorting is off, the RowNumber parameter of this function is interpreted as sorted index
+			UnsortedIndex := Control.IndependentSorting ? RowNumberOrItem : this.CRow.GetUnsortedIndex(SortedIndex, Control.hwnd)
 			;Decrease the unsorted indices after the deletion index by one
 			Loop % LV_GetCount() - UnsortedIndex
 				this.CRow.SetUnsortedIndex(this.CRow.GetSortedIndex(UnsortedIndex + A_Index, Control.hwnd), UnsortedIndex + A_Index - 1, Control.hwnd)
-			LV_Delete(SortedIndex)
+			result := LV_Delete(SortedIndex)
+			this._.Remove(UnsortedIndex)
 			if(WasSelected)
 			{
 				if(LV_GetCount("Selected") = 1)
@@ -453,7 +497,7 @@ Class CListViewControl Extends CControl
 		*/
 		__Get(Name)
 		{
-			global CGUI
+			;~ global CGUI
 			if(Name != "_")
 			{
 				GUI := CGUI.GUIList[this._.GUINum]
@@ -463,20 +507,30 @@ Class CListViewControl Extends CControl
 				if Name is Integer
 				{
 					if(Name > 0 && Name <= this.Count)
-						return this._[this.IndependentSorting ? Name : this.CRow.GetUnsortedIndex(Name, Control.hwnd)]
+						return this._[Control.IndependentSorting ? Name : this.CRow.GetUnsortedIndex(Name, Control.hwnd)]
 				}
 				else if(Name = "Count")
 					return this.MaxIndex()
 			}
 		}
-		__Set(Name, Value, Params*)
+		__Set(Name, Params*)
 		{
-			global CGUI
+			;~ global CGUI
 			GUI := CGUI.GUIList[this._.GUINum]
 			if(GUI.IsDestroyed)
 				return
+			;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
 			Value := Params[Params.MaxIndex()]
 			Params.Remove(Params.MaxIndex())
+			if(Params.MaxIndex())
+			{
+				Params.Insert(1, Name)
+				Name :=  Params[Params.MaxIndex()]
+				Params.Remove(Params.MaxIndex())
+				Object := this[Params*]
+				Object[Name] := Value
+				return Value
+			}
 			if Name is Integer
 			{
 				if(!Params.MaxIndex()) ;Setting a row directly is not allowed
@@ -499,7 +553,7 @@ Class CListViewControl Extends CControl
 		{
 			__New(SortedIndex, UnsortedIndex, GUINum, hwnd)
 			{
-				global CGUI
+				;~ global CGUI
 				this.Insert("_", {})				
 				this._.RowNumber := UnsortedIndex
 				this._.GUINum := GUINum
@@ -514,7 +568,7 @@ Class CListViewControl Extends CControl
 				this._.Insert("Controls", {})
 			}
 			/*
-			Function: AddControl()
+			Function: AddControl
 			Adds a control to this item that will be visible/enabled only when this item is selected. The parameters correspond to the Add() function of CGUI.
 			
 			Parameters:
@@ -526,13 +580,13 @@ Class CListViewControl Extends CControl
 			*/
 			AddControl(type, Name, Options, Text, UseEnabledState = 0)
 			{
-				global CGUI
+				;~ global CGUI
 				GUI := CGUI.GUIList[this._.GUINum]
 				if(!this.Selected)
 					Options .= UseEnabledState ? " Disabled" : " Hidden"
-				Control := GUI.Add(type, Name, Options, Text, this._.Controls)
+				Control := GUI.AddControl(type, Name, Options, Text, this._.Controls, this)
 				Control._.UseEnabledState := UseEnabledState
-				this._.Controls.Insert(Name, Control)
+				Control.hParentControl := this._.hwnd
 				return Control
 			}
 			/*
@@ -620,16 +674,16 @@ Class CListViewControl Extends CControl
 			}
 			_NewEnum()
 			{
-				global CEnumerator
+				;~ global CEnumerator
 				return new CEnumerator(this)
 			}
 			/*
-			Function: MaxIndex()
+			Function: MaxIndex
 			Returns the number of columns.
 			*/
 			MaxIndex()
 			{				
-				global CGUI
+				;~ global CGUI
 				GUI := CGUI.GUIList[this._.GUINum]
 				if(GUI.IsDestroyed)
 					return
@@ -648,7 +702,7 @@ Class CListViewControl Extends CControl
 			*/
 			SetIcon(Filename, IconNumberOrTransparencyColor = 1)
 			{
-				global CGUI
+				;~ global CGUI
 				GUI := CGUI.GUIList[this._.GUINum]
 				if(GUI.IsDestroyed)
 					return
@@ -657,6 +711,39 @@ Class CListViewControl Extends CControl
 				this._.Icon := Filename
 				this._.IconNumber := IconNumberOrTransparencyColor
 			}
+			/*
+		Function: Modify
+		Modifies a row.
+		
+		Parameters:
+			Options - Options for the modified row. See AHK documentation on LV_Modify().
+			Fields - Any additional parameters are used as cell text.
+		*/
+		Modify(Options, Fields*)
+		{
+			;~ global CGUI
+			GUI := CGUI.GUIList[this._.GUINum]
+			if(GUI.IsDestroyed)
+				return
+			Control := GUI.Controls[this._.hwnd]
+			Gui, % Control.GUINum ":Default"
+			Gui, ListView, % Control.ClassNN
+			SortedIndex := Control.IndependentSorting ? this.CRow.GetSortedIndex(this._.RowNumber, Control.hwnd) : this._.RowNumber ;If independent sorting is off, the RowNumber parameter of this function is interpreted as sorted index
+			LV_Modify(SortedIndex, Options, Fields*)
+			if(InStr(Options, "Select"))
+			{
+				if(LV_GetCount("Selected") = 1)
+				{
+					Control.ProcessSubControlState(Control._.PreviouslySelectedItem, Control.SelectedItem)
+					Control._.PreviouslySelectedItem := Control.SelectedItem
+				}
+				else
+				{
+					Control.ProcessSubControlState(Control._.PreviouslySelectedItem, "")
+					Control._.PreviouslySelectedItem := ""
+				}
+			}
+		}
 			/*
 			Variable: 1,2,3,4,...
 			Columns can be accessed by their index, e.g. this.ListView.Items[1][2] accesses the text of the first row and second column.
@@ -684,7 +771,7 @@ Class CListViewControl Extends CControl
 			*/
 			__Get(Name)
 			{
-				global CGUI				
+				;~ global CGUI				
 				GUI := CGUI.GUIList[this._.GUINum]
 				if(!GUI.IsDestroyed)
 				{
@@ -718,12 +805,24 @@ Class CListViewControl Extends CControl
 						return this._.Controls
 				}
 			}
-			__Set(Name, Value)
+			__Set(Name, Params*)
 			{				
-				global CGUI
+				;~ global CGUI
 				GUI := CGUI.GUIList[this._.GUINum]
 				if(!GUI.IsDestroyed)
 				{
+					;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
+					Value := Params[Params.MaxIndex()]
+					Params.Remove(Params.MaxIndex())
+					if(Params.MaxIndex())
+					{
+						Params.Insert(1, Name)
+						Name :=  Params[Params.MaxIndex()]
+						Params.Remove(Params.MaxIndex())
+						Object := this[Params*]
+						Object[Name] := Value
+						return Value
+					}
 					Control := GUI.Controls[this._.hwnd]
 					if Name is Integer
 					{
@@ -775,34 +874,35 @@ Class CListViewControl Extends CControl
 	Additionally it is required to create a label with this naming scheme: GUIName_ControlName
 	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent(). 
 	For better readability labels may be chained since they all execute the same code.
+	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
 	
-	Event: Click(RowIndex)
+	Event: Click(RowItem)
 	Invoked when the user clicked on the control.
 	
-	Event: DoubleClick(RowIndex)
+	Event: DoubleClick(RowItem)
 	Invoked when the user double-clicked on the control.
 	
-	Event: RightClick(RowIndex)
+	Event: RightClick(RowItem)
 	Invoked when the user right-clicked on the control.
 	
-	Event: DoubleRightClick(RowIndex)
+	Event: DoubleRightClick(RowItem)
 	Invoked when the user double-right-clicked on the control.
 	
 	Event: ColumnClick(ColumnIndex)
 	Invoked when the user clicked on a column header.
 	
-	Event: EditingStart(RowIndex)
+	Event: EditingStart(RowItem)
 	Invoked when the user started editing the first cell of a row.
 	
-	Event: EditingEnd(RowIndex)
+	Event: EditingEnd(RowItem)
 	Invoked when the user finished editing a cell.
 	
-	Event: ItemActivate(RowIndex)
+	Event: ItemActivate(RowItem)
 	Invoked when a row was activated.
 	
 	Event: KeyPress(KeyCode)
 	Invoked when the user pressed a key while the control had focus.
-		
+	
 	Event: MouseLeave()
 	Invoked when the mouse leaves the control boundaries.
 	
@@ -821,104 +921,78 @@ Class CListViewControl Extends CControl
 	Event: ScrollingEnd()
 	Invoked when the user ends scrolling the control.
 	
-	Event: ItemSelected(RowIndex)
-	Invoked when the user selects an item.
-	
-	Event: ItemDeselected(RowIndex)
-	Invoked when the user deselects an item.
-	
-	Event: SelectionChanged(RowIndex)
+	Event: SelectionChanged(RowItem)
 	Invoked when the selected item(s) has/have changed.
 	
-	Event: ItemFocused(RowIndex)
+	Event: ItemFocused(RowItem)
 	Invoked when a row gets focused.
 	
-	Event: ItemDefocused(RowIndex)
+	Event: ItemDefocused(RowItem)
 	Invoked when a row loses the focus.
 	
-	Event: FocusedChanged(RowIndex)
+	Event: FocusedChanged(RowItem)
 	Invoked when the row focus has changed.
 	
-	Event: ItemChecked(RowIndex)
+	Event: ItemChecked(RowItem)
 	Invoked when the user checks a row.
 	
-	Event: ItemUnchecked(RowIndex)
+	Event: ItemUnchecked(RowItem)
 	Invoked when the user unchecks a row.	
 	
-	Event: CheckedChanged(RowIndex)
+	Event: CheckedChanged(RowItem)
 	Invoked when the checked row(s) has/have changed.
 	*/
-	HandleEvent()
+	HandleEvent(Event)
 	{
-		global CGUI
-		if(CGUI.GUIList[this.GUINum].IsDestroyed)
-			return
-		; Critical := A_IsCritical
-		; Critical, On
-		ErrLevel := ErrorLevel
-		;~ if(!events)
-			;~ events := object()
-		;~ events[mod(i,30) +1] := A_GuiEvent " " A_EventInfo " " ErrLevel
-		;~ i++
-		;~ loop 30
-			;~ text .= events[A_Index] "`n"
-		;~ tooltip %text%
-		Mapping := {DoubleClick : "_DoubleClick", R : "_DoubleRightClick", ColClick : "_ColumnClick", eb : "_EditingEnd", Normal : "_Click", RightClick : "_RightClick",  A : "_ItemActivate", Ea : "_EditingStart", K : "_KeyPress"}
-		for Event, Function in Mapping
-			if((strlen(A_GuiEvent) = 1 && A_GuiEvent == SubStr(Event, 1, 1)) || A_GuiEvent == Event)
-				if(IsFunc(CGUI.GUIList[this.GUINum][this.Name Function]))
-				{
-					ErrorLevel := ErrLevel
-					`(CGUI.GUIList[this.GUINum])[this.Name Function]({DoubleClick : 1, R : 1, Normal : 1, RightClick : 1,  A : 1, E : 1}[A_GUIEvent] && this._.Items.IndependentSorting ? this.CItems.CRow.GetUnsortedIndex(A_EventInfo, this.hwnd) : A_EventInfo)
-					; if(!Critical)
-						; Critical, Off
-					return
-				}
-		Mapping := {C : "_MouseLeave", Fa : "_FocusReceived", fb : "_FocusLost", M : "_Marquee", Sa : "_ScrollingStart", sb : "_ScrollingEnd"} ;Case insensitivity strikes back!
-		for Event, Function in Mapping
-			if(A_GuiEvent == SubStr(Event, 1, 1))
-				if(IsFunc(CGUI.GUIList[this.GUINum][this.Name Function]))
-				{
-					ErrorLevel := ErrLevel
-					`(CGUI.GUIList[this.GUINum])[this.Name Function]()
-					; if(!Critical)
-						; Critical, Off
-					return
-				}
-		if(A_GuiEvent == "I")
+		Row := this.IndependentSorting ? this.CItems.CRow.GetUnsortedIndex(Event.EventInfo, this.hwnd) : Event.EventInfo
+		if(Event.GUIEvent == "E")
+			this.CallEvent("EditingStart", Row)
+		else if(EventName := {DoubleClick : "DoubleClick", R : "DoubleRightClick", ColClick : "ColumnClick", e : "EditingEnd", Normal : "Click", RightClick : "RightClick",  A : "ItemActivate", K : "KeyPress"}[Event.GUIEvent])
+			this.CallEvent(EventName, Row)
+		else if(Event.GUIEvent == "F")
+			this.CallEvent("FocusReceived")
+		else if(Event.GUIEvent == "S")
+			this.CallEvent("ScrollingStart")
+		else if(EventName :=  {C : "MouseLeave", f : "FocusLost", M : "Marquee", s : "ScrollingEnd"}[Event.GUIEvent])
+			this.CallEvent(EventName)
+		else if(Event.GUIEvent = "I")
 		{
-			if(InStr(ErrLevel, "S"))
+			if(InStr(Event.Errorlevel, "S")) ;Process sub control state
 			{
 				if(LV_GetCount("Selected") = 1)
-				{
 					this.ProcessSubControlState(this._.PreviouslySelectedItem, this.SelectedItem)
-					this._.PreviouslySelectedItem := this.SelectedItem
-				}
 				else
-				{
 					this.ProcessSubControlState(this._.PreviouslySelectedItem, "")
-					this._.PreviouslySelectedItem := ""
-				}
 			}
-			Mapping := { Sa : "_ItemSelected", sb : "_ItemDeselected", Fa : "_ItemFocused", fb : "_ItemDefocused", Ca : "_ItemChecked", cb : "_ItemUnChecked"} ;Case insensitivity strikes back!
-			for Event, Function in Mapping
-				if(InStr(ErrLevel, SubStr(Event, 1, 1), true))
-					if(IsFunc(CGUI.GUIList[this.GUINum][this.Name Function]))
-					{
-						ErrorLevel := ErrLevel
-						`(CGUI.GUIList[this.GUINum])[this.Name Function](this._.Items.IndependentSorting ? this.CItems.CRow.GetUnsortedIndex(A_EventInfo, this.hwnd) : A_EventInfo)
-					}
-			Mapping := {S : "_SelectionChanged", C : "_CheckedChanged", F : "_FocusedChanged"}
-			for Event, Function in Mapping
-				if(InStr(ErrLevel, Event, false) = 1)
-					if(IsFunc(CGUI.GUIList[this.GUINum][this.Name Function]))
-					{
-						ErrorLevel := ErrLevel
-						`(CGUI.GUIList[this.GUINum])[this.Name Function](this._.Items.IndependentSorting ? this.CItems.CRow.GetUnsortedIndex(A_EventInfo, this.hwnd) : A_EventInfo)
-					}
-			; if(!Critical)
-				; Critical, Off
-			return
+			Mapping := {Ca : "ItemChecked", cb : "ItemUnChecked"} ;Case insensitivity strikes back!
+			for EventIndex, Function in Mapping
+				if(InStr(Event.Errorlevel, SubStr(EventIndex, 1, 1), true))
+				{
+					this.CallEvent(Function, Row)
+					break
+				}
+			;This is handled in CGUI for all controls at the moment.
+			;~ if(Event.ErrorLevel = "f")
+			;~ {
+				;~ CGUI.PushEvent("CGUI_FocusChange", this.GUINum)
+				;~ if(Event.ErrorLevel == "F")
+					;~ this.CallEvent("FocusReceived")
+				;~ else if(Event.ErrorLevel == "f")
+				;~ {
+					;~ this.CallEvent("FocusLost")
+					;~ if(CGUI.GUIList[this.GUINum].ValidateOnFocusLeave && this.IsValidatableControlType())
+						;~ this.Validate()
+				;~ }
+			;~ }
+			if(EventName :=  {S : "SelectionChanged", C : "CheckedChanged", F : "FocusedChanged"}[Event.Errorlevel])
+				this.CallEvent(EventName, Row)
+			if(InStr(Event.Errorlevel, "S")) ;Process sub control state
+			{
+				if(this.SelectedItems.MaxIndex() = 1)
+					this._.PreviouslySelectedItem := this.SelectedItem
+				else
+					this._.PreviouslySelectedItem := ""
+			}
 		}
 	}
 }

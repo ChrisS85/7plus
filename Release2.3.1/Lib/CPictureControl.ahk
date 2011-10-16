@@ -29,7 +29,7 @@ Class CPictureControl Extends CControl
 	*/
 	__Get(Name) 
     {
-		global CGUI
+		;~ global CGUI
 		if(Name != "GUINum" && !CGUI.GUIList[this.GUINum].IsDestroyed)
 		{
 			DetectHidden := A_DetectHiddenWindows
@@ -55,11 +55,23 @@ Class CPictureControl Extends CControl
 		}
 	}
 	
-	__Set(Name, Value)
+	__Set(Name, Params*)
 	{
-		global CGUI
+		;~ global CGUI
 		if(!CGUI.GUIList[this.GUINum].IsDestroyed)
 		{
+			;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
+			Value := Params[Params.MaxIndex()]
+			Params.Remove(Params.MaxIndex())
+			if(Params.MaxIndex())
+			{
+				Params.Insert(1, Name)
+				Name :=  Params[Params.MaxIndex()]
+				Params.Remove(Params.MaxIndex())
+				Object := this[Params*]
+				Object[Name] := Value
+				return Value
+			}
 			DetectHidden := A_DetectHiddenWindows
 			DetectHiddenWindows, On
 			Handled := true
@@ -102,22 +114,14 @@ Class CPictureControl Extends CControl
 	Additionally it is required to create a label with this naming scheme: GUIName_ControlName
 	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent(). 
 	For better readability labels may be chained since they all execute the same code.
+	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
 	
 	Event: Click()
 	Invoked when the user clicked on the control.
 	*/
-	HandleEvent()
+	HandleEvent(Event)
 	{
-		global CGUI
-		if(CGUI.GUIList[this.GUINum].IsDestroyed)
-			return
-		ErrLevel := ErrorLevel
-		func := A_GUIEvent = "DoubleClick" ? "_DoubleClick" : "_Click"
-		if(IsFunc(CGUI.GUIList[this.GUINum][this.Name func]))
-		{
-			ErrorLevel := ErrLevel
-			`(CGUI.GUIList[this.GUINum])[this.Name func]()
-		}
+		this.CallEvent(Event.GUIEvent = "DoubleClick" ? "DoubleClick" : "Click")
 	}
 	
 

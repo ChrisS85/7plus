@@ -8,13 +8,13 @@ Class CTreeViewControl Extends CControl
 {
 	__New(Name, ByRef Options, Text, GUINum)
 	{
-		global CGUI
-		Events := "Click,RightClick,EditingStart,FocusReceived,FocusLost,KeyPress,ItemExpanded,ItemCollapsed"
+		;~ global CGUI
+		Events := ["_Click", "_RightClick", "_EditingStart", "_FocusReceived", "_FocusLost", "_KeyPress", "_ItemExpanded", "_ItemCollapsed"]
 		if(!InStr(Options, "AltSubmit")) ;Automagically add AltSubmit when necessary
 		{
-			Loop, Parse, Events,`,
+			for index, function in Events
 			{
-				if(IsFunc(CGUI.GUIList[GUINum][Name "_" A_LoopField]))
+				if(IsFunc(CGUI.GUIList[GUINum][Name Function]))
 				{
 					Options .= " AltSubmit"
 					break
@@ -23,18 +23,17 @@ Class CTreeViewControl Extends CControl
 		}
 		base.__New(Name, Options, Text, GUINum)
 		this._.Insert("ControlStyles", {Checked : 0x100, ReadOnly : -0x8, FullRowSelect : 0x1000, Buttons : 0x1, Lines : 0x2, HScroll : -0x8000, AlwaysShowSelection : 0x20, SingleExpand : 0x400, HotTrack : 0x200})
-		Events := "DoubleClick,EditingEnd,ItemSelected,Click,RightClick,EditingStart,KeyPress,ItemExpanded,ItemCollapsed,FocusReceived,FocusLost" 
-		this._.Insert("Events", [])
-		Loop, Parse, Events, `,
-			this._.Events.Insert("Events", A_LoopField)
-		;~ this._.Insert("Events", [])
+		this._.Insert("Events", ["DoubleClick", "EditingEnd", "ItemSelected", "Click", "RightClick", "EditingStart", "KeyPress", "ItemExpanded", "ItemCollapsed", "FocusReceived", "FocusLost"])
+		this._.Insert("Messages", {0x004E : "Notify"}) ;This control uses WM_NOTIFY with NM_SETFOCUS and NM_KILLFOCUS
 		this.Type := "TreeView"
 	}
 	
 	PostCreate()
 	{
-		this._.Insert("ImageListManager", new this.CImageListManager(this.GUINum, this.hwnd))
-		this._.Insert("Items", new this.CItem(0, this.GUINum, this.hwnd))
+		Base.PostCreate()
+		this._.ImageListManager := new this.CImageListManager(this.GUINum, this.hwnd)
+		this._.Items := new this.CItem(0, this.GUINum, this.hwnd)
+		this._.PreviouslySelectedItem := this._.Items
 	}
 	/*
 	Function: FindItem
@@ -69,7 +68,7 @@ Class CTreeViewControl Extends CControl
 	*/
 	__Get(Name, Params*)
 	{
-		global CGUI		
+		;~ global CGUI		
 		if(Name = "Items")
 			Value := this._.Items
 		else if(Name = "SelectedItem")
@@ -88,11 +87,23 @@ Class CTreeViewControl Extends CControl
 			return Value
 	}
 	
-	__Set(Name, Value)
+	__Set(Name, Params*)
 	{
-		global CGUI
+		;~ global CGUI
 		if(!CGUI.GUIList[this.GUINum].IsDestroyed)
 		{
+			;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
+			Value := Params[Params.MaxIndex()]
+			Params.Remove(Params.MaxIndex())
+			if(Params.MaxIndex())
+			{
+				Params.Insert(1, Name)
+				Name :=  Params[Params.MaxIndex()]
+				Params.Remove(Params.MaxIndex())
+				Object := this[Params*]
+				Object[Name] := Value
+				return Value
+			}
 			DetectHidden := A_DetectHiddenWindows
 			DetectHiddenWindows, On
 			Handled := true
@@ -120,70 +131,57 @@ Class CTreeViewControl Extends CControl
 	Additionally it is required to create a label with this naming scheme: GUIName_ControlName
 	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent(). 
 	For better readability labels may be chained since they all execute the same code.
+	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
 	
-	Event: Click(NodeIndex)
+	Event: Click(Item)
 	Invoked when the user clicked on the control.
 	
-	Event: DoubleClick(NodeIndex)
+	Event: DoubleClick(Item)
 	Invoked when the user double-clicked on the control.
 	
-	Event: RightClick(NodeIndex)
+	Event: RightClick(Item)
 	Invoked when the user right-clicked on the control.
 	
-	Event: EditingStart(NodeIndex)
+	Event: EditingStart(Item)
 	Invoked when the user started editing a node.
 	
-	Event: EditingEnd(NodeIndex)
+	Event: EditingEnd(Item)
 	Invoked when the user finished editing a node.
 	
-	Event: ItemSelected(NodeIndex)
+	Event: ItemSelected(Item)
 	Invoked when the user selected a node.
 	
-	Event: ItemExpanded(NodeIndex)
+	Event: ItemExpanded(Item)
 	Invoked when the user expanded a node.
 	
-	Event: ItemCollapsed(NodeIndex)
+	Event: ItemCollapsed(Item)
 	Invoked when the user collapsed a node.
 	
 	Event: KeyPress(KeyCode)
 	Invoked when the user pressed a key while the control was focused.
 	*/
-	HandleEvent()
+	HandleEvent(Event)
 	{
-		global CGUI
+		;~ global CGUI
+		start := A_TickCount
 		if(CGUI.GUIList[this.GUINum].IsDestroyed)
 			return
-		;~ Critical := A_IsCritical
-		;~ Critical, On
-		ErrLevel := ErrorLevel
 		;Handle visibility of controls associated with tree nodees
-		if(A_GuiEvent = "S")
-		{
-			this.ProcessSubControlState(this.PreviouslySelectedItem, this.SelectedItem)
-			this.PreviouslySelectedItem := this.SelectedItem
-		}
-		Mapping := {DoubleClick : "_DoubleClick", eb : "_EditingEnd", S : "_ItemSelected", Normal : "_Click", RightClick : "_RightClick", Ea : "_EditingStart", K : "_KeyPress", "+" : "_ItemExpanded", "-" : "ItemCollapsed"}
-		for Event, Function in Mapping
-			if((strlen(A_GuiEvent) = 1 && A_GuiEvent == SubStr(Event, 1, 1)) || A_GuiEvent == Event)
-				if(IsFunc(CGUI.GUIList[this.GUINum][this.Name Function]))
-				{
-					ErrorLevel := ErrLevel
-					`(CGUI.GUIList[this.GUINum])[this.Name Function](this.FindItem(A_EventInfo))
-					;~ if(!Critical)
-						;~ Critical, Off
-					return
-				}
-		Mapping := {Fa : "_FocusReceived", fb : "_FocusLost"} ;Case insensitivity strikes back!
-		for Event, Function in Mapping
-			if(A_GuiEvent == SubStr(Event, 1, 1))
-				if(IsFunc(CGUI.GUIList[this.GUINum][this.Name Function]))
-				{
-					ErrorLevel := ErrLevel
-					`(CGUI.GUIList[this.GUINum])[this.Name Function]()
-					;~ if(!Critical)
-						;~ Critical, Off
-					return
-				}
+		if(Event.GUIEvent = "S")
+			this.ProcessSubControlState(this.PreviouslySelectedItem, SelectedItem := this.Items.ItemByID(Event.EventInfo))
+		if(Event.GUIEvent == "E")
+			this.CallEvent("EditingStart", this.Items.ItemByID(Event.EventInfo))
+		else if(EventName := {DoubleClick : "DoubleClick", e : "EditingEnd", S : "ItemSelected", Normal : "Click", RightClick : "RightClick", "+" : "ItemExpanded", "-" : "ItemCollapsed"}[Event.GUIEvent])
+			this.CallEvent(EventName, this.Items.ItemByID(Event.EventInfo))
+		else if(EventName = "K")
+			this.CallEvent(EventName, Event.EventInfo)
+		else if(Event.GUIEvent == "F")
+			this.CallEvent("FocusReceived")
+		else if(Event.GUIEvent == "f")
+			this.CallEvent("FocusLost")
+		if(Event.GUIEvent = "S")			
+			this.PreviouslySelectedItem := SelectedItem
+		OutputDebug % "HandleEvent: " A_TickCount - start
 	}
 	
 	/*
@@ -213,7 +211,7 @@ Class CTreeViewControl Extends CControl
 		*/
 		Add(Text, Options = "")
 		{
-			global CGUI, CTreeViewControl
+			;~ global CGUI, CTreeViewControl
 			GUI := CGUI.GUIList[this._.GUINum]
 			if(GUI.IsDestroyed)
 				return
@@ -228,7 +226,7 @@ Class CTreeViewControl Extends CControl
 		}
 		
 		/*
-		Function: AddControl()
+		Function: AddControl
 		Adds a control to this tree node that will be visible only when this node is selected. The parameters correspond to the Add() function of CGUI.
 		
 		Parameters:
@@ -240,13 +238,13 @@ Class CTreeViewControl Extends CControl
 		*/
 		AddControl(type, Name, Options, Text, UseEnabledState = 0)
 		{
-			global CGUI
+			;~ global CGUI
 			GUI := CGUI.GUIList[this._.GUINum]
 			if(!this.Selected)
 				Options .= UseEnabledState ? " Disabled" : " Hidden"
-			Control := GUI.Add(type, Name, Options, Text, this._.Controls)
+			Control := GUI.AddControl(type, Name, Options, Text, this._.Controls, this)
 			Control._.UseEnabledState := UseEnabledState
-			this._.Controls.Insert(Name, Control)
+			Control.hParentControl := this._.hwnd
 			return Control
 		}
 		
@@ -259,7 +257,7 @@ Class CTreeViewControl Extends CControl
 		*/
 		Remove(ObjectOrIndex)
 		{
-			global CGUI
+			;~ global CGUI
 			GUI := CGUI.GUIList[this._.GUINum]
 			if(GUI.IsDestroyed)
 				return
@@ -305,7 +303,7 @@ Class CTreeViewControl Extends CControl
 		*/
 		Move(Position=1, Parent = "")
 		{
-			global CGUI
+			;~ global CGUI
 			GUI := CGUI.GUIList[this._.GUINum]
 			if(GUI.IsDestroyed)
 				return
@@ -368,7 +366,7 @@ Class CTreeViewControl Extends CControl
 		*/
 		SetIcon(Filename, IconNumberOrTransparencyColor = 1)
 		{
-			global CGUI
+			;~ global CGUI
 			GUI := CGUI.GUIList[this._.GUINum]
 			if(GUI.IsDestroyed)
 				return
@@ -378,18 +376,17 @@ Class CTreeViewControl Extends CControl
 			this._.IconNumber := IconNumberOrTransparencyColor
 		}
 		/*
-		Function: MaxIndex()
+		Function: MaxIndex
 		Returns the number of child nodes.		
 		*/
 		MaxIndex()
 		{
-			global CGUI
+			;~ global CGUI
 			GUI := CGUI.GUIList[this._.GUINum]
 			if(GUI.IsDestroyed)
 				return
 			Control := GUI.Controls[this._.hwnd]
 			Gui, % this._.GUINum ":Default"
-			text := this.text
 			Gui, TreeView, % Control.ClassNN
 			current := this._.ID ? TV_GetChild(this._.ID) : TV_GetNext() ;Get first child or first top node
 			if(!current)
@@ -402,7 +399,7 @@ Class CTreeViewControl Extends CControl
 		
 		/*
 		Function: ItemByID
-		Access a child item by its ID. This function only works for childs of the first order, no grand-child nodes etc...
+		Access a child item by its ID.
 		
 		Parameters:
 			ID - The ID of the child item
@@ -411,12 +408,16 @@ Class CTreeViewControl Extends CControl
 		ItemByID(ID)
 		{
 			Loop % this.MaxIndex()
+			{
 				if(this[A_Index]._.ID = ID)
 					return this[A_Index]
+				else if(Item := this[A_Index].ItemByID(ID))
+					return Item
+			}
 		}
 		_NewEnum()
 		{
-			global CEnumerator
+			;~ global CEnumerator
 			return new CEnumerator(this)
 		}
 		
@@ -465,7 +466,7 @@ Class CTreeViewControl Extends CControl
 		*/
 		__Get(Name, Params*)
 		{
-			global CTreeViewControl, CGUI
+			;~ global CTreeViewControl, CGUI
 			if(Name != "_")
 			{
 				GUI := CGUI.GUIList[this._.GUINum]
@@ -549,9 +550,19 @@ Class CTreeViewControl Extends CControl
 		}
 		__Set(Name, Params*)
 		{
-			global CGUI
+			;~ global CGUI
+			;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
 			Value := Params[Params.MaxIndex()]
 			Params.Remove(Params.MaxIndex())
+			if(Params.MaxIndex())
+			{
+				Params.Insert(1, Name)
+				Name :=  Params[Params.MaxIndex()]
+				Params.Remove(Params.MaxIndex())
+				Object := this[Params*]
+				Object[Name] := Value
+				return Value
+			}
 			GUI := CGUI.GUIList[this._.GUINum]
 			if(!GUI.IsDestroyed)
 			{

@@ -80,7 +80,7 @@ MouseMovePolling()
 	return
 }
 
-#if WordDelete && IsEditControlActive() && NothingSelected() ;Special checks for edit control to support .NET and native edit control
+#if Settings.Misc.FixEditControlWordDelete && IsEditControlActive() && NothingSelected() ;Special checks for edit control to support .NET and native edit control
 ^Backspace::ControlBackspaceFix()
 ^Delete::ControlDeleteFix()
 #if
@@ -394,8 +394,7 @@ FlashWindows()
 
 AutoCloseWindowsUpdate(hwnd)
 {
-	global AutoCloseWindowsUpdate
-	if(WinExist("Windows Update ahk_class #32770") = hwnd)
+	if(Settings.Windows.AutoCloseWindowsUpdate && WinExist("Windows Update ahk_class #32770") = hwnd)
 	{
 		WinActivate ahk_id %hwnd%
 		Send {Up}{Down 2}{Tab 2}{Enter}

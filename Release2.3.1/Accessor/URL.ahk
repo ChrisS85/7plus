@@ -1,18 +1,17 @@
-Accessor_URL_Init(ByRef URL, Settings)
+Accessor_URL_Init(ByRef URL, PluginSettings)
 {
-	global ConfigPath
 	URL.KeywordOnly := false
 	URL.MinChars := 3
 	URL.OKName := "Open URL"
 	URL.Description := "This plugin allows to open URLs in the browser and also has a history function."
 	URL.HasSettings := true
-	URL.Settings.UseHistory := Settings.HasKey("UseHistory") ? Settings.UseHistory : 1
-	URL.Settings.MaxHistoryLen := Settings.HasKey("MaxHistoryLen") ? Settings.MaxHistoryLen : 1
-	URL.Settings.SaveHistoryOnExit := Settings.HasKey("SaveHistoryOnExit") ? Settings.SaveHistoryOnExit : 1
+	URL.Settings.UseHistory := PluginSettings.HasKey("UseHistory") ? PluginSettings.UseHistory : 1
+	URL.Settings.MaxHistoryLen := PluginSettings.HasKey("MaxHistoryLen") ? PluginSettings.MaxHistoryLen : 1
+	URL.Settings.SaveHistoryOnExit := PluginSettings.HasKey("SaveHistoryOnExit") ? PluginSettings.SaveHistoryOnExit : 1
 	URL.History := Array()
-	if(!FileExist(ConfigPath "\History.xml"))
+	if(!FileExist(Settings.ConfigPath "\History.xml"))
 		return
-	FileRead, xml, %ConfigPath%\History.xml
+	FileRead, xml, % Settings.ConfigPath "\History.xml"
 	XMLObject := XML_Read(xml)
 	;Convert empty and single arrays to real array
 	if(!XMLObject.List.len())
@@ -59,14 +58,13 @@ Accessor_URL_OnAccessorClose(URL, Accessor)
 }
 Accessor_URL_OnExit(URL)
 {
-	global ConfigPath
-	FileDelete, %ConfigPath%\History.xml
+	FileDelete, % Settings.ConfigPath "\History.xml"
 	if(!URL.Settings.SaveHistoryOnExit)
 		return
 	XMLObject := Object("List",Array())
 	Loop % URL.History.len()
 		XMLObject.List.append(Object("URL",URL.History[A_Index].URL))
-	XML_Save(XMLObject,ConfigPath "\History.xml")
+	XML_Save(XMLObject, Settings.ConfigPath "\History.xml")
 }
 Accessor_URL_FillAccessorList(URL, Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet)
 {

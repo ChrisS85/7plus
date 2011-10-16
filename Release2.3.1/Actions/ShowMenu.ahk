@@ -15,7 +15,6 @@ Action_ShowMenu_ReadXML(Action, XMLAction)
 
 Action_ShowMenu_Execute(Action, Event)
 {
-	global ImageExtensions
 	X := Event.ExpandPlaceholders(Action.X)
 	Y := Event.ExpandPlaceholders(Action.Y)
 	BuildMenu(Action.Menu)
@@ -32,20 +31,19 @@ Action_ShowMenu_DisplayString(Action)
 
 Action_ShowMenu_GuiShow(Action, ActionGUI, GoToLabel = "")
 {
-	global Settings_Events
 	static sActionGUI
 	if(GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
 		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action shows a menu which is made up out of events with a Menu trigger and the same name as the name specified here.")
-		;Look for menus in Settings_Events to catch unsaved menus
+		;Look for menus in SettingsWindow.Events to catch unsaved menus
 		Menus := Array()
-		Loop % Settings_Events.len()
+		Loop % SettingsWindow.Events.len()
 		{
-			if(Settings_Events[A_Index].Trigger.Type = "MenuItem" && Menus.indexOf(Settings_Events[A_Index].Trigger.Menu) = 0)
+			if(SettingsWindow.Events[A_Index].Trigger.Type = "MenuItem" && Menus.indexOf(SettingsWindow.Events[A_Index].Trigger.Menu) = 0)
 			{
-				Menus.append(Settings_Events[A_Index].Trigger.Menu)
-				MenuString .= (Menus.len() = 1 ? "" : "|") Settings_Events[A_Index].Trigger.Menu
+				Menus.append(SettingsWindow.Events[A_Index].Trigger.Menu)
+				MenuString .= (Menus.len() = 1 ? "" : "|") SettingsWindow.Events[A_Index].Trigger.Menu
 			}
 		}
 	

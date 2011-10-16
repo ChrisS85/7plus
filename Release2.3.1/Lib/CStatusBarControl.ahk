@@ -14,7 +14,8 @@ Class CStatusBarControl Extends CControl
 		this._.Insert("Events", ["Click", "DoubleClick", "RightClick", "DoubleRightClick"])
 	}
 	PostCreate()
-	{		
+	{
+		Base.PostCreate()
 		this._.Parts := new this.CParts(this.GUINum, this.hwnd)
 		if(this.Content)
 			this._.Parts._.Insert(1, new this.CParts.CPart(Text, 1, "", "", "", "", this.GUINum, this.hwnd))
@@ -40,8 +41,18 @@ Class CStatusBarControl Extends CControl
 	}
 	__Set(Name, Params*)
 	{
+		;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
 		Value := Params[Params.MaxIndex()]
 		Params.Remove(Params.MaxIndex())
+		if(Params.MaxIndex())
+		{
+			Params.Insert(1, Name)
+			Name :=  Params[Params.MaxIndex()]
+			Params.Remove(Params.MaxIndex())
+			Object := this[Params*]
+			Object[Name] := Value
+			return Value
+		}
 		if(Name = "Text") ;Assign text -> assign text of first part
 		{
 			this._.Parts[1].Text := Value
@@ -134,7 +145,7 @@ Class CStatusBarControl Extends CControl
 			}
 		}
 		/*
-		Function: MaxIndex()
+		Function: MaxIndex
 		Returns the number of parts.
 		*/
 		MaxIndex()
@@ -143,13 +154,23 @@ Class CStatusBarControl Extends CControl
 		}
 		_NewEnum()
 		{
-			global CEnumerator
+			;~ global CEnumerator
 			return new CEnumerator(this._)
 		}
 		__Set(Name, Params*)
 		{
+			;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
 			Value := Params[Params.MaxIndex()]
 			Params.Remove(Params.MaxIndex())
+			if(Params.MaxIndex())
+			{
+				Params.Insert(1, Name)
+				Name :=  Params[Params.MaxIndex()]
+				Params.Remove(Params.MaxIndex())
+				Object := this[Params*]
+				Object[Name] := Value
+				return Value
+			}
 			if Name is Integer
 			{
 				if(Name <= this._.MaxIndex())
@@ -164,7 +185,7 @@ Class CStatusBarControl Extends CControl
 			}
 		}
 		/*
-		Function: Add()
+		Function: Add
 		Adds a part.
 		
 		Parameters:
@@ -177,7 +198,7 @@ Class CStatusBarControl Extends CControl
 		*/
 		Add(Text, PartNumber = "", Width = 50, Style = "", Icon = "", IconNumber = "")
 		{
-			global CGUI
+			;~ global CGUI
 			if(PartNumber)
 				this._.Insert(PartNumber, new this.CPart(Text, PartNumber, Width, Style, Icon, IconNumber, this.GUINum, this.hwnd))
 			else
@@ -187,7 +208,7 @@ Class CStatusBarControl Extends CControl
 		}
 		
 		/*
-		Function: Remove()
+		Function: Remove
 		Removes a part.
 		
 		Parameters:
@@ -195,7 +216,7 @@ Class CStatusBarControl Extends CControl
 		*/
 		Remove(PartNumber)
 		{
-			global CGUI
+			;~ global CGUI
 			if PartNumber is Integer
 			{
 				this._.Remove(PartNumber)
@@ -246,9 +267,21 @@ Class CStatusBarControl Extends CControl
 				if(Name != "_" && this._.HasKey(Name))
 					return this._[Name]
 			}
-			__Set(Name, Value)
+			__Set(Name, Params*)
 			{
-				global CGUI
+				;~ global CGUI
+				;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
+				Value := Params[Params.MaxIndex()]
+				Params.Remove(Params.MaxIndex())
+				if(Params.MaxIndex())
+				{
+					Params.Insert(1, Name)
+					Name :=  Params[Params.MaxIndex()]
+					Params.Remove(Params.MaxIndex())
+					Object := this[Params*]
+					Object[Name] := Value
+					return Value
+				}
 				Control := CGUI.GUIList[this.GUINum].Controls[this.hwnd]
 				if(Name = "Width")
 				{
@@ -261,6 +294,7 @@ Class CStatusBarControl Extends CControl
 					this._[Name] := Value
 					Gui, % this.GUINum ":Default"
 					SB_SetText(Name = "Text" ? Value : this._.Text, this._.PartNumber, Name = "Style" ? Value : this._.Style)
+					return Value
 				}
 				else if(Name = "Icon" || Name = "IconNumber")
 				{
@@ -282,6 +316,7 @@ Class CStatusBarControl Extends CControl
 	Additionally it is required to create a label with this naming scheme: GUIName_ControlName
 	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent(). 
 	For better readability labels may be chained since they all execute the same code.
+	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
 	
 	Event: Click(PartIndex)
 	Invoked when the user clicked on the control.
@@ -295,18 +330,8 @@ Class CStatusBarControl Extends CControl
 	Event: DoubleRightClick(PartIndex)
 	Invoked when the user double-right-clicked on the control.
 	*/
-	HandleEvent()
+	HandleEvent(Event)
 	{
-		global CGUI
-		if(CGUI.GUIList[this.GUINum].IsDestroyed)
-			return
-		ErrLevel := ErrorLevel
-		Mapping := {Normal : "_Click", DoubleClick : "_DoubleClick", Right : "_RightClick", R : "_DoubleRightClick"}
-		func := this.Name Mapping[A_GuiEvent]
-		if(IsFunc(CGUI.GUIList[this.GUINum][func]))
-		{
-			ErrorLevel := ErrLevel
-			`(CGUI.GUIList[this.GUINum])[func](A_EventInfo)
-		}
+		this.CallEvent({Normal : "Click", DoubleClick : "DoubleClick", Right : "RightClick", R : "DoubleRightClick"}[Event.GUIEvent], Event.EventInfo)
 	}
 }

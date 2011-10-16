@@ -18,7 +18,6 @@ Action_Screenshot_ReadXML(Action, XMLAction)
 ; return
 Action_Screenshot_Execute(Action, Event)
 {
-	global ImageExtensions
 	TargetFolder := Event.ExpandPlaceholders(Action.TargetFolder)
 	TargetFile := Event.ExpandPlaceholders(Action.TargetFile)
 	if(Action.Area = "Screen")

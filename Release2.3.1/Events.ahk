@@ -1,19 +1,20 @@
 ;This function needs to be used to add events, to allow syncing with settings window
 Events_Add(Events, Event) 
 {
-	global Settings_Events, TemporaryEvents
+	global TemporaryEvents
 	Events.append(Event)
-	if(Settings_Events && Events != Settings_Events && Events != TemporaryEvents) ;Non-temporary and non-settings event that needs to be synced with an open settings gui
+	if(SettingsActive() && Events != SettingsWindow.Events && Events != TemporaryEvents) ;Non-temporary and non-settings event that needs to be synced with an open settings gui
 	{
-		Settings_Events.append(Event.DeepCopy())
-		Settings_SetupEvents()
+		SettingsWindow.Events.append(Event.DeepCopy())
+		SettingsWindow.RecreateTreeView()
 	}
 }
 
 ;This function needs to be used to remove events, to allow syncing with settings window
+;It returns true when a category was deleted.
 Events_Delete(Events, Event, UpdateGUI=true) 
 {
-	global Settings_Events, TemporaryEvents	
+	global TemporaryEvents	
 	index := Events.indexOfSubItem("ID", Event.ID)
 	if(!index)
 		return
@@ -25,11 +26,11 @@ Events_Delete(Events, Event, UpdateGUI=true)
 	}
 	Events[index].Delete()
 	Events.Remove(index)
-	if(Settings_Events && Events != Settings_Events) ;Remove the event on the settings page too
+	if(SettingsActive() && Events != SettingsWindow.Events) ;Remove the event on the settings page too
 	{
-		Settings_Events.Delete(Settings_Events.SubItem("ID", Event.ID), false)
+		SettingsWindow.Events.Delete(SettingsWindow.Events.SubItem("ID", Event.ID), false)
 		if(UpdateGUI)
-			Settings_SetupEvents()
+			SettingsWindow.RecreateTreeView()
 	}
 	Events.HighestID := -1 ;Decrease HighestID to prevent ID changes when "reimporting" all events from the gui
 	Loop % Events.len()

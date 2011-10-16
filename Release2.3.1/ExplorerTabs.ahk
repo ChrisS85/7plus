@@ -1,12 +1,12 @@
-#if UseTabs && WinActive("ahk_group ExplorerGroup")
+#if Settings.Explorer.Tabs.UseTabs && WinActive("ahk_group ExplorerGroup")
 ^t::CreateTab(WinActive("ahk_group ExplorerGroup")+0)
 #if
-#if UseTabs && IsTabbedWindow(WinExist("A")+0)
+#if Settings.Explorer.Tabs.UseTabs && IsTabbedWindow(WinExist("A")+0)
 ^Tab Up::ExplorerWindows.SubItem("hwnd", WinExist("A")+0).TabContainer.CycleTabs(1)
 ^+Tab Up::ExplorerWindows.SubItem("hwnd", WinExist("A")+0).TabContainer.CycleTabs(-1)
 ^w::CloseActiveTab()
 #if
-#if UseTabs && IsMouseOverTabButton()
+#if Settings.Explorer.Tabs.UseTabs && IsMouseOverTabButton()
 LButton::MouseActivateTab()
 MButton::MouseCloseTab()
 #if
@@ -610,8 +610,8 @@ Class CTabContainer
 	*/
 	CloseTab(Tab)
 	{
-		; global TabContainerList,TabNum, NoTabUpdate, OnTabClose
-		global ExplorerWindows, OnTabClose
+		; global TabContainerList,TabNum, NoTabUpdate
+		global ExplorerWindows,
 		; DetectHiddenWindows, On	
 		; NoTabUpdate:=true
 		; Folder:=GetCurrentFolder(hwnd)
@@ -623,9 +623,9 @@ Class CTabContainer
 		outputdebug % "currently active tab" this.tabs.Indexofsubitem("hwnd", this.active+0)
 		if(Tab.hwnd=this.active)
 		{	
-			if(OnTabClose=1)
+			if(Settings.Explorer.Tabs.OnTabClose=1)
 				this.CycleTabs(-1)
-			else if(OnTabClose=2)
+			else if(Settings.Explorer.Tabs.OnTabClose=2)
 				this.CycleTabs(1)
 		}
 		outputdebug % "currently active tab after cycling" this.tabs.Indexofsubitem("hwnd", this.active+0)
@@ -660,16 +660,16 @@ Class CTabContainer
 	;Called when a tab is closed manually (close button, alt+f4, ...)
 	TabClosed(hwnd)
 	{
-		global ExplorerWindows, OnTabClose
+		global ExplorerWindows
 		outputdebug tab closed manually %hwnd%
 		Tab := this.Tabs.SubItem("hwnd", hwnd)
 		if(!Tab)
 			return false
 		if(hwnd=this.active)
 		{
-			if(OnTabClose=1)
+			if(Settings.Explorer.Tabs.OnTabClose=1)
 				this.CycleTabs(-1)
-			else if(OnTabClose=2)
+			else if(Settings.Explorer.Tabs.OnTabClose=2)
 				this.CycleTabs(1)
 		}
 		
@@ -687,8 +687,8 @@ Class CTabContainer
 }
 CreateTab(hwnd, path=-1,Activate=-1)
 {
-	; global TabContainerList, TabContainerBase, SuppressTabEvents, TabNum, TabWindow,TabControl,TabStartupPath,ActivateTab,NewTabPosition
-	global ExplorerWindows, CTabContainer, NewTabPosition, ActivateTab, TabStartupPath
+	; global TabContainerList, TabContainerBase, SuppressTabEvents, TabNum, TabWindow,TabControl
+	global ExplorerWindows, CTabContainer
 	if(!hwnd)
 	{
 		Msgbox CreateTab(): No active tab!
@@ -696,8 +696,8 @@ CreateTab(hwnd, path=-1,Activate=-1)
 	}
 	WasCritical := A_IsCritical
 	Critical
-	Activate := Activate = -1 ? ActivateTab : Activate
-	path := path = -1 ? TabStartupPath : path
+	Activate := Activate = -1 ? Settings.Explorer.Tabs.ActivateTab : Activate
+	path := path = -1 ? Settings.Explorer.Tabs.TabStartupPath : path
 	ExplorerWindow := ExplorerWindows.SubItem("hwnd", hwnd+0)
 	if(!ExplorerWindow)
 	{
@@ -782,9 +782,9 @@ CreateTab(hwnd, path=-1,Activate=-1)
 	}
 	RegisterExplorerWindows()
 	TabContainer.CalculateVerticalTabPosition(TabContainer.tabs.IndexOfSubItem("hwnd", hwnd+0))
-	if(NewTabPosition=1)
+	if(Settings.Explorer.Tabs.NewTabPosition = 1)
 		TabContainer.add(ExplorerWindows.SubItem("hwnd", hwndnew+0),TabContainer.tabs.IndexOfSubItem("hwnd", hwnd+0) + 1,1) ;Add new tab right to the current tab
-	else if(NewTabPosition=2)
+	else if(Settings.Explorer.Tabs.NewTabPosition = 2)
 		TabContainer.add(ExplorerWindows.SubItem("hwnd", hwndnew+0),"",1) ;Add new tab to end of list
 	DetectHiddenWindows, Off
 	; TabContainer.CalculateVerticalTabPosition(TabContainer.tabs.IndexOfSubItem("hwnd", hwndnew))

@@ -1,12 +1,12 @@
 ;Enabled state needs to be set through this function, to allow syncing with settings window
 Event_SetEnabled(Event,Value) 
 {
-	global Events, Settings_Events, SettingsActive
+	global Events
 	Event.Enabled := Value
-	if(SettingsActive && Settings_Events && Events.SubItem("ID", Event.ID)) ;if settings are open and updating a regular event, update its counterpart in settings_events
+	if(SettingsActive() && Events.SubItem("ID", Event.ID)) ;if settings are open and updating a regular event, update its counterpart in SettingsWindow.Events
 	{	
-		Settings_Events.SubItem("ID", Event.ID).Enabled := Value
-		Settings_SetupEvents()
+		SettingsWindow.Events.SubItem("ID", Event.ID).Enabled := Value
+		SettingsWindow.FillEventsList()
 	}
 }
 Event_Delete(Event)

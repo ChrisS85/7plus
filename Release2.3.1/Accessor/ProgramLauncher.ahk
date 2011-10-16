@@ -1,4 +1,4 @@
-Accessor_ProgramLauncher_Init(ByRef ProgramLauncher, Settings)
+Accessor_ProgramLauncher_Init(ByRef ProgramLauncher, PluginSettings)
 {
 	ReadProgramLauncherCache(ProgramLauncher)
 	RefreshProgramLauncherCache(ProgramLauncher)
@@ -8,9 +8,9 @@ Accessor_ProgramLauncher_Init(ByRef ProgramLauncher, Settings)
 	ProgramLauncher.KeywordOnly := false
 	ProgramLauncher.MinChars := 2
 	ProgramLauncher.OKName := "Run"	
-	ProgramLauncher.Settings.FuzzySearch := Settings.HasKey("FuzzySearch") ? Settings.FuzzySearch : 1
-	ProgramLauncher.Settings.IgnoreExtensions := Settings.HasKey("IgnoreExtensions") ? Settings.IgnoreExtensions : 1
-	ProgramLauncher.Settings.Exclude := Settings.HasKey("Exclude") ? Settings.Exclude : 1
+	ProgramLauncher.Settings.FuzzySearch := PluginSettings.HasKey("FuzzySearch") ? PluginSettings.FuzzySearch : 1
+	ProgramLauncher.Settings.IgnoreExtensions := PluginSettings.HasKey("IgnoreExtensions") ? PluginSettings.IgnoreExtensions : 1
+	ProgramLauncher.Settings.Exclude := PluginSettings.HasKey("Exclude") ? PluginSettings.Exclude : 1
 	ProgramLauncher.Description := "Run programs/files by typing a part of their name. All programs/files from the folders in the list `nbelow can be used. 7plus also looks for running programs and automatically adds them `nto the index, so you don't have to add large directories like Program Files or WinDir usually."
 	ProgramLauncher.HasSettings := True
 }
@@ -219,17 +219,16 @@ Accessor_ProgramLauncher_OnExit(ProgramLauncher)
 }
 ReadProgramLauncherCache(ProgramLauncher)
 {
-	global ConfigPath
 	ProgramLauncher.List := Array()
 	ProgramLauncher.Paths := Array()
-	if(!FileExist(ConfigPath "\ProgramCache.xml")) ;File doesn't exist, create default values
+	if(!FileExist(Settings.ConfigPath "\ProgramCache.xml")) ;File doesn't exist, create default values
 	{
 		ProgramLauncher.Paths.append(Object("Path","%StartMenu%","Extensions","lnk,exe"))
 		ProgramLauncher.Paths.append(Object("Path","%StartMenuCommon%","Extensions","lnk,exe"))
 		return
 	}
 	
-	FileRead, xml, %ConfigPath%\ProgramCache.xml
+	FileRead, xml, % Settings.ConfigPath "\ProgramCache.xml"
 	XMLObject := XML_Read(xml)
 	;Convert empty and single arrays to real array
 	if(!XMLObject.List.len())
@@ -253,15 +252,14 @@ ReadProgramLauncherCache(ProgramLauncher)
 }
 WriteProgramLauncherCache(ProgramLauncher)
 {
-	global ConfigPath
-	FileDelete, %ConfigPath%\ProgramCache.xml
+	FileDelete, % Settings.ConfigPath "\ProgramCache.xml"
 	XMLObject := Object("List", Array(), "Paths", Array())
 	Loop % ProgramLauncher.List.len()
 		XMLObject.List.append(Object("Command", ProgramLauncher.List[A_Index].Command, "Name", ProgramLauncher.List[A_Index].Name, "BasePath", ProgramLauncher.List[A_Index].BasePath))
 	Loop % ProgramLauncher.Paths.len()
 		XMLObject.Paths.append(Object("Path", ProgramLauncher.Paths[A_Index].Path, "Extensions", ProgramLauncher.Paths[A_Index].Extensions))
 	
-	XML_Save(XMLObject, ConfigPath "\ProgramCache.xml")
+	XML_Save(XMLObject, Settings.ConfigPath "\ProgramCache.xml")
 }
 RefreshProgramLauncherCache(ProgramLauncher, Path ="")
 {

@@ -81,5 +81,5 @@ Trigger_ExplorerButton_GuiSubmit(Trigger, TriggerGUI)
 	SubEventGUI_GuiSubmit(Trigger,TriggerGUI)
 }  
 RemoveAllExplorerButtons:
-RemoveAllButtons()
+RemoveAllExplorerButtons()
 return

@@ -1,11 +1,10 @@
 #include %A_ScriptDir%\Lib\FTP.ahk
 Action_Upload_Init(Action)
 {
-	global Settings_Events
 	;When creating a new upload action, try to find estimates for some settings based on existing upload actions
-	Loop % Settings_Events.len()
+	Loop % SettingsWindow.Events.len()
 	{
-		Event := Settings_Events[A_Index]
+		Event := SettingsWindow.Events[A_Index]
 		Loop % Event.Actions.len()
 		{
 			if(Event.Actions[A_Index].Type = "Upload")
@@ -19,17 +18,18 @@ Action_Upload_Init(Action)
 	}
 	Action.Category := "File"
 	Action.SourceFiles := "${SelNM}" ;All upload actions need to have SourceFiles property (used in ImageConverter)
-	Action.TargetFolder := (OtherAction && Settings_Events ? OtherAction.TargetFolder : "")
-	Action.TargetFile := (OtherAction && Settings_Events ? OtherAction.TargetFile : "")
-	Action.Silent := (OtherAction && Settings_Events? OtherAction.Silent : 0)
-	Action.Clipboard := (OtherAction && Settings_Events ? OtherAction.Clipboard : 1)
+	SettingsActive := SettingsActive()
+	Action.TargetFolder := (OtherAction && SettingsActive ? OtherAction.TargetFolder : "")
+	Action.TargetFile := (OtherAction && SettingsActive ? OtherAction.TargetFile : "")
+	Action.Silent := (OtherAction && SettingsActive? OtherAction.Silent : 0)
+	Action.Clipboard := (OtherAction && SettingsActive ? OtherAction.Clipboard : 1)
 }
 
 Action_Upload_ReadFTPProfiles()
 {
-	global ConfigPath, FTPProfiles
+	global FTPProfiles
 	FTPProfiles := Array()
-	FileRead, xml, %ConfigPath%\FTPProfiles.xml
+	FileRead, xml, % Settings.ConfigPath "\FTPProfiles.xml"
 	if(!xml)
 	{
 		xml =
@@ -45,9 +45,9 @@ Action_Upload_ReadFTPProfiles()
 	}
 	XMLObject := XML_Read(xml)
 	;Convert empty and single arrays to real array
-	if(!XMLObject.List.len())
+	if(!XMLObject.List.MaxIndex())
 		XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()
-	Loop % XMLObject.List.len()
+	Loop % XMLObject.List.MaxIndex()
 	{
 		ListEntry := XMLObject.List[A_Index]
 		FTPProfiles.append(Object("Hostname", ListEntry.Hostname, "Port", ListEntry.Port, "User", ListEntry.User, "Password", ListEntry.Password, "URL", ListEntry.URL))
@@ -55,7 +55,8 @@ Action_Upload_ReadFTPProfiles()
 }
 Action_Upload_WriteFTPProfiles()
 {
-	global ConfigPath, FTPProfiles
+	global FTPProfiles
+	ConfigPath := Settings.ConfigPath
 	SplitPath, ConfigPath,,path
 	path .= "\FTPProfiles.xml"
 	FileDelete, %ConfigPath%\FTPProfiles.xml
@@ -125,7 +126,7 @@ Action_Upload_Execute(Action, Event)
 		Action_Upload_GetFTPVariables(Action.FTPProfile, Hostname, Port, User, Password, URL)
 		if(!Hostname || Hostname = "Hostname.com")
 		{
-			Notify("FTP profile not set", "The FTP profile was not created yet or is invalid. Click here to enter a valid FTP login.", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",Vista7 ? 78 : 110)
+			Notify("FTP profile not set", "The FTP profile was not created yet or is invalid. Click here to enter a valid FTP login.", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",NotifyIcons.Error)
 			return 0
 		}
 		decrypted:=Decrypt(Password)
@@ -138,25 +139,35 @@ Action_Upload_Execute(Action, Event)
 		if !FTP.Open(Hostname, User, decrypted) 
 		{ 
 			if(!Action.Silent)
-				Notify("Connection Error", "Couldn't connect to " Hostname ". Correct host/username/password?", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",Vista7 ? 78 : 110)
+				Notify("Connection Error", "Couldn't connect to " Hostname ". Correct host/username/password?", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",NotifyIcons.Error)
 			result := 0
 		}
 		else
 		{
-			; create a new directory
+			;go into target directory, optionally creating directories along the way.
 			if(TargetFolder != "" && ftp.SetCurrentDirectory(TargetFolder) != true)
 			{
-				if(ftp.CreateDirectory(TargetFolder) != true)
+				Loop, Parse, TargetFolder, /
 				{
-					if(!Action.Silent)
-						Notify("FTP Error", "Couldn't create target directory. Check permissions!", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",Vista7 ? 78 : 110)
-					result := 0
-				}
-				else if(ftp.SetCurrentDirectory(TargetFolder) != true)
-				{
-					if(!Action.Silent)
-						Notify("FTP Error", "Couldn't switch to created target directory. Check permissions!", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",Vista7 ? 78 : 110)
-					result := 0
+					;Skip current level if it exists
+					if(ftp.SetCurrentDirectory(A_LoopField))
+						continue
+					;Try to create current level
+					if(ftp.CreateDirectory(A_LoopField) != true)
+					{
+						if(!Action.Silent)
+							Notify("FTP Error", "Couldn't create target directory " A_LoopField ". Check permissions!", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",NotifyIcons.Error)
+						result := 0
+						break
+					}
+					;Try to go into newly created directory
+					if(ftp.SetCurrentDirectory(A_LoopField) != true)
+					{
+						if(!Action.Silent)
+							Notify("FTP Error", "Couldn't switch to created target directory" A_LoopField ". Check permissions!", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",NotifyIcons.Error)
+						result := 0
+						break
+					}
 				}
 			}
 			if(result != 0)
@@ -170,7 +181,7 @@ Action_Upload_Execute(Action, Event)
 					if(!success && result)
 						success := result
 					if(result=0 && !Action.Silent)
-						Notify("Couldn't upload file", "Couldn't upload "  targets[A_Index] " properly. Make sure you have write rights and the path exists", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",Vista7 ? 78 : 110)
+						Notify("Couldn't upload file", "Couldn't upload "  targets[A_Index] " properly. Make sure you have write rights and the path exists", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",NotifyIcons.Error)
 					else if(result != 0 && URL && Action.Clipboard)
 						cliptext .= (A_Index = 1 ? "" : "`r`n") URL "/" TargetFolder (TargetFolder ? "/" : "") StringReplace(targets[A_Index], " ", "%20", 1)
 				}
@@ -180,7 +191,7 @@ Action_Upload_Execute(Action, Event)
 				if(!Action.Silent && success)
 				{
 					Notify("","",0, "Wait",FTP.NotifyID)
-					Notify("Transfer finished", "File uploaded", 2, "GC=555555 TC=White MC=White",Vista7 ? 145 : 136)
+					Notify("Transfer finished", "File uploaded", 2, "GC=555555 TC=White MC=White",NotifyIcons.Success)
 					SoundBeep
 				}
 				result := 1
@@ -197,7 +208,7 @@ Action_Upload_Progress()
 	total := my.BytesTotal
 	if !FTP.init
 	{
-		FTP.NotifyID := Notify("Uploading " FTP.NumFiles " file" (FTP.NumFiles = 1 ? "":"s") " to " FTP.Hostname,my.RemoteName " - " FormatFileSize(done) " / " FormatFileSize(total),"","PG=100 GC=555555 TC=White MC=White",Vista7 ? 136 : 136)
+		FTP.NotifyID := Notify("Uploading " FTP.NumFiles " file" (FTP.NumFiles = 1 ? "":"s") " to " FTP.Hostname,my.RemoteName " - " FormatFileSize(done) " / " FormatFileSize(total),"","PG=100 GC=555555 TC=White MC=White",NotifyIcons.Internet)
 		FTP.init := 1
 		return 1
 	}
@@ -258,9 +269,8 @@ Action_Upload_GuiSubmit(Action, ActionGUI)
 
 ShowFTPProfileSelectionGUI(Action, ActionGUI)
 {
-	global FTPProfiles
-	Loop % FTPProfiles.len()
-		Profiles .= "|" A_Index ": " FTPProfiles[A_Index].Hostname
+	Loop % SettingsWindow.FTPProfiles.len()
+		Profiles .= "|" A_Index ": " SettingsWindow.FTPProfiles[A_Index].Hostname
 	SubEventGUI_Add(Action, ActionGUI, "DropDownList", "FTPProfile", Profiles, "", "FTP profile:","","","","","FTP profiles are created on their specific sub page in the settings window.")
 	SubEventGUI_Add(Action, ActionGUI, "Edit", "TargetFolder", "", "", "Target folder:", "Placeholders", "Action_Upload_Placeholders_TargetFolder")
 	SubEventGUI_Add(Action, ActionGUI, "Edit", "TargetFile", "", "", "Target files:", "Placeholders", "Action_Upload_Placeholders_TargetFile", "", "", "Filename(+ optionally .extension) / or empty for original filename")

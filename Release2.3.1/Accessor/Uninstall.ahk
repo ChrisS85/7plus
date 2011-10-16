@@ -1,4 +1,4 @@
-Accessor_Uninstall_Init(ByRef Uninstall, Settings)
+Accessor_Uninstall_Init(ByRef Uninstall, PluginSettings)
 {
 	Uninstall.Settings.Keyword := "Uninstall"
 	Uninstall.DefaultKeyword := "Uninstall"

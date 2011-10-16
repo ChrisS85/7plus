@@ -1,15 +1,24 @@
-LoadLanguage()
+/*
+This file contains language-related code
+*/
+Class CLanguages
 {
-	global Language, IniPath, CLanguage
-	IniRead, Language, %IniPath%, General, Language, En
-	Languages := Array()
-	Languages.append(new CLanguage("en", "English", ""))
-	Languages.append(new CLanguage("fr", "Francais", "fr_"))
-	Language := Object("CurrentLanguage", Languages.SubItem("ShortName", Language), "Languages", Languages)
-	Language.CurrentLanguage.LoadLocalizedStrings()
+	Languages := {}
+	__New()
+	{
+		this.LoadLanguages()
+	}
+	LoadLanguages()
+	{
+		this.Languages.en := new CLanguage("en", "English", "")
+		this.Languages.fr := new CLanguage("fr", "Francais", "fr_")
+	}
+	GetCurrentLanguage()
+	{
+		return this.Languages[Settings.General.Language]
+	}
 }
-
-class CLanguage
+Class CLanguage
 {
 	__New(ShortName, FullName, WikiPrefix)
 	{
@@ -18,12 +27,12 @@ class CLanguage
 		this.WikiPrefix := WikiPrefix
 		this.Strings := Object()
 	}
-	LoadLocalizedStrings()
+	LoadLocalizedStrings() ;Empty for now until localization kicks in
 	{
 	
-	}	
-	OpenWikiPage(Page, SkipTranslation=false)
-	{
-		run % "http://code.google.com/p/7plus/wiki/" (SkipTranslation ? "" : this.WikiPrefix) Page, UseErrorLevel
 	}
+}
+OpenWikiPage(Page, SkipTranslation=false)
+{
+	run % "http://code.google.com/p/7plus/wiki/" (SkipTranslation ? "" : Languages.GetCurrentLanguage().WikiPrefix) Page, UseErrorLevel
 }

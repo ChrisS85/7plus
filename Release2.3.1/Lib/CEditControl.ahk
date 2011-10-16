@@ -12,9 +12,10 @@ Class CEditControl Extends CControl
 		this.Type := "Edit"
 		this._.Insert("ControlStyles", {Center : 0x1, LowerCase : 0x10, Number : 0x2000, Multi : 0x4, Password : 0x20, ReadOnly : 0x800, Right : 0x2, Uppercase : 0x8, WantReturn : 0x1000})
 		this._.Insert("Events", ["TextChanged"])
+		this._.Insert("Messages", {0x200 : "KillFocus", 0x100 : "SetFocus" }) ;Used for automatically registering message callbacks
 	}
 	/*
-	Function: AddUpDown()
+	Function: AddUpDown
 	Adds an UpDown control to this text field. This function needs to be called immediately after adding the edit control to the window.
 	
 	Parameters:
@@ -25,7 +26,14 @@ Class CEditControl Extends CControl
 	{
 		WM_USER := 0x0400 
 		UDM_SETBUDDY := WM_USER + 105
+		;If this edit control belongs to a tab, set the correct tab first and unset it afterwards
+		if(this.hParentControl && CGUI.GUIList[this.GUINum].Controls[this.hParentControl].Type = "Tab")
+			Gui, % this.GUINum ":Tab", % this.TabNumber, % CGUI.GUIList[this.GUINum].Controls[this.hParentControl]._.TabIndex
+		
 		Gui, % this.GUINum ":Add", UpDown, Range%Min%-%Max% hwndhUpDown, % this.Text
+		
+		if(this.hParentControl && CGUI.GUIList[this.GUINum].Controls[this.hParentControl].Type = "Tab")
+			Gui, % this.GUINum ":Tab"
 		hwnd := this.hwnd
 		;~ SendMessage, UDM_SETBUDDY, hwnd, 0,, % "ahk_id " hwnd
 		this._.UpDownHwnd := hUpDown
@@ -69,11 +77,23 @@ Class CEditControl Extends CControl
 	Variable: Max
 	If AddUpDown() has been called befored, the maximum value can be changed here.
 	*/
-	__Set(Name, Value)
+	__Set(Name, Params*)
 	{
-		global CGUI
+		;~ global CGUI
 		if(Name != "GUINum" && !CGUI.GUIList[this.GUINum].IsDestroyed)
 		{
+			;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
+			Value := Params[Params.MaxIndex()]
+			Params.Remove(Params.MaxIndex())
+			if(Params.MaxIndex())
+			{
+				Params.Insert(1, Name)
+				Name :=  Params[Params.MaxIndex()]
+				Params.Remove(Params.MaxIndex())
+				Object := this[Params*]
+				Object[Name] := Value
+				return Value
+			}
 			if(this._.UpDownHwnd && this._.HasKey({Min : "Min", Max : "Max"}[Name]))
 			{
 				SendMessage, 0x400 + 111, this._.Min := (Name = "Min" ? Value : this._.Min), this._.Max := (Name = "Max" ? Value : this._.Max),,% "ahk_id " this._.UpDownHwnd
@@ -89,20 +109,13 @@ Class CEditControl Extends CControl
 	Additionally it is required to create a label with this naming scheme: GUIName_ControlName
 	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent(). 
 	For better readability labels may be chained since they all execute the same code.
+	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
 	
 	Event: TextChanged()
 	Invoked when the text of the control is changed.
 	*/
-	HandleEvent()
+	HandleEvent(Event)
 	{
-		global CGUI
-		if(CGUI.GUIList[this.GUINum].IsDestroyed)
-			return
-		ErrLevel := ErrorLevel
-		if(IsFunc(CGUI.GUIList[this.GUINum][this.Name "_TextChanged"]))
-		{
-			ErrorLevel := ErrLevel
-			`(CGUI.GUIList[this.GUINum])[this.Name "_TextChanged"]()
-		}
+		this.CallEvent("TextChanged")
 	}
 }

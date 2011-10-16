@@ -35,8 +35,7 @@ DebuggingStart()
 ;output debug command->function wrapper
 OutputDebug(text)
 {
-	global DebugEnabled
-	if(DebugEnabled)
+	if(Settings.General.DebugEnabled)
 		OutputDebug %text%
 }
 

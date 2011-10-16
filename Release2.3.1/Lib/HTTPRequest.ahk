@@ -1,10 +1,34 @@
-
 ; ##################################################################################################
 ; ###                                       HTTPRequest                                          ###
 ; ##################################################################################################
+/*
+Copyright © 2011 [VxE]. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted
+provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditions
+and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions
+and the following disclaimer in the documentation and/or other materials provided with the
+distribution.
+
+3. The name "[VxE]" may not be used to endorse or promote products derived from this software
+without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY [VxE] "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL [VxE] BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE.
+*/
 
 HTTPRequest( url, byref in_POST_out_DATA="", byref inout_HEADERS="", options="" ) { ; --------------
-; Function by [VxE] (7-1-2011). Special thanks to derRaphael for inspiring this function.
+; Function by [VxE] (09-27-2011). Special thanks to derRaphael for inspiring this function.
 ; Submits one request to the specified URL and returns the number of bytes in the response.
 ; 'in_POST_out_DATA' must be a variable, which may contain data to be send as POST data. If the
 ; request completes successfully, 'in_POST_out_DATA' receives the response data. 'inout_HEADERS'
@@ -14,89 +38,138 @@ HTTPRequest( url, byref in_POST_out_DATA="", byref inout_HEADERS="", options="" 
 ; the function will return '0'. Since it is possible for a successful request to elicit a response
 ; with zero bytes, you should consult the response headers to determine if an error occured. On the
 ; other hand, if you are requesting data, a zero-byte response would indicate an error anyways.
+;
 ; IMPORTANT: each header in 'inout_HEADERS' must conform to the following format:
 ; "<header name>: <header text>", and multiple headers MUST be separated by a linefeed.
+;
 ; THE FOLLOWING HEADERS ARE HANDLED SPECIALLY:
-; Content-Length  -> the header is added automatically IF AND ONLY IF the post data is not empty.
+; Cookie          -> The flag INTERNET_FLAG_NO_COOKIES is applied to the request.
+; Content-Length  -> The header is added automatically IF AND ONLY IF the post data is not empty.
 ;                    Use the Content-Length header to override data length auto-detection.
-; Content-MD5     -> the value is computed automatically IF AND ONLY IF the VALUE is left blank.
-; User-Agent      -> the header is set automatically if it isn't specified or if the value is blank.
+; Content-MD5     -> The value is computed automatically IF AND ONLY IF the VALUE is left blank.
+;                    If the response headers contain a 'Content-MD5' header, a 'Computed-MD5'
+;                    header is appended to the response headers with the calculated MD5 hash.
+; User-Agent      -> The header is set automatically if it isn't specified or if the value is blank.
 ;                    NOTE: The automatic user-agent contains the script file's name and OS version.
 ;                    If this is not desirable, please specify your own user-agent.
-; Referrer        -> is uncorrected to 'Referer' because that's the actual official header name.
+; Referrer        -> Is uncorrected to 'Referer' because that's the actual official header name.
 ;
 ; Any of the following may appear in the 'options' parameter:
-; +Flag: FlagName    Use this to set custom flags for a request. 'FlagName' can either be the name
+; +FlagName          Use this to set custom flags for a request. 'FlagName' can either be the name
 ;                    of one of the internet flags specified below OR an exact power of 2.
-;                    E.g: "+Flag: INTERNET_FLAG_FORMS_SUBMIT", OR "+Flag: 0x40"
-; -Flag: FlagName    This can remove an internet flag in case you want to negate one of the default
+;                    E.g: "+INTERNET_FLAG_FORMS_SUBMIT", OR "+0x40"
+; -FlagName          This can remove an internet flag in case you want to negate one of the default
 ;                    flags. Default flags include KEEP_CONNECTION, RELOAD and NO_CACHE_WRITE.
-; >> FilePath        Use this to write the downloaded data to a file (overwriting the file).
+; > FilePath         Use this to write the downloaded data to a file (overwriting the file).
 ;                    After the data has been written to the indicated file, the file is read into
 ;                    'in_POST_out_DATA' (this function still returns the number of bytes downloaded,
 ;                    which may not be the actual length of the data). This will overwrite the file
 ;                    if it already exists. This is functionally similar to URLDownloadToFile.
+;                    In version (09-10-2011) and later, the '>' may be preceeded by either 'n', 'r'
+;                    or both. 'N' prevents HTTPRequest from reading the file's contents into the
+;                    data output variable (in_POST_out_DATA is made blank). 'R' causes HTTPRequest
+;                    to resume a download, if the file already exists.
+; AutoProxy          Connects using internet explorer's proxy configuration in the registry.
+;                    This means that if internet explorer is configured to use a proxy, HTTPRequest
+;                    will use that same configuration. NOTE: If this doesn't work, it could mean
+;                    that your system is preventing registry access.
+; Binary             Tells HTTPReqeust to treat the response data as non-text (i.e: HTTPRequest
+;                    won't change the character encoding or update the output variable's length).
+; Callback: F[, VAL] Use this to specify a callback function to handle upload/download progress.
+;                    The function should require a maximum of 3 parameters. During POST upload, the
+;                    function is called with the current fraction of the upload minus 1 as parameter
+;                    1, the total number of bytes in the upload as parameter 2, and 'VAL' as
+;                    parameter 3. During data download, the function is called with the current
+;                    fraction of the download as parameter 1, the total number of bytes in the
+;                    download as parameter 2, and 'VAL' as parameter 3. Finally, the function may
+;                    return the word "cancel" to cancel the current operation (either upload or
+;                    download), possibly terminating the transaction.
+; CodePage           Tells HTTPRequest to convert text POST data to the stated codepage.
+;                    This option MUST be accompanied by a 'Content-Type' header WITH the 'Charset'
+;                    attribute. HTTPRequest will convert the POST data text from the script's
+;                    codepage to the one specified as the 'Charset' value.
+; Method: VERB       Use the specified HTTP method verb when submitting the request. Normally, the
+;                    'POST' verb is used when submitting POST data, otherwise 'GET' is used. Some
+;                    APIs require other verbs for certain functions. Supported verbs are 'GET',
+;                    'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS', and 'TRACE'.
 ; Proxy: HostURL     Use this options to specify a proxy service to use when making the request.
 ; ProxyBypass: Host  Use this to define a host (repeat this for multiple hosts) that HTTPRequest
 ;                    should access directly, not through any proxy.
-; Callback: func     Use this to specify a callback function to handle upload/download progress.
-;                    The function should accept one or two parameters. The first parameter receives
-;                    the fraction indicating the current progress (ranging from -1 to 1, where a
-;                    negative value indicates data is being uploaded and a value greater than 0
-;                    indicates a data download is in progress. The second parameter receives the
-;                    total number of bytes that the transaction is expected to handle (in other
-;                    words, parameter 2 is the Content-Length, both for the POST data and the
-;                    response data). When either download or upload has finished, the callback
-;                    function is called with an empty string as the first parameter.
-; IMPORTANT: for users of unicode versions of AHK: if you want to submit text as POST data (either
-; a query string or XML feed or other text) AND your target url does not accept UTF-16 (wide-char)
-; text, HTTPRequest can automatically convert the POST text to UTF-8, but ONLY IF you supply a
-; Content-Type header with the attribute 'charset=UTF-8'. E.g: Content-Type: text/xml charset=UTF-8
+; Upload: FilePath   Uses the contents of the file at 'filepath' as the POST data, instead of 
+;                    whatever is in 'in_POST_out_DATA'. This option reads from the file as it
+;                    uploads, so only a few KB of the file will be in memory at a time.
+;                    
+; ! IMPORTANT ! when submitting text as POST data, be mindful of the character encoding (charset, 
+; or codepage). HTTPRequest will assume the server will accept the POST data AS-IS unless you
+; specifically tell it otherwise. This is particularly important for UNICODE versions of AHK; either
+; user StrPut() to convert text to the desired codepage, or use the 'CodePage' option (see above)
+; along with a 'Content-Type' header that has the 'charset' attribute.
 
-     Static URL_Components, WorA := "", ModuleName := "WinINet.dll"
-		, Scheme, Host, User, Pass, UrlPath, ExtraInfo, URL_Components
-		, INTERNET_OPEN_TYPE_DIRECT := 1, INTERNET_OPEN_TYPE_PROXY := 3, hModule := 0
-		, INTERNET_FLAG_DONT_CACHE                     := 0x04000000
-		, INTERNET_FLAG_NO_CACHE_WRITE                 := 0x20000000
-		, INTERNET_FLAG_FORMS_SUBMIT                   := 0x00000040
-		, INTERNET_FLAG_FROM_CACHE                     := 0x01000000
-		, INTERNET_FLAG_FWD_BACK                       := 0x00000020
-		, INTERNET_FLAG_HYPERLINK                      := 0x00000400
-		, INTERNET_FLAG_IGNORE_CERT_CN_INVALID         := 0x00001000
-		, INTERNET_FLAG_IGNORE_CERT_DATE_INVALID       := 0x00002000
-		, INTERNET_FLAG_IGNORE_REDIRECT_TO_HTTP        := 0x00008000
-		, INTERNET_FLAG_IGNORE_REDIRECT_TO_HTTPS       := 0x00004000
-		, INTERNET_FLAG_KEEP_CONNECTION                := 0x00400000
-		, INTERNET_FLAG_MAKE_PERSISTENT                := 0x02000000
-		, INTERNET_FLAG_MUST_CACHE_REQUEST             := 0x00000010
-		, INTERNET_FLAG_NEED_FILE                      := 0x00000010
-		, INTERNET_FLAG_NO_AUTH                        := 0x00040000
-		, INTERNET_FLAG_NO_AUTO_REDIRECT               := 0x00200000
-		, INTERNET_FLAG_NO_CACHE_WRITE                 := 0x04000000
-		, INTERNET_FLAG_NO_COOKIES                     := 0x00080000
-		, INTERNET_FLAG_NO_UI                          := 0x00000200
-		, INTERNET_FLAG_OFFLINE                        := 0x01000000
-		, INTERNET_FLAG_FROM_CACHE                     := 0x08000000
-		, INTERNET_FLAG_PRAGMA_NOCACHE                 := 0x00000100
-		, INTERNET_FLAG_RAW_DATA                       := 0x40000000
-		, INTERNET_FLAG_READ_PREFETCH                  := 0x00100000
-		, INTERNET_FLAG_RELOAD                         := 0x80000000
-		, INTERNET_FLAG_RESTRICTED_ZONE                := 0x00020000
-		, INTERNET_FLAG_RESYNCHRONIZE                  := 0x00000800
-		, INTERNET_FLAG_SECURE                         := 0x00800000
-		, iFlagList := "
-		( LTRIM JOIN
-			,INTERNET_FLAG_DONT_CACHE,INTERNET_FLAG_NO_CACHE_WRITE,INTERNET_FLAG_FORMS_SUBMIT
-			,INTERNET_FLAG_FROM_CACHE,INTERNET_FLAG_FWD_BACK,INTERNET_FLAG_HYPERLINK
-			,INTERNET_FLAG_IGNORE_CERT_CN_INVALID,INTERNET_FLAG_IGNORE_CERT_DATE_INVALID
-			,INTERNET_FLAG_IGNORE_REDIRECT_TO_HTTP,INTERNET_FLAG_IGNORE_REDIRECT_TO_HTTPS
-			,INTERNET_FLAG_KEEP_CONNECTION,INTERNET_FLAG_MUST_CACHE_REQUEST
-			,INTERNET_FLAG_NEED_FILE,INTERNET_FLAG_NO_AUTH,INTERNET_FLAG_NO_AUTO_REDIRECT
-			,INTERNET_FLAG_NO_CACHE_WRITE,INTERNET_FLAG_NO_COOKIES,INTERNET_FLAG_NO_UI
-			,INTERNET_FLAG_OFFLINE,INTERNET_FLAG_FROM_CACHE,INTERNET_FLAG_PRAGMA_NOCACHE
-			,INTERNET_FLAG_RAW_DATA,INTERNET_FLAG_READ_PREFETCH,INTERNET_FLAG_RELOAD
-			,INTERNET_FLAG_RESTRICTED_ZONE,INTERNET_FLAG_RESYNCHRONIZE,INTERNET_FLAG_SECURE,
-		)"
+     Static URL_Components, WorA := "", psz, pty, macp, macs, ModuleName := "WinINet.dll"
+	, Scheme, Host, User, Pass, UrlPath, ExtraInfo
+	, text_type_content := "text/,/atom,/html,/json,/soap,/xhtml,/xml,/x-www-form-urlencoded"
+	, iFlagList := "
+; The list of internet flags has been condensed and obfuscated for version (09-10-2011).
+; Flag values may be found here > http://msdn.microsoft.com/en-us/library/aa383661%28v=vs.85%29.aspx
+	( LTRIM JOIN|INTERNET_FLAG_
+	....
+	NEED_FILE
+	MUST_CACHE_REQUEST|.
+	FWD_BACK|.
+	FORMS_SUBMIT|..
+	PRAGMA_NOCACHE|.
+	NO_UI|.
+	HYPERLINK|.
+	RESYNCHRONIZE|.
+	IGNORE_CERT_CN_INVALID|.
+	IGNORE_CERT_DATE_INVALID|.
+	IGNORE_REDIRECT_TO_HTTPS|.
+	IGNORE_REDIRECT_TO_HTTP|..
+	RESTRICTED_ZONE|.
+	NO_AUTH|.
+	NO_COOKIES|.
+	READ_PREFETCH|.
+	NO_AUTO_REDIRECT|.
+	KEEP_CONNECTION|.
+	SECURE|.
+	FROM_CACHE
+	OFFLINE|.
+	MAKE_PERSISTENT|.
+	DONT_CACHE|...
+	NO_CACHE_WRITE|.
+	RAW_DATA|.
+	RELOAD|
+	)"
+	, CPList := "|
+; Codepage list taken from here > http://msdn.microsoft.com/en-us/library/dd317756%28v=vs.85%29.aspx
+	( LTRIM JOIN|
+		00037=IBM037|00437=IBM437|00500=IBM500|00708=ASMO-708|00720=DOS-720|00737=ibm737
+		00775=ibm775|00850=ibm850|00852=ibm852|00855=IBM855|00857=ibm857|00858=IBM00858|00860=IBM860
+		00861=ibm861|00862=DOS-862|00863=IBM863|00864=IBM864|00865=IBM865|00866=cp866|00869=ibm869
+		00870=IBM870|00874=windows-874|00875=cp875|00932=shift_jis|00936=gb2312|00949=ks_c_5601-1987
+		00950=big5|01026=IBM1026|01047=IBM01047|01140=IBM01140|01141=IBM01141|01142=IBM01142
+		01143=IBM01143|01144=IBM01144|01145=IBM01145|01146=IBM01146|01147=IBM01147|01148=IBM01148
+		01149=IBM01149|01200=utf-16|01201=unicodeFFFE|01250=windows-1250|01251=windows-1251
+		01252=Windows-1252|01253=windows-1253|01254=windows-1254|01255=windows-1255
+		01256=windows-1256|01257=windows-1257|01258=windows-1258|01361=Johab|10000=macintosh
+		10001=x-mac-japanese|10002=x-mac-chinesetrad|10003=x-mac-korean|10004=x-mac-arabic
+		10005=x-mac-hebrew|10006=x-mac-greek|10007=x-mac-cyrillic|10008=x-mac-chinesesimp
+		10010=x-mac-romanian|10017=x-mac-ukrainian|10021=x-mac-thai|10029=x-mac-ce
+		10079=x-mac-icelandic|10081=x-mac-turkish|10082=x-mac-croatian|12000=utf-32|12001=utf-32BE
+		20000=x-Chinese-CNS|20001=x-cp20001|20002=x-Chinese-Eten|20003=x-cp20003|20004=x-cp20004
+		20005=x-cp20005|20105=x-IA5|20106=x-IA5-German|20107=x-IA5-Swedish|20108=x-IA5-Norwegian
+		20127=us-ascii|20261=x-cp20261|20269=x-cp20269|20273=IBM273|20277=IBM277|20278=IBM278
+		20280=IBM280|20284=IBM284|20285=IBM285|20290=IBM290|20297=IBM297|20420=IBM420|20423=IBM423
+		20424=IBM424|20833=x-EBCDIC-KoreanExtended|20838=IBM-Thai|20866=koi8-r|20871=IBM871
+		20880=IBM880|20905=IBM905|20924=IBM00924|20932=EUC-JP|20936=x-cp20936|20949=x-cp20949
+		21025=cp1025|21866=koi8-u|28591=iso-8859-1|28592=iso-8859-2|28593=iso-8859-3|28594=iso-8859-4
+		28595=iso-8859-5|28596=iso-8859-6|28597=iso-8859-7|28598=iso-8859-8|28599=iso-8859-9
+		28603=iso-8859-13|28605=iso-8859-15|29001=x-Europa|38598=iso-8859-8-i|50220=iso-2022-jp
+		50221=csISO2022JP|50222=iso-2022-jp|50225=iso-2022-kr|50227=x-cp50227|51932=euc-jp
+		51936=EUC-CN|51949=euc-kr|52936=hz-gb-2312|54936=GB18030|57002=x-iscii-de|57003=x-iscii-be
+		57004=x-iscii-ta|57005=x-iscii-te|57006=x-iscii-as|57007=x-iscii-or|57008=x-iscii-ka
+		57009=x-iscii-ma|57010=x-iscii-gu|57011=x-iscii-pa|65000=utf-7|65001=utf-8|
+	)"
 
 	If ( WorA = "" ) ; Initialize Static Varaibles
 	{
@@ -104,138 +177,212 @@ HTTPRequest( url, byref in_POST_out_DATA="", byref inout_HEADERS="", options="" 
 	; Filling the URL_Components structure with the addresses of static variables only needs to
 	; happen once per script instance. For unicode, the string capacities are doubled.
 	; URL_COMPONENTS structure > http://msdn.microsoft.com/en-us/library/aa385420%28v=VS.85%29.aspx
-		VarSetCapacity( URL_Components, 60, 0 )
+		psz := A_PtrSize = "" ? 4 : A_PtrSize, pty := A_PtrSize = 8 ? "Ptr" : "UInt"
+		macp := WorA = "W" ? "01200" : SubStr( 100000.0 + DllCall("GetACP"), 2, 5 )
+		StringGetPos, pos, CPList, % "|" macp "="
+		StringMid, macs, CPList, pos + 8, InStr( CPList, "|", 0, pos ) - pos - 8
+		VarSetCapacity( URL_Components, 4 * 9 + ( 6 * psz ) , 0 )
 		NumPut( 60, URL_Components, 0, "Int" )
 		VarSetCapacity( Scheme, 16 << !! A_IsUnicode, 0 )
 		NumPut( &Scheme, URL_Components, 4, "UInt" )
 		VarSetCapacity( Host, 2048 << !! A_IsUnicode, 0 )
-		NumPut( &Host, URL_Components, 16, "UInt" )
+		NumPut( &Host, URL_Components, 12 + psz, "UInt" )
 		VarSetCapacity( User, 2048 << !! A_IsUnicode, 0 )
-		NumPut( &User, URL_Components, 28, "UInt" )
+		NumPut( &User, URL_Components, 20 + 2 * psz, "UInt" )
 		VarSetCapacity( Pass, 2048 << !! A_IsUnicode, 0 )
-		NumPut( &Pass, URL_Components, 36, "UInt" )
+		NumPut( &Pass, URL_Components, 24 + 3 * psz, "UInt" )
 		VarSetCapacity( UrlPath, 4096 << !! A_IsUnicode, 0 )
-		NumPut( &UrlPath, URL_Components, 44, "UInt" )
+		NumPut( &UrlPath, URL_Components, 28 + 4 * psz, "UInt" )
 		VarSetCapacity( ExtraInfo, 4096 << !! A_IsUnicode, 0 )
-		NumPut( &ExtraInfo, URL_Components, 52, "UInt" )
+		NumPut( &ExtraInfo, URL_Components, 32 + 5 * psz, "UInt" )
 	}
 
-	inout_HEADERS := "`r`n" inout_HEADERS "`r`n" ; Padding... yes it's important.
-
-	; Determine the length of the POST data and auto-add the content-type if needed
-	If RegexMatch( inout_HEADERS, "i)\v\h*Content-Length:\h*\K(?:0x[\da-f]+|\d+)", Content_Length )
-	{
-		Content_Length := RegexReplace( Content_Length + 0.0, ".*\K\..*" ) ; coerce to decimal
-		; Give a default content-type header if there IS POST data but no content-type header.
-		If !RegexMatch( inout_HEADERS, "i)\v\h*Content-Type:\h*\K\w+", Content_Type )
-		{
-			StringGetPos, pos, in_POST_out_DATA, <?xml
-			If !( ErrorLevel ) && ( pos < 5 )
-				Content_Type := "text/xml"
-			Else Content_Type := "application/x-www-form-urlencoded"
-			inout_HEADERS .= "Content-Type: " Content_Type "`r`n"
-		}
-	}
-	Else ; the POST is either blank or contains text so we can determine the length automatically.
-	{
-		StringLen, Content_Length, in_POST_out_DATA
-		If ( 0 < ( Content_Length := RegexReplace( Content_Length + 0.0, ".*\K\..*" ) ) )
-		{
-			inout_HEADERS .= "Content-Length: " Content_Length "`r`n"
-			; Give a default content-type header if there IS POST data but no content-type header.
-			If !RegexMatch( inout_HEADERS, "i)\v\h*Content-Type:\h*\K\V+", Content_Type )
-			{
-				StringGetPos, pos, in_POST_out_DATA, <?xml
-				If !( ErrorLevel ) && ( pos < 5 )
-					Content_Type := "text/xml"
-				Else Content_Type := "application/x-www-form-urlencoded"
-				inout_HEADERS .= "Content-Type: " Content_Type "`r`n"
-			}
-		}
-	}
-
-	; If the user wants to POST text in UTF-8, but they are using a unicode-version of AHK,
-	; convert the POST data to UTF-8 and recalculate the length
-	If ( A_IsUnicode && InStr( Content_Type, "charset=UTF-8" ) )
-	{
-		buffers := in_POST_out_DATA
-		; WideCharToMultiByte > http://msdn.microsoft.com/en-us/library/dd374130%28v=vs.85%29.aspx
-		VarSetCapacity( in_POST_out_DATA, size := DllCall( "WideCharToMultiByte"
-			, "UInt", 65001, "UInt", 0, "UInt", &buffers, "UInt", Content_Length
-			, "UInt", 0, "UInt", 0, "UInt", 0, "UInt", 0 ), 0 )
-		DllCall( "WideCharToMultiByte"
-			, "UInt", 65001, "UInt", 0, "UInt", &buffers, "UInt", Content_Length
-			, "UInt", &in_POST_out_DATA, "UInt", size, "UInt", 0, "UInt", 0 )
-		size := RegexReplace( size + 0.0, ".*\K\..*" )
-		StringReplace, inout_HEADERS, inout_HEADERS, % "Content-Length: " Content_Length "`r`n", % "Content-Length: " size "`r`n"
-		Content_Length := size
-	}
-
-	; Determine the accept type
-	If !RegexMatch( inout_HEADERS, "i)\v\h*Accept:\h*\K\V+", Accept_Types )
-		Accept_Types := "text/xml, text/* q=0.2, */* q=0.1"
-
-	; Get the agent, if it's specified. Otherwise, add an auto-generated agent that has enough
-	; info to satisfy any API that requires an informative agent.
-	If !RegexMatch( inout_HEADERS, "i)\v\h*User-Agent:\h*\K\V+", Agent )
-		inout_HEADERS .= "User-Agent: " ( Agent := RegexReplace( A_ScriptName, ".*\K\..*" )
-				. "/1.0 (Language=AutoHotkey/" A_AhkVersion "; Platform=" A_OSVersion ")" ) "`r`n"
-
-	; Check the referer url
-	RegexMatch( inout_HEADERS, "i)\v\h*Referr?er:\h+\K\V+", Referer_URL )
-
-	; Check the content-MD5 header
-	If RegexMatch( inout_HEADERS, "i)\v\h*Content-MD5:\h*\K\w*", pos ) && 40 != StrLen( pos )
-		inout_HEADERS := RegexReplace( inout_HEADERS, "i)\v\h*Content-MD5:\K\h+\V*"
-					, " " HTTPRequest_MD5( in_POST_out_DATA, Content_Length ) )
+	inout_HEADERS := "`n" inout_HEADERS "`n" ; Padding... yes it's important.
+	options := "`n" options "`n"
 
 	; Properly format the headers. For each line in the headers, check to make sure it's formatted
 	; like a header (Name: Value) and if it is, then append it to the the actual headers followed
 	; by CRLF. Also, check the headers for additional flags the user may want to use.
-	Loop, Parse, inout_HEADERS, `n, % "`t`r "
-		If ( A_Index = 1 )
-			inout_HEADERS := ""
-		Else If RegexMatch( A_LoopField, "^(?<name>[^\h:]+):\h*\K.+", header )
-				inout_HEADERS .= headername ": " header "`r`n"
-
-	; Typical flags for normal HTTP requests.
-	iDoCallback := 0, bUseProxy := 0, Flags := 0
-	Flags |= INTERNET_FLAG_KEEP_CONNECTION
-	Flags |= INTERNET_FLAG_RELOAD
-	Flags |= INTERNET_FLAG_NO_CACHE_WRITE
-
-	; Handle the optional parameters
-	Loop, Parse, options, `n
+	StringLen, size, inout_HEADERS
+	Loop, Parse, inout_HEADERS, `n
 	{
-		StringReplace, options, A_LoopField, :, `n ; replace first : (value delimiter) with newline
-		StringReplace, options, options, >, >`n, A
-		Loop, Parse, options, `n, % "`t`r "
-			If ( A_Index = 1 )
-				options := A_LoopField
-			Else If ( options = ">" ) ; use an output file
-			{
-				If !InStr( A_LoopField, "\" )
-				|| FileExist( RegexReplace( A_LoopField, ".*\K\\.*" ) )
-					RegexMatch( A_LoopField, "^(?:\w:)?[^*?:""<>|\v\t]+", output_file )
-			}
-			Else If ( options = "Callback" ) ; do a transfer progress callback
-				iDoCallback := IsFunc( Callback_Func := A_LoopField )
-			Else If ( options = "Proxy" ) ; use a proxy (don't bother checking the URL validity)
-				proxy_url := A_LoopField, bUseProxy := 1
-			Else If ( options = "ProxyBypass" ) ; bypass the proxy for these hosts
-				proxy_bypass .= A_LoopField "`r`n"
-			Else If ( options = "+Flag" || options = "-Flag" ) ; add or remove a flag
-					IfInString, iFlagList, % "," A_LoopField ","
-						Flags := Asc( options ) = 45 ? ~%A_LoopField% & Flags : %A_LoopField% | Flags
-					Else If ( header = 1 << Ln( header ) / Ln( 2 ) )
-						Flags := Asc( options ) = 45 ? ~A_LoopField & Flags : A_LoopField | Flags
+		If ( A_Index = 1 )
+			ErrorLevel := VarSetCapacity( inout_HEADERS, size << ( WorA = "W" ), 0 )
+		Else StringReplace, header, A_LoopField, :, `n
+
+		If !ErrorLevel
+			Loop, Parse, header, `n, % "`t`r "
+				If ( A_Index = 1 )
+					header := A_LoopField
+				Else If ( header = "Accept" )
+					inout_HEADERS .= "Accept: " ( Accept_Types := A_LoopField )
+				Else If ( header = "User-Agent" )
+					inout_HEADERS .= "User-Agent: " ( Agent := A_LoopField )
+				Else If ( header = "Content-MD5" )
+					inout_HEADERS .= "Content-MD5: <<<<<<<ContentMD5>>>>>>>`r`n"
+				Else If ( header = "Referer" || headername = "Referrer" )
+					inout_HEADERS .=  "Referer: " ( Referer_URL := A_LoopField ) "`r`n"
+				Else If ( header = "Content-Length" )
+					Content_Length := A_LoopField
+				Else If ( header = "Content-Type" )
+					RegexMatch( content := A_LoopField, "i)\w[^\s""',;:=]*", content_type )
+					, RegexMatch( A_LoopField, "\bcharset=""?\K[^\s""',;:=]*", content_charset )
+				Else inout_HEADERS .= header ": " A_LoopField "`r`n"
 	}
+
+	iDoCallback := 0, iOpenType := 1, Flags := 0, Ignore_Text := 0, output_resume := 0, inohash := 0
+	; Typical flags for normal HTTP requests.
+	Flags |= 0x400000 ; INTERNET_FLAG_KEEP_CONNECTION
+	Flags |= 0x80000000 ; INTERNET_FLAG_RELOAD
+	Flags |= 0x20000000 ; INTERNET_FLAG_NO_CACHE_WRITE
+	If InStr( "`r`n" inout_HEADERS, "`r`nCookie: " )
+		Flags |= 0x80000 ; INTERNET_FLAG_NO_COOKIES ; Apply 'no cookies' flag if there are custom cookies
+
+	; Handle any other options specified
+	Loop, Parse, options, `n, % "`t`r "
+		If ( Asc( A_LoopField ) = 45 || Asc( A_LoopField ) = 43 ) ; flags begin with either + or -
+		{
+			options := RegexReplace( A_LoopField, "i)[+-](flag)?\W*" )
+			If options IS NOT INTEGER
+			{
+				StringGetPos, pos, iFlagList, % "|" SubStr( A_LoopField, 2 ) "|"
+				If ( ErrorLevel )
+					StringGetPos, pos, iFlagList, % "|INTERNET_FLAG_" SubStr( A_LoopField, 2 ) "|"
+				If ( ErrorLevel )
+					Continue
+				StringLeft, options, iFlagList, pos
+				StringReplace, options, options, ., ., UseErrorLevel
+				options := 1 << ErrorLevel
+			}
+			Else If ( options != 1 << Round( Ln( options ) / Ln( 2 ) ) )
+				Continue
+			flags := Asc( A_LoopField ) = 45 ? ~options & flags : options | flags
+		}
+		Else If ( pos := InStr( A_LoopField, ">" ) + 3 >> 2 = 1 )
+			Loop, Parse, A_LoopField, >, % "`t`n`r "
+				If ( A_Index != 1 ) && ( !InStr( A_LoopField, "\" ) || FileExist( RegexReplace( A_LoopField, ".*\K\\.*" ) ) )
+				{
+					output_file := A_LoopField
+					no_output := 0 != InStr( output_options, "n" )
+					If ( output_resume := InStr( output_options, "r" ) && FileExist( output_file ) )
+					{
+						FileGetSize, output_resume, % output_file
+						inout_Headers .= "Range: bytes=" . SubStr( output_resume + 0.0, 1, 1
+						+ Floor( Log( output_resume ) ) ) "-" RegexReplace( "`r`n" inout_Headers, "i)\v+\KRange:\V*\v+" )
+					}
+				}
+				Else output_options .= A_LoopField
+		Else If ( A_LoopField = "binary" )
+			Ignore_Text := 1
+		Else If ( A_LoopField = "codepage" )
+			Do_Codepage := 1
+		Else If ( A_LoopField = "autoproxy" )
+			iOpenType := 0
+		Else If ( A_LoopField = "nohash" )
+			inohash := 1
+		Else IfInString, A_LoopField, :
+		{
+			StringReplace, options, A_LoopField, :, `n
+			Loop, Parse, options, `n, % "`t`r "
+				If ( A_Index = 1 )
+					options := A_LoopField
+				Else If ( options = "Callback" ) ; do a transfer progress callback
+				{
+					RegexMatch( A_LoopField, "(?<_func>[\w@#$]*)[\h,]*(?<_val>.*)", iDoCallback )
+					iDoCallback := IsFunc( iDoCallback_func ) + 3 >> 2 = 1 ; OK if 0,1,2,3 params needed
+					StringReplace, iDoCallback_val, iDoCallback_val, ``n, `n, A
+				}
+				Else If ( options = "Upload" ) ; use a proxy (don't bother checking the URL validity)
+					bDoFileUpload := "" != FileExist( upload_file := A_LoopField )
+				Else If ( options = "Proxy" ) ; use a proxy (don't bother checking the URL validity)
+					proxy_url := A_LoopField, iOpenType := 3
+				Else If ( options = "ProxyBypass" ) ; bypass the proxy for these hosts
+					proxy_bypass .= A_LoopField "`r`n"
+				Else If ( options = "Method" ) && ( A_LoopField = "GET" || A_LoopField = "HEAD"
+					|| A_LoopField = "POST" || A_LoopField = "PUT" || A_LoopField = "DELETE"
+					|| A_LoopField = "OPTIONS" || A_LoopField = "TRACE" )
+					StringUpper, Method, A_LoopField
+		}
 	StringTrimRight, proxy_bypass, proxy_bypass, 2
 
-	; Load WinINet.dll. Because the 'hModule' is static, we can tell if the function interrupted
-	; itself. If the function is interrupting itself, it shouldn't unload WinINet before ending.
-	If !( interrupted := 0 != hModule )
-	&& !( hModule := DllCall( "LoadLibrary" WorA, "UInt", &ModuleName ) )
+	If ( Accept_Types = "" )
+		inout_HEADERS .= "Accept: " ( Accept_Types := "text/xml, text/json q=0.4, text/html q=0.3, text/* q=0.2, */* q=0.1" ) "`r`n"
+	If ( Agent = "" )
+		inout_HEADERS .= "User-Agent: " ( Agent := RegexReplace( A_ScriptName, ".*\K\..*" ) "/1.0 (Language=AutoHotkey/" A_AhkVersion "; Platform=" A_OSVersion ")" ) "`r`n"
+	If ( Content_Length = "" )
+		If ( bDoFileUpload )
+			FileGetSize, Content_Length, % upload_file
+		Else StringLen, Content_Length, in_POST_out_DATA
+	If ( Method = "" )
+		Method := Content_Length ? "POST" : "GET"
+
+	; If there IS POST data (length > zero) then make sure there is also a content-type header.
+	If ( Content_Length := SubStr( Content_Length + 0.0, 1, 1 + Floor( Log( Content_Length ))))
+	{
+		; Detect the content type in the input headers. Default is either XML or forms data.
+		If ( Content_Type = "" ) || ( Content_Type = "charset" )
+		{
+			StringGetPos, pos, in_POST_out_DATA, <?xml
+			Content_Type := !ErrorLevel && pos < 5 ? "text/xml" : "application/x-www-form-urlencoded"
+		}
+		If ( Content_Charset = "" )
+			Content_Charset := macs
+		; For text POST data, make sure the charset attribute is also in the content-type header.
+		If Content_Type CONTAINS %text_type_content%
+		{
+			If ( Content_Charset = "" )
+			{
+				pos := 7 + InStr( CPList, "|" macp "=" )
+				StringMid, Content_Charset, CPList, pos, InStr( CPList, "|", 0, pos ) - pos
+			}
+			StringGetPos, pos, CPList, % "=" Content_Charset "|"
+			StringMid, CodePage, CPList, pos - 5, 5
+
+			If ( Do_Codepage ) && ( CodePage != macp )
+			{
+				If ( WorA = "W" )
+					buffer := in_POST_out_DATA
+				Else
+				{
+				; MultiByteToWideChar > http://msdn.microsoft.com/en-us/library/dd319072%28v=vs.85%29.aspx
+					size := Content_Length
+					Content_Length := DllCall( "MultiByteToWideChar"
+						, "UInt", macp, "UInt", 0
+						, pty, &in_POST_out_DATA, "UInt", size
+						, pty, 0, "UInt", 0 )
+					VarSetCapacity( buffer, Content_Length + 1 << 1, 0 )
+					DllCall( "MultiByteToWideChar"
+						, "UInt", macp, "UInt", 0
+						, pty, &in_POST_out_DATA, "UInt", size
+						, pty, &buffer, "UInt", Content_Length )
+					Content_Length -= 1
+				}
+				; WideCharToMultiByte > http://msdn.microsoft.com/en-us/library/dd374130%28v=vs.85%29.aspx
+				size := Content_Length
+				Content_Length := DllCall( "WideCharToMultiByte"
+					, "UInt", CodePage, "UInt", 0
+					, pty, &buffer, "UInt", size
+					, pty, 0, "UInt", 0
+					, pty, 0, pty, 0 )
+				VarSetCapacity( in_POST_out_DATA, Content_Length + 1, 0 )
+				DllCall( "WideCharToMultiByte"
+					, "UInt", CodePage, "UInt", 0
+					, pty, &buffer, "UInt", size
+					, pty, &in_POST_out_DATA, "UInt", Content_Length
+					, pty, 0, pty, 0 )
+				buffer := ""
+				inout_HEADERS .= "Content-Length: " ( Content_Length := SubStr( size + 0.0, 1, 1 + Floor( Log( size ) ) ) ) "`r`n"
+			}
+			inout_HEADERS .= "Content-Type: " Content_Type "; Charset=" Content_Charset "`r`n"
+		}
+		Else inout_HEADERS .= "Content-Type: " Content "`r`n"
+	}
+
+	IfInString, inout_HEADERS, % "<<<<<<<ContentMD5>>>>>>>"
+		StringReplace, inout_HEADERS, inout_HEADERS, % "<<<<<<<ContentMD5>>>>>>>", % HTTPRequest_MD5( in_POST_out_DATA, bDoFileUpload ? upload_file : Content_Length )
+
+	; Load WinINet.dll
+	If !( hModule := DllCall( "LoadLibrary" WorA, pty, &ModuleName ) )
 	{
 		inout_HEADERS := "There was a problem loading WinINet.dll. ErrorLevel = " ErrorLevel ", A_LastError = " A_LastError
 		Return 0
@@ -243,27 +390,26 @@ HTTPRequest( url, byref in_POST_out_DATA="", byref inout_HEADERS="", options="" 
 
 	; Put the sizes into the URL_Components structure (the sizes are the same for unicode and ansi
 	; because the sizes are actually a character count, not a byte count).
-	NumPut( 16, URL_Components, 8, "Int" )
-	NumPut( 2048, URL_Components, 20, "Int" )
-	NumPut( 2048, URL_Components, 32, "Int" )
-	NumPut( 2048, URL_Components, 40, "Int" )
-	NumPut( 4096, URL_Components, 48, "Int" )
-	NumPut( 4096, URL_Components, 56, "Int" )
+	NumPut( 16, URL_Components, 4 + psz, "Int" )
+	NumPut( 2048, URL_Components, 12 + 2 * psz, "Int" )
+	NumPut( 2048, URL_Components, 20 + 3 * psz, "Int" )
+	NumPut( 2048, URL_Components, 24 + 4 * psz, "Int" )
+	NumPut( 4096, URL_Components, 28 + 5 * psz, "Int" )
+	NumPut( 4096, URL_Components, 32 + 6 * psz, "Int" )
 
+	URL := InStr( URL, "://" ) >> 2 = 1 ? URL : "http://" URL ; add scheme if it doesn't seem to be there
 	; InternetCrackUrl > http://msdn.microsoft.com/en-us/library/aa384376%28VS.85%29.aspx
-	If !DllCall( "WinINet\InternetCrackUrl" WorA, "UInt", &URL, "Int", StrLen( URL ), "UInt", 0, "UInt", &URL_Components )
+	If !DllCall( "WinINet\InternetCrackUrl" WorA, pty, &URL, "Int", StrLen( URL ), "UInt", 0, pty, &URL_Components )
 	{
 		inout_HEADERS := "There was a problem with the provided URL (InternetCrackUrl). ErrorLevel = " ErrorLevel ", A_LastError = " A_LastError
-		If !( interrupted )
-			hModule := 0 & DllCall( "FreeLibrary", "UInt", hModule )
+		DllCall( "FreeLibrary", pty, hModule )
 		Return 0
 	}
 	; The port should always be 80... but if it's zero, then something went terribly wrong
 	If !( Port := NumGet( URL_Components, 24, "UShort" ) )
 	{
 		inout_HEADERS := "There was a problem with the provided URL. The connection port could not be determined."
-		If !( interrupted )
-			hModule := 0 & DllCall( "FreeLibrary", "UInt", hModule )
+		DllCall( "FreeLibrary", pty, hModule )
 		Return 0
 	}
 
@@ -276,132 +422,138 @@ HTTPRequest( url, byref in_POST_out_DATA="", byref inout_HEADERS="", options="" 
 	VarSetCapacity( ExtraInfo, -1 )
 	Query := UrlPath ExtraInfo
 
-	If ( Scheme = "https" ) ; Apply these flags to HTTPS requests
-		Flags |= INTERNET_FLAG_IGNORE_CERT_CN_INVALID | INTERNET_FLAG_SECURE | INTERNET_FLAG_IGNORE_CERT_DATE_INVALID
+	If ( Scheme = "https" ) ; Apply the following flags to HTTPS requests:
+; INTERNET_FLAG_IGNORE_CERT_CN_INVALID, INTERNET_FLAG_IGNORE_CERT_DATE_INVALID, INTERNET_FLAG_SECURE
+		Flags |= 0x1000 | 0x2000 | 0x800000 ; Technically, INTERNET_FLAG_SECURE is redundant for https
 	Else If ( Scheme != "http" )
 	{
 	; Schemes other than HTTP and HTTPS are not supported by this function.
 		inout_HEADERS := "HTTPRequest does not support '" Scheme "' type connections."
-		If !( interrupted )
-			hModule := 0 & DllCall( "FreeLibrary", "UInt", hModule )
+		DllCall( "FreeLibrary", pty, hModule )
 		Return 0
 	}
 
 	; Tweak the accept type string to look like a list
-	Loop, Parse, Accept_Types, `,
+	Loop, Parse, Accept_Types, `,, % "`t`r "
 		Loop, Parse, A_LoopField, % Chr( 59 + !( pos := A_Index ) ), % "`t`n`r "
 			If ( A_Index = 1 )
 				If ( pos = 1 )
 					Accept_Types := A_LoopField
 				Else Accept_Types .= "`n" A_LoopField
-	VarSetCapacity( int_array, pos + 1 << 2, 0 )
+	VarSetCapacity( int_array, ( pos + 1 ) * psz, 0 )
 
 	; Build an array of pointers to the valid accept type strings and insert nulls into the
 	; accept types string to make it look like a collection of null-terminated strings.
 	pos := 0
 	Loop, Parse, Accept_Types, `n
 	{
-		NumPut( &Accept_Types + pos, int_array, A_Index - 1 << 2, "UInt" )
+		NumPut( &Accept_Types + pos, int_array, ( A_Index - 1 ) * psz, pty )
 		pos += StrLen( A_LoopField ) << !!A_IsUnicode
 		NumPut( 0, Accept_Types, pos, A_IsUnicode ? "UShort" : "UChar" )
 		pos += 1 << !!A_IsUnicode
 	}
 
 	; Get an internet handle. InternetOpen > http://msdn.microsoft.com/en-us/library/aa385096(v=VS.85).aspx
-	hInternet := DllCall( "WinINet\InternetOpen" WorA
-		, "UInt", &Agent
-		, "UInt", bUseProxy ? INTERNET_OPEN_TYPE_PROXY : INTERNET_OPEN_TYPE_DIRECT
-		, "UInt", bUseProxy ? &proxy_url : 0
-		, "UInt", bUseProxy && proxy_bypass = "" ? 0 : &proxy_bypass
-		, "UInt", 0 )
-
-	If !( hInternet )
+	If !( hInternet := DllCall( "WinINet\InternetOpen" WorA
+		, pty, &Agent
+		, "UInt", iOpenType ; INTERNET_OPEN_TYPE:( _PRECONFIG = 0 | _DIRECT = 1 | _PROXY = 3 )
+		, pty, bUseProxy ? &proxy_url : 0
+		, pty, bUseProxy && proxy_bypass = "" ? 0 : &proxy_bypass
+		, "UInt", 0 ) )
 	{
 		inout_HEADERS := "There was a problem opening an internet handle. ErrorLevel = " ErrorLevel ", A_LastError = " A_LastError
-		If !( interrupted )
-			hModule := 0 & DllCall( "FreeLibrary", "UInt", hModule )
+		DllCall( "FreeLibrary", pty, hModule )
 		Return 0
 	}
 
 	; Open a connection. InternetConnect > http://msdn.microsoft.com/en-us/library/aa384363%28v=VS.85%29.aspx
-	hConnection := DllCall( "WinINet\InternetConnect" WorA, "UInt", hInternet
-		, "UInt", &Host
+	If !( hConnection := DllCall( "WinINet\InternetConnect" WorA, pty, hInternet
+		, pty, &Host
 		, "UInt", Port
-		, "UInt", &User
-		, "UInt", &Pass
+		, pty, &User
+		, pty, &Pass
 		, "UInt", 3 ; INTERNET_SERVICE_HTTP = 3
 		, "UInt", Flags
-		, "UInt", 0 )
-
-	If !( hConnection )
+		, "UInt", 0 ) )
 	{
 		inout_HEADERS := "There was a problem opening a connection to the host. ErrorLevel = " ErrorLevel ", A_LastError = " A_LastError
-		hInternet := 0 & DllCall( "WinINet\InternetCloseHandle", "UInt", hInternet )
-		If !( interrupted )
-			hModule := 0 & DllCall( "FreeLibrary", "UInt", hModule )
+		hInternet := 0 & DllCall( "WinINet\InternetCloseHandle", pty, hInternet )
+		DllCall( "FreeLibrary", pty, hModule )
 		Return 0
 	}
 
 	; Open a request. HttpOpenRequest > http://msdn.microsoft.com/en-us/library/aa384233%28v=VS.85%29.aspx
-	hRequest := DllCall( "WinINet\HttpOpenRequest" WorA, "UInt", hConnection
-		, "Str", Content_Length = 0 ? "GET" : "POST"
-		, "UInt", &Query
-		, "Str", "HTTP/1.1"
-		, "UInt", &Referer_URL
-		, "UInt", &int_array
-		, "UInt", Flags )
-
-	If !( hRequest )
+	If !( hRequest := DllCall( "WinINet\HttpOpenRequest" WorA, pty, hConnection
+		, pty, &Method
+		, pty, &Query
+		, pty, &( scheme := "HTTP/1.1" )
+		, pty, &Referer_URL
+		, pty, &int_array
+		, "UInt", Flags ) )
 	{
 		inout_HEADERS := "There was a problem opening the request. ErrorLevel = " ErrorLevel ", A_LastError = " A_LastError
-		DllCall( "WinINet\InternetCloseHandle", "UInt", hConnection )
-		DllCall( "WinINet\InternetCloseHandle", "UInt", hInternet )
-		If !( interrupted )
-			hModule := 0 & DllCall( "FreeLibrary", "UInt", hModule )
+		DllCall( "WinINet\InternetCloseHandle", pty, hConnection )
+		DllCall( "WinINet\InternetCloseHandle", pty, hInternet )
+		DllCall( "FreeLibrary", pty, hModule )
 		Return 0
 	}
 
 	; apply the headers to the request ( to allow header errors to be detected and reported )
-	pos := DllCall( "WinINet\HttpAddRequestHeaders" WorA, "UInt", hRequest
-		, "Str", inout_HEADERS
+	If !( DllCall( "WinINet\HttpAddRequestHeaders" WorA, pty, hRequest
+		, pty, &inout_HEADERS
 		, "UInt", StrLen( inout_HEADERS )
-		, "UInt", 0x20000000 ) ; HTTP_ADDREQ_FLAG_ADD = 0x20000000
-	If !( pos )
+		, "UInt", 0x20000000 ) ) ; HTTP_ADDREQ_FLAG_ADD = 0x20000000
 	{
-		inout_HEADERS := "There was a applying one or more headers to the request. ErrorLevel = " ErrorLevel ", A_LastError = " A_LastError "`nHeaders:`n" inout_HEADERS
+		inout_HEADERS := "There was a problem applying one or more headers to the request. ErrorLevel = " ErrorLevel ", A_LastError = " A_LastError "`nHeaders:`n" inout_HEADERS
 		StringReplace, inout_HEADERS, inout_HEADERS, `r`n, `n, A
-		DllCall( "WinINet\InternetCloseHandle", "UInt", hRequest )
-		DllCall( "WinINet\InternetCloseHandle", "UInt", hConnection )
-		DllCall( "WinINet\InternetCloseHandle", "UInt", hInternet )
-		If !( interrupted )
-			hModule := 0 & DllCall( "FreeLibrary", "UInt", hModule )
+		DllCall( "WinINet\InternetCloseHandle", pty, hRequest )
+		DllCall( "WinINet\InternetCloseHandle", pty, hConnection )
+		DllCall( "WinINet\InternetCloseHandle", pty, hInternet )
+		DllCall( "FreeLibrary", pty, hModule )
 		Return 0
 	}
 	VarSetCapacity( int_array, 4, 0 ) ; recycle this variable (use it as an INT)
 
 	; Update: Version (7-1-2011) - To implement the upload progress callback, I needed to swap out
 	; the HttpSendRequest function for HttpSendRequestEx, which allows tighter control over the
-	; POST operation. GET reqeusts still use the HttpSendRequest function (for simplicity)
+	; POST operation. GET requests still use the HttpSendRequest function (for simplicity).
 	If ( Content_Length )
 	{
-		VarSetCapacity( buffers, 40, 0 )
-		NumPut( 40, buffers, 0, "Int" )
-		NumPut( Content_Length, buffers, 28, "Int" )
+		VarSetCapacity( buffer, 40, 0 )
+		NumPut( 40, buffer, 0, "Int" )
+		NumPut( Content_Length, buffer, 28, "Int" )
 		; Send the POST request. HttpSendRequestEx > http://msdn.microsoft.com/en-us/library/aa384318%28v=VS.85%29.aspx
-		If !( DllCall( "WinINet\HttpSendRequestEx" WorA, "UInt", hRequest
-			, "UInt", &buffers, "UInt", 0, "UInt", 0, "UInt", 0 ) )
+		If !( DllCall( "WinINet\HttpSendRequestEx" WorA, pty, hRequest
+			, pty, &buffer, "UInt", 0, pty, 0, "UInt", 0 ) )
 		{
-			inout_HEADERS := "There was a problem sending the POST request. ErrorLevel = " ErrorLevel ", A_LastError = " A_LastError
-			DllCall( "WinINet\InternetCloseHandle", "UInt", hRequest )
-			DllCall( "WinINet\InternetCloseHandle", "UInt", hConnection )
-			DllCall( "WinINet\InternetCloseHandle", "UInt", hInternet )
-			If !( interrupted )
-				hModule := 0 & DllCall( "FreeLibrary", "UInt", hModule )
+			inout_HEADERS := "There was a problem sending the " method " request. ErrorLevel = " ErrorLevel ", A_LastError = " A_LastError
+			DllCall( "WinINet\InternetCloseHandle", pty, hRequest )
+			DllCall( "WinINet\InternetCloseHandle", pty, hConnection )
+			DllCall( "WinINet\InternetCloseHandle", pty, hInternet )
+			DllCall( "FreeLibrary", pty, hModule )
 			Return 0
 		}
 
-		If ( iDoCallback = 2 || iDoCallback = 3 )
-			%Callback_Func%( -1, Content_Length )
+		If ( iDoCallback ) && "cancel" = %iDoCallback_func%( -1, Content_Length, iDoCallback_val )
+		{
+			inout_HEADERS := "The callback function '" iDoCallback_func "' returned 'cancel' to terminate the data upload."
+			DllCall( "WinINet\HttpEndRequest" WorA, pty, hRequest, pty, 0, "UInt", 0, pty, 0 )
+			DllCall( "WinINet\InternetCloseHandle", pty, hRequest )
+			DllCall( "WinINet\InternetCloseHandle", pty, hConnection )
+			DllCall( "WinINet\InternetCloseHandle", pty, hInternet )
+			DllCall( "FreeLibrary", pty, hModule )
+			Return 0
+		}
+		; (9-10-2011) See if the user wants to upload a file from disk, rather than from memory.
+		If ( bDoFileUpload )
+		{
+			VarSetCapacity( buffer, 4096, 0 ) ; Use a 4K buffer
+			hFile := DllCall( "CreateFile" WorA, pty, &upload_file
+				, "Uint", 0x80000000 ; GENERIC_READ = 0x80000000
+ 				, "Uint", 0, pty, 0
+				, "UInt", 4 ; OPEN_ALWAYS = 4
+				, "Uint", 0, pty, 0 )
+		}
 		; Submit the POST data in 4K chunks
 		size := 0
 		Loop
@@ -409,62 +561,84 @@ HTTPRequest( url, byref in_POST_out_DATA="", byref inout_HEADERS="", options="" 
 				Break
 			Else
 			{
+				If ( bDoFileUpload )
+					DllCall( "ReadFile", pty, hFile, pty, pos := &buffer, "UInt", size + 4096 < Content_Length ? 4096 : Content_Length - size, pty, &int_array, pty, 0 )
+				Else pos := &in_POST_out_DATA + size
 				; InternetWriteFile > http://msdn.microsoft.com/en-us/library/aa385128%28v=VS.85%29.aspx
-				pos := DllCall( "WinINet\InternetWriteFile", "UInt", hRequest
-					, "UInt", &in_POST_out_DATA + size
+				If !( DllCall( "WinINet\InternetWriteFile", pty, hRequest
+					, pty, pos
 					, "Int", size + 4096 < Content_Length ? 4096 : Content_Length - size
-					, "UInt", &int_array )
-
-				If !( pos )
+					, pty, &int_array ) )
 				{
 					inout_HEADERS := "There was a problem uploading the POST data. ErrorLevel = " ErrorLevel ", A_LastError = " A_LastError
-					DllCall( "WinINet\HttpEndRequest" WorA, "UInt", hRequest, "UInt", 0, "UInt", 0, "UInt", 0 )
-					DllCall( "WinINet\InternetCloseHandle", "UInt", hRequest )
-					DllCall( "WinINet\InternetCloseHandle", "UInt", hConnection )
-					DllCall( "WinINet\InternetCloseHandle", "UInt", hInternet )
-					If !( interrupted )
-						hModule := 0 & DllCall( "FreeLibrary", "UInt", hModule )
+					DllCall( "WinINet\HttpEndRequest" WorA, pty, hRequest, pty, 0, "UInt", 0, pty, 0 )
+					DllCall( "WinINet\InternetCloseHandle", pty, hRequest )
+					DllCall( "WinINet\InternetCloseHandle", pty, hConnection )
+					DllCall( "WinINet\InternetCloseHandle", pty, hInternet )
+					DllCall( "FreeLibrary", pty, hModule )
+					If ( bDoFileUpload )
+						DllCall( "CloseHandle", pty, hFile )
 					Return 0
 				}
 
 				size += NumGet( int_array, 0, "Int" )
 
-				If ( iDoCallback = 2 || iDoCallback = 3 )
-					%Callback_Func%( size / Content_Length - 1, Content_Length )
+				If ( iDoCallback ) && "cancel" = %iDoCallback_func%( size / Content_Length - 1, Content_Length, iDoCallback_val )
+				{
+					inout_HEADERS := "The callback function '" iDoCallback_func "' returned 'cancel' to terminate the data upload."
+					DllCall( "WinINet\HttpEndRequest" WorA, pty, hRequest, pty, 0, "UInt", 0, pty, 0 )
+					DllCall( "WinINet\InternetCloseHandle", pty, hRequest )
+					DllCall( "WinINet\InternetCloseHandle", pty, hConnection )
+					DllCall( "WinINet\InternetCloseHandle", pty, hInternet )
+					DllCall( "FreeLibrary", pty, hModule )
+					If ( bDoFileUpload )
+						DllCall( "CloseHandle", pty, hFile )
+					Return 0
+				}
 			}
-		If ( iDoCallback = 2 || iDoCallback = 3 )
-			%Callback_Func%( "", 0 )
 		; A request opened by HttpSendRequestEx must be closed by HttpEndRequest.
 		; HttpEndRequest > http://msdn.microsoft.com/en-us/library/aa384230%28v=VS.85%29.aspx
-		DllCall( "WinINet\HttpEndRequest" WorA, "UInt", hRequest, "UInt", 0, "UInt", 0, "UInt", 0 )
-	}
-	Else	; Send the GET request. HttpSendRequest > http://msdn.microsoft.com/en-us/library/aa384247%28v=VS.85%29.aspx
-		If !( DllCall( "WinINet\HttpSendRequest" WorA, "UInt", hRequest
-			, "UInt", 0, "UInt", 0, "UInt", 0, "UInt", 0 ) )
+		DllCall( "WinINet\HttpEndRequest" WorA, pty, hRequest, pty, 0, "UInt", 0, pty, 0 )
+		If ( bDoFileUpload )
+			DllCall( "CloseHandle", pty, hFile )
+
+		If ( iDoCallback ) && "cancel" = %iDoCallback_func%( "", 0, iDoCallback_val )
 		{
-			inout_HEADERS := "There was a problem sending the GET request. ErrorLevel = " ErrorLevel ", A_LastError = " A_LastError
-			DllCall( "WinINet\InternetCloseHandle", "UInt", hRequest )
-			DllCall( "WinINet\InternetCloseHandle", "UInt", hConnection )
-			DllCall( "WinINet\InternetCloseHandle", "UInt", hInternet )
-			If !( interrupted )
-				hModule := 0 & DllCall( "FreeLibrary", "UInt", hModule )
+			inout_HEADERS := "The callback function '" iDoCallback_func "' returned 'cancel' to terminate the transaction."
+			DllCall( "WinINet\HttpEndRequest" WorA, pty, hRequest, pty, 0, "UInt", 0, pty, 0 )
+			DllCall( "WinINet\InternetCloseHandle", pty, hRequest )
+			DllCall( "WinINet\InternetCloseHandle", pty, hConnection )
+			DllCall( "WinINet\InternetCloseHandle", pty, hInternet )
+			DllCall( "FreeLibrary", pty, hModule )
+			Return 0
+		}
+	}
+	Else	; Send no POST data. HttpSendRequest > http://msdn.microsoft.com/en-us/library/aa384247%28v=VS.85%29.aspx
+		If !( DllCall( "WinINet\HttpSendRequest" WorA, pty, hRequest
+			, pty, 0, "UInt", 0, pty, 0, "UInt", 0 ) )
+		{
+			inout_HEADERS := "There was a problem sending the " method " request. ErrorLevel = " ErrorLevel ", A_LastError = " A_LastError
+			DllCall( "WinINet\InternetCloseHandle", pty, hRequest )
+			DllCall( "WinINet\InternetCloseHandle", pty, hConnection )
+			DllCall( "WinINet\InternetCloseHandle", pty, hInternet )
+			DllCall( "FreeLibrary", pty, hModule )
 			Return 0
 		}
 
-	; Query the request for ready data. Actualy, it waits for data to become ready.
+	; Query the request for ready data. Actually, it waits for data to become ready.
 	; InternetQueryDataAvailable > http://msdn.microsoft.com/en-us/library/aa385100%28v=VS.85%29.aspx
-	DllCall( "WinINet\InternetQueryDataAvailable", "UInt", hRequest, "UInt", &int_array, "UInt", 0, "UInt", 0 )
+	DllCall( "WinINet\InternetQueryDataAvailable", pty, hRequest, pty, &int_array, "UInt", 0, pty, 0 )
 
 	VarSetCapacity( inout_HEADERS, 4096, 0 ) ; use 4K as first-try for response header length.
 	NumPut( 4096, int_array )
 	Loop 2 ; Get the response headers separated by CRLF. The first line has the HTTP response code
 	{
 		; HttpQueryInfo > http://msdn.microsoft.com/en-us/library/aa384238%28v=VS.85%29.aspx
-		If ( pos := DllCall( "WinINet\HttpQueryInfo" WorA, "UInt", hRequest
+		If ( pos := DllCall( "WinINet\HttpQueryInfo" WorA, pty, hRequest
 			, "UInt", 22 ; HTTP_QUERY_RAW_HEADERS_CRLF = 22
-			, "UInt", &inout_HEADERS
-			, "UInt", &int_array
-			, "UInt", 0 ) )
+			, pty, &inout_HEADERS
+			, pty, &int_array
+			, pty, 0 ) )
 				Break
 
 		If ( A_LastError = 122 ) ; ERROR_INSUFFICIENT_BUFFER = 122
@@ -474,89 +648,102 @@ HTTPRequest( url, byref in_POST_out_DATA="", byref inout_HEADERS="", options="" 
 	If !( pos )
 	{
 		inout_HEADERS := "There was a problem reading the response headers. ErrorLevel = " ErrorLevel ", A_LastError = " A_LastError
-		DllCall( "WinINet\InternetCloseHandle", "UInt", hRequest )
-		DllCall( "WinINet\InternetCloseHandle", "UInt", hConnection )
-		DllCall( "WinINet\InternetCloseHandle", "UInt", hInternet )
-		If !( interrupted )
-			hModule := 0 & DllCall( "FreeLibrary", "UInt", hModule )
+		DllCall( "WinINet\InternetCloseHandle", pty, hRequest )
+		DllCall( "WinINet\InternetCloseHandle", pty, hConnection )
+		DllCall( "WinINet\InternetCloseHandle", pty, hInternet )
+		DllCall( "FreeLibrary", pty, hModule )
 		Return 0
 	}
 
 	; Update response header outputvar length and remove carriage returns
 	VarSetCapacity( inout_HEADERS, -1 )
 	StringReplace, inout_HEADERS, inout_HEADERS, `r`n, `n, A
+	StringLeft, ResponseCode, inout_HEADERS, InStr( inout_HEADERS "`n", "`n" ) - 1
+	StringTrimLeft, ResponseCode, ResponseCode, InStr( ResponseCode, " " )
+	StringLeft, ResponseCode, ResponseCode, 3
 	; Get the content length header (since the content-length header is not guaranteed to be in
 	; the response headers, the value is only used in the progress callback function).
-	StringGetPos, pos, inout_HEADERS, % "`nContent-Length: "
-	pos += 18
-	If !( ErrorLevel )
-		StringMid, Content_Length, inout_HEADERS, pos, InStr( inout_HEADERS "`n", "`n", 0, pos ) - pos
-	Else Content_Length := 65535 ; arbitrary (unknown) content-length
-	If ( iDoCallback = 2 || iDoCallback = 3 )
-		%Callback_Func%( 0, Content_Length )
-	; Get the content type (well use it to see if we should treat the response as a string)
-	StringGetPos, pos, inout_HEADERS, % "`nContent-Type: "
-	pos += 16
-	StringMid, Accept_Types, inout_HEADERS, pos, InStr( inout_HEADERS "`n", "`n", 0, pos ) - pos
-	If ( bTextdata := InStr( Accept_Types, "text/" ) = 1
-		|| InStr( Accept_Types, "/xml" )
-		|| InStr( Accept_Types, "/atom" )
-		|| InStr( Accept_Types, "/json" )
-		|| InStr( Accept_Types, "/x-www-form-urlencoded" )
-		|| InStr( Accept_Types, "/xhtml" )
-		|| InStr( Accept_Types, "/html" )
-		|| InStr( Accept_Types, "/soap" ) )
-		Codepage := InStr( Accept_Types, "charset=ISO-8859-1" ) ? 28591 : 65001
+	RegexMatch( inout_HEADERS "`nContent-Length: 65536", "i)`nContent-Length: \K\d+", Content_Length )
+	RegexMatch( inout_HEADERS, "i)`nContent-Type: \K\V+", Content_Type )
+	; In version 09-10-2011 and later, the charset of a text response is detected and used in codepage conversion.
+	If Content_Type CONTAINS %text_type_content%
+		If RegexMatch( Content_Type, "i)\bcharset=""?\K[^""\v,;]*", Content_Charset )
+		&& ( pos := InStr( CPList, "=" Content_Charset "|" ) )
+			StringMid, CodePage, CPList, pos - 5, 5
+		Else CodePage := 65001
 
 	; Download the response data
 	Size := 0
-	If ( output_file != "" )
+	If ( iDoCallback ) && "cancel" = %iDoCallback_func%( ( output_resume + size )
+	/ ( Content_Length + output_resume ), Content_Length + output_resume, iDoCallback_val )
+		inout_HEADERS .= "The callback function '" iDoCallback_func "' returned 'cancel' to terminate the download. Only " size " bytes were downloaded.`n"
+	Else If ( output_resume && ResponseCode <> "206" )
+		inout_HEADERS .= "Resume download failed: the server did not respond with '206 Partial Content'.`n"
+	Else If ( output_file != "" )
 	{
-		; The user wants to save the info as a file, so delete the file if it exists.
-		IfExist, % output_file
+		; If the user isn't resuming a download, then delete the file if it exists.
+		If !( output_resume ) && FileExist( output_file )
 			FileDelete, % output_file
 
 		; Use binary-mode file write. CreateFile > http://msdn.microsoft.com/en-us/library/aa363858%28v=vs.85%29.aspx
-		If !( hFile := DllCall( "CreateFile" WorA, "Str", output_file
-					, "Uint", 0x40000000 ; GENERIC_WRITE = 0x40000000
-      				, "Uint", 0, "UInt", 0, "UInt", 4 ; OPEN_ALWAYS = 4
-					, "Uint", 0, "UInt", 0 ) )
-			inout_HEADERS .= "`nHTTPRequest Error: Could not create/open the file for writing. ErrorLevel = " ErrorLevel ", A_LastError = " A_LastError
+		If !( hFile := DllCall( "CreateFile" WorA, pty, &output_file
+				, "Uint", 0x40000000 ; GENERIC_WRITE = 0x40000000
+ 				, "Uint", 0, pty, 0
+				, "UInt", 4 ; OPEN_ALWAYS = 4
+				, "Uint", 0, pty, 0 ) )
+			inout_HEADERS .= "HTTPRequest Error: Could not create/open the file for writing. ErrorLevel = " ErrorLevel ", A_LastError = " A_LastError "`n"
 		Else
 		{
+			If ( output_resume ) ; output_resume holds the size in bytes of the partially downloaded file
+			; SetFilePointerEx > http://msdn.microsoft.com/en-us/library/aa365542%28v=VS.85%29.aspx
+				DllCall( "SetFilePointerEx", pty, hfile
+					, "Int64", output_resume
+					, pty, 0, "UInt", 0 )
+			If ( no_output )
+				VarSetCapacity( in_POST_out_DATA, 0 )
 			; Read from the internet response and write to the file
 			Loop
 			{
-				VarSetCapacity( buffers, 4096, 0 ) ; Use a 4K buffer
+				VarSetCapacity( buffer, 4096, 0 ) ; Use a 4K buffer
 				; InternetReadFile > http://msdn.microsoft.com/en-us/library/aa385103%28v=VS.85%29.aspx
-				pos := DllCall( "WinINet\InternetReadFile", "UInt", hRequest
-					, "UInt", &buffers
+				
+				If !( pos := DllCall( "WinINet\InternetReadFile", pty, hRequest
+					, pty, &buffer
 					, "UInt", 4096
-					, "UInt", &int_array )
-				If !( pos && NumGet( int_array ) )
+					, pty, &int_array ) ) || !NumGet( int_array )
 				{
 					; CloseHandle > http://msdn.microsoft.com/en-us/library/ms724211%28v=vs.85%29.aspx
-					DllCall( "CloseHandle", "Uint", hFile )
 					If !( pos )
-						inout_HEADERS .= "`nHTTPRequest Warning: InternetReadFile Failed. ErrorLevel = " ErrorLevel ", A_LastError = " A_LastError
-					Else FileRead, in_POST_out_DATA, % "*c " output_file
+						inout_HEADERS .= "HTTPRequest Warning: InternetReadFile Failed. ErrorLevel = " ErrorLevel ", A_LastError = " A_LastError "`n"
+					Else If !( no_output )
+					; ReadFile > http://msdn.microsoft.com/en-us/library/aa365467%28v=VS.85%29.aspx
+						VarSetCapacity( in_POST_out_DATA, size + 2, 0 )
+						, DllCall( "ReadFile", pty, hFile, pty, &in_POST_out_DATA, "UInt", size, pty, 0, pty, 0 )
+					DllCall( "CloseHandle", pty, hFile )
 					Break
 				}
 				Sleep -1
 				Size += buffersize := NumGet( int_array )
 				; WriteFile > http://msdn.microsoft.com/en-us/library/aa365747%28v=vs.85%29.aspx
-				If !DllCall( "WriteFile", "UInt", hFile, "UInt", &buffers, "Int", buffersize, "UInt", &int_array, "UInt", 0 )
+				If !DllCall( "WriteFile", pty, hFile, pty, &buffer, "UInt", buffersize, pty, &int_array, pty, 0 )
 				{
-					DllCall( "CloseHandle", "Uint", hFile )
+					inout_HEADERS .= "HTTPRequest Error: There was a problem writing to the file. ErrorLevel = " ErrorLevel ", A_LastError = " A_LastError "`n"
+					DllCall( "CloseHandle", pty, hFile )
 					FileDelete, % output_file
-					inout_HEADERS .= "`nHTTPRequest Error: There was a problem writing to the file. ErrorLevel = " ErrorLevel ", A_LastError = " A_LastError
 					Break
 				}
 				Sleep -1
-				If ( iDoCallback = 2 || iDoCallback = 3 )
-					%Callback_Func%( Size / Content_Length, Content_Length )
+				If ( iDoCallback ) && "cancel" = %iDoCallback_func%( ( size + output_resume )
+				/ ( Content_Length + output_resume ), Content_Length + output_resume, iDoCallback_val )
+				{
+					inout_HEADERS .= "The callback function '" iDoCallback_func "' returned 'cancel' to terminate the download. Only " size " bytes were downloaded.`n"
+					DllCall( "CloseHandle", pty, hFile )
+					Break
+				}
 			}
-			buffers := ""
+			buffer := ""
+			If !inohash && InStr( inout_HEADERS, "`nContent-MD5: " )
+				inout_HEADERS .= "Computed-MD5: " HTTPRequest_MD5( buffer, output_file ) "`n"
 		}
 	}
 	Else
@@ -564,78 +751,128 @@ HTTPRequest( url, byref in_POST_out_DATA="", byref inout_HEADERS="", options="" 
 		; Read the response and store it into a pseudo-array of buffers
 		Loop
 		{
-			buffers := A_Index
+			buffer := A_Index
 			VarSetCapacity( HTTPRequest_Buffer_%A_Index% := "", 4096, 0 )
 			; InternetReadFile > http://msdn.microsoft.com/en-us/library/aa385103%28v=VS.85%29.aspx
-			pos := DllCall( "WinINet\InternetReadFile", "UInt", hRequest
-				, "UInt", &HTTPRequest_Buffer_%A_Index%
+			pos := DllCall( "WinINet\InternetReadFile", pty, hRequest
+				, pty, &HTTPRequest_Buffer_%A_Index%
 				, "UInt", 4096
-				, "UInt", &int_array )
+				, pty, &int_array )
 			If !( pos && NumGet( int_array ) )
 				Break
 			Size += HTTPRequest_BufferSize_%A_Index% := NumGet( int_array )
 			Sleep -1
-			If ( iDoCallback = 2 || iDoCallback = 3 )
-				%Callback_Func%( Size / Content_Length, Content_Length )
+			If ( iDoCallback ) && "cancel" = %iDoCallback_func%( ( size + output_resume )
+			/ ( Content_Length + output_resume ), Content_Length + output_resume, iDoCallback_val )
+			{
+				inout_HEADERS .= "The callback function '" iDoCallback_func "' returned 'cancel' to terminate the download. Only " size " bytes were downloaded.`n"
+				Break
+			}
 		}
 		If !( pos )
-			inout_HEADERS .= "`nHTTPRequest Warning: InternetReadFile Failed. ErrorLevel = " ErrorLevel ", A_LastError = " A_LastError
+			inout_HEADERS .= "HTTPRequest Warning: InternetReadFile Failed. ErrorLevel = " ErrorLevel ", A_LastError = " A_LastError "`n"
 		VarSetCapacity( in_POST_out_DATA, Size + 1 << !!A_IsUnicode, 0 ) ; always put an ending null, even for non-text data
 		Size := 0
-		Loop % buffers - 1 ; Then copy the buffered data into the output parameter.
+		Loop % buffer - 1 ; Then copy the buffered data into the output parameter.
 		{
-			If ( A_IsUnicode ) && bTextdata ; convert ANSI or UTF-8 into Wide-Char (UTF-16)
-				; MultiByteToWideChar > http://msdn.microsoft.com/en-us/library/dd319072%28v=vs.85%29.aspx
-				Size += DllCall( "MultiByteToWideChar"
-						, "UInt", CodePage, "UInt", 0
-						, "UInt", &HTTPRequest_Buffer_%A_Index%
-						, "UInt", HTTPRequest_BufferSize_%A_Index%
-						, "UInt", &in_POST_out_DATA + Size
-						, "UInt", HTTPRequest_BufferSize_%A_Index% << 1 ) << 1
-			Else ; the script isn't unicode, so just copy byte for byte
-			{
-				; MoveMemory > http://msdn.microsoft.com/en-us/library/aa366788%28v=vs.85%29.aspx
-				DllCall( "RtlMoveMemory"
-						, "UInt", &in_POST_out_DATA + Size
-						, "UInt", &HTTPRequest_Buffer_%A_Index%
-						, "UInt", HTTPRequest_BufferSize_%A_Index% )
-				Size += HTTPRequest_BufferSize_%A_Index%
-			}
+			; MoveMemory > http://msdn.microsoft.com/en-us/library/aa366788%28v=vs.85%29.aspx
+			DllCall( "RtlMoveMemory"
+					, pty, &in_POST_out_DATA + Size
+					, pty, &HTTPRequest_Buffer_%A_Index%
+					, "UInt", HTTPRequest_BufferSize_%A_Index% )
+			Size += HTTPRequest_BufferSize_%A_Index%
 			HTTPRequest_Buffer_%A_Index% := ""
 		}
-
-		; If the content-type is text, update the output data length
-		If ( bTextdata )
-			VarSetCapacity( in_POST_out_DATA, -1 )
-		; Scrapped idea: if content-type = text/xml, insert newlines and tabs to make it pretty
+		If !inohash && InStr( inout_HEADERS, "`nContent-MD5: " )
+			inout_HEADERS .= "Computed-MD5: " HTTPRequest_MD5( in_POST_out_DATA, size ) "`n"
 	} ; End Else
-	If ( iDoCallback = 2 || iDoCallback = 3 )
-		%Callback_Func%( "", 0 )
+	; Convert the text result's codepage to the instance's codepage
+
+	If ( !Ignore_Text && size )
+		If Content_Type CONTAINS %text_type_content%
+			If ( CodePage != macp )
+			{
+				; MultiByteToWideChar > http://msdn.microsoft.com/en-us/library/dd319072%28v=vs.85%29.aspx
+				Content_Length := size
+				size := DllCall( "MultiByteToWideChar"
+					, "UInt", CodePage, "UInt", 0
+					, pty, &in_POST_out_DATA, "UInt", Content_Length
+					, pty, 0, "UInt", 0 )
+				VarSetCapacity( buffer, size + 1 << 1, 0 )
+				DllCall( "MultiByteToWideChar"
+					, "UInt", CodePage, "UInt", 0
+					, pty, &in_POST_out_DATA, "UInt", Content_Length
+					, pty, &buffer, "UInt", size )
+				If ( WorA = "W" )
+					VarSetCapacity( buffer, -1 ), in_POST_out_DATA := buffer
+				Else
+				{
+				; WideCharToMultiByte > http://msdn.microsoft.com/en-us/library/dd374130%28v=vs.85%29.aspx
+					Content_Length := size
+					size := DllCall( "WideCharToMultiByte"
+						, "UInt", macp, "UInt", 0
+						, pty, &buffer, "UInt", Content_Length
+						, pty, 0, "UInt", 0
+						, pty, 0, pty, 0 )
+					VarSetCapacity( in_POST_out_DATA, 0 )
+					VarSetCapacity( in_POST_out_DATA, size + 1, 0 )
+					DllCall( "WideCharToMultiByte"
+						, "UInt", macp, "UInt", 0
+						, pty, &buffer, "UInt", Content_Length
+						, pty, &in_POST_out_DATA, "UInt", size
+						, pty, 0, pty, 0 )
+				}
+				VarSetCapacity( in_POST_out_DATA, -1 )
+			}
+			Else VarSetCapacity( in_POST_out_DATA, -1 )
+	
+	If ( iDoCallback )
+		%iDoCallback_func%( "", 0, iDoCallback_val )
 
 	; InternetCloseHandle > http://msdn.microsoft.com/en-us/library/aa384350%28v=VS.85%29.aspx
-	DllCall( "WinINet\InternetCloseHandle", "UInt", hRequest )
-	DllCall( "WinINet\InternetCloseHandle", "UInt", hConnection )
-	DllCall( "WinINet\InternetCloseHandle", "UInt", hInternet )
-	If !( interrupted )
-		hModule := 0 & DllCall( "FreeLibrary", "UInt", hModule )
+	DllCall( "WinINet\InternetCloseHandle", pty, hRequest )
+	DllCall( "WinINet\InternetCloseHandle", pty, hConnection )
+	DllCall( "WinINet\InternetCloseHandle", pty, hInternet )
+	DllCall( "FreeLibrary", pty, hModule )
 	Return Size
 } ; HTTPRequest( url, byref in_POST_out_DATA="", byref inout_HEADERS="", options="" ) --------------
 
 HTTPRequest_MD5( byref data, length=-1 ) { ; -------------------------------------------------------
 ; Computes the MD5 hash of a data blob of length 'length'. If 'length' is less than zero, this
 ; function assumes that 'data' is a null-terminated string and determines the length automatically.
-	; static variables and constants r[0~63], encoded here as bytes with an offset of 64
-	; ( that means the real value is the byte value minus 64, e.g: r[0] = 7, so 7 + 64 = 71 = 'G' )
-	Static S, k, p:=0, r := "GLQVGLQVGLQVGLQVEINTEINTEINTEINTDKPWDKPWDKPWDKPWFJOUFJOUFJOUFJOU"
+; If length is the path to a file, this function returns the 
+; Static variables and constants r[0~63], encoded here as bytes with an offset of 64
+; ( that means the real value is the byte value minus 64, e.g: r[0] = 7, so 7 + 64 = 71 = 'G' )
+	Static s, k, pty, u, p:=0, r := "GLQVGLQVGLQVGLQVEINTEINTEINTEINTDKPWDKPWDKPWDKPWFJOUFJOUFJOUFJOU"
+	; Initialize the block buffer S and constants p and k[0~63]
+	If !( p )
+	{
+		VarSetCapacity( k, 256 )
+		VarSetCapacity( S, 64, 0 )
+		u := !!A_IsUnicode
+		pty := A_PtrSize = "" ? "UInt" : "Ptr"
+		Loop, 64
+			NumPut( i := Floor(Abs(Sin(A_Index)) * 0x100000000 ), k, A_Index - 1 << 2, "UInt" )
+	}
 
-	VarSetCapacity( S, 64, 0 ) ; Initialize the block buffer S and constants p and k[0~63]
-	IfEqual, p, 0, Loop % VarSetCapacity( k, 256 + !( p := &S ) ) >> 2 & 64
-		NumPut( Floor(Abs(Sin(A_Index)) * 2**32 ), k, A_Index - 1 << 2, "UInt" )
+	If length IS NOT NUMBER
+		IfExist, % length ; use file-MD5 mode.
+		{
+			hFile := DllCall( "CreateFile" ( u ? "W" : "A" ), "Str", length
+				, "UInt", 0x80000000 ; GENERIC_READ = 0x80000000
+ 				, "Uint", 0, pty, 0
+				, "UInt", 4 ; OPEN_ALWAYS = 4
+				, "Uint", 0, pty, 0 )
+			VarSetCapacity( l, 8 )
+			DllCall( "GetFileSizeEx", pty, hFile, pty, &l )
+			length := NumGet( l, 0, "Int64" )
+		}
 
 	; autodetect message length if it's not specified (or is not positive)
-	IfLess, length, 1, StringLen, length, data
+	If Round( length ) < 1
+		StringLen, length, data
 
-	; initialize running accumulators and terminator (the terminator is appended to the message)
+	; initialize running accumulators
 	ha := 0x67452301, hb := 0xEFCDAB89, hc := 0x98BADCFE, hd := 0x10325476
 
 	; Begin rolling the message. This loop does 1 iteration for each 64 byte block such that the
@@ -643,28 +880,85 @@ HTTPRequest_MD5( byref data, length=-1 ) { ; -----------------------------------
 	Loop % length + 72 >> 6
 	{
 		If ( f := length - 64 > ( e := A_Index - 1 << 6 ) ? 64 : length > e ? length - e : 0 )
-			DllCall( "RtlMoveMemory", "UInt", p, "UInt", &data + e, "Int", f ) ; copy the block
+			If ( hFile )
+				DllCall( "ReadFile", pty, hFile, pty, &s, "UInt", f, pty, &l, pty, 0 )
+			Else DllCall( "RtlMoveMemory", pty, &s, pty, &data + e, "UInt", f ) ; copy the block
 		If ( f != 64 && e <= length ) ; append the terminator to the message
-			NumPut( 128, S, f, "UChar" )
-		IfLess, f, 56, Loop 8 ; if this is the real last block, insert the data length in BITS
-			NumPut( ( length << 3 >> ( A_Index - 1 << 3 ) ) & 255, S, 55 + A_Index, "UChar" )
-		
+			NumPut( 128, s, f, "UChar" )
+		If ( f < 56 )
+			Loop 8 ; if this is the real last block, insert the data length in BITS
+				NumPut( ( ( length << 3 ) >> ( A_Index - 1 << 3 ) ) & 255, s, 55 + A_Index, "UChar" )
+
 		a := ha, b := hb, c := hc, d := hd ; copy running accumulators to intermediate variables
 
 		Loop 64 ; begin rolling the block. These operations have been condensed and obfuscated.
-		{ ; For i from 0 to 63 {
-			e := NumGet( r, ( 2 - !A_IsUnicode ) * i := A_Index - 1, "UChar" ) & 31
+		{
+			e := NumGet( r, ( i := A_Index - 1 ) << u, "UChar" ) & 31
 			f := 0 = ( j := i >> 4 ) ? (b&c)|(~b&d) : j=1 ? (d&b)|(~d&c) : j=2 ? b^c^d : c^(~d|b)
-			g := (( i * ( 3817 >> j * 3 & 7 ) + ( 328 >> j * 3 & 7 ) & 15 ) << 2 ) + p
+			g := &s + (( i * ( 3817 >> j * 3 & 7 ) + ( 328 >> j * 3 & 7 ) & 15 ) << 2 )
 			w := (*(g+3) << 24 | *(g+2) << 16 | *(g+1) << 8 | *g) + a + f + NumGet(k,i<<2,"UInt")
 			a := d, d := c, c := b, b += w << e | (( w & 0xFFFFFFFF ) >> ( 32 - e ))
+
 		}
 		; add the intermediate variables to the running accumlators (making sure to mod by 2**32)
 		ha := ha+a&0xFFFFFFFF, hb := hb+b&0xFFFFFFFF, hc := hc+c&0xFFFFFFFF, hd := hd+d&0xFFFFFFFF
-		VarSetCapacity( S, 64, 0 ) ; Clear the block ( set bits to zero )
+		VarSetCapacity( S, 64, 0 ) ; zero the block
 	}
+	If ( hFile )
+		DllCall( "CloseHandle", pty, hFile )
 	Loop 32 ; convert the running accumulators into 32 hex digits
-		i := Chr( 96 + ( A_Index + 7 >> 3 ) ), S .= SubStr( "123456789abcdef0"
-		, h%i% >> ( ( A_Index - 1 + ( A_Index & 1 ) - !( A_Index & 1 ) & 7 ) << 2 ) & 15, 1 )
-	Return S ; return the hex digits
+		g:=1&(i:=A_Index-1), e:=Chr(97+(i>>3))
+		, f:=15&(h%e%>>((!g-g+i&7)<<2)), s.=Chr(48+f+39*(9<f))
+	s .= "0000"
+	Loop 6
+		Loop, % 4+0*(g := Abs("0x" SubStr( s,A_Index*6-5,6)))
+			i:=(g>>6*(4-A_Index))&63, s.=i=63 ? "/" : i=62 ? "+" : Chr(i<26 ? i+65 : i<52 ? i+71 : i-4)
+	Return SubStr( s, 37, 22 ) "==" ; return the base 64 encoded MD5 hash.
 } ; HTTPRequest_MD5( byref data, length=-1 ) -------------------------------------------------------
+
+HTTPRequest_Base64Encode( byref data, length ) { ; -------------------------------------------------
+; Returns the byte stream encoded using base64. If 'length' is the path to a file (instead of a
+; number), this function returns the file's contents in base64 encoding.
+	Static u, pty, b64 := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+	If !( u )
+		u := !!A_IsUnicode, pty := A_PtrSize = "" ? "UInt" : "Ptr"
+	oel := ErrorLevel, b := &data
+	If length IS NOT NUMBER
+		IfExist, % length ; use file base64 encode mode
+		{
+			hFile := DllCall( "CreateFile" ( u ? "W" : "A" ), "Str", length
+				, "UInt", 0x80000000 ; GENERIC_READ = 0x80000000
+ 				, "Uint", 0, pty, 0
+				, "UInt", 4 ; OPEN_ALWAYS = 4
+				, "Uint", 0, pty, 0 )
+			VarSetCapacity( l, 8 )
+			DllCall( "GetFileSizeEx", pty, hFile, pty, &l )
+			length := NumGet( l, 0, "Int64" )
+			VarSetCapacity( buffer, 3072, 0 )
+		}
+	VarSetCapacity( output, ( 16 + length * 4 ) / 3 << u, 0 )
+	Loop, % length // 3
+	{
+		If ( !( A_Index - 1 & 1023 ) && hFile )
+			DllCall( "ReadFile", pty, hFile, pty, b := &buffer, "UInt", A_Index * 3 < length ? 3072 : length + 3072 - A_Index * 3, pty, &l, pty, 0 )
+		i := ( *( b ) << 16 ) | ( *( b + 1 ) << 8 ) | ( *( b + 2 ) )
+		StringMid, ch1, b64, 1 + ( i >> 18 & 63 ), 1
+		StringMid, ch2, b64, 1 + ( i >> 12 & 63 ), 1
+		StringMid, ch3, b64, 1 + ( i >> 6 & 63 ), 1
+		StringMid, ch4, b64, 1 + ( i & 63 ), 1
+		output .= ch1 ch2 ch3 ch4, b += 3
+	}
+	If Mod( length, 3 )
+	{
+		If ( b = 3069 && hFile )
+			DllCall( "ReadFile", pty, hFile, pty, b := &buffer, "UInt", Mod( length, 3 ), pty, &l, pty, 0 )
+		i := ( *( b ) << 16 ) | ( Mod( length, 3 ) = 2 ? *( b + 1 ) << 8 : 0 )
+		StringMid, ch1, b64, 1 + ( i >> 18 & 63 ), 1
+		StringMid, ch2, b64, 1 + ( i >> 12 & 63 ), 1
+		StringMid, ch3, b64, 1 + ( i >> 6 & 63 ), 1
+		output .= ch1 ch2 ( Mod( length, 3 ) = 2 ? ch3 : "=" ) "="
+	}
+	If ( hFile )
+		DllCall( "CloseHandle", pty, hFile )
+	return output, ErrorLevel := oel
+} ; HTTPRequest_Base64Encode( byref data, length ) -------------------------------------------------

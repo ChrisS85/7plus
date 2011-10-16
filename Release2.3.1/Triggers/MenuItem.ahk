@@ -41,16 +41,15 @@ Trigger_MenuItem_DisplayString(Trigger)
 
 Trigger_MenuItem_GuiShow(Trigger, TriggerGUI)
 {
-	global Settings_Events
 	sTriggerGUI := TriggerGUI
 	; SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Menu", "", "", "Menu:")
 	Menus := Array()
-	Loop % Settings_Events.len()
+	Loop % SettingsWindow.Events.len()
 	{
-		if(Settings_Events[A_Index].Trigger.Type = "MenuItem" && Menus.indexOf(Settings_Events[A_Index].Trigger.Menu) = 0)
+		if(SettingsWindow.Events[A_Index].Trigger.Type = "MenuItem" && Menus.indexOf(SettingsWindow.Events[A_Index].Trigger.Menu) = 0)
 		{
-			Menus.append(Settings_Events[A_Index].Trigger.Menu)
-			MenuString .= (Menus.len() = 1 ? "" : "|") Settings_Events[A_Index].Trigger.Menu
+			Menus.append(SettingsWindow.Events[A_Index].Trigger.Menu)
+			MenuString .= (Menus.len() = 1 ? "" : "|") SettingsWindow.Events[A_Index].Trigger.Menu
 		}
 	}
 	

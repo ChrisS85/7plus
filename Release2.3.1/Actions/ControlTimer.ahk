@@ -47,8 +47,7 @@ Action_ControlTimer_Execute(Action, ThisEvent)
 
 Action_ControlTimer_DisplayString(Action)
 {
-	global Settings_Events
-	return Action.Action ": " Action.TimerID ": " Settings_Events.SubItem("ID", Action.TimerID).Name	
+	return Action.Action ": " Action.TimerID ": " SettingsWindow.Events.SubItem("ID", Action.TimerID).Name	
 }
 
 Action_ControlTimer_GuiShow(Action, ActionGUI, GoToLabel = "")

@@ -29,7 +29,7 @@ HICON WINAPI ExtractAssociatedIcon(
   __inout     WORD *lpiIcon
 );
 */
-ExtractAssociatedIcon(hInst, lpIconPath, lpiIcon)
+ExtractAssociatedIcon(hInst, lpIconPath, ByRef lpiIcon)
 {
 	return DllCall("Shell32\ExtractAssociatedIcon", "Ptr", hInst, "Str", lpIconPath, "UShortP", lpiIcon, "Ptr")
  }

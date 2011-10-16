@@ -7,7 +7,7 @@ Class CImageConverter extends CGUI
 	*/
 	__New(Action)
 	{
-		global FTPProfiles, Vista7, TemporaryEvents, ImageQuality
+		global FTPProfiles, Vista7, TemporaryEvents
 		Base.__New()
 		this.Title := "Image Converter"
 		this.Files := Array()
@@ -35,7 +35,7 @@ Class CImageConverter extends CGUI
 				if(!this.txtQuality)
 				{
 					this.txtQuality := item.AddControl("Text", "txtQuality", "x+10 ys+30", "Quality:")
-					this.editQuality := item.AddControl("Edit", "EditQuality", "x+10 ys+26", ImageQuality)
+					this.editQuality := item.AddControl("Edit", "EditQuality", "x+10 ys+26", Settings.Misc.ImageQuality)
 				}
 				else
 				{
@@ -218,6 +218,7 @@ Class CImageConverter extends CGUI
 		{
 			this.PreviousPicturePath := this.Picture.Picture
 			SplitPath(this.Picture.Picture, cFilename, cPath)
+			msgbox watchdir
 			WatchDirectory(cPath "|" cFilename "\", "")
 		}
 		pBitmap := Gdip_CreateBitmapFromFile(Selected)
@@ -388,7 +389,7 @@ Class CImageConverter extends CGUI
 	}
 	btnBrowse_Click()
 	{
-		FolderDialog := new("CFolderDialog")
+		FolderDialog := new CFolderDialog()
 		SplitPath(this.editPath.Text ? this.editPath.Text : this.Files[1], "", Path)
 		FolderDialog.Folder := Path
 		FolderDialog.Title := "Select output directory"
@@ -441,10 +442,10 @@ Class CImageConverter extends CGUI
 			{
 				for index, image in FailedImages
 					Files .= (index := 1 ? "" : "`n") Image
-				Notify("Image Conversion failed!", "Failed to convert these files:`n" Files, 5, "GC=555555 TC=White MC=White", Vista7 ? 78 : 110)
+				Notify("Image Conversion failed!", "Failed to convert these files:`n" Files, 5, "GC=555555 TC=White MC=White", NotifyIcons.Error)
 			}
 			else
-				Notify("Image Conversion completed!", "Successfully converted " ConvertedImages.MaxIndex() " files.", 5, "GC=555555 TC=White MC=White", Vista7 ? 145 : 22)
+				Notify("Image Conversion completed!", "Successfully converted " ConvertedImages.MaxIndex() " files.", 5, "GC=555555 TC=White MC=White", NotifyIcons.Success)
 			this.Close()
 		}
 	}

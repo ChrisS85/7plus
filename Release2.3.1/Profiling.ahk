@@ -16,9 +16,9 @@ else
 return
 ShowProfiling()
 {
-	global Profiler, hAHK
+	global Profiler
 	outputdebug % Profiler.Current.StartTime
-	WinGet, PID, PID, ahk_id %hAHK%
+	WinGet, PID, PID, ahk_id %A_ScriptHwnd%
 	hProc := DllCall("OpenProcess", "Uint", 0x400, "int", 0, "Uint", PID, "Ptr")
 	DllCall("GetProcessTimes", "Ptr", hProc, "int64P", CreationTime, "int64P", ExitTime, "int64P", newKrnlTime, "int64P", newUserTime, "Ptr")
 	DllCall("CloseHandle", "Ptr", hProc)
@@ -43,7 +43,7 @@ ShowProfiling()
 	return
 }
 
-#if ProfilingEnabled
+#if Settings.General.ProfilingEnabled
 ^!#P::ShowProfilingInfo := !ShowProfilingInfo
 ^!#R::GoSub ResetCurrentProfiling
 #if

@@ -78,13 +78,13 @@ AddTimer()
 return
 AddTimer()
 {
-	global Events, Settings_Events
+	global Events
 	Event := EventSystem_RegisterEvent("") ;Create new event without registering it in the event list so it won't increase max id
 	Event.Trigger := EventSystem_CreateSubEvent("Trigger", "Timer")
 	Event := GUI_EditEvent(Event)
 	if(Event)
 	{
-		Events.HighestID := max(Events.HighestID, Settings_Events.HighestID) + 1
+		Events.HighestID := max(Events.HighestID, SettingsActive() ? SettingsWindow.Events.HighestID : 0) + 1
 		Event.ID := Events.HighestID
 		Events.Add(Event)
 		Event.Enable()

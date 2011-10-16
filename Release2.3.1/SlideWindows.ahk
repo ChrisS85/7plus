@@ -44,7 +44,6 @@ Class CSlideWindow
 	;This function slides a window into the screen, making it visible
 	SlideIn()
 	{
-		global SlideWinHide
 		DetectHiddenWindows, On
 		;Disable Minimize/Restore animation
 		RegRead, Animate, HKCU, Control Panel\Desktop\WindowMetrics , MinAnimate
@@ -59,7 +58,7 @@ Class CSlideWindow
 		{
 			hwnd := A_Index = 1 ? this.hwnd : this.ChildWindows[A_Index - 1].hwnd
 			WinSet, AlwaysOnTop, On , ahk_id %hwnd%
-			if(SlideWinHide)
+			if(Settings.Windows.SlideWindows.HideSlideWindows)
 			{
 				if(A_Index = 1 || this.ChildWindows[A_Index - 1].WasVisible)
 					WinShow ahk_id %hwnd%
@@ -127,7 +126,6 @@ Class CSlideWindow
 	;This function slides a window outside the screen, hiding it
 	SlideOut()
 	{
-		Global SlideWinHide
 		DetectHiddenWindows, On
 		;Disable Minimize/Restore animation
 		RegRead, Animate, HKCU, Control Panel\Desktop\WindowMetrics , MinAnimate
@@ -212,7 +210,7 @@ Class CSlideWindow
 		{
 			hwnd := A_Index = 1 ? this.hwnd : this.ChildWindows[A_Index - 1].hwnd
 			
-			if(SlideWinHide)
+			if(Settings.Windows.SlideWindows.HideSlideWindows)
 				WinHide, ahk_id %hwnd%
 			else
 			{
@@ -380,12 +378,11 @@ Class CSlideWindows
 {
 	__New()
 	{
-		global ConfigPath
 		this.base.base := Array()
 		;Read list of window classes that were closed outside of the screen
-		if(FileExist(ConfigPath "\ClosedWindowsOutsideScreen.xml"))
+		if(FileExist(Settings.ConfigPath "\ClosedWindowsOutsideScreen.xml"))
 		{
-			FileRead, xml, %ConfigPath%\ClosedWindowsOutsideScreen.xml
+			FileRead, xml, % Settings.ConfigPath "\ClosedWindowsOutsideScreen.xml"
 			XMLObject := XML_Read(xml)
 			this.ClosedWindowsOutsideScreen := XMLObject.Window.len() > 0 ? XMLObject.Window : Array(XMLObject.Window)
 		}
@@ -394,11 +391,10 @@ Class CSlideWindows
 	}
 	__Delete()
 	{
-		global ConfigPath
 		if(this.ClosedWindowsOutsideScreen.len() > 0)
-			XML_Save(Object("Window", this.ClosedWindowsOutsideScreen), ConfigPath "\ClosedWindowsOutsideScreen.xml")
+			XML_Save(Object("Window", this.ClosedWindowsOutsideScreen), Settings.ConfigPath "\ClosedWindowsOutsideScreen.xml")
 		else
-			FileDelete, %ConfigPath%\ClosedWindowsOutsideScreen.xml
+			FileDelete, % Settings.ConfigPath "\ClosedWindowsOutsideScreen.xml"
 	}
 	CanAddSlideWindow(hwnd, Direction)
 	{
@@ -416,7 +412,6 @@ Class CSlideWindows
 	}
 	IsSlideSpaceOccupied(px,py,width,height,dir)
 	{
-		global SlideWindowsBorder,SlideWindowSideLimit
 		if(dir=1||dir=3)
 		{
 			Loop % this.len() ;Check all slide windows
@@ -424,8 +419,8 @@ Class CSlideWindows
 				SlideWindow:=this[A_INDEX]
 				if(SlideWindow.Direction=dir)
 				{
-					BorderY:=(Height-2*SlideWindowsBorder>0) ? SlideWindowsBorder : 0
-					objBorderY:=(SlideWindow.SlideOutLen-2*SlideWindowsBorder>0) ? SlideWindowsBorder : 0
+					BorderY:=(Height-2*Settings.Windows.SlideWindows.BorderSize>0) ? Settings.Windows.SlideWindows.BorderSize : 0
+					objBorderY:=(SlideWindow.SlideOutLen-2*Settings.Windows.SlideWindows.BorderSize>0) ? Settings.Windows.SlideWindows.BorderSize : 0
 					Y1:=pY+borderY
 					Y2:=pY+Height-borderY
 					objY1:=SlideWindow.SlideOutPos+objBorderY
@@ -448,8 +443,8 @@ Class CSlideWindows
 				SlideWindow:=this[A_INDEX]
 				if(SlideWindow.Direction=dir)
 				{
-					borderX:=(Width-2*SlideWindowsBorder>0) ? SlideWindowsBorder : 0
-					objBorderX:=(SlideWindow.SlideOutLen-2*SlideWindowsBorder>0) ? SlideWindowsBorder : 0
+					borderX:=(Width-2*Settings.Windows.SlideWindows.BorderSize>0) ? Settings.Windows.SlideWindows.BorderSize : 0
+					objBorderX:=(SlideWindow.SlideOutLen-2*Settings.Windows.SlideWindows.BorderSize>0) ? Settings.Windows.SlideWindows.BorderSize : 0
 					X1:=pX+borderX
 					X2:=pX+Width-borderX
 					objX1:=SlideWindow.SlideOutPos+objBorderX
@@ -469,8 +464,7 @@ Class CSlideWindows
 	}
 	IsSlideSpaceFree(hwnd,dir)
 	{
-		global SlideWindowSideLimit
-		if(SlideWindowSideLimit) ;Limit to one Slide window per side
+		if(Settings.Windows.SlideWindows.LimitToOnePerSide)
 			return this.IndexOfSubItem("Direction", dir) = 0
 		WinGetPos X, Y, Width, Height, ahk_id %hwnd%
 		return !this.IsSlideSpaceOccupied(X,Y,Width,Height,dir)
@@ -576,7 +570,6 @@ Class CSlideWindows
 	;This is called when the mouse is moved and takes care of screen border slide window activation and deactivation when the mouse leaves the window
 	OnMouseMove(x,y)
 	{
-		global SlideWindowRequireMouseUp,SlideWindowsModifier
 		GetVirtualScreenCoordinates(VirtualLeft, VirtualTop, VirtualWidth, VirtualHeight)
 		VirtualRight += VirtualLeft
 		VirtualBottom += VirtualTop
@@ -594,7 +587,7 @@ Class CSlideWindows
 			return
 		;Check if mouse position matches a slide window border and don't slide in while other slide window is on the screen
 		SlideWindow:=this.IsSlideSpaceOccupied(x,y,0,0,dir)
-		if(dir > 0 && SlideWindow && (!SlideWindowRequireMouseUp || !GetKeyState("LButton", "P") || GetKeyState(SlideWindowsModifier, "P")) && !this.indexOfSubItem("SlideState", 1))
+		if(dir > 0 && SlideWindow && (!Settings.Windows.SlideWindows.BorderActivationRequiresMouseUp || !GetKeyState("LButton", "P") || GetKeyState(Settings.Windows.SlideWindows.ModifierKey, "P")) && !this.indexOfSubItem("SlideState", 1))
 		{
 			this.ActiveWindow := WinExist("A")
 			SlideWindow.AutoSlideOut := true
@@ -605,7 +598,7 @@ Class CSlideWindows
 		MouseGetPos, , ,win
 		win+=0
 		SlideWindow:=this.SubItem("SlideState", 1)
-		if(SlideWindow && SlideWindow.AutoSlideOut && SlideWindow.hwnd!=win && !SlideWindow.ChildWindows.IndexOfSubItem("hwnd", win) && !IsContextMenuActive() && !GetKeyState(SlideWindowsModifier,"P"))
+		if(SlideWindow && SlideWindow.AutoSlideOut && SlideWindow.hwnd!=win && !SlideWindow.ChildWindows.IndexOfSubItem("hwnd", win) && !IsContextMenuActive() && !GetKeyState(Settings.Windows.SlideWindows.ModifierKey,"P"))
 		{
 			SlideWindow.SlideOut()
 			WinActivate % "ahk_id " this.ActiveWindow

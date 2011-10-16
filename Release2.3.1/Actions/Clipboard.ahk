@@ -19,7 +19,6 @@ Action_Clipboard_ReadXML(Action, XMLAction)
 
 Action_Clipboard_Execute(Action, Event)
 {
-	global ImageExtensions
 	Content := Event.ExpandPlaceholders(Action.Content)
 	if(Action.InsertType = "Text")
 	{
@@ -36,7 +35,7 @@ Action_Clipboard_Execute(Action, Event)
 	else if(Action.InsertType = "FileContent")
 	{
 		textfiles := Content
-		SplitByExtension(textfiles, imagefiles, ImageExtensions)
+		SplitByExtension(textfiles, imagefiles, Settings.Misc.ImageExtensions)
 		if(textfiles.len() > 0 && FileExist(textfiles[1]))
 		{
 			file := textfiles[1]

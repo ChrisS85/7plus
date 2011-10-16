@@ -45,8 +45,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 	yIt+=textboxstep
 	y:=yIt+TextBoxCheckBoxOffset
 	Gui, 1:Add, Text, x%x1% y%y%, Documentation language:	
-	Loop % Language.Languages.len()
-		Languages .= (A_Index = 1 ? "" : "|") Language.Languages[A_Index].FullName
+	Loop % Languages.Languages.MaxIndex()
+		Languages .= (A_Index = 1 ? "" : "|") Languages.Languages[A_Index].FullName
 	Gui, 1:Add, DropDownList, x%x2% y%yIt% w%wTBMedium% hwndhLanguage, % Languages
 }
 Settings_CreateEvents(ByRef TabCount) {
@@ -60,7 +60,7 @@ Settings_CreateEvents(ByRef TabCount) {
 	AddTab(0, "","SysTabControl32" TabCount)
 	Gui, 1:Add, Text, x%x1% y%yIt% w600, You can add events here that are triggered under certain conditions. When triggered, the event can launch a series of actions. This is a very powerful tool to add all kinds of features, and many features from 7plus are now implemented with this system.
 	yIt+=41
-	Gui, 1:Add, Checkbox, x%x1% y%yIt% vShowComplexEvents gShowAllEvents, Show advanced events
+	Gui, 1:Add, Checkbox, x%x1% y%yIt% vShowAdvancedEvents gShowAllEvents, Show advanced events
 	Gui, 1:Add, Text, x+150 y%yIt%, Event search:
 	yIt-=4
 	Gui, 1:Add, Edit, x+10 y%yIt% w160 hwndEventFilter gEventFilterChange
@@ -544,14 +544,14 @@ Settings_SetupEvents() {
 	GuiControl, 1:enable, GUI_EventsList_Remove
 	GuiControl, 1:enable, GUI_EventsList_Edit
 	GuiControl, 1:enable, GUI_EventsList_Copy
-	GuiControl, 1:, ShowComplexEvents, % ShowComplexEvents = 1
+	GuiControl, 1:, ShowAdvancedEvents, % ShowAdvancedEvents = 1
 	ControlFocus, SysListView321, A
 	if(!WasCritical)
 		Critical, Off
 }
 FillEventsList()
 {
-	global EventFilter, Settings_Events, ShowComplexEvents
+	global EventFilter, Settings_Events, ShowAdvancedEvents
 	WasCritical := A_IsCritical
 	Critical
 	Gui, 1:Default
@@ -573,7 +573,7 @@ FillEventsList()
 		DisplayString := Settings_Events[A_Index].Trigger.DisplayString()
 		Name := Settings_Events[A_Index].Name
 		scroll := false
-		if(((!filter || InStr(id, filter) || InStr(DisplayString, Filter) || InStr(Name, filter) || InStr(Settings_Events[A_Index].Description, Filter)) && (filter || !Category || Category = Settings_Events[A_Index].Category)) && (ShowComplexEvents || !Settings_Events[A_Index].EventComplexityLevel))
+		if(((!filter || InStr(id, filter) || InStr(DisplayString, Filter) || InStr(Name, filter) || InStr(Settings_Events[A_Index].Description, Filter)) && (filter || !Category || Category = Settings_Events[A_Index].Category)) && (ShowAdvancedEvents || !Settings_Events[A_Index].EventComplexityLevel))
 		{
 			Gui, ListView, GUI_EventsList
 			LV_Add((SelectedID != "" && id = SelectedID  && (scroll := 1) ? "Select Focus" : "") (Settings_Events[A_Index].Enabled ? " Check": " "), "", id, DisplayString, name)
@@ -597,7 +597,7 @@ FillEventsList()
 }
 RecreateTreeView()
 {
-	global Settings_Events, SettingsTabList, SuppressTreeViewMessages, ShowComplexEvents
+	global Settings_Events, SettingsTabList, SuppressTreeViewMessages, ShowAdvancedEvents
 	WasCritical := A_IsCritical
 	Critical
 	Gui, 1:Default
@@ -617,7 +617,7 @@ RecreateTreeView()
 		Category := Settings_Events.Categories[A_Index]
 		Loop % Settings_Events.len()
 		{
-			if(ShowComplexEvents || (Settings_Events[A_Index].Category = Category && !Settings_Events[A_Index].EventComplexityLevel))
+			if(ShowAdvancedEvents || (Settings_Events[A_Index].Category = Category && !Settings_Events[A_Index].EventComplexityLevel))
 			{
 				TV_Add(Category, EventsTreeViewEntry, "Sort" (CurrentCategory = Category ? " Select Vis" : ""))
 				break
@@ -695,17 +695,15 @@ Settings_SetupExplorer() {
 	
 	if(!Vista7)
 		GuiControl, 1:disable, HKAutoCheck
-	GuiControl, 1:, ImgName, %ImgName%
-	GuiControl, 1:, TxtName, %TxtName%
+	GuiControl, 1:, ImgName, % Settings.Explorer.PasteImageAsFileName
+	GuiControl, 1:, TxtName, % Settings.Explorer.PasteTextAsFileName
 	
 	;Setup paste text as file
-	temp:=(txtName!="")
-	GuiControl, 1:,Paste text as file,%temp%
+	GuiControl, 1:, Paste text as file, % (Settings.Explorer.PasteTextAsFileName != "")
 	GoSub txt
 	
-	;Setup paste image as file	
-	temp:=(imgName!="")
-	GuiControl, 1:,Paste image as file,%temp%
+	;Setup paste image as file
+	GuiControl, 1:,Paste image as file,% (Settings.Explorer.PasteImageAsFileName!="")
 	GoSub img
 		
 	GuiControl, 1:, HKSelectFirstFile, % HKSelectFirstFile = 1
@@ -850,7 +848,7 @@ AddTab(IconNumber, TabName, TabControl) {
 	SendMessage, 0x1307, 999, &TCITEM, %TabControl%  ; 0x1307 is TCM_INSERTITEM
 }
 SettingsHandler:
-ShowSettings(FirstRun ? "Introduction" : "")
+ShowSettings(Settings.General.FirstRun ? "Introduction" : "")
 return
 ShowSettings(ShowPane="") {
 	global
@@ -1063,7 +1061,7 @@ EventFilterChange:
 FillEventsList()
 return
 ShowAllEvents:
-GuiControlGet,ShowComplexEvents
+GuiControlGet,ShowAdvancedEvents
 RecreateTreeView()
 return
 GUI_EventsList_SelectionChange:
@@ -1365,7 +1363,7 @@ GUI_EventsList_Export()
 	}	
 }
 GUI_EventsList_Help:
-Language.CurrentLanguage.OpenWikiPage("EventsOverview")
+OpenWikiPage("EventsOverview")
 Return
 GUI_SaveEvents()
 {
@@ -1518,7 +1516,7 @@ DropAccessorFiles()
 	return
 }
 GUI_Accessor_Help:
-Language.CurrentLanguage.OpenWikiPage("docsAccessor")
+OpenWikiPage("docsAccessor")
 return
 GUI_AccessorSettings:
 ShowAccessorSettings()
@@ -2134,7 +2132,7 @@ ApplySettings(Close = 0)
 	}
 	else
 		Menu, Tray, Icon
-	WriteIni()
+	Settings.Save()
 	if(Action & 1)
 	{
 		MsgBox, 4, Restart Windows, You need to restart windows to apply a setting. Do you want to do this now?
@@ -2242,88 +2240,4 @@ HandleMessage(p_w, p_l, p_m, p_hw)
             } 
         } 
     } 
-}
-IsAutorunEnabled()
-{
-	global Vista7
-	if(Vista7)
-	{
-		objService := ComObjCreate("Schedule.Service") 
-		objService.Connect()
-		objFolder := objService.GetFolder("\")
-		objTask := objFolder.GetTask("7plus Autorun")
-		return objTask.Name != ""
-	}
-	else
-	{
-		RegRead, key, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus
-		return key != ""
-	}
-}
-DisableAutorun()
-{
-	global Vista7
-	RegDelete, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus
-	if(Vista7)
-	{
-		objService := ComObjCreate("Schedule.Service") 
-		objService.Connect()
-		objFolder := objService.GetFolder("\")
-		objFolder.DeleteTask("7plus Autorun", 0)
-	}
-}
-EnableAutorun()
-{
-	global Vista7
-	if(IsAutorunEnabled())
-		DisableAutorun() ;Better re-enable it if paths have changed
-	if(!Vista7)
-	{
-		if(A_IsCompiled)
-			RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus, %A_ScriptFullPath%
-		else
-			RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus, "%A_AhkPath%" "%A_ScriptFullPath%"
-	}
-	else
-	{
-		TriggerType = 9   ; trigger on logon. 
-		ActionTypeExec = 0  ; specifies an executable action. 
-		TaskCreateOrUpdate = 6 
-		Task_Runlevel_Highest = 1 
-
-		objService := ComObjCreate("Schedule.Service") 
-		objService.Connect() 
-
-		objFolder := objService.GetFolder("\") 
-		objTaskDefinition := objService.NewTask(0) 
-
-		principal := objTaskDefinition.Principal 
-		principal.LogonType := 1    ; Set the logon type to TASK_LOGON_PASSWORD 
-		principal.RunLevel := Task_Runlevel_Highest  ; Tasks will be run with the highest privileges. 
-
-		colTasks := objTaskDefinition.Triggers
-		objTrigger := colTasks.Create(TriggerType) 
-		colActions := objTaskDefinition.Actions 
-		objAction := colActions.Create(ActionTypeExec) 
-		objAction.ID := "7plus Autorun" 
-		if(A_IsCompiled)
-			objAction.Path := """" A_ScriptFullPath """"
-		else
-		{
-			objAction.Path := """" A_AhkPath """"
-			objAction.Arguments := """" A_ScriptFullPath """"
-		}
-		objAction.WorkingDirectory := A_ScriptDir
-		objInfo := objTaskDefinition.RegistrationInfo 
-		objInfo.Author := "7plus" 
-		objInfo.Description := "Run 7plus through task scheduler to prevent UAC dialog." 
-		objSettings := objTaskDefinition.Settings 
-		objSettings.Enabled := True 
-		objSettings.Hidden := False 
-		objSettings.StartWhenAvailable := True 
-		objSettings.ExecutionTimeLimit := "PT0S"
-		objSettings.DisallowStartIfOnBatteries := False
-		objSettings.StopIfGoingOnBatteries := False
-		objFolder.RegisterTaskDefinition("7plus Autorun", objTaskDefinition, TaskCreateOrUpdate , "", "", 3 ) 
-	}
 }

@@ -1,11 +1,8 @@
-;Run this function at startup if you include this file in other scripts
 JoystickStart()
 {
-	global
 	SetTimer, CheckJoystick, 5
 	SetTimer, Arrows, 70
 	SetTimer, Fullscreencheck, 1000
-	JoyControl:=1
 }
 ;Run this function to disable joystick control
 JoystickStop()
@@ -14,7 +11,6 @@ JoystickStop()
 	SetTimer, CheckJoystick, off
 	SetTimer, Arrows, off
 	SetTimer, Fullscreencheck, off
-	JoyControl:=0
 }
 
 ;Called every second to enable/disable joystick remote control when fullscreen state changes
@@ -99,7 +95,7 @@ if(POV>=0)
 return
 
 ;Joystick buttons
-#if JoyControl && !IsFullScreen("A",true)
+#if Settings.Misc.GamepadRemoteControl && !IsFullScreen("A",true)
 ;Mouse buttons have separate press and release triggers, so they can be held for dragging etc.
 Joy1::
 SetMouseDelay, -1  ; Makes movement smoother.

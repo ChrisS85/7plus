@@ -273,11 +273,15 @@ Class CReplaceDialog
 		{
 			key := SubStr(key, 2)
 			if(WinGetClass("ahk_id " value) = "Button")
+			{
+				outputdebug % "button " ControlGetText("", "ahk_id " value)
 				this[key] := ControlGet("Checked","","", "ahk_id " value)
+			}
 			else if(WinGetClass("ahk_id " value) = "Edit")
 				this[key] := ControlGetText("", "ahk_id " value)
 			else if(WinGetClass("ahk_id " value) = "ComboBox")
 				this[key] := ControlGetText("", "ahk_id " value)
+			outputdebug % key "=" this[key] ", hwnd=" value ", class = " WinGetClass("ahk_id " value)
 		}
 		this.SearchResults := Array()
 		LV_Delete()
@@ -569,7 +573,10 @@ Class CReplaceDialog
 			if(this.TrimLineStart && this.TrimLineStartEdit)
 				NewText := LTrim(NewText, this.TrimLineStartEdit)
 			if(this.TrimLineEnd && this.TrimLineEndEdit)
+			{
 				NewText := RTrim(NewText, this.TrimLineEndEdit)
+				outputdebug trimmed %newtext%
+			}
 			if(this.InsertLineChars && this.InsertLineCharsEdit && IsNumeric(this.InsertLineCharsPos) && this.InsertLineCharsPos >= 0)
 			{
 				if(this.InsertLineCharsDir = "line start")
@@ -623,8 +630,7 @@ Class CReplaceDialog
 			else
 				NewText .= (r ? "`r" : "") (n? "`n" : "")
 		}
-		
-		if(!(NewText == Text))
+		if(NewText && !(NewText == Text))
 		{
 			File.Lines.Append(Object("Line", LineNumber, "Text", Text, "NewText", NewText, "Enabled", true))
 			return 1

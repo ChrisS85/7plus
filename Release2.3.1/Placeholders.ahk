@@ -5,15 +5,13 @@ Event_ExpandPlaceHolders(Event,text)
 	if(IsObject(text)) ;Internally arrays may be supplied as parameters which mustn't be expanded here
 		return text
 	;Expand local dynamic placeholders (for example ${MessageResult} defined by SendMessage action)
-	enum := Event.Placeholders._newEnum()
-	while enum[key,value]
+	for key, value in Event.Placeholders
 	{
 		if(InStr(text,"${" key "}"))
 			text := StringReplace(text, "${" key "}", value, 1)
 	}
 	;Expand dynamic placeholders with global scope (for example the result of an Input action)
-	enum := Events.GlobalPlaceholders._newEnum()
-	while enum[key,value]
+	for key, value in Events.GlobalPlaceholders
 	{
 		if(InStr(text,"${" key "}"))
 			text := StringReplace(text, "${" key "}", value, 1)
@@ -78,7 +76,7 @@ ExpandPathPlaceholders(text)
 ;Expands a single placeholder. Placeholder argument contains only the name, without ${}
 ExpandPlaceholder(Placeholder)
 {
-	global Vista7, ExplorerPath, PreviousExplorerPath
+	global Vista7
 	if(Placeholder = "Clip")
 		return ReadClipboardText()
 	else if(Placeholder = "A")
@@ -110,9 +108,9 @@ ExpandPlaceholder(Placeholder)
 		}
 		if(Placeholder = "U")
 			return UnderMouse
-		else if(InStr(Placeholder, "X") = 3)
+		else if(InStr(Placeholder, "X") = 2)
 			return x
-		else if(InStr(Placeholder, "Y") = 3)
+		else if(InStr(Placeholder, "Y") = 2)
 			return y
 		else if(InStr(Placeholder, "NN") = 2)
 			return Control
@@ -139,9 +137,9 @@ ExpandPlaceholder(Placeholder)
 		return titlepath
 	}
 	else if(Placeholder = "P")
-		return ExplorerPath
+		return Settings.Explorer.CurrentPath
 	else if(Placeholder = "T")
-		return PreviousExplorerPath
+		return Settings.Explorer.PreviousPath
 	else if(strStartsWith(Placeholder, "Sel") && (WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog()))
 	{
 		files:=GetSelectedFiles()

@@ -1,3 +1,4 @@
+#include *i %A_ScriptDir%\lib\Array.ahk
 ;usage example:
 ;x:=TranslateMUI("shell32.dll",31236)
 TranslateMUI(resDll, resID)
@@ -6,6 +7,19 @@ VarSetCapacity(buf, 256)
 hDll := DllCall("LoadLibrary", "str", resDll, "Ptr") 
 Result := DllCall("LoadString", "Ptr", hDll, "uint", resID, "str", buf, "int", 128)
 return buf
+}
+
+;Finds the path of the Shell32.dll.mui file
+LocateShell32MUI()
+{
+	VarSetCapacity(buffer, 85*2)
+	length:=DllCall("GetUserDefaultLocaleName","UIntP",buffer,"UInt",85)
+	if(A_IsUnicode)
+		locale := StrGet(buffer)
+	shell32MUIpath:=A_WinDir "\winsxs\*_microsoft-windows-*resources*" locale "*" ;\x86_microsoft-windows-shell32.resources_31bf3856ad364e35_6.1.7600.16385_de-de_b08f46c44b512da0\shell32.dll.mui
+	loop %shell32MUIpath%,2,0
+		if(FileExist(A_LoopFileFullPath "\shell32.dll.mui"))
+			return A_LoopFileFullPath "\shell32.dll.mui"
 }
 
 ;Splits a command into command and arguments
@@ -35,11 +49,11 @@ SplitCommand(fullcmd, ByRef cmd, ByRef args)
 	o v0.81 by majkinetor.
 	o Licenced under BSD <http://creativecommons.org/licenses/BSD/> 
 */
-GetFreeGuiNum(start){
+GetFreeGuiNum(start, prefix = ""){
 	loop {
-		Gui %start%:+LastFoundExist
+		Gui %prefix%%start%:+LastFoundExist
 		IfWinNotExist
-			return start
+			return prefix start
 		start++
 		if(start = 100)
 			return 0
@@ -158,7 +172,6 @@ IsConnected(URL="http://code.google.com/p/7plus/")
 IsFullscreen(sWinTitle = "A", UseExcludeList = true, UseIncludeList=true) { 
     Static 
     Local iWinX, iWinY, iWinW, iWinH, iCltX, iCltY, iCltW, iCltH, iMidX, iMidY, iMonitor, c, D, iBestD 
-    global FullScreenExclude, FullScreenInclude
     ErrorLevel := False
 	
 	;Without admin mode processes launched with admin permissions aren't detectable, so better treat all windows as non-fullscreen.
@@ -178,12 +191,18 @@ IsFullscreen(sWinTitle = "A", UseExcludeList = true, UseIncludeList=true) {
         Return False 
     ;Fullscreen include list
     if(UseIncludeList)
+	{
+		FullscreenInclude := Settings.Misc.FullScreenInclude
     	if c in %FullscreenInclude%
 			return true
+	}
     ;Fullscreen exclude list
     if(UseExcludeList)
+	{
+		FullscreenExclude := Settings.Misc.FullScreenExclude
     	if c in %FullscreenExclude%
 			return false
+	}
     ;Resolution change would only need to be detected every few seconds or so, but since it doesn't add anything notably to cpu usage, just do it always
     SysGet, Mon0, MonitorCount 
     SysGet, iPrimaryMon, MonitorPrimary 
@@ -953,7 +972,7 @@ GetFullPathName(SPath)
 	Return lPath 
 }
 
-;This function calls a of an event on every key in it
+;This function calls a function of an event on every key in it
 objDeepPerform(obj, function, Event)
 {
 	if(!IsFunc(function))
@@ -997,23 +1016,6 @@ FindFreeFileName(FilePath)
 	}
 	return TestPath
 }
-AddUninstallInformation()
-{
-	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, IsPortable
-	if(IsPortable)
-		return
-	RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7plus, DisplayName, 7plus V.%MajorVersion%.%MinorVersion%.%BugfixVersion%.%PatchVersion%
-	RegWrite, REG_DWORD, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7plus, NoModify, 1
-	RegWrite, REG_DWORD, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7plus, NoRepair, 1
-	RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7plus, UninstallString, 1, "%A_ScriptDir%\Uninstall.exe"
-}
-
-RemoveUninstallInformation()
-{
-	if(IsPortable)
-		return
-	RegDelete, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7plus
-}
 
 AttachToolWindow(hParent, GUINumber, AutoClose)
 {
@@ -1053,25 +1055,6 @@ DeAttachToolWindow(GUINumber)
 				DllCall("SetWindowLongPtr", "Ptr", hGui, "int", -8, "PTR", 0) ;Remove tool window behavior
 			DllCall("SetWindowLongPtr", "Ptr", hGui, "int", -8, "PTR", 0)
 			ToolWindows.Remove(A_Index)
-		}
-	}
-}
-
-LocateShell32MUI()
-{
-	global shell32MUIpath
-	VarSetCapacity(buffer, 85*2)
-	length:=DllCall("GetUserDefaultLocaleName","UIntP",buffer,"UInt",85)
-	if(A_IsUnicode)
-		locale := StrGet(buffer)
-	shell32MUIpath:=A_WinDir "\winsxs\*_microsoft-windows-*resources*" locale "*" ;\x86_microsoft-windows-shell32.resources_31bf3856ad364e35_6.1.7600.16385_de-de_b08f46c44b512da0\shell32.dll.mui
-	loop %shell32MUIpath%,2,0
-	{
-		if(FileExist(A_LoopFileFullPath "\shell32.dll.mui"))
-		{
-			shell32MUIpath:=A_LoopFileFullPath "\shell32.dll.mui"
-			found:=true
-			break
 		}
 	}
 }
@@ -1210,7 +1193,7 @@ WatchDirectory(p*){
    static FILE_NOTIFY_INFORMATION:="DWORD NextEntryOffset,DWORD Action,DWORD FileNameLength,WCHAR FileName[1]" 
    static OVERLAPPED:="ULONG_PTR Internal,ULONG_PTR InternalHigh,{struct{DWORD offset,DWORD offsetHigh},PVOID Pointer},HANDLE hEvent" 
    ;Variables 
-   static running,sizeof_FNI=65536,nReadLen:=VarSetCapacity(nReadLen,8),WatchDirectory:=RegisterCallback("WatchDirectory","F",0,0) 
+   static running,sizeof_FNI=65536,WatchDirectory:=RegisterCallback("WatchDirectory","F",0,0) ;,nReadLen:=VarSetCapacity(nReadLen,8)
    static timer,ReportToFunction,LP,nReadLen:=VarSetCapacity(LP,(260)*(A_PtrSize/2),0) 
    static @:=Object(),reconnect:=Object(),#:=Object(),DirEvents,StringToRegEx="\\\|.\.|+\+|[\[|{\{|(\(|)\)|^\^|$\$|?\.?|*.*" 
    ;ReadDirectoryChanges related 
@@ -1348,13 +1331,40 @@ WatchDirectory(p*){
    } 
    Return 
 }
-New(Object, Params*)
+Clamp(value, min, max)
+{
+	if(value < min)
+		value := min
+	else if(value > max)
+		value := max
+	return value
+}
+VersionString(Short = 0)
 {
 	global
-	if(IsObject(%Object%))
-	{
-		instance := {base : %Object%}
-		instance.__New(Params*)
-		return instance
-	}
+	if(Short)
+		return MajorVersion "." MinorVersion "." BugfixVersion
+	else
+		return MajorVersion "." MinorVersion "." BugfixVersion "." PatchVersion
+}
+uuid(c = false) { ; v1.1 - by Titan 
+   static n = 0, l, i 
+   f := A_FormatInteger, t := A_Now, s := "-" 
+   SetFormat, Integer, H 
+   t -= 1970, s 
+   t := (t . A_MSec) * 10000 + 122192928000000000 
+   If !i and c { 
+      Loop, HKLM, System\MountedDevices 
+      If i := A_LoopRegName 
+         Break 
+      StringGetPos, c, i, %s%, R2 
+      StringMid, i, i, c + 2, 17 
+   } Else { 
+      Random, x, 0x100, 0xfff 
+      Random, y, 0x10000, 0xfffff 
+      Random, z, 0x100000, 0xffffff 
+      x := 9 . SubStr(x, 3) . s . 1 . SubStr(y, 3) . SubStr(z, 3) 
+   } t += n += l = A_Now, l := A_Now 
+   SetFormat, Integer, %f% 
+   Return, SubStr(t, 10) . s . SubStr(t, 6, 4) . s . 1 . SubStr(t, 3, 3) . s . (c ? i : x) 
 }

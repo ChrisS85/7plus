@@ -37,11 +37,11 @@ Action_ImageUpload_Execute(Action, Event)
 				Clipboard := Action.tmpClipboard
 			Notify("","",0, "Wait",Action.tmpNotifyID)
 			if(Action.tmpFailed.len() = 0)
-				Notify("Transfer finished", "File(s) uploaded" (Action.CopyToClipboard ? " and copied to clipboard" : ""), 2, "GC=555555 TC=White MC=White",Vista7 ? 145 : 136)
+				Notify("Transfer finished", "File(s) uploaded" (Action.CopyToClipboard ? " and copied to clipboard" : ""), 2, "GC=555555 TC=White MC=White",NotifyIcons.Success)
 			else if(Action.tmpFailed.len() = Action.tmpFiles.len() && Action.tmpFiles.len() > 0)
-				Notify("Transfer failed", "Maybe the file extension is not supported by this hoster?", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",Vista7 ? 78 : 110)
+				Notify("Transfer failed", "Maybe the file extension is not supported by this hoster?", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",NotifyIcons.Error)
 			else
-				Notify("Transfer partially failed", "The following files could not be transferred:`n" Action.tmpFailed.ToString() , "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",Vista7 ? 78 : 110)
+				Notify("Transfer partially failed", "The following files could not be transferred:`n" Action.tmpFailed.ToString() , "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",NotifyIcons.Error)
 			Action.Remove("tmpNotifyID")
 			Action.Remove("tmpFiles")
 			Action.Remove("tmpFile")
@@ -94,7 +94,7 @@ Action_ImageUpload_ProgressHandler(Status, ID)
 		outputdebug progress notification
 		if(!Action.HasKey("tmpNotifyID"))
 		{
-			Action.tmpNotifyID := Notify("Uploading " Action.tmpFiles.len() " file" (Action.tmpFiles.len() > 1 ? "s" : "" ) " to " Action.Hoster,"File " Action.tmpFile ": " Action.tmpFiles[Action.tmpFile],"","PG=100 GC=555555 TC=White MC=White",Vista7 ? 136 : 136)
+			Action.tmpNotifyID := Notify("Uploading " Action.tmpFiles.len() " file" (Action.tmpFiles.len() > 1 ? "s" : "" ) " to " Action.Hoster,"File " Action.tmpFile ": " Action.tmpFiles[Action.tmpFile],"","PG=100 GC=555555 TC=White MC=White",NotifyIcons.Internet)
 			return
 		}
 		Notify("","",Status, "Progress",Action.tmpNotifyID)

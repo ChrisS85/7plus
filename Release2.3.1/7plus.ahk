@@ -1,4 +1,3 @@
-; watchdirectory("C:\test|clip.jpg\", "watch")
 Suspend, On
 #SingleInstance off
 #NoTrayIcon ;Added later
@@ -16,11 +15,13 @@ SetWinDelay, -1
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases. 
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability. 
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
+DetectHiddenWindows, On ;We don't want to miss any usually
 ;SetFormat, Integer, D
 MajorVersion := 2
 MinorVersion := 4
 BugfixVersion := 0
 ComObjError(0)
+#include %A_ScriptDir%\Globals.ahk ;Some global variable definitions
 #include %A_ScriptDir%\Autoexecute.ahk ;include first to avoid issues with autoexecute ending too soon because of labels
 #include <Array>
 #include <CGUI>
@@ -39,10 +40,12 @@ ComObjError(0)
 #include <Win>
 #include <DllCalls>
 #include <Notify>
-#include <Struct>
+#include <_Struct>
 
+#include %A_ScriptDir%\CApplicationState.ahk
+#include %A_ScriptDir%\CSettings.ahk
 #include %A_ScriptDir%\Accessor\Accessor.ahk
-#include %A_ScriptDir%\Autoupdate.ahk
+#include %A_ScriptDir%\Deployment.ahk
 #include %A_ScriptDir%\EventSystem.ahk
 #include %A_ScriptDir%\EditEventGUI.ahk
 #include %A_ScriptDir%\Language.ahk
@@ -56,6 +59,7 @@ ComObjError(0)
 #include %A_ScriptDir%\ContextMenu.ahk
 #include %A_ScriptDir%\FastFolders.ahk
 #include %A_ScriptDir%\WindowHandling.ahk
+#include %A_ScriptDir%\WindowsSettings.ahk
 #include %A_ScriptDir%\explorer.ahk
 #include %A_ScriptDir%\ImageConverter.ahk
 #include %A_ScriptDir%\clipboard.ahk
@@ -63,16 +67,12 @@ ComObjError(0)
 #include %A_ScriptDir%\Hotstrings.ahk
 #include %A_ScriptDir%\xml.ahk
 #include %A_ScriptDir%\debugging.ahk
-#include %A_ScriptDir%\settings.ahk
+#include %A_ScriptDir%\CNewSettings.ahk
 #include %A_ScriptDir%\miscfunctions.ahk
 #include %A_ScriptDir%\Registry.ahk
 #include %A_ScriptDir%\SlideWindows.ahk
 #include %A_ScriptDir%\JoyControl.ahk
 #include %A_ScriptDir%\ExplorerTabs.ahk
 #include %A_ScriptDir%\CustomHotkeys.ahk
-;~ #include %A_ScriptDir%\HotkeyGUI.ahk
 #include %A_ScriptDir%\Profiling.ahk
-; watch(from, to)
-; {
-	; msgbox change
-; }
+#include *i %A_ScriptDir%\Tools\ObjTree.ahk

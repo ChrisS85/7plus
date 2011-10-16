@@ -49,7 +49,7 @@ RestoreFolderBand()
 	global Vista7
 	if(!Vista7)
 		return
-	RemoveAllButtons()	
+	RemoveAllExplorerButtons()	
 	RegRevokePermissions("hklm\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes")
 }
 RestoreFolderBandButtons()

@@ -12,18 +12,16 @@ AttachToolWindow(hParent, GUINumber, AutoClose)
 		ToolWindows.Insert(Object("hParent", hParent, "hGui", hGui,"AutoClose", AutoClose))
 		hidden := A_DetectHiddenWindows
 		DetectHiddenWindows, On
-		ToolWindows.hAHK := WinExist(A_ScriptFullPath " ahk_class AutoHotkey")
 		if(!hidden)
 			DetectHiddenWindows, Off
-		if(ToolWindows.hAHK && AutoClose)
+		if(AutoClose)
 		{
-			DllCall("RegisterShellHookWindow", "Ptr", ToolWindows.hAHK )
-			ShellHookMsgNum := DllCall("RegisterWindowMessage", Str,"SHELLHOOK" )
-			ToolWindows.ShellHookMsgNum := ShellHookMsgNum
-			Monitor := OnMessage(ShellHookMsgNum)
+			DllCall("RegisterShellHookWindow", "Ptr", A_ScriptHwnd)
+			ToolWindows.ShellHookMessage := DllCall("RegisterWindowMessage", Str,"SHELLHOOK")
+			Monitor := OnMessage(ToolWindows.ShellHookMessage)
 			if(Monitor && Monitor != "ToolWindow_ShellMessage")
 				ToolWindows.Monitor := Monitor
-			OnMessage( ShellHookMsgNum, "ToolWindow_ShellMessage" )
+			OnMessage(ToolWindows.ShellHookMessage, "ToolWindow_ShellMessage")
 		}
 		return true
 }
@@ -43,9 +41,9 @@ DeAttachToolWindow(GUINumber)
 			if(ToolWindows.MaxIndex() = "") ;No more tool windows, remove shell hook
 			{
 				if(ToolWindows.Monitor)
-					OnMessage(ToolWindows.ShellHookMsgNum, ToolWindows.Monitor)
+					OnMessage(ToolWindows.ShellHookMessage, ToolWindows.Monitor)
 				else
-					DllCall("DeRegisterShellHookWindow", "Ptr", ToolWindows.hAHK)
+					DllCall("DeRegisterShellHookWindow", "Ptr", A_ScriptHwnd)
 			}
 		}
 	}
@@ -66,7 +64,7 @@ ToolWindow_ShellMessage(wParam, lParam, msg, hwnd)
 					if(ToolWindows.Monitor)
 						OnMessage(msg, ToolWindows.Monitor)
 					else
-						DllCall("DeRegisterShellHookWindow", "Ptr", ToolWindows.hAHK)
+						DllCall("DeRegisterShellHookWindow", "Ptr", A_ScriptHwnd)
 				}
 				break
 			}

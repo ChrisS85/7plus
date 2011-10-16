@@ -1,7 +1,7 @@
 GUI_EditEvent(e,GoToLabel="", Parameter="")
 {
 	static Event, result, SubeventGUI,SubEventBackup, EditEventTab, EditEventTriggerCategory, EditEventTriggerType, EditEventConditions, EditEvent_EditCondition, EditEvent_RemoveCondition, EditEvent_AddCondition, EditEventActions, EditEvent_EditAction, EditEvent_RemoveAction, EditEvent_AddAction, EditEvent_Condition_MoveDown, EditEvent_Condition_MoveUp, EditEvent_Action_MoveUp, EditEvent_Action_MoveDown, EditEvent_Name, EditEvent_Description, EditEvent_DisableAfterUse, EditEvent_DeleteAfterUse, EditEvent_OneInstance, EditEvent_Category, EditEvent_CopyCondition, EditEvent_PasteCondition, EditEvent_CopyAction, EditEvent_PasteAction, ActionClipboard, ConditionClipboard,EditConditionNegate,EditEventConditionsType,EditEventConditionsCategory,EditEventActionsType,EditEventActionsCategory,EditEvent_ComplexEvent
-	global Trigger_Categories, Settings_Events, Condition_Categories, Action_Categories, Language
+	global Trigger_Categories, Condition_Categories, Action_Categories
 	if(GoToLabel = "")
 	{
 		;Don't show more than once
@@ -10,11 +10,11 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 		Event := e
 		result := ""
 		SubeventGUI := ""
-		Gui 1:+LastFoundExist
+		Gui CSettingsWindow1:+LastFoundExist
 		IfWinExist		
-			Gui, 1:+Disabled
+			Gui, CSettingsWindow1:+Disabled
 		Gui, 4:Default
-		Gui, +LabelEditEvent +Owner1 +ToolWindow +OwnDialogs
+		Gui, +LabelEditEvent +OwnerCSettingsWindow1 +ToolWindow +OwnDialogs
 		width := 900
 		height := 570
 		;Gui, 4:Add, Button, ,OK
@@ -171,7 +171,7 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 		y -= 4
 		w := 300
 		Category := Event.Category
-		Categories := "|" ArrayToList(Settings_Events.Categories, "|") "|"
+		Categories := "|" ArrayToList(SettingsWindow.Events.Categories, "|") "|"
 		StringReplace, Categories, Categories, |%Category%|, |%Category%||
 		Categories := strTrimLeft(Categories, "|")
 		if(!strEndsWith(Categories, "||"))
@@ -211,9 +211,9 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 				break
 		}
 		Event := ""
-		Gui 1:+LastFoundExist
+		Gui CSettingsWindow1:+LastFoundExist
 		IfWinExist
-			Gui, 1:Default
+			Gui, CSettingsWindow1:Default
 		return result
 	}
 	else if(GoToLabel = "EditEventTab")
@@ -266,22 +266,22 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 		Event.OneInstance := EditEvent_OneInstance
 		Event.EventComplexityLevel := EditEvent_ComplexEvent
 		result := Event
-		Gui 1:+LastFoundExist
+		Gui CSettingsWindow1:+LastFoundExist
 		IfWinExist		
-			Gui, 1:-Disabled
+			Gui, CSettingsWindow1:-Disabled
 		Gui, Destroy
 		return
 	}
 	else if(GoToLabel = "EditEventClose")
 	{
-		Gui 1:+LastFoundExist
+		Gui CSettingsWindow1:+LastFoundExist
 		IfWinExist		
-			Gui, 1:-Disabled
+			Gui, CSettingsWindow1:-Disabled
 		Gui, Cancel
 		Gui, destroy
-		Gui 1:+LastFoundExist
+		Gui CSettingsWindow1:+LastFoundExist
 		IfWinExist		
-			Gui, 1:Default
+			Gui, CSettingsWindow1:Default
 		result := ""
 		return
 	}
@@ -559,9 +559,9 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 	{
 		GuiControlGet, type,,EditEvent%EditEventTab%Type
 		if(EditEventTab = "Trigger")
-			Language.CurrentLanguage.OpenWikiPage("docsTriggers" type)
+			OpenWikiPage("docsTriggers" type)
 		else
-			Language.CurrentLanguage.OpenWikiPage("docs" EditEventTab type)
+			OpenWikiPage("docs" EditEventTab type)
 		return
 	}
 }

@@ -91,7 +91,6 @@ Trigger_ContextMenu_Delete(Trigger)
 
 Trigger_ContextMenu_Matches(Trigger, Filter, Event)
 {
-	global ShellHookMsgNum
 	return false ;Match is handled in Eventsystem.ahk through trigger event
 }
 

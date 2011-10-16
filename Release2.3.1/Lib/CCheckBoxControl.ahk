@@ -8,11 +8,13 @@ Class CCheckBoxControl Extends CControl ;This class is a radio control as well
 {
 	__New(Name, Options, Text, GUINum, Type)
 	{
+		Options .= " +0x4000" ;BS_NOTIFY to allow receiving BN_SETFOCUS and BN_KILLFOCUS notifications in CGUI
 		Base.__New(Name, Options, Text, GUINum)
 		this.Type := Type
 		this._.Insert("ControlStyles", {Center : 0x300, Left : 0x100, Right : 0x200, RightButton : 0x20, Default : 0x1, Wrap : 0x2000, Flat : 0x8000})
 		this._.Insert("Events", ["CheckedChanged"])
 		this._.Insert("Controls", {})
+		this._.Insert("Messages", {7 : "KillFocus", 6 : "SetFocus" }) ;Used for automatically registering message callbacks
 	}
 	/*
 	Variable: Checked
@@ -20,7 +22,7 @@ Class CCheckBoxControl Extends CControl ;This class is a radio control as well
 	*/
 	__Get(Name)
     {
-		global CGUI
+		;~ global CGUI
 		if(Name != "GUINum" && !CGUI.GUIList[this.GUINum].IsDestroyed)
 		{
 			DetectHidden := A_DetectHiddenWindows
@@ -35,11 +37,23 @@ Class CCheckBoxControl Extends CControl ;This class is a radio control as well
 				return Value
 		}
 	}
-	__Set(Name, Value)
+	__Set(Name, Params*)
 	{
-		global CGUI
+		;~ global CGUI
 		if(!CGUI.GUIList[this.GUINum].IsDestroyed)
 		{
+			;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
+			Value := Params[Params.MaxIndex()]
+			Params.Remove(Params.MaxIndex())
+			if(Params.MaxIndex())
+			{
+				Params.Insert(1, Name)
+				Name :=  Params[Params.MaxIndex()]
+				Params.Remove(Params.MaxIndex())
+				Object := this[Params*]
+				Object[Name] := Value
+				return Value
+			}
 			DetectHidden := A_DetectHiddenWindows
 			DetectHiddenWindows, On
 			Handled := true
@@ -60,7 +74,7 @@ Class CCheckBoxControl Extends CControl ;This class is a radio control as well
 		}
 	}
 	/*
-	Function: AddControl()
+	Function: AddControl
 	Adds a control to this control that will be visible/enabled only when this checkbox/radio button is checked. The parameters correspond to the Add() function of CGUI.
 	
 	Parameters:
@@ -72,22 +86,25 @@ Class CCheckBoxControl Extends CControl ;This class is a radio control as well
 	*/
 	AddControl(type, Name, Options, Text, UseEnabledState = 0)
 	{
-		global CGUI
+		;~ global CGUI
 		GUI := CGUI.GUIList[this.GUINum]
 		if(!this.Checked)
 			Options .= UseEnabledState ? " Disabled" : " Hidden"
-		Control := GUI.Add(type, Name, Options, Text, this._.Controls)
+		Control := GUI.AddControl(type, Name, Options, Text, this._.Controls, this)
 		Control._.UseEnabledState := UseEnabledState
+		Control.hParentControl := this.hwnd
 		return Control
 	}
 	/*
-	Function: GetRadioButtonGroup()
+	Function: GetRadioButtonGroup
 	Returns the group of radio buttons this radio button belongs to as an array of controls.
 	*/
 	GetRadioButtonGroup()
 	{
-		global CGUI
+		;~ global CGUI
 		GUI := CGUI.GUIList[this.GUINum]
+		if(GUI.IsDestroyed)
+			return []
 		Group := [this]
 		if(this.type = "Checkbox")
 			return Group
@@ -138,7 +155,7 @@ Class CCheckBoxControl Extends CControl ;This class is a radio control as well
 	}
 	
 	/*
-	Function: GetSelectedRadioButton()
+	Function: GetSelectedRadioButton
 	Returns the radio button control of the current group which is currently selected. Returns 0 if no button is selected.
 	*/
 	GetSelectedRadioButton()
@@ -157,23 +174,16 @@ Class CCheckBoxControl Extends CControl ;This class is a radio control as well
 	Additionally it is required to create a label with this naming scheme: GUIName_ControlName
 	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent(). 
 	For better readability labels may be chained since they all execute the same code.
+	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
 	
 	Event: CheckedChanged()
 	Invoked when the checkbox/radio value changes.
 	*/
-	HandleEvent()
+	HandleEvent(Event)
 	{
-		global CGUI
-		if(CGUI.GUIList[this.GUINum].IsDestroyed)
-			return
-		ErrLevel := ErrorLevel
 		Group := this.Type = "Radio" ? this.GetRadioButtonGroup() : [this]
 		for Index, Control in Group
 			Control.ProcessSubControlState(Control.Checked ? "" : Control, Control.Checked ? Control : "")
-		if(IsFunc(CGUI.GUIList[this.GUINum][this.Name "_CheckedChanged"]))
-		{
-			ErrorLevel := ErrLevel
-			`(CGUI.GUIList[this.GUINum])[this.Name "_CheckedChanged"]()
-		}
+		this.CallEvent("CheckedChanged")
 	}
 }
