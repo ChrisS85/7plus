@@ -165,7 +165,7 @@ Class CImageConverter extends CGUI
 			{
 				SplitPath(File, Filename)
 				this.ListView.Items.Add("", Filename)
-				this.Files.append(File)
+				this.Files.Insert(File)
 				Added := true
 			}
 		}
@@ -458,17 +458,17 @@ Class CImageConverter extends CGUI
 		Event := EventSystem_CreateEvent()
 		if(IsNumeric(SubStr(this.ddlHoster.Text, 1,max(InStr(this.ddlHoster.Text, ":") - 1, 1))))
 		{
-			Event.Actions.append(EventSystem_CreateSubEvent("Action","Upload"))
+			Event.Actions.Insert(EventSystem_CreateSubEvent("Action","Upload"))
 			Event.Actions[1].SourceFiles := ConvertedImages
 			Event.Actions[1].TargetFolder := this.editFTPTargetDir.Text
 			Event.Actions[1].FTPProfile := SubStr(this.ddlHoster.Text, 1,max(InStr(this.ddlHoster.Text, ":") - 1, 1))
 		}
 		else
 		{
-			Event.Actions.append(EventSystem_CreateSubEvent("Action","ImageUpload"))
+			Event.Actions.Insert(EventSystem_CreateSubEvent("Action","ImageUpload"))
 			Event.Actions[1].SourceFiles := ConvertedImages
 		}
-		Event.Actions.append(EventSystem_CreateSubEvent("Action","Delete"))
+		Event.Actions.Insert(EventSystem_CreateSubEvent("Action","Delete"))
 		Event.Actions[2].SourceFile := ConvertedImages
 		Event.Actions[2].Silent := 1
 		TemporaryEvents.RegisterEvent(Event)

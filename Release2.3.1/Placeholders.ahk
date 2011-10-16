@@ -150,11 +150,11 @@ ExpandPlaceholder(Placeholder)
 			number := SubStr(number, 4)
 			StringSplit, files, files, `n
 			if(files0 >= number)
-				array.append(files%number%)
+				array.Insert(files%number%)
 		}
 		else if(strStartsWith(Placeholder, "SelN"))
 			Loop, Parse, files, `n, %A_Space%
-				array.append(A_LoopField)
+				array.Insert(A_LoopField)
 		if(array.len() = 0)
 			return ""
 		Placeholder := SubStr(Placeholder, 4+max(strLen(number), 1))

@@ -516,7 +516,7 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 		{
 			Gui, ListView, EditEvent%EditEventTab%
 			Subevent := EventSystem_CreateSubevent(EditEventTab = "Conditions" ? "Condition" : "Action", EditEventTab = "Conditions" ? "If" : "Message")
-			Event[EditEventTab].append(Subevent)
+			Event[EditEventTab].Insert(Subevent)
 			LV_Add("Select", Subevent.DisplayString())
 		}
 		return
@@ -539,7 +539,7 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 		{
 			Gui, ListView, EditEvent%EditEventTab%("")
 			SingularName := strTrimRight(EditEventTab, "s")
-			Event[EditEventTab].append(%SingularName%Clipboard.DeepCopy())
+			Event[EditEventTab].Insert(%SingularName%Clipboard.DeepCopy())
 			LV_Add("Select", (EditEventTab = "Conditions" && %SingularName%Clipboard.Negate ? "NOT " : "") %SingularName%Clipboard.DisplayString())
 		}
 		return

@@ -31,7 +31,7 @@ LoadHotstrings()
 	{
 		if(XMLObject.List[A_Index].keyword != "")
 		{
-			Hotstrings.append(Object("key", XMLObject.List[A_Index].keyword, "value", XMLObject.List[A_Index].value))
+			Hotstrings.Insert(Object("key", XMLObject.List[A_Index].keyword, "value", XMLObject.List[A_Index].value))
 			hotstrings(XMLObject.List[A_Index].keyword, XMLObject.List[A_Index].value)
 		}
 	}
@@ -42,13 +42,13 @@ SaveHotstrings()
 	FileDelete, % Settings.ConfigPath "\Hotstrings.xml"
 	XMLObject := Object("List", Array())
 	Loop % Hotstrings.len()
-		XMLObject.List.append(Object("keyword", Hotstrings[A_Index].key, "value", Hotstrings[A_Index].value))
+		XMLObject.List.Insert(Object("keyword", Hotstrings[A_Index].key, "value", Hotstrings[A_Index].value))
 	XML_Save(XMLObject, Settings.ConfigPath "\Hotstrings.xml")
 }
 AddHotstring(key,value)
 {
 	global Hotstrings
-	Hotstrings.append(Object("key", key, "value", value))
+	Hotstrings.Insert(Object("key", key, "value", value))
 	hotstrings(key, value)
 }
 RemoveHotstring(key)

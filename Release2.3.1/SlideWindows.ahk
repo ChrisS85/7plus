@@ -350,7 +350,7 @@ Class CSlideWindow
 				classParent := WinGetClass("ahk_id " hParent) ;Some stuff here is only added for debugging, may be removed later if all really works fine.
 				if(InStr("tooltips_class32,WorkerW,IME,MSCTFIME UI", class)) ;Ignore some common helper windows
 					continue
-				FoundChildWindows.append(Windows%A_Index%)
+				FoundChildWindows.Insert(Windows%A_Index%)
 				WinGet, Style, Style, % "ahk_id " Windows%A_Index% ;Store if the child window is visible
 				if(index := this.ChildWindows.IndexOfSubItem("hwnd", Windows%A_Index%)) ;By refreshing the ChildWindows array instead of replacing it, we make sure to keep the original visible and always on top states of child windows
 				{
@@ -361,7 +361,7 @@ Class CSlideWindow
 				WinGet, ExStyle, ExStyle, % "ahk_id " Windows%A_Index% ;Also store always on top state of new child windows
 				if(this.SlideState = 1) ;Make sure that newly created windows will be set to always on top when the window is already slided out
 					WinSet, AlwaysOnTop, On, % "ahk_id " Windows%A_Index%
-				this.ChildWindows.append(Object("hwnd", Windows%A_Index%, "WasOnTop", ExStyle & 0x8, "WasVisible", Style & 0x10000000, "Class", class, "ClassParent", ClassParent))
+				this.ChildWindows.Insert(Object("hwnd", Windows%A_Index%, "WasOnTop", ExStyle & 0x8, "WasVisible", Style & 0x10000000, "Class", class, "ClassParent", ClassParent))
 			}
 		}
 		index := 1
@@ -503,7 +503,7 @@ Class CSlideWindows
 		{
 			class := WindowList[hwnd].class
 			if(!this.ClosedWindowsOutsideScreen.IndexOf(class))
-				this.ClosedWindowsOutsideScreen.append(class)
+				this.ClosedWindowsOutsideScreen.Insert(class)
 		}
 	}
 	;This is called when a window gets activated and takes care of sliding windows out/in that were (de)activated
@@ -630,7 +630,7 @@ GetParentWindows(hwnd)
 		Class := WinGetClass("ahk_id " hParent)
 		if(InStr("WorkerW,Progman,Shell_TrayWnd,BaseBar,DV2ControlHost,Static", Class)) ;Ignore taskbar and desktop windows
 			break
-		Parents.append(hParent)
+		Parents.Insert(hParent)
 	}
 	return Parents
 }
@@ -657,7 +657,7 @@ GetParentWindows(hwnd)
 	;~ while(hParent && hParent != win)
 		;~ hParent := DllCall("GetParent", "PTR", hParent)
 	;~ if(hParent = win)
-		;~ ChildWindows.append(WinGetClass("ahk_id " Windows%A_Index%))
+		;~ ChildWindows.Insert(WinGetClass("ahk_id " Windows%A_Index%))
 ;~ }
 ;~ msgbox % exploreobj(childwindows)
 ;~ return
@@ -675,6 +675,6 @@ GetParentWindows(hwnd)
 ;~ WinGet, Windows, List
 ;~ list := array()
 ;~ Loop % Windows
-	;~ list.append(object("hwnd", Windows%A_Index%, "class", WinGetClass("ahk_id " Windows%A_Index%), "title", WinGetTitle("ahk_id " Windows%A_Index%)))
+	;~ list.Insert(object("hwnd", Windows%A_Index%, "class", WinGetClass("ahk_id " Windows%A_Index%), "title", WinGetTitle("ahk_id " Windows%A_Index%)))
 ;~ msgbox % Exploreobj(list)
 ;~ return

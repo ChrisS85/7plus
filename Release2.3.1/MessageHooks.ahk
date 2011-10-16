@@ -165,7 +165,7 @@ ShellMessage( wParam, lParam, Msg)
 		; outputdebug blinking window %class%
 		if(BlinkingWindows.indexOf(lParam)=0)
 		{			
-			BlinkingWindows.Append(lParam)
+			BlinkingWindows.Insert(lParam)
 			ct:=BlinkingWindows.len()
 		}
 	}	

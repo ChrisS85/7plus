@@ -140,10 +140,10 @@ ApplyUpdateFixes()
 				XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()		
 
 			Loop % min(XMLObject.List.len(), 10)
-				ClipboardList.append(Decrypt(XMLObject.List[A_Index])) ;Read encrypted clipboard history
+				ClipboardList.Insert(Decrypt(XMLObject.List[A_Index])) ;Read encrypted clipboard history
 			XMLObject := Object("List",Array())
 			Loop % min(ClipboardList.len(), 10)
-				XMLObject.List.append(Encrypt(ClipboardList[A_Index])) ;Store encrypted
+				XMLObject.List.Insert(Encrypt(ClipboardList[A_Index])) ;Store encrypted
 			XML_Save(XMLObject, Settings.ConfigPath "\Clipboard.xml")
 		}
 	}

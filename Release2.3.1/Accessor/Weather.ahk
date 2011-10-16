@@ -55,7 +55,7 @@ Accessor_Weather_FillAccessorList(Weather, Accessor, Filter, LastFilter, ByRef I
 	{
 		ImageList_ReplaceIcon(Accessor.ImageListID, -1, Weather.List[A_Index].Icon)
 		IconCount++
-		Accessor.List.append(Object("Title",Weather.List[A_Index].Title,"Path",Weather.List[A_Index].Path, "Type","Weather", "Detail1", Weather.List[A_Index].Detail1, "Detail2", Weather.List[A_Index].Detail2,"Icon", IconCount))
+		Accessor.List.Insert(Object("Title",Weather.List[A_Index].Title,"Path",Weather.List[A_Index].Path, "Type","Weather", "Detail1", Weather.List[A_Index].Detail1, "Detail2", Weather.List[A_Index].Detail2,"Icon", IconCount))
 	}
 }
 Accessor_Weather_PerformAction(Weather, Accessor, AccessorListEntry)
@@ -122,7 +122,7 @@ QueryWeatherResult()
 		URLDownloadToFile, http://google.com%icon1%, %A_Temp%\7plus\%name%		
 	pBitmap := Gdip_CreateBitmapFromFile(A_Temp "\7plus\" name)
 	hIcon := Gdip_CreateHICONFromBitmap(pBitmap)
-	WeatherPlugin.List.append(Object("Title", "Now: " condition1 ", " temp_c1 "°C, " humidity1, "Path","Weather in " city1, "Icon", hIcon ))
+	WeatherPlugin.List.Insert(Object("Title", "Now: " condition1 ", " temp_c1 "°C, " humidity1, "Path","Weather in " city1, "Icon", hIcon ))
 	Loop
 	{
 		pos1 := RegexMatch(WeatherQuery, "i)<condition data=""(.*?)""/>",condition,pos1+1)
@@ -140,7 +140,7 @@ QueryWeatherResult()
 			hIcon := Gdip_CreateHICONFromBitmap(pBitmap)
 			low1 := Round((5/9)*(low1-32)) ;Convert °F to °C
 			high1 := Round((5/9)*(high1-32)) ;Convert °F to °C
-			WeatherPlugin.List.append(Object("Title", day_of_week1 ": " condition1 ", Low: " low1 "°C, high: " high1 "°C", "Path", "Weather in " city1, "Icon", hIcon ))
+			WeatherPlugin.List.Insert(Object("Title", day_of_week1 ": " condition1 ", Low: " low1 "°C, high: " high1 "°C", "Path", "Weather in " city1, "Icon", hIcon ))
 		}
 		else
 			break

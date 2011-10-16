@@ -55,9 +55,9 @@ Accessor_WindowSwitcher_FillAccessorList(WindowSwitcher, Accessor, Filter, LastF
 			ImageList_ReplaceIcon(Accessor.ImageListID, -1, window.Icon)
 			IconCount++
 			if(x)
-				Accessor.List.append(Object("Icon", IconCount, "Title", window.Title, "Path", window.Path, "ExeName", window.ExeName, "CPU", window.CPU, "OnTop", window.OnTop, "Type", "WindowSwitcher", "PID", window.PID, "hwnd", window.hwnd))			
+				Accessor.List.Insert(Object("Icon", IconCount, "Title", window.Title, "Path", window.Path, "ExeName", window.ExeName, "CPU", window.CPU, "OnTop", window.OnTop, "Type", "WindowSwitcher", "PID", window.PID, "hwnd", window.hwnd))			
 			else
-				FuzzyList.append(Object("Icon", IconCount, "Title", window.Title, "Path", window.Path, "ExeName", window.ExeName, "CPU", window.CPU, "OnTop", window.OnTop, "Type", "WindowSwitcher", "PID", window.PID, "hwnd", window.hwnd))			
+				FuzzyList.Insert(Object("Icon", IconCount, "Title", window.Title, "Path", window.Path, "ExeName", window.ExeName, "CPU", window.CPU, "OnTop", window.OnTop, "Type", "WindowSwitcher", "PID", window.PID, "hwnd", window.hwnd))			
 		}
 	}
 	Accessor.List.extend(FuzzyList)
@@ -219,7 +219,7 @@ GetWindowInfo()
 		Else
 			hIcon := GetWindowIcon(wid, 1) ; (window id, whether to get large icons)
 			
-		windows.append(Object("hwnd",wid,"Title", wid_Title, "Class", Win_Class, "Style", Style, "ExStyle", es, "ExeName", Exe_Name, "Path", FullPath, "OnTop", (es&0x8 > 0 ? "On top" : ""), "PID", PID, "Type", "Window", "Icon", hIcon))
+		windows.Insert(Object("hwnd",wid,"Title", wid_Title, "Class", Win_Class, "Style", Style, "ExStyle", es, "ExeName", Exe_Name, "Path", FullPath, "OnTop", (es&0x8 > 0 ? "On top" : ""), "PID", PID, "Type", "Window", "Icon", hIcon))
 	}
 	return windows
 }

@@ -21,7 +21,7 @@ Accessor_URL_Init(ByRef URL, PluginSettings)
 	{
 		XMLObjectListEntry := XMLObject.List[A_Index]
 		HistoryURL := XMLObjectListEntry.URL
-		URL.History.append(Object("URL",HistoryURL))
+		URL.History.Insert(Object("URL",HistoryURL))
 	}
 }
 Accessor_URL_ShowSettings(URL, PluginSettings, PluginGUI)
@@ -63,7 +63,7 @@ Accessor_URL_OnExit(URL)
 		return
 	XMLObject := Object("List",Array())
 	Loop % URL.History.len()
-		XMLObject.List.append(Object("URL",URL.History[A_Index].URL))
+		XMLObject.List.Insert(Object("URL",URL.History[A_Index].URL))
 	XML_Save(XMLObject, Settings.ConfigPath "\History.xml")
 }
 Accessor_URL_FillAccessorList(URL, Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet)
@@ -79,10 +79,10 @@ Accessor_URL_FillAccessorList(URL, Accessor, Filter, LastFilter, ByRef IconCount
 	{
 		Parameters := Array()
 		outputdebug placeholder %Parameter1%
-		Parameters.append(Parameter1)
+		Parameters.Insert(Parameter1)
 		p0 := Parse(Filter, "1 2 3 4 5 6 7 8 9 10", Filter, p1, p2, p3, p4, p5, p6, p7, p8, p9)
 		while(pos := RegexMatch(Filter, "\${(\d+)}", Parameter, pos + 1))
-			Parameters.append(Parameter1)
+			Parameters.Insert(Parameter1)
 		
 		Loop % Parameters.len()
 		{
@@ -91,7 +91,7 @@ Accessor_URL_FillAccessorList(URL, Accessor, Filter, LastFilter, ByRef IconCount
 		}
 	}
 	outputdebug url filter %filter%
-	Accessor.List.append(Object("Title",Filter,"Path", "Open URL", "Type","URL", "Detail1", "URL", "Detail2", "","Icon", 3))
+	Accessor.List.Insert(Object("Title",Filter,"Path", "Open URL", "Type","URL", "Detail1", "URL", "Detail2", "","Icon", 3))
 	if(URL.Settings.UseHistory)
 	{
 		outputdebug % "history len: " URL.History.len()
@@ -99,7 +99,7 @@ Accessor_URL_FillAccessorList(URL, Accessor, Filter, LastFilter, ByRef IconCount
 		{
 			outputdebug % history URL.History[A_Index].URL
 			if(InStr(URL.History[A_Index].URL, Filter) && URL.History[A_Index].URL != Filter && CouldBeURL(URL.History[A_Index].URL))
-				Accessor.List.append(Object("Title", URL.History[A_Index].URL, "Path", "Open URL", "Type", "URL", "Detail1", "URL", "Detail2", "","Icon", 3, "History", true))
+				Accessor.List.Insert(Object("Title", URL.History[A_Index].URL, "Path", "Open URL", "Type", "URL", "Detail1", "URL", "Detail2", "","Icon", 3, "History", true))
 		}
 	}
 }
@@ -112,7 +112,7 @@ Accessor_URL_PerformAction(URLPlugin, Accessor, AccessorListEntry)
 		{			
 			if(index := URLPlugin.History.indexOfSubItem("URL",AccessorListEntry.Title)) ;Move existing items to the top
 				URLPlugin.History.Delete(index)
-			URLPlugin.History.append(Object("URL", AccessorListEntry.Title)) ;Add entered item to the top
+			URLPlugin.History.Insert(Object("URL", AccessorListEntry.Title)) ;Add entered item to the top
 			if(URLPlugin.History.len() > URLPlugin.Settings.MaxHistoryLen) ;Make sure history len is not exceeded
 				URLPlugin.History.Delete(1)
 		}

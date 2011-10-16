@@ -40,9 +40,9 @@ Accessor_FastFolders_FillAccessorList(FastFoldersPlugin, Accessor, Filter, LastF
 	Loop 10
 		if(FastFolders[A_Index].Path)
 			if(InStr(FastFolders[A_Index].Title,Filter) || InStr(FastFolders[A_Index].Path,Filter))
-				Accessor.List.append(Object("Title",FastFolders[A_Index].Title,"Path",FastFolders[A_Index].Path,"Type","FastFolders", "Icon", 2)) ;Use generic folder icon
+				Accessor.List.Insert(Object("Title",FastFolders[A_Index].Title,"Path",FastFolders[A_Index].Path,"Type","FastFolders", "Icon", 2)) ;Use generic folder icon
 			else if(FastFoldersPlugin.Settings.FuzzySearch && FuzzySearch(FastFolders[A_Index].Title,Filter) < 0.4)
-				FuzzyList.List.append(Object("Title",FastFolders[A_Index].Title,"Path",FastFolders[A_Index].Path,"Type","FastFolders", "Icon", 2)) ;Use generic folder icon
+				FuzzyList.List.Insert(Object("Title",FastFolders[A_Index].Title,"Path",FastFolders[A_Index].Path,"Type","FastFolders", "Icon", 2)) ;Use generic folder icon
 	Accessor.List.extend(FuzzyList)
 }
 Accessor_FastFolders_PerformAction(FastFolders, Accessor, AccessorListEntry)

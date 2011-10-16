@@ -83,7 +83,7 @@ Accessor_Calc_FillAccessorList(Calc, Accessor, Filter, LastFilter, ByRef IconCou
 	{
 		ImageList_ReplaceIcon(Accessor.ImageListID, -1, Calc.List[A_Index].Icon)
 		IconCount++
-		Accessor.List.append(Object("Title",Calc.List[A_Index].Result,"Path",Calc.List[A_Index].URL, "Type","Calc", "Icon", IconCount))
+		Accessor.List.Insert(Object("Title",Calc.List[A_Index].Result,"Path",Calc.List[A_Index].URL, "Type","Calc", "Icon", IconCount))
 	}
 }
 Accessor_Calc_PerformAction(Calc, Accessor, AccessorListEntry)
@@ -152,7 +152,7 @@ QueryCalcResult()
 			pBitmap := Gdip_CreateBitmapFromFile(A_Temp "\7plus\calc_img.gif")
 			hIcon := Gdip_CreateHICONFromBitmap(pBitmap)
 			outputdebug hicon %hicon%
-			CalcPlugin.List.append(Object("result",result,"URL", "http://www.google.com/search?q=" Filter, "Icon", hIcon))
+			CalcPlugin.List.Insert(Object("result",result,"URL", "http://www.google.com/search?q=" Filter, "Icon", hIcon))
 			FillAccessorList()
 		}
 	}
@@ -172,7 +172,7 @@ QueryCalcResult()
 			pBitmap := Gdip_CreateBitmapFromFile(A_Temp "\7plus\" result1 ".gif")
 			hIcon := Gdip_CreateHICONFromBitmap(pBitmap)
 			outputdebug hicon %hicon%
-			CalcPlugin.List.append(Object("result",result1,"Details",result21,"URL", "http://www.google.com/search?q=" Filter, "Icon", hIcon))
+			CalcPlugin.List.Insert(Object("result",result1,"Details",result21,"URL", "http://www.google.com/search?q=" Filter, "Icon", hIcon))
 			FillAccessorList()
 		}
 	}

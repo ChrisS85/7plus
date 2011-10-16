@@ -440,9 +440,9 @@ SplitByExtension(ByRef files, ByRef SplitFiles,extensions)
 	{ 
 		SplitPath, A_LoopField , , , OutExtension
 		if (InStr(extensions, OutExtension) && OutExtension != "")
-			SplitFiles.append(A_LoopField)
+			SplitFiles.Insert(A_LoopField)
 		else
-			newFiles.append(A_LoopField)
+			newFiles.Insert(A_LoopField)
 	}
 	files := newFiles
 	return
@@ -707,7 +707,7 @@ RemoveLineFeedsAndSurroundWithDoubleQuotes(files)
 		result := Array()
 		Loop % files.len()
 			if !InStr(FileExist(files[A_Index]), "D")
-				result.append("""" files[A_Index] """")
+				result.Insert("""" files[A_Index] """")
 		return result
 	}
 	else
@@ -761,7 +761,7 @@ ToArray(SourceFiles, ByRef Separator = "`n", ByRef wasQuoted = 0)
 			}
 			if(file)
 			{
-				files.append(file)
+				files.Insert(file)
 				pos += strlen(file) + 3
 				continue
 			}
@@ -775,7 +775,7 @@ ToArray(SourceFiles, ByRef Separator = "`n", ByRef wasQuoted = 0)
 				file := SubStr(SourceFiles, pos) ;no quotes or separators, single file
 			if(file)
 			{
-				files.append(file)
+				files.Insert(file)
 				pos += strlen(file) + strlen(Separator)
 				continue
 			}

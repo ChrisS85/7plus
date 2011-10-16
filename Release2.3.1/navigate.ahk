@@ -471,8 +471,8 @@ SelectFiles(Select,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)
 						}
 						Sleep 10
 					}
-					items.append(item)	
-					itemnames.append(itemname)
+					items.Insert(item)	
+					itemnames.Insert(itemname)
 				}
 				Loop % Select.len()
 				{

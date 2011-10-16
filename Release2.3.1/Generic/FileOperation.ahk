@@ -88,7 +88,7 @@ Action_FileOperation_ProcessPaths(Action, Event, ByRef Sources, ByRef Targets, B
 				target .= "." Extension
 		}
 		sources .= (A_Index = 1 ? "" : "|") file
-		targets.append(target)
+		targets.Insert(target)
 	}
 	target := targets
 	targets := ""

@@ -479,7 +479,7 @@ RegisterExplorerWindows()
 	Loop % hwndList
 	{
 		if(!ExplorerWindows.IndexOfSubItem("hwnd", hWndList%A_Index%+0))
-			ExplorerWindows.append(new CExplorerWindow(hwndList%A_Index%+0))
+			ExplorerWindows.Insert(new CExplorerWindow(hwndList%A_Index%+0))
 	}
 	
 	SetTimer, WaitForClose, 1000
@@ -536,7 +536,7 @@ ExplorerActivated(hwnd)
 {
 	global TabNum, TabWindow, SuppressTabEvents, ExplorerWindows
 	if(!ExplorerWindows.IndexOfSubItem("hwnd",hwnd))
-		ExplorerWindows.Append(new CExplorerWindow(hwnd))
+		ExplorerWindows.Insert(new CExplorerWindow(hwnd))
 	RegisterSelectionChangedEvents() ;Is this needed? only as backup probably
 	; if(SuppressTabEvents)
 		; return
@@ -685,7 +685,7 @@ ExplorerSelectionChanged(ExplorerCOMObject)
 		return
 	}
 	outputdebug nothing to ignore
-	ExplorerWindows[index].Selection.History.append(ToArray(GetSelectedFiles(0, ExplorerWindows[index].hwnd)))
+	ExplorerWindows[index].Selection.History.Insert(ToArray(GetSelectedFiles(0, ExplorerWindows[index].hwnd)))
 	if(ExplorerWindows[index].Selection.History.len() > 10)
 		ExplorerWindows[index].Selection.History.Delete(1)
 	if(A_OSVersion = "WIN_7")

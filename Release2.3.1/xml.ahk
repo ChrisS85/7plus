@@ -156,13 +156,13 @@ XML_Read(xml,node = 0)
 			if (A)
 				outputdebug turn %key% into array
 			array := Array()
-			array.append(node[key])
-			array.append(value)
+			array.Insert(node[key])
+			array.Insert(value)
 			node[key] := array
 		}
 		else if(node.HasKey(key) && node[key].len() > 0) ;Key already exists and is an array, just append the new key
 		{
-			node[key].append(value)
+			node[key].Insert(value)
 			if (A)
 				outputdebug % "append " key " to array, new len " node[key].len()
 		}

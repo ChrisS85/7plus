@@ -12,7 +12,6 @@ Array(Params*){
 	  ArrBase.SubItem := "Array_SubItem"
 	  ArrBase.contains := "Array_Contains"
 	  ArrBase.join := "Array_Join" 
-	  ArrBase.append := "Array_Append"
 	  ;~ ArrBase.insert := "Array_Insert"
 	  ArrBase.delete := "Array_Delete" 
 	  ArrBase.sort := "Array_sort"
@@ -131,11 +130,6 @@ Array_Copy(arr){
    Return Array().extend(arr) 
 } 
 
-Array_Append(arr, Params*){ 
-	for index, param in Params
-		arr.insert(arr.len()+1, param) 
-	return arr
-} 
 ;~ Array_Insert(arr, index, Params*)
 ;~ {
 	;~ if(!Params.MaxIndex())

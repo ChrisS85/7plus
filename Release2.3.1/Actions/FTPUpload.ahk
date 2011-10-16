@@ -50,7 +50,7 @@ Action_Upload_ReadFTPProfiles()
 	Loop % XMLObject.List.MaxIndex()
 	{
 		ListEntry := XMLObject.List[A_Index]
-		FTPProfiles.append(Object("Hostname", ListEntry.Hostname, "Port", ListEntry.Port, "User", ListEntry.User, "Password", ListEntry.Password, "URL", ListEntry.URL))
+		FTPProfiles.Insert(Object("Hostname", ListEntry.Hostname, "Port", ListEntry.Port, "User", ListEntry.User, "Password", ListEntry.Password, "URL", ListEntry.URL))
 	}
 }
 Action_Upload_WriteFTPProfiles()
@@ -65,7 +65,7 @@ Action_Upload_WriteFTPProfiles()
 	Loop % FTPProfiles.len()
 	{
 		ListEntry := FTPProfiles[A_Index]
-		XMLObject.List.append(Object("Hostname", ListEntry.Hostname, "Port", ListEntry.Port, "User", ListEntry.User, "Password", ListEntry.Password, "URL", ListEntry.URL))
+		XMLObject.List.Insert(Object("Hostname", ListEntry.Hostname, "Port", ListEntry.Port, "User", ListEntry.User, "Password", ListEntry.Password, "URL", ListEntry.URL))
 	}
 	XML_Save(XMLObject, ConfigPath "\FTPProfiles.xml")
 }
@@ -105,13 +105,13 @@ Action_Upload_Execute(Action, Event)
 		Splitpath, file, filename, , fileextension, filenamenoextension
 		SplitPath, TargetFile, , , targetfileextension, targetfilenamenoextension
 		if(targetfilenamenoextension && targetfileextension)
-			targets.append(targetfilenamenoextension "." targetfileextension)
+			targets.Insert(targetfilenamenoextension "." targetfileextension)
 		else if(targetfilenamenoextension)
-			targets.append(targetfilenamenoextension "." fileextension)
+			targets.Insert(targetfilenamenoextension "." fileextension)
 		else if(targetfileextension)
-			targets.append(filenamenoextension "." targetfileextension)
+			targets.Insert(filenamenoextension "." targetfileextension)
 		else
-			targets.append(filename)
+			targets.Insert(filename)
 		file1 := targets[A_Index]
 		SplitPath, file1, ,,CheckExtension, CheckFilenameNoExtension
 		number := 1

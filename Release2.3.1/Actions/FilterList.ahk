@@ -40,7 +40,7 @@ Action_FilterList_Execute(Action,Event)
 		if(	(Action.Action = "Keep list entries from" && result)
 		||  (Action.Action = "Remove list entries from" && !result))
 		
-			newarray.append(array[A_Index])
+			newarray.Insert(array[A_Index])
 		outputdebug % "Action: " Action.Operator " result: " result " len: " newarray.len()
 	}
 	

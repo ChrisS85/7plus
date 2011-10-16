@@ -129,7 +129,7 @@ Accessor_Init()
 			if(XMLObject[A_LoopField].Settings.BasePriority) ;Set base priority automatically for each plugin to save some lines
 				tmpobject.Settings.BasePriority := XMLObject[A_LoopField].Settings.BasePriority	
 		}
-		AccessorPlugins.append(Object("Base",tmpobject))
+		AccessorPlugins.Insert(Object("Base",tmpobject))
 	}
 		
 	Accessor.Keywords := Array()
@@ -138,7 +138,7 @@ Accessor_Init()
 	if(!XMLObject.Keywords.Keyword.len())
 		XMLObject.Keywords.Keyword := IsObject(XMLObject.Keywords.Keyword) ? Array(XMLObject.Keywords.Keyword) : Array()
 	Loop % XMLObject.Keywords.Keyword.len()
-		Accessor.Keywords.append(Object("Key", XMLObject.Keywords.Keyword[A_Index].Key, "Command", XMLObject.Keywords.Keyword[A_Index].Command))
+		Accessor.Keywords.Insert(Object("Key", XMLObject.Keywords.Keyword[A_Index].Key, "Command", XMLObject.Keywords.Keyword[A_Index].Command))
 	Accessor.GenericIcons := Object()
 	Accessor.GenericIcons.Application := ExtractIcon("shell32.dll", 3, 64)
 	Accessor.GenericIcons.File := ExtractIcon("shell32.dll", 1, 64)
@@ -162,7 +162,7 @@ Accessor_OnExit(Accessor)
 	}
 	XMLObject.Keywords := Object("Keyword",Array())
 	Loop % Accessor.Keywords.len()
-		XMLObject.Keywords.Keyword.append(Object("Key", Accessor.Keywords[A_Index].Key, "Command", Accessor.Keywords[A_Index].Command))
+		XMLObject.Keywords.Keyword.Insert(Object("Key", Accessor.Keywords[A_Index].Key, "Command", Accessor.Keywords[A_Index].Command))
 	XML_Save(XMLObject, Settings.ConfigPath "\Accessor.xml")
 	
 	DestroyIcon(Accessor.GenericIcons.Application)
@@ -652,10 +652,10 @@ AccessorRunWithArgs()
 	Event := EventSystem_CreateEvent()
 	Event.Name := "Run with arguments"
 	Event.Temporary := true
-	Event.Actions.append(EventSystem_CreateSubEvent("Action","Input"))
+	Event.Actions.Insert(EventSystem_CreateSubEvent("Action","Input"))
 	Event.Actions[1].Text := "Enter program arguments"
 	Event.Actions[1].Title := "Enter program arguments"
-	Event.Actions.append(EventSystem_CreateSubEvent("Action","Run"))
+	Event.Actions.Insert(EventSystem_CreateSubEvent("Action","Run"))
 	Event.Actions[2].Command := """" Accessor.List[id].Path """ ${Input}"
 	TemporaryEvents.RegisterEvent(Event)
 	TriggerSingleEvent(Event)

@@ -48,7 +48,7 @@ Trigger_MenuItem_GuiShow(Trigger, TriggerGUI)
 	{
 		if(SettingsWindow.Events[A_Index].Trigger.Type = "MenuItem" && Menus.indexOf(SettingsWindow.Events[A_Index].Trigger.Menu) = 0)
 		{
-			Menus.append(SettingsWindow.Events[A_Index].Trigger.Menu)
+			Menus.Insert(SettingsWindow.Events[A_Index].Trigger.Menu)
 			MenuString .= (Menus.len() = 1 ? "" : "|") SettingsWindow.Events[A_Index].Trigger.Menu
 		}
 	}

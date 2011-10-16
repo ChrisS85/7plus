@@ -454,7 +454,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 			if(NewEvent.Category = "")
 				NewEvent.Category := "Uncategorized"
 			if(!this.Events.Categories.indexOf(NewEvent.Category))
-				this.Events.Categories.append(NewEvent.Category)
+				this.Events.Categories.Insert(NewEvent.Category)
 			this.RecreateTreeView() ;Refresh Event display
 		}
 		else if(TemporaryEvent)
@@ -581,7 +581,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 				for index, Item in Page.listEvents.SelectedItems
 				{
 						Event := this.Events.SubItem("ID", Item[2])
-						ExportEvents.append(Event)
+						ExportEvents.Insert(Event)
 						if(!FTP && Event.Actions.indexOfSubItem("Type", "Upload"))
 							FTP := true
 				}

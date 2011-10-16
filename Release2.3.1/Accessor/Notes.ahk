@@ -21,7 +21,7 @@ Accessor_Notes_Init(ByRef Notes, PluginSettings)
 	{
 		XMLObjectListEntry := XMLObject.List[A_Index]
 		Text := XMLObjectListEntry.Text
-		Notes.List.append(Object("Text",Text))
+		Notes.List.Insert(Object("Text",Text))
 	}
 }
 Accessor_Notes_ShowSettings(Notes, PluginSettings, PluginGUI)
@@ -49,7 +49,7 @@ Accessor_Notes_OnExit(Notes)
 	FileDelete, % Settings.ConfigPath "\Notes.xml"
 	XMLObject := Object("List",Array())
 	Loop % Notes.List.len()
-		XMLObject.List.append(Object("Text",Notes.List[A_Index].Text))
+		XMLObject.List.Insert(Object("Text",Notes.List[A_Index].Text))
 	XML_Save(XMLObject, Settings.ConfigPath "\Notes.xml")
 	DestroyIcon(Notes.Icon)
 }
@@ -64,10 +64,10 @@ Accessor_Notes_FillAccessorList(Notes, Accessor, Filter, LastFilter, ByRef IconC
 	GuiControlGet, Filter, , AccessorEdit
 	Filter := strTrimLeft(Filter, Notes.Settings.Keyword " ")
 	if(Filter)
-		Accessor.List.append(Object("Title","New note","Path","Adds a new node", "Type","Notes", "Detail1", "Notes", "Detail2", "","Icon", IconCount))
+		Accessor.List.Insert(Object("Title","New note","Path","Adds a new node", "Type","Notes", "Detail1", "Notes", "Detail2", "","Icon", IconCount))
 	outputdebug % "note count " Notes.List.len()
 	Loop % Notes.List.len()
-		Accessor.List.append(Object("Title",Notes.List[A_Index].Text,"Path","", "Type","Notes", "Detail1", "Notes", "Detail2", "","Icon", IconCount, "ID", A_Index))
+		Accessor.List.Insert(Object("Title",Notes.List[A_Index].Text,"Path","", "Type","Notes", "Detail1", "Notes", "Detail2", "","Icon", IconCount, "ID", A_Index))
 }
 Accessor_Notes_PerformAction(Notes, Accessor, AccessorListEntry)
 {
@@ -81,7 +81,7 @@ Accessor_Notes_PerformAction(Notes, Accessor, AccessorListEntry)
 		GuiControlGet, Filter, , AccessorEdit
 		Filter := strTrimLeft(Filter, Notes.Settings.Keyword " ")
 		outputdebug note %filter%
-		Notes.List.append(Object("Text", Filter))
+		Notes.List.Insert(Object("Text", Filter))
 		outputdebug % "count " Notes.List.len()
 	}
 	else

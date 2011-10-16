@@ -69,7 +69,7 @@ Accessor_ProgramLauncher_ShowSettings(ProgramLauncher, PluginSettings, PluginGUI
 		path:=COMObjCreate("Shell.Application").BrowseForFolder(0, "Add indexing path", 0).Self.Path
 		if(path!="")
 		{
-			PSettings.tmpPaths.append(Object("Path", path, "Extensions", "exe"))
+			PSettings.tmpPaths.Insert(Object("Path", path, "Extensions", "exe"))
 			LV_Add("Select", PSettings.tmpPaths.len(), path)
 		}
 	}
@@ -171,11 +171,11 @@ Accessor_ProgramLauncher_FillAccessorList(ProgramLauncher, Accessor, Filter, Las
 			ImageList_ReplaceIcon(Accessor.ImageListID, -1, ProgramLauncher.List[A_Index].hIcon)
 			Name := ProgramLauncher.List[A_Index].Name ? ProgramLauncher.List[A_Index].Name : ProgramLauncher.List[A_Index].ExeName
 			if(x = 1)
-				Accessor.List.append(Object("Title", Name, "Path", ProgramLauncher.List[A_Index].Command, "Type", "ProgramLauncher", "Icon", IconCount))
+				Accessor.List.Insert(Object("Title", Name, "Path", ProgramLauncher.List[A_Index].Command, "Type", "ProgramLauncher", "Icon", IconCount))
 			else if(x)
-				InStrList.append(Object("Title", Name, "Path", ProgramLauncher.List[A_Index].Command, "Type", "ProgramLauncher", "Icon", IconCount))
+				InStrList.Insert(Object("Title", Name, "Path", ProgramLauncher.List[A_Index].Command, "Type", "ProgramLauncher", "Icon", IconCount))
 			else
-				FuzzyList.append(Object("Title", Name, "Path", ProgramLauncher.List[A_Index].Command, "Type", "ProgramLauncher", "Icon", IconCount))
+				FuzzyList.Insert(Object("Title", Name, "Path", ProgramLauncher.List[A_Index].Command, "Type", "ProgramLauncher", "Icon", IconCount))
 		}
 	}
 	Accessor.List.Extend(InStrList)
@@ -223,8 +223,8 @@ ReadProgramLauncherCache(ProgramLauncher)
 	ProgramLauncher.Paths := Array()
 	if(!FileExist(Settings.ConfigPath "\ProgramCache.xml")) ;File doesn't exist, create default values
 	{
-		ProgramLauncher.Paths.append(Object("Path","%StartMenu%","Extensions","lnk,exe"))
-		ProgramLauncher.Paths.append(Object("Path","%StartMenuCommon%","Extensions","lnk,exe"))
+		ProgramLauncher.Paths.Insert(Object("Path","%StartMenu%","Extensions","lnk,exe"))
+		ProgramLauncher.Paths.Insert(Object("Path","%StartMenuCommon%","Extensions","lnk,exe"))
 		return
 	}
 	
@@ -241,13 +241,13 @@ ReadProgramLauncherCache(ProgramLauncher)
 		XMLObjectListEntry := XMLObject.List[A_Index]
 		command := XMLObjectListEntry.Command
 		SplitPath, command, ExeName
-		ProgramLauncher.List.append(Object("ExeName", ExeName, "Name", name, "Command", command, "BasePath", XMLObjectListEntry.BasePath))
+		ProgramLauncher.List.Insert(Object("ExeName", ExeName, "Name", name, "Command", command, "BasePath", XMLObjectListEntry.BasePath))
 	}
 	
 	Loop % XMLObject.Paths.len() ;Read scan directories
 	{
 		XMLPath := XMLObject.Paths[A_Index]
-		ProgramLauncher.Paths.append(Object("Path", XMLPath.Path, "Extensions", XMLPath.Extensions))
+		ProgramLauncher.Paths.Insert(Object("Path", XMLPath.Path, "Extensions", XMLPath.Extensions))
 	}
 }
 WriteProgramLauncherCache(ProgramLauncher)
@@ -255,9 +255,9 @@ WriteProgramLauncherCache(ProgramLauncher)
 	FileDelete, % Settings.ConfigPath "\ProgramCache.xml"
 	XMLObject := Object("List", Array(), "Paths", Array())
 	Loop % ProgramLauncher.List.len()
-		XMLObject.List.append(Object("Command", ProgramLauncher.List[A_Index].Command, "Name", ProgramLauncher.List[A_Index].Name, "BasePath", ProgramLauncher.List[A_Index].BasePath))
+		XMLObject.List.Insert(Object("Command", ProgramLauncher.List[A_Index].Command, "Name", ProgramLauncher.List[A_Index].Name, "BasePath", ProgramLauncher.List[A_Index].BasePath))
 	Loop % ProgramLauncher.Paths.len()
-		XMLObject.Paths.append(Object("Path", ProgramLauncher.Paths[A_Index].Path, "Extensions", ProgramLauncher.Paths[A_Index].Extensions))
+		XMLObject.Paths.Insert(Object("Path", ProgramLauncher.Paths[A_Index].Path, "Extensions", ProgramLauncher.Paths[A_Index].Extensions))
 	
 	XML_Save(XMLObject, Settings.ConfigPath "\ProgramCache.xml")
 }
@@ -319,9 +319,9 @@ RefreshProgramLauncherCache(ProgramLauncher, Path ="")
 					if(ProgramLauncher.List.indexOfSubItem("Command",command) = 0)
 					{
 						if(ExeName)
-							ProgramLauncher.List.append(Object("Name",name, "ExeName", ExeName, "Command", command, "BasePath", Path))
+							ProgramLauncher.List.Insert(Object("Name",name, "ExeName", ExeName, "Command", command, "BasePath", Path))
 						else
-							ProgramLauncher.List.append(Object("Name",name, "Command", command, "BasePath", Path))
+							ProgramLauncher.List.Insert(Object("Name",name, "Command", command, "BasePath", Path))
 					}
 				}
 			}
@@ -359,7 +359,7 @@ UpdateLauncherPrograms(ProgramLauncher)
 				{
 					path := Window.Path
 					SplitPath, path, name
-					ProgramLauncher.List.append(Object("Name", name,"Command", WindowFullPath))
+					ProgramLauncher.List.Insert(Object("Name", name,"Command", WindowFullPath))
 				}
 			}
 		}

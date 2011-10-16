@@ -377,7 +377,7 @@ Class CReplaceDialog
 			if((File.Directory && ((this.IncludeDirectories && this.ProcessFilename(File)) + (this.IncludeSubdirectories &&this.CreateFilenameSearchTree(File))) > 0 ) || (!File.Directory && this.ProcessFilename(File))) ;If File should be processed itself or contains other files which are processed
 			{
 				File.enabled := true
-				Root.append(File)
+				Root.Insert(File)
 				items++
 			}
 		}
@@ -408,7 +408,7 @@ Class CReplaceDialog
 			if(this.Stop)
 				return 0
 			if(Root[A_Index].NewFilename)
-				this.SearchResults.Append(Root[A_Index])
+				this.SearchResults.Insert(Root[A_Index])
 			if(Root[A_Index].Directory)
 				this.FlattenTree(Root[A_Index])
 		}
@@ -442,7 +442,7 @@ Class CReplaceDialog
 				Root.Remove(Index)
 				continue
 			}
-			PathsList.append(NewPath)
+			PathsList.Insert(NewPath)
 			if(Root[index].Directory)
 				this.CheckForDuplicates(Root[index], NewPath, PathsList)
 			index++
@@ -632,7 +632,7 @@ Class CReplaceDialog
 		}
 		if(NewText && !(NewText == Text))
 		{
-			File.Lines.Append(Object("Line", LineNumber, "Text", Text, "NewText", NewText, "Enabled", true))
+			File.Lines.Insert(Object("Line", LineNumber, "Text", Text, "NewText", NewText, "Enabled", true))
 			return 1
 		}
 		return 0
@@ -673,7 +673,7 @@ Class CReplaceDialog
 			}
 			f.Close()
 			if(File.Lines.len() > 0)				
-				this.SearchResults.Append(File)
+				this.SearchResults.Insert(File)
 		}
 	}
 	PerformFileContentReplace()

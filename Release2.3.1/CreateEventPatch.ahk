@@ -49,14 +49,14 @@ Loop % NewXMLObject.Events.Event.len()
 	{
 		XMLConditions := Array()
 		if(NewEvent.Conditions.HasKey("Condition"))
-			XMLConditions.append(NewEvent.Conditions.Condition)
+			XMLConditions.Insert(NewEvent.Conditions.Condition)
 		NewEvent.Conditions.Condition := XMLConditions
 	}
 	if(!IsFunc(NewEvent.Actions.Action.len)) ;Single action
 	{
 		XMLActions := Array()
 		if(NewEvent.Actions.HasKey("Action"))
-			XMLActions.append(NewEvent.Actions.Action)
+			XMLActions.Insert(NewEvent.Actions.Action)
 		NewEvent.Actions.Action := XMLActions
 	}
 }
@@ -68,14 +68,14 @@ Loop % OldXMLObject.Events.Event.len()
 	{
 		XMLConditions := Array()
 		if(OldEvent.Conditions.HasKey("Condition"))
-			XMLConditions.append(OldEvent.Conditions.Condition)
+			XMLConditions.Insert(OldEvent.Conditions.Condition)
 		OldEvent.Conditions.Condition := XMLConditions
 	}
 	if(!IsFunc(OldEvent.Actions.Action.len)) ;Single Action
 	{
 		XMLActions := Array()
 		if(OldEvent.Actions.HasKey("Action"))
-			XMLActions.append(OldEvent.Actions.Action)
+			XMLActions.Insert(OldEvent.Actions.Action)
 		OldEvent.Actions.Action := XMLActions
 	}
 	;Warn if official event is not set
@@ -120,16 +120,16 @@ Loop % OldXMLObject.Events.Event.len()
 			}
 		}
 		if(Updated)
-			PatchXMLObject.Events.Event.Append(PatchEvent)
+			PatchXMLObject.Events.Event.Insert(PatchEvent)
 	}
 	else ;Event was deleted
-		PatchXMLObject.Remove.OfficialEvent.Append(OldEvent.OfficialEvent)
+		PatchXMLObject.Remove.OfficialEvent.Insert(OldEvent.OfficialEvent)
 }
 Loop % NewXMLObject.Events.Event.len()
 {
 	NewEvent := NewXMLObject.Events.Event[A_Index]
 	if(!OldXMLObject.Events.Event.SubItem("OfficialEvent", NewEvent.OfficialEvent)) ;Event was added
-		PatchXMLObject.Events.Event.Append(NewEvent)
+		PatchXMLObject.Events.Event.Insert(NewEvent)
 }
 XML_Save(PatchXMLObject, A_ScriptDir "\Events\ReleasePatch\" PatchXMLObject.MajorVersion "." PatchXMLObject.MinorVersion "." PatchXMLObject.BugfixVersion "." PatchXMLObject.PatchVersion ".xml")
 

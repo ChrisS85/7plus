@@ -62,7 +62,7 @@ Accessor_Uninstall_FillAccessorList(Uninstall, Accessor, Filter, LastFilter, ByR
 				hIcon := Accessor.GenericIcons.Application
 			; outputdebug hicon %hicon%
 			if(DisplayName)
-				Uninstall.List.append(Object("GUID", GUID, "DisplayName", DisplayName, "UninstallString", UninstallString, "InstallLocation", InstallLocation, "Icon", hIcon))
+				Uninstall.List.Insert(Object("GUID", GUID, "DisplayName", DisplayName, "UninstallString", UninstallString, "InstallLocation", InstallLocation, "Icon", hIcon))
 		}
 	}
 	FuzzyList := Array()
@@ -74,9 +74,9 @@ Accessor_Uninstall_FillAccessorList(Uninstall, Accessor, Filter, LastFilter, ByR
 			ImageList_ReplaceIcon(Accessor.ImageListID, -1, Uninstall.List[A_Index].Icon)
 			IconCount++
 			if(x)
-				Accessor.List.append(Object("Title",Uninstall.List[A_Index].DisplayName,"Path",Uninstall.List[A_Index].InstallLocation, "UninstallString", Uninstall.List[A_Index].UninstallString, "Type","Uninstall", "Icon", IconCount))
+				Accessor.List.Insert(Object("Title",Uninstall.List[A_Index].DisplayName,"Path",Uninstall.List[A_Index].InstallLocation, "UninstallString", Uninstall.List[A_Index].UninstallString, "Type","Uninstall", "Icon", IconCount))
 			else
-				FuzzyList.append(Object("Title",Uninstall.List[A_Index].DisplayName,"Path",Uninstall.List[A_Index].InstallLocation, "UninstallString", Uninstall.List[A_Index].UninstallString, "Type","Uninstall", "Icon", IconCount))
+				FuzzyList.Insert(Object("Title",Uninstall.List[A_Index].DisplayName,"Path",Uninstall.List[A_Index].InstallLocation, "UninstallString", Uninstall.List[A_Index].UninstallString, "Type","Uninstall", "Icon", IconCount))
 		}
 	}
 }

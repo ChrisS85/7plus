@@ -24,7 +24,7 @@ Action_SlideWindowOut_Execute(Action)
 	SlideWindow := new CSlideWindow(hwnd, Action.Direction)
 	outputdebug object created
 	if(IsObject(SlideWindow))
-		SlideWindows.Append(SlideWindow)
+		SlideWindows.Insert(SlideWindow)
 	outputdebug % "len: " SlideWindows.len()
 	return 1
 } 

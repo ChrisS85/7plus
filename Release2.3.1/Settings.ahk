@@ -675,7 +675,7 @@ Settings_SetupAccessor() {
 		; PluginCopy.Keyword := AccessorPlugins[A_Index].Keyword
 		PluginCopy.Type := AccessorPlugins[A_Index].Type
 		PluginCopy.Settings := AccessorPlugins[A_Index].Settings.DeepCopy()
-		Settings_AccessorPlugins.append(PluginCopy)
+		Settings_AccessorPlugins.Insert(PluginCopy)
 		outputdebug Settings_SetupAccessor() add
 		Gui, ListView, GUI_AccessorPluginsList
 		LV_Add(Settings_AccessorPlugins[A_Index].Enabled ? "Check" : "", "", A_Index, Settings_AccessorPlugins[A_Index].Type)
@@ -1158,7 +1158,7 @@ GUI_RemoveEvent()
 		if(LV_GetNext(A_Index-1) = A_Index)
 		{
 			LV_GetText(id,A_Index,2)			
-			Events.append(id)
+			Events.Insert(id)
 		}
 	}
 	Loop % Events.len()
@@ -1226,7 +1226,7 @@ GUI_EventsList_Edit(Add = 0)
 		if(event.Category = "")
 			event.Category := "Uncategorized"
 		if(!Settings_Events.Categories.indexOf(event.Category))
-			Settings_Events.Categories.append(event.Category)
+			Settings_Events.Categories.Insert(event.Category)
 		Settings_SetupEvents() ;Refresh listview		
 	}
 	else if(Add)
@@ -1254,7 +1254,7 @@ GUI_EventsList_Copy()
 			Copy := Event.DeepCopy()
 			Copy.Remove("OfficialEvent") ;Make sure that pasted events don't patch existing events
 			if((!IsPortable && A_IsAdmin) || Event.Trigger.Type != "ExplorerButton")
-				Settings_Events_Clipboard.append(copy)
+				Settings_Events_Clipboard.Insert(copy)
 		}
 	}
 	WriteEventsFile(Settings_Events_Clipboard,A_Temp "/7plus/EventsClipboard.xml")	
@@ -1325,7 +1325,7 @@ GUI_EventsList_Export()
 		Loop % Settings_Events.len()
 		{
 			if(Settings_Events[A_Index].Category = Category)
-				Events.append(Settings_Events[A_Index])
+				Events.Insert(Settings_Events[A_Index])
 		}
 		if(Events.len() > 0)
 			WriteEventsFile(Events, A_ScriptDir "\Events\" Category ".xml")
@@ -1351,7 +1351,7 @@ GUI_EventsList_Export()
 				{
 					LV_GetText(id,A_Index,2)
 					Event := Settings_Events.SubItem("ID", id)
-					Events.append(Event)
+					Events.Insert(Event)
 					if(!FTP && Event.Actions.indexOfSubItem("Type", "Upload"))
 						FTP := true
 				}
@@ -1420,7 +1420,7 @@ GUI_Accessor_AddKeyword()
 {
 	global Settings_AccessorKeywords
 	Gui, ListView, GUI_AccessorKeywordsList
-	Settings_AccessorKeywords.append(Object("Key", "Key", "Command", "Command"))
+	Settings_AccessorKeywords.Insert(Object("Key", "Key", "Command", "Command"))
 	LV_Add("Select", Settings_AccessorKeywords.len(), "Key", "Command")
 }
 GUI_AccessorKeywords_Delete:
@@ -1510,7 +1510,7 @@ DropAccessorFiles()
 	Loop, parse, A_GuiEvent, `n
 	{
 		SplitPath, A_LoopField, ,,,name
-		Settings_AccessorKeywords.append(Object("Key", name, "Command", A_LoopField))
+		Settings_AccessorKeywords.Insert(Object("Key", name, "Command", A_LoopField))
 		LV_Add("Select", Settings_AccessorKeywords.len(), name, A_LoopField)
 	}
 	return
@@ -1697,7 +1697,7 @@ return
 FTPProfiles_Add()
 {
 	global Settings_FTPProfiles, FTPProfilesDropDownList
-	Settings_FTPProfiles.append(Object("Hostname", "Hostname.com", "Port", 21, "User", "SomeUser", "Password", "", "URL", "http://somehost.com"))
+	Settings_FTPProfiles.Insert(Object("Hostname", "Hostname.com", "Port", 21, "User", "SomeUser", "Password", "", "URL", "http://somehost.com"))
 	len := Settings_FTPProfiles.len()
 	string := len ": " Settings_FTPProfiles[Settings_FTPProfiles.len()].Hostname
 	GuiControl, , FTPProfilesDropDownList, %string%
@@ -1760,7 +1760,7 @@ GUI_Hotstrings_Add()
 {
 	global Settings_Hotstrings
 	Gui, ListView, GUI_HotstringsList
-	Settings_Hotstrings.append(Object("Key", "key", "value", "value"))
+	Settings_Hotstrings.Insert(Object("Key", "key", "value", "value"))
 	LV_Add("Select", Settings_Hotstrings.len(), "key", "value")
 }
 GUI_Hotstrings_Delete:
@@ -2113,7 +2113,7 @@ ApplySettings(Close = 0)
 	SavePreviousFTPProfile()
 	FTPProfiles := Array()
 	Loop % Settings_FTPProfiles.len()
-		FTPProfiles.append(Settings_FTPProfiles[A_Index])
+		FTPProfiles.Insert(Settings_FTPProfiles[A_Index])
 
 	if(!(ImageQuality > 0 && ImageQuality <= 100))
 		ImageQuality := 95

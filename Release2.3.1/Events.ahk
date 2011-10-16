@@ -2,10 +2,10 @@
 Events_Add(Events, Event) 
 {
 	global TemporaryEvents
-	Events.append(Event)
+	Events.Insert(Event)
 	if(SettingsActive() && Events != SettingsWindow.Events && Events != TemporaryEvents) ;Non-temporary and non-settings event that needs to be synced with an open settings gui
 	{
-		SettingsWindow.Events.append(Event.DeepCopy())
+		SettingsWindow.Events.Insert(Event.DeepCopy())
 		SettingsWindow.RecreateTreeView()
 	}
 }

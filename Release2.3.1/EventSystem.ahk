@@ -257,7 +257,7 @@ EventSystem_CreateBaseObjects()
 		Trigger_%A_LoopField%_Base.Type := A_LoopField
 		Trigger_%A_LoopField%_Init(Trigger_%A_LoopField%_Base)	
 		;Add type to category
-		Trigger_Categories[Trigger_%A_LoopField%_Base.Category].append(Trigger_%A_LoopField%_Base.Type)
+		Trigger_Categories[Trigger_%A_LoopField%_Base.Category].Insert(Trigger_%A_LoopField%_Base.Type)
 	
 		;Trigger_%A_LoopField%_Base := tmpobject.DeepCopy()
 	}
@@ -276,7 +276,7 @@ EventSystem_CreateBaseObjects()
 		Condition_%A_LoopField%_Base.Type := A_LoopField
 		Condition_%A_LoopField%_Init(Condition_%A_LoopField%_Base)
 		;Add type to category
-		Condition_Categories[Condition_%A_LoopField%_Base.Category].append(Condition_%A_LoopField%_Base.Type)
+		Condition_Categories[Condition_%A_LoopField%_Base.Category].Insert(Condition_%A_LoopField%_Base.Type)
 	}
 	Loop, Parse, EventSystem_Actions, `,,%A_Space%
 	{
@@ -293,7 +293,7 @@ EventSystem_CreateBaseObjects()
 		Action_%A_LoopField%_Base.Type := A_LoopField
 		Action_%A_LoopField%_Init(Action_%A_LoopField%_Base)
 		;Add type to category
-		Action_Categories[Action_%A_LoopField%_Base.Category].append(Action_%A_LoopField%_Base.Type)
+		Action_Categories[Action_%A_LoopField%_Base.Category].Insert(Action_%A_LoopField%_Base.Type)
 	}
 	EventBase := RichObject()
 	EventBase.Enable := "Event_Enable"
@@ -409,7 +409,7 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 			Event.Category := OverwriteCategory ? OverwriteCategory : XMLEvent.Category ? XMLEvent.Category : "Uncategorized"
 		
 			if(!Events.Categories.indexOf(Event.Category))
-				Events.Categories.append(Event.Category)
+				Events.Categories.Insert(Event.Category)
 		}
 		else
 			Event.Remove("Category")
@@ -461,7 +461,7 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 		if(XMLEvent.Conditions.HasKey("Condition") && !IsFunc(XMLEvent.Conditions.Condition.len)) ;Single condition
 		{
 			XMLConditions := Array()
-			XMLConditions.append(XMLEvent.Conditions.Condition)
+			XMLConditions.Insert(XMLEvent.Conditions.Condition)
 			XMLEvent.Conditions.Condition := XMLConditions
 		}
 		
@@ -482,14 +482,14 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 			;Read condition values
 			Condition.ReadXML(XMLCondition)
 						
-			Event.Conditions.append(Condition)
+			Event.Conditions.Insert(Condition)
 		}
 		
 		;Read actions
 		if(XMLEvent.Actions.HasKey("Action") && !IsFunc(XMLEvent.Actions.Action.len)) ;Single Action
 		{
 			XMLActions := Array()
-			XMLActions.append(XMLEvent.Actions.Action)
+			XMLActions.Insert(XMLEvent.Actions.Action)
 			XMLEvent.Actions.Action := XMLActions
 		}
 		
@@ -507,7 +507,7 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 			;Read action values
 			Action.ReadXML(XMLAction)
 						
-			Event.Actions.append(Action)
+			Event.Actions.Insert(Action)
 		}
 		
 		if(Event.HasKey("OfficialEvent") && (OldEvent := Events.SubItem("OfficialEvent", Event.OfficialEvent))) ;If an official event already exists, apply this as patch
@@ -523,7 +523,7 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 		{
 			if(Update)
 				Update.Message := Update.Message "`n- Added Event: " Event.Name
-			Events.append(Event)
+			Events.Insert(Event)
 		}
 	}
 	;fix IDs from import
@@ -627,7 +627,7 @@ WriteEventsFile(Events, path)
 	Loop % Events.len()
 	{
 		xmlEvent := Object()
-		xmlEvents.append(xmlEvent)
+		xmlEvents.Insert(xmlEvent)
 		i := A_Index
 		Event := Events[i]
 		
@@ -703,7 +703,7 @@ WriteEventsFile(Events, path)
 			j := A_Index
 			Condition := Event.Conditions[j]
 			xmlCondition := Object()
-			xmlConditions.append(xmlCondition)
+			xmlConditions.Insert(xmlCondition)
 			
 			;Write condition type, since it's stored in base object, and isn't iterated below
 			xmlCondition.Type := Condition.Type
@@ -727,7 +727,7 @@ WriteEventsFile(Events, path)
 			j := A_Index
 			Action := Event.Actions[j]
 			xmlAction := Object()
-			xmlActions.append(xmlAction)
+			xmlActions.Insert(xmlAction)
 			
 			;Write action type, since it's stored in base object, and isn't iterated below
 			xmlAction.Type := Action.Type
@@ -768,7 +768,7 @@ TriggerSingleEvent(Event, Trigger="")
 	{
 		;Test if the event is already running and mustn't be run multiple times
 		if(!Event.OneInstance || !EventSchedule.IndexOfSubItem("ID", Event.ID))
-			EventSchedule.append(Copy := Event.DeepCopy())
+			EventSchedule.Insert(Copy := Event.DeepCopy())
 	}
 	return Copy
 }

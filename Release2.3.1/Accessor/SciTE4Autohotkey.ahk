@@ -110,7 +110,7 @@ Accessor_SciTE4AutoHotkey_FillAccessorList(SciTE4AutoHotkey, Accessor, Filter, L
 		{
 			Path := SciTE4AutoHotkey.List1[A_Index]
 			SplitPath, Path, Name
-			Accessor.List.append(Object("Title",Name,"Path",Path, "Type","SciTE4AutoHotkey", "Detail1", "SciTE4AutoHotkey", "Icon", IconCount))
+			Accessor.List.Insert(Object("Title",Name,"Path",Path, "Type","SciTE4AutoHotkey", "Detail1", "SciTE4AutoHotkey", "Icon", IconCount))
 		}
 		return
 	}
@@ -122,11 +122,11 @@ Accessor_SciTE4AutoHotkey_FillAccessorList(SciTE4AutoHotkey, Accessor, Filter, L
 		SplitPath, Path, Name
 		pos := InStr(Name, Filter)
 		if(pos = 1)
-			Accessor.List.append(Object("Title",Name,"Path",Path, "Type","SciTE4AutoHotkey", "Detail1", "SciTE4AutoHotkey", "Icon", IconCount))
+			Accessor.List.Insert(Object("Title",Name,"Path",Path, "Type","SciTE4AutoHotkey", "Detail1", "SciTE4AutoHotkey", "Icon", IconCount))
 		else if(pos > 1)
-			InStrList.append(Object("Title",Name,"Path",Path, "Type","SciTE4AutoHotkey", "Detail1", "SciTE4AutoHotkey", "Icon", IconCount))
+			InStrList.Insert(Object("Title",Name,"Path",Path, "Type","SciTE4AutoHotkey", "Detail1", "SciTE4AutoHotkey", "Icon", IconCount))
 		else if(SciTE4AutoHotkey.Settings.FuzzySearch && FuzzySearch(Name,Filter) < 0.3)
-			FuzzyList.append(Object("Title",Name,"Path",Path, "Type","SciTE4AutoHotkey", "Detail1", "SciTE4AutoHotkey", "Icon", IconCount))
+			FuzzyList.Insert(Object("Title",Name,"Path",Path, "Type","SciTE4AutoHotkey", "Detail1", "SciTE4AutoHotkey", "Icon", IconCount))
 	}
 	Accessor.List.Extend(InStrList)
 	Accessor.List.Extend(FuzzyList)
@@ -144,7 +144,7 @@ Accessor_SciTE4AutoHotkey_PerformAction(SciTE4AutoHotkey, Accessor, AccessorList
 			Gui, %GUINum%: Default
 			GuiControlGet, Filter, , AccessorEdit
 			if(!(index := SciTE4AutoHotkey.MRUList.indexOfSubItem("Path", ActiveTab := GetSciTE4AutoHotkeyActiveTab())))
-				SciTE4AutoHotkey.MRUList.append(Object("Path", ActiveTab, "Command", Filter, "Entry", AccessorListEntry.Path))
+				SciTE4AutoHotkey.MRUList.Insert(Object("Path", ActiveTab, "Command", Filter, "Entry", AccessorListEntry.Path))
 			else
 			{
 				SciTE4AutoHotkey.MRUList[index].Command := Filter
@@ -217,7 +217,7 @@ GetListOfOpenSciTE4AutoHotkeyTabs()
 	tabs := scite.Tabs.Array 
 	; tabs is a SafeArray containing the file names 
 	Loop, % scite.tabs.Count
-	   list.append(tabs[A_Index-1])
+	   list.Insert(tabs[A_Index-1])
 	return list
 }
 GetSciTE4AutoHotkeyPath()

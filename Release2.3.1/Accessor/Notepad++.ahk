@@ -96,13 +96,13 @@ Accessor_NotepadPlusPlus_FillAccessorList(NotepadPlusPlus, Accessor, Filter, Las
 		{
 			Path := NotepadPlusPlus.List1[A_Index]
 			SplitPath, Path, Name
-			Accessor.List.append(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
+			Accessor.List.Insert(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
 		}
 		Loop % NotepadPlusPlus.List2.len()
 		{
 			Path := NotepadPlusPlus.List2[A_Index]
 			SplitPath, Path, Name
-			Accessor.List.append(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
+			Accessor.List.Insert(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
 		}
 		return
 	}
@@ -114,11 +114,11 @@ Accessor_NotepadPlusPlus_FillAccessorList(NotepadPlusPlus, Accessor, Filter, Las
 		SplitPath, Path, Name
 		pos := InStr(Name, Filter)
 		if(pos = 1)
-			Accessor.List.append(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
+			Accessor.List.Insert(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
 		else if(pos > 1)
-			InStrList.append(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
+			InStrList.Insert(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
 		else if(NotepadPlusPlus.Settings.FuzzySearch && FuzzySearch(Name,Filter) < 0.3)
-			FuzzyList.append(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
+			FuzzyList.Insert(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
 	}
 	Loop % NotepadPlusPlus.List2.len()
 	{
@@ -126,11 +126,11 @@ Accessor_NotepadPlusPlus_FillAccessorList(NotepadPlusPlus, Accessor, Filter, Las
 		SplitPath, Path, Name		
 		pos := InStr(Name, Filter)
 		if(pos = 1)
-			Accessor.List.append(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
+			Accessor.List.Insert(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
 		else if(pos > 1)
-			InStrList.append(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
+			InStrList.Insert(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
 		else if(NotepadPlusPlus.Settings.FuzzySearch && FuzzySearch(Name,Filter) < 0.3)
-			FuzzyList.append(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
+			FuzzyList.Insert(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
 	}
 	Accessor.List.Extend(InStrList)
 	Accessor.List.Extend(FuzzyList)
@@ -147,7 +147,7 @@ Accessor_NotepadPlusPlus_PerformAction(NotepadPlusPlus, Accessor, AccessorListEn
 			Gui, %GUINum%: Default
 			GuiControlGet, Filter, , AccessorEdit
 			if(!(index := NotepadPlusPlus.MRUList.indexOfSubItem("Path", ActiveTab := GetNotepadPlusPlusActiveTab())))
-				NotepadPlusPlus.MRUList.append(Object("Path", ActiveTab, "Command", Filter, "Entry", AccessorListEntry.Path))
+				NotepadPlusPlus.MRUList.Insert(Object("Path", ActiveTab, "Command", Filter, "Entry", AccessorListEntry.Path))
 			else
 			{
 				NotepadPlusPlus.MRUList[index].Command := Filter
@@ -253,7 +253,7 @@ GetListOfOpenNotepadPlusPlusTabs(WhichView = 1)
 			TabName := ConvertedTabName
 		if(WhichView != 1)
 			TabName .= " [2]"
-		list.append(TabName)
+		list.Insert(TabName)
 	}
 	RemoteBuf_Close(H) ;Close/free remote buffer
 	return list

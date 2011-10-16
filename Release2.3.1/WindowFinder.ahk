@@ -46,7 +46,7 @@ GUI_WindowFinder(PreviousGUINum, GoToLabel="")
 			WindowListEntry.Bitmap := pThumbnail
 			WindowListEntry.hIcon := GetWindowIcon(hwnd,0)
 			WindowListEntry.IconNumber := ImageList_ReplaceIcon(ImageList, -1, WindowListEntry.hIcon)
-			WindowList.Append(WindowListEntry)
+			WindowList.Insert(WindowListEntry)
 		}
 		;Fill listview
 		enum := WindowList._newEnum()

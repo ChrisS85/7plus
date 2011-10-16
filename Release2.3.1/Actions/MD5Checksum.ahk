@@ -81,7 +81,7 @@ MD5Dialog(Files)
 			if(sFiles.IndexOf(Files[A_Index]) = 0)
 			{
 				LV_Add("",Files[A_Index], FileMD5(Files[A_Index]))
-				sFiles.append(Files[A_Index])
+				sFiles.Insert(Files[A_Index])
 			}
 		}
 		Gui, %l_GUI%:Show

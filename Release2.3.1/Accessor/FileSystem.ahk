@@ -73,7 +73,7 @@ Accessor_FileSystem_FillAccessorList(FileSystem, Accessor, Filter, LastFilter, B
 				else
 					Icon := 4
 			}
-			Accessor.List.append(Object("Title",A_LoopFileName,"Path",A_LoopFileFullPath,"Type","FileSystem", "Icon", Icon))
+			Accessor.List.Insert(Object("Title",A_LoopFileName,"Path",A_LoopFileFullPath,"Type","FileSystem", "Icon", Icon))
 		}
 	}
 }
@@ -87,7 +87,7 @@ Accessor_FileSystem_PerformAction(FileSystem, Accessor, AccessorListEntry)
 	{
 		path := AccessorListEntry.Path
 		SplitPath, path, name
-		ProgramLauncher.List.append(Object("Name",name, "Command", path, "BasePath", ""))
+		ProgramLauncher.List.Insert(Object("Name",name, "Command", path, "BasePath", ""))
 	}
 	Run("""" AccessorListEntry.Path """")
 }

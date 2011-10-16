@@ -86,7 +86,7 @@ Action_ImageUpload_ProgressHandler(Status, ID)
 	}
 	else if(Status = 101) ;Error
 	{
-		Action.tmpFailed.Append(Action.tmpFiles[Action.tmpFile])
+		Action.tmpFailed.Insert(Action.tmpFiles[Action.tmpFile])
 		Action.tmpFile++
 	}
 	else if(Status >= 0 && Status <= 100) ;Progress notification

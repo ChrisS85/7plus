@@ -60,7 +60,7 @@ MouseMovePolling()
 				Loop % Events.len()
 				{
 					if(Events[A_Index].Trigger.Type = "ScreenCorner" && Events[A_Index].Trigger.Corner = Corner)
-						ScreenCornerEvents.append(Object("time", Events[A_Index].Trigger.Time, "Id", Events[A_Index].ID))
+						ScreenCornerEvents.Insert(Object("time", Events[A_Index].Trigger.Time, "Id", Events[A_Index].ID))
 				}
 				hoverstart := A_TickCount
 			}

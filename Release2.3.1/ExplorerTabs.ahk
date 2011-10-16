@@ -183,7 +183,7 @@ Class CTabContainer
 		this.h := 0
 		this.state := 0
 		this.Active := ExplorerWindow.hwnd
-		ExplorerWindows.TabContainerList.Append(this)
+		ExplorerWindows.TabContainerList.Insert(this)
 		this.Add(ExplorerWindow)
 		this.CreateTabWindow()
 	}
@@ -216,7 +216,7 @@ Class CTabContainer
 		tab.height := ExplorerWindows.TabContainerList.height - ExplorerWindows.TabContainerList.InActiveHeightDifference
 		if(position="")
 		{
-			this.tabs.append(tab)
+			this.tabs.Insert(tab)
 			this.CalculateHorizontalTabPositions(this.tabs.len())
 			this.CalculateVerticalTabPosition(this.tabs.len())
 		}

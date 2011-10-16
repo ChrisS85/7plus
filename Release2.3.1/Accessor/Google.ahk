@@ -49,7 +49,7 @@ Accessor_Google_FillAccessorList(Google, Accessor, Filter, LastFilter, ByRef Ico
 		return
 	outputdebug fillaccessorlist %filter%
 	Loop % Google.List.len()
-		Accessor.List.append(Object("Title",Google.List[A_Index].titleNoFormatting,"Path",Google.List[A_Index].visibleUrl, "Type","Google", "URL", Google.List[A_Index].unescapedURL,"Icon", 3))
+		Accessor.List.Insert(Object("Title",Google.List[A_Index].titleNoFormatting,"Path",Google.List[A_Index].visibleUrl, "Type","Google", "URL", Google.List[A_Index].unescapedURL,"Icon", 3))
 }
 Accessor_Google_PerformAction(Google, Accessor, AccessorListEntry)
 {
@@ -107,7 +107,7 @@ QueryGoogleResult()
 		pos3 := RegexMatch(GoogleQuery, "i)""titleNoFormatting"":""(.*?)""", titleNoFormatting, pos3+1)
 		titleNoFormatting1 := unhtml(Deref_Umlauts(titleNoFormatting1))
 		if(unescapedURL1 && visibleURL1 && titleNoFormatting1)
-			GooglePlugin.List.append(Object("unescapedURL",unescapedURL1,"visibleUrl", visibleUrl1, "titleNoFormatting", titleNoFormatting1))
+			GooglePlugin.List.Insert(Object("unescapedURL",unescapedURL1,"visibleUrl", visibleUrl1, "titleNoFormatting", titleNoFormatting1))
 		else
 			break
 	}
