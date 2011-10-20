@@ -135,9 +135,9 @@ Accessor_Init()
 	Accessor.Keywords := Array()
 	if(!IsObject(XMLObject.Keywords))
 		XMLObject.Keywords := Object()
-	if(!XMLObject.Keywords.Keyword.len())
+	if(!XMLObject.Keywords.Keyword.MaxIndex())
 		XMLObject.Keywords.Keyword := IsObject(XMLObject.Keywords.Keyword) ? Array(XMLObject.Keywords.Keyword) : Array()
-	Loop % XMLObject.Keywords.Keyword.len()
+	Loop % XMLObject.Keywords.Keyword.MaxIndex()
 		Accessor.Keywords.Insert(Object("Key", XMLObject.Keywords.Keyword[A_Index].Key, "Command", XMLObject.Keywords.Keyword[A_Index].Command))
 	Accessor.GenericIcons := Object()
 	Accessor.GenericIcons.Application := ExtractIcon("shell32.dll", 3, 64)
@@ -155,13 +155,13 @@ Accessor_OnExit(Accessor)
 	
 	FileDelete, % Settings.ConfigPath "\Accessor.xml"
 	XMLObject := Object()
-	Loop % AccessorPlugins.len()
+	Loop % AccessorPlugins.MaxIndex()
 	{
 		XMLObject[AccessorPlugins[A_Index].Type] := Object("Enabled", AccessorPlugins[A_Index].Enabled, "Keyword", AccessorPlugins[A_Index].Settings.Keyword, "Settings", AccessorPlugins[A_Index].Settings)
 		AccessorPlugins[A_Index].OnExit()
 	}
 	XMLObject.Keywords := Object("Keyword",Array())
-	Loop % Accessor.Keywords.len()
+	Loop % Accessor.Keywords.MaxIndex()
 		XMLObject.Keywords.Keyword.Insert(Object("Key", Accessor.Keywords[A_Index].Key, "Command", Accessor.Keywords[A_Index].Command))
 	XML_Save(XMLObject, Settings.ConfigPath "\Accessor.xml")
 	
@@ -224,7 +224,7 @@ CreateAccessorWindow(Action)
 	Accessor.LauncherHotkey := Action.LauncherHotkey
 	Accessor.History.Index := 1
 	Accessor.History[1] := ""
-	Loop % AccessorPlugins.len()
+	Loop % AccessorPlugins.MaxIndex()
 	{
 		outputdebug % "load accessor plugin " AccessorPlugins[A_index].type
 		AccessorPlugins[A_Index].OnAccessorOpen(Accessor)
@@ -260,7 +260,7 @@ FillAccessorList()
 	Gui, ListView, AccessorListView	
 	GuiControlGet, BaseFilter, , AccessorEdit
 	outputdebug pre keyword:%BaseFilter%
-	Loop % Accessor.Keywords.len()
+	Loop % Accessor.Keywords.MaxIndex()
 	{
 		;if filter starts with keyword and ends directly after it or has a space after it
 		if(InStr(BaseFilter, Accessor.Keywords[A_Index].Key) = 1 && (strlen(BaseFilter) = strlen(Accessor.Keywords[A_Index].Key) || InStr(BaseFilter, " ") = strLen(Accessor.Keywords[A_Index].Key) + 1))
@@ -292,7 +292,7 @@ FillAccessorList()
 	ImageList_ReplaceIcon(Accessor.ImageListID, -1, Accessor.GenericIcons.File)
 	Accessor.List := Array()
 	;Find out if we are in a single plugin context, and add only those items
-	Loop % AccessorPlugins.len()
+	Loop % AccessorPlugins.MaxIndex()
 		if(AccessorPlugins[A_Index].Enabled && SingleContext := ((AccessorPlugins[A_Index].Settings.Keyword && Filter && KeywordSet := strStartsWith(Filter, AccessorPlugins[A_Index].Settings.Keyword " ")) || AccessorPlugins[A_Index].IsInSinglePluginContext(Filter, LastFilter))) 
 		{
 			Filter := strTrim(Filter, AccessorPlugins[A_Index].Settings.Keyword " ")
@@ -303,7 +303,7 @@ FillAccessorList()
 	if(!SingleContext)
 	{
 		Pluginlist := ""
-		Loop % AccessorPlugins.len()
+		Loop % AccessorPlugins.MaxIndex()
 			Pluginlist .= (Pluginlist ? "," : "") A_Index
 		Sort, Pluginlist, F AccessorPrioritySort D`,
 		Loop, Parse, Pluginlist, `,
@@ -312,10 +312,10 @@ FillAccessorList()
 	}
 	;Now that items are added, add them to the listview
 	LV_SetImageList(Accessor.ImageListID, 1) ; Attach the ImageLists to the ListView so that it can later display the icons
-	Loop % Accessor.List.len()
+	Loop % Accessor.List.MaxIndex()
 	{
 		AccessorListEntry := Accessor.List[A_Index]
-		AccessorPlugin := AccessorPlugins.SubItem("Type", AccessorListEntry.Type)
+		AccessorPlugin := AccessorPlugins.GetItemWithValue("Type", AccessorListEntry.Type)
 		AccessorPlugin.GetDisplayStrings(AccessorListEntry, Title := AccessorListEntry.Title, Path := AccessorListEntry.Path, Detail1 := AccessorListEntry.Detail1, Detail2 := AccessorListEntry.Detail2)
 		LV_Add("Icon" AccessorListEntry.Icon, "", A_Index, Title, Path, Detail1, Detail2)
 	}
@@ -365,7 +365,7 @@ AccessorEditEvents()
 	LV_GetText(id,A_EventInfo,2)
 	AccessorListEntry := Accessor.List[id]
 	NeedsUpdate := 1
-	Loop % AccessorPlugins.len() ;Check if single context plugin requests an update
+	Loop % AccessorPlugins.MaxIndex() ;Check if single context plugin requests an update
 	{
 		if(AccessorPlugins[A_Index].Enabled && ((AccessorPlugins[A_Index].Settings.Keyword && Filter && strStartsWith(Filter, AccessorPlugins[A_Index].Settings.Keyword)) || AccessorPlugins[A_Index].IsInSinglePluginContext(Filter, Accessor.LastFilter)))
 		{
@@ -374,7 +374,7 @@ AccessorEditEvents()
 		}
 	}
 	if(!NeedsUpdate) ;Check if any plugin requests an update
-		Loop % AccessorPlugins.len()
+		Loop % AccessorPlugins.MaxIndex()
 		{
 			if(AccessorPlugins[A_Index].Enabled && !AccessorPlugins[A_Index].KeywordOnly)
 				NeedsUpdate := AccessorPlugins[A_Index].EditEvents(AccessorListEntry, Filter, LastFilter)
@@ -397,7 +397,7 @@ AccessorListViewEvents()
 	SplitPath, Filter, name, dir,,,drive
 	LV_GetText(id,A_EventInfo,2)
 	AccessorListEntry := Accessor.List[id]
-	Loop % AccessorPlugins.len()
+	Loop % AccessorPlugins.MaxIndex()
 	{
 		if(AccessorPlugins[A_Index].Enabled && AccessorListentry.Type = AccessorPlugins[A_Index].Type)
 		{	
@@ -440,9 +440,9 @@ AccessorOK()
 	LV_GetText(id,selected,2)
 	GuiControlGet, Filter, , AccessorEdit
 	Accessor.History.Insert(2, Filter)
-	while(Accessor.History.len() > 10)
+	while(Accessor.History.MaxIndex() > 10)
 		Accessor.History.Delete(11)
-	Loop % AccessorPlugins.len()
+	Loop % AccessorPlugins.MaxIndex()
 	{
 		if(AccessorPlugins[A_Index].Type = Accessor.List[id].Type)
 		{
@@ -461,7 +461,7 @@ AccessorClose()
 		GUINum := Accessor.GUINum
 		Gui, %GUINum%: Default
 		GUI, ListView, AccessorListView
-		Loop % AccessorPlugins.len()
+		Loop % AccessorPlugins.MaxIndex()
 			AccessorPlugins[A_Index].OnAccessorClose(Accessor)
 		Accessor.LastFilter := ""
 		OnMessage(0x100, Accessor.OldKeyDown) ; Restore previous KeyDown handler
@@ -495,7 +495,7 @@ Accessor_WM_KEYDOWN(wParam,lParam)
 		AccessorListEntry := Accessor.List[id]
 	}
 	
-	Loop % AccessorPlugins.len()
+	Loop % AccessorPlugins.MaxIndex()
 		if(AccessorPlugins[A_Index].Enabled && SingleContext := ((AccessorPlugins[A_Index].Settings.Keyword && Filter && strStartsWith(Filter, AccessorPlugins[A_Index].Settings.Keyword)) || AccessorPlugins[A_Index].IsInSinglePluginContext(Filter, Accessor.LastFilter)))
 		{
 			outputdebug single context keydown
@@ -504,7 +504,7 @@ Accessor_WM_KEYDOWN(wParam,lParam)
 				return 1
 		}
 	if(!SingleContext)
-		Loop % AccessorPlugins.len()
+		Loop % AccessorPlugins.MaxIndex()
 		{
 			if(AccessorPlugins[A_Index].Enabled && AccessorPlugins[A_Index].Type = AccessorListEntry.Type && !AccessorPlugins[A_Index].KeywordOnly)
 			{
@@ -530,7 +530,7 @@ Accessor_WM_KEYDOWN(wParam,lParam)
 	{
 		if(GetKeyState("Control", "P"))
 		{
-			if(Accessor.History.len() >= Accessor.History.Index + 1 && Accessor.History.Index < 10)
+			if(Accessor.History.MaxIndex() >= Accessor.History.Index + 1 && Accessor.History.Index < 10)
 			{
 				Accessor.History.Index := Accessor.History.Index + 1
 				Accessor.History.CycleHistory := 1
@@ -589,7 +589,7 @@ AccessorContextMenu()
 		Menu, AccessorMenu, DeleteAll
 		LV_GetText(id,selected,2)
 		AccessorListEntry := Accessor.List[id]
-		Loop % AccessorPlugins.len()
+		Loop % AccessorPlugins.MaxIndex()
 		{
 			if(AccessorListEntry.Type = AccessorPlugins[A_Index].Type)
 			{
@@ -649,16 +649,16 @@ AccessorRunWithArgs()
 	GUI, ListView, AccessorListView
 	selected := LV_GetNext()
 	LV_GetText(id,selected,2)
-	Event := EventSystem_CreateEvent()
+	Event := new CEvent()
 	Event.Name := "Run with arguments"
 	Event.Temporary := true
-	Event.Actions.Insert(EventSystem_CreateSubEvent("Action","Input"))
+	Event.Actions.Insert(new CInputAction())
 	Event.Actions[1].Text := "Enter program arguments"
 	Event.Actions[1].Title := "Enter program arguments"
-	Event.Actions.Insert(EventSystem_CreateSubEvent("Action","Run"))
+	Event.Actions.Insert(new CRunAction())
 	Event.Actions[2].Command := """" Accessor.List[id].Path """ ${Input}"
-	TemporaryEvents.RegisterEvent(Event)
-	TriggerSingleEvent(Event)
+	EventSystem.TemporaryEvents.RegisterEvent(Event)
+	Event.TriggerThisEvent()
 	AccessorClose()
 }
 AccessorOpenExplorer()
@@ -707,7 +707,7 @@ GUI_EditAccessorPlugin(TemporaryPlugin,GoToLabel="")
 		if(!GuiNum)
 			return
 		sTemporaryPlugin := TemporaryPlugin.DeepCopy()
-		sOriginalPlugin := AccessorPlugins.SubItem("Type", sTemporaryPlugin.Type)
+		sOriginalPlugin := AccessorPlugins.GetItemWithValue("Type", sTemporaryPlugin.Type)
 		if(!sOriginalPlugin)
 			return
 		result := ""
@@ -762,7 +762,7 @@ GUI_EditAccessorPlugin(TemporaryPlugin,GoToLabel="")
 	{
 		outputdebug ok %guinum%
 		sOriginalPlugin.SaveSettings(sTemporaryPlugin.Settings, PluginGUI)
-		SubEventGUI_GUISubmit(sTemporaryPlugin.Settings, PluginGUI)
+		SubmitControls(sTemporaryPlugin.Settings, PluginGUI)
 		Gui, %GuiNum%:Submit, NoHide
 		outputdebug % " keyword: " sTemporaryPlugin.Settings.Keyword " Default: " sTemporaryPlugin.DefaultKeyword
 		if(sTemporaryPlugin.Settings.Keyword = "" && sOriginalPlugin.DefaultKeyword != "")

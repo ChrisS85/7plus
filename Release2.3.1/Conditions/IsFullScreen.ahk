@@ -1,33 +1,21 @@
- Condition_IsFullScreen_Init(Condition)
+Class CIsFullScreenCondition Extends CCondition
 {
-	Condition.Category := "Window"
-	Condition.UseIncludeList := 1
-	Condition.UseExcludeList := 1
+	static Type := RegisterType(CIsFullScreenCondition, "IsFullScreen")
+	static Category := RegisterCategory(CIsFullScreenCondition, "Window")
+	static UseIncludeList := 1
+	static UseExcludeList := 1
+	Evaluate()
+	{
+		return IsFullScreen("A",this.UseExcludeList, this.UseIncludeList)
+	}
+	DisplayString()
+	{
+		return "In fullscreen"
+	}
+	GuiShow(SubEventGUI)
+	{
+		this.AddControl(SubEventGUI, "Text", "Desc", "This condition checks if a fullscreen window is active (such as a game or a movie).")
+		this.AddControl(SubEventGUI, "Checkbox", "UseIncludeList", "Use include list","","","","","","","The include list is specified in Misc settings. All window classes on this list are always recognized as fullscreen.")
+		this.AddControl(SubEventGUI, "Checkbox", "UseExcludeList", "Use exclude list","","","","","","","The exclude list is specified in Misc settings. All window classes on this list are never recognized as fullscreen.")
+	}
 }
-Condition_IsFullScreen_ReadXML(Condition, XMLCondition)
-{
-	Condition.ReadVar(XMLCondition, "UseIncludeList")
-	Condition.ReadVar(XMLCondition, "UseExcludeList")
-}
-Condition_IsFullScreen_Evaluate(Condition)
-{
-	x:=IsFullScreen("A",Condition.UseExcludeList, Condition.UseIncludeList)
-	outputdebug evaluate fullscreen %x%
-	return x
-}
-Condition_IsFullScreen_DisplayString(Condition)
-{
-	return "In fullscreen"
-}
-
-Condition_IsFullScreen_GuiShow(Condition, ConditionGUI)
-{
-	SubEventGUI_Add(Condition, ConditionGUI, "Text", "Desc", "This condition checks if a fullscreen window is active (such as a game or a movie).")
-	SubEventGUI_Add(Condition, ConditionGUI, "Checkbox", "UseIncludeList", "Use include list","","","","","","","The include list is specified in Misc settings. All window classes on this list are always recognized as fullscreen.")
-	SubEventGUI_Add(Condition, ConditionGUI, "Checkbox", "UseExcludeList", "Use exclude list","","","","","","","The exclude list is specified in Misc settings. All window classes on this list are never recognized as fullscreen.")
-}
-
-Condition_IsFullScreen_GuiSubmit(Condition, ConditionGUI)
-{
-	SubEventGUI_GUISubmit(Condition, ConditionGUI)
-} 

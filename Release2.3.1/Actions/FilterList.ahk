@@ -28,7 +28,7 @@ Action_FilterList_Execute(Action,Event)
 	array := ToArray(List, Separator, wasQuoted)
 	outputdebug separator: "%separator%"
 	newarray := Array()
-	Loop % array.len()
+	Loop % array.MaxIndex()
 	{
 		result := (	Action.Operator = "that are equal to" && array[A_Index] = Filter
 				|| 	Action.Operator = "that are greater than" && array[A_Index] > Filter
@@ -41,10 +41,10 @@ Action_FilterList_Execute(Action,Event)
 		||  (Action.Action = "Remove list entries from" && !result))
 		
 			newarray.Insert(array[A_Index])
-		outputdebug % "Action: " Action.Operator " result: " result " len: " newarray.len()
+		outputdebug % "Action: " Action.Operator " result: " result " len: " newarray.MaxIndex()
 	}
 	
-	if(Action.ExitOnEmptyList && newarray.len() = 0)
+	if(Action.ExitOnEmptyList && newarray.MaxIndex() = 0)
 		return 0
 	newlist := ArrayToList(newarray, Separator, wasQuoted)
 	Event.Placeholders[key] := newlist

@@ -1,14 +1,14 @@
-;Adds a row of controls to a SubEvent GUI. Control handles are stored in SubEventGUI, and can be stored back and have the controls delete by SubEventGUI_GUISubmit
-SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description="", Button1Text="", Button1gLabel = "", Button2Text="", Button2gLabel = "", Tooltip = "")
+;Adds a row of controls to a GUI using a value associated with ValueObject. Control handles are stored in GUI, and can be stored back and have the controls delete by CSubEvent.GUISubmit
+AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", Button1Text = "", Button1gLabel = "", Button2Text = "", Button2gLabel = "", Tooltip = "")
 {
-	x := SubEventGUI.x
-	y := SubEventGUI.y
+	x := GUI.x
+	y := GUI.y
 	w := 200
 	if(description != "")
 	{
 		y += 4
 		Gui, Add, Text, x%x% y%y% hwndDesc_%name%, %description%
-		SubEventGUI["Desc_" name] := Desc_%name%
+		GUI["Desc_" name] := Desc_%name%
 		x += 70
 		y -= 4
 	}
@@ -24,9 +24,9 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 				w += 60
 		}
 		Gui, Add, Text, x%x% y%y% w%w% hwndText_%name%, %text%
-		if(SubEventGUI.HasKey("Text_" name))
+		if(GUI.HasKey("Text_" name))
 			Msgbox Subevent GUI control already exists: %name%
-		SubEventGUI["Text_" name] := Text_%name%
+		GUI["Text_" name] := Text_%name%
 		if(description = "")
 			w -= 100
 		ControlGetPos,,,,h,,% "ahk_id " Text_%name%
@@ -36,33 +36,33 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 	}
 	else if(type = "Checkbox")
 	{
-		if(SubEvent[name] = 1)
+		if(ValueObj[name] = 1)
 			Gui, Add, Checkbox, x%x% y%y% hwndCheck_%name% Checked, %text%
 		else
 		{
 			Gui, Add, Checkbox, x%x% y%y% hwndCheck_%name%, %text%
-			if(SubEvent[name] != 0)
-				Msgbox SubEventGUI_Add(%type%,%name%, %text%, %description%) has wrong checkbox value!
+			if(ValueObj[name] != 0)
+				Msgbox SubEvent.AddControl(%type%,%name%, %text%, %description%) has wrong checkbox value!
 		}
 		y += 30		
-		if(SubEventGUI.HasKey("Check_" name))
+		if(GUI.HasKey("Check_" name))
 			Msgbox Subevent GUI control already exists: %name%
-		SubEventGUI["Check_" name] := Check_%name%
+		GUI["Check_" name] := Check_%name%
 		if(Tooltip)
 			AddToolTIp(Check_%name%, Tooltip)
 	}
 	else if(type = "Edit")
 	{
 		y += 1
-		text := SubEvent[name]
+		text := ValueObj[name]
 		options = x%x% y%y% w%w% hwndEdit_%name% -Multi R1
 		options .= InStr(name, "password") ? " Password" : ""
 		Gui, Add, Edit, %options% , %text%
 		y -= 1
 		y += 30
-		if(SubEventGUI.HasKey("Edit_" name))
+		if(GUI.HasKey("Edit_" name))
 			Msgbox Subevent GUI control already exists: %name%
-		SubEventGUI["Edit_" name] := Edit_%name%
+		GUI["Edit_" name] := Edit_%name%
 		if(Tooltip)
 			AddToolTIp(Edit_%name%, Tooltip)
 	}
@@ -70,9 +70,9 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 	{
 		Gui, Add, Button, x%x% y%y% w%w% hwndButton_%name% g%gLabel% r1 -Wrap, %text%
 		y += 30
-		if(SubEventGUI.HasKey("Button_" name))
+		if(GUI.HasKey("Button_" name))
 			Msgbox Subevent GUI control already exists: %name%
-		SubEventGUI["Button_" name] := Button_%name%
+		GUI["Button_" name] := Button_%name%
 		if(Tooltip)
 			AddToolTIp(Button_%name%, Tooltip)
 	}
@@ -83,7 +83,7 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 		{
 			Triggertype := SubStr(text, 13)
 			text := ""
-			Loop % SettingsWindow.Events.len()
+			Loop % SettingsWindow.Events.MaxIndex()
 			{
 				if(!TriggerType || SettingsWindow.Events[A_Index].Trigger.Type = TriggerType)
 					text .= SettingsWindow.Events[A_Index].ID ": " SettingsWindow.Events[A_Index].Name "|"
@@ -94,9 +94,9 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 		{
 			if(A_LoopField)
 				if(InStr(A_LoopField, ": ")) ;if list entries start with "\d+: " or similar, it is sufficient to store \d+ in the assigned variable to select its item
-					text1 .= A_LoopField (SubStr(A_LoopField, 1, InStr(A_LoopField, ": ") - 1) = SubEvent[name] ? "||" : "|")
+					text1 .= A_LoopField (SubStr(A_LoopField, 1, InStr(A_LoopField, ": ") - 1) = ValueObj[name] ? "||" : "|")
 				else
-					text1 .= A_LoopField (A_LoopField = SubEvent[name] ? "||" : "|")
+					text1 .= A_LoopField (A_LoopField = ValueObj[name] ? "||" : "|")
 		}
 		if(!strEndsWith(text1,"||"))
 			text1 := SubStr(text1, 1, -1)
@@ -106,9 +106,9 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 			if(gLabel != "")
 				options .= " g" gLabel
 			Gui, Add, DropDownList, %options%, %text1%
-			if(SubEventGUI.HasKey("DropDown_" name))
+			if(GUI.HasKey("DropDown_" name))
 				Msgbox Subevent GUI control already exists: %name%
-			SubEventGUI["DropDown_" name] := DropDown_%name%
+			GUI["DropDown_" name] := DropDown_%name%
 			if(Tooltip)
 				AddToolTIp(DropDown_%name%, Tooltip)
 		}
@@ -118,11 +118,11 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 			if(gLabel != "")
 				options .= " g" gLabel
 			Gui, Add, ComboBox, %options%, %text1%
-			if(SubEventGUI.HasKey("ComboBox_" name))
+			if(GUI.HasKey("ComboBox_" name))
 				Msgbox Subevent GUI control already exists: %name%
-			SubEventGUI["ComboBox_" name] := ComboBox_%name%
+			GUI["ComboBox_" name] := ComboBox_%name%
 			if(!InStr(text1, "||"))
-				ControlSetText, , % SubEvent[name], % "ahk_id " ComboBox_%name%
+				ControlSetText, , % ValueObj[name], % "ahk_id " ComboBox_%name%
 			if(Tooltip)
 				AddToolTIp(ComboBox_%name%, Tooltip)
 		}
@@ -130,42 +130,44 @@ SubEventGUI_Add(SubEvent, SubEventGUI, type, name, text, glabel="", description=
 	}	
 	else if(type = "Time")
 	{
-		text := SubEvent[name]
+		text := ValueObj[name]
 		outputdebug time %text%
 		Gui, Add, DateTime, x%x% y%y% hwndTime_%name% Choose20100101%text%, Time
 		y += 30		
-		if(SubEventGUI.HasKey("Time_" name))
+		if(GUI.HasKey("Time_" name))
 			Msgbox Subevent GUI control already exists: %name%
-		SubEventGUI["Time_" name] := Time_%name%
+		GUI["Time_" name] := Time_%name%
 		if(Tooltip)
 			AddToolTIp(Time_%name%, Tooltip)
 	}
 	if(Button1Text != "")
 	{				
 		x += 210
-		y := SubEventGUI.y
+		y := GUI.y
 		w := 70
 		if(Button2Text != "")
 			Gui, Add, Button, x%x% y%y% w%w% hwndButton1_%name% g%Button1gLabel% r1 -Wrap, %Button1Text%
 		else
 			Gui, Add, Button, x%x% y%y% hwndButton1_%name% g%Button1gLabel% r1 -Wrap, %Button1Text%
 		y += 30
-		SubEventGUI["Button1_" name] := Button1_%name%
+		GUI["Button1_" name] := Button1_%name%
 		if(Button2Text != "")
 		{		
 			x += 76
-			y := SubEventGUI.y
+			y := GUI.y
 			Gui, Add, Button, x%x% y%y% w%w% hwndButton2_%name% g%Button2gLabel% r1 -Wrap, %Button2Text%
 			y += 30
-			SubEventGUI["Button2_" name] := Button2_%name%
+			GUI["Button2_" name] := Button2_%name%
 		}
 	}
-	SubEventGUI.y := y
+	GUI.y := y
 }
-SubEventGUI_GUISubmit(SubEvent, SubEventGUI)
+
+;Stores the values of the controls in GUI in their associated field in ValueObj. This function is used in combination with AddControl().
+SubmitControls(ValueObj, GUI)
 {
-	;Loop over all controls added to SubEventGUI, and store their results and delete them
-	enum := SubEventGUI._newEnum()
+	;Loop over all controls added to GUI, and store their results and delete them
+	enum := GUI._newEnum()
 	while enum[key,value]
 	{
 		if(strStartsWith(key, "Desc_") || strStartsWith(key, "Text_") || strStartsWith(key, "Button"))
@@ -176,7 +178,7 @@ SubEventGUI_GUISubmit(SubEvent, SubEventGUI)
 		{
 			name := SubStr(key,7)
 			ControlGet, Checked, Checked, , ,ahk_id %value%
-			SubEvent[name] := Checked
+			ValueObj[name] := Checked
 			outputdebug save %name% %checked%
 			WinKill, ahk_id %value%
 		}
@@ -184,7 +186,7 @@ SubEventGUI_GUISubmit(SubEvent, SubEventGUI)
 		{
 			name := SubStr(key, 6)
 			ControlGetText, text, , ahk_id %value%
-			SubEvent[name] := text
+			ValueObj[name] := text
 			outputdebug save %name% %text%
 			WinKill, ahk_id %value%
 		}
@@ -195,7 +197,7 @@ SubEventGUI_GUISubmit(SubEvent, SubEventGUI)
 			if(InStr(text, ": ")) ;If the selection starts with "\d+: " or similar, (\d+) is returned instead
 				text := SubStr(text, 1, InStr(text, ": ") - 1)
 			outputdebug save %name% %text%
-			SubEvent[name] := text
+			ValueObj[name] := text
 			WinKill, ahk_id %value%
 		}
 		else if(strStartsWith(key, "ComboBox_"))
@@ -205,7 +207,7 @@ SubEventGUI_GUISubmit(SubEvent, SubEventGUI)
 			if(InStr(text, ": ")) ;If the selection starts with "\d+: " or similar, (\d+) is returned instead
 				text := SubStr(text, 1, InStr(text, ": ") - 1)
 			outputdebug save %name% %text%
-			SubEvent[name] := text
+			ValueObj[name] := text
 			WinKill, ahk_id %value%
 		}
 		else if(strStartsWith(key, "Time_"))
@@ -214,19 +216,20 @@ SubEventGUI_GUISubmit(SubEvent, SubEventGUI)
 			ControlGetText, text, , ahk_id %value%
 			StringReplace, text, text, :,,All
 			outputdebug store %text% in %name%
-			SubEvent[name] := text
+			ValueObj[name] := text
 			WinKill, ahk_id %value%
 		}
 	}
 }
 
-SubEventGUI_Browse(SubEventGUI, name, Title="Select Folder",Options=0, Quote=0)
+;Shows a browse dialog and shows the result in the GUI control associated with "name". This function is used in combination with AddControl()
+Browse(GUI, name, Title="Select Folder",Options=0, Quote=0)
 {
 	Gui +OwnDialogs
 	path:=COMObjCreate("Shell.Application").BrowseForFolder(0, Title, Options).Self.Path
 	if(path!="")
 	{
-		enum := SubEventGUI._newEnum()
+		enum := GUI._newEnum()
 		while enum[key,value]
 		{
 			if(InStr(key,"_" name) && !InStr(key, "Button1_") && !InStr(key, "Button2_") && !InStr(key, "Desc_"))
@@ -239,13 +242,14 @@ SubEventGUI_Browse(SubEventGUI, name, Title="Select Folder",Options=0, Quote=0)
 		}
 	}
 }
-SubEventGUI_SelectFile(SubEventGUI, name, Title = "Select File", Filter = "", Quote=0, options = 3)
+;Shows a file selection dialog and shows the result in the GUI control associated with "name". This function is used in combination with AddControl()
+SelectFile(GUI, name, Title = "Select File", Filter = "", Quote=0, options = 3)
 {
 	Gui +OwnDialogs
 	FileSelectFile, path , %options%, , %Title%, %Filter%
 	if(path != "")
 	{
-		enum := SubEventGUI._newEnum()
+		enum := GUI._newEnum()
 		while enum[key,value]
 		{
 			if(InStr(key,"_" name) && !InStr(key, "Button1_") && !InStr(key, "Button2_") && !InStr(key, "Desc_"))
@@ -258,112 +262,3 @@ SubEventGUI_SelectFile(SubEventGUI, name, Title = "Select File", Filter = "", Qu
 		}
 	}
 }
-SubEventGUI_Placeholders(SubEventGUI, name, ClickedMenu="")
-{
-	static sSubEventGUI,sname
-	if(ClickedMenu = "")
-	{
-		sSubEventGUI := SubEventGUI
-		sname := name
-		
-		Menu, Placeholders, add, 1,PlaceholderHandler
-		Menu, Placeholders, DeleteAll
-		
-		Menu, Placeholders_FilePaths, add, 1,PlaceholderHandler
-		Menu, Placeholders_FilePaths, DeleteAll
-		Menu, Placeholders_DateTime, add, 1,PlaceholderHandler
-		Menu, Placeholders_DateTime, DeleteAll		
-		Menu, Placeholders_Explorer, add, 1,PlaceholderHandler
-		Menu, Placeholders_Explorer, DeleteAll
-		Menu, Placeholders_Mouse, add, 1,PlaceholderHandler
-		Menu, Placeholders_Mouse, DeleteAll
-		Menu, Placeholders_System, add, 1,PlaceholderHandler
-		Menu, Placeholders_System, DeleteAll
-		Menu, Placeholders_Windows, add, 1,PlaceholderHandler
-		Menu, Placeholders_Windows, DeleteAll
-		
-		Menu, Placeholders, add, Date and Time, :Placeholders_DateTime
-		Menu, Placeholders, add, Explorer, :Placeholders_Explorer
-		Menu, Placeholders, add, File Paths, :Placeholders_FilePaths
-		Menu, Placeholders, add, Mouse, :Placeholders_Mouse
-		Menu, Placeholders, add, System, :Placeholders_System
-		Menu, Placeholders, add, Windows, :Placeholders_Windows
-		
-		Menu, Placeholders_DateTime, add, ${DateTime} - Language-specific time and date (4:55 PM Saturday`, November 27`, 2010), PlaceholderHandler
-		Menu, Placeholders_DateTime, add, ${DateTimeLongDate} - Language-specific long date (Friday`, April 23`, 2010), PlaceholderHandler
-		Menu, Placeholders_DateTime, add, ${DateTimeShortDate} - Language-specific short date (02/29/10), PlaceholderHandler
-		Menu, Placeholders_DateTime, add, ${DateTimeTime} - Language-specific time (5:26 PM), PlaceholderHandler
-		Menu, Placeholders_DateTime, add, ${DateTime[Format]} - Other [Format]`, see here, PlaceholderHandler
-		
-		Menu, Placeholders_Explorer, add, ${P} - Path of last active explorer window, PlaceholderHandler
-		Menu, Placeholders_Explorer, add, ${PP} - Previous path of explorer window, PlaceholderHandler
-		Menu, Placeholders_Explorer, add, ${Sel1} - Filepath of first selected file, PlaceholderHandler
-		Menu, Placeholders_Explorer, add, ${Sel2DQ} - Directory of second selected file`, quoted, PlaceholderHandler
-		Menu, Placeholders_Explorer, add, ${Sel3N} - Filename of third selected file`, no extension, PlaceholderHandler
-		Menu, Placeholders_Explorer, add, ${Sel4NE} - Filename of fourth selected file`, including extension, PlaceholderHandler
-		Menu, Placeholders_Explorer, add, ${SelN} - Filepaths of all selected files`, separated by spaces, PlaceholderHandler
-		Menu, Placeholders_Explorer, add, ${SelNNEM} - Filenames+extensions of all selected files`, separated by new lines, PlaceholderHandler
-		Menu, Placeholders_Explorer, add, Feel free to combine those expressions!, PlaceholderHandler
-		
-		Menu, Placeholders_FilePaths, add, `%ProgramFiles`% - Program Files Directory, PlaceholderHandler
-		Menu, Placeholders_FilePaths, add, `%AppData`% - AppData Directory, PlaceholderHandler
-		Menu, Placeholders_FilePaths, add, `%Desktop`% - Desktop Directory, PlaceholderHandler
-		Menu, Placeholders_FilePaths, add, `%MyDocuments`% - My Documents Directory, PlaceholderHandler
-		Menu, Placeholders_FilePaths, add, `%Temp`% - Temp Directory, PlaceholderHandler
-		Menu, Placeholders_FilePaths, add, `%StartMenu`% - Start Menu Directory, PlaceholderHandler
-		Menu, Placeholders_FilePaths, add, `%StartMenuCommon`% - Common Start Menu Directory, PlaceholderHandler
-		Menu, Placeholders_FilePaths, add, `%7plusDrive`% - Drive 7plus is running from, PlaceholderHandler
-		Menu, Placeholders_FilePaths, add, `%7plusDir`% - 7plus Directory, PlaceholderHandler
-		
-		Menu, Placeholders_Mouse, add, ${U} - Handle of window under mouse, PlaceholderHandler
-		Menu, Placeholders_Mouse, add, ${MC} - Class of window under mouse, PlaceholderHandler
-		Menu, Placeholders_Mouse, add, ${MNN} - ClassNN of control under mouse, PlaceholderHandler
-		Menu, Placeholders_Mouse, add, ${MX} - Mouse X coordinate, PlaceholderHandler
-		Menu, Placeholders_Mouse, add, ${MY} - Mouse Y coordinate, PlaceholderHandler		
-		Menu, Placeholders_Mouse, add, ${MXA} - Mouse X coordinate`, relative to active window, PlaceholderHandler
-		Menu, Placeholders_Mouse, add, ${MYA} - Mouse Y coordinate`, relative to active window, PlaceholderHandler		
-		Menu, Placeholders_Mouse, add, ${MXU} - Mouse X coordinate`, relative to window under mouse, PlaceholderHandler
-		Menu, Placeholders_Mouse, add, ${MYU} - Mouse Y coordinate`, relative to window under mouse, PlaceholderHandler
-		
-		Menu, Placeholders_System, add, ${Clip} - Clipboard contents, PlaceholderHandler
-		Menu, Placeholders_System, add, ${MessageResult} - Result of previous SendMessage action (Send only!), PlaceholderHandler
-		Menu, Placeholders_System, add, ${wParam} - wParam value if this condition/action was triggered by OnMessage trigger, PlaceholderHandler
-		Menu, Placeholders_System, add, ${lParam} - lParam value if this condition/action was triggered by OnMessage trigger, PlaceholderHandler
-		Menu, Placeholders_System, add, ${Context} - List of selected files(with paths) from Contextmenu trigger`, separated by newlines, PlaceholderHandler
-		Menu, Placeholders_System, add, ${WinVer} - Windows version(WIN_7`, WIN_VISTA`, WIN_XP`, WIN_2003`,...), PlaceholderHandler
-		
-		Menu, Placeholders_Windows, add, ${A} - Active window handle, PlaceholderHandler
-		Menu, Placeholders_Windows, add, ${Class} - Active window class, PlaceholderHandler
-		Menu, Placeholders_Windows, add, ${Title} - Active window title, PlaceholderHandler
-		Menu, Placeholders_Windows, add, ${Control} - Focussed control ClassNN, PlaceholderHandler
-		Menu, Placeholders_Windows, add, ${TitlePath} - Path in active window title, PlaceholderHandler
-		Menu, Placeholders_Windows, add, ${TitleFilename} - Path and filename in active window title, PlaceholderHandler
-		Menu, Placeholders, Show
-	}
-	else
-	{
-		if(ClickedMenu = "${DateTime[Format]} - Other [Format], see here")
-		{
-			run http://www.autohotkey.com/docs/commands/FormatTime.htm
-			return
-		}
-		else if(ClickedMenu = "Feel free to combine those expressions!")
-			return
-		else if(InStr(ClickedMenu, "-"))
-			placeholder := SubStr(ClickedMenu, 1, InStr(ClickedMenu, " -") - 1)
-		
-		enum := sSubEventGUI._newEnum()
-		while enum[key,value]
-		{
-			if(InStr(key,"_" sname) && !InStr(key, "Button1_") && !InStr(key, "Button2_") && !InStr(key, "Desc_"))
-			{
-				ControlGetText, text, , ahk_id %value%
-				ControlSetText, , %text%%placeholder%, ahk_id %value%
-				break
-			}
-		}
-	}
-}
-PlaceholderHandler:
-SubEventGUI_Placeholders("","",A_ThisMenuItem)
-return

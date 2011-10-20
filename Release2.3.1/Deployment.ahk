@@ -98,13 +98,13 @@ ApplyUpdateFixes()
 			;This will also set the XML version variables. 
 			;In case this is triggered by an autoupdate, it will make sure that case C) won't be recognized afterwards.
 			;This requires that the version is specified in the patch.
-			ReadEventsFile(Events, A_ScriptDir "\Events\ReleasePatch\" MajorVersion "." MinorVersion "." BugfixVersion ".0.xml")
+			EventSystem.Events.ReadEventsFile(A_ScriptDir "\Events\ReleasePatch\" MajorVersion "." MinorVersion "." BugfixVersion ".0.xml")
 			
 			;Upgrade from previous version resets the Patch version to 0
 			PatchVersion := 0
 			
 			;Save the patched file immediately
-			WriteMainEventsFile()
+			EventSystem.Events.WriteMainEventsFile()
 		}
 	}
 	;Register shell extension quietly
@@ -136,13 +136,13 @@ ApplyUpdateFixes()
 			FileRead, xml, % Settings.ConfigPath "\Clipboard.xml"
 			XMLObject := XML_Read(xml)
 			;Convert empty and single arrays to real array
-			if(!XMLObject.List.len())
+			if(!XMLObject.List.MaxIndex())
 				XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()		
 
-			Loop % min(XMLObject.List.len(), 10)
+			Loop % min(XMLObject.List.MaxIndex(), 10)
 				ClipboardList.Insert(Decrypt(XMLObject.List[A_Index])) ;Read encrypted clipboard history
 			XMLObject := Object("List",Array())
-			Loop % min(ClipboardList.len(), 10)
+			Loop % min(ClipboardList.MaxIndex(), 10)
 				XMLObject.List.Insert(Encrypt(ClipboardList[A_Index])) ;Store encrypted
 			XML_Save(XMLObject, Settings.ConfigPath "\Clipboard.xml")
 		}
@@ -176,9 +176,9 @@ AutoUpdate_CheckPatches()
 		}
 		if(FileExist(Settings.ConfigPath "\Patches\" version ".xml")) ;If the patch exists in patches directory (does not mean it has been downloaded now, they are stored)
 		{
-			ReadEventsFile(Events, Settings.ConfigPath "\Patches\" version ".xml","", Update)
+			EventSystem.Events.ReadEventsFile(Settings.ConfigPath "\Patches\" version ".xml","", Update)
 			PatchVersion++
-			WriteMainEventsFile()
+			EventSystem.Events.WriteMainEventsFile()
 			patch := true
 			continue
 		}

@@ -46,13 +46,13 @@ Action_Accessor_DisplayString(Action)
 
 Action_Accessor_GuiShow(Action, ActionGUI, GoToLabel = "")
 {
-	SubEventGUI_Add(Action, ActionGUI, "Checkbox", "FlashingWindows", "Activate flashing windows first")
-	; SubEventGUI_Add(Action, ActionGUI, "Edit", "LauncherHotkey", "","","Launcher Hotkey:")
+	AddControl(Action, ActionGUI, "Checkbox", "FlashingWindows", "Activate flashing windows first")
+	; AddControl(Action, ActionGUI, "Edit", "LauncherHotkey", "","","Launcher Hotkey:")
 }
 
 Action_Accessor_GuiSubmit(Action, ActionGUI)
 {
-	SubEventGUI_GUISubmit(Action, ActionGUI)
+	SubmitControls(Action, ActionGUI)
 } 
 Action_Accessor_OnExit(Action)
 {

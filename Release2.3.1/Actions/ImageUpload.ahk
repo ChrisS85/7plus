@@ -1,81 +1,100 @@
-Action_ImageUpload_Init(Action)
+Class CImageUploadAction Extends CAction
 {
-	Action.Category := "File"
-	Action.Hoster := "ImgUr"
-	Action.SourceFiles := "${SelNM}" ;All upload actions need to have SourceFiles property (used in ImageConverter)
-	Action.CopyToClipboard := 1
-}
+	static Type := RegisterType(CImageUploadAction, "ImageUpload")
+	static Category := RegisterCategory(CImageUploadAction, "File")
+	static Hoster := "ImgUr"
+	static SourceFiles := "${SelNM}" ;All upload actions need to have SourceFiles property (used in ImageConverter)
+	static CopyToClipboard := 1
 
-Action_ImageUpload_ReadXML(Action, XMLAction)
-{
-	Action.ReadVar(XMLAction, "Hoster")
-	Action.ReadVar(XMLAction, "SourceFiles")
-	Action.ReadVar(XMLAction, "CopyToClipboard")
-}
-
-Action_ImageUpload_DisplayString(Action)
-{
-	return "Upload images: " Action.SourceFiles
-}
-Action_ImageUpload_Execute(Action, Event)
-{
-	global Vista7
-	if(!Action.HasKey("tmpFiles"))
+	__New()
 	{
-		Action.tmpFiles := ToArray(Event.ExpandPlaceholders(Action.SourceFiles))
-		Action.tmpFailed := Array()
-		if(Action.tmpFiles.len() < 1)
-			return 0
-		else
-			Action.tmpFile := 1
+		;Setup the message handler for receiving image upload progress notifications
+		OnMessage(55556, "Action_ImageUpload_ProgressHandler")
 	}
-	if(Action.HasKey("tmpFiles"))
+	DisplayString()
 	{
-		if(Action.tmpFile > Action.tmpFiles.len()) ;All uploads finished
+		return "Upload images: " this.SourceFiles
+	}
+	Execute(Event)
+	{
+		global Vista7
+		if(!this.HasKey("tmpFiles"))
 		{
-			if(Action.CopyToClipboard)
-				Clipboard := Action.tmpClipboard
-			Notify("","",0, "Wait",Action.tmpNotifyID)
-			if(Action.tmpFailed.len() = 0)
-				Notify("Transfer finished", "File(s) uploaded" (Action.CopyToClipboard ? " and copied to clipboard" : ""), 2, "GC=555555 TC=White MC=White",NotifyIcons.Success)
-			else if(Action.tmpFailed.len() = Action.tmpFiles.len() && Action.tmpFiles.len() > 0)
-				Notify("Transfer failed", "Maybe the file extension is not supported by this hoster?", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",NotifyIcons.Error)
+			this.tmpFiles := ToArray(Event.ExpandPlaceholders(this.SourceFiles))
+			this.tmpFailed := Array()
+			if(this.tmpFiles.MaxIndex() < 1)
+				return 0
 			else
-				Notify("Transfer partially failed", "The following files could not be transferred:`n" Action.tmpFailed.ToString() , "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",NotifyIcons.Error)
-			Action.Remove("tmpNotifyID")
-			Action.Remove("tmpFiles")
-			Action.Remove("tmpFile")
-			Action.Remove("tmpClipboard")
-			Action.Remove("tmpFailed")
-			return 1
+				this.tmpFile := 1
 		}
-		Process, Exist, % Action.tmpPID
-		if(!ErrorLevel || !Action.tmpPID) ;No upload process running, start one
+		if(this.HasKey("tmpFiles"))
 		{
-			File := Action.tmpFiles[Action.tmpFile]
-			if(!FileExist(File) || !File)
+			if(this.tmpFile > this.tmpFiles.MaxIndex()) ;All uploads finished
 			{
-				Action.tmpFile++
+				if(this.CopyToClipboard)
+					Clipboard := this.tmpClipboard
+				Notify("","",0, "Wait",this.tmpNotifyID)
+				if(this.tmpFailed.MaxIndex() = 0)
+					Notify("Transfer finished", "File(s) uploaded" (this.CopyToClipboard ? " and copied to clipboard" : ""), 2, "GC=555555 TC=White MC=White",NotifyIcons.Success)
+				else if(this.tmpFailed.MaxIndex() = this.tmpFiles.MaxIndex() && this.tmpFiles.MaxIndex() > 0)
+					Notify("Transfer failed", "Maybe the file extension is not supported by this hoster?", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",NotifyIcons.Error)
+				else
+					Notify("Transfer partially failed", "The following files could not be transferred:`n" this.tmpFailed.ToString() , "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",NotifyIcons.Error)
+				this.Remove("tmpNotifyID")
+				this.Remove("tmpFiles")
+				this.Remove("tmpFile")
+				this.Remove("tmpClipboard")
+				this.Remove("tmpFailed")
+				return 1
+			}
+			Process, Exist, % this.tmpPID
+			if(!ErrorLevel || !this.tmpPID) ;No upload process running, start one
+			{
+				File := this.tmpFiles[this.tmpFile]
+				if(!FileExist(File) || !File)
+				{
+					this.tmpFile++
+					return -1
+				}
+				If(A_IsCompiled)
+					run % """" A_ScriptFullPath """ -iu """ File """ " Event.ID " " this.Hoster,,UseErrorLevel, PID
+				else
+					run % """" A_AhkPath """ """ A_ScriptFullPath """ -iu """ File """ " Event.ID " " this.Hoster,,UseErrorLevel, PID
+				this.tmpPID := PID
 				return -1
 			}
-			If(A_IsCompiled)
-				run % """" A_ScriptFullPath """ -iu """ File """ " Event.ID " " Action.Hoster,,UseErrorLevel, PID
-			else
-				run % """" A_AhkPath """ """ A_ScriptFullPath """ -iu """ File """ " Event.ID " " Action.Hoster,,UseErrorLevel, PID
-			Action.tmpPID := PID
-			return -1
+			else ;Upload still running, keep Action in EventSchedule
+				return -1
 		}
-		else ;Upload still running, keep Action in EventSchedule
-			return -1
+		return 0 ;No files
 	}
-	return 0 ;No files
+
+
+	GuiShow(GUI, GoToLabel = "")
+	{
+		static sGUI
+		if(GoToLabel = "")
+		{
+			sGUI := GUI
+			this.AddControl(GUI, "Text", "Desc", "This action uploads images to image hosters. Currently only ImgUr is supported, others may follow.")		
+			this.AddControl(GUI, "DropDownList", "Hoster", GetImageHosterList().ToString("|"), "", "Hoster:")
+			this.AddControl(GUI, "Edit", "SourceFiles", "", "", "Files:", "Placeholders", "Action_ImageUpload_Placeholders_Files")
+			this.AddControl(GUI, "Edit", "LinksPlaceholder", "", "", "Links Placeholder:", "", "","","","Name only, without ${}")
+			this.AddControl(GUI, "Checkbox", "CopyToClipboard", "Copy links to clipboard")
+		}
+		else if(GoToLabel = "Placeholders_Files")
+			ShowPlaceholderMenu(sGUI, "SourceFiles")
+	}
 }
-;This handles progress from upload processes
+Action_ImageUpload_Placeholders_Files:
+GetCurrentSubEvent().GuiShow("", "Placeholders_Files")
+return
+
+;This is called in the main 7plus process when a status message from an upload process is received
 Action_ImageUpload_ProgressHandler(Status, ID)
 {
-	global EventSchedule
-	Event := EventSchedule.SubItem("ID", ID)
-	Action := Event.Actions.SubItem("Type", "ImageUpload")
+	Event := EventSystem.EventSchedule.GetItemWithValue("ID", ID)
+	Action := Event.Actions.GetItemWithValue("Type", "ImageUpload")
 	if(Status = 102) ;Upload completed
 	{
 		;Code to read link and copy to clipboard
@@ -94,42 +113,20 @@ Action_ImageUpload_ProgressHandler(Status, ID)
 		outputdebug progress notification
 		if(!Action.HasKey("tmpNotifyID"))
 		{
-			Action.tmpNotifyID := Notify("Uploading " Action.tmpFiles.len() " file" (Action.tmpFiles.len() > 1 ? "s" : "" ) " to " Action.Hoster,"File " Action.tmpFile ": " Action.tmpFiles[Action.tmpFile],"","PG=100 GC=555555 TC=White MC=White",NotifyIcons.Internet)
+			Action.tmpNotifyID := Notify("Uploading " Action.tmpFiles.MaxIndex() " file" (Action.tmpFiles.MaxIndex() > 1 ? "s" : "" ) " to " Action.Hoster,"File " Action.tmpFile ": " Action.tmpFiles[Action.tmpFile],"","PG=100 GC=555555 TC=White MC=White",NotifyIcons.Internet)
 			return
 		}
 		Notify("","",Status, "Progress",Action.tmpNotifyID)
 		Notify("","","File " Action.tmpFile ": " Action.tmpFiles[Action.tmpFile], "Text",Action.tmpNotifyID)
 	}
 }
-
-Action_ImageUpload_GuiShow(Action, ActionGUI, GoToLabel = "")
-{
-	static sActionGUI
-	if(GoToLabel = "")
-	{
-		sActionGUI := ActionGUI
-		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action uploads images to image hosters. Currently only ImgUr is supported, others may follow.")		
-		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "Hoster", GetImageHosterList().ToString("|"), "", "Hoster:")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "SourceFiles", "", "", "Files:", "Placeholders", "Action_ImageUpload_Placeholders_Files")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "LinksPlaceholder", "", "", "Links Placeholder:", "", "","","","Name only, without ${}")
-		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "CopyToClipboard", "Copy links to clipboard")
-	}
-	else if(GoToLabel = "Placeholders_Files")
-		SubEventGUI_Placeholders(sActionGUI, "SourceFiles")
-}
-Action_ImageUpload_Placeholders_Files:
-Action_ImageUpload_GuiShow("", "", "Placeholders_Files")
-return
-
-Action_ImageUpload_GUISubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-}
+	
 GetImageHosterList()
 {
 	return Array("ImgUr")
 }
-;This function is run in a second 7plus process
+
+;This function is run in another 7plus process to prevent blocking the only available real thread
 ImageUploadThread(ParameterIndex,7plusHWND)
 {
 	global
@@ -185,26 +182,3 @@ Imgur_Upload( image_file, byref output_XML="" ) { ; ----------------------------
       Return SubStr( output_XML, pos + 10, Instr( output_XML, "</original>", 0, pos ) - pos - 10 ) 
    Else Return "" ; error: see response 
 } ; Imgur_Upload( image_path, Anonymous_API_Key, byref output_XML="" ) ----------------------------- 
-
-XML_MakePretty( XML, Tab="`t" ) { ; ---------------------------------------------------------------- 
-; Function by [VxE]. Adds newlines and tabs between XML tags to give human-friendly arrangement to 
-; an XML stream. 'Tab' contains the string to use as an indentation unit (it may be more readable to 
-; use 2 or 3 spaces instead of a full tab... so it's up to you!). 
-   oel := ErrorLevel, PrevCloseTag := 0, tabs := "", tablen := StrLen( tab ) 
-   StringLen, pos, XML 
-   Loop, Parse, XML, <, % "`t`r`n " 
-      If ( A_Index = 1 ) 
-         VarSetCapacity( XML, pos, 0 ) 
-      Else 
-      { 
-         StringGetPos, pos, A_LoopField, > 
-         StringMid, b, A_LoopField, pos, 1 
-         StringLeft, a, A_LoopField, 1 
-         If !( OpenTag := a != "/" ) * ( CloseTag := a = "/" || a = "!" || a = "?" || b = "/" ) 
-            StringTrimRight, tabs, tabs, tablen 
-         XML .= ( OpenTag || PrevCloseTag ? tabs : "" ) "<" A_LoopField 
-         If !( PrevCloseTag := CloseTag ) * OpenTag 
-            tabs := ( tabs = "" ? "`n" : tabs ) tab 
-      } 
-   Return XML, ErrorLevel := oel 
-} ; XML_MakePretty( XML, Tab="`t" ) ----------------------------------------------------------------

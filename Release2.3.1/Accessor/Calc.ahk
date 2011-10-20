@@ -52,7 +52,7 @@ Accessor_Calc_Init(ByRef Calc, PluginSettings)
 }
 Accessor_Calc_ShowSettings(Calc, PluginSettings, PluginGUI)
 {
-	SubEventGUI_Add(PluginSettings, PluginGUI, "Edit", "Keyword", "", "", "Keyword:")
+	AddControl(PluginSettings, PluginGUI, "Edit", "Keyword", "", "", "Keyword:")
 }
 Accessor_Calc_IsInSinglePluginContext(Calc, Filter, LastFilter)
 {
@@ -68,7 +68,7 @@ Accessor_Calc_OnAccessorOpen(Calc, Accessor)
 }
 Accessor_Calc_OnAccessorClose(Calc, Accessor)
 {
-	Loop % Calc.List.len()
+	Loop % Calc.List.MaxIndex()
 		if(Calc.List[A_Index].Icon != Accessor.GenericIcons.Application)			
 			DestroyIcon(Calc.List[A_Index].Icon)
 }
@@ -79,7 +79,7 @@ Accessor_Calc_FillAccessorList(Calc, Accessor, Filter, LastFilter, ByRef IconCou
 {
 	if(!strStartsWith(Filter, Calc.Settings.Keyword) && !KeywordSet)
 		return
-	Loop % Calc.List.len()
+	Loop % Calc.List.MaxIndex()
 	{
 		ImageList_ReplaceIcon(Accessor.ImageListID, -1, Calc.List[A_Index].Icon)
 		IconCount++
@@ -116,7 +116,7 @@ return
 QueryCalcResult()
 {
 	global AccessorPlugins, AccessorEdit, Accessor
-	CalcPlugin := AccessorPlugins.SubItem("Type", "Calc")
+	CalcPlugin := AccessorPlugins.GetItemWithValue("Type", "Calc")
 	GUINum := Accessor.GUINum
 	if(!GUINum)
 		return
@@ -132,7 +132,7 @@ QueryCalcResult()
 	URLDownloadToFile, %URL%, %A_Temp%\7plus\GoogleQuery.htm
 	FileRead, GoogleQuery, %A_Temp%\7plus\GoogleQuery.htm
 	
-	Loop % CalcPlugin.List.len()
+	Loop % CalcPlugin.List.MaxIndex()
 		if(CalcPlugin.List[A_Index].Icon)
 			DestroyIcon(CalcPlugin.List[A_Index].Icon)
 	CalcPlugin.List := Array()

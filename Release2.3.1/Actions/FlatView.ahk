@@ -74,7 +74,7 @@ FlatView(files)
 			</kindList>
 			<scope>
 	)
-	Loop % files.len()
+	Loop % files.MaxIndex()
 	{ 
 		if(InStr(FileExist(files[A_Index]), "D"))
 			searchString:=searchString "<include path=""" files[A_Index] """/>"

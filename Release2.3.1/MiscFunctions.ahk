@@ -705,7 +705,7 @@ RemoveLineFeedsAndSurroundWithDoubleQuotes(files)
 	if(isobject(files))
 	{
 		result := Array()
-		Loop % files.len()
+		Loop % files.MaxIndex()
 			if !InStr(FileExist(files[A_Index]), "D")
 				result.Insert("""" files[A_Index] """")
 		return result
@@ -789,7 +789,7 @@ ToArray(SourceFiles, ByRef Separator = "`n", ByRef wasQuoted = 0)
 
 ArrayToList(array, separator = "`n", quote = 0)
 {
-	Loop % array.len()
+	Loop % array.MaxIndex()
 		result .= (A_Index != 1 ? separator : "") (quote ? """" : "") array[A_Index] (quote ? """" : "")
 	return result
 }

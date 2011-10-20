@@ -10,7 +10,7 @@ Accessor_Uninstall_Init(ByRef Uninstall, PluginSettings)
 }
 Accessor_Uninstall_ShowSettings(Uninstall, PluginSettings, PluginGUI)
 {
-	SubEventGUI_Add(PluginSettings, PluginGUI, "Edit", "Keyword", "", "", "Keyword:")
+	AddControl(PluginSettings, PluginGUI, "Edit", "Keyword", "", "", "Keyword:")
 }
 Accessor_Uninstall_IsInSinglePluginContext(Uninstall, Filter, LastFilter)
 {
@@ -26,7 +26,7 @@ Accessor_Uninstall_OnAccessorOpen(Uninstall, Accessor)
 }
 Accessor_Uninstall_OnAccessorClose(Uninstall, Accessor)
 {
-	Loop % Uninstall.List.len()
+	Loop % Uninstall.List.MaxIndex()
 		if(Uninstall.List[A_Index].Icon != Accessor.GenericIcons.Application)			
 			DestroyIcon(Uninstall.List[A_Index].Icon)
 }
@@ -36,7 +36,7 @@ Accessor_Uninstall_OnExit(Uninstall)
 Accessor_Uninstall_FillAccessorList(Uninstall, Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet)
 {
 	;Lazy loading
-	if(Uninstall.List.len() = 0)
+	if(Uninstall.List.MaxIndex() = 0)
 	{
 		Loop, HKLM , SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, 2, 0
 		{
@@ -66,7 +66,7 @@ Accessor_Uninstall_FillAccessorList(Uninstall, Accessor, Filter, LastFilter, ByR
 		}
 	}
 	FuzzyList := Array()
-	Loop % Uninstall.List.len()
+	Loop % Uninstall.List.MaxIndex()
 	{
 		x := 0
 		if(x := (Filter = "" || InStr(Uninstall.List[A_Index].DisplayName,Filter)) || y := (Uninstall.Settings.FuzzySearch && FuzzySearch(Uninstall.List[A_Index].DisplayName,Filter) < 0.4))
@@ -118,7 +118,7 @@ RemoveUninstallEntry()
 	LV_GetText(id,selected,2)
 	GUID := Accessor.List[id].GUID
 	RegDelete, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%GUID%
-	Uninstall := AccessorPlugins.SubItem("Type", "Uninstall")
-	Uninstall.List.Delete(Uninstall.List.indexOfSubItem("GUID", GUID))
+	Uninstall := AccessorPlugins.GetItemWithValue("Type", "Uninstall")
+	Uninstall.List.Delete(Uninstall.List.FindKeyWithValue("GUID", GUID))
 	FillAccessorList()
 }

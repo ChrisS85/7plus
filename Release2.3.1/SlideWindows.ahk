@@ -32,7 +32,7 @@ Class CSlideWindow
 		WinGet, ExStyle, ExStyle, % "ahk_id " this.hwnd
 		this.WasOnTop := ExStyle & 0x8
 		this.OriginalPosition := WinGetPos("ahk_id " this.hwnd)
-		Loop % this.ChildWindows.len()
+		Loop % this.ChildWindows.MaxIndex()
 			this.ChildWindows.OriginalPosition := WinGetPos("ahk_id " this.ChildWindows.hwnd)
 		this.SlideOut()
 	}
@@ -54,7 +54,7 @@ Class CSlideWindow
 		this.GetChildWindows(0)
 		SetWinDelay 0
 		this.SlideState:=2
-		Loop % this.ChildWindows.len() + 1 ;Set all windows to always on top
+		Loop % this.ChildWindows.MaxIndex() + 1 ;Set all windows to always on top
 		{
 			hwnd := A_Index = 1 ? this.hwnd : this.ChildWindows[A_Index - 1].hwnd
 			WinSet, AlwaysOnTop, On , ahk_id %hwnd%
@@ -72,13 +72,13 @@ Class CSlideWindow
 		
 		;Calculate target position
 		this.Position := WinGetPos("ahk_id " this.hwnd)
-		Loop % this.ChildWindows.len()
+		Loop % this.ChildWindows.MaxIndex()
 			this.ChildWindows[A_Index].Position := WinGetPos("ahk_id " this.ChildWindows[A_Index].hwnd)
 		if(this.Direction = 1) ;Left
 		{
 			this.ToX := VirtualLeft
 			this.ToY := this.Position.y
-			Loop % this.ChildWindows.len()
+			Loop % this.ChildWindows.MaxIndex()
 			{
 				this.ChildWindows[A_Index].ToX := max(this.ToX + this.ChildWindows[A_Index].Position.x - this.Position.x, VirtualLeft)
 				this.ChildWindows[A_Index].ToY := this.ChildWindows[A_Index].Position.y
@@ -88,7 +88,7 @@ Class CSlideWindow
 		{
 			this.ToX := this.Position.x
 			this.ToY := VirtualTop
-			Loop % this.ChildWindows.len()
+			Loop % this.ChildWindows.MaxIndex()
 			{
 				this.ChildWindows[A_Index].ToX := this.ChildWindows[A_Index].Position.x
 				this.ChildWindows[A_Index].ToY := max(this.ToY + this.ChildWindows[A_Index].Position.y - this.Position.y, VirtualTop)
@@ -98,7 +98,7 @@ Class CSlideWindow
 		{
 			this.ToX := VirtualRight - this.Position.w
 			this.ToY := this.Position.y
-			Loop % this.ChildWindows.len()
+			Loop % this.ChildWindows.MaxIndex()
 			{
 				this.ChildWindows[A_Index].ToX := min(this.ToX + this.ChildWindows[A_Index].Position.x - this.Position.x, VirtualRight - this.ChildWindows[A_Index].Position.w)
 				this.ChildWindows[A_Index].ToY := this.ChildWindows[A_Index].Position.y
@@ -108,7 +108,7 @@ Class CSlideWindow
 		{
 			this.ToX := this.Position.x
 			this.ToY := VirtualBottom - this.Position.h
-			Loop % this.ChildWindows.len()
+			Loop % this.ChildWindows.MaxIndex()
 			{
 				this.ChildWindows[A_Index].ToX := this.ChildWindows[A_Index].Position.x
 				this.ChildWindows[A_Index].ToY := min(this.ToY + this.ChildWindows[A_Index].Position.y - this.Position.y, VirtualBottom - this.ChildWindows[A_Index].Position.h)
@@ -139,7 +139,7 @@ Class CSlideWindow
 		Active := WinExist("A")+0 ;Store the active slide/child window so it can be activated on next slide in
 		if(this.hwnd = Active)
 			this.Active := Active
-		else if(this.ChildWindows.IndexOfSubItem("hwnd", Active))
+		else if(this.ChildWindows.FindKeyWithValue("hwnd", Active))
 			this.Active := Active
 		GetVirtualScreenCoordinates(VirtualLeft, VirtualTop, VirtualRight, VirtualBottom) ;We want the coordinates of the upper left and lower right point
 		VirtualRight += VirtualLeft
@@ -147,15 +147,15 @@ Class CSlideWindow
 		
 		;Calculate target position
 		this.Position := WinGetPos("ahk_id " this.hwnd)
-		Loop % this.ChildWindows.len()
+		Loop % this.ChildWindows.MaxIndex()
 			this.ChildWindows[A_Index].Position := WinGetPos("ahk_id " this.ChildWindows[A_Index].hwnd)
 		if(this.Direction = 1) ;Left
 		{
 			this.ToX := VirtualLeft - this.Position.w
 			this.ToY := this.Position.y
-			Loop % this.ChildWindows.len() ;Correct for offset of child windows
+			Loop % this.ChildWindows.MaxIndex() ;Correct for offset of child windows
 				this.ToX := min(this.ToX, this.ToX - ((this.ChildWindows[A_Index].Position.x + this.ChildWindows[A_Index].Position.w) - (this.Position.x + this.Position.w)))
-			Loop % this.ChildWindows.len()
+			Loop % this.ChildWindows.MaxIndex()
 			{
 				this.ChildWindows[A_Index].ToX := min(this.ToX + this.ChildWindows[A_Index].Position.x - this.Position.x,VirtualLeft - this.ChildWindows[A_Index].Position.w)
 				this.ChildWindows[A_Index].ToY := this.ChildWindows[A_Index].Position.y
@@ -167,9 +167,9 @@ Class CSlideWindow
 		{
 			this.ToX := this.Position.x
 			this.ToY := VirtualTop - this.Position.h
-			Loop % this.ChildWindows.len() ;Correct for offset of child windows
+			Loop % this.ChildWindows.MaxIndex() ;Correct for offset of child windows
 				this.ToY := min(this.ToY, this.ToY - ((this.ChildWindows[A_Index].Position.y + this.ChildWindows[A_Index].Position.h) - (this.Position.y + this.Position.h)))
-			Loop % this.ChildWindows.len()
+			Loop % this.ChildWindows.MaxIndex()
 			{
 				this.ChildWindows[A_Index].ToX := this.ChildWindows[A_Index].Position.x
 				this.ChildWindows[A_Index].ToY := min(this.ToY + this.ChildWindows[A_Index].Position.y - this.Position.y, VirtualTop - this.ChildWindows[A_Index].Position.h)
@@ -181,9 +181,9 @@ Class CSlideWindow
 		{
 			this.ToX := VirtualRight
 			this.ToY := this.Position.y
-			Loop % this.ChildWindows.len() ;Correct for offset of child windows
+			Loop % this.ChildWindows.MaxIndex() ;Correct for offset of child windows
 				this.ToX := max(this.ToX, this.ToX + (this.Position.x - this.ChildWindows[A_Index].Position.x))
-			Loop % this.ChildWindows.len()
+			Loop % this.ChildWindows.MaxIndex()
 			{
 				this.ChildWindows[A_Index].ToX := max(this.ToX + this.ChildWindows[A_Index].Position.x - this.Position.x,VirtualRight)
 				this.ChildWindows[A_Index].ToY := this.ChildWindows[A_Index].Position.y
@@ -195,9 +195,9 @@ Class CSlideWindow
 		{
 			this.ToX := this.Position.x
 			this.ToY := VirtualBottom
-			Loop % this.ChildWindows.len() ;Correct for offset of child windows
+			Loop % this.ChildWindows.MaxIndex() ;Correct for offset of child windows
 				this.ToY := max(this.ToY, this.ToY + (this.Position.y - this.ChildWindows[A_Index].Position.y))
-			Loop % this.ChildWindows.len()
+			Loop % this.ChildWindows.MaxIndex()
 			{
 				this.ChildWindows[A_Index].ToX := this.ChildWindows[A_Index].Position.x
 				this.ChildWindows[A_Index].ToY := max(this.ToY + this.ChildWindows[A_Index].Position.y - this.Position.y,VirtualBottom)
@@ -206,7 +206,7 @@ Class CSlideWindow
 			this.SlideOutLen := this.Position.w
 		}
 		this.Move()
-		Loop this.ChildWindows.len() + 1 ;hide/minimize all child windows and main window
+		Loop this.ChildWindows.MaxIndex() + 1 ;hide/minimize all child windows and main window
 		{
 			hwnd := A_Index = 1 ? this.hwnd : this.ChildWindows[A_Index - 1].hwnd
 			
@@ -245,7 +245,7 @@ Class CSlideWindow
 				WinMove, % "ahk_id " this.hwnd,, % this.Position.x, % this.Position.y
 				Moved := true
 			}
-			Loop % this.ChildWindows.len() ;Move all child windows
+			Loop % this.ChildWindows.MaxIndex() ;Move all child windows
 			{
 				hwnd := this.ChildWindows[A_Index].hwnd
 				diffX:=this.ChildWindows[A_Index].toX-this.ChildWindows[A_Index].Position.x
@@ -268,7 +268,7 @@ Class CSlideWindow
 		this.Remove("Position")
 		this.Remove("ToX")
 		this.Remove("ToY")
-		Loop % this.ChildWindows.len()
+		Loop % this.ChildWindows.MaxIndex()
 		{
 			this.ChildWindows[A_Index].Remove("Position")
 			this.ChildWindows[A_Index].Remove("ToX")
@@ -288,7 +288,7 @@ Class CSlideWindow
 			this.Position := WinGetPos("ahk_id " this.hwnd)
 			this.ToX := this.OriginalPosition.x
 			this.ToY := this.OriginalPosition.y
-			Loop % this.ChildWindows.len()
+			Loop % this.ChildWindows.MaxIndex()
 			{
 				this.ChildWindows[A_Index].Position := WinGetPos("ahk_id " this.ChildWindows[A_Index].hwnd)
 				this.ChildWindows[A_Index].ToX := this.ChildWindows[A_Index].OriginalPosition.x
@@ -297,9 +297,9 @@ Class CSlideWindow
 			this.Move()
 		}
 		WinSet, AlwaysOnTop, % this.WasOnTop ? "On" : "Off", % "ahk_id " this.hwnd
-		Loop % this.ChildWindows.len()
+		Loop % this.ChildWindows.MaxIndex()
 			WinSet, AlwaysOnTop, % this.ChildWindows.WasOnTop ? "On" : "Off", % "ahk_id " this.ChildWindows[A_Index].hwnd
-		if(index := SlideWindows.IndexOfSubItem("hwnd", this.hwnd)) ;Remove if not already done so
+		if(index := SlideWindows.FindKeyWithValue("hwnd", this.hwnd)) ;Remove if not already done so
 			SlideWindows.Remove(index)
 	}
 	;Calculates a bounding box around the slide window and its child windows
@@ -310,7 +310,7 @@ Class CSlideWindow
 		bRight := x + w
 		bTop := y
 		bBottom := y + h
-		Loop % this.ChildWindows.len() ;Create a bounding box of all involved windows
+		Loop % this.ChildWindows.MaxIndex() ;Create a bounding box of all involved windows
 		{
 			WinGet, Style, Style, % "ahk_id " this.ChildWindows[A_Index].hwnd
 			if(!(Style & 0x10000000))
@@ -352,7 +352,7 @@ Class CSlideWindow
 					continue
 				FoundChildWindows.Insert(Windows%A_Index%)
 				WinGet, Style, Style, % "ahk_id " Windows%A_Index% ;Store if the child window is visible
-				if(index := this.ChildWindows.IndexOfSubItem("hwnd", Windows%A_Index%)) ;By refreshing the ChildWindows array instead of replacing it, we make sure to keep the original visible and always on top states of child windows
+				if(index := this.ChildWindows.FindKeyWithValue("hwnd", Windows%A_Index%)) ;By refreshing the ChildWindows array instead of replacing it, we make sure to keep the original visible and always on top states of child windows
 				{
 					if(UpdateVisibility)
 						this.ChildWindows[index].WasVisible := Style & 0x10000000 ? 1 : 0
@@ -365,7 +365,7 @@ Class CSlideWindow
 			}
 		}
 		index := 1
-		Loop % this.ChildWindows.len() ;Delete loop for child windows which were closed
+		Loop % this.ChildWindows.MaxIndex() ;Delete loop for child windows which were closed
 		{
 			if(FoundChildWindows.IndexOf(this.ChildWindows[index].hwnd))
 				index++
@@ -384,14 +384,14 @@ Class CSlideWindows
 		{
 			FileRead, xml, % Settings.ConfigPath "\ClosedWindowsOutsideScreen.xml"
 			XMLObject := XML_Read(xml)
-			this.ClosedWindowsOutsideScreen := XMLObject.Window.len() > 0 ? XMLObject.Window : Array(XMLObject.Window)
+			this.ClosedWindowsOutsideScreen := XMLObject.Window.MaxIndex() > 0 ? XMLObject.Window : Array(XMLObject.Window)
 		}
 		else
 			this.ClosedWindowsOutsideScreen := Array()
 	}
 	__Delete()
 	{
-		if(this.ClosedWindowsOutsideScreen.len() > 0)
+		if(this.ClosedWindowsOutsideScreen.MaxIndex() > 0)
 			XML_Save(Object("Window", this.ClosedWindowsOutsideScreen), Settings.ConfigPath "\ClosedWindowsOutsideScreen.xml")
 		else
 			FileDelete, % Settings.ConfigPath "\ClosedWindowsOutsideScreen.xml"
@@ -414,7 +414,7 @@ Class CSlideWindows
 	{
 		if(dir=1||dir=3)
 		{
-			Loop % this.len() ;Check all slide windows
+			Loop % this.MaxIndex() ;Check all slide windows
 			{
 				SlideWindow:=this[A_INDEX]
 				if(SlideWindow.Direction=dir)
@@ -438,7 +438,7 @@ Class CSlideWindows
 		}
 		else if(dir=2||dir=4)
 		{
-			Loop % this.len() ;Check all slide windows
+			Loop % this.MaxIndex() ;Check all slide windows
 			{
 				SlideWindow:=this[A_INDEX]
 				if(SlideWindow.Direction=dir)
@@ -465,7 +465,7 @@ Class CSlideWindows
 	IsSlideSpaceFree(hwnd,dir)
 	{
 		if(Settings.Windows.SlideWindows.LimitToOnePerSide)
-			return this.IndexOfSubItem("Direction", dir) = 0
+			return this.FindKeyWithValue("Direction", dir) = 0
 		WinGetPos X, Y, Width, Height, ahk_id %hwnd%
 		return !this.IsSlideSpaceOccupied(X,Y,Width,Height,dir)
 	}
@@ -478,7 +478,7 @@ Class CSlideWindows
 	CheckResizeReleaseCondition(hwnd)
 	{
 		GetVirtualScreenCoordinates(VirtualLeft, VirtualTop, VirtualWidth, VirtualHeight)
-		SlideWindow := this.SubItem("hwnd", hwnd)
+		SlideWindow := this.GetItemWithValue("hwnd", hwnd)
 		if(!SlideWindow)
 			return
 		if(SlideWindow.SlideState = 0 || SlideWindow.SlideState = 1)
@@ -489,7 +489,7 @@ Class CSlideWindows
 	{
 		global WindowList
 		index := 1
-		Loop % this.len()
+		Loop % this.MaxIndex()
 		{
 			SlideWindow:=this[index]
 			if(!WinExist("ahk_id " SlideWindow.hwnd))
@@ -517,7 +517,7 @@ Class CSlideWindows
 		SlideWindow:=this.GetByWindowHandle(hwnd, ChildIndex)
 		if(SlideWindow.SlideState = 1)
 			SlideWindow.Active := WinExist("A")+0 ;Last active slide window
-		index := this.IndexOfSubItemBetween("SlideState", 1, 4)
+		index := this.FindKeyWithValueBetween("SlideState", 1, 4)
 		CurrentSlideWindow:=this[index]
 		GetVirtualScreenCoordinates(VirtualLeft, VirtualTop, VirtualWidth, VirtualHeight)
 		WinGetPos, x, y, w, h, ahk_id %hwnd%
@@ -556,14 +556,14 @@ Class CSlideWindows
 	;Finds a slide window object by one of its windows
 	GetByWindowHandle(hwnd, ByRef ChildIndex)
 	{
-		Loop % this.len()
+		Loop % this.MaxIndex()
 		{
 			if(this[A_Index].hwnd = hwnd)
 			{
 				ChildIndex := 0
 				return this[A_Index]
 			}
-			else if(ChildIndex := this[A_Index].ChildWindows.IndexOfSubItem("hwnd", hwnd))
+			else if(ChildIndex := this[A_Index].ChildWindows.FindKeyWithValue("hwnd", hwnd))
 				return this[A_Index]
 		}
 	}
@@ -583,11 +583,11 @@ Class CSlideWindows
 			dir=4
 		if((z:=GetTaskbarDirection())=dir || z<=0)
 			return
-		if(this.indexOfSubItemBetween("SlideState", 2, 4)) ;Currently sliding a window, ignore mouse
+		if(this.FindKeyWithValueBetween("SlideState", 2, 4)) ;Currently sliding a window, ignore mouse
 			return
 		;Check if mouse position matches a slide window border and don't slide in while other slide window is on the screen
 		SlideWindow:=this.IsSlideSpaceOccupied(x,y,0,0,dir)
-		if(dir > 0 && SlideWindow && (!Settings.Windows.SlideWindows.BorderActivationRequiresMouseUp || !GetKeyState("LButton", "P") || GetKeyState(Settings.Windows.SlideWindows.ModifierKey, "P")) && !this.indexOfSubItem("SlideState", 1))
+		if(dir > 0 && SlideWindow && (!Settings.Windows.SlideWindows.BorderActivationRequiresMouseUp || !GetKeyState("LButton", "P") || GetKeyState(Settings.Windows.SlideWindows.ModifierKey, "P")) && !this.FindKeyWithValue("SlideState", 1))
 		{
 			this.ActiveWindow := WinExist("A")
 			SlideWindow.AutoSlideOut := true
@@ -597,8 +597,8 @@ Class CSlideWindows
 		;Now see if mouse is currently over a shown slide window and maybe hide it
 		MouseGetPos, , ,win
 		win+=0
-		SlideWindow:=this.SubItem("SlideState", 1)
-		if(SlideWindow && SlideWindow.AutoSlideOut && SlideWindow.hwnd!=win && !SlideWindow.ChildWindows.IndexOfSubItem("hwnd", win) && !IsContextMenuActive() && !GetKeyState(Settings.Windows.SlideWindows.ModifierKey,"P"))
+		SlideWindow:=this.GetItemWithValue("SlideState", 1)
+		if(SlideWindow && SlideWindow.AutoSlideOut && SlideWindow.hwnd!=win && !SlideWindow.ChildWindows.FindKeyWithValue("hwnd", win) && !IsContextMenuActive() && !GetKeyState(Settings.Windows.SlideWindows.ModifierKey,"P"))
 		{
 			SlideWindow.SlideOut()
 			WinActivate % "ahk_id " this.ActiveWindow
@@ -607,8 +607,8 @@ Class CSlideWindows
 	CheckForNewChildWindows()
 	{
 		Parents := GetParentWindows(this.ActivatedWindow)
-		Loop % Parents.len()
-			if(SubItem := this.SubItem("hwnd", Parents[A_Index]))
+		Loop % Parents.MaxIndex()
+			if(SubItem := this.GetItemWithValue("hwnd", Parents[A_Index]))
 			{
 				SubItem.GetChildWindows(0)
 				break

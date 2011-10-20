@@ -158,7 +158,7 @@ FixExplorerConfirmationDialogs()
 {
 	global ExplorerConfirmationDialogTitle, ExplorerConfirmationDialogButton
 	;Check if titles were acquired and if this is a proper dialog
-	if(ExplorerConfirmationDialogTitle.len() > 0 && z:=IsExplorerConfirmationDialog())
+	if(ExplorerConfirmationDialogTitle.MaxIndex() > 0 && z:=IsExplorerConfirmationDialog())
 	{
 		if(z=2 || z=6)
 			Control, Check , , Button4, A
@@ -179,7 +179,7 @@ IsExplorerConfirmationDialog()
 	if(WinActive("ahk_class #32770"))
 	{
 		WinGetTitle, title, A
-		loop % ExplorerConfirmationDialogTitle.len()
+		loop % ExplorerConfirmationDialogTitle.MaxIndex()
 			if(strStartsWith(title, ExplorerConfirmationDialogTitle[A_INDEX]))
 				return A_Index
 	}
@@ -293,8 +293,8 @@ CurrentDesktopFiles:=GetSelectedFiles()
 ; outputdebug(A_TimeSincePriorHotkey " < " DllCall("GetDoubleClickTime") " && " A_ThisHotkey "=" A_PriorHotkey)
 if(IsDoubleClick() && CurrentDesktopFiles = "")
 {
-	Trigger := EventSystem_CreateSubEvent("Trigger","DoubleClickDesktop")
-	OnTrigger(Trigger)
+	Trigger := new CDoubleClickDesktopTrigger()
+	EventSystem.OnTrigger(Trigger)
 }
 Return
 #if
@@ -353,8 +353,8 @@ if(!IsRenaming() && InFileList())
 				files:=GetSelectedFiles()
 				if (!files)
 				{
-					Trigger := EventSystem_CreateSubEvent("Trigger","ExplorerDoubleClickSpace")
-					OnTrigger(Trigger)
+					Trigger := new CExplorerDoubleClickSpaceTrigger()
+					EventSystem.OnTrigger(Trigger)
 					/*
 					if (Vista7 && !strEndsWith(path1,".search-ms"))
 						Send !{Up}
@@ -377,8 +377,8 @@ outputdebug lbutton
 if(IsDoubleClick() && IsMouseOverFreeTaskListSpace())
 {
 	outputdebug doubleclicktaskbar
-	Trigger := EventSystem_CreateSubEvent("Trigger", "DoubleClickTaskbar")
-	OnTrigger(Trigger)
+	Trigger := new CDoubleClickTaskbarTrigger()
+	EventSystem.OnTrigger(Trigger)
 }
 else
 {
@@ -478,7 +478,7 @@ RegisterExplorerWindows()
 	WinGet, hWndList, List, ahk_group ExplorerGroup
 	Loop % hwndList
 	{
-		if(!ExplorerWindows.IndexOfSubItem("hwnd", hWndList%A_Index%+0))
+		if(!ExplorerWindows.FindKeyWithValue("hwnd", hWndList%A_Index%+0))
 			ExplorerWindows.Insert(new CExplorerWindow(hwndList%A_Index%+0))
 	}
 	
@@ -489,7 +489,7 @@ RegisterExplorerWindows()
 RegisterSelectionChangedEvents()
 {
 	global ExplorerWindows
-	Loop % ExplorerWindows.len()
+	Loop % ExplorerWindows.MaxIndex()
 		ExplorerWindows[A_Index].RegisterSelectionChangedEvent()
 }
 /*
@@ -497,7 +497,7 @@ RegisterSelectionChangedEvents()
 UnregisterSelectionChangedEvents(hwnd)
 {
 	global RegisteredSelectionChangedWindows
-	i := RegisteredSelectionChangedWindows.indexOfSubItem("hwnd", hwnd)
+	i := RegisteredSelectionChangedWindows.FindKeyWithValue("hwnd", hwnd)
 	if(i > 0)
 		RegisteredSelectionChangedWindows.Delete(i)
 }
@@ -508,19 +508,19 @@ RestoreExplorerSelection()
 	hwnd := WinActive("ahk_group ExplorerGroup")+0
 	if(hwnd)
 	{
-		ExplorerWindow := ExplorerWindows.SubItem("hWnd",hwnd)
+		ExplorerWindow := ExplorerWindows.GetItemWithValue("hWnd",hwnd)
 		if(!IsObject(ExplorerWindow.Selection.History))
 			outputdebug % "Explorer window " hwnd " is not registered!"
-		if(ExplorerWindow.Selection.History.len() > 1)
+		if(ExplorerWindow.Selection.History.MaxIndex() > 1)
 		{		
 			outputdebug % "Explorer window " hwnd "restore selection"
-			Selection := ExplorerWindow.Selection.History[ExplorerWindow.Selection.History.len() - 1]
+			Selection := ExplorerWindow.Selection.History[ExplorerWindow.Selection.History.MaxIndex() - 1]
 			; A SelectionChanged event will be fired 2 times that needs to be suppressed? 
 			;Why is it fired 2 times instead of one time for each file? -> Probably because of timing
 			ExplorerWindow.Selection.IgnoreNextEvent := 2 
 			outputdebug % "Explorer window " hwnd " expecting " ExplorerWindow.Selection.IgnoreNextEvent " selection events."
 			SelectFiles(Selection,1,0,1,1,hwnd)
-			ExplorerWindow.Selection.History.Delete(ExplorerWindow.Selection.History.len())
+			ExplorerWindow.Selection.History.Delete(ExplorerWindow.Selection.History.MaxIndex())
 		}
 		else
 			outputdebug % "Explorer window " hwnd " is registered but has no history"
@@ -535,7 +535,7 @@ RestoreExplorerSelection()
 ExplorerActivated(hwnd)
 {
 	global TabNum, TabWindow, SuppressTabEvents, ExplorerWindows
-	if(!ExplorerWindows.IndexOfSubItem("hwnd",hwnd))
+	if(!ExplorerWindows.FindKeyWithValue("hwnd",hwnd))
 		ExplorerWindows.Insert(new CExplorerWindow(hwnd))
 	RegisterSelectionChangedEvents() ;Is this needed? only as backup probably
 	; if(SuppressTabEvents)
@@ -560,7 +560,7 @@ ExplorerActivated(hwnd)
 }
 WaitForClose:
 DetectHiddenWindows, On
-Loop % ExplorerWindows.len()
+Loop % ExplorerWindows.MaxIndex()
 {
 	if(!WinExist("ahk_id " ExplorerWindows[A_Index].hwnd))
 	{
@@ -599,8 +599,8 @@ ExplorerDestroyed(hwnd)
 {
 	global TabContainerList, ExplorerWindows
 	outputdebug explorer destroyed
-	TabContainer:=ExplorerWindows.SubItem("hwnd", hwnd+0).TabContainer
-	if(index := ExplorerWindows.IndexOfSubItem("hwnd", hwnd))
+	TabContainer:=ExplorerWindows.GetItemWithValue("hwnd", hwnd+0).TabContainer
+	if(index := ExplorerWindows.FindKeyWithValue("hwnd", hwnd))
 		ExplorerWindows.Remove(index) ;This will destroy the info gui as well
 	if(ExplorerWindows.TabContainerList.TabCloseInProgress) ;If this is set, then this event was caused by a tab closing action and must not trigger further tab close functions
 	{
@@ -617,7 +617,7 @@ ExplorerDestroyed(hwnd)
 ExplorerMoved(hwnd)
 {
 	global ExplorerWindows
-	ExplorerWindow := ExplorerWindows.SubItem("hwnd", hwnd)
+	ExplorerWindow := ExplorerWindows.GetItemWithValue("hwnd", hwnd)
 	if(Settings.Explorer.Tabs.UseTabs && !ExplorerWindows.TabContainerList.TabActivationInProgress)
 		ExplorerWindow.TabContainer.UpdatePosition()
 	if(Settings.Explorer.AdvancedStatusBarInfo && A_OsVersion = "WIN_7")
@@ -667,7 +667,7 @@ ExplorerSelectionChanged(ExplorerCOMObject)
 	; Critical ;This apparently makes it stop working and blocks the explorer window somehow
 	Critical, Off
 	outputdebug explorer selection changed
-	Loop % ExplorerWindows.Len()
+	Loop % ExplorerWindows.MaxIndex()
 	{
 		if(ExplorerWindows[A_Index].Selection.COMObject = ExplorerCOMObject)
 		{
@@ -686,7 +686,7 @@ ExplorerSelectionChanged(ExplorerCOMObject)
 	}
 	outputdebug nothing to ignore
 	ExplorerWindows[index].Selection.History.Insert(ToArray(GetSelectedFiles(0, ExplorerWindows[index].hwnd)))
-	if(ExplorerWindows[index].Selection.History.len() > 10)
+	if(ExplorerWindows[index].Selection.History.MaxIndex() > 10)
 		ExplorerWindows[index].Selection.History.Delete(1)
 	if(A_OSVersion = "WIN_7")
 		ExplorerWindows[index].InfoGUI.UpdateInfos(ExplorerWindows[index]) ;Update the info GUI to reflect selection change
@@ -723,8 +723,8 @@ class InfoGUI
 			return
 		totalsize:=0
 		realfiles:=false ;check if only folders are selected
-		History :=ExplorerWindow.Selection.History[ExplorerWindow.Selection.History.len()]
-		Loop % History.len()
+		History :=ExplorerWindow.Selection.History[ExplorerWindow.Selection.History.MaxIndex()]
+		Loop % History.MaxIndex()
 		{
 			FileGetSize, size, % ExplorerWindow.Path "\" History[A_Index]
 			if(!realfiles)

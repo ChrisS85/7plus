@@ -14,10 +14,10 @@ Accessor_URL_Init(ByRef URL, PluginSettings)
 	FileRead, xml, % Settings.ConfigPath "\History.xml"
 	XMLObject := XML_Read(xml)
 	;Convert empty and single arrays to real array
-	if(!XMLObject.List.len())
+	if(!XMLObject.List.MaxIndex())
 		XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()		
 	
-	Loop % min(XMLObject.List.len(), URL.Settings.MaxHistoryLen)
+	Loop % min(XMLObject.List.MaxIndex(), URL.Settings.MaxHistoryLen)
 	{
 		XMLObjectListEntry := XMLObject.List[A_Index]
 		HistoryURL := XMLObjectListEntry.URL
@@ -26,9 +26,9 @@ Accessor_URL_Init(ByRef URL, PluginSettings)
 }
 Accessor_URL_ShowSettings(URL, PluginSettings, PluginGUI)
 {	
-	SubEventGUI_Add(PluginSettings, PluginGUI, "Checkbox", "UseHistory", "Use history", "", "")
-	SubEventGUI_Add(PluginSettings, PluginGUI, "Checkbox", "SaveHistoryOnExit", "Save history on exit", "", "")
-	SubEventGUI_Add(PluginSettings, PluginGUI, "Edit", "MaxHistoryLen", "", "", "History length:","Clear history","Accessor_URL_ClearHistory")
+	AddControl(PluginSettings, PluginGUI, "Checkbox", "UseHistory", "Use history", "", "")
+	AddControl(PluginSettings, PluginGUI, "Checkbox", "SaveHistoryOnExit", "Save history on exit", "", "")
+	AddControl(PluginSettings, PluginGUI, "Edit", "MaxHistoryLen", "", "", "History length:","Clear history","Accessor_URL_ClearHistory")
 }
 Accessor_URL_ClearHistory:
 Accessor_URL_ClearHistory()
@@ -36,7 +36,7 @@ return
 Accessor_URL_ClearHistory()
 {
 	global AccessorPlugins
-	URLPlugin := AccessorPlugins.SubItem("Type","URL")
+	URLPlugin := AccessorPlugins.GetItemWithValue("Type","URL")
 	URLPlugin.History := Array()
 }
 Accessor_URL_IsInSinglePluginContext(URL, Filter, LastFilter)
@@ -62,7 +62,7 @@ Accessor_URL_OnExit(URL)
 	if(!URL.Settings.SaveHistoryOnExit)
 		return
 	XMLObject := Object("List",Array())
-	Loop % URL.History.len()
+	Loop % URL.History.MaxIndex()
 		XMLObject.List.Insert(Object("URL",URL.History[A_Index].URL))
 	XML_Save(XMLObject, Settings.ConfigPath "\History.xml")
 }
@@ -84,7 +84,7 @@ Accessor_URL_FillAccessorList(URL, Accessor, Filter, LastFilter, ByRef IconCount
 		while(pos := RegexMatch(Filter, "\${(\d+)}", Parameter, pos + 1))
 			Parameters.Insert(Parameter1)
 		
-		Loop % Parameters.len()
+		Loop % Parameters.MaxIndex()
 		{
 			outputdebug % "param " A_Index ": " p%A_Index%
 			Filter := StringReplace(Filter, "${" A_Index "}", p%A_Index%)
@@ -94,8 +94,8 @@ Accessor_URL_FillAccessorList(URL, Accessor, Filter, LastFilter, ByRef IconCount
 	Accessor.List.Insert(Object("Title",Filter,"Path", "Open URL", "Type","URL", "Detail1", "URL", "Detail2", "","Icon", 3))
 	if(URL.Settings.UseHistory)
 	{
-		outputdebug % "history len: " URL.History.len()
-		Loop % URL.History.len()
+		outputdebug % "history len: " URL.History.MaxIndex()
+		Loop % URL.History.MaxIndex()
 		{
 			outputdebug % history URL.History[A_Index].URL
 			if(InStr(URL.History[A_Index].URL, Filter) && URL.History[A_Index].URL != Filter && CouldBeURL(URL.History[A_Index].URL))
@@ -110,13 +110,13 @@ Accessor_URL_PerformAction(URLPlugin, Accessor, AccessorListEntry)
 	{
 		if(URLPlugin.Settings.UseHistory)
 		{			
-			if(index := URLPlugin.History.indexOfSubItem("URL",AccessorListEntry.Title)) ;Move existing items to the top
+			if(index := URLPlugin.History.FindKeyWithValue("URL",AccessorListEntry.Title)) ;Move existing items to the top
 				URLPlugin.History.Delete(index)
 			URLPlugin.History.Insert(Object("URL", AccessorListEntry.Title)) ;Add entered item to the top
-			if(URLPlugin.History.len() > URLPlugin.Settings.MaxHistoryLen) ;Make sure history len is not exceeded
+			if(URLPlugin.History.MaxIndex() > URLPlugin.Settings.MaxHistoryLen) ;Make sure history len is not exceeded
 				URLPlugin.History.Delete(1)
 		}
-		outputdebug % "append new len: " URLPlugin.History.len()
+		outputdebug % "append new len: " URLPlugin.History.MaxIndex()
 		url := (!InStr(AccessorListEntry.Title, "://") ? "http://" : "") AccessorListEntry.Title
 		run %url%,,UseErrorLevel
 	}

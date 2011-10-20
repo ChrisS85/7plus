@@ -33,7 +33,7 @@ FlashingWindows(Action)
 		MouseMove %mx%,%my%,0
 		return 1
 	}
-	else if (Action.FlashingWindows && BlinkingWindows.len()>0 && WinExist("ahk_id " BlinkingWindows[1]))
+	else if (Action.FlashingWindows && BlinkingWindows.MaxIndex()>0 && WinExist("ahk_id " BlinkingWindows[1]))
 	{
 		z:=BlinkingWindows[1]
 		WinActivate ahk_id %z%

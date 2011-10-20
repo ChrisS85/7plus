@@ -474,7 +474,7 @@ SelectFiles(Select,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)
 					items.Insert(item)	
 					itemnames.Insert(itemname)
 				}
-				Loop % Select.len()
+				Loop % Select.MaxIndex()
 				{
 					index := A_Index
 					filter := Select[A_Index]
@@ -485,7 +485,7 @@ SelectFiles(Select,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)
 						{
 							filter := "\Q" StringReplace(filter, "*", "\E.*\Q", 1) "\E"
 							filter := strTrim(filter,"\Q\E")
-							Loop % items.len()
+							Loop % items.MaxIndex()
 							{
 								if(RegexMatch(itemnames[A_Index],"i)" filter))
 								{
@@ -497,7 +497,7 @@ SelectFiles(Select,Clear=1,Deselect=0,MakeVisible=1,focus=1, hWnd=0)
 						}
 						else
 						{
-							Loop % items.len()
+							Loop % items.MaxIndex()
 							{
 								if(itemnames[A_Index]=filter)
 								{

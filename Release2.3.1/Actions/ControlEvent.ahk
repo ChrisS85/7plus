@@ -21,11 +21,10 @@ Action_ControlEvent_ReadXML(Action, XMLAction)
 
 Action_ControlEvent_Execute(Action, Event)
 {
-	global Events, TemporaryEvents
 	if(Condition_If_Evaluate(Action, Event))
 	{
 		outputdebug condition fulfilled
-		TargetEvent := Events.SubItem("ID", Event.ExpandPlaceholders(Action.EventID))
+		TargetEvent := EventSystem.Events.GetItemWithValue("ID", Event.ExpandPlaceholders(Action.EventID))
 		if(Action.Action = "Enable Event")
 			TargetEvent.Enable()
 		else if(Action.Action = "Disable Event")
@@ -40,19 +39,19 @@ Action_ControlEvent_Execute(Action, Event)
 				TargetEvent.Enable()
 		else if(Action.Action = "Trigger Event")
 		{
-			Trigger := EventSystem_CreateSubEvent("Trigger", "Trigger")
+			Trigger := new CTriggerTrigger()
 			Trigger.TargetID := Action.EventID
-			OnTrigger(Trigger)
+			EventSystem.OnTrigger(Trigger)
 		}
 		else if(Action.Action = "Copy Event")
 		{
-			Copy := EventSystem_RegisterEvent(TemporaryEvents, TargetEvent.DeepCopy(), 0)
+			Copy := EventSystem.TemporaryEvents.RegisterEvent(TargetEvent.DeepCopy(), 0)
 			Copy.DeleteAfterUse := Action.DeleteAfterUse
 			;Placeholders may be evaluated at the time of the copy operation, 
 			;so they don't use placeholders which may have changed in the meantime
 			if(Action.EvaluateOnCopy)
 				objDeepPerform(Copy, "Event_ExpandPlaceHolders", Copy)
-			Events.GlobalPlaceholders[Action.Placeholder] := Copy.ID
+			EventSystem.Events.GlobalPlaceholders[Action.Placeholder] := Copy.ID
 		}
 	}
 	return 1
@@ -60,7 +59,7 @@ Action_ControlEvent_Execute(Action, Event)
 
 Action_ControlEvent_DisplayString(Action)
 {
-	return Action.Action ": " Action.EventID ": " SettingsWindow.Events.SubItem("ID", Action.EventID).Name	
+	return Action.Action ": " Action.EventID ": " SettingsWindow.Events.GetItemWithValue("ID", Action.EventID).Name	
 }
 
 Action_ControlEvent_GuiShow(Action, ActionGUI, GoToLabel = "")

@@ -12,10 +12,10 @@ Accessor_WindowSwitcher_Init(ByRef WindowSwitcher, PluginSettings)
 }
 Accessor_WindowSwitcher_ShowSettings(WindowSwitcher, PluginSettings, PluginGUI)
 {
-	SubEventGUI_Add(PluginSettings, PluginGUI, "Edit", "Keyword", "", "", "Keyword:")
-	SubEventGUI_Add(PluginSettings, PluginGUI, "Edit", "BasePriority", "", "", "Base Priority:")
-	SubEventGUI_Add(PluginSettings, PluginGUI, "Checkbox", "FuzzySearch", "Use fuzzy search (slower)", "", "")
-	SubEventGUI_Add(PluginSettings, PluginGUI, "Checkbox", "IgnoreFileExtensions", "Ignore .exe extension in program paths", "", "")	
+	AddControl(PluginSettings, PluginGUI, "Edit", "Keyword", "", "", "Keyword:")
+	AddControl(PluginSettings, PluginGUI, "Edit", "BasePriority", "", "", "Base Priority:")
+	AddControl(PluginSettings, PluginGUI, "Checkbox", "FuzzySearch", "Use fuzzy search (slower)", "", "")
+	AddControl(PluginSettings, PluginGUI, "Checkbox", "IgnoreFileExtensions", "Ignore .exe extension in program paths", "", "")	
 }
 Accessor_WindowSwitcher_GetDisplayStrings(WindowSwitcher, AccessorListEntry, ByRef Title, ByRef Path, ByRef Detail1, ByRef Detail2)
 {
@@ -36,7 +36,7 @@ Accessor_WindowSwitcher_OnAccessorOpen(WindowSwitcher, Accessor)
 }
 Accessor_WindowSwitcher_OnAccessorClose(WindowSwitcher, Accessor)
 {
-	Loop % WindowSwitcher.List.len()
+	Loop % WindowSwitcher.List.MaxIndex()
 		if(WindowSwitcher[A_Index].Icon != Accessor.GenericIcons.Application)
 			DestroyIcon(WindowSwitcher[A_Index].Icon)
 	SetTimer, UpdateTimes, Off
@@ -45,7 +45,7 @@ Accessor_WindowSwitcher_FillAccessorList(WindowSwitcher, Accessor, Filter, LastF
 {
 	strippedFilter := WindowSwitcher.Settings.IgnoreFileExtensions ? strTrimRight(Filter, ".exe") : Filter
 	FuzzyList := Array()
-	Loop % WindowSwitcher.List.len()
+	Loop % WindowSwitcher.List.MaxIndex()
 	{
 		x := 0
 		window := WindowSwitcher.List[A_Index]
@@ -138,8 +138,8 @@ WindowSwitcherCloseWindow()
 	hwnd := Accessor.List[id].hwnd
 	outputdebug hwnd %hwnd%
 	PostMessage, 0x112, 0xF060,,, ahk_id %hwnd%
-	WindowSwitcher := AccessorPlugins.SubItem("Type","WindowSwitcher")
-	WindowSwitcher.List.Delete(WindowSwitcher.List.indexOfSubItem("hwnd",hwnd))
+	WindowSwitcher := AccessorPlugins.GetItemWithValue("Type","WindowSwitcher")
+	WindowSwitcher.List.Delete(WindowSwitcher.List.FindKeyWithValue("hwnd",hwnd))
 	FillAccessorList()
 }
 WindowSwitcherAlwaysOnTop()
@@ -335,9 +335,9 @@ UpdateCPUTimes()
 			Accessor.List[index].newKrnlTime := newKrnlTime
 			Accessor.List[index].newUserTime := newUserTime
 			Accessor.List[index].CPU := Round(min(max((Accessor.List[index].newKrnlTime-Accessor.List[index].oldKrnlTime + Accessor.List[index].newUserTime-Accessor.List[index].oldUserTime)/10000000 * 100,0),100), 2)   ; 1sec: 10**7
-			WindowSwitcher := AccessorPlugins[AccessorPlugins.subIndexOf("Type", "WindowSwitcher")]
-			outputdebug % WindowSwitcher.List[WindowSwitcher.List.subIndexOf("hwnd", Accessor.List[index].hwnd)].CPU
-			WindowSwitcher.List[WindowSwitcher.List.subIndexOf("hwnd", Accessor.List[index].hwnd)].CPU := Accessor.List[index].CPU
+			WindowSwitcher := AccessorPlugins[AccessorPlugins.FindKeyWithValue("Type", "WindowSwitcher")]
+			outputdebug % WindowSwitcher.List[WindowSwitcher.List.FindKeyWithValue("hwnd", Accessor.List[index].hwnd)].CPU
+			WindowSwitcher.List[WindowSwitcher.List.FindKeyWithValue("hwnd", Accessor.List[index].hwnd)].CPU := Accessor.List[index].CPU
 			; Accessor.List[index].CPU := GetProcessTimes(Accessor.List[index].PID)
 			LV_Modify(A_Index,"Col5","CPU: " Accessor.List[index].CPU "%")
 		}

@@ -22,28 +22,28 @@ Action_FileOperation_DisplayString(Action)
 	return Action.Type " " Action.SourceFile (Action.TargetPath || Action.TargetFile ? " to " : " ") Action.TargetPath (Action.TargetFile && Action.TargetPath ? "\" : "") Action.TargetFile
 }
 
-Action_FileOperation_GuiShow(Action, ActionGUI, GoToLabel = "")
+Action_FileOperation_GuiShow(SubEvent, GUI, GoToLabel = "")
 {	
-	static sActionGUI
+	static sGUI
 	if(GoToLabel = "")
 	{
-		sActionGUI := ActionGUI
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "SourceFile", "", "", "Source file(s):", "Browse", "Action_FileOperation_Browse_Source", "Placeholders", "Action_FileOperation_Placeholders_Source")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "TargetPath", "", "", "Target path:", "Browse", "Action_FileOperation_Browse_Target", "Placeholders", "Action_FileOperation_Placeholders_TargetPath")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "TargetFile", "", "", "Target file(s):", "Placeholders", "Action_FileOperation_Placeholders_TargetName")
-		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Silent", "Silent", "", "")
-		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Overwrite", "Overwrite existing files", "", "")
+		sGUI := GUI
+		AddControl(SubEvent, GUI, "Edit", "SourceFile", "", "", "Source file(s):", "Browse", "Action_FileOperation_Browse_Source", "Placeholders", "Action_FileOperation_Placeholders_Source")
+		AddControl(SubEvent, GUI, "Edit", "TargetPath", "", "", "Target path:", "Browse", "Action_FileOperation_Browse_Target", "Placeholders", "Action_FileOperation_Placeholders_TargetPath")
+		AddControl(SubEvent, GUI, "Edit", "TargetFile", "", "", "Target file(s):", "Placeholders", "Action_FileOperation_Placeholders_TargetName")
+		AddControl(SubEvent, GUI, "Checkbox", "Silent", "Silent", "", "")
+		AddControl(SubEvent, GUI, "Checkbox", "Overwrite", "Overwrite existing files", "", "")
 	}
 	else if(GoToLabel = "PlaceholdersSource")
-		SubEventGUI_Placeholders(sActionGUI, "SourceFile")
+		ShowPlaceholderMenu(sGUI, "SourceFile")
 	else if(GoToLabel = "Browse_Source")
-		SubEventGUI_SelectFile(sActionGUI, "SourceFile")
+		ShowPlaceholderMenu(sGUI, "SourceFile")
 	else if(GoToLabel = "Browse_Target")
-		SubEventGUI_SelectFile(sActionGUI, "TargetPath")
+		ShowPlaceholderMenu(sGUI, "TargetPath")
 	else if(GoToLabel = "PlaceholdersTargetPath")
-		SubEventGUI_Placeholders(sActionGUI, "TargetPath")
+		ShowPlaceholderMenu(sGUI, "TargetPath")
 	else if(GoToLabel = "PlaceholdersTargetName")
-		SubEventGUI_Placeholders(sActionGUI, "TargetFile")	
+		ShowPlaceholderMenu(sGUI, "TargetFile")	
 }
 Action_FileOperation_Placeholders_Source:
 Action_FileOperation_GuiShow("", "", "PlaceholdersSource")
@@ -69,7 +69,7 @@ Action_FileOperation_ProcessPaths(Action, Event, ByRef Sources, ByRef Targets, B
 	SplitPath, TargetFile, , , TargetExtension, TargetFilenameNoExt
 	files := ToArray(SourceFiles)
 	targets := Array()
-	Loop % files.len()
+	Loop % files.MaxIndex()
 	{
 		file := files[A_Index]
 		SplitPath, file, Filename, Filepath, Extension, FilenameNoExt
@@ -92,7 +92,7 @@ Action_FileOperation_ProcessPaths(Action, Event, ByRef Sources, ByRef Targets, B
 	}
 	target := targets
 	targets := ""
-	Loop % target.len()
+	Loop % target.MaxIndex()
 	{
 		file := target[A_Index]
 		pos := A_Index

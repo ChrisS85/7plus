@@ -36,13 +36,13 @@ Action_Clipboard_Execute(Action, Event)
 	{
 		textfiles := Content
 		SplitByExtension(textfiles, imagefiles, Settings.Misc.ImageExtensions)
-		if(textfiles.len() > 0 && FileExist(textfiles[1]))
+		if(textfiles.MaxIndex() > 0 && FileExist(textfiles[1]))
 		{
 			file := textfiles[1]
 			FileRead, content, %file%
 			Clipboard := Action.Append ? Clipboard content : content
 		}
-		else if(imagefiles.len() > 0 && FileExist(imagefiles[1]))
+		else if(imagefiles.MaxIndex() > 0 && FileExist(imagefiles[1]))
 			Gdip_ImageToClipboard(imagefiles[1])
 	}
 	return 1

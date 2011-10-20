@@ -1,132 +1,163 @@
-;; objDeepCopy(ast, reserved=0) 
-objDeepCopy(ast, reserved=0) 
-{ 
-  if !reserved 
-   reserved := object("copied" . &ast, 1)  ; to keep track of unique objects within top object 
-  if !isobject(ast) 
-   return ast 
-  copy := object("base", objDeepCopy(ast.base))
-  enum := ast._newenum() 
-  while enum[key, value] 
-  { 
-    if reserved["copied" . &value] 
-      continue  ; don't copy repeat objects (circular references) 
-    copy._Insert(key, objDeepCopy(value, reserved)) 
-  } 
-  return copy 
+RichObject()
+{
+	return new CRichObject()
 }
-objPrint(ast, reserved=0) 
-{ 
-  if !isobject(ast) 
-    return " " ast " " 
-  
-  if !reserved 
-    reserved := object("seen" . &ast, 1)  ; to keep track of unique objects within top object 
-  
-  enum := ast._newenum() 
-  while enum[key, value] 
-  { 
-    if reserved["seen" . &value] 
-      string .= key . ": WARNING: CIRCULAR OBJECT SKIPPED !!!`n "  
-    else 
-      string .= key . ": " . objPrint(value, reserved) 
-  } 
-  return "(" string ") " 
-} 
+Class CRichObject
+{
+	Is(Class)
+	{
+		if(this.base.HasKey("__Class"))
+			return this.base.__Class = Class
+		return 0
+	}
+	Extends(Class)
+	{
+		obj := this
+		while(obj.Base)
+		{
+			obj := obj.base
+			if(obj.__Class = Class)
+				return true
+		}
+		return false
+	}
+	;; DeepCopy(reserved=0) 
+	DeepCopy(reserved=0) 
+	{
+		if !reserved 
+			reserved := object("copied" . &this, 1)  ; to keep track of unique objects within top object 
+		if !isobject(this) 
+			return this
+		func := "CRichObject.DeepCopy"
+		if(this.base.HasKey("__Class"))
+			copy := Object("base", this.base)
+		else
+			copy := object("base", %func%(this.base))
+		for key, value in this
+		{ 
+			if reserved["copied" . &value] 
+				continue  ; don't copy repeat objects (circular references) 
+				copy._Insert(key, %func%(value, reserved))
+		} 
+		return copy
+	}
+	ToString(reserved=0) 
+	{ 
+		if !isobject(this) 
+			return " " this " " 
 
-objEqual(x, y, reserved=0) 
-{ 
-  if !reserved 
-   reserved := object("seen" . &x, 1)  ; to keep track of unique objects within top object 
+		if !reserved 
+			reserved := object("seen" . &this, 1)  ; to keep track of unique objects within top object 
 
+		for key, value in this
+		{ 
+			if reserved["seen" . &value] 
+				string .= key . ": WARNING: CIRCULAR OBJECT SKIPPED !!!`n "  
+			else 
+				string .= key . ": " . value.Print(reserved) 
+		} 
+		return "(" string ") " 
+	}
+	
+	Equal(y, reserved=0) 
+	{ 
+		if !reserved 
+			reserved := object("seen" . &this, 1)  ; to keep track of unique objects within top object 
 
-  if !(x != y) ; equal non-object values or exact same object 
-    return 1 ; note != obeys StringCaseSense, unlike = and == 
-  if !isobject(x) 
-    return 0 ; unequal non-object value 
-  ; recursively compare contents of both objects: 
-  enumx := x._newenum() 
-  enumy := y._newenum() 
-  while enumx[xkey, xvalue] && enumy[ykey, yvalue] 
-     { 
-     if (xkey != ykey) 
-       return 0 
-    
-    if reserved["seen" . &value] 
-       continue  ; don't compare repeat objects (circular references) 
+		if !(this != y) ; equal non-object values or exact same object 
+			return 1 ; note != obeys StringCaseSense, unlike = and == 
+		if !isobject(this) 
+			return 0 ; unequal non-object value 
+		; recursively compare contents of both objects: 
+		enumthis := this._newenum() 
+		enumy := y._newenum() 
+		while enumthis[thiskey, thisvalue] && enumy[ykey, yvalue] 
+		{ 
+			if (thiskey != ykey) 
+				return 0 
 
-     if !objEqual(xvalue, yvalue) 
-       return 0 
-    } 
-  ; finally, check that there are no excess key-value pairs in y: 
-  return ! enumy[ykey] 
-} 
+			if reserved["seen" . &value] 
+				continue  ; don't compare repeat objects (circular references) 
 
-objCopy(ast) 
-{ 
-  if !isobject(ast) 
-   return ast 
+			if !thisvalue.Equal(yvalue) 
+				return 0 
+		} 
+		; finally, check that there are no excess key-value pairs in y: 
+		return ! enumy[ykey] 
+	} 
+	
+	FindKeyWithValue(subitem, val){
+		for k, v in this
+		  If (IsObject(v) && v[subitem] = val )
+			 Return, k
+		Return 0
+	}
+	FindKeyWithValueBetween(subitem, val, val2){
+		if(IsObject(val))
+		{
+			for k, v in this
+			  If (IsObject(v) && v[subitem] = val )
+				 Return, k
+			return 0
+		}
+		if(val2 = "")
+			val2 := val
+		Loop % this.MaxIndex()
+			If(IsObject(this[A_Index]) && this[A_Index][subitem] >= val && this[A_Index][subitem] <= val2)
+				Return A_Index
+		Return 0
+	}
+	GetItemWithValue(subitem, val)
+	{
+		if(subitem = "ID")
+			OutputDebug break
+		for k, v in this
+		  If (IsObject(v) && v[subitem] = val )
+			 Return, v
+		 Return ""
+	}
 
-  copy := richObject() 
-  enum := ast._newenum() 
-  while enum[key, value] 
-     copy._Insert(key, value) 
-  return copy 
-} 
+	IsCircular(reserved=0) 
+	{ 
+		if !reserved 
+			reserved := object("seen" . &this, 1)  ; to keep track of unique objects within top object 
 
-richObject(){ 
-   static richObject 
-   If !richObject 
-      richObject := Object("base", Object("print", "objPrint", "copy", "objCopy" 
-                             , "deepCopy", "objDeepCopy", "equal", "objEqual" 
-             , "flatten", "objFlatten"  )) 
-    
-   return  Object("base", richObject) 
-} 
+		if !isobject(this) 
+			return " " this " " 
+		for key, value in this
+		{    
+			if reserved["seen" . &value] 
+			{ 
+				msgbox error: circular references not supported 
+				return 1 
+			}
+			value.IsCircular(reserved) 
+		} 
+		return 0 
+	} 
 
-objIsCircular(ast, reserved=0) 
-{ 
-  if !reserved 
-    reserved := object("seen" . &ast, 1)  ; to keep track of unique objects within top object 
-  
-  if !isobject(ast) 
-    return " " ast " " 
-  enum := ast._newenum() 
-  while enum[key, value] 
-  {    
-    if reserved["seen" . &value] 
-    { 
-      msgbox error: circular references not supported 
-      return 1 
-    } 
-    objIsCircular(value, reserved) 
-  } 
-  return 0 
-} 
+	Flatten(reserved=0) 
+	{ 
+		if !isobject(this) 
+			return this 
+		if !reserved 
+			reserved := object("seen" . &this, 1)  ; to keep track of unique objects within top object 
 
-objFlatten(ast, reserved=0) 
-{ 
-  if !isobject(ast) 
-    return ast 
-  if !reserved 
-    reserved := object("seen" . &ast, 1)  ; to keep track of unique objects within top object 
+		flat := new CRichObject() ; flat object 
 
-  flat := richObject() ; flat object 
-  
-  enum := ast._newenum() 
-  while enum[key, value] 
-  { 
-    if !isobject(value) 
-      flat._Insert(value) 
-    else 
-    { 
-    if reserved["seen" . &value] 
-      continue 
-      next := objFlatten(value, reserved) 
-      loop % next._MaxIndex() 
-      flat._Insert(next[A_Index]) 
-      
-    } 
-  } 
-  return flat 
-} 
+		for key, value in this
+		{ 
+			if !isobject(value) 
+				flat._Insert(value) 
+			else 
+			{ 
+				if reserved["seen" . &value] 
+					continue 
+				next := value.Flatten(reserved) 
+				loop % next._MaxIndex() 
+					flat._Insert(next[A_Index]) 
+			} 
+		} 
+		return flat 
+	}
+}

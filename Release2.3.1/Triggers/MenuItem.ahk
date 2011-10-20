@@ -44,12 +44,12 @@ Trigger_MenuItem_GuiShow(Trigger, TriggerGUI)
 	sTriggerGUI := TriggerGUI
 	; SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Menu", "", "", "Menu:")
 	Menus := Array()
-	Loop % SettingsWindow.Events.len()
+	Loop % SettingsWindow.Events.MaxIndex()
 	{
 		if(SettingsWindow.Events[A_Index].Trigger.Type = "MenuItem" && Menus.indexOf(SettingsWindow.Events[A_Index].Trigger.Menu) = 0)
 		{
 			Menus.Insert(SettingsWindow.Events[A_Index].Trigger.Menu)
-			MenuString .= (Menus.len() = 1 ? "" : "|") SettingsWindow.Events[A_Index].Trigger.Menu
+			MenuString .= (Menus.MaxIndex() = 1 ? "" : "|") SettingsWindow.Events[A_Index].Trigger.Menu
 		}
 	}
 	
@@ -73,15 +73,15 @@ MenuItemTriggered(menu, item, pos)
 	if(menu = "Tray")
 		pos -= 10
 	index := 1
-	Loop % Events.len()
+	Loop % Events.MaxIndex()
 	{
 		if(Events[A_Index].Trigger.Type = "MenuItem" && Events[A_Index].Trigger.Menu = menu)
 		{
 			if(index = pos)
 			{
-				Trigger := EventSystem_CreateSubEvent("Trigger", "Trigger")
+				Trigger := new CTriggerTrigger()
 				Trigger.TargetID := Events[A_Index].ID
-				OnTrigger(Trigger)				
+				EventSystem.OnTrigger(Trigger)				
 				return
 			}
 			index++

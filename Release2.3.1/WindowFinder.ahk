@@ -75,7 +75,7 @@ GUI_WindowFinder(PreviousGUINum, GoToLabel="")
 				break
 		}
 		Gui, %sPreviousGUINum%:Default
-		Loop % WindowList.len()
+		Loop % WindowList.MaxIndex()
 			DestroyIcon(WindowList[A_Index].hIcon)
 		return result
 	}

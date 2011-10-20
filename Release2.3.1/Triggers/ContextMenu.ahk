@@ -1,118 +1,107 @@
-Trigger_ContextMenu_Init(Trigger)
+Class CContextMenuTrigger Extends CTrigger
 {
-	Trigger.Category := "System"
-	Trigger.Name := "Context menu entry"
-	Trigger.Description := "Context menu entry description"
-	Trigger.SubMenu := ""
-	Trigger.Directory := false
-	Trigger.DirectoryBackground := false
-	Trigger.Desktop := false
-	Trigger.Computer := false
-	Trigger.SingleFileOnly := false
-}
-Trigger_ContextMenu_ReadXML(Trigger, XMLTrigger)
-{
-	Trigger.ReadVar(XMLTrigger, "FileTypes")
-	Trigger.ReadVar(XMLTrigger, "Name")
-	Trigger.ReadVar(XMLTrigger, "Description")
-	Trigger.ReadVar(XMLTrigger, "Directory")
-	Trigger.ReadVar(XMLTrigger, "DirectoryBackground")
-	Trigger.ReadVar(XMLTrigger, "Desktop")
-	Trigger.ReadVar(XMLTrigger, "Computer")
-	Trigger.ReadVar(XMLTrigger, "SubMenu")
-	Trigger.ReadVar(XMLTrigger, "SingleFileOnly")
-}
-
-Trigger_ContextMenu_Enable(Trigger, Event)
-{
-	if(A_IsCompiled)
-		ahk_path:="""" A_ScriptDir "\7plus.exe"""
-	else
-		ahk_path := """" A_AhkPath """ """ A_ScriptFullPath """"
-	id := Event.ID
-	RegWrite, REG_DWORD, HKCU, Software\7plus\ContextMenuEntries\%id%, ID, %id%
-	RegWrite, REG_SZ, HKCU, Software\7plus\ContextMenuEntries\%id%, Name, % Trigger.Name
-	RegWrite, REG_SZ, HKCU, Software\7plus\ContextMenuEntries\%id%, Description, % Trigger.Description
-	RegWrite, REG_SZ, HKCU, Software\7plus\ContextMenuEntries\%id%, Submenu, % Trigger.Submenu
-	RegWrite, REG_SZ, HKCU, Software\7plus\ContextMenuEntries\%id%, Extensions, % Trigger.FileTypes
-	RegWrite, REG_DWORD, HKCU, Software\7plus\ContextMenuEntries\%id%, Directory, % Trigger.Directory
-	RegWrite, REG_DWORD, HKCU, Software\7plus\ContextMenuEntries\%id%, DirectoryBackground, % Trigger.DirectoryBackground
-	RegWrite, REG_DWORD, HKCU, Software\7plus\ContextMenuEntries\%id%, Desktop, % Trigger.Desktop
-	RegWrite, REG_DWORD, HKCU, Software\7plus\ContextMenuEntries\%id%, SingleFileOnly, % Trigger.SingleFileOnly
-
-	if(Trigger.Computer)
+	static Type := RegisterType(CContextMenuTrigger, "ContextMenu")	
+	static Category := RegisterCategory(CContextMenuTrigger, "System")
+	static Name := "Context menu entry"
+	static Description := "Context menu entry description"
+	static SubMenu := ""
+	static Directory := false
+	static DirectoryBackground := false
+	static Desktop := false
+	static Computer := false
+	static SingleFileOnly := false
+	
+	Enable(Event)
 	{
-		if(Trigger.SubMenu = "")
-			key := "shell\" Trigger.Name "\command"
+		if(A_IsCompiled)
+			ahk_path:="""" A_ScriptDir "\7plus.exe"""
 		else
+			ahk_path := """" A_AhkPath """ """ A_ScriptFullPath """"
+		id := Event.ID
+		RegWrite, REG_DWORD, HKCU, Software\7plus\ContextMenuEntries\%id%, ID, %id%
+		RegWrite, REG_SZ, HKCU, Software\7plus\ContextMenuEntries\%id%, Name, % this.Name
+		RegWrite, REG_SZ, HKCU, Software\7plus\ContextMenuEntries\%id%, Description, % this.Description
+		RegWrite, REG_SZ, HKCU, Software\7plus\ContextMenuEntries\%id%, Submenu, % this.Submenu
+		RegWrite, REG_SZ, HKCU, Software\7plus\ContextMenuEntries\%id%, Extensions, % this.FileTypes
+		RegWrite, REG_DWORD, HKCU, Software\7plus\ContextMenuEntries\%id%, Directory, % this.Directory
+		RegWrite, REG_DWORD, HKCU, Software\7plus\ContextMenuEntries\%id%, DirectoryBackground, % this.DirectoryBackground
+		RegWrite, REG_DWORD, HKCU, Software\7plus\ContextMenuEntries\%id%, Desktop, % this.Desktop
+		RegWrite, REG_DWORD, HKCU, Software\7plus\ContextMenuEntries\%id%, SingleFileOnly, % this.SingleFileOnly
+
+		if(this.Computer)
 		{
-			key := "shell\" Trigger.SubMenu
-			RegWrite, REG_SZ, HKCR, CLSID\{20D04FE0-3AEA-1069-A2D8-08002B30309D}\%key%,subcommands,
-			key := "shell\" Trigger.SubMenu "\shell\" Trigger.Name
-			RegWrite, REG_SZ, HKCR, CLSID\{20D04FE0-3AEA-1069-A2D8-08002B30309D}\%key%,, %name%
-		}
-		RegWrite, REG_SZ, HKCR, CLSID\{20D04FE0-3AEA-1069-A2D8-08002B30309D}\%key%,, %ahk_path% -ContextID:%id%
-	}
-}
-Trigger_ContextMenu_Disable(Trigger)
-{
-	RegDelete, HKCU, Software\7plus\ContextMenuEntries
-	if(Trigger.Computer)
-	{
-		if(Trigger.SubMenu = "")
-		{
-			key := "CLSID\{20D04FE0-3AEA-1069-A2D8-08002B30309D}\shell\" Trigger.Name
-			RegDelete, HKCR, %key%
-		}
-		else
-		{
-			key := "CLSID\{20D04FE0-3AEA-1069-A2D8-08002B30309D}\shell\" Trigger.SubMenu "\shell\" Trigger.Name
-			RegDelete, HKCR, %key%
-			key := "CLSID\{20D04FE0-3AEA-1069-A2D8-08002B30309D}\shell\" Trigger.SubMenu "\shell"
-			found := false
-			Loop, HKCR , %key%, 2, 0
+			if(this.SubMenu = "")
+				key := "shell\" this.Name "\command"
+			else
 			{
-				found := true
-				break
+				key := "shell\" this.SubMenu
+				RegWrite, REG_SZ, HKCR, CLSID\{20D04FE0-3AEA-1069-A2D8-08002B30309D}\%key%,subcommands,
+				key := "shell\" this.SubMenu "\shell\" this.Name
+				RegWrite, REG_SZ, HKCR, CLSID\{20D04FE0-3AEA-1069-A2D8-08002B30309D}\%key%,, %name%
 			}
-			if(!found)
+			RegWrite, REG_SZ, HKCR, CLSID\{20D04FE0-3AEA-1069-A2D8-08002B30309D}\%key%,, %ahk_path% -ContextID:%id%
+		}
+	}
+	Disable()
+	{
+		RegDelete, HKCU, Software\7plus\ContextMenuEntries
+		if(this.Computer)
+		{
+			if(this.SubMenu = "")
 			{
-				key := "CLSID\{20D04FE0-3AEA-1069-A2D8-08002B30309D}\shell\" Trigger.SubMenu
+				key := "CLSID\{20D04FE0-3AEA-1069-A2D8-08002B30309D}\shell\" this.Name
 				RegDelete, HKCR, %key%
 			}
+			else
+			{
+				key := "CLSID\{20D04FE0-3AEA-1069-A2D8-08002B30309D}\shell\" this.SubMenu "\shell\" this.Name
+				RegDelete, HKCR, %key%
+				key := "CLSID\{20D04FE0-3AEA-1069-A2D8-08002B30309D}\shell\" this.SubMenu "\shell"
+				found := false
+				Loop, HKCR , %key%, 2, 0
+				{
+					found := true
+					break
+				}
+				if(!found)
+				{
+					key := "CLSID\{20D04FE0-3AEA-1069-A2D8-08002B30309D}\shell\" this.SubMenu
+					RegDelete, HKCR, %key%
+				}
+			}
 		}
 	}
-}
-;When ContextMenu is deleted, it needs to be removed from ContextMenuarrays
-Trigger_ContextMenu_Delete(Trigger)
-{
-	Trigger_ContextMenu_Disable(Trigger)
-}
+	;When ContextMenu is deleted, it needs to be removed from ContextMenuarrays
+	Delete()
+	{
+		this.Disable()
+	}
 
-Trigger_ContextMenu_Matches(Trigger, Filter, Event)
-{
-	return false ;Match is handled in Eventsystem.ahk through trigger event
-}
+	Matches(Filter, Event)
+	{
+		return false ;Match is handled in Eventsystem.ahk through trigger event
+	}
 
-Trigger_ContextMenu_DisplayString(Trigger)
-{
-	return "Context menu: " Trigger.Name
-}
+	DisplayString()
+	{
+		return "Context menu: " this.Name
+	}
 
-Trigger_ContextMenu_GuiShow(Trigger, TriggerGUI)
-{
-	SubEventGUI_Add(Trigger, TriggerGUI, "Text", "tmpText", "This trigger allows you to add context menu entries.")
-	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Name", "", "", "Name:")
-	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Description", "", "", "Description:")
-	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "SubMenu", "", "", "Submenu:")
-	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "FileTypes", "", "", "File types:", "", "", "", "", "File extensions separated by comma")
-	SubEventGUI_Add(Trigger, TriggerGUI, "Checkbox", "Directory", "Show in directory context menus")
-	SubEventGUI_Add(Trigger, TriggerGUI, "Checkbox", "DirectoryBackground", "Show in directory background context menus")
-	SubEventGUI_Add(Trigger, TriggerGUI, "Checkbox", "Desktop", "Show in desktop context menu")
-	SubEventGUI_Add(Trigger, TriggerGUI, "Checkbox", "Computer", "Show in ""My Computer"" context menus")
-	SubEventGUI_Add(Trigger, TriggerGUI, "Checkbox", "SingleFileOnly", "Don't show with multiple files selected")
-	SubEventGUI_Add(Trigger, TriggerGUI, "Button", "Register", "Register context menu shell extension", "RegisterShellExtension", "")
-	SubEventGUI_Add(Trigger, TriggerGUI, "Button", "Unregister", "Unregister context menu shell extension", "UnregisterShellExtension", "")
+	GuiShow(GUI)
+	{
+		this.AddControl(GUI, "Text", "tmpText", "This trigger allows you to add context menu entries.")
+		this.AddControl(GUI, "Edit", "Name", "", "", "Name:")
+		this.AddControl(GUI, "Edit", "Description", "", "", "Description:")
+		this.AddControl(GUI, "Edit", "SubMenu", "", "", "Submenu:")
+		this.AddControl(GUI, "Edit", "FileTypes", "", "", "File types:", "", "", "", "", "File extensions separated by comma")
+		this.AddControl(GUI, "Checkbox", "Directory", "Show in directory context menus")
+		this.AddControl(GUI, "Checkbox", "DirectoryBackground", "Show in directory background context menus")
+		this.AddControl(GUI, "Checkbox", "Desktop", "Show in desktop context menu")
+		this.AddControl(GUI, "Checkbox", "Computer", "Show in ""My Computer"" context menus")
+		this.AddControl(GUI, "Checkbox", "SingleFileOnly", "Don't show with multiple files selected")
+		this.AddControl(GUI, "Button", "Register", "Register context menu shell extension", "RegisterShellExtension", "")
+		this.AddControl(GUI, "Button", "Unregister", "Unregister context menu shell extension", "UnregisterShellExtension", "")
+	}
 }
 RegisterShellExtension:
 RegisterShellExtension(0)
@@ -163,7 +152,3 @@ UnregisterShellExtension(Silent=1)
 	else if(!Silent)
 		MsgBox Context menu shell extension can only be used in non-portable mode for now.
 }
-Trigger_ContextMenu_GuiSubmit(Trigger, TriggerGUI)
-{
-	SubEventGUI_GuiSubmit(Trigger,TriggerGUI)
-}  

@@ -172,7 +172,7 @@ WindowFilter_GuiShow(WindowFilter, WindowFilterGUI,GoToLabel="")
 		sWindowFilterGUI := WindowFilterGUI
 		sWindowFilter := WindowFilter
 		PreviousSelection := ""
-		SubEventGUI_Add(WindowFilter, WindowFilterGUI, "DropDownList", "WindowMatchType", "Specific Window|Any Window|Active|UnderMouse", "WindowFilter_SelectionChange", "Match Type:")
+		AddControl(WindowFilter, WindowFilterGUI, "DropDownList", "WindowMatchType", "Specific Window|Any Window|Active|UnderMouse", "WindowFilter_SelectionChange", "Match Type:")
 		x := WindowFilterGUI.x
 		y := WindowFilterGUI.y
 		w := 200
@@ -186,9 +186,9 @@ WindowFilter_GuiShow(WindowFilter, WindowFilterGUI,GoToLabel="")
 		{
 			if(WindowMatchType != PreviousSelection) ;Create specific controls and store values
 			{
-				SubEventGUI_Add(sWindowFilter, sWindowFilterGUI, "Edit", "WindowFilterClass", "", "", "By class:", "Select Class", "WindowFilter_SelectClass")
-				SubEventGUI_Add(sWindowFilter, sWindowFilterGUI, "Edit", "WindowFilterExecutable", "", "", "By executable:", "Select executable", "WindowFilter_SelectExecutable")
-				SubEventGUI_Add(sWindowFilter, sWindowFilterGUI, "Edit", "WindowFilterTitle", "", "", "By title:", "Select Title", "WindowFilter_SelectTitle")
+				AddControl(sWindowFilter, sWindowFilterGUI, "Edit", "WindowFilterClass", "", "", "By class:", "Select Class", "WindowFilter_SelectClass")
+				AddControl(sWindowFilter, sWindowFilterGUI, "Edit", "WindowFilterExecutable", "", "", "By executable:", "Select executable", "WindowFilter_SelectExecutable")
+				AddControl(sWindowFilter, sWindowFilterGUI, "Edit", "WindowFilterTitle", "", "", "By title:", "Select Title", "WindowFilter_SelectTitle")
 			}
 		}
 		else

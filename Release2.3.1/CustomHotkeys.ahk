@@ -29,7 +29,7 @@ CollisionCheck(key1,filter1,exclude)
 		if(KeyCollision && StateCollision && DirCollision)
 			return true
 	}
-    Loop % CustomHotkeys.len()
+    Loop % CustomHotkeys.MaxIndex()
 	{
 		key2 := CustomHotkeys[A_Index].key
 		filter2 := CustomHotkeys[A_Index].key

@@ -25,7 +25,7 @@ Action_SlideWindowOut_Execute(Action)
 	outputdebug object created
 	if(IsObject(SlideWindow))
 		SlideWindows.Insert(SlideWindow)
-	outputdebug % "len: " SlideWindows.len()
+	outputdebug % "len: " SlideWindows.MaxIndex()
 	return 1
 } 
 

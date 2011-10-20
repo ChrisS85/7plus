@@ -45,7 +45,7 @@ Action_ImageConverter_GuiShow(Action, ActionGUI, GoToLabel = "")
 	{
 		sActionGUI := ActionGUI
 		SubEventGUI_Add(Action, ActionGUI, "Edit", "Files", "", "", "Files:", "Placeholders", "Action_ImageConverter_Placeholders")
-		Loop % FTPProfiles.len()
+		Loop % FTPProfiles.MaxIndex()
 			Hosters .= "|" A_Index ": " FTPProfiles[A_Index].Hostname
 		Hosters .= "|" GetImageHosterList().ToString("|")
 		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "Hoster", Hosters, "", "IMG Hoster:","","","","","FTP profiles which are created on their specific sub page in the settings window can be used here.")

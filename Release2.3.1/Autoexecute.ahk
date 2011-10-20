@@ -99,7 +99,8 @@ if(shell32MUIpath := LocateShell32MUI())
 
 ;Init event system
 outputdebug starting event system
-EventSystem_Startup()
+global EventSystem := new CEventSystem()
+EventSystem.Startup()
 
 ;Update checker
 if(Settings.General.AutoUpdate)
@@ -151,10 +152,10 @@ if(FileExist(Settings.ConfigPath "\Clipboard.xml"))
 	FileRead, xml, % Settings.ConfigPath "\Clipboard.xml"
 	XMLObject := XML_Read(xml)
 	;Convert empty and single arrays to real array
-	if(!XMLObject.List.len())
+	if(!XMLObject.List.MaxIndex())
 		XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()		
 
-	Loop % min(XMLObject.List.len(), 10)
+	Loop % min(XMLObject.List.MaxIndex(), 10)
 		ClipboardList.Insert(Decrypt(XMLObject.List[A_Index])) ;Read encrypted clipboard history
 }
 
@@ -178,15 +179,9 @@ ThemedWindows:=DllCall("uxtheme.dll\IsThemeActive") ; On non-themed environments
 		Menu, tray, Icon, %A_ScriptDir%\7+-w.ico,,1
 ; }
 
-
-
 ;Show tray icon when loading is complete
 if(!Settings.Misc.HidetrayIcon)
 	menu, tray, Icon
-	
-SetTimer, TriggerTimer, 1000
-; SetTimer, AssignHotkeys, -10000
-
 
 ;possibly start wizard
 if (Settings.General.Firstrun)
@@ -222,11 +217,10 @@ OnExit(Reload=0)
 	outputdebug OnExit()
 	if(ApplicationState.ProgramStartupFinished)
 	{
-		EventSystem_End()
+		EventSystem.OnExit()
 		Gdip_Shutdown(pToken)
 		Settings.Save()
 		WriteClipboard()
-		Action_Upload_WriteFTPProfiles()
 		CloseAllInactiveTabs()
 		SaveHotstrings()
 	}
@@ -254,12 +248,12 @@ WriteClipboard()
 {
 	global ClipboardList, Events
 	FileDelete, % Settings.ConfigPath "\Clipboard.xml"
-	Loop % Events.len() ;Check if clipboard history is actually used and don't store the history when it isn't
+	Loop % Events.MaxIndex() ;Check if clipboard history is actually used and don't store the history when it isn't
 	{
-		if((Events[A_Index].SubItem("Type", "Clipmenu") || Events[A_Index].SubItem("Type", "ClipPaste"))&& Events[A_Index].Enabled)
+		if((Events[A_Index].GetItemWithValue("Type", "Clipmenu") || Events[A_Index].GetItemWithValue("Type", "ClipPaste"))&& Events[A_Index].Enabled)
 		{
 			XMLObject := Object("List",Array())
-			Loop % min(ClipboardList.len(), 10)
+			Loop % min(ClipboardList.MaxIndex(), 10)
 				XMLObject.List.Insert(Encrypt(ClipboardList[A_Index])) ;Store encrypted
 			XML_Save(XMLObject, Settings.ConfigPath "\Clipboard.xml")
 			break

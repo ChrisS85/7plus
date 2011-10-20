@@ -10,7 +10,7 @@
 }
 Accessor_Weather_ShowSettings(Weather, PluginSettings, PluginGUI)
 {
-	SubEventGUI_Add(PluginSettings, PluginGUI, "Edit", "Keyword", "", "", "Keyword:")
+	AddControl(PluginSettings, PluginGUI, "Edit", "Keyword", "", "", "Keyword:")
 }
 Accessor_Weather_IsInSinglePluginContext(Weather, Filter, LastFilter)
 {
@@ -40,7 +40,7 @@ Accessor_Weather_OnAccessorOpen(Weather, Accessor)
 }
 Accessor_Weather_OnAccessorClose(Weather, Accessor)
 {
-	Loop % Weather.List.len()	
+	Loop % Weather.List.MaxIndex()	
 		if(Weather.List[A_Index].Icon)
 			DestroyIcon(Weather.List[A_Index].Icon)
 }
@@ -51,7 +51,7 @@ Accessor_Weather_FillAccessorList(Weather, Accessor, Filter, LastFilter, ByRef I
 {
 	if(!KeywordSet)
 		return
-	Loop % Weather.List.len()
+	Loop % Weather.List.MaxIndex()
 	{
 		ImageList_ReplaceIcon(Accessor.ImageListID, -1, Weather.List[A_Index].Icon)
 		IconCount++
@@ -89,7 +89,7 @@ return
 QueryWeatherResult()
 {
 	global AccessorPlugins, AccessorEdit, Accessor
-	WeatherPlugin := AccessorPlugins.SubItem("Type", "Weather")
+	WeatherPlugin := AccessorPlugins.GetItemWithValue("Type", "Weather")
 	GUINum := Accessor.GUINum
 	if(!GUINum)
 		return
@@ -102,7 +102,7 @@ QueryWeatherResult()
 	FileDelete, %A_Temp%\7plus\WeatherQuery.xml
 	URLDownloadToFile, %URL%, %A_Temp%\7plus\WeatherQuery.xml
 	FileRead, WeatherQuery, %A_Temp%\7plus\WeatherQuery.xml
-	Loop % WeatherPlugin.List.len()
+	Loop % WeatherPlugin.List.MaxIndex()
 		if(WeatherPlugin.List[A_Index].Icon)
 			DestroyIcon(WeatherPlugin.List[A_Index].Icon)
 	WeatherPlugin.List := Array()

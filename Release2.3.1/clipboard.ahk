@@ -28,8 +28,8 @@ Stack_Push(stack,item)
 	if(x=0)
 	{
 		stack.Insert(1,item)
-		if(stack.len()=11)
-			stack.Delete(stack.len())
+		if(stack.MaxIndex()=11)
+			stack.Delete(stack.MaxIndex())
 	}
 	else
 	{
@@ -42,9 +42,9 @@ ClipboardManagerMenu()
 	global ClipboardList
 	Menu, ClipboardMenu, add, 1,ClipboardHandler1
 	Menu, ClipboardMenu, DeleteAll
-	loop % ClipboardList.len()
+	loop % ClipboardList.MaxIndex()
 	{		
-		i:=A_Index ;ClipboardList.len()-A_Index+1
+		i:=A_Index ;ClipboardList.MaxIndex()-A_Index+1
 		
 		x:=ClipboardList[i]
 		StringReplace,x,x,`r,,All

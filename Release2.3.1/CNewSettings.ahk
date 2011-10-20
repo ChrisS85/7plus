@@ -205,7 +205,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("Button", "btnEditEvent", "x743 y146 w75 h23", "Edit Event")
 		Page.AddControl("Button", "btnDeleteEvents", "x743 y117 w75 h23", "Delete Events")
 		Page.AddControl("Button", "btnAddEvent", "x743 y88 w75 h23", "Add Event")
-		Page.AddControl("Edit", "editEventDescription", "x197 y365 w536 h50", "")
+		Page.AddControl("Edit", "editEventDescription", "x197 y365 w536 h50 ReadOnly", "")
 		Page.AddControl("Edit", "editEventFilter", "x589 y62 w144 h20", "")
 		Page.AddControl("Text", "txtEventSearch", "x508 y65 w75 h13", "Event Search:")
 		;ListView uses indices that are independent of the listview sorting so it can access the array with the data more easily
@@ -216,19 +216,17 @@ Finally, here are some settings that you're likely to change at the beginning:
 	}	
 	InitEvents()
 	{
-		global Events
 		Page := this.Pages.Events.Tabs[1].Controls
 		this.SupressFillEventsList := true
 		Page.chkShowAdvancedEvents.Checked := Settings.General.ShowAdvancedEvents
 		if(!this.Events)
 		{
-			for index, Event in Events
+			for index, Event in EventSystem.Events
 				Event.Trigger.PrepareCopy(Event)		
 			
-			this.Events := Events.DeepCopy()
+			this.Events := EventSystem.Events.DeepCopy()
 			Page.editEventFilter.Text := ""
 		}
-		OutputDebug first RecreateTreeView
 		this.RecreateTreeView()
 		Page.listEvents.ModifyCol(2, 40)
 		Page.listEvents.ModifyCol(3, 195)
@@ -238,36 +236,36 @@ Finally, here are some settings that you're likely to change at the beginning:
 	}
 	ApplyEvents()
 	{
-		global Events
 		Page := this.Pages.Events.Tabs[1].Controls
 		Settings.General.ShowAdvancedEvents := Page.chkShowAdvancedEvents.Checked
 		
 		;TODO: Improve code quality here.
 		;Disable all events first (without setting enabled to false, so triggers can decide what they want to do themselves)
-		Loop % Events.len()
-			Events[A_Index].Trigger.Disable(Events[A_Index])	
+		for index, Event in EventSystem.Events
+			Event.Trigger.Disable(Event)
 		;Remove events that were deleted in settings window and refresh the settings copies to consider recent changes in the original events (such as timer state)
 		pos := 1
 		this.Events.IsSettings := true
-		Loop % Events.len()
+		Loop % Events.MaxIndex()
 		{
-			if(!this.Events.SubItem("ID", Events[pos].id)) ;separate destroy routine instead of simple disable is needed for removed events because of hotkey/timer discrepancy
+			if(!this.Events.GetItemWithValue("ID", EventSystem.Events[pos].id)) ;separate destroy routine instead of simple disable is needed for removed events because of hotkey/timer discrepancy
 			{
-				Events_Delete(Events, Events[pos],false)
+				EventSystem.Events.Delete(Events[pos], false)
 				continue
 			}
-			Events[pos].Trigger.PrepareReplacement(Events[pos], this.Events.SubItem("ID", Events[pos].id))
+			Events[pos].Trigger.PrepareReplacement(Events[pos], this.Events.GetItemWithValue("ID", Events[pos].id))
 			pos++
 		}
 		;Replace the original events with the copies
-		Events := this.Events.DeepCopy()
+		EventSystem.Events := this.Events.DeepCopy()
+		
 		;Update enabled state
-		Loop % Events.len()
+		for index, Event in EventSystem.Events
 		{
-			if(Events[A_Index].Enabled)
-				Events[A_Index].Trigger.Enable(Events[A_Index])
+			if(Event.Enabled)
+				Event.Trigger.Enable(Event)
 			else
-				Events[A_Index].Trigger.Disable(Events[A_Index])
+				Event.Trigger.Disable(Event)
 		}
 	}
 	RecreateTreeView()
@@ -302,7 +300,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 	;This function needs to use speed optimizations
 	FillEventsList()
 	{
-		if(this.SupressFillEventsList) ;Used to suppress a redundant call to this function on init since it takes up 200-500ms on my PC.
+		;Used to suppress a redundant call to this function on init since it takes up 200-500ms on my PC.
+		if(this.SupressFillEventsList)
 			return
 		Page := this.Pages.Events.Tabs[1].Controls
 		SelectedCategory := this.GetSelectedCategory()
@@ -313,9 +312,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Items.Clear()
 		;~ GuiControl, % this.GUINum ":-Redraw", % Page.listEvents.ClassNN
 		;Add all matching events
-		Loop % this.Events.MaxIndex()
+		for index, Event in this.Events
 		{
-			Event := this.Events[A_Index]
 			ID := Event.ID
 			DisplayString := Event.Trigger.DisplayString()
 			Name := Event.Name
@@ -332,7 +330,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		if(!Page.listEvents.SelectedItems.MaxIndex() && Page.listEvents.Items.MaxIndex())
 			Page.listEvents.SelectedIndex := 1
 		if(Page.listEvents.SelectedItems.MaxIndex() = 1)
-			Page.editEventDescription.Text := this.Events.SubItem("ID", Page.listEvents.SelectedItem[2]).Description
+			Page.editEventDescription.Text := this.Events.GetItemWithValue("ID", Page.listEvents.SelectedItem[2]).Description
 		this.listEvents_SelectionChanged("")
 	}
 	
@@ -370,7 +368,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		}
 		if(items = 1)
 		{
-			Page.editEventDescription.Text := this.Events.SubItem("ID", Page.listEvents.SelectedItem[2]).Description
+			Page.editEventDescription.Text := this.Events.GetItemWithValue("ID", Page.listEvents.SelectedItem[2]).Description
 			Page.btnEditEvent.Enabled := true
 		}
 		else
@@ -415,23 +413,26 @@ Finally, here are some settings that you're likely to change at the beginning:
 	{
 		OpenWikiPage("EventsOverview")
 	}
+	
 	AddEvent()
 	{
 		Page := this.Pages.Events.Tabs[1].Controls
-		Event := EventSystem_RegisterEvent(this.Events) ;Event is added to SettingsWindows.Events here
+		;Event is added to this.Events here and an ID is assigned
+		Event := this.Events.RegisterEvent()
 		ListItem := Page.listEvents.Items.Add("Select Vis", "", Event.ID, Event.Trigger.DisplayString(), Event.Name)
 		Page.listEvents.SelectedItem := ListItem
 		SelectedCategory := this.GetSelectedCategory(true)
 		Event.Category := SelectedCategory
 		this.EditEvent(1)
-	}	
+	}
+	
 	EditEvent(TemporaryEvent)
 	{
 		Page := this.Pages.Events.Tabs[1].Controls
 		if(Page.listEvents.SelectedItems.MaxIndex() != 1)
 			return
 		ID := Page.listEvents.SelectedItem[2]
-		OriginalEvent := this.Events.SubItem("ID", ID)
+		OriginalEvent := this.Events.GetItemWithValue("ID", ID)
 		if((Settings.IsPortable || !A_IsAdmin) && OriginalEvent.Trigger.Type = "ExplorerButton")
 		{
 			Msgbox ExplorerButton trigger events may not be modified in portable or non-admin mode, as this might cause inconsistencies with the registry.
@@ -450,7 +451,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		if(NewEvent)
 		{
 			this.editEventFilter.Text := ""
-			this.Events[this.Events.IndexOfSubItem("ID", ID)] := NewEvent ;overwrite edited event
+			this.Events[this.Events.FindKeyWithValue("ID", ID)] := NewEvent ;overwrite edited event
 			if(NewEvent.Category = "")
 				NewEvent.Category := "Uncategorized"
 			if(!this.Events.Categories.indexOf(NewEvent.Category))
@@ -469,10 +470,11 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Loop % SelectedEvents.MaxIndex()
 		{
 			Index := SelectedEvents[SelectedEvents.MaxIndex() - A_Index + 1]
-			Event := this.Events.SubItem("ID", Page.listEvents.Items[Index][2])
+			Event := this.Events.GetItemWithValue("ID", Page.listEvents.Items[Index][2])
 			if((!Settings.IsPortable && A_IsAdmin) || Event.Trigger.Type != "ExplorerButton" && Event.Trigger.Type != "ContextMenu")
 			{
-				CategoryDeleted += this.Events.Delete(Event, false) ;Events object has special delete function
+				;Events object notifies its trigger about deletion
+				CategoryDeleted += this.Events.Delete(Event, false)
 				ListPos := Index
 				Page.listEvents.Items.Delete(Index)
 			}
@@ -495,13 +497,13 @@ Finally, here are some settings that you're likely to change at the beginning:
 		ClipboardEvents := Array()
 		for index, item in Page.listEvents.SelectedItems
 		{	
-			Event := this.Events.SubItem("ID", item[2])
+			Event := this.Events.GetItemWithValue("ID", item[2])
 			Copy := Event.DeepCopy()
 			Copy.Remove("OfficialEvent") ;Make sure that pasted events don't patch existing events
 			if((!Settings.IsPortable && A_IsAdmin) || Event.Trigger.Type != "ExplorerButton")
 				ClipboardEvents.Insert(copy)
 		}
-		WriteEventsFile(ClipboardEvents, A_Temp "/7plus/EventsClipboard.xml")	
+		EventSystem.WriteEventsFile(ClipboardEvents, A_Temp "/7plus/EventsClipboard.xml")	
 		Page.btnPasteEvent.Enabled := true
 	}
 	PasteEvent()
@@ -510,7 +512,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		if(FileExist(A_Temp "/7plus/EventsClipboard.xml"))
 		{
 			SelectedCategory := this.GetSelectedCategory(true)
-			ReadEventsFile(this.Events, A_Temp "/7plus/EventsClipboard.xml", SelectedCategory)
+			this.Events.ReadEventsFile(A_Temp "/7plus/EventsClipboard.xml", SelectedCategory)
 			this.FillEventsList()
 		}
 	}
@@ -525,14 +527,14 @@ Finally, here are some settings that you're likely to change at the beginning:
 		oldlen := this.Events.MaxIndex()
 		if(FileDialog.Show())
 		{
-			ReadEventsFile(this.Events, FileDialog.Filename)
+			this.Events.ReadEventsFile(FileDialog.Filename)
 			this.RecreateTreeView()
 			
 			;Figure out if FTP events were added and notify the user to set the FTP profile assignments
-			Loop % this.Events.len() - oldlen
+			Loop % this.Events.MaxIndex() - oldlen
 			{
 				pos := A_Index + oldlen
-				if(this.Events[pos].Actions.indexOfSubItem("Type", "Upload"))
+				if(this.Events[pos].Actions.FindKeyWithValue("Type", "Upload"))
 				{
 					found := true
 					break
@@ -577,15 +579,15 @@ Finally, here are some settings that you're likely to change at the beginning:
 				File := FileDialog.Filename
 				if(!strEndsWith(File, ".xml"))
 					File .= ".xml"
-				ExportEvents := Array()
+				ExportEvents := new CEvents()
 				for index, Item in Page.listEvents.SelectedItems
 				{
-						Event := this.Events.SubItem("ID", Item[2])
+						Event := this.Events.GetItemWithValue("ID", Item[2])
 						ExportEvents.Insert(Event)
-						if(!FTP && Event.Actions.indexOfSubItem("Type", "Upload"))
+						if(!FTP && Event.Actions.FindKeyWithValue("Type", "Upload"))
 							FTP := true
 				}
-				WriteEventsFile(ExportEvents, File)
+				EventSystem.WriteEventsFile(ExportEvents, File)
 				if(FTP)
 					Notify("Note", "FTP profiles won't be exported by this function. To save them, create a backup of FTPProfiles.xml. This file is only updated at program exit!", 2, "GC=555555 TC=White MC=White", NotifyIcons.Info)
 			}
@@ -609,7 +611,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page := this.Pages.AccessorPlugins.Tabs[1].Controls
 		this.AccessorPlugins := Array() ;We don't copy the whole AccessorPlugins structure here to save some memory (program launcher might take some for example)
 		Page.listAccessorPlugins.Items.Clear()
-		Loop % AccessorPlugins.len()
+		Loop % AccessorPlugins.MaxIndex()
 		{
 			AccessorPlugin := AccessorPlugins[A_Index]
 			PluginCopy := RichObject()

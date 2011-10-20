@@ -22,7 +22,7 @@ Action_SelectFiles_Execute(Action, Event)
 	Separator := ";"
 	Filter := ToArray(Filter, Separator)
 	if(Action.Wildcard)
-		Loop % Filter.len()
+		Loop % Filter.MaxIndex()
 			Filter[A_Index] := "*" Filter[A_Index] "*"
 	SelectFiles(Filter,Action.Clear,Action.Deselect,1,1,hwnd)
 	return 1

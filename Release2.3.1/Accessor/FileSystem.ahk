@@ -9,7 +9,7 @@ Accessor_FileSystem_Init(ByRef FileSystem, PluginSettings)
 }
 Accessor_FileSystem_ShowSettings(FileSystem, PluginSettings, PluginGUI)
 {
-	SubEventGUI_Add(PluginSettings, PluginGUI, "Checkbox", "UseIcons", "Use exact icons (much slower)", "", "")
+	AddControl(PluginSettings, PluginGUI, "Checkbox", "UseIcons", "Use exact icons (much slower)", "", "")
 }
 Accessor_FileSystem_IsInSinglePluginContext(FileSystem, Filter, LastFilter)
 {
@@ -80,10 +80,10 @@ Accessor_FileSystem_FillAccessorList(FileSystem, Accessor, Filter, LastFilter, B
 Accessor_FileSystem_PerformAction(FileSystem, Accessor, AccessorListEntry)
 {
 	global AccessorPlugins
-	ProgramLauncher := AccessorPlugins.SubItem("Type", "ProgramLauncher")
+	ProgramLauncher := AccessorPlugins.GetItemWithValue("Type", "ProgramLauncher")
 	if(!AccessorListEntry.Path)
 		return
-	if(ProgramLauncher.List.indexOfSubItem("Command",AccessorListEntry.Path) = 0)
+	if(ProgramLauncher.List.FindKeyWithValue("Command",AccessorListEntry.Path) = 0)
 	{
 		path := AccessorListEntry.Path
 		SplitPath, path, name

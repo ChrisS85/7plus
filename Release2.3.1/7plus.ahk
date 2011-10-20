@@ -23,6 +23,7 @@ BugfixVersion := 0
 ComObjError(0)
 #include %A_ScriptDir%\Globals.ahk ;Some global variable definitions
 #include %A_ScriptDir%\Autoexecute.ahk ;include first to avoid issues with autoexecute ending too soon because of labels
+#include <RichObject>
 #include <Array>
 #include <CGUI>
 #include <binreadwrite>
@@ -33,7 +34,6 @@ ComObjError(0)
 #include <gdip>
 #include <Parse>
 #include <RemoteBuf>
-#include <RichObject>
 #include <Taskbutton>
 #include <unhtml>
 #include <VA>
@@ -46,7 +46,8 @@ ComObjError(0)
 #include %A_ScriptDir%\CSettings.ahk
 #include %A_ScriptDir%\Accessor\Accessor.ahk
 #include %A_ScriptDir%\Deployment.ahk
-#include %A_ScriptDir%\EventSystem.ahk
+#include %A_ScriptDir%\CNewEventSystem.ahk
+;~ #include %A_ScriptDir%\EventSystem.ahk
 #include %A_ScriptDir%\EditEventGUI.ahk
 #include %A_ScriptDir%\Language.ahk
 ;~ #include %A_ScriptDir%\EditSubEventGUI.ahk

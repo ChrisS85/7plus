@@ -3,9 +3,9 @@ Event_SetEnabled(Event,Value)
 {
 	global Events
 	Event.Enabled := Value
-	if(SettingsActive() && Events.SubItem("ID", Event.ID)) ;if settings are open and updating a regular event, update its counterpart in SettingsWindow.Events
+	if(SettingsActive() && Events.GetItemWithValue("ID", Event.ID)) ;if settings are open and updating a regular event, update its counterpart in SettingsWindow.Events
 	{	
-		SettingsWindow.Events.SubItem("ID", Event.ID).Enabled := Value
+		SettingsWindow.Events.GetItemWithValue("ID", Event.ID).Enabled := Value
 		SettingsWindow.FillEventsList()
 	}
 }

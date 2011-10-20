@@ -15,9 +15,9 @@ Accessor_NotepadPlusPlus_Init(ByRef NotepadPlusPlus, PluginSettings)
 }
 Accessor_NotepadPlusPlus_ShowSettings(NotepadPlusPlus, PluginSettings, PluginGUI)
 {
-	SubEventGUI_Add(PluginSettings, PluginGUI, "Edit", "Keyword", "", "", "Keyword:")
-	SubEventGUI_Add(PluginSettings, PluginGUI, "Edit", "BasePriority", "", "", "Base Priority:")
-	SubEventGUI_Add(PluginSettings, PluginGUI, "Checkbox", "FuzzySearch", "Use fuzzy search (slower)", "", "")
+	AddControl(PluginSettings, PluginGUI, "Edit", "Keyword", "", "", "Keyword:")
+	AddControl(PluginSettings, PluginGUI, "Edit", "BasePriority", "", "", "Base Priority:")
+	AddControl(PluginSettings, PluginGUI, "Checkbox", "FuzzySearch", "Use fuzzy search (slower)", "", "")
 }
 Accessor_NotepadPlusPlus_IsInSinglePluginContext(NotepadPlusPlus, Filter, LastFilter)
 {
@@ -40,7 +40,7 @@ Accessor_NotepadPlusPlus_OnAccessorOpen(NotepadPlusPlus, Accessor)
 	if(WinExist("ahk_class Notepad++") = Accessor.PreviousWindow)
 	{
 		NotepadPlusPlus.Priority := 10000
-		if(index := NotepadPlusPlus.MRUList.indexOfSubItem("Path", Path := GetNotepadPlusPlusActiveTab()))
+		if(index := NotepadPlusPlus.MRUList.FindKeyWithValue("Path", Path := GetNotepadPlusPlusActiveTab()))
 		{
 			GUINum := Accessor.GUINum
 			if(!GUINum)
@@ -85,20 +85,20 @@ Accessor_NotepadPlusPlus_FillAccessorList(NotepadPlusPlus, Accessor, Filter, Las
 	}
 	if(!WinActive("ahk_class Notepad++") && strLen(Filter) < 2 && !KeywordSet)
 		return
-	if(!NotepadPlusPlus.List1.len() && !NotepadPlusPlus.List2.len())
+	if(!NotepadPlusPlus.List1.MaxIndex() && !NotepadPlusPlus.List2.MaxIndex())
 		return
 	outputdebug count %IconCount%
 	ImageList_ReplaceIcon(Accessor.ImageListID, -1, NotepadPlusPlus.Icon)
 	IconCount++
 	if(!Filter && KeywordSet)
 	{
-		Loop % NotepadPlusPlus.List1.len()
+		Loop % NotepadPlusPlus.List1.MaxIndex()
 		{
 			Path := NotepadPlusPlus.List1[A_Index]
 			SplitPath, Path, Name
 			Accessor.List.Insert(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
 		}
-		Loop % NotepadPlusPlus.List2.len()
+		Loop % NotepadPlusPlus.List2.MaxIndex()
 		{
 			Path := NotepadPlusPlus.List2[A_Index]
 			SplitPath, Path, Name
@@ -108,7 +108,7 @@ Accessor_NotepadPlusPlus_FillAccessorList(NotepadPlusPlus, Accessor, Filter, Las
 	}
 	InStrList := Array()
 	FuzzyList := Array()
-	Loop % NotepadPlusPlus.List1.len()
+	Loop % NotepadPlusPlus.List1.MaxIndex()
 	{
 		Path := NotepadPlusPlus.List1[A_Index]
 		SplitPath, Path, Name
@@ -120,7 +120,7 @@ Accessor_NotepadPlusPlus_FillAccessorList(NotepadPlusPlus, Accessor, Filter, Las
 		else if(NotepadPlusPlus.Settings.FuzzySearch && FuzzySearch(Name,Filter) < 0.3)
 			FuzzyList.Insert(Object("Title",Name,"Path",Path, "Type","NotepadPlusPlus", "Detail1", "NP++", "Icon", IconCount))
 	}
-	Loop % NotepadPlusPlus.List2.len()
+	Loop % NotepadPlusPlus.List2.MaxIndex()
 	{
 		Path := NotepadPlusPlus.List2[A_Index]
 		SplitPath, Path, Name		
@@ -146,7 +146,7 @@ Accessor_NotepadPlusPlus_PerformAction(NotepadPlusPlus, Accessor, AccessorListEn
 		{
 			Gui, %GUINum%: Default
 			GuiControlGet, Filter, , AccessorEdit
-			if(!(index := NotepadPlusPlus.MRUList.indexOfSubItem("Path", ActiveTab := GetNotepadPlusPlusActiveTab())))
+			if(!(index := NotepadPlusPlus.MRUList.FindKeyWithValue("Path", ActiveTab := GetNotepadPlusPlusActiveTab())))
 				NotepadPlusPlus.MRUList.Insert(Object("Path", ActiveTab, "Command", Filter, "Entry", AccessorListEntry.Path))
 			else
 			{
@@ -297,7 +297,7 @@ GetNotepadPlusPlusPath()
 GetNotepadPlusPlusActiveTab()
 {
 	global AccessorPlugins
-	NotepadPlusPlus := AccessorPlugins.SubItem("Type", "NotepadPlusPlus")
+	NotepadPlusPlus := AccessorPlugins.GetItemWithValue("Type", "NotepadPlusPlus")
 	hwnd := WinExist("ahk_class Notepad++")
 	if(!hwnd)
 		return ""

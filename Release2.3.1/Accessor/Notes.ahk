@@ -14,10 +14,10 @@ Accessor_Notes_Init(ByRef Notes, PluginSettings)
 	FileRead, xml, % Settings.ConfigPath "\Notes.xml"
 	XMLObject := XML_Read(xml)
 	;Convert empty and single arrays to real array
-	if(!XMLObject.List.len())
+	if(!XMLObject.List.MaxIndex())
 		XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()		
 	
-	Loop % XMLObject.List.len()
+	Loop % XMLObject.List.MaxIndex()
 	{
 		XMLObjectListEntry := XMLObject.List[A_Index]
 		Text := XMLObjectListEntry.Text
@@ -26,7 +26,7 @@ Accessor_Notes_Init(ByRef Notes, PluginSettings)
 }
 Accessor_Notes_ShowSettings(Notes, PluginSettings, PluginGUI)
 {
-	SubEventGUI_Add(PluginSettings, PluginGUI, "Edit", "Keyword", "", "", "Keyword:")
+	AddControl(PluginSettings, PluginGUI, "Edit", "Keyword", "", "", "Keyword:")
 }
 Accessor_Notes_IsInSinglePluginContext(Notes, Filter, LastFilter)
 {
@@ -48,7 +48,7 @@ Accessor_Notes_OnExit(Notes)
 {
 	FileDelete, % Settings.ConfigPath "\Notes.xml"
 	XMLObject := Object("List",Array())
-	Loop % Notes.List.len()
+	Loop % Notes.List.MaxIndex()
 		XMLObject.List.Insert(Object("Text",Notes.List[A_Index].Text))
 	XML_Save(XMLObject, Settings.ConfigPath "\Notes.xml")
 	DestroyIcon(Notes.Icon)
@@ -65,8 +65,8 @@ Accessor_Notes_FillAccessorList(Notes, Accessor, Filter, LastFilter, ByRef IconC
 	Filter := strTrimLeft(Filter, Notes.Settings.Keyword " ")
 	if(Filter)
 		Accessor.List.Insert(Object("Title","New note","Path","Adds a new node", "Type","Notes", "Detail1", "Notes", "Detail2", "","Icon", IconCount))
-	outputdebug % "note count " Notes.List.len()
-	Loop % Notes.List.len()
+	outputdebug % "note count " Notes.List.MaxIndex()
+	Loop % Notes.List.MaxIndex()
 		Accessor.List.Insert(Object("Title",Notes.List[A_Index].Text,"Path","", "Type","Notes", "Detail1", "Notes", "Detail2", "","Icon", IconCount, "ID", A_Index))
 }
 Accessor_Notes_PerformAction(Notes, Accessor, AccessorListEntry)
@@ -82,7 +82,7 @@ Accessor_Notes_PerformAction(Notes, Accessor, AccessorListEntry)
 		Filter := strTrimLeft(Filter, Notes.Settings.Keyword " ")
 		outputdebug note %filter%
 		Notes.List.Insert(Object("Text", Filter))
-		outputdebug % "count " Notes.List.len()
+		outputdebug % "count " Notes.List.MaxIndex()
 	}
 	else
 		MsgBox % AccessorListEntry.Title
@@ -149,7 +149,7 @@ NoteDelete()
 	if(!selected)
 		return
 	LV_GetText(id,selected,2)
-	Notes := AccessorPlugins.SubItem("Type", "Notes")
+	Notes := AccessorPlugins.GetItemWithValue("Type", "Notes")
 	if(!Accessor.List[id].Path)
 	{
 		Notes.List.Delete(Accessor.List[id].ID)

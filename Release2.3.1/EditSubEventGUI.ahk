@@ -127,7 +127,7 @@ GUI_EditSubEvent(se, ia=0, GoToLabel="")
 		category := IsAction ? Action_Categories[EditSubEventCategory] : Condition_Categories[EditSubEventCategory]
 		GuiControl,,EditSubEventType,|
 		found := false
-		Loop % category.len()
+		Loop % category.MaxIndex()
 		{
 			type := category[A_Index]
 			if(SubEvent.type = type)
@@ -159,7 +159,7 @@ GUI_EditSubEvent(se, ia=0, GoToLabel="")
 			t := SubEvent.Type
 			c := SubEvent.Category
 			SubEvent.GuiSubmit(SubEventGUI)
-			SubEvent := EventSystem_CreateSubEvent(IsAction ? "Action" : "Condition",type)
+			SubEvent := new EventSystem[IsAction ? "Actions" : "Conditions"][type]()
 		}
 		;Show sub-specific part of the gui and store hwnds in SubEventGUI
 		SubEventGUI := object("Type", type)

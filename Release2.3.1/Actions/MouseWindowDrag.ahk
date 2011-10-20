@@ -18,11 +18,11 @@ Action_MouseWindowDrag_Execute(Action, Event, Parameter="")
 		}
 		else if(IsObject(sAction)) ;Dragging still in progress
 			return -1
-		Loop % EventSchedule.len() ;Make sure no drag event is in progress
+		Loop % EventSchedule.MaxIndex() ;Make sure no drag event is in progress
 		{
 			if(EventSchedule[A_Index].ID = Event.ID)
 				continue
-			if(EventSchedule[A_Index].Actions.SubItem("Type", "MouseWindowResize") || EventSchedule[A_Index].Actions.SubItem("Type", "MouseWindowDrag"))
+			if(EventSchedule[A_Index].Actions.GetItemWithValue("Type", "MouseWindowResize") || EventSchedule[A_Index].Actions.GetItemWithValue("Type", "MouseWindowDrag"))
 				return 0
 		}
 		sAction := Action

@@ -20,10 +20,10 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 		return	
 	if(event=0x0016) ;EVENT_SYSTEM_MINIMIZEEND
 	{
-		Trigger := EventSystem_CreateSubEvent("Trigger","WindowStateChange")
+		Trigger := new CWindowStateChangeTrigger()
 		Trigger.Window := hwnd
 		Trigger.Event := "Window minimized"
-		OnTrigger(Trigger)
+		EventSystem.OnTrigger(Trigger)
 	}
 	else if(event=0x8001 && Settings.Explorer.Tabs.UseTabs) ;EVENT_OBJECT_DESTROY
 	{
@@ -35,10 +35,10 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 		WinGet, state, minmax, ahk_id %hwnd%
 		if(state = 1)
 		{
-			Trigger := EventSystem_CreateSubEvent("Trigger","WindowStateChange")
+			Trigger := new CWindowStateChangeTrigger()
 			Trigger.Window := hwnd
 			Trigger.Event := "Window maximized"
-			OnTrigger(Trigger)
+			EventSystem.OnTrigger(Trigger)
 		}
 		if(InStr("CabinetWClass,ExploreWClass", WinGetClass("ahk_id " hwnd)))
 			ExplorerMoved(hwnd)
@@ -94,11 +94,11 @@ ShellMessage( wParam, lParam, Msg)
 	ListLines, Off
 	global BlinkingWindows, WindowList, Accessor, RecentCreateCloseEvents, Profiler, ToolWindows, ExplorerWindows, LastWindow, LastWindowClass, SlideWindows, CurrentWindow, PreviousWindow
 	StartTime := A_TickCount
-	Trigger := EventSystem_CreateSubEvent("Trigger", "OnMessage")
+	Trigger := new COnMessageTrigger()
 	Trigger.Message := wParam
 	Trigger.lParam := lParam
 	Trigger.Msg := Msg
-	OnTrigger(Trigger)
+	EventSystem.OnTrigger(Trigger)
 	If	(wParam=1||wParam=2) ;Window Created/Closed
 	{
 		lParam += 0
@@ -109,10 +109,10 @@ ShellMessage( wParam, lParam, Msg)
 		if(!RecentCreateCloseEvents.HasKey(lParam))
 		{
 			RecentCreateCloseEvents[lParam] := 1
-			Trigger := wParam = 1 ? EventSystem_CreateSubEvent("Trigger","WindowCreated") : EventSystem_CreateSubEvent("Trigger","WindowClosed")
+			Trigger := wParam = 1 ? new CWindowCreatedTrigger() : new CWindowClosedTrigger()
 			class:= wParam = 1 ? WinGetClass("ahk_Id " lParam) : WindowList[lParam].class
 			Trigger.Window := lParam
-			OnTrigger(Trigger)
+			EventSystem.OnTrigger(Trigger)
 			;Keep a list of windows and their required info stored. This allows to identify windows which were closed recently.
 			if(!WindowList)
 				WindowList := Object()
@@ -166,7 +166,7 @@ ShellMessage( wParam, lParam, Msg)
 		if(BlinkingWindows.indexOf(lParam)=0)
 		{			
 			BlinkingWindows.Insert(lParam)
-			ct:=BlinkingWindows.len()
+			ct:=BlinkingWindows.MaxIndex()
 		}
 	}	
 	;Window Activation
@@ -179,9 +179,8 @@ ShellMessage( wParam, lParam, Msg)
 			CurrentWindow := lParam
 		}
 		lParam += 0
-		Trigger := Object("base", TriggerBase)
-		Trigger.Type := "WindowActivated"
-		OnTrigger(Trigger)
+		Trigger := new CWindowActivatedTrigger()
+		EventSystem.OnTrigger(Trigger)
 		;Blinking windows detection, remove activated windows
 		if(x:=BlinkingWindows.indexOf(lParam))
 			BlinkingWindows.Delete(x)
@@ -213,7 +212,7 @@ ShellMessage( wParam, lParam, Msg)
 		;Detect changed path		
 		if(InStr("CabinetWClass,ExploreWClass", WinGetClass("ahk_id " lParam)))
 		{
-			ExplorerPathChanged(ExplorerWindows.SubItem("hwnd", lParam))
+			ExplorerPathChanged(ExplorerWindows.GetItemWithValue("hwnd", lParam))
 			; newpath:=GetCurrentFolder()
 			; if(newpath && newpath != Settings.Explorer.CurrentPath)
 			; {
@@ -221,8 +220,8 @@ ShellMessage( wParam, lParam, Msg)
 				; ExplorerPathChanged(Settings.Explorer.CurrentPath, newpath)
 				; Settings.Explorer.PreviousPath := Settings.Explorer.CurrentPath
 				; Settings.Explorer.CurrentPath := newpath
-				; Trigger := EventSystem_CreateSubEvent("Trigger","ExplorerPathChanged")
-				; OnTrigger(Trigger)
+				; Trigger := new CExplorerPathChangedTrigger()
+				; EventSystem.OnTrigger(Trigger)
 				; if(Settings.Explorer.Tabs.UseTabs && !SuppressTabEvents && hwnd:=WinActive("ahk_group ExplorerGroup"))
 					; UpdateTabs()
 			; }

@@ -530,7 +530,7 @@ Settings_SetupEvents() {
 	Gui, ListView, GUI_EventsList
 	if(!Settings_Events)
 	{
-		Loop % Events.len()
+		Loop % Events.MaxIndex()
 			Events[A_Index].Trigger.PrepareCopy(Events[A_Index])		
 		
 		Settings_Events := Events.DeepCopy()	
@@ -567,7 +567,7 @@ FillEventsList()
 		Category := ""
 	ControlGetText, filter,,ahk_id %EventFilter%
 	count := 0
-	Loop % Settings_Events.len()
+	Loop % Settings_Events.MaxIndex()
 	{
 		id := Settings_Events[A_Index].ID
 		DisplayString := Settings_Events[A_Index].Trigger.DisplayString()
@@ -588,7 +588,7 @@ FillEventsList()
 	{
 		i:=LV_GetNext("")
 		LV_GetText(id,i,2)
-		Event := Settings_Events.SubItem("ID", id)
+		Event := Settings_Events.GetItemWithValue("ID", id)
 		GuiControl, 1:, GUI_EventsDescription, % Event.Description
 	}
 	
@@ -612,10 +612,10 @@ RecreateTreeView()
 	TV_Delete()
 	TV_Add("Introduction") ;Note: Treeview is also created once in initial setup
 	EventsTreeViewEntry := TV_Add("All Events", "", "Expand Select Vis" )
-	Loop % Settings_Events.Categories.len()
+	Loop % Settings_Events.Categories.MaxIndex()
 	{
 		Category := Settings_Events.Categories[A_Index]
-		Loop % Settings_Events.len()
+		Loop % Settings_Events.MaxIndex()
 		{
 			if(ShowAdvancedEvents || (Settings_Events[A_Index].Category = Category && !Settings_Events[A_Index].EventComplexityLevel))
 			{
@@ -640,12 +640,12 @@ Settings_SetupAccessorKeywords() {
 	Gui, ListView, GUI_AccessorKeywordsList
 	Settings_AccessorKeywords := Accessor.Keywords.DeepCopy()
 	LV_Delete()
-	Loop % Settings_AccessorKeywords.len()
+	Loop % Settings_AccessorKeywords.MaxIndex()
 	{
 		Gui, ListView, GUI_AccessorKeywordsList
 		LV_Add(A_Index = 1 ? "Select" : "", A_Index, Settings_AccessorKeywords[A_Index].Key, Settings_AccessorKeywords[A_Index].Command)
 	}
-	if(Settings_AccessorKeywords.len() > 0)
+	if(Settings_AccessorKeywords.MaxIndex() > 0)
 	{
 		GuiControl, 1:enable, GUI_AccessorKeywordsKey
 		GuiControl, 1:enable, GUI_AccessorKeywordsCommand
@@ -666,9 +666,9 @@ Settings_SetupAccessor() {
 	outputdebug Settings_SetupAccessor() listview
 	Gui, ListView, GUI_AccessorPluginsList
 	Settings_AccessorPlugins := Array()
-	outputdebug % "setupaccessor count " accessorplugins.len()
+	outputdebug % "setupaccessor count " accessorplugins.MaxIndex()
 	LV_Delete()
-	Loop % AccessorPlugins.len()
+	Loop % AccessorPlugins.MaxIndex()
 	{
 		PluginCopy := RichObject()
 		PluginCopy.Enabled := AccessorPlugins[A_Index].Enabled
@@ -741,7 +741,7 @@ Settings_SetupFTPProfiles() {
 	global
 	local Profiles
 	Settings_FTPProfiles := FTPProfiles.DeepCopy()
-	Loop % FTPProfiles.len()
+	Loop % FTPProfiles.MaxIndex()
 		Profiles .= "|" A_Index ": " FTPProfiles[A_Index].Hostname (A_Index = 1 ? "|" : "")
 	GuiControl, 1:,FTPProfilesDropDownList, %Profiles%
 	GuiControl, 1:Choose, FTPProfilesDropDownList, |1 ;| -> trigger g-label
@@ -771,12 +771,12 @@ Settings_SetupHotstrings() {
 	Gui, ListView, GUI_HotstringsList
 	Settings_Hotstrings := Hotstrings.DeepCopy()
 	LV_Delete()
-	Loop % Settings_Hotstrings.len()
+	Loop % Settings_Hotstrings.MaxIndex()
 	{
 		Gui, ListView, GUI_HotstringsList
 		LV_Add(A_Index = 1 ? "Select" : "", A_Index, Settings_Hotstrings[A_Index].Key, Settings_Hotstrings[A_Index].Value)
 	}
-	if(Settings_Hotstrings.len() > 0)
+	if(Settings_Hotstrings.MaxIndex() > 0)
 	{
 		GuiControl, 1:enable, GUI_HotstringsKey
 		GuiControl, 1:enable, GUI_HotstringsValue
@@ -891,7 +891,7 @@ ShowSettings(ShowPane="") {
 			Gui, 1:Add, TreeView, x16 y20 w140 h420 AltSubmit gSettingsTreeView vSettingsTreeView -HScroll
 			TV_Add("Introduction", "", "First")
 			EventsTreeViewEntry := TV_Add("All Events", "", "Expand")
-			Loop % Events.Categories.len()
+			Loop % Events.Categories.MaxIndex()
 				TV_Add(Events.Categories[A_Index], EventsTreeViewEntry, "Sort")
 			Loop, Parse, SettingsTabList, |
 				if(A_LoopField != "Introduction")
@@ -1091,7 +1091,7 @@ GUI_EventsList_Update()
 			return
 		i:=LV_GetNext("")
 		LV_GetText(id,i,2)
-		Event := Settings_Events.SubItem("ID", id)
+		Event := Settings_Events.GetItemWithValue("ID", id)
 		GuiControl, 1:, GUI_EventsDescription, % Event.Description
 	}
 	else if(A_GuiEvent="I" && InStr(ListEvent, "s", true))
@@ -1114,7 +1114,7 @@ GUI_EventsList_Update()
 		{
 			Checked := LV_GetNext(A_Index-1, "Checked") = A_Index ? 1 : 0
 			LV_GetText(id,A_Index,2)
-			Event := Settings_Events.SubItem("ID", id)
+			Event := Settings_Events.GetItemWithValue("ID", id)
 			if((!IsPortable && A_IsAdmin) || Event.Trigger.Type != "ExplorerButton")
 				Event.Enabled := Checked
 		}
@@ -1161,9 +1161,9 @@ GUI_RemoveEvent()
 			Events.Insert(id)
 		}
 	}
-	Loop % Events.len()
+	Loop % Events.MaxIndex()
 	{
-		Event := Settings_Events.SubItem("ID", Events[A_Index])
+		Event := Settings_Events.GetItemWithValue("ID", Events[A_Index])
 		if((!IsPortable && A_IsAdmin) || Event.Trigger.Type != "ExplorerButton" && Event.Trigger.Type != "ContextMenu")
 		{
 			deleted += Settings_Events.Delete(Event, false) ;Settings_Events has special delete function
@@ -1203,7 +1203,7 @@ GUI_EventsList_Edit(Add = 0)
 		return
 	i:=LV_GetNext("")
 	LV_GetText(id,i,2)
-	pos := Settings_Events.indexOfSubItem("ID", id)
+	pos := Settings_Events.FindKeyWithValue("ID", id)
 	if((IsPortable || !A_IsAdmin) && Settings_Events[pos].Trigger.Type = "ExplorerButton")
 	{
 		Msgbox ExplorerButton trigger events may not be modified in portable or non-admin mode, as this might cause inconsistencies with the registry.
@@ -1250,7 +1250,7 @@ GUI_EventsList_Copy()
 		if(LV_GetNext(A_Index-1) = A_Index)
 		{
 			LV_GetText(id,A_Index,2)			
-			Event := Settings_Events.SubItem("ID", id)
+			Event := Settings_Events.GetItemWithValue("ID", id)
 			Copy := Event.DeepCopy()
 			Copy.Remove("OfficialEvent") ;Make sure that pasted events don't patch existing events
 			if((!IsPortable && A_IsAdmin) || Event.Trigger.Type != "ExplorerButton")
@@ -1289,16 +1289,16 @@ GUI_EventsList_Import()
 {
 	global Settings_Events
 	FileSelectFile, file, 3, , Import Events file, Event files (*.xml)
-	oldlen := Settings_Events.len()
+	oldlen := Settings_Events.MaxIndex()
 	if(file)
 		ReadEventsFile(Settings_Events, file)
 	Settings_SetupEvents()
 	
 	;Figure out if FTP events were added and notify the user to set the FTP profile assignments
-	Loop % Settings_Events.len() - oldlen
+	Loop % Settings_Events.MaxIndex() - oldlen
 	{
 		pos := A_Index + oldlen
-		Loop % Settings_Events[pos].Actions.len()
+		Loop % Settings_Events[pos].Actions.MaxIndex()
 		{
 			if(Settings_Events[pos].Actions[A_Index].Type = "Upload")
 			{
@@ -1318,16 +1318,16 @@ GUI_EventsList_Export()
 	
 	
 	;Uncomment the following lines to export all events separated by category to Events\Category.xml instead	
-	Loop % Settings_Events.Categories.len()
+	Loop % Settings_Events.Categories.MaxIndex()
 	{
 		Category := Settings_Events.Categories[A_Index]
 		Events := Array()
-		Loop % Settings_Events.len()
+		Loop % Settings_Events.MaxIndex()
 		{
 			if(Settings_Events[A_Index].Category = Category)
 				Events.Insert(Settings_Events[A_Index])
 		}
-		if(Events.len() > 0)
+		if(Events.MaxIndex() > 0)
 			WriteEventsFile(Events, A_ScriptDir "\Events\" Category ".xml")
 	}
 	WriteEventsFile(Settings_Events, A_ScriptDir "\Events\All Events.xml")
@@ -1345,14 +1345,14 @@ GUI_EventsList_Export()
 			if(!strEndsWith(file, ".xml"))
 				file .= ".xml"
 			Events := Array()
-			Loop % Settings_Events.len()
+			Loop % Settings_Events.MaxIndex()
 			{
 				if(LV_GetNext(A_Index - 1) = A_Index)
 				{
 					LV_GetText(id,A_Index,2)
-					Event := Settings_Events.SubItem("ID", id)
+					Event := Settings_Events.GetItemWithValue("ID", id)
 					Events.Insert(Event)
-					if(!FTP && Event.Actions.indexOfSubItem("Type", "Upload"))
+					if(!FTP && Event.Actions.FindKeyWithValue("Type", "Upload"))
 						FTP := true
 				}
 			}
@@ -1369,25 +1369,25 @@ GUI_SaveEvents()
 {
 	global Events, Settings_Events
 	;Disable all events first (without setting enabled to false, so triggers can decide what they want to do themselves)
-	Loop % Events.len()
+	Loop % Events.MaxIndex()
 		Events[A_Index].Trigger.Disable(Events[A_Index])	
 	;Remove events that were deleted in settings window and refresh the settings copies to consider recent changes in the original events (such as timer state)
 	pos := 1
 	Settings_Events.IsSettings := true
-	Loop % Events.len()
+	Loop % Events.MaxIndex()
 	{
-		if(!Settings_Events.SubItem("ID", Events[pos].id)) ;separate destroy routine instead of simple disable is needed for removed events because of hotkey/timer discrepancy
+		if(!Settings_Events.GetItemWithValue("ID", Events[pos].id)) ;separate destroy routine instead of simple disable is needed for removed events because of hotkey/timer discrepancy
 		{
 			Events_Delete(Events, Events[pos],false)
 			continue
 		}
-		Events[pos].Trigger.PrepareReplacement(Events[pos], Settings_Events.SubItem("ID", Events[pos].id))
+		Events[pos].Trigger.PrepareReplacement(Events[pos], Settings_Events.GetItemWithValue("ID", Events[pos].id))
 		pos++
 	}
 	;Replace the original events with the copies
 	Events := Settings_Events.DeepCopy()
 	;Update enabled state
-	Loop % Events.len()
+	Loop % Events.MaxIndex()
 	{
 		if(Events[A_Index].Enabled)
 			Events[A_Index].Enable()
@@ -1421,7 +1421,7 @@ GUI_Accessor_AddKeyword()
 	global Settings_AccessorKeywords
 	Gui, ListView, GUI_AccessorKeywordsList
 	Settings_AccessorKeywords.Insert(Object("Key", "Key", "Command", "Command"))
-	LV_Add("Select", Settings_AccessorKeywords.len(), "Key", "Command")
+	LV_Add("Select", Settings_AccessorKeywords.MaxIndex(), "Key", "Command")
 }
 GUI_AccessorKeywords_Delete:
 GUI_AccessorKeywords_Delete()
@@ -1482,11 +1482,11 @@ GUI_SaveAccessorKeywords()
 {
 	global Accessor, Settings_AccessorKeywords
 	pos := 1
-	len := Settings_AccessorKeywords.len()
+	len := Settings_AccessorKeywords.MaxIndex()
 	Loop % len
 	{
 		keywordentry := Settings_AccessorKeywords[A_Index]
-		Loop % Settings_AccessorKeywords.len()
+		Loop % Settings_AccessorKeywords.MaxIndex()
 		{
 			if(pos != A_Index && Settings_AccessorKeywords[A_Index].Key = keywordentry.Key)
 			{
@@ -1511,7 +1511,7 @@ DropAccessorFiles()
 	{
 		SplitPath, A_LoopField, ,,,name
 		Settings_AccessorKeywords.Insert(Object("Key", name, "Command", A_LoopField))
-		LV_Add("Select", Settings_AccessorKeywords.len(), name, A_LoopField)
+		LV_Add("Select", Settings_AccessorKeywords.MaxIndex(), name, A_LoopField)
 	}
 	return
 }
@@ -1584,7 +1584,7 @@ GUI_SaveAccessorPluginSettings()
 {
 	global AccessorPlugins, Settings_AccessorPlugins	
 	outputdebug save accessor settings
-	Loop % AccessorPlugins.len()
+	Loop % AccessorPlugins.MaxIndex()
 	{
 		Plugin := AccessorPlugins[A_Index]
 		Settings_Plugin := Settings_AccessorPlugins[A_Index]
@@ -1652,7 +1652,7 @@ FTPProfiles_Hostname()
 	GuiControlGet, selection,, FTPProfilesDropDownList
 	if(SubStr(selection, 1, Instr(selection, ": ") - 1) != Settings_FTPProfiles.CurrentID)
 		return
-	Loop % Settings_FTPProfiles.len()
+	Loop % Settings_FTPProfiles.MaxIndex()
 		Profiles .= "|" A_Index ": " (A_Index = Settings_FTPProfiles.CurrentID ? hostname : Settings_FTPProfiles[A_Index].Hostname) (A_Index = Settings_FTPProfiles.CurrentID ? "|" : "")
 	if(strEndsWith(Profiles, "|"))
 		Profiles .= "|"
@@ -1698,8 +1698,8 @@ FTPProfiles_Add()
 {
 	global Settings_FTPProfiles, FTPProfilesDropDownList
 	Settings_FTPProfiles.Insert(Object("Hostname", "Hostname.com", "Port", 21, "User", "SomeUser", "Password", "", "URL", "http://somehost.com"))
-	len := Settings_FTPProfiles.len()
-	string := len ": " Settings_FTPProfiles[Settings_FTPProfiles.len()].Hostname
+	len := Settings_FTPProfiles.MaxIndex()
+	string := len ": " Settings_FTPProfiles[Settings_FTPProfiles.MaxIndex()].Hostname
 	GuiControl, , FTPProfilesDropDownList, %string%
 	GuiControl, Choose,FTPProfilesDropDownList, |%len% ;|->trigger g-label
 	GuiControl, enable, FTPProfiles_Hostname
@@ -1718,7 +1718,7 @@ FTPProfiles_Delete()
 	id := SubStr(selection, 1, Instr(selection, ": ") - 1)
 	Settings_FTPProfiles.Delete(id)
 	Settings_FTPProfiles.CurrentID := 0 ;Don't save current values
-	Loop % Settings_FTPProfiles.len()
+	Loop % Settings_FTPProfiles.MaxIndex()
 		Profiles .= "|" A_Index ": " Settings_FTPProfiles[A_Index].Hostname (A_Index = 1 ? "|" : "")
 	outputdebug new list: %Profiles%
 	GuiControl, 1:,FTPProfilesDropDownList, %Profiles%
@@ -1761,7 +1761,7 @@ GUI_Hotstrings_Add()
 	global Settings_Hotstrings
 	Gui, ListView, GUI_HotstringsList
 	Settings_Hotstrings.Insert(Object("Key", "key", "value", "value"))
-	LV_Add("Select", Settings_Hotstrings.len(), "key", "value")
+	LV_Add("Select", Settings_Hotstrings.MaxIndex(), "key", "value")
 }
 GUI_Hotstrings_Delete:
 GUI_Hotstrings_Delete()
@@ -1826,12 +1826,12 @@ GUI_SaveHotstrings()
 {
 	global Hotstrings, Settings_Hotstrings
 	pos := 1
-	len := Settings_Hotstrings.len()
+	len := Settings_Hotstrings.MaxIndex()
 	Loop % len
 	{
 		Hotstring := Settings_Hotstrings[A_Index]
 		;Remove duplicates and empty keys
-		Loop % Settings_Hotstrings.len()
+		Loop % Settings_Hotstrings.MaxIndex()
 		{
 			if(pos != A_Index && Settings_Hotstrings[A_Index].Key = Hotstring.Key)
 			{
@@ -1849,10 +1849,10 @@ GUI_SaveHotstrings()
 		if(IsObject(Hotstring))
 			pos++
 	}
-	len := Hotstrings.len()
+	len := Hotstrings.MaxIndex()
 	Loop % len
 		RemoveHotstring(Hotstrings[1].key)
-	Loop % Settings_Hotstrings.len()
+	Loop % Settings_Hotstrings.MaxIndex()
 		AddHotstring(Settings_Hotstrings[A_Index].key, Settings_Hotstrings[A_Index].value)
 }
 
@@ -2070,7 +2070,7 @@ ApplySettings(Close = 0)
 	Settings_WindowsSettings_Submit(1)
 	;Store variables which can be stored directly
 	Gui 1:Submit, NoHide
-	Language.CurrentLanguage := Language.Languages.SubItem("FullName", ControlGetText("", "ahk_id " hLanguage))
+	Language.CurrentLanguage := Language.Languages.GetItemWithValue("FullName", ControlGetText("", "ahk_id " hLanguage))
 	Action := Settings_WindowsSettings_Submit(0)
 	;SaveEvents relies on SettingsActive to be false so that enabling/dissabling the events doesn't refresh them in settings window
 	SettingsActive := false
@@ -2112,7 +2112,7 @@ ApplySettings(Close = 0)
 	}
 	SavePreviousFTPProfile()
 	FTPProfiles := Array()
-	Loop % Settings_FTPProfiles.len()
+	Loop % Settings_FTPProfiles.MaxIndex()
 		FTPProfiles.Insert(Settings_FTPProfiles[A_Index])
 
 	if(!(ImageQuality > 0 && ImageQuality <= 100))

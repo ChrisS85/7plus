@@ -24,14 +24,14 @@ MouseMovePolling()
 		||corner = 4 && MouseX = VirtualX && MouseY = VirtualY + VirtualH - 1)
 		{
 			index := 1
-			Loop % ScreenCornerEvents.len() ;Check if any of the events belonging to this corner have reached the time limit yet
+			Loop % ScreenCornerEvents.MaxIndex() ;Check if any of the events belonging to this corner have reached the time limit yet
 			{
 				if(ScreenCornerEvents[index].Time < A_TickCount - hoverstart)
 				{
 					outputdebug found event
-					Trigger := EventSystem_CreateSubEvent("Trigger","ScreenCorner")
+					Trigger := new CScreenCornerTrigger()
 					Trigger.Corner := Corner
-					TriggerSingleEvent(Events.SubItem("ID", ScreenCornerEvents[index].ID), Trigger) ;Trigger the single event and remove it from the list so it only gets triggered once
+					EventSystem.Events.GetItemWithValue("ID", ScreenCornerEvents[index].ID).Trigger.TriggerThisEvent() ;Trigger the single event and remove it from the list so it only gets triggered once
 					ScreenCornerEvents.Remove(index)
 				}
 				else
@@ -56,11 +56,11 @@ MouseMovePolling()
 			}
 			if(corner != "") ;Create an array of matching events to save some cpu time on later checks
 			{
-				ScreenCornerEvents := Array()
-				Loop % Events.len()
+				ScreenCornerEvents := new CArray()
+				for index, Event in EventSystem.Events
 				{
-					if(Events[A_Index].Trigger.Type = "ScreenCorner" && Events[A_Index].Trigger.Corner = Corner)
-						ScreenCornerEvents.Insert(Object("time", Events[A_Index].Trigger.Time, "Id", Events[A_Index].ID))
+					if(Event.Trigger.Type = "ScreenCorner" && Event.Trigger.Corner = Corner)
+						ScreenCornerEvents.Insert(Object("time", Event.Trigger.Time, "Id", Event.ID))
 				}
 				hoverstart := A_TickCount
 			}
@@ -336,7 +336,7 @@ FlashWindows()
 		ControlClick,, ahk_id %z%
 		MouseMove %mx%,%my%,0
 	}
-	else if (BlinkingWindows.len()>0)
+	else if (BlinkingWindows.MaxIndex()>0)
 	{
 		z:=BlinkingWindows[1]
 		WinActivate ahk_id %z%

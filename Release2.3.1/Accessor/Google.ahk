@@ -10,7 +10,7 @@ Accessor_Google_Init(ByRef Google, PluginSettings)
 }
 Accessor_Google_ShowSettings(Google, PluginSettings, PluginGUI)
 {
-	SubEventGUI_Add(PluginSettings, PluginGUI, "Edit", "Keyword", "", "", "Keyword:")
+	AddControl(PluginSettings, PluginGUI, "Edit", "Keyword", "", "", "Keyword:")
 }
 Accessor_Google_IsInSinglePluginContext(Google, Filter, LastFilter)
 {
@@ -48,7 +48,7 @@ Accessor_Google_FillAccessorList(Google, Accessor, Filter, LastFilter, ByRef Ico
 	if(!KeywordSet)
 		return
 	outputdebug fillaccessorlist %filter%
-	Loop % Google.List.len()
+	Loop % Google.List.MaxIndex()
 		Accessor.List.Insert(Object("Title",Google.List[A_Index].titleNoFormatting,"Path",Google.List[A_Index].visibleUrl, "Type","Google", "URL", Google.List[A_Index].unescapedURL,"Icon", 3))
 }
 Accessor_Google_PerformAction(Google, Accessor, AccessorListEntry)
@@ -81,7 +81,7 @@ return
 QueryGoogleResult()
 {
 	global AccessorPlugins, AccessorEdit, Accessor
-	GooglePlugin := AccessorPlugins.SubItem("Type", "Google")
+	GooglePlugin := AccessorPlugins.GetItemWithValue("Type", "Google")
 	GUINum := Accessor.GUINum
 	if(!GUINum)
 		return

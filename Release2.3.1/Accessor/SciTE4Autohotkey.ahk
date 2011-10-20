@@ -28,9 +28,9 @@ Accessor_SciTE4AutoHotkey_Init(ByRef SciTE4AutoHotkey, PluginSettings)
 }
 Accessor_SciTE4AutoHotkey_ShowSettings(SciTE4AutoHotkey, PluginSettings, PluginGUI)
 {
-	SubEventGUI_Add(PluginSettings, PluginGUI, "Edit", "Keyword", "", "", "Keyword:")
-	SubEventGUI_Add(PluginSettings, PluginGUI, "Edit", "BasePriority", "", "", "Base Priority:")
-	SubEventGUI_Add(PluginSettings, PluginGUI, "Checkbox", "FuzzySearch", "Use fuzzy search (slower)", "", "")
+	AddControl(PluginSettings, PluginGUI, "Edit", "Keyword", "", "", "Keyword:")
+	AddControl(PluginSettings, PluginGUI, "Edit", "BasePriority", "", "", "Base Priority:")
+	AddControl(PluginSettings, PluginGUI, "Checkbox", "FuzzySearch", "Use fuzzy search (slower)", "", "")
 }
 Accessor_SciTE4AutoHotkey_IsInSinglePluginContext(SciTE4AutoHotkey, Filter, LastFilter)
 {
@@ -52,7 +52,7 @@ Accessor_SciTE4AutoHotkey_OnAccessorOpen(SciTE4AutoHotkey, Accessor)
 	if(WinExist("ahk_class SciTEWindow") = Accessor.PreviousWindow)
 	{
 		SciTE4AutoHotkey.Priority := 10000
-		if(index := SciTE4AutoHotkey.MRUList.indexOfSubItem("Path", Path := GetSciTE4AutoHotkeyActiveTab()))
+		if(index := SciTE4AutoHotkey.MRUList.FindKeyWithValue("Path", Path := GetSciTE4AutoHotkeyActiveTab()))
 		{
 			GUINum := Accessor.GUINum
 			if(!GUINum)
@@ -100,13 +100,13 @@ Accessor_SciTE4AutoHotkey_FillAccessorList(SciTE4AutoHotkey, Accessor, Filter, L
 	}
 	if(!WinActive("ahk_class SciTEWindow") && strLen(Filter) < 2 && !KeywordSet)
 		return
-	if(!SciTE4AutoHotkey.List1.len())
+	if(!SciTE4AutoHotkey.List1.MaxIndex())
 		return
 	ImageList_ReplaceIcon(Accessor.ImageListID, -1, SciTE4AutoHotkey.Icon)
 	IconCount++
 	if(!Filter && KeywordSet)
 	{
-		Loop % SciTE4AutoHotkey.List1.len()
+		Loop % SciTE4AutoHotkey.List1.MaxIndex()
 		{
 			Path := SciTE4AutoHotkey.List1[A_Index]
 			SplitPath, Path, Name
@@ -116,7 +116,7 @@ Accessor_SciTE4AutoHotkey_FillAccessorList(SciTE4AutoHotkey, Accessor, Filter, L
 	}
 	InStrList := Array()
 	FuzzyList := Array()
-	Loop % SciTE4AutoHotkey.List1.len()
+	Loop % SciTE4AutoHotkey.List1.MaxIndex()
 	{
 		Path := SciTE4AutoHotkey.List1[A_Index]
 		SplitPath, Path, Name
@@ -143,7 +143,7 @@ Accessor_SciTE4AutoHotkey_PerformAction(SciTE4AutoHotkey, Accessor, AccessorList
 		{
 			Gui, %GUINum%: Default
 			GuiControlGet, Filter, , AccessorEdit
-			if(!(index := SciTE4AutoHotkey.MRUList.indexOfSubItem("Path", ActiveTab := GetSciTE4AutoHotkeyActiveTab())))
+			if(!(index := SciTE4AutoHotkey.MRUList.FindKeyWithValue("Path", ActiveTab := GetSciTE4AutoHotkeyActiveTab())))
 				SciTE4AutoHotkey.MRUList.Insert(Object("Path", ActiveTab, "Command", Filter, "Entry", AccessorListEntry.Path))
 			else
 			{
@@ -233,7 +233,7 @@ GetSciTE4AutoHotkeyPath()
 GetSciTE4AutoHotkeyActiveTab()
 {
 	global AccessorPlugins
-	SciTE4AutoHotkey := AccessorPlugins.SubItem("Type", "SciTE4AutoHotkey")
+	SciTE4AutoHotkey := AccessorPlugins.GetItemWithValue("Type", "SciTE4AutoHotkey")
 	hwnd := WinExist("ahk_class SciTEWindow")
 	if(!hwnd)
 		return ""		

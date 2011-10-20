@@ -1,19 +1,44 @@
+;Gets the event which is currently being edited by the GUI Name of the editor window
+GetCurrentSubEvent()
+{
+	Event := EventSystem.CurrentlyEditingEvents[A_GUI]
+	GuiControlGet,CurrentTab,,SysTabControl321
+	if(CurrentTab = "Trigger")
+		return Event.Trigger
+	else if(CurrentTab = "Conditions")
+	{
+		Gui, ListView, SysListView321
+		return Event.Conditions[LV_GetNext()]
+	}
+	else if(CurrentTab = "Actions")
+	{
+		Gui, ListView, SysListView321
+		return Event.Conditions[LV_GetNext()]
+	}
+	return 
+}
 GUI_EditEvent(e,GoToLabel="", Parameter="")
 {
 	static Event, result, SubeventGUI,SubEventBackup, EditEventTab, EditEventTriggerCategory, EditEventTriggerType, EditEventConditions, EditEvent_EditCondition, EditEvent_RemoveCondition, EditEvent_AddCondition, EditEventActions, EditEvent_EditAction, EditEvent_RemoveAction, EditEvent_AddAction, EditEvent_Condition_MoveDown, EditEvent_Condition_MoveUp, EditEvent_Action_MoveUp, EditEvent_Action_MoveDown, EditEvent_Name, EditEvent_Description, EditEvent_DisableAfterUse, EditEvent_DeleteAfterUse, EditEvent_OneInstance, EditEvent_Category, EditEvent_CopyCondition, EditEvent_PasteCondition, EditEvent_CopyAction, EditEvent_PasteAction, ActionClipboard, ConditionClipboard,EditConditionNegate,EditEventConditionsType,EditEventConditionsCategory,EditEventActionsType,EditEventActionsCategory,EditEvent_ComplexEvent
-	global Trigger_Categories, Condition_Categories, Action_Categories
 	if(GoToLabel = "")
 	{
 		;Don't show more than once
 		if(Event)
 			return ""
+		if(!e)
+			MsgBox Edit Event: Event not found!
 		Event := e
 		result := ""
 		SubeventGUI := ""
 		Gui CSettingsWindow1:+LastFoundExist
 		IfWinExist		
 			Gui, CSettingsWindow1:+Disabled
-		Gui, 4:Default
+		GUIName := 4
+		Gui, %GUIName%:Default
+		
+		;Add the event to the list of events that are currently being edited so it can be found by a subevent label
+		EventSystem.CurrentlyEditingEvents[GUIName] := Event
+		
 		Gui, +LabelEditEvent +OwnerCSettingsWindow1 +ToolWindow +OwnDialogs
 		width := 900
 		height := 570
@@ -210,6 +235,7 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 			IfWinNotExist ahk_id %EditEvent_hWnd% 
 				break
 		}
+		EventSystem.CurrentlyEditingEvents.Remove(GUIName, "")
 		Event := ""
 		Gui CSettingsWindow1:+LastFoundExist
 		IfWinExist
@@ -296,7 +322,7 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 			Gui, ListView, EditEvent%A_LoopField%
 			i:=LV_GetNext("")
 			LV_Delete()
-			Loop % Event[A_LoopField].len()
+			Loop % Event[A_LoopField].MaxIndex()
 				LV_Add(A_Index = i || (!i && A_Index = 1) ? "Select" : "", (EditEventTab = "Conditions" && Event[A_LoopField][A_Index].Negate ? "NOT " : "") Event[A_LoopField][A_Index].DisplayString())
 			GuiControl, focus, EditEvent%A_LoopField%
 		}
@@ -310,20 +336,21 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 			;~ i:=LV_GetNext("")
 		;~ }
 		Subevents := "Trigger|Conditions|Actions"
+		
 		Loop, Parse, Subevents,|
 		{
 			if(A_LoopField = "Trigger")
-				enum := Trigger_Categories._newEnum()
+				Categories := CTrigger.Categories
 			else if(A_LoopField = "Conditions")
-				enum := Condition_Categories._newEnum()
+				Categories := CCondition.Categories
 			else if(A_LoopField = "Actions")
-				enum := Action_Categories._newEnum()
-			while enum[key,value]
+				Categories := CAction.Categories
+			for key, value in Categories
 			{
 				if(A_LoopField = "Trigger" && key = Event.Trigger.Category)
-					GuiControl,,EditEvent%A_LoopField%Category,%key%||
+					GuiControl,,EditEvent%A_LoopField%Category,% key "||"
 				else
-					GuiControl,,EditEvent%A_LoopField%Category,%key%
+					GuiControl,,EditEvent%A_LoopField%Category,% key
 			}
 		}
 		return
@@ -351,21 +378,21 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 		SingularName := strTrimRight(EditEventTab, "s")
 		if(EditEventTab = "Trigger")
 		{
-			category := Trigger_Categories[EditEvent%EditEventTab%Category]
+			category := CTrigger.Categories[EditEvent%EditEventTab%Category]
 			Subevent := Event.Trigger
 		}
 		else if(EditEventTab = "Conditions" || EditEventTab = "Actions")
 		{
-			category := %SingularName%_Categories[EditEvent%EditEventTab%Category]
+			category := EditEventTab = "Conditions" ? CCondition.Categories[EditEvent%EditEventTab%Category] : CAction.Categories[EditEvent%EditEventTab%Category]
 			Gui, ListView, EditEvent%EditEventTab%
 			i:=LV_GetNext("")
 			Subevent := Event[EditEventTab][i]
 		}
 		GuiControl,,EditEvent%EditEventTab%Type,|
 		found := false
-		Loop % category.len() ;Find current type of subevent, select it and trigger the selectionchange label
+		Loop % category.MaxIndex() ;Find current type of subevent, select it and trigger the selectionchange label
 		{
-			type := category[A_Index]
+			type := category[A_Index].Type
 			if(Subevent.type = type)
 			{
 				GuiControl,,EditEvent%EditEventTab%Type,%type%||
@@ -401,7 +428,8 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 					return
 				SetControlDelay, 0
 				Event.Trigger.GuiSubmit(SubeventGUI)
-				Event.Trigger := EventSystem_CreateSubevent("Trigger",type)
+				TriggerTemplate := EventSystem.Triggers[Type]
+				Event.Trigger := new TriggerTemplate()
 			}
 			else if(EditEventTab = "Conditions" || EditEventTab = "Actions")
 			{
@@ -412,7 +440,7 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 						return
 					SetControlDelay, 0
 					Event[EditEventTab][i].GuiSubmit(SubeventGUI)
-					Event[EditEventTab][i] := EventSystem_CreateSubevent(EditEventTab = "Conditions" ? "Condition" : "Action", type)
+					Event[EditEventTab][i] := new EventSystem[EditEventTab = "Conditions" ? "Conditions" : "Actions"][type]()
 				}
 			}
 		}
@@ -515,7 +543,7 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 		if(EditEventTab = "Conditions" || EditEventTab = "Actions")
 		{
 			Gui, ListView, EditEvent%EditEventTab%
-			Subevent := EventSystem_CreateSubevent(EditEventTab = "Conditions" ? "Condition" : "Action", EditEventTab = "Conditions" ? "If" : "Message")
+			Subevent := new EventSystem[EditEventTab = "Conditions" ? "Conditions" : "Actions"][EditEventTab = "Conditions" ? "If" : "Message"]()
 			Event[EditEventTab].Insert(Subevent)
 			LV_Add("Select", Subevent.DisplayString())
 		}

@@ -42,17 +42,17 @@ else
 PatchXMLObject.PatchVersion := PatchVersion
 
 ;Convert to array
-Loop % NewXMLObject.Events.Event.len()
+Loop % NewXMLObject.Events.Event.MaxIndex()
 {
 	NewEvent := NewXMLObject.Events.Event[A_Index]
-	if(!IsFunc(NewEvent.Conditions.Condition.len)) ;Single condition
+	if(!NewEvent.Conditions.Condition.Is("CArray")) ;Single condition
 	{
 		XMLConditions := Array()
 		if(NewEvent.Conditions.HasKey("Condition"))
 			XMLConditions.Insert(NewEvent.Conditions.Condition)
 		NewEvent.Conditions.Condition := XMLConditions
 	}
-	if(!IsFunc(NewEvent.Actions.Action.len)) ;Single action
+	if(!NewEvent.Actions.Action.Is("CArray")) ;Single action
 	{
 		XMLActions := Array()
 		if(NewEvent.Actions.HasKey("Action"))
@@ -60,18 +60,18 @@ Loop % NewXMLObject.Events.Event.len()
 		NewEvent.Actions.Action := XMLActions
 	}
 }
-Loop % OldXMLObject.Events.Event.len()
+Loop % OldXMLObject.Events.Event.MaxIndex()
 {
 	OldEvent := OldXMLObject.Events.Event[A_Index]
 	;Convert to array
-	if(!IsFunc(OldEvent.Conditions.Condition.len)) ;Single condition
+	if(!OldEvent.Conditions.Condition.Is("CArray")) ;Single condition
 	{
 		XMLConditions := Array()
 		if(OldEvent.Conditions.HasKey("Condition"))
 			XMLConditions.Insert(OldEvent.Conditions.Condition)
 		OldEvent.Conditions.Condition := XMLConditions
 	}
-	if(!IsFunc(OldEvent.Actions.Action.len)) ;Single Action
+	if(!OldEvent.Actions.Action.Is("CArray")) ;Single Action
 	{
 		XMLActions := Array()
 		if(OldEvent.Actions.HasKey("Action"))
@@ -81,7 +81,7 @@ Loop % OldXMLObject.Events.Event.len()
 	;Warn if official event is not set
 	if(!OldEvent.HasKey("OfficialEvent"))
 		Msgbox % OldEvent.ID ": " OldEvent.Name " doesn't have an official id!"
-	if(NewEvent := NewXMLObject.Events.Event.SubItem("OfficialEvent", OldEvent.OfficialEvent)) ;Event exists in both files, look for changes
+	if(NewEvent := NewXMLObject.Events.Event.GetItemWithValue("OfficialEvent", OldEvent.OfficialEvent)) ;Event exists in both files, look for changes
 	{
 		PatchEvent := Object("OfficialEvent", OldEvent.OfficialEvent)
 		Updated := false
@@ -125,10 +125,10 @@ Loop % OldXMLObject.Events.Event.len()
 	else ;Event was deleted
 		PatchXMLObject.Remove.OfficialEvent.Insert(OldEvent.OfficialEvent)
 }
-Loop % NewXMLObject.Events.Event.len()
+Loop % NewXMLObject.Events.Event.MaxIndex()
 {
 	NewEvent := NewXMLObject.Events.Event[A_Index]
-	if(!OldXMLObject.Events.Event.SubItem("OfficialEvent", NewEvent.OfficialEvent)) ;Event was added
+	if(!OldXMLObject.Events.Event.GetItemWithValue("OfficialEvent", NewEvent.OfficialEvent)) ;Event was added
 		PatchXMLObject.Events.Event.Insert(NewEvent)
 }
 XML_Save(PatchXMLObject, A_ScriptDir "\Events\ReleasePatch\" PatchXMLObject.MajorVersion "." PatchXMLObject.MinorVersion "." PatchXMLObject.BugfixVersion "." PatchXMLObject.PatchVersion ".xml")

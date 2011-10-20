@@ -12,14 +12,14 @@ Action_ExplorerReplaceDialog_ReadXML(Action, XMLAction)
 Action_ExplorerReplaceDialog_Execute(Action, Event)
 {
 	global ExplorerWindows, CReplaceDialog
-	if(IsObject(ExplorerWindows.SubItem("hwnd", WinActive("ahk_group ExplorerGroup")).ReplaceDialog))
-		Gui, % ExplorerWindows.SubItem("hwnd", WinActive("ahk_group ExplorerGroup")).ReplaceDialog.GUINum ":Show"
+	if(IsObject(ExplorerWindows.GetItemWithValue("hwnd", WinActive("ahk_group ExplorerGroup")).ReplaceDialog))
+		Gui, % ExplorerWindows.GetItemWithValue("hwnd", WinActive("ahk_group ExplorerGroup")).ReplaceDialog.GUINum ":Show"
 	else
 	{
 		ReplaceDialog := new CReplaceDialog(Action, Event)
 		if(IsObject(ReplaceDialog))
 		{
-			ExplorerWindows.SubItem("hwnd", ReplaceDialog.Parent).ReplaceDialog := ReplaceDialog
+			ExplorerWindows.GetItemWithValue("hwnd", ReplaceDialog.Parent).ReplaceDialog := ReplaceDialog
 			return 1
 		}
 	}
@@ -46,7 +46,7 @@ Class CReplaceDialog
 		Critical, Off
 		if(!this.Parent := WinActive("ahk_group ExplorerGroup"))
 			return 0
-		if(IsObject(ExplorerWindows.SubItem("hwnd", this.Parent).ReplaceDialog))
+		if(IsObject(ExplorerWindows.GetItemWithValue("hwnd", this.Parent).ReplaceDialog))
 			return 0
 		this.GUINum:=GetFreeGUINum(10)
 		if(!this.GUINum)
@@ -293,7 +293,7 @@ Class CReplaceDialog
 		{
 			this.DirectoryTree := Array()
 			this.DirectoryTree.Directory := true			
-			BasePath := ExplorerWindows.SubItem("hwnd", this.Parent).Path
+			BasePath := ExplorerWindows.GetItemWithValue("hwnd", this.Parent).Path
 			SplitPath, BasePath,Name,Path
 			this.BasePath := BasePath
 			this.DirectoryTree.Path := Path
@@ -307,7 +307,7 @@ Class CReplaceDialog
 					this.FlattenTree(this.DirectoryTree)
 					if(!this.Stop)
 					{
-						Loop % this.SearchResults.len()
+						Loop % this.SearchResults.MaxIndex()
 						{
 							if(this.Stop)
 								break
@@ -319,16 +319,16 @@ Class CReplaceDialog
 		}
 		else
 		{
-			this.BasePath := ExplorerWindows.SubItem("hwnd", this.Parent).Path
+			this.BasePath := ExplorerWindows.GetItemWithValue("hwnd", this.Parent).Path
 			this.FileContentSearch()
 			if(!this.Stop)
 			{
-				Loop % this.SearchResults.len()
+				Loop % this.SearchResults.MaxIndex()
 				{
 					if(this.Stop)
 						break
 					index := A_Index
-					Loop % this.SearchResults[A_Index].Lines.len()
+					Loop % this.SearchResults[A_Index].Lines.MaxIndex()
 					{
 						if(this.Stop)
 							break
@@ -346,7 +346,7 @@ Class CReplaceDialog
 			Control, Disable,,, % "ahk_id " this.hReplaceButton
 			this.Remove("Stop")
 		}
-		if(this.SearchResults.len() > 0)
+		if(this.SearchResults.MaxIndex() > 0)
 			Control, Enable,,, % "ahk_id " this.hReplaceButton
 		WinSetTitle, % "ahk_id " this.hWnd,,Rename / Replace
 		ControlSetText,, Cancel, % "ahk_id " this.hCancel
@@ -387,7 +387,7 @@ Class CReplaceDialog
 	;Locates a tree item by its Path and Name value
 	FindTreeItem(Root, Path, Name)
 	{
-		Loop % Root.len()
+		Loop % Root.MaxIndex()
 		{
 			if(Root[A_Index].Path = Path && Root[A_Index].Name = Name)
 				return Root[A_Index]
@@ -403,7 +403,7 @@ Class CReplaceDialog
 	;Flattens the directory structure into a single array. Items which won't be renamed will be skipped.
 	FlattenTree(Root)
 	{
-		Loop % Root.len()
+		Loop % Root.MaxIndex()
 		{
 			if(this.Stop)
 				return 0
@@ -418,7 +418,7 @@ Class CReplaceDialog
 	CheckForDuplicates(Root, RootPath, PathsList)
 	{
 		index := 1
-		len := Root.len()
+		len := Root.MaxIndex()
 		Loop % len
 		{
 			if(this.Stop)
@@ -453,7 +453,7 @@ Class CReplaceDialog
 	;TODO check overwrite modes here and adjust paths based on rename success
 	PerformFileNameReplace(Root, RootPath)
 	{
-		Loop % Root.len()
+		Loop % Root.MaxIndex()
 		{
 			if(this.Stop)
 				return 0
@@ -672,18 +672,18 @@ Class CReplaceDialog
 				this.ProcessLine(File, Line, A_Index)
 			}
 			f.Close()
-			if(File.Lines.len() > 0)				
+			if(File.Lines.MaxIndex() > 0)				
 				this.SearchResults.Insert(File)
 		}
 	}
 	PerformFileContentReplace()
 	{
-		Loop % this.SearchResults.len()
+		Loop % this.SearchResults.MaxIndex()
 		{
 			index := A_Index
 			Lines := ""
 			output := ""
-			Loop % this.SearchResults[index].Lines.len() ;Small loop to speed it up a bit for large files
+			Loop % this.SearchResults[index].Lines.MaxIndex() ;Small loop to speed it up a bit for large files
 			{
 				if(this.SearchResults[index].Lines[A_Index].Enabled)
 					Lines .= "," this.SearchResults[index].Lines[A_Index].Line
@@ -701,7 +701,7 @@ Class CReplaceDialog
 				}
 				Line := f.ReadLine()
 				if(InStr(Lines, "," A_Index))
-					output .= this.SearchResults[index].Lines.SubItem("Line", A_Index).NewText
+					output .= this.SearchResults[index].Lines.GetItemWithValue("Line", A_Index).NewText
 				else
 					output .= Line
 			}
@@ -741,7 +741,7 @@ Class CReplaceDialog
 					Enabled := false
 				 LV_GetText(Path, A_EventInfo, 1)
 				 LV_GetText(LineNumber, A_EventInfo, 2)
-				 Result := this.SearchResults.SubItem("Path", AppendPaths(this.BasePath,Path)).Lines.SubItem("Line", LineNumber)
+				 Result := this.SearchResults.GetItemWithValue("Path", AppendPaths(this.BasePath,Path)).Lines.GetItemWithValue("Line", LineNumber)
 				Result.Enabled := Enabled
 			}
 		}
@@ -972,7 +972,7 @@ Class CReplaceDialog
 			ControlSetText,, Cancel, % "ahk_id " this.hCancel
 			Control, Disable,,, % "ahk_id " this.hReplaceButton
 		}
-		ExplorerWindows.SubItem("hwnd", this.Parent).Remove("ReplaceDialog")
+		ExplorerWindows.GetItemWithValue("hwnd", this.Parent).Remove("ReplaceDialog")
 	}
 }
 ExplorerReplaceDialogFiles:
@@ -997,25 +997,25 @@ ExplorerReplaceDialogLineTabsToSpaces:
 ExplorerReplaceDialogLineSpacesToTabs:
 ExplorerReplaceDialogChangeLineCase:
 ExplorerReplaceDialogConvertLineSeparator:
-Loop % ExplorerWindows.len()
+Loop % ExplorerWindows.MaxIndex()
 	if(ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
 		ExplorerWindows[A_Index].ReplaceDialog.GuiEvent(A_ThisLabel)
 return
 
 
 ExplorerReplaceDialogListView:
-Loop % ExplorerWindows.len()
+Loop % ExplorerWindows.MaxIndex()
 	if(ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
 		ExplorerWindows[A_Index].ReplaceDialog.ListViewEvent()
 return
 ExplorerReplaceDialogSearch:
-Loop % ExplorerWindows.len()
+Loop % ExplorerWindows.MaxIndex()
 	if(ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
 		ExplorerWindows[A_Index].ReplaceDialog.Search()
 return
 
 ExplorerReplaceDialogCancel:
-Loop % ExplorerWindows.len()
+Loop % ExplorerWindows.MaxIndex()
 {
 	if(ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
 	{
@@ -1028,7 +1028,7 @@ Loop % ExplorerWindows.len()
 return
 ExplorerReplaceDialogClose:
 ExplorerReplaceDialogEscape:
-Loop % ExplorerWindows.len()
+Loop % ExplorerWindows.MaxIndex()
 	if(ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
 	{
 		ExplorerWindows[A_Index].ReplaceDialog.Stop := true
@@ -1036,7 +1036,7 @@ Loop % ExplorerWindows.len()
 	}
 return
 ExplorerReplaceDialogReplace:
-Loop % ExplorerWindows.len()
+Loop % ExplorerWindows.MaxIndex()
 	if(ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
 		ExplorerWindows[A_Index].ReplaceDialog.Replace()
 return

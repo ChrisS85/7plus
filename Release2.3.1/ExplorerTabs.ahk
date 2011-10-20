@@ -2,8 +2,8 @@
 ^t::CreateTab(WinActive("ahk_group ExplorerGroup")+0)
 #if
 #if Settings.Explorer.Tabs.UseTabs && IsTabbedWindow(WinExist("A")+0)
-^Tab Up::ExplorerWindows.SubItem("hwnd", WinExist("A")+0).TabContainer.CycleTabs(1)
-^+Tab Up::ExplorerWindows.SubItem("hwnd", WinExist("A")+0).TabContainer.CycleTabs(-1)
+^Tab Up::ExplorerWindows.GetItemWithValue("hwnd", WinExist("A")+0).TabContainer.CycleTabs(1)
+^+Tab Up::ExplorerWindows.GetItemWithValue("hwnd", WinExist("A")+0).TabContainer.CycleTabs(-1)
 ^w::CloseActiveTab()
 #if
 #if Settings.Explorer.Tabs.UseTabs && IsMouseOverTabButton()
@@ -13,15 +13,15 @@ MButton::MouseCloseTab()
 CloseActiveTab()
 {
 	global ExplorerWindows	
-	TabContainer := ExplorerWindows.SubItem("hwnd", WinExist("A")+0).TabContainer
-	tab := TabContainer.tabs.SubItem("hwnd", WinExist("A")+0)
+	TabContainer := ExplorerWindows.GetItemWithValue("hwnd", WinExist("A")+0).TabContainer
+	tab := TabContainer.tabs.GetItemWithValue("hwnd", WinExist("A")+0)
 	outputdebug % "active tab " tab.path WinExist("A")+0
 	TabContainer.CloseTab(tab)
 }
 IsTabbedWindow(hwnd)
 {
 	global ExplorerWindows
-	if(IsObject(ExplorerWindows.SubItem("hwnd", hwnd+0).TabContainer))
+	if(IsObject(ExplorerWindows.GetItemWithValue("hwnd", hwnd+0).TabContainer))
 		return hwnd+0
 	return false
 }
@@ -38,11 +38,11 @@ IsMouseOverTabButton(ByRef TabContainer="")
 		x-=WinX
 		y-=WinY
 		; outputdebug correct window x%x% y%y%
-		TabContainer:=ExplorerWindows.TabContainerList.SubItem("TabWindow", window+0)
+		TabContainer:=ExplorerWindows.TabContainerList.GetItemWithValue("TabWindow", window+0)
 		if(TabContainer)
 		{
 			; outputdebug tab container
-			Loop % TabContainer.tabs.len()
+			Loop % TabContainer.tabs.MaxIndex()
 			{
 				if(IsInArea(x,y,TabContainer.tabs[A_Index].x,TabContainer.tabs[A_Index].y,TabContainer.tabs[A_Index].width,TabContainer.tabs[A_Index].height))
 					return A_Index
@@ -73,7 +73,7 @@ CalculateTabText(tab)
 {
 	global ExplorerWindows
 	outputdebug % "calculate tab text for " tab.hwnd+0
-	TabContainer := ExplorerWindows.SubItem("hwnd", tab.hwnd+0).TabContainer
+	TabContainer := ExplorerWindows.GetItemWithValue("hwnd", tab.hwnd+0).TabContainer
 	WinGetPos x,y,w,h,% "ahk_id " TabContainer.TabWindow
 	
 	; Create a gdi bitmap with width and height of what we are going to draw into it. This is the entire drawing area for everything
@@ -151,7 +151,7 @@ CalculateTabText(tab)
 CloseAllInactiveTabs()
 {
 	global ExplorerWindows
-	len := ExplorerWindows.TabContainerList.len()
+	len := ExplorerWindows.TabContainerList.MaxIndex()
 	loop %len% ;Fixed length for delete loop
 		ExplorerWindows.TabContainerList[1].CloseInactiveTabs()
 }
@@ -159,7 +159,7 @@ CloseAllInactiveTabs()
 /*
 TabContainerList_indexOf(TabContainerList,TabContainer)
 {
-	Loop % TabContainerList.len()
+	Loop % TabContainerList.MaxIndex()
 	{
 		tc:=TabContainerList[A_Index]
 		if(tc.ContainsHWND(TabContainer.active))
@@ -169,7 +169,7 @@ TabContainerList_indexOf(TabContainerList,TabContainer)
 */
 
 DrawTabWindow:
-ExplorerWindows.SubItem("hwnd", WinExist("A")+0).DrawTabWindow()
+ExplorerWindows.GetItemWithValue("hwnd", WinExist("A")+0).DrawTabWindow()
 return
 Class CTabContainer
 {
@@ -217,8 +217,8 @@ Class CTabContainer
 		if(position="")
 		{
 			this.tabs.Insert(tab)
-			this.CalculateHorizontalTabPositions(this.tabs.len())
-			this.CalculateVerticalTabPosition(this.tabs.len())
+			this.CalculateHorizontalTabPositions(this.tabs.MaxIndex())
+			this.CalculateVerticalTabPosition(this.tabs.MaxIndex())
 		}
 		else
 		{
@@ -227,10 +227,10 @@ Class CTabContainer
 			this.CalculateVerticalTabPosition(position)
 		}
 		ExplorerWindow.TabContainer := this
-		if(this.tabs.len() > 1)
+		if(this.tabs.MaxIndex() > 1)
 		{
 			if(Activate)
-				this.ActivateTab(position = "" ? this.Tabs.len() : position)
+				this.ActivateTab(position = "" ? this.Tabs.MaxIndex() : position)
 			else
 			{
 				;To hide the old tab without showing the hide anim, it is moved outside of the screen first
@@ -294,7 +294,7 @@ Class CTabContainer
 		AttachToolWindow(hwnd, this.TabNum, false)
 		;DisableMinimizeAnim(0)
 		this.CalculateVerticalTabPosition(pos)
-		this.CalculateVerticalTabPosition(this.tabs.IndexOfSubItem("hwnd", OldTab+0))
+		this.CalculateVerticalTabPosition(this.tabs.FindKeyWithValue("hwnd", OldTab+0))
 		this.UpdatePosition()
 		this.UpdateTabs()
 		Sleep 10 ;To allow any message hooks to be executed
@@ -306,14 +306,14 @@ Class CTabContainer
 	*/
 	CycleTabs(dir)
 	{
-		if(this.tabs.len()>1)
+		if(this.tabs.MaxIndex()>1)
 		{
-			pos:=this.tabs.IndexOfSubItem("hwnd", this.active+0)
+			pos:=this.tabs.FindKeyWithValue("hwnd", this.active+0)
 			pos+=dir
 			if(pos<1)
-				pos+=this.tabs.len()
-			Else if(pos>this.tabs.len())
-				pos-=this.tabs.len()
+				pos+=this.tabs.MaxIndex()
+			Else if(pos>this.tabs.MaxIndex())
+				pos-=this.tabs.MaxIndex()
 			outputdebug activate tab %pos%
 			this.ActivateTab(pos)
 		}
@@ -337,12 +337,12 @@ Class CTabContainer
 			; TabContainer:=TabContainerList.ContainsHWND(hwnd)
 			; if(hwnd && TabContainer)
 			; {
-		Loop % ExplorerWindows.len()
+		Loop % ExplorerWindows.MaxIndex()
 		{
 			if(ExplorerWindows[A_Index].TabContainer != this)
 				continue
 			DisplayName := ExplorerWindows[A_Index].DisplayName
-			Tab := ExplorerWindows[A_Index].TabContainer.tabs.SubItem("hwnd", ExplorerWindows[A_Index].hwnd+0)
+			Tab := ExplorerWindows[A_Index].TabContainer.tabs.GetItemWithValue("hwnd", ExplorerWindows[A_Index].hwnd+0)
 			if(Tab && DisplayName != Tab.DisplayName)
 			{
 				Tab.DisplayName := DisplayName
@@ -443,11 +443,11 @@ Class CTabContainer
 		global ExplorerWindows
 		ExplorerWindows.TabContainerList.Delete(ExplorerWindows.TabContainerList.indexOf(this))
 		ExplorerWindows.TabContainerList.TabCloseInProgress := true
-		loop % this.tabs.len()
+		loop % this.tabs.MaxIndex()
 		{
 			hwnd := this.tabs[A_Index].hwnd+0
 			;Remove all references to the Tab Container so that its delete routine may be called and ExplorerDestroyed doesn't recurse
-			ExplorerWindows.SubItem("hwnd", hwnd).Remove("TabContainer")
+			ExplorerWindows.GetItemWithValue("hwnd", hwnd).Remove("TabContainer")
 			if(hwnd!=this.active)
 				WinClose, ahk_id %hwnd%
 		}
@@ -473,11 +473,11 @@ Class CTabContainer
 		; outputdebug after deletion:
 		; TabContainerList.Print()
 		ExplorerWindows.TabContainerList.TabCloseInProgress := true
-		loop % this.tabs.len()
+		loop % this.tabs.MaxIndex()
 		{
 			hwnd := this.tabs[A_Index].hwnd+0
 			;Remove all references to the Tab Container so that its delete routine may be called and ExplorerDestroyed doesn't recurse
-			ExplorerWindows.SubItem("hwnd", hwnd).Remove("TabContainer")
+			ExplorerWindows.GetItemWithValue("hwnd", hwnd).Remove("TabContainer")
 			WinClose, ahk_id %hwnd%
 		}
 		Loop 100
@@ -500,7 +500,7 @@ Class CTabContainer
 			x:=0
 		Loop
 		{
-			if(i>this.tabs.len())
+			if(i>this.tabs.MaxIndex())
 				break
 			this.tabs[i].x:=x
 			x+=this.tabs[i].width
@@ -512,7 +512,7 @@ Class CTabContainer
 		global ExplorerWindows
 		WinGetPos x,y,w,h, % "ahk_id " this.TabWindow
 		outputdebug draw tab window current size x%x% y%y% w%w% h%h%
-		count:=this.tabs.len()
+		count:=this.tabs.MaxIndex()
 		desiredwidth:=0
 		loop % count
 		{
@@ -560,7 +560,7 @@ Class CTabContainer
 		;Create pen for border liens
 		pPenBorder := Gdip_CreatePen(0xFF808080, 1)
 		;Draw all tabs
-		Loop % this.tabs.len()
+		Loop % this.tabs.MaxIndex()
 		{
 			tab := this.tabs[A_Index]
 			Gdip_SetSmoothingMode(G, 4)
@@ -620,7 +620,7 @@ Class CTabContainer
 		; if(!TabContainer)
 			; TabContainer:=TabContainerList.ContainsHWND(hwnd)
 		; outputdebug % "close tab " this.tabs.IndexOf(Tab)
-		outputdebug % "currently active tab" this.tabs.Indexofsubitem("hwnd", this.active+0)
+		outputdebug % "currently active tab" this.tabs.FindKeyWithValue("hwnd", this.active+0)
 		if(Tab.hwnd=this.active)
 		{	
 			if(Settings.Explorer.Tabs.OnTabClose=1)
@@ -628,19 +628,19 @@ Class CTabContainer
 			else if(Settings.Explorer.Tabs.OnTabClose=2)
 				this.CycleTabs(1)
 		}
-		outputdebug % "currently active tab after cycling" this.tabs.Indexofsubitem("hwnd", this.active+0)
+		outputdebug % "currently active tab after cycling" this.tabs.FindKeyWithValue("hwnd", this.active+0)
 		
-		if(this.tabs.len()=2)
+		if(this.tabs.MaxIndex()=2)
 		{
 			;Remove all references to the Tab Container so that its delete routine may be called
 			ExplorerWindows.TabContainerList.Delete(ExplorerWindows.TabContainerList.indexOf(this))
-			Loop % this.tabs.len()
-				ExplorerWindows.SubItem("hwnd", this.tabs[A_Index].hwnd+0).Remove("TabContainer")
+			Loop % this.tabs.MaxIndex()
+				ExplorerWindows.GetItemWithValue("hwnd", this.tabs[A_Index].hwnd+0).Remove("TabContainer")
 		}
 		Else
 		{
 			this.tabs.Delete(this.tabs.IndexOf(Tab))
-			ExplorerWindows.SubItem("hwnd", Tab.hwnd+0).Remove("TabContainer")
+			ExplorerWindows.GetItemWithValue("hwnd", Tab.hwnd+0).Remove("TabContainer")
 		}
 		WinMove, % "ahk_id " Tab.hwnd,,-10000,-10000
 		ExplorerWindows.TabContainerList.TabCloseInProgress++
@@ -662,7 +662,7 @@ Class CTabContainer
 	{
 		global ExplorerWindows
 		outputdebug tab closed manually %hwnd%
-		Tab := this.Tabs.SubItem("hwnd", hwnd)
+		Tab := this.Tabs.GetItemWithValue("hwnd", hwnd)
 		if(!Tab)
 			return false
 		if(hwnd=this.active)
@@ -673,12 +673,12 @@ Class CTabContainer
 				this.CycleTabs(1)
 		}
 		
-		if(this.tabs.len()=2)
+		if(this.tabs.MaxIndex()=2)
 		{
 			;Remove all references to the Tab Container so that its delete routine may be called
 			ExplorerWindows.TabContainerList.Delete(ExplorerWindows.TabContainerList.indexOf(this))
-			Loop % this.tabs.len()
-				ExplorerWindows.SubItem("hwnd", this.tabs[A_Index].hwnd+0).Remove("TabContainer")
+			Loop % this.tabs.MaxIndex()
+				ExplorerWindows.GetItemWithValue("hwnd", this.tabs[A_Index].hwnd+0).Remove("TabContainer")
 		}
 		Else
 			this.tabs.Delete(this.tabs.IndexOf(Tab))
@@ -698,7 +698,7 @@ CreateTab(hwnd, path=-1,Activate=-1)
 	Critical
 	Activate := Activate = -1 ? Settings.Explorer.Tabs.ActivateTab : Activate
 	path := path = -1 ? Settings.Explorer.Tabs.TabStartupPath : path
-	ExplorerWindow := ExplorerWindows.SubItem("hwnd", hwnd+0)
+	ExplorerWindow := ExplorerWindows.GetItemWithValue("hwnd", hwnd+0)
 	if(!ExplorerWindow)
 	{
 		Msgbox Error creating tab: Explorer window not registered!
@@ -781,13 +781,13 @@ CreateTab(hwnd, path=-1,Activate=-1)
 		; outputdebug hide old tab
 	}
 	RegisterExplorerWindows()
-	TabContainer.CalculateVerticalTabPosition(TabContainer.tabs.IndexOfSubItem("hwnd", hwnd+0))
+	TabContainer.CalculateVerticalTabPosition(TabContainer.tabs.FindKeyWithValue("hwnd", hwnd+0))
 	if(Settings.Explorer.Tabs.NewTabPosition = 1)
-		TabContainer.add(ExplorerWindows.SubItem("hwnd", hwndnew+0),TabContainer.tabs.IndexOfSubItem("hwnd", hwnd+0) + 1,1) ;Add new tab right to the current tab
+		TabContainer.add(ExplorerWindows.GetItemWithValue("hwnd", hwndnew+0),TabContainer.tabs.FindKeyWithValue("hwnd", hwnd+0) + 1,1) ;Add new tab right to the current tab
 	else if(Settings.Explorer.Tabs.NewTabPosition = 2)
-		TabContainer.add(ExplorerWindows.SubItem("hwnd", hwndnew+0),"",1) ;Add new tab to end of list
+		TabContainer.add(ExplorerWindows.GetItemWithValue("hwnd", hwndnew+0),"",1) ;Add new tab to end of list
 	DetectHiddenWindows, Off
-	; TabContainer.CalculateVerticalTabPosition(TabContainer.tabs.IndexOfSubItem("hwnd", hwndnew))
+	; TabContainer.CalculateVerticalTabPosition(TabContainer.tabs.FindKeyWithValue("hwnd", hwndnew))
 	if(Activate)
 		AttachToolWindow(TabContainer.Active, TabContainer.TabNum, false)
 	this.UpdateTabs()
@@ -829,7 +829,7 @@ CreateTab(hwnd, path=-1,Activate=-1)
 ; TabContainer_ContainsHWND(TabContainer,hwnd)
 ; {
 	;;DecToHex(hwnd)
-	; Loop % TabContainer.tabs.len()
+	; Loop % TabContainer.tabs.MaxIndex()
 	; {
 		; if(TabContainer.tabs[A_Index].hwnd = hwnd)
 			; return A_Index
@@ -850,7 +850,7 @@ CreateTab(hwnd, path=-1,Activate=-1)
 	; outputdebug y: %y%
 	; outputdebug w: %w%
 	; outputdebug h: %h%
-	; Loop % TabContainer.tabs.len()
+	; Loop % TabContainer.tabs.MaxIndex()
 	; {
 		; path:=GetCurrentFolder(TabContainer.tabs[A_Index].hwnd)
 		; hwnd:=TabContainer.tabs[A_Index].hwnd
@@ -861,7 +861,7 @@ CreateTab(hwnd, path=-1,Activate=-1)
 ; {
 	;;DecToHex(hwnd)
 	;;outputdebug TabContainerList_ContainsHWND(%hwnd%)
-	; Loop % TabContainerList.len()
+	; Loop % TabContainerList.MaxIndex()
 	; {		
 		; TabContainer:=TabContainerList[A_Index]
 		; if(TabContainer.ContainsHWND(hwnd))
@@ -876,11 +876,11 @@ CreateTab(hwnd, path=-1,Activate=-1)
 	; outputdebug --------------------------------------------
 	; active:=TabContainerList.active
 	; outputdebug Active: %active%
-	; count:=TabContainerList.len()
+	; count:=TabContainerList.MaxIndex()
 	; outputdebug tab container count: %count%
-	; loop % TabContainerList.len()
+	; loop % TabContainerList.MaxIndex()
 	; {
-		; count:=TabContainerList[A_Index].tabs.len()
+		; count:=TabContainerList[A_Index].tabs.MaxIndex()
 		; outputdebug %A_Index%: %count% entries
 		; TabContainerList[A_Index].Print()
 	; }

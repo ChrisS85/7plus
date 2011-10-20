@@ -112,7 +112,7 @@ EventSystem_Startup()
 	Action_Upload_ReadFTPProfiles()
 	
 	;Create list object for events
-	EventsBase := object("base", Array(), "Categories", Array(), "GlobalPlaceholders", Array(), "HighestID", -1, "CreateEvent", "EventSystem_CreateEvent","RegisterEvent", "EventSystem_RegisterEvent", "Add", "Events_Add", "Delete", "Events_Delete", "SubItem", "Events_SubItem", "indexOfSubItem", "Events_indexOfSubItem")
+	EventsBase := object("base", Array(), "Categories", Array(), "GlobalPlaceholders", Array(), "HighestID", -1, "CreateEvent", "EventSystem_CreateEvent","RegisterEvent", "EventSystem_RegisterEvent", "Add", "Events_Add", "Delete", "Events_Delete", "GetItemWithValue", "Events_GetItemWithValue", "FindKeyWithValue", "Events_FindKeyWithValue")
 	Events := object("base", EventsBase)
 	
 	;Temporary events are not visible in settings GUI and won't be saved. See ControlEvent -> Copy Event for usage example.
@@ -132,7 +132,7 @@ EventSystem_Startup()
 	EventSchedule := Array()
 	
 	;Make sure the subevents can enabled themselves
-	Loop % Events.len()
+	Loop % Events.MaxIndex()
 	{
 		Event := Events[A_Index]	
 		if(Event.Enabled)
@@ -308,18 +308,18 @@ EventSystem_End()
 {
 	global Events, TemporaryEvents
 	WriteMainEventsFile()
-	Loop % Events.len()
+	Loop % Events.MaxIndex()
 	{
 		Event := Events[A_Index]
 		Event.Trigger.OnExit()
-		Loop % Event.Actions.len()
+		Loop % Event.Actions.MaxIndex()
 			Event.Actions[A_Index].OnExit()
 	}
-	Loop % TemporaryEvents.len()
+	Loop % TemporaryEvents.MaxIndex()
 	{
 		Event := TemporaryEvents[A_Index]
 		Event.Trigger.OnExit()
-		Loop % Event.Actions.len()
+		Loop % Event.Actions.MaxIndex()
 			Event.Actions[A_Index].OnExit()
 	}
 }
@@ -362,10 +362,10 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 	if(path = Settings.ConfigPath "\Events.xml") ;main config file, read patch version
 		PatchVersion := XMLObject.PatchVersion ? XMLObject.PatchVersion : 0
 	
-	count := Events.len()
+	count := Events.MaxIndex()
 	lowestID := 999999999999
 	HighestID := Events.HighestID
-	len := max(XMLObject.Events.Event.len(), XMLObject.Events.HasKey("Event"))
+	len := max(XMLObject.Events.Event.MaxIndex(), XMLObject.Events.HasKey("Event"))
 	Loop % len
 	{
 		i := A_Index
@@ -458,14 +458,14 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 			Event.Remove("Trigger")
 		
 		;Read conditions
-		if(XMLEvent.Conditions.HasKey("Condition") && !IsFunc(XMLEvent.Conditions.Condition.len)) ;Single condition
+		if(XMLEvent.Conditions.HasKey("Condition") && !XMLEvent.Conditions.Condition.Is("CArray")) ;Single condition
 		{
 			XMLConditions := Array()
 			XMLConditions.Insert(XMLEvent.Conditions.Condition)
 			XMLEvent.Conditions.Condition := XMLConditions
 		}
 		
-		Loop % XMLEvent.Conditions.Condition.len()
+		Loop % XMLEvent.Conditions.Condition.MaxIndex()
 		{
 			j := A_Index
 			
@@ -486,14 +486,14 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 		}
 		
 		;Read actions
-		if(XMLEvent.Actions.HasKey("Action") && !IsFunc(XMLEvent.Actions.Action.len)) ;Single Action
+		if(XMLEvent.Actions.HasKey("Action") && !XMLEvent.Actions.Action.Is("CArray")) ;Single Action
 		{
 			XMLActions := Array()
 			XMLActions.Insert(XMLEvent.Actions.Action)
 			XMLEvent.Actions.Action := XMLActions
 		}
 		
-		Loop % XMLEvent.Actions.Action.len()
+		Loop % XMLEvent.Actions.Action.MaxIndex()
 		{
 			j := A_Index
 			
@@ -510,7 +510,7 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 			Event.Actions.Insert(Action)
 		}
 		
-		if(Event.HasKey("OfficialEvent") && (OldEvent := Events.SubItem("OfficialEvent", Event.OfficialEvent))) ;If an official event already exists, apply this as patch
+		if(Event.HasKey("OfficialEvent") && (OldEvent := Events.GetItemWithValue("OfficialEvent", Event.OfficialEvent))) ;If an official event already exists, apply this as patch
 		{			
 			if(!XMLEvent.HasKey("Conditions"))
 				Event.Remove("Conditions")
@@ -529,7 +529,7 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 	;fix IDs from import
 	;Loop over all new events
 	pos := count + 1
-	count := Events.len()
+	count := Events.MaxIndex()
 	Loop
 	{
 		if(pos > count)
@@ -550,7 +550,7 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 			if(strEndsWith(k, "ID") && IsNumeric(v))
 				Event.Trigger[k] := Event.Trigger[k] + offset
 		}
-		Loop % Event.Conditions.len()
+		Loop % Event.Conditions.MaxIndex()
 		{
 			enum := Event.Conditions[A_Index]._newEnum()
 			Condition := Event.Conditions[A_Index]
@@ -560,7 +560,7 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 					Condition[k] := Condition[k] + offset
 			}
 		}
-		Loop % Event.Actions.len()
+		Loop % Event.Actions.MaxIndex()
 		{
 			enum := Event.Actions[A_Index]._newEnum()
 			Action := Event.Actions[A_Index]
@@ -574,7 +574,7 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 	}
 	if(XMLObject.HasKey("Remove")) ;If Objects are to be removed
 	{
-		len := max(XMLObject.Remove.OfficialEvent.len(), XMLObject.Remove.HasKey("OfficialEvent"))
+		len := max(XMLObject.Remove.OfficialEvent.MaxIndex(), XMLObject.Remove.HasKey("OfficialEvent"))
 		Loop % len
 		{
 			i := A_Index
@@ -587,7 +587,7 @@ ReadEventsFile(Events, path,OverwriteCategory="", Update="")
 			if(!OfficialEvent)
 				continue
 			
-			if((Index := Events.indexOfSubItem("OfficialEvent", OfficialEvent)))
+			if((Index := Events.FindKeyWithValue("OfficialEvent", OfficialEvent)))
 			{
 				if(Update) ;Should be true if we are here
 					Update.Message := Update.Message "`n- Removed Event: " Events[index].Name
@@ -624,7 +624,7 @@ WriteEventsFile(Events, path)
 	xmlEvents := Array()
 	xmlObject.Events.Event := xmlEvents
 	;Write Events entries
-	Loop % Events.len()
+	Loop % Events.MaxIndex()
 	{
 		xmlEvent := Object()
 		xmlEvents.Insert(xmlEvent)
@@ -671,7 +671,7 @@ WriteEventsFile(Events, path)
 		; {			
 			; Loop
 			; {
-				; if(Events.IndexOfSubItem("OfficialEvent", A_Index))
+				; if(Events.FindKeyWithValue("OfficialEvent", A_Index))
 					; continue ;Alread in use
 				; xmlEvent.OfficialEvent := A_Index ;Not used
 				; Event.OfficialEvent := A_Index
@@ -698,7 +698,7 @@ WriteEventsFile(Events, path)
 		xmlEvent.Conditions := Object()
 		xmlConditions := Array()
 		xmlEvent.Conditions.Condition := xmlConditions
-		Loop % Event.Conditions.len()
+		Loop % Event.Conditions.MaxIndex()
 		{
 			j := A_Index
 			Condition := Event.Conditions[j]
@@ -722,7 +722,7 @@ WriteEventsFile(Events, path)
 		xmlEvent.Actions := Object()
 		xmlActions := Array()
 		xmlEvent.Actions.Action := xmlActions
-		Loop % Event.Actions.len()
+		Loop % Event.Actions.MaxIndex()
 		{
 			j := A_Index
 			Action := Event.Actions[j]
@@ -750,9 +750,9 @@ OnTrigger(Trigger)
 {
 	global Events,EventSchedule, TemporaryEvents
 	;Find matching triggers
-	Loop % Events.len()
+	Loop % Events.MaxIndex()
 		TriggerSingleEvent(Events[A_Index], Trigger)
-	Loop % TemporaryEvents.len()	
+	Loop % TemporaryEvents.MaxIndex()	
 		TriggerSingleEvent(TemporaryEvents[A_Index], Trigger)
 	return
 }
@@ -767,7 +767,7 @@ TriggerSingleEvent(Event, Trigger="")
 	if(Event.Enabled && (!IsObject(Trigger) || (Event.Trigger.Type = Trigger.Type && Event.Trigger.Matches(Trigger, Event)) || (Trigger.Type = "Trigger" && Event.ID = Trigger.TargetID)))
 	{
 		;Test if the event is already running and mustn't be run multiple times
-		if(!Event.OneInstance || !EventSchedule.IndexOfSubItem("ID", Event.ID))
+		if(!Event.OneInstance || !EventSchedule.FindKeyWithValue("ID", Event.ID))
 			EventSchedule.Insert(Copy := Event.DeepCopy())
 	}
 	return Copy
@@ -786,10 +786,10 @@ EventScheduler()
 		StartTime := A_TickCount
 		;First, check the conditions of all events in the queue to make sure an event can't influence the result of a condition check of another event.
 		EventPos := 1
-		Loop % EventSchedule.len()
+		Loop % EventSchedule.MaxIndex()
 		{			
 			Event := EventSchedule[EventPos]
-			index := Events.indexOfSubItem("ID", Event.ID) ;Will return the index of the event in Events or TemporaryEvents
+			index := Events.FindKeyWithValue("ID", Event.ID) ;Will return the index of the event in Events or TemporaryEvents
 			OriginalEvent := Event.ID < 0 ? TemporaryEvents[index] : Events[index]
 			;Check conditions
 			if(Event.Conditions.Success != 1) ;Check if conditions have been evaluated before
@@ -798,7 +798,7 @@ EventScheduler()
 				ConditionPos := 1
 				if(Success)
 				{
-					Loop % Event.Conditions.len()
+					Loop % Event.Conditions.MaxIndex()
 					{
 						result := Event.Conditions[ConditionPos].Evaluate(Event)
 						if( result = -1) ;Not decided yet, check later
@@ -841,16 +841,16 @@ EventScheduler()
 		
 		;Now the event queue contains only those events which passed the condition check. These can be processed now.
 		EventPos := 1
-		Loop % EventSchedule.len()
+		Loop % EventSchedule.MaxIndex()
 		{
 			Event := EventSchedule[EventPos]
 			outputdebug % "Process event ID: " Event.ID " Name: " Event.Name
 			if(Settings.General.DebugEnabled)
 				EventLog("Process event ID: " Event.ID " Name: " Event.Name)
 			; outputdebug conditions fulfilled
-			Loop % Event.Actions.len()
+			Loop % Event.Actions.MaxIndex()
 			{
-				index := Events.indexOfSubItem("ID", Event.ID) ;Will return the index of the event in Events or TemporaryEvents
+				index := Events.FindKeyWithValue("ID", Event.ID) ;Will return the index of the event in Events or TemporaryEvents
 				OriginalEvent := Event.ID < 0 ? TemporaryEvents[index] : Events[index]
 				if(index && !OriginalEvent.Enabled && Event.Trigger.Type != "Timer") ;Check enabled state again here, because it might have changed since in one of the previous actions during waiting
 				{
@@ -874,10 +874,10 @@ EventScheduler()
 				if(Settings.General.ShowExecutingEvents)
 					Notify("Event Executed", "The event" Event.ID ": " Event.Name " was executed", "5", "GC=555555 TC=White MC=White",NotifyIcons.Info)
 			}
-			if(Event.Actions.len() = 0) ;No more actions in this event, consider it processed and remove it from queue
+			if(Event.Actions.MaxIndex() = 0) ;No more actions in this event, consider it processed and remove it from queue
 			{
 				EventSchedule.Delete(EventPos)
-				index := Events.indexOfSubItem("ID", Event.ID) ;Will return the index of the event in Events or TemporaryEvents
+				index := Events.FindKeyWithValue("ID", Event.ID) ;Will return the index of the event in Events or TemporaryEvents
 				OriginalEvent := Event.ID < 0 ? TemporaryEvents[index] : Events[index]
 				if(Event.DisableAfterUse && index)
 					OriginalEvent.SetEnabled(false)
@@ -905,10 +905,10 @@ EventLog(text)
 EventFromGUINumber(number, type, ByRef Event, ByRef Action)
 {
 	global EventSchedule
-	Loop % EventSchedule.len()
+	Loop % EventSchedule.MaxIndex()
 	{
 		pos := A_Index
-		Loop % EventSchedule[pos].Actions.len()
+		Loop % EventSchedule[pos].Actions.MaxIndex()
 		{
 			if(EventSchedule[pos].Actions[A_Index].Type = type && EventSchedule[pos].Actions[A_Index].tmpGUINum = number)
 			{

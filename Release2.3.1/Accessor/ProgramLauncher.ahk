@@ -25,14 +25,14 @@ Accessor_ProgramLauncher_ShowSettings(ProgramLauncher, PluginSettings, PluginGUI
 		PGUI := PluginGUI
 		hEdit := 0
 		PSettings.tmpPaths := PLauncher.Paths.DeepCopy()
-		SubEventGUI_Add(PSettings, PGUI, "Edit", "Keyword", "", "", "Keyword:")
-		SubEventGUI_Add(PSettings, PGUI, "Edit", "BasePriority", "", "", "Base Priority:")
-		SubEventGUI_Add(PSettings, PGUI, "Checkbox", "FuzzySearch", "Use fuzzy search (slower)", "", "")
-		SubEventGUI_Add(PSettings, PGUI, "Checkbox", "IgnoreExtensions", "Ignore file extensions", "", "")
-		SubEventGUI_Add(PSettings, PGUI, "Edit", "Exclude", "", "", "Exclude:")
+		AddControl(PSettings, PGUI, "Edit", "Keyword", "", "", "Keyword:")
+		AddControl(PSettings, PGUI, "Edit", "BasePriority", "", "", "Base Priority:")
+		AddControl(PSettings, PGUI, "Checkbox", "FuzzySearch", "Use fuzzy search (slower)", "", "")
+		AddControl(PSettings, PGUI, "Checkbox", "IgnoreExtensions", "Ignore file extensions", "", "")
+		AddControl(PSettings, PGUI, "Edit", "Exclude", "", "", "Exclude:")
 		x := PGUI.x
 		GUI, Add, ListView, vProgramLauncherListView gProgramLauncherListView AltSubmit -Hdr -Multi x%x% y+10 w330 R8, ID|Path
-		Loop % PSettings.tmpPaths.len()
+		Loop % PSettings.tmpPaths.MaxIndex()
 			LV_Add(A_Index = 1 ? "Select" : "", A_Index, PSettings.tmpPaths[A_Index].Path)
 		GUI, Add, Button, x+10 gProgramLauncherAddPath w80, Add Path
 		GUI, Add, Button, y+10 gProgramLauncherEditPath vProgramLauncherEditPath w80, Browse
@@ -70,7 +70,7 @@ Accessor_ProgramLauncher_ShowSettings(ProgramLauncher, PluginSettings, PluginGUI
 		if(path!="")
 		{
 			PSettings.tmpPaths.Insert(Object("Path", path, "Extensions", "exe"))
-			LV_Add("Select", PSettings.tmpPaths.len(), path)
+			LV_Add("Select", PSettings.tmpPaths.MaxIndex(), path)
 		}
 	}
 	else if(GoToLabel = "EditPath")
@@ -151,7 +151,7 @@ Accessor_ProgramLauncher_FillAccessorList(ProgramLauncher, Accessor, Filter, Las
 	InStrList := Array()
 	strippedFilter := WindowSwitcher.Settings.IgnoreFileExtensions ? RegexReplace(Filter, "\.\w+") : Filter
 	Filter := ExpandInternalPlaceHolders(Filter)
-	Loop % ProgramLauncher.List.len()
+	Loop % ProgramLauncher.List.MaxIndex()
 	{
 		x := 0
 		strippedExeName := WindowSwitcher.Settings.IgnoreFileExtensions ? RegexReplace(ProgramLauncher.List[A_Index].ExeName, "\.\w+") : ProgramLauncher.List[A_Index].ExeName 
@@ -213,7 +213,7 @@ Accessor_ProgramLauncher_SetupContextMenu(ProgramLauncher, AccessorListEntry)
 }
 Accessor_ProgramLauncher_OnExit(ProgramLauncher)
 {
-	Loop % ProgramLauncher.List.len()
+	Loop % ProgramLauncher.List.MaxIndex()
 		DestroyIcon(ProgramLauncher.List.Icon)	
 	WriteProgramLauncherCache(ProgramLauncher)
 }
@@ -231,12 +231,12 @@ ReadProgramLauncherCache(ProgramLauncher)
 	FileRead, xml, % Settings.ConfigPath "\ProgramCache.xml"
 	XMLObject := XML_Read(xml)
 	;Convert empty and single arrays to real array
-	if(!XMLObject.List.len())
+	if(!XMLObject.List.MaxIndex())
 		XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()
-	if(!XMLObject.Paths.len())
+	if(!XMLObject.Paths.MaxIndex())
 		XMLObject.Paths := IsObject(XMLObject.Paths) ? Array(XMLObject.Paths) : Array()
 		
-	Loop % XMLObject.List.len() ;Read cached files
+	Loop % XMLObject.List.MaxIndex() ;Read cached files
 	{
 		XMLObjectListEntry := XMLObject.List[A_Index]
 		command := XMLObjectListEntry.Command
@@ -244,7 +244,7 @@ ReadProgramLauncherCache(ProgramLauncher)
 		ProgramLauncher.List.Insert(Object("ExeName", ExeName, "Name", name, "Command", command, "BasePath", XMLObjectListEntry.BasePath))
 	}
 	
-	Loop % XMLObject.Paths.len() ;Read scan directories
+	Loop % XMLObject.Paths.MaxIndex() ;Read scan directories
 	{
 		XMLPath := XMLObject.Paths[A_Index]
 		ProgramLauncher.Paths.Insert(Object("Path", XMLPath.Path, "Extensions", XMLPath.Extensions))
@@ -254,9 +254,9 @@ WriteProgramLauncherCache(ProgramLauncher)
 {
 	FileDelete, % Settings.ConfigPath "\ProgramCache.xml"
 	XMLObject := Object("List", Array(), "Paths", Array())
-	Loop % ProgramLauncher.List.len()
+	Loop % ProgramLauncher.List.MaxIndex()
 		XMLObject.List.Insert(Object("Command", ProgramLauncher.List[A_Index].Command, "Name", ProgramLauncher.List[A_Index].Name, "BasePath", ProgramLauncher.List[A_Index].BasePath))
-	Loop % ProgramLauncher.Paths.len()
+	Loop % ProgramLauncher.Paths.MaxIndex()
 		XMLObject.Paths.Insert(Object("Path", ProgramLauncher.Paths[A_Index].Path, "Extensions", ProgramLauncher.Paths[A_Index].Extensions))
 	
 	XML_Save(XMLObject, Settings.ConfigPath "\ProgramCache.xml")
@@ -265,7 +265,7 @@ RefreshProgramLauncherCache(ProgramLauncher, Path ="")
 {
 	;Delete old cache entries which are to be refreshed
 	pos := 1
-	Loop % ProgramLauncher.List.len()
+	Loop % ProgramLauncher.List.MaxIndex()
 	{
 		if((Path && ProgramLauncher.List[pos].BasePath=Path) || (!Path && ProgramLauncher.List[pos].BasePath))
 		{	
@@ -280,7 +280,7 @@ RefreshProgramLauncherCache(ProgramLauncher, Path ="")
 		Paths := Array(Path)
 	else
 		Paths := ProgramLauncher.Paths
-	Loop % Paths.len()
+	Loop % Paths.MaxIndex()
 	{
 		Path := Paths[A_Index].Path
 		Path := ExpandInternalPlaceholders(Path)
@@ -316,7 +316,7 @@ RefreshProgramLauncherCache(ProgramLauncher, Path ="")
 				if command not contains %exclude%
 				{					
 					;Check for existing duplicates
-					if(ProgramLauncher.List.indexOfSubItem("Command",command) = 0)
+					if(ProgramLauncher.List.FindKeyWithValue("Command",command) = 0)
 					{
 						if(ExeName)
 							ProgramLauncher.List.Insert(Object("Name",name, "ExeName", ExeName, "Command", command, "BasePath", Path))
@@ -330,7 +330,7 @@ RefreshProgramLauncherCache(ProgramLauncher, Path ="")
 }
 
 UpdateLauncherPrograms:
-UpdateLauncherPrograms(AccessorPlugins[AccessorPlugins.subIndexOf("Type", "ProgramLauncher")])
+UpdateLauncherPrograms(AccessorPlugins[AccessorPlugins.FindKeyWithValue("Type", "ProgramLauncher")])
 return
 ;This function is periodically called and adds running programs to the ProgramLauncher cache
 UpdateLauncherPrograms(ProgramLauncher)
@@ -338,7 +338,7 @@ UpdateLauncherPrograms(ProgramLauncher)
 	global Accessor
 	if(Accessor.GUINum)
 		return
-	Loop % Accessor.List.len()
+	Loop % Accessor.List.MaxIndex()
 	{
 		Window := Accessor.List[A_Index]
 		if(Window.Type = "WindowSwitcher")
@@ -347,7 +347,7 @@ UpdateLauncherPrograms(ProgramLauncher)
 			if(WindowFullPath) ;Fails sometimes for some reason
 			{
 				found := false
-				Loop % ProgramLauncher.List.len()
+				Loop % ProgramLauncher.List.MaxIndex()
 				{
 					if(ProgramLauncher.List[A_Index].Command = WindowFullPath)
 					{

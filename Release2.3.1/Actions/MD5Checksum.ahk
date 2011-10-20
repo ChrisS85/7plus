@@ -65,7 +65,7 @@ MD5Dialog(Files)
 	outputdebug files %files%
 	if(!IsObject(Files))
 		Files := ToArray(Files)
-	if(!(Files.len() > 0))
+	if(!(Files.MaxIndex() > 0))
 	{
 		Msgbox MD5 Checksums: Invalid Files specified!
 		return 0
@@ -76,7 +76,7 @@ MD5Dialog(Files)
 	if(l_GUI)
 	{		
 		Gui, ListView, MD5ListView
-		Loop % Files.len()
+		Loop % Files.MaxIndex()
 		{
 			if(sFiles.IndexOf(Files[A_Index]) = 0)
 			{
@@ -101,7 +101,7 @@ MD5Dialog(Files)
          
 	Gui, -MinimizeBox -MaximizeBox +LabelMD5 +AlwaysOnTop
 	Gui, Show,,MD5 Checksums
-	Loop % sFiles.len()
+	Loop % sFiles.MaxIndex()
 	{
 		if(!InStr(FileExist(sFiles[A_Index]), "D"))
 		{

@@ -25,9 +25,9 @@ LoadHotstrings()
 	FileRead, xml, % Settings.ConfigPath "\Hotstrings.xml"
 	XMLObject := XML_Read(xml)
 	;Convert empty and single arrays to real array
-	if(!XMLObject.List.len())
+	if(!XMLObject.List.MaxIndex())
 		XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()
-	Loop % XMLObject.List.len()
+	Loop % XMLObject.List.MaxIndex()
 	{
 		if(XMLObject.List[A_Index].keyword != "")
 		{
@@ -41,7 +41,7 @@ SaveHotstrings()
 	global Hotstrings
 	FileDelete, % Settings.ConfigPath "\Hotstrings.xml"
 	XMLObject := Object("List", Array())
-	Loop % Hotstrings.len()
+	Loop % Hotstrings.MaxIndex()
 		XMLObject.List.Insert(Object("keyword", Hotstrings[A_Index].key, "value", Hotstrings[A_Index].value))
 	XML_Save(XMLObject, Settings.ConfigPath "\Hotstrings.xml")
 }
@@ -54,7 +54,7 @@ AddHotstring(key,value)
 RemoveHotstring(key)
 {
 	global Hotstrings
-	Loop % Hotstrings.len()
+	Loop % Hotstrings.MaxIndex()
 	{
 		if(Hotstrings[A_Index].key = key)
 		{

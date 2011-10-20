@@ -75,7 +75,7 @@ Class CImageConverter extends CGUI
 		this.Add("Text", "txtUpload", "x10 y486", "Upload")
 		this.Add("DropDownList", "ddlWhichFiles", "x+10 y482 w70", "selected||all")
 		this.Add("Text", "txtFilesTo", "x+10 y486", "files to:")
-		Loop % FTPProfiles.len()
+		Loop % FTPProfiles.MaxIndex()
 			Hosters .= (A_Index != 1 ? "|" : "") A_Index ": " FTPProfiles[A_Index].Hostname (Action.Hoster = A_Index ? "|" : "")
 		Hosters .= "|" GetImageHosterList().ToString("|")
 		if(!IsNumeric(Action.Hoster))
@@ -112,7 +112,6 @@ Class CImageConverter extends CGUI
 	}
 	PreClose()
 	{
-		global EventSchedule
 		;Possibly delete old files
 		;Get list of involved files
 		Files := []
@@ -129,9 +128,9 @@ Class CImageConverter extends CGUI
 		;Check if an upload is still running and possibly attach an action to it to delete the involved files
 		;Enable Critical so the event processing doesn't interfere here (should be unlikely but better be sure)
 		Critical, On
-		if(this.QueuedUploadEvent && EventSchedule.IndexOf(this.QueuedUploadEvent))
+		if(this.QueuedUploadEvent && EventSystem.EventSchedule.IndexOf(this.QueuedUploadEvent))
 		{
-			Action := EventSystem_CreateSubEvent("Action","Delete")
+			Action := new CDeleteAction()
 			Action.SourceFile := this.ddlWhichFiles.Text = "All" ? Files : this.QueuedUploadEvent.Actions[1].SourceFiles
 			Action.Silent := 1
 			this.QueuedUploadEvent.Actions.Insert(Action)
@@ -147,7 +146,7 @@ Class CImageConverter extends CGUI
 	AddFiles(Files)
 	{
 		Files := ToArray(Files)
-		if(Files.len() < 1)
+		if(Files.MaxIndex() < 1)
 		{
 			Msgbox Image Converter: No files selected!
 			return
@@ -452,27 +451,26 @@ Class CImageConverter extends CGUI
 	
 	Upload()
 	{
-		global TemporaryEvents
 		this.ConvertImages(ConvertedImages := Array(), FailedImages := Array(), this.ddlWhichFiles.Text = "Selected", 1)
 		;Let's build an event that uploads the files using the selected hoster and deletes them afterwards (if they are temporary (screenshot) files located in temp dir)
-		Event := EventSystem_CreateEvent()
+		Event := new CEvent()
 		if(IsNumeric(SubStr(this.ddlHoster.Text, 1,max(InStr(this.ddlHoster.Text, ":") - 1, 1))))
 		{
-			Event.Actions.Insert(EventSystem_CreateSubEvent("Action","Upload"))
+			Event.Actions.Insert(new CFTPUploadAction())
 			Event.Actions[1].SourceFiles := ConvertedImages
 			Event.Actions[1].TargetFolder := this.editFTPTargetDir.Text
 			Event.Actions[1].FTPProfile := SubStr(this.ddlHoster.Text, 1,max(InStr(this.ddlHoster.Text, ":") - 1, 1))
 		}
 		else
 		{
-			Event.Actions.Insert(EventSystem_CreateSubEvent("Action","ImageUpload"))
+			Event.Actions.Insert(new CImageUploadAction())
 			Event.Actions[1].SourceFiles := ConvertedImages
 		}
-		Event.Actions.Insert(EventSystem_CreateSubEvent("Action","Delete"))
+		Event.Actions.Insert(new CFileDeleteAction())
 		Event.Actions[2].SourceFile := ConvertedImages
 		Event.Actions[2].Silent := 1
-		TemporaryEvents.RegisterEvent(Event)
-		this.QueuedUploadEvent := TriggerSingleEvent(Event)
+		EventSystem.TemporaryEvents.RegisterEvent(Event)
+		this.QueuedUploadEvent := Event.TriggerThisEvent()
 	}
 	
 	ConvertSingleImage(OldFile, NewFile, ByRef changed)
@@ -581,7 +579,7 @@ Class CImageConverter extends CGUI
 					ControlGetText, Text, ,ahk_id %lParam%
 					if((!IsNumeric(text) || text <= 0) && lParam != quality_h)
 					{
-						CGUI.GUIList.SubItem("hwnd", hwnd).Lock := 4
+						CGUI.GUIList.GetItemWithValue("hwnd", hwnd).Lock := 4
 						GuiControl, , this.editAbsWidth.Text, %aw%
 						GuiControl, , this.editAbsHeight.Text, %ah%
 						GuiControl, , this.editRelWidth.Text, %rw%
@@ -637,12 +635,8 @@ ImageConverter_OpenedFileChange(from, to) ;This gets called when a file that is 
 ;Not working right now
 ImageConverter_MessageHandler(wParam, lParam, msg, hwnd)
 {
-	global EventSchedule
-	Loop % EventSchedule.len()
-	{
-		Event := EventSchedule[A_Index]
-		Loop % Event.Actions.len()
-			if(Event.Actions[A_Index].tmpImageConverterClass.GUINum = A_GUI)
-				Event.Actions[A_Index].tmpImageConverterClass.MessageHandler(wParam, lParam, msg, hwnd)
-	}
+	for index, Event in EventSystem.EventSchedule
+		for index2, Action in Event
+			if(Action.tmpImageConverterClass.GUINum = A_GUI)
+				Action.tmpImageConverterClass.MessageHandler(wParam, lParam, msg, hwnd)
 }

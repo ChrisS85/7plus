@@ -38,12 +38,12 @@ Action_ShowMenu_GuiShow(Action, ActionGUI, GoToLabel = "")
 		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action shows a menu which is made up out of events with a Menu trigger and the same name as the name specified here.")
 		;Look for menus in SettingsWindow.Events to catch unsaved menus
 		Menus := Array()
-		Loop % SettingsWindow.Events.len()
+		Loop % SettingsWindow.Events.MaxIndex()
 		{
 			if(SettingsWindow.Events[A_Index].Trigger.Type = "MenuItem" && Menus.indexOf(SettingsWindow.Events[A_Index].Trigger.Menu) = 0)
 			{
 				Menus.Insert(SettingsWindow.Events[A_Index].Trigger.Menu)
-				MenuString .= (Menus.len() = 1 ? "" : "|") SettingsWindow.Events[A_Index].Trigger.Menu
+				MenuString .= (Menus.MaxIndex() = 1 ? "" : "|") SettingsWindow.Events[A_Index].Trigger.Menu
 			}
 		}
 	
@@ -76,7 +76,7 @@ BuildMenu(Name)
 	Menu, %Name%, DeleteAll
 	if(Name = "Tray")
 		Menu, Tray, Standard
-	Loop % Events.len()
+	Loop % Events.MaxIndex()
 	{
 		if(Events[A_Index].Trigger.Type = "MenuItem" && Events[A_Index].Trigger.Menu = Name)
 		{
