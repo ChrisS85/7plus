@@ -1,29 +1,26 @@
-Trigger_WindowCreated_Init(Trigger)
+Class CWindowCreatedTrigger Extends CTrigger
 {
-	Trigger.Category := "Window"
-	WindowFilter_Init(Trigger)
-}
-Trigger_WindowCreated_ReadXML(Trigger, XMLTrigger)
-{	
-	WindowFilter_ReadXML(Trigger, XMLTrigger)
-}
+	static Type := RegisterType(CWindowCreatedTrigger, "Window created")
+	static Category := RegisterCategory(CWindowCreatedTrigger, "Window")
+	static _ImplementsWindowFilter := ImplementWindowFilterInterface(CWindowCreatedTrigger)
+	
+	Matches(Filter)
+	{
+		return this.WindowFilterMatches(Filter.Window, Filter)
+	}
 
-Trigger_WindowCreated_Matches(Trigger, Filter)
-{
-	return WindowFilter_Matches(Trigger, Filter.Window, Filter)
-}
+	DisplayString()
+	{
+		return "Window created: " this.WindowFilterDisplayString()
+	}
 
-Trigger_WindowCreated_DisplayString(Trigger)
-{
-	return "Window Created: " WindowFilter_DisplayString(Trigger)
-}
+	GuiShow(GUI)
+	{
+		this.WindowFilterGuiShow(GUI)
+	}
 
-Trigger_WindowCreated_GuiShow(Trigger, TriggerGUI)
-{
-	WindowFilter_GuiShow(Trigger, TriggerGUI)
-}
-
-Trigger_WindowCreated_GuiSubmit(Trigger, TriggerGUI)
-{
-	WindowFilter_GuiSubmit(Trigger, TriggerGUI)
+	GuiSubmit(GUI)
+	{
+		this.WindowFilterGuiSubmit(GUI)
+	}
 }

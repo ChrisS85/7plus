@@ -1,43 +1,40 @@
-Action_FastFoldersClear_Init(Action)
+Class CFastFoldersClearAction Extends CAction
 {
-	Action.Category := "FastFolders"
-}
-
-Action_FastFoldersClear_ReadXML(Action, XMLAction)
-{
-	Action.ReadVar(XMLAction, "Slot")
-}
-Action_FastFoldersClear_Execute(Action, Event)
-{
-	global
-	local Slot	
-	if(IsPortable)
+	static Type := RegisterType(CFastFoldersClearAction, "Clear Fast Folder")
+	static Category := RegisterCategory(CFastFoldersClearAction, "Fast Folders")
+	static Slot := 0
+	
+	Execute(Event)
 	{
-		MsgBox 7plus is running in portable mode. Features which need to make changes to the registry won't be available.
-		return
-	}
-	if(!A_IsAdmin)
+		if(ApplicationState.IsPortable)
+		{
+			MsgBox 7plus is running in portable mode. Features which need to make changes to the registry won't be available.
+			return 0
+		}
+		if(!A_IsAdmin)
+		{
+			MsgBox 7plus is running without admin priviledges. Features which need to make changes to the registry won't be available.
+			return 0
+		}
+		Slot := this.Slot
+		if(Slot >= 0 && Slot <= 9 )
+			ClearStoredFolder(Slot)
+		return 1
+	} 
+
+	DisplayString()
 	{
-		MsgBox 7plus is running without admin priviledges. Features which need to make changes to the registry won't be available.
-		return
+		return "Clear Fast Folder: " this.Slot
+	} 
+	
+	GuiShow(GUI)
+	{
+		this.AddControl(GUI, "Edit", "Slot", "", "", "Slot (0-9):")
 	}
-	Slot := Action.Slot
-	if(Slot >= 0 && Slot <= 9 )
-		ClearStoredFolder(Slot)
-	return 1
-} 
 
-Action_FastFoldersClear_DisplayString(Action)
-{
-	return "Clear FastFolder: " Action.Slot
-} 
-Action_FastFoldersClear_GuiShow(Action, ActionGUI, GoToLabel = "")
-{
-	SubEventGUI_Add(Action, ActionGUI, "Edit", "Slot", "", "", "Slot (0-9):")
-}
-
-Action_FastFoldersClear_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-	Action.Slot := min(max(Action.Slot, 0), 9)
+	GuiSubmit(GUI)
+	{
+		Base.GuiSubmit(GUI)
+		this.Slot := Clamp(this.Slot, 0, 9)
+	}
 }

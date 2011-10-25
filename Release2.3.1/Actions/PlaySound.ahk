@@ -1,50 +1,44 @@
-Action_PlaySound_Init(Action)
+Class CPlaySoundAction Extends CAction
 {
-	Action.Category := "System"
-	Action.File := "*-1"
-}
-
-Action_PlaySound_ReadXML(Action, XMLAction)
-{
-	Action.ReadVar(XMLAction, "File")
-}
-
-Action_PlaySound_DisplayString(Action)
-{
-	return "Play " Action.File
-}
-Action_PlaySound_Execute(Action, Event)
-{
-	file := Event.ExpandPlaceholders(Action.File)
-	SoundPlay, % file
-	return 1
-}
-Action_PlaySound_GuiShow(Action, ActionGUI, GoToLabel = "")
-{	
-	static sActionGUI
-	if(GoToLabel = "")
+	static Type := RegisterType(CPlaySoundAction, "Play a sound")
+	static Category := RegisterCategory(CPlaySoundAction, "System")
+	static File := "*-1"
+	
+	DisplayString()
 	{
-		sActionGUI := ActionGUI
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "File", "", "", "Sound file:", "Browse", "Action_PlaySound_Browse", "Placeholders", "Action_PlaySound_Placeholders_File")
-		SubEventGUI_Add(Action, ActionGUI, "Button", "", "System Sounds", "Action_PlaySound_Help")
+		return "Play " this.File
 	}
-	else if(GoToLabel = "Placeholders_File")
-		SubEventGUI_Placeholders(sActionGUI, "File")	
-	else if(GoToLabel = "Browse")
-		SubEventGUI_SelectFile(sActionGUI, "File")
-	else if(GoToLabel = "Help")
-		run, http://www.autohotkey.net/docs/commands/SoundPlay.htm,,UseErrorLevel
+	
+	Execute(Event)
+	{
+		file := Event.ExpandPlaceholders(this.File)
+		SoundPlay, % file
+		return 1
+	}
+	
+	GuiShow(GUI, GoToLabel = "")
+	{	
+		static sGUI
+		if(GoToLabel = "")
+		{
+			sGUI := GUI
+			this.AddControl(GUI, "Edit", "File", "", "", "Sound file:", "Browse", "Action_PlaySound_Browse", "Placeholders", "Action_PlaySound_Placeholders_File")
+			this.AddControl(GUI, "Button", "", "System Sounds", "Action_PlaySound_Help")
+		}
+		else if(GoToLabel = "Placeholders_File")
+			ShowPlaceholderMenu(sGUI, "File")	
+		else if(GoToLabel = "Browse")
+			this.SelectFile(sGUI, "File")
+		else if(GoToLabel = "Help")
+			run, http://www.autohotkey.net/docs/commands/SoundPlay.htm,,UseErrorLevel
+	}
 }
 Action_PlaySound_Placeholders_File:
-Action_PlaySound_GuiShow("", "", "Placeholders_File")
+GetCurrentSubEvent().GuiShow("", "Placeholders_File")
 return
 Action_PlaySound_Browse:
-Action_PlaySound_GuiShow(Action, ActionGUI, "Browse")
+GetCurrentSubEvent().GuiShow("", "Browse")
 return
 Action_PlaySound_Help:
-Action_PlaySound_GuiShow("", "", "Help")
+GetCurrentSubEvent().GuiShow("", "Help")
 return
-Action_PlaySound_GUISubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-}

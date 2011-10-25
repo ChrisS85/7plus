@@ -33,11 +33,15 @@ Class CRichObject
 			copy := Object("base", this.base)
 		else
 			copy := object("base", %func%(this.base))
-		for key, value in this
+		enum := ObjNewEnum(this)
+		while enum[key, value]
 		{ 
 			if reserved["copied" . &value] 
 				continue  ; don't copy repeat objects (circular references) 
-				copy._Insert(key, %func%(value, reserved))
+			if(IsObject(value))
+				copy.Insert(key, %func%(value, reserved))
+			else
+				copy.Insert(key, value)
 		} 
 		return copy
 	}

@@ -1,89 +1,78 @@
-Condition_MouseOver_Init(Condition)
+Class CMouseOverCondition Extends CCondition
 {
-	Condition.Category := "Mouse"
-	Condition.MouseOverType := "Window"
-	WindowFilter_Init(Condition)
-}
-Condition_MouseOver_ReadXML(Condition, XMLCondition)
-{
-	Condition.ReadVar(XMLCondition, "MouseOverType")
-	if(Condition.MouseOverType = "Window")
-		WindowFilter_ReadXML(Condition, XMLCondition)
-}
-Condition_MouseOver_Evaluate(Condition)
-{
-	if(Condition.MouseOverType = "Window")
+	static Type := RegisterType(CMouseOverCondition, "Mouse over")
+	static Category := RegisterCategory(CMouseOverCondition, "Mouse")
+	static MouseOverType := "Window"
+	static _ImplementsWindowFilter := ImplementWindowFilterInterface(CMouseOverCondition)
+	Evaluate()
 	{
-		MouseGetPos,,,window
-		return WindowFilter_Matches(Condition, window)
-	}
-	else if(Condition.MouseOverType = "Clock")
-		return IsMouseOverClock()
-	else
-	{
-		result := MouseHitTest()
-		if(Condition.MouseOverType = "TitleBar")
-			return result = 2
-		else if(Condition.MouseOverType = "MinimizeButton")
-			return result = 8
-		else if(Condition.MouseOverType = "MaximizeButton")
-			return result = 9
-		else if(Condition.MouseOverType = "CloseButton")
-			return result = 20
-	}
-}
-Condition_MouseOver_DisplayString(Condition)
-{
-	string := "Mouse over: "
-	if(Condition.MouseOverType = "Window")
-		return string WindowFilter_DisplayString(Condition)
-	else
-		return string Condition.MouseOverType
-}
-
-Condition_MouseOver_GuiShow(Condition, ConditionGUI,GoToLabel="")
-{
-	static sConditionGUI, sCondition, PreviousSelection
-	if(GoToLabel = "")
-	{
-		sConditionGUI := ConditionGUI
-		sCondition := Condition
-		PreviousSelection := ""
-		SubEventGUI_Add(Condition, ConditionGUI, "DropDownList", "MouseOverType", "Clock|Window|Titlebar|MinimizeButton|MaximizeButton|CloseButton", "MouseOver_SelectionChange", "Mouse Over:")
-		x := ConditionGUI.x
-		y := ConditionGUI.y
-		w := 200
-		Condition_MouseOver_GuiShow("", "","MouseOver_SelectionChange")
-	}
-	else if(GoToLabel = "MouseOver_SelectionChange")
-	{
-		DropDown_MouseOverType := sConditionGUI.DropDown_MouseOverType
-		ControlGetText, MouseOverType, , ahk_id %DropDown_MouseOverType%
-		outputdebug selected %MouseOverType%
-		if(MouseOverType = "Window")
+		if(this.MouseOverType = "Window")
 		{
-			if(MouseOverType != PreviousSelection)
-			{
-				if(PreviousSelection)
-					WindowFilter_Init(sCondition)
-				WindowFilter_GuiShow(sCondition, sConditionGUI)
-			}
+			MouseGetPos,,,window
+			return this.WindowFilterMatches(window)
 		}
+		else if(this.MouseOverType = "Clock")
+			return IsMouseOverClock()
 		else
 		{
-			WindowFilter_GuiSubmit(sCondition, sConditionGUI)
-			if(PreviousSelection = "Window")
-				sConditionGUI.y := sConditionGUI.y - 60
+			result := MouseHitTest()
+			if(this.MouseOverType = "TitleBar")
+				return result = 2
+			else if(this.MouseOverType = "MinimizeButton")
+				return result = 8
+			else if(this.MouseOverType = "MaximizeButton")
+				return result = 9
+			else if(this.MouseOverType = "CloseButton")
+				return result = 20
 		}
-		PreviousSelection := MouseOverType
+	}
+	DisplayString()
+	{
+		if(this.MouseOverType = "Window")
+			return "Mouse over: " this.WindowFilterDisplayString()
+		else
+			return "Mouse over: " this.MouseOverType
+	}
+
+	GuiShow(GUI,GoToLabel="")
+	{
+		if(GoToLabel = "")
+		{
+			this.tmpGUI := GUI
+			this.tmpPreviousSelection := ""
+			this.AddControl(GUI, "DropDownList", "MouseOverType", "Clock|Window|Titlebar|MinimizeButton|MaximizeButton|CloseButton", "MouseOver_SelectionChange", "Mouse Over:")
+			this.GuiShow("","MouseOver_SelectionChange")
+		}
+		else if(GoToLabel = "MouseOver_SelectionChange")
+		{
+			DropDown_MouseOverType := this.tmpGUI.DropDown_MouseOverType
+			ControlGetText, MouseOverType, , ahk_id %DropDown_MouseOverType%
+			if(MouseOverType = "Window")
+			{
+				if(MouseOverType != this.tmpPreviousSelection)
+				{
+					if(this.tmpPreviousSelection)
+						ImplementWindowFilterInterface(this) ;Reset to default values
+					this.WindowFilterGuiShow(this.tmpGUI)
+				}
+			}
+			else
+			{
+				this.WindowFilterGuiSubmit(this.tmpGUI)
+				if(this.tmpPreviousSelection = "Window")
+					this.tmpGUI.y := this.tmpGUI.y - 60
+			}
+			this.tmpPreviousSelection := MouseOverType
+		}
+	}
+	GuiSubmit(GUI)
+	{
+		this.Remove("tmpGUI")
+		this.Remove("tmpPreviousSelection")
+		this.WindowFilterGuiSubmit(GUI)
+		Base.GuiSubmit(GUI)
 	}
 }
 MouseOver_SelectionChange:
-Condition_MouseOver_GuiShow("", "","MouseOver_SelectionChange")
+GetCurrentSubEvent().GuiShow("","MouseOver_SelectionChange")
 return
-
-;Using WindowFilter_GUISubmit is not required, as it does the same basically
-Condition_MouseOver_GuiSubmit(Condition, ConditionGUI)
-{	
-	SubEventGUI_GUISubmit(Condition, ConditionGUI)
-} 

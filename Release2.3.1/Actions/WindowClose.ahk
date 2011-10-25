@@ -1,36 +1,37 @@
-Action_WindowClose_Init(Action)
+Class CWindowCloseAction Extends CAction
 {
-	WindowFilter_Init(Action)
-	Action.Category := "Window"
-	Action.ForceClose := 0
-}
-Action_WindowClose_ReadXML(Action, XMLAction)
-{
-	WindowFilter_ReadXML(Action, XMLAction)
-	Action.ReadVar(XMLAction, "ForceClose")
-}
-Action_WindowClose_Execute(Action)
-{
-	hwnd := WindowFilter_Get(Action)
-	if(hwnd != 0)
+	static Type := RegisterType(CWindowCloseAction, "Close a window")
+	static Category := RegisterCategory(CWindowCloseAction, "Window")
+	static _ImplementsWindowFilter := ImplementWindowFilterInterface(CWindowCloseAction)
+	static ForceClose := 0
+	
+	Execute()
 	{
-		if(Action.ForceClose)
-			CloseKill(hwnd)
-		else
-			WinClose ahk_id %hwnd%
+		hwnd := this.WindowFilterGet()
+		if(hwnd != 0)
+		{
+			if(this.ForceClose)
+				CloseKill(hwnd)
+			else
+				WinClose ahk_id %hwnd%
+		}
+		return 1
 	}
-	return 1
-}
-Action_WindowClose_DisplayString(Action)
-{
-	return "Close Window " WindowFilter_DisplayString(Action)
-}
-Action_WindowClose_GuiShow(Action, ActionGUI)
-{
-	WindowFilter_GuiShow(Action,ActionGUI)
-	SubEventGUI_Add(Action, ActionGUI, "Checkbox", "ForceClose", "Force-close applications", "", "")
-}
-Action_WindowClose_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GuiSubmit(Action,ActionGUI)
+	
+	DisplayString()
+	{
+		return "Close Window " this.WindowFilterDisplayString()
+	}
+	
+	GUIShow(GUI)
+	{
+		this.WindowFilterGUIShow(GUI)
+		this.AddControl(GUI, "Checkbox", "ForceClose", "Force-close applications", "", "")
+	}
+	
+	GUISubmit(Action, GUI)
+	{
+		this.WindowFilterGUISubmit(GUI)
+		Base.GuiSubmit(GUI)
+	}
 }

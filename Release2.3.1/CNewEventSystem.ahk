@@ -1,7 +1,7 @@
 /*
 Note: CEventSystem, CTrigger, CCondition and CAction need to be defined before any real subevent class.
 TODO: Create a replacement routine in event loading for legacy names. Current remappings:
- - Upload ->FTPUpload
+
 TODO: Possibly implement CPlaceholderContainer
 TODO: Check if the Success property is relevant for copying events with ControlEvent action
 TODO: Think about how shared event components such as WindowFilter or FileOperation are best implemented
@@ -90,6 +90,11 @@ Class CEventSystem extends CRichObject
 	;that is used by the triggers of events to decide if the event should be triggered.
 	OnTrigger(Trigger)
 	{
+		if(!Trigger)
+		{
+			OutputDebug Invalid trigger!
+			return
+		}
 		;Find matching triggers
 		for index, Event in EventSystem.Events
 			Event.TriggerThisEvent(Trigger)
@@ -173,23 +178,62 @@ Class CEventSystem extends CRichObject
 		Profiler.Current.EventLoop := Profiler.Current.EventLoop + A_TickCount - StartTime
 	}
 	
-	;Finds the event and action of a running event of specified type by its gui number
-	;This function assumes that the gui number is stored as "tmpGUINum" in the action of the specified type.
-	EventFromGUINumber(number, type, ByRef pEvent, ByRef pAction)
+	;Finds the queued event and subevent in which a subevent has a specific key with a specific value. Filter specifies which types of subevents should be searched.
+	EventFromSubEventKey(ByRef pEvent, ByRef pSubEvent, Key, Value, Filter = "TCA")
 	{
 		for index, Event in this.EventSchedule
 		{
-			for index2, Action in Event.Actions
+			if(InStr(Filter, "A"))
 			{
-				if(Action.Type = type && Action.tmpGUINum = number)
+				for index2, Action in Event.Actions
 				{
-					pEvent := Event
-					pAction := Action
-					return Event
+					if(Action[Key] = Value)
+					{
+						pEvent := Event
+						pSubEvent := Action
+						return Event
+					}
 				}
+			}
+			if(InStr(Filter, "C"))
+			{
+				for index3, Condition in Event.Conditions
+				{
+					if(Condition[Key] = Value)
+					{
+						pEvent := Event
+						pSubEvent := Condition
+						return Event
+					}
+				}
+			}
+			
+			if(Event.Trigger[Key] = Value && InStr(Filter, "T"))
+			{
+				pEvent := Event
+				pSubEvent := Event.Trigger
+				return Event
 			}
 		}
 		return 0
+	}
+	;Same as EventFromSubEventKey except that it returns only the SubEvent
+	SubEventFromSubEventKey(Key, Value, Filter = "TCA")
+	{
+		this.EventFromSubEventKey("", SubEvent, Key, Value, Filter)
+		return SubEvent
+	}
+	;Finds the event and subevent of a running event of specified type by its gui number
+	;This function assumes that the gui number is stored as "tmpGUINum" in the subevent of the specified type.
+	EventFromGUI(ByRef pEvent, ByRef pSubEvent)
+	{
+		return this.EventFromSubEventKey(pEvent, pSubEvent, "tmpGUINum", A_GUI)
+	}
+	;Same as EventFromGUI except that it returns only the SubEvent
+	SubEventFromGUI()
+	{
+		this.EventFromGUI("", SubEvent)
+		return SubEvent
 	}
 }
 
@@ -250,9 +294,10 @@ Class CEvent extends CRichObject
 			if(key != "PatchOnly")
 				this[key] := value
 	}
-	ExpandPlaceholders()
-	{
-	}
+	
+	;Main function to expand placeholders. Placeholders are marked by ${key} and by %PATH%
+	;This function is implemented as a global function so it can be called independently of a subevent
+	static ExpandPlaceholders := Func("ExpandPlaceholders")
 	
 	;Evaluates the conditions of this event. Returns -1 if the conditions can't be evaluated completely, 0 if they evaluated to false and 1 if they evuated to true
 	CheckConditions(RemoveSuccessfulConditions)
@@ -350,6 +395,10 @@ Class CEvents extends CArray
 			EventSystem.TemporaryEvents.Delete(Event, UpdateGUI)
 			return
 		}
+		
+		;Disable the event
+		Event.Disable()
+		
 		;Call the delete function of the event so it may do further processing
 		Event.Delete()
 		this.Remove(index)
@@ -509,10 +558,16 @@ Class CEvents extends CArray
 			{
 				if(!EventSystem.Triggers.HasKey(XMLEvent.Trigger.Type))
 				{
-					MsgBox % "No known trigger of Type " XMLEvent.Trigger.Type ", skipping event " Event.ID ": " Event.Name
-					continue
+					if(!CTrigger.CLegacyTypes.HasKey(XMLEvent.Trigger.Type) || !IsObject(EventSystem.Triggers[CTrigger.CLegacyTypes[xmlEvent.Trigger.Type]]))
+					{
+						MsgBox % "No known trigger of Type " XMLEvent.Trigger.Type ", skipping event " Event.ID ": " Event.Name
+						continue
+					}
+					else
+						TriggerTemplate := EventSystem.Triggers[CTrigger.CLegacyTypes[XMLEvent.Trigger.Type]]
 				}
-				TriggerTemplate := EventSystem.Triggers[XMLEvent.Trigger.Type]
+				else
+					TriggerTemplate := EventSystem.Triggers[XMLEvent.Trigger.Type]
 				Event.Trigger := new TriggerTemplate()
 				Event.Trigger.ReadXML(XMLEvent.Trigger)
 			}
@@ -528,10 +583,16 @@ Class CEvents extends CArray
 				;Create new condition
 				if(!EventSystem.Conditions.HasKey(XMLCondition.Type))
 				{
-					MsgBox % "No known condition of Type " XMLCondition.Type ", skipping condition of " Event.ID ": " Event.Name
-					continue
+					if(!CCondition.CLegacyTypes.HasKey(XMLCondition.Type) || !IsObject(EventSystem.Conditions[CCondition.CLegacyTypes[XMLCondition.Type]]))
+					{
+						MsgBox % "No known Condition of Type " XMLCondition.Type ", skipping event " Event.ID ": " Event.Name
+						continue
+					}
+					else
+						ConditionTemplate := EventSystem.Conditions[CCondition.CLegacyTypes[XMLCondition.Type]]
 				}
-				ConditionTemplate := EventSystem.Conditions[XMLCondition.Type]
+				else
+					ConditionTemplate := EventSystem.Conditions[XMLCondition.Type]
 				Condition :=  new ConditionTemplate()
 				
 				;Read Negation
@@ -552,10 +613,16 @@ Class CEvents extends CArray
 				;Create new action
 				if(!EventSystem.Actions.HasKey(XMLAction.Type))
 				{
-					MsgBox % "No known action of Type " XMLAction.Type ", skipping action of " Event.ID ": " Event.Name
-					continue
+					if(!CAction.CLegacyTypes.HasKey(XMLAction.Type) || !IsObject(EventSystem.Actions[CAction.CLegacyTypes[XMLAction.Type]]))
+					{
+						MsgBox % "No known Action of Type " XMLAction.Type ", skipping event " Event.ID ": " Event.Name
+						continue
+					}
+					else
+						ActionTemplate := EventSystem.Actions[CAction.CLegacyTypes[XMLAction.Type]]
 				}
-				ActionTemplate := EventSystem.Actions[XMLAction.Type]
+				else
+					ActionTemplate := EventSystem.Actions[XMLAction.Type]
 				Action := new ActionTemplate()
 				
 				;Read action values
@@ -710,7 +777,7 @@ Class CEvents extends CArray
 			xmlTrigger.Type := Event.Trigger.Type
 			for key, Value in Event.Trigger
 			{
-				if(key = "Category" || InStr(key, "tmp") = 1)
+				if(key = "Category" || InStr(key, "tmp") = 1 || InStr(key, "_") = 1)
 					continue
 				xmlTrigger[key] := value
 			}
@@ -730,7 +797,7 @@ Class CEvents extends CArray
 				
 				for key, Value in Condition
 				{
-					if(key = "Category" || InStr(key, "tmp") = 1)
+					if(key = "Category" || InStr(key, "tmp") = 1 || InStr(key, "_") = 1)
 						continue
 					xmlCondition[key] := value
 				}
@@ -746,7 +813,7 @@ Class CEvents extends CArray
 				
 				for key, Value in Action
 				{
-					if(key = "Category" || InStr(key, "tmp") = 1)
+					if(key = "Category" || InStr(key, "tmp") = 1 || InStr(key, "_") = 1)
 						continue
 					xmlAction[key] := value
 				}
@@ -821,7 +888,7 @@ Class CSubEvent extends CRichObject
 	}
 	
 	;Can be implemented by the specific inheriting subevent.
-	;Called when the event system is starting up. This Subevent may read special configuration data or similar here.
+	;Called on the SubEvent class (not the instance!) when the event system is starting up. This Subevent may read special configuration data or similar here.
 	Startup()
 	{		
 	}
@@ -865,6 +932,26 @@ Class CTrigger extends CSubEvent
 {
 	;This is an object containing categories. It is automatically populated by the triggers when they set the "Category" key.
 	static Categories := RichObject()
+	
+	;This class is used to convert old subevent types into changed ones during loading
+	Class CLegacyTypes
+	{
+		static ContextMenu := "Context menu"
+		static DoubleClickDesktop := "Double click on desktop"
+		static DoubleClickTaskbar := "Double click on taskbar"
+		static ExplorerButton := "Explorer bar button"
+		static ExplorerPathChanged := "Explorer path changed"
+		static ExplorerDoubleClickSpace := "Double click on empty space"
+		static MenuItem := "Menu item clicked"
+		static OnMessage := "On window message"
+		static ScreenCorner := "Screen corner"
+		static None := "Triggered by an action"
+		static 7plusStart := "On 7plus start"
+		static WindowActivated := "Window activated"
+		static WindowClosed := "Window closed"
+		static WindowCreated := "Window created"
+		static WindowStateChange := "Window state changed"
+	}
 	
 	;This function NEEDS to be implemented by the trigger implementation inheriting from CTrigger
 	;Filter is a trigger instance of a specific type that specifies some parameters that describe the trigger. This function decides
@@ -922,6 +1009,23 @@ Class CCondition extends CSubEvent
 	;This is an object containing condition categories. It is automatically populated by the conditions when they set the "Category" key.
 	static Categories := RichObject()
 	
+	;This class is used to convert old subevent types into changed ones during loading
+	Class CLegacyTypes
+	{
+		static IsDialog := "Window is file dialog"
+		static IsContextMenuActive := "Context menu active"
+		static IsDragable := "Window is dragable"
+		static IsRenaming := "Explorer is renaming"
+		static KeyIsDown := "Key is down"
+		static IsFullScreen := "Fullscreen window active"
+		static MouseOver := "Mouse over"
+		static MouseOverFileList := "Mouse over file list"
+		static MouseOverTabButton := "Mouse over tab button"
+		static MouseOverTaskList := "Mouse over taskbar list"
+		static WindowActive := "Window active"
+		static WindowExists := "Window exists"
+	}
+	
 	;This function NEEDS to be implemented by the condition implementation inheriting from CCondition.
 	;Called when the event owning this condition gets triggered. This function decides if this condition is fullfilled
 	;and influences if the actions contained in the event will be executed.
@@ -949,6 +1053,76 @@ Class CAction extends CSubEvent
 {
 	;This is an object containing action categories. It is automatically populated by the actions when they set the "Category" key.
 	static Categories := RichObject()
+	
+	;This class is used to convert old subevent types into changed ones during loading
+	Class CLegacyTypes
+	{
+		static Upload := "Upload to FTP"
+		static Exit7plus := "Exit 7plus"
+		static ShowAccessor := "Show Accessor"
+		static ShowSettings := "Show settings"
+		static FlashingWindows := "Flashing windows"
+		static Restart7plus := "Restart 7plus"
+		static Accessor := "Show Accessor"
+		static ShowMenu := "Show menu"
+		static ShowAeroFlip := "Show Aero Flip"
+		static AutoUpdate := "Check for updates"
+		static Clipboard := "Write to clipboard"
+		static ClipMenu := "Clipboard Manager menu"
+		static ClipPaste := "Paste clipboard entry"
+		static ControlTimer := "Control Timer"
+		static ControlEvent := "Control event"
+		static ExplorerReplaceDialog := "Explorer replace dialog"
+		static FastFoldersStore := "Save Fast Folder"
+		static FastFoldersRecall := "Open Fast Folder"
+		static FastFoldersClear := "Clear Fast Folder"
+		static FastFoldersMenu := "Fast Folder menu"
+		static Delete := "Delete file"
+		static FileCopy := "Copy file"
+		static FileMove := "Move file"
+		static FileWrite := "Write to file"
+		static FilterList := "Filter list"
+		static FlatView := "Show Explorer flat view"
+		static FocusControl := "Focus a control"
+		static ImageConverter := "Show Image Converter"
+		static Input := "Ask for user input"
+		static InvertSelection := "Invert file selection"
+		static MergeTabs := "Merge Explorer windows"
+		static MD5 := "Show Explorer checksum dialog"
+		static MouseClick := "Mouse click"
+		static MouseCloseTab := "Close tab under mouse"
+		static MouseWindowDrag := "Drag window with mouse"
+		static MouseWindowResize := "Resize window with mouse"
+		static NewFile := "Create new file"
+		static NewFolder := "Create new folder"
+		static OpenInNewFolder := "Open folder in new window / tab"
+		static PlaySound := "Play a sound"
+		static RestoreSelection := "Restore file selection"
+		static Run := "Run a program"
+		static RunOrActivate := "Run a program or activate it"
+		static Screenshot := "Take a screenshot"
+		static SelectFiles := "Select files"
+		static SendKeys := "Send keyboard input"
+		static SendMessage := "Send a window message"
+		static SetDirectory := "Set current directory"
+		static SetWindowTitle := "Set window title"
+		static SlideWindowOut := "Move Slide Window out of screen"
+		static ShortenURL := "Shorten a URL"
+		static Shutdown := "Shutdown computer"
+		static TaskButtonClose := "Close taskbar button under mouse"
+		static ToggleWallpaper := "Change desktop wallpaper"
+		static ToolTip := "Show a tooltip"
+		static ViewMode := "Change explorer view mode"
+		static Volume := "Change sound volume"
+		static WindowActivate := "Activate a window"
+		static WindowClose := "Close a window"
+		static WindowHide := "Hide a window"
+		static WindowMove := "Move a window"
+		static WindowResize := "Resize a window"
+		static WindowSendToBottom := "Put window in background"
+		static WindowShow := "Show a window"
+		static WindowState := "Change window state"
+	}
 	
 	;This function NEEDS to be implemented by the action implementation inheriting from CAction.
 	;Execute() is called when this action is performed. It can return 1 on success, 0 on failure 
@@ -979,104 +1153,106 @@ Class CExampleAction extends CAction
 	}
 }
 #include %A_ScriptDir%\Triggers\ContextMenu.ahk
-;~ #include %A_ScriptDir%\Triggers\DoubleClickDesktop.ahk
-;~ #include %A_ScriptDir%\Triggers\DoubleClickTaskbar.ahk
-;~ #include %A_ScriptDir%\Triggers\ExplorerButton.ahk
-;~ #include %A_ScriptDir%\Triggers\ExplorerPathChanged.ahk
-;~ #include %A_ScriptDir%\Triggers\ExplorerDoubleClickSpace.ahk
+#include %A_ScriptDir%\Triggers\DoubleClickDesktop.ahk
+#include %A_ScriptDir%\Triggers\DoubleClickTaskbar.ahk
+#include %A_ScriptDir%\Triggers\ExplorerButton.ahk
+#include %A_ScriptDir%\Triggers\ExplorerPathChanged.ahk
+#include %A_ScriptDir%\Triggers\ExplorerDoubleClickSpace.ahk
 #include %A_ScriptDir%\Triggers\Hotkey.ahk
-;~ #include %A_ScriptDir%\Triggers\MenuItem.ahk
-;~ #include %A_ScriptDir%\Triggers\OnMessage.ahk
-;~ #include %A_ScriptDir%\Triggers\ScreenCorner.ahk
-;~ #include %A_ScriptDir%\Triggers\Trigger.ahk
+#include %A_ScriptDir%\Triggers\MenuItem.ahk
+#include %A_ScriptDir%\Triggers\OnMessage.ahk
+#include %A_ScriptDir%\Triggers\ScreenCorner.ahk
+#include %A_ScriptDir%\Triggers\Trigger.ahk
 #include %A_ScriptDir%\Triggers\Timer.ahk
-;~ #include %A_ScriptDir%\Triggers\WindowActivated.ahk
-;~ #include %A_ScriptDir%\Triggers\WindowClosed.ahk
-;~ #include %A_ScriptDir%\Triggers\WindowCreated.ahk
-;~ #include %A_ScriptDir%\Triggers\WindowStateChange.ahk
-;~ #include %A_ScriptDir%\Triggers\7plusStart.ahk
+#include %A_ScriptDir%\Triggers\WindowActivated.ahk
+#include %A_ScriptDir%\Triggers\WindowClosed.ahk
+#include %A_ScriptDir%\Triggers\WindowCreated.ahk
+#include %A_ScriptDir%\Triggers\WindowStateChange.ahk
+#include %A_ScriptDir%\Triggers\7plusStart.ahk
 
-;~ #include %A_ScriptDir%\Conditions\If.ahk
-;~ #include %A_ScriptDir%\Conditions\IsDialog.ahk
+#include %A_ScriptDir%\Conditions\If.ahk
+#include %A_ScriptDir%\Conditions\IsDialog.ahk
 #include %A_ScriptDir%\Conditions\IsFullScreen.ahk
-;~ #include %A_ScriptDir%\Conditions\IsContextMenuActive.ahk
-;~ #include %A_ScriptDir%\Conditions\IsDragable.ahk
-;~ #include %A_ScriptDir%\Conditions\IsRenaming.ahk
-;~ #include %A_ScriptDir%\Conditions\KeyIsDown.ahk
-;~ #include %A_ScriptDir%\Conditions\MouseOver.ahk
-;~ #include %A_ScriptDir%\Conditions\MouseOverFileList.ahk
-;~ #include %A_ScriptDir%\Conditions\MouseOverTaskList.ahk
-;~ #include %A_ScriptDir%\Conditions\MouseOverTabButton.ahk
-;~ #include %A_ScriptDir%\Conditions\WindowActive.ahk
-;~ #include %A_ScriptDir%\Conditions\WindowExists.ahk
+#include %A_ScriptDir%\Conditions\IsContextMenuActive.ahk
+#include %A_ScriptDir%\Conditions\IsDragable.ahk
+#include %A_ScriptDir%\Conditions\IsRenaming.ahk
+#include %A_ScriptDir%\Conditions\KeyIsDown.ahk
+#include %A_ScriptDir%\Conditions\MouseOver.ahk
+#include %A_ScriptDir%\Conditions\MouseOverFileList.ahk
+#include %A_ScriptDir%\Conditions\MouseOverTaskList.ahk
+#include %A_ScriptDir%\Conditions\MouseOverTabButton.ahk
+#include %A_ScriptDir%\Conditions\WindowActive.ahk
+#include %A_ScriptDir%\Conditions\WindowExists.ahk
 
-;~ #include %A_ScriptDir%\Actions\Accessor.ahk
-;~ #include %A_ScriptDir%\Actions\AeroFlip.ahk
-;~ #include %A_ScriptDir%\Actions\Autoupdate.ahk
-;~ #include %A_ScriptDir%\Actions\Clipboard.ahk
-;~ #include %A_ScriptDir%\Actions\Clipmenu.ahk
-;~ #include %A_ScriptDir%\Actions\ClipPaste.ahk
-;~ #include %A_ScriptDir%\Actions\ControlEvent.ahk
-;~ #include %A_ScriptDir%\Actions\ControlTimer.ahk
-;~ #include %A_ScriptDir%\Actions\Exit7plus.ahk
-;~ #include %A_ScriptDir%\Actions\ExplorerReplaceDialog.ahk
-;~ #include %A_ScriptDir%\Actions\FastFoldersClear.ahk
-;~ #include %A_ScriptDir%\Actions\FastFoldersMenu.ahk
-;~ #include %A_ScriptDir%\Actions\FastFoldersRecall.ahk
-;~ #include %A_ScriptDir%\Actions\FastFoldersStore.ahk
-;~ #include %A_ScriptDir%\Actions\FileCopy.ahk
-;~ #include %A_ScriptDir%\Actions\FileDelete.ahk
-;~ #include %A_ScriptDir%\Actions\FileMove.ahk
-;~ #include %A_ScriptDir%\Actions\FileWrite.ahk
-;~ #include %A_ScriptDir%\Actions\FilterList.ahk
-;~ #include %A_ScriptDir%\Actions\FlashingWindows.ahk
-;~ #include %A_ScriptDir%\Actions\FlatView.ahk
-;~ #include %A_ScriptDir%\Actions\FocusControl.ahk
+#include %A_ScriptDir%\Actions\Accessor.ahk
+#include %A_ScriptDir%\Actions\AeroFlip.ahk
+#include %A_ScriptDir%\Actions\Autoupdate.ahk
+#include %A_ScriptDir%\Actions\Clipboard.ahk
+#include %A_ScriptDir%\Actions\Clipmenu.ahk
+#include %A_ScriptDir%\Actions\ClipPaste.ahk
+#include %A_ScriptDir%\Actions\ControlEvent.ahk
+#include %A_ScriptDir%\Actions\ControlTimer.ahk
+#include %A_ScriptDir%\Actions\Exit7plus.ahk
+#include %A_ScriptDir%\Actions\ExplorerReplaceDialog.ahk
+#include %A_ScriptDir%\Actions\FastFoldersClear.ahk
+#include %A_ScriptDir%\Actions\FastFoldersMenu.ahk
+#include %A_ScriptDir%\Actions\FastFoldersRecall.ahk
+#include %A_ScriptDir%\Actions\FastFoldersStore.ahk
+#include %A_ScriptDir%\Actions\FileCopy.ahk
+#include %A_ScriptDir%\Actions\FileDelete.ahk
+#include %A_ScriptDir%\Actions\FileMove.ahk
+#include %A_ScriptDir%\Actions\FileWrite.ahk
+#include %A_ScriptDir%\Actions\FilterList.ahk
+#include %A_ScriptDir%\Actions\FlashingWindows.ahk
+#include %A_ScriptDir%\Actions\FlatView.ahk
+#include %A_ScriptDir%\Actions\FocusControl.ahk
 #include %A_ScriptDir%\Actions\FTPUpload.ahk
-;~ #include %A_ScriptDir%\Actions\ImageConverter.ahk
+#include %A_ScriptDir%\Actions\ImageConverter.ahk
 #include %A_ScriptDir%\Actions\ImageUpload.ahk
-;~ #include %A_ScriptDir%\Actions\Input.ahk
-;~ #include %A_ScriptDir%\Actions\InvertSelection.ahk
-;~ #include %A_ScriptDir%\Actions\MergeTabs.ahk
-;~ #include %A_ScriptDir%\Actions\Message.ahk
-;~ #include %A_ScriptDir%\Actions\MD5Checksum.ahk
-;~ #include %A_ScriptDir%\Actions\MouseClick.ahk
-;~ #include %A_ScriptDir%\Actions\MouseCloseTab.ahk
-;~ #include %A_ScriptDir%\Actions\MouseWindowDrag.ahk
-;~ #include %A_ScriptDir%\Actions\MouseWindowResize.ahk
-;~ #include %A_ScriptDir%\Actions\NewFile.ahk
-;~ #include %A_ScriptDir%\Actions\NewFolder.ahk
-;~ #include %A_ScriptDir%\Actions\OpenInNewFolder.ahk
-;~ #include %A_ScriptDir%\Actions\PlaySound.ahk
-;~ #include %A_ScriptDir%\Actions\Restart7plus.ahk
-;~ #include %A_ScriptDir%\Actions\RestoreSelection.ahk
-;~ #include %A_ScriptDir%\Actions\Run.ahk
-;~ #include %A_ScriptDir%\Actions\RunOrActivate.ahk
-;~ #include %A_ScriptDir%\Actions\Screenshot.ahk
-;~ #include %A_ScriptDir%\Actions\SelectFiles.ahk
-;~ #include %A_ScriptDir%\Actions\SendKeys.ahk
-;~ #include %A_ScriptDir%\Actions\SendMessage.ahk
-;~ #include %A_ScriptDir%\Actions\SetDirectory.ahk
-;~ #include %A_ScriptDir%\Actions\SetWindowTitle.ahk
-;~ #include %A_ScriptDir%\Actions\SlideWindowOut.ahk
-;~ #include %A_ScriptDir%\Actions\ShortenURL.ahk
-;~ #include %A_ScriptDir%\Actions\ShowMenu.ahk
-;~ #include %A_ScriptDir%\Actions\ShowSettings.ahk
-;~ #include %A_ScriptDir%\Actions\ShutDown.ahk
-;~ #include %A_ScriptDir%\Actions\TaskButtonClose.ahk
-;~ #include %A_ScriptDir%\Actions\ToggleWallpaper.ahk
-;~ #include %A_ScriptDir%\Actions\Tooltip.ahk
-;~ #include %A_ScriptDir%\Actions\ViewMode.ahk
-;~ #include %A_ScriptDir%\Actions\Volume.ahk
-;~ #include %A_ScriptDir%\Actions\Wait.ahk
-;~ #include %A_ScriptDir%\Actions\WindowActivate.ahk
-;~ #include %A_ScriptDir%\Actions\WindowClose.ahk
-;~ #include %A_ScriptDir%\Actions\WindowHide.ahk
-;~ #include %A_ScriptDir%\Actions\WindowMove.ahk
-;~ #include %A_ScriptDir%\Actions\WindowResize.ahk
-;~ #include %A_ScriptDir%\Actions\WindowSendToBottom.ahk
-;~ #include %A_ScriptDir%\Actions\WindowShow.ahk
-;~ #include %A_ScriptDir%\Actions\WindowState.ahk
+#include %A_ScriptDir%\Actions\Input.ahk
+#include %A_ScriptDir%\Actions\InvertSelection.ahk
+#include %A_ScriptDir%\Actions\MergeTabs.ahk
+#include %A_ScriptDir%\Actions\Message.ahk
+#include %A_ScriptDir%\Actions\MD5Checksum.ahk
+#include %A_ScriptDir%\Actions\MouseClick.ahk
+#include %A_ScriptDir%\Actions\MouseCloseTab.ahk
+#include %A_ScriptDir%\Actions\MouseWindowDrag.ahk
+#include %A_ScriptDir%\Actions\MouseWindowResize.ahk
+#include %A_ScriptDir%\Actions\NewFile.ahk
+#include %A_ScriptDir%\Actions\NewFolder.ahk
+#include %A_ScriptDir%\Actions\OpenInNewFolder.ahk
+#include %A_ScriptDir%\Actions\PlaySound.ahk
+#include %A_ScriptDir%\Actions\Restart7plus.ahk
+#include %A_ScriptDir%\Actions\RestoreSelection.ahk
+#include %A_ScriptDir%\Actions\Run.ahk
+#include %A_ScriptDir%\Actions\RunOrActivate.ahk
+#include %A_ScriptDir%\Actions\Screenshot.ahk
+#include %A_ScriptDir%\Actions\SelectFiles.ahk
+#include %A_ScriptDir%\Actions\SendKeys.ahk
+#include %A_ScriptDir%\Actions\SendMessage.ahk
+#include %A_ScriptDir%\Actions\SetDirectory.ahk
+#include %A_ScriptDir%\Actions\SetWindowTitle.ahk
+#include %A_ScriptDir%\Actions\SlideWindowOut.ahk
+#include %A_ScriptDir%\Actions\ShortenURL.ahk
+#include %A_ScriptDir%\Actions\ShowMenu.ahk
+#include %A_ScriptDir%\Actions\ShowSettings.ahk
+#include %A_ScriptDir%\Actions\ShutDown.ahk
+#include %A_ScriptDir%\Actions\TaskButtonClose.ahk
+#include %A_ScriptDir%\Actions\ToggleWallpaper.ahk
+#include %A_ScriptDir%\Actions\Tooltip.ahk
+#include %A_ScriptDir%\Actions\ViewMode.ahk
+#include %A_ScriptDir%\Actions\Volume.ahk
+#include %A_ScriptDir%\Actions\Wait.ahk
+#include %A_ScriptDir%\Actions\WindowActivate.ahk
+#include %A_ScriptDir%\Actions\WindowClose.ahk
+#include %A_ScriptDir%\Actions\WindowHide.ahk
+#include %A_ScriptDir%\Actions\WindowMove.ahk
+#include %A_ScriptDir%\Actions\WindowResize.ahk
+#include %A_ScriptDir%\Actions\WindowSendToBottom.ahk
+#include %A_ScriptDir%\Actions\WindowShow.ahk
+#include %A_ScriptDir%\Actions\WindowState.ahk
 
-#include %A_ScriptDir%\Generic\WindowFilter.ahk
 #include %A_ScriptDir%\Generic\FileOperation.ahk
+#include %A_ScriptDir%\Generic\If.ahk
+#include %A_ScriptDir%\Generic\Run.ahk
+#include %A_ScriptDir%\Generic\WindowFilter.ahk

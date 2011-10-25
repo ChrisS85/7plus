@@ -1,32 +1,22 @@
-Action_MouseWindowDrag_Init(Action)
+Class CMouseWindowDragAction Extends CAction
 {
-	Action.Category := "Window"
-}
-Action_MouseWindowDrag_ReadXML(Action, XMLAction)
-{
-}
-Action_MouseWindowDrag_Execute(Action, Event, Parameter="")
-{
-	global EventSchedule
-	static sAction, sEvent
-	if(!Parameter)
+	static Type := RegisterType(CMouseWindowDragAction, "Drag window with mouse")
+	static Category := RegisterCategory(CMouseWindowDragAction, "Window")
+	
+	Execute(Event)
 	{
-		if(IsObject(sEvent) && !IsObject(sAction)) ;This only happens when the event has finished already
-		{
-			sEvent := ""
+		if(this.HasKey("tmpDraggingWindow") && this.tmpDraggingWindow = false) ;This only happens when the event has finished already
 			return 1
-		}
-		else if(IsObject(sAction)) ;Dragging still in progress
+		else if(this.HasKey("tmpDraggingWindow")) ;Dragging still in progress
 			return -1
-		Loop % EventSchedule.MaxIndex() ;Make sure no drag event is in progress
+		for index, QueuedEvent in EventSystem.EventSchedule ;Make sure no drag event is in progress
 		{
-			if(EventSchedule[A_Index].ID = Event.ID)
+			if(QueuedEvent.ID = Event.ID)
 				continue
-			if(EventSchedule[A_Index].Actions.GetItemWithValue("Type", "MouseWindowResize") || EventSchedule[A_Index].Actions.GetItemWithValue("Type", "MouseWindowDrag"))
+			if(QueuedEvent.Actions.GetItemWithValue("Type", "MouseWindowResize").HasKey("tmpResizingWindow") || QueuedEvent.Actions.GetItemWithValue("Type", "MouseWindowDrag").HasKey("tmpDraggingWindow"))
 				return 0
 		}
-		sAction := Action
-		sEvent := Event
+		this.tmpDraggingWindow := true
 		CoordMode, Mouse, Screen
 		MouseGetPos, Drag_OriginalMouseX, Drag_OriginalMouseY, Drag_HWND
 		WinGetPos, Drag_OriginalWindowX, Drag_OriginalWindowY,,, ahk_id %Drag_HWND%
@@ -37,47 +27,48 @@ Action_MouseWindowDrag_Execute(Action, Event, Parameter="")
 		Action.tmpHWND := Drag_HWND
 		Action.tmpActiveWindow := WinExist("A")
 		SetTimer, Action_MouseWindowDrag_Timer, 10
-	}
-	else
+		return -1
+	} 
+	DragLoop(Event)
 	{
-		Key := ExtractKey(sEvent.Trigger.Type = "Hotkey" && sEvent.Trigger.Key ? sEvent.Trigger.Key : "LButton")
+		Key := ExtractKey(Event.Trigger.Type = "Hotkey" && Event.Trigger.Key ? Event.Trigger.Key : "LButton")
 		GetKeyState, KeyState, %Key%, P
 		if(KeyState = "U")  ; Button has been released, so drag is complete.
 		{
 			SetTimer, Action_MouseWindowDrag_Timer, off
-			sAction := ""
-			return 1
+			this.tmpDraggingWindow := false ;This will make Execute() return 1 to finish the drag action.
+			return
 		}
 		GetKeyState, EscapeState, Escape, P
-		if(EscapeState = "D" || WinExist("A") != sAction.tmpActiveWindow)  ; Escape has been pressed or another program was activated, so drag is cancelled.
+		if(EscapeState = "D" || WinExist("A") != this.tmpActiveWindow)  ; Escape has been pressed or another program was activated, so drag is cancelled.
 		{
 			SetTimer, Action_MouseWindowDrag_Timer, off
-			WinMove, % "ahk_id " sAction.tmpHWND,, % sAction.tmpOriginalWindowX, % sAction.tmpOriginalWindowY
-			sAction := ""
-			return 0
+			WinMove, % "ahk_id " this.tmpHWND,, % this.tmpOriginalWindowX, % this.tmpOriginalWindowY
+			this.tmpDraggingWindow := false ;This will make Execute() return 1 to finish the drag action.
+			return
 		}
+		
+		;Do the dragging
 		CoordMode, Mouse, Screen
 		MouseGetPos, MouseX, MouseY
-		WinGetPos, WinX, WinY,,, % "ahk_id " sAction.tmpHWND
+		WinGetPos, WinX, WinY,,, % "ahk_id " this.tmpHWND
 		SetWinDelay, -1 
-		newx := sAction.tmpOriginalWindowX + MouseX - sAction.tmpOriginalMouseX
-		newy := sAction.tmpOriginalWindowY + MouseY - sAction.tmpOriginalMouseY
-		if(abs(MouseX - sAction.tmpOriginalMouseX) > 10 || abs(MouseY - sAction.tmpOriginalMouseY) > 10) ;Allow alt-left clicks
-			WinMove, % "ahk_id " sAction.tmpHWND,, newx, newy
+		newx := this.tmpOriginalWindowX + MouseX - this.tmpOriginalMouseX
+		newy := this.tmpOriginalWindowY + MouseY - this.tmpOriginalMouseY
+		if(abs(MouseX - this.tmpOriginalMouseX) > 10 || abs(MouseY - this.tmpOriginalMouseY) > 10) ;Allow alt-left clicks
+			WinMove, % "ahk_id " this.tmpHWND,, newx, newy
 	}
-	return -1
-} 
-Action_MouseWindowDrag_DisplayString(Action)
-{
-	return "Drag window with mouse"
+	DisplayString()
+	{
+		return "Drag window under cursor with mouse"
+	}
 }
-Action_MouseWindowDrag_GuiShow(Action, ActionGUI)
-{
-}
-Action_MouseWindowDrag_GuiSubmit(Action, ActionGUI)
-{
-}
-
 Action_MouseWindowDrag_Timer:
-Action_MouseWindowDrag_Execute("","","Timer")
+MouseWindowDragRouter()
 return
+
+MouseWindowDragRouter()
+{
+	EventSystem.EventFromSubEventKey(Event, Action, "tmpDraggingWindow", true, "A")
+	Action.DragLoop(Event)
+}

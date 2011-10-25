@@ -1,34 +1,29 @@
-Action_OpenInNewFolder_Init(Action)
+Class COpenInNewFolderAction Extends CAction
 {
-	Action.Category := "Explorer"
-	Action.Action := "Tab in Background"
-}
-Action_OpenInNewFolder_ReadXML(Action, XMLAction)
-{
-	Action.ReadVar(XMLAction, "Action")
-}
-Action_OpenInNewFolder_Execute(Action, Event)
-{
-	OpenInNewFolder(Action)
-}
-Action_OpenInNewFolder_DisplayString(Action)
-{
-	return "Open explorer folder under mouse in new window/tab"
-}
-Action_OpenInNewFolder_GuiShow(Action, ActionGUI, GoToLabel = "")
-{
-	SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action opens the explorer folder under the mouse in a new window, tab or in a tab without activating it.")
-	SubEventGUI_Add(Action, ActionGUI, "DropDownList", "Action", "Tab|Tab in Background|Window", "", "Open in new:")
-}
-Action_OpenInNewFolder_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
+	static Type := RegisterType(COpenInNewFolderAction, "Open folder in new window / tab")
+	static Category := RegisterCategory(COpenInNewFolderAction, "Explorer")
+	static Action := "Tab in Background"
+	
+	Execute(Event)
+	{
+		OpenInNewFolder(this)
+	}
+
+	DisplayString()
+	{
+		return "Open explorer folder under mouse in new window/tab"
+	}
+
+	GuiShow(GUI)
+	{
+		this.AddControl(GUI, "Text", "Desc", "This action opens the explorer folder under the mouse in a new window, tab or in a tab without activating it.")
+		this.AddControl(GUI, "DropDownList", "Action", "Tab|Tab in Background|Window", "", "Open in new:")
+	}
 }
 
 ;Opens the folder under the mouse in a new window or tab
 OpenInNewFolder(Action)
 {
-	global MiddleOpenFolder
  	if(!WinActive("ahk_group ExplorerGroup")||!IsMouseOverFileList())
  		return false
 	selected:=GetSelectedFiles(0)

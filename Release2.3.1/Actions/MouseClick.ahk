@@ -1,69 +1,56 @@
-Action_MouseClick_Init(Action)
+Class CMouseClickAction Extends CAction
 {
-	Action.Category := "Input"
-	Action.RestorePosition := 1
-	Action.Relative := 1
-	Action.Button := "Left"
-	Action.Double := 0
-}
-
-Action_MouseClick_ReadXML(Action, XMLAction)
-{
-	Action.ReadVar(XMLAction, "Button")
-	Action.ReadVar(XMLAction, "X")
-	Action.ReadVar(XMLAction, "Y")
-	Action.ReadVar(XMLAction, "RestorePosition")
-	Action.ReadVar(XMLAction, "Relative")
-	Action.ReadVar(XMLAction, "Double")
-}
-Action_MouseClick_Execute(Action, Event)
-{
-	global
-	CoordMode, Mouse, Screen
-	MouseGetPos, mx,my
-	X := Event.ExpandPlaceholders(Action.X)
-	Y := Event.ExpandPlaceholders(Action.Y)
-	if(Action.Relative)
-		CoordMode, Mouse, Relative
-	Button := Action.Button	
-	Double := Action.Double ? 2 : 1
-	Click %Button% %X%, %Y% %Double%
-	CoordMode, Mouse, Screen
-	if(Action.RestorePosition)
-		MouseMove, %mx%, %my%
-	return 1
-} 
-
-Action_MouseClick_DisplayString(Action)
-{
-	return "Click " Action.Button " at " Action.X "/" Action.Y (Action.Relative ? " relative to current window" : "")
-} 
-Action_MouseClick_GuiShow(Action, ActionGUI, GoToLabel = "")
-{
-	static sActionGUI	
-	if(GoToLabel = "")
+	static Type := RegisterType(CMouseClickAction, "Mouse click")
+	static Category := RegisterCategory(CMouseClickAction, "Input")
+	static RestorePosition := true
+	static Relative := true
+	static Button := "Left"
+	static Double := true
+	static X := 0
+	static Y := 0
+	Execute(Event)
 	{
-		sActionGUI := ActionGUI
-		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "Button", "Left||Middle|Right", "", "Button:")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "X", "", "", "X:", "Placeholders", "Action_MouseClick_Placeholders_X","","","Leave empty to click at current cursor position.")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Y", "", "", "Y:", "Placeholders", "Action_MouseClick_Placeholders_Y","","","Leave empty to click at current cursor position.")
-		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Relative", "Position relative to active window")
-		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "RestorePosition", "Restore previous mouse position")
-		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Double", "Double click")
+		CoordMode, Mouse, Screen
+		MouseGetPos, mx,my
+		X := Event.ExpandPlaceholders(this.X)
+		Y := Event.ExpandPlaceholders(this.Y)
+		if(this.Relative)
+			CoordMode, Mouse, Relative
+		Button := this.Button	
+		Double := this.Double ? 2 : 1
+		Click %Button% %X%, %Y% %Double%
+		CoordMode, Mouse, Screen
+		if(this.RestorePosition)
+			MouseMove, %mx%, %my%
+		return 1
+	} 
+
+	DisplayString()
+	{
+		return "Click " this.Button " at " this.X "/" this.Y (this.Relative ? " relative to current window" : "")
+	} 
+	GuiShow(GUI, GoToLabel = "")
+	{
+		static sGUI	
+		if(GoToLabel = "")
+		{
+			sGUI := GUI
+			this.AddControl(GUI, "DropDownList", "Button", "Left||Middle|Right", "", "Button:")
+			this.AddControl(GUI, "Edit", "X", "", "", "X:", "Placeholders", "Action_MouseClick_Placeholders_X","","","Leave empty to click at current cursor position.")
+			this.AddControl(GUI, "Edit", "Y", "", "", "Y:", "Placeholders", "Action_MouseClick_Placeholders_Y","","","Leave empty to click at current cursor position.")
+			this.AddControl(GUI, "Checkbox", "Relative", "Position relative to active window")
+			this.AddControl(GUI, "Checkbox", "RestorePosition", "Restore previous mouse position")
+			this.AddControl(GUI, "Checkbox", "Double", "Double click")
+		}
+		else if(GoToLabel = "Placeholders_X")
+			ShowPlaceholderMenu(sGUI, "X")
+		else if(GoToLabel = "Placeholders_Y")
+			ShowPlaceholderMenu(sGUI, "Y")
 	}
-	else if(GoToLabel = "Placeholders_X")
-		SubEventGUI_Placeholders(sActionGUI, "X")
-	else if(GoToLabel = "Placeholders_Y")
-		SubEventGUI_Placeholders(sActionGUI, "Y")
 }
 Action_MouseClick_Placeholders_X:
-Action_MouseClick_GuiShow("", "", "Placeholders_X")
+GetCurrentSubEvent().GuiShow("", "Placeholders_X")
 return
 Action_MouseClick_Placeholders_Y:
-Action_MouseClick_GuiShow("", "", "Placeholders_Y")
+GetCurrentSubEvent().GuiShow("", "Placeholders_Y")
 return
-
-Action_MouseClick_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-}  

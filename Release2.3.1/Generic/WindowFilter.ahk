@@ -1,37 +1,20 @@
-;Generic Window Filter
-WindowFilter_Init(WindowFilter)
+;Generic Window Filter interface for subevents. They can implement this interface like this:
+;static _ImplementsWindowFilter := ImplementWindowFilterInterface(CSubEvent)
+;It's important to use a "_" or "tmp" at the start of the name to mark this property as temporary so it won't be saved.
+ImplementWindowFilterInterface(WindowFilter)
 {
 	WindowFilter.WindowMatchType := "Specific Window"
-	WindowFilter.WindowFilter := ""
 	WindowFilter.WindowFilterClass := ""
 	WindowFilter.WindowFilterExecutable := ""
 	WindowFilter.WindowFilterTitle := ""
-}
-WindowFilter_ReadXML(WindowFilterObject, XMLWindowFilter)
-{
-	WindowFilterObject.ReadVar(XMLWindowFilter, "WindowMatchType")
-	/* This support should not be needed anymore since there were some updates in between.
-	;Support for legacy window filter objects
-	if(XMLWindowFilter.HasKey("WindowFilter") && XMLWindowFilter.WindowFilter)
+	if(WindowFilter.HasKey("__Class"))
 	{
-		OldFilter := XMLWindowFilter.WindowFilter
-		WindowFilterObject.WindowMatchType := "Specific Window"
-		if(XMLWindowFilter.WindowMatchType = "Program")
-			WindowFilterObject.WindowFilterExecutable := OldFilter
-		else if(XMLWindowFilter.WindowMatchType = "class")
-			WindowFilterObject.WindowFilterClass := OldFilter
-		else if(XMLWindowFilter.WindowMatchType = "title")
-			WindowFilterObject.WindowFilterTitle := OldFilter
+		WindowFilter.Get := Func("WindowFilter_Get")
+		WindowFilter.WindowFilterMatches := Func("WindowFilter_Matches")
+		WindowFilter.WindowFilterDisplayString := Func("WindowFilter_DisplayString")
+		WindowFilter.WindowFilterGUIShow := Func("WindowFilter_GUIShow")
+		WindowFilter.WindowFilterGUISubmit := Func("WindowFilter_GUISubmit")
 	}
-	else if(XMLWindowFilter.HasKey("WindowFilter") && !XMLWindowFilter.WindowFilter)
-		WindowFilterObject.WindowMatchType := "Any Window"
-	else
-	{
-	*/
-		WindowFilterObject.ReadVar(XMLWindowFilter, "WindowFilterExecutable")
-		WindowFilterObject.ReadVar(XMLWindowFilter, "WindowFilterClass")
-		WindowFilterObject.ReadVar(XMLWindowFilter, "WindowFilterTitle")
-	; }
 }
 ;Get a matching window handle from a WindowFilter object
 WindowFilter_Get(WindowFilter)
@@ -166,38 +149,36 @@ WindowFilter_DisplayString(WindowFilter)
 
 WindowFilter_GuiShow(WindowFilter, WindowFilterGUI,GoToLabel="")
 {
-	static sWindowFilterGUI, sWindowFilter, PreviousSelection
 	if(GoToLabel = "")
 	{
-		sWindowFilterGUI := WindowFilterGUI
-		sWindowFilter := WindowFilter
-		PreviousSelection := ""
-		AddControl(WindowFilter, WindowFilterGUI, "DropDownList", "WindowMatchType", "Specific Window|Any Window|Active|UnderMouse", "WindowFilter_SelectionChange", "Match Type:")
+		WindowFilter.tmpWindowFilterGUI := WindowFilterGUI
+		WindowFilter.tmpPreviousSelection := ""
+		WindowFilter.AddControl(WindowFilterGUI, "DropDownList", "WindowMatchType", "Specific Window|Any Window|Active|UnderMouse", "WindowFilter_SelectionChange", "Match Type:")
 		x := WindowFilterGUI.x
 		y := WindowFilterGUI.y
 		w := 200
-		WindowFilter_GuiShow("", "","WindowFilter_SelectionChange")
+		WindowFilter_GuiShow(WindowFilter, "","WindowFilter_SelectionChange")
 	}
 	else if(GoToLabel = "WindowFilter_SelectionChange")
 	{
-		DropDown_WindowMatchType := sWindowFilterGUI.DropDown_WindowMatchType
+		DropDown_WindowMatchType := WindowFilter.tmpWindowFilterGUI.DropDown_WindowMatchType
 		ControlGetText, WindowMatchType, , ahk_id %DropDown_WindowMatchType%
 		if(WindowMatchType = "Specific Window")
 		{
-			if(WindowMatchType != PreviousSelection) ;Create specific controls and store values
+			if(WindowMatchType != WindowFilter.tmpPreviousSelection) ;Create specific controls and store values
 			{
-				AddControl(sWindowFilter, sWindowFilterGUI, "Edit", "WindowFilterClass", "", "", "By class:", "Select Class", "WindowFilter_SelectClass")
-				AddControl(sWindowFilter, sWindowFilterGUI, "Edit", "WindowFilterExecutable", "", "", "By executable:", "Select executable", "WindowFilter_SelectExecutable")
-				AddControl(sWindowFilter, sWindowFilterGUI, "Edit", "WindowFilterTitle", "", "", "By title:", "Select Title", "WindowFilter_SelectTitle")
+				WindowFilter.AddControl(WindowFilter.tmpWindowFilterGUI, "Edit", "WindowFilterClass", "", "", "By class:", "Select Class", "WindowFilter_SelectClass")
+				WindowFilter.AddControl(WindowFilter.tmpWindowFilterGUI, "Edit", "WindowFilterExecutable", "", "", "By executable:", "Select executable", "WindowFilter_SelectExecutable")
+				WindowFilter.AddControl(WindowFilter.tmpWindowFilterGUI, "Edit", "WindowFilterTitle", "", "", "By title:", "Select Title", "WindowFilter_SelectTitle")
 			}
 		}
 		else
 		{
-			if(PreviousSelection = "Specific Window") ;Destroy specific controls and store values
+			if(WindowFilter.tmpPreviousSelection = "Specific Window") ;Destroy specific controls and store values
 			{
-				Desc_WindowFilterClass := sWindowFilterGUI.Desc_WindowFilterClass
-				Edit_WindowFilterClass := sWindowFilterGUI.Edit_WindowFilterClass
-				Button1_WindowFilterClass := sWindowFilterGUI.Button1_WindowFilterClass
+				Desc_WindowFilterClass := WindowFilter.tmpWindowFilterGUI.Desc_WindowFilterClass
+				Edit_WindowFilterClass := WindowFilter.tmpWindowFilterGUI.Edit_WindowFilterClass
+				Button1_WindowFilterClass := WindowFilter.tmpWindowFilterGUI.Button1_WindowFilterClass
 								
 				ControlGetText, WindowFilterClass, , ahk_id %Edit_WindowFilterClass%
 				WindowFilter.WindowFilterClass := WindowFilterClass
@@ -206,9 +187,9 @@ WindowFilter_GuiShow(WindowFilter, WindowFilterGUI,GoToLabel="")
 				WinKill, ahk_id %Edit_WindowFilterClass%
 				WinKill, ahk_id %Button1_WindowFilterClass%
 				
-				Desc_WindowFilterExecutable := sWindowFilterGUI.Desc_WindowFilterExecutable
-				Edit_WindowFilterExecutable := sWindowFilterGUI.Edit_WindowFilterExecutable
-				Button1_WindowFilterExecutable := sWindowFilterGUI.Button1_WindowFilterExecutable
+				Desc_WindowFilterExecutable := WindowFilter.tmpWindowFilterGUI.Desc_WindowFilterExecutable
+				Edit_WindowFilterExecutable := WindowFilter.tmpWindowFilterGUI.Edit_WindowFilterExecutable
+				Button1_WindowFilterExecutable := WindowFilter.tmpWindowFilterGUI.Button1_WindowFilterExecutable
 								
 				ControlGetText, WindowFilterExecutable, , ahk_id %Edit_WindowFilterExecutable%
 				WindowFilter.WindowFilterExecutable := WindowFilterExecutable
@@ -217,9 +198,9 @@ WindowFilter_GuiShow(WindowFilter, WindowFilterGUI,GoToLabel="")
 				WinKill, ahk_id %Edit_WindowFilterExecutable%
 				WinKill, ahk_id %Button1_WindowFilterExecutable%
 				
-				Desc_WindowFilterTitle := sWindowFilterGUI.Desc_WindowFilterTitle
-				Edit_WindowFilterTitle := sWindowFilterGUI.Edit_WindowFilterTitle
-				Button1_WindowFilterTitle := sWindowFilterGUI.Button1_WindowFilterTitle
+				Desc_WindowFilterTitle := WindowFilter.tmpWindowFilterGUI.Desc_WindowFilterTitle
+				Edit_WindowFilterTitle := WindowFilter.tmpWindowFilterGUI.Edit_WindowFilterTitle
+				Button1_WindowFilterTitle := WindowFilter.tmpWindowFilterGUI.Button1_WindowFilterTitle
 								
 				ControlGetText, WindowFilterTitle, , ahk_id %Edit_WindowFilterTitle%
 				WindowFilter.WindowFilterTitle := WindowFilterTitle
@@ -228,50 +209,51 @@ WindowFilter_GuiShow(WindowFilter, WindowFilterGUI,GoToLabel="")
 				WinKill, ahk_id %Edit_WindowFilterTitle%
 				WinKill, ahk_id %Button1_WindowFilterTitle%
 				
-				sWindowFilterGUI.y := sWindowFilterGUI.y - 90
+				WindowFilter.tmpWindowFilterGUI.y := WindowFilter.tmpWindowFilterGUI.y - 90
 			}
 		}
-		PreviousSelection := WindowMatchType
+		WindowFilter.tmpPreviousSelection := WindowMatchType
 	}
 	else if(GoToLabel = "WindowFilter_SelectClass")
 	{
-		Window := GUI_WindowFinder(sWindowFilterGUI.GUINum)
-		Edit_WindowFilterClass := sWindowFilterGUI.Edit_WindowFilterClass
+		Window := GUI_WindowFinder(WindowFilter.tmpWindowFilterGUI.GUINum)
+		Edit_WindowFilterClass := WindowFilter.tmpWindowFilterGUI.Edit_WindowFilterClass
 		Class := Window.Class
 		if(Class)
 			ControlSetText,, %Class%, ahk_id %Edit_WindowFilterClass%
 	}
 	else if(GoToLabel = "WindowFilter_SelectExecutable")
 	{
-		Window := GUI_WindowFinder(sWindowFilterGUI.GUINum)
-		Edit_WindowFilterExecutable := sWindowFilterGUI.Edit_WindowFilterExecutable
+		Window := GUI_WindowFinder(WindowFilter.tmpWindowFilterGUI.GUINum)
+		Edit_WindowFilterExecutable := WindowFilter.tmpWindowFilterGUI.Edit_WindowFilterExecutable
 		Executable := Window.Executable
 		if(Executable)
 			ControlSetText,, %Executable%, ahk_id %Edit_WindowFilterExecutable%
 	}
 	else if(GoToLabel = "WindowFilter_SelectTitle")
 	{
-		Window := GUI_WindowFinder(sWindowFilterGUI.GUINum)
-		Edit_WindowFilterTitle := sWindowFilterGUI.Edit_WindowFilterTitle
+		Window := GUI_WindowFinder(WindowFilter.tmpWindowFilterGUI.GUINum)
+		Edit_WindowFilterTitle := WindowFilter.tmpWindowFilterGUI.Edit_WindowFilterTitle
 		title := Window.title
 		if(Title)
 			ControlSetText,, %title%, ahk_id %Edit_WindowFilterTitle%
 	}
 }
 WindowFilter_SelectionChange:
-WindowFilter_GuiShow("", "","WindowFilter_SelectionChange")
+GetCurrentSubEvent().WindowFilterGUIShow("","WindowFilter_SelectionChange")
 return
 WindowFilter_SelectClass:
-WindowFilter_GuiShow("", "","WindowFilter_SelectClass")
+GetCurrentSubEvent().WindowFilterGUIShow("","WindowFilter_SelectClass")
 return
 WindowFilter_SelectExecutable:
-WindowFilter_GuiShow("", "","WindowFilter_SelectExecutable")
+GetCurrentSubEvent().WindowFilterGUIShow("","WindowFilter_SelectExecutable")
 return
 WindowFilter_SelectTitle:
-WindowFilter_GuiShow("", "","WindowFilter_SelectTitle")
+GetCurrentSubEvent().WindowFilterGUIShow("","WindowFilter_SelectTitle")
 return
 
 ;Window filter uses own GUISubmit function, so it can be executed without storing its ancestor's values
+;This is effectively the same as the regular GUISubmit function but only for the WindowFilter values
 WindowFilter_GuiSubmit(WindowFilter, WindowFilterGUI)
 {
 	Desc_WindowMatchType := WindowFilterGUI.Desc_WindowMatchType
@@ -317,4 +299,6 @@ WindowFilter_GuiSubmit(WindowFilter, WindowFilterGUI)
 	WinKill, ahk_id %Button1_WindowFilterTitle%
 	
 	WindowFilterGUI.y := WindowFilterGUI.y - 60
+	WindowFilterGUI.Remove("tmpWindowFilterGUI")
+	WindowFilterGUI.Remove("tmpPreviousSelection")
 }

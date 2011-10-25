@@ -1,59 +1,54 @@
-Action_SendKeys_Init(Action)
+Class CSendKeysAction Extends CAction
 {
-	Action.Category := "Input"
-	Action.WriteText := False
-	Action.KeyDelay := 0
-}
-Action_SendKeys_ReadXML(Action, XMLAction)
-{
-	Action.ReadVar(XMLAction, "Keys")
-	Action.ReadVar(XMLAction, "WriteText")
-	Action.ReadVar(XMLAction, "KeyDelay")
-}
-Action_SendKeys_Execute(Action,Event)
-{
-	keys := Event.ExpandPlaceholders(Action.Keys)
-	if(Action.WriteText)
+	static Type := RegisterType(CSendKeysAction, "Send keyboard input")
+	static Category := RegisterCategory(CSendKeysAction, "Input")	
+	static Keys := ""
+	static WriteText := False
+	static KeyDelay := 0
+	
+	Execute(Event)
 	{
-		Transform, Text, deref, %keys%
-		WriteText(Text)
-	}
-	else
+		keys := Event.ExpandPlaceholders(this.Keys)
+		if(this.WriteText)
+		{
+			Transform, Text, deref, %keys%
+			WriteText(Text)
+		}
+		else
+		{
+			Backup := A_KeyDelay
+			SetKeyDelay % this.KeyDelay
+			SendEvent %keys%
+			SetKeyDelay % Backup
+		}
+		return 1
+	} 
+	
+	DisplayString()
 	{
-		Backup := A_KeyDelay
-		SetKeyDelay % Action.KeyDelay
-		SendEvent %keys%
-		SetKeyDelay % Backup
+		return "Send Keys " this.Keys
 	}
-	return 1
-} 
-Action_SendKeys_DisplayString(Action)
-{
-	return "SendKeys " Action.Keys
-}
-Action_SendKeys_GuiShow(Action, ActionGUI, GoToLabel = "")
-{
-	static sActionGUI
-	if(GoToLabel = "")
+	
+	GuiShow(GUI, GoToLabel = "")
 	{
-		sActionGUI := ActionGUI
-		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action sends keyboard input.")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Keys", "", "", "Keys to send:", "Placeholders", "Action_SendKeys_Placeholders", "Key names", "Action_SendKeys_KeyNames")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "KeyDelay", "", "", "Key delay:")
-		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "WriteText", "Write text directly (useful for newlines, tabs etc.)")
+		static sGUI
+		if(GoToLabel = "")
+		{
+			sGUI := GUI
+			this.AddControl(GUI, "Text", "Desc", "This action sends keyboard input.")
+			this.AddControl(GUI, "Edit", "Keys", "", "", "Keys to send:", "Placeholders", "Action_SendKeys_Placeholders", "Key names", "Action_SendKeys_KeyNames")
+			this.AddControl(GUI, "Edit", "KeyDelay", "", "", "Key delay:")
+			this.AddControl(GUI, "Checkbox", "WriteText", "Write text directly (useful for newlines, tabs etc.)")
+		}
+		else if(GoToLabel = "Placeholders")
+			ShowPlaceholderMenu(sGUI, "Keys")
 	}
-	else if(GoToLabel = "Placeholders")
-		SubEventGUI_Placeholders(sActionGUI, "Keys")
 }
+
 Action_SendKeys_Placeholders:
-Action_SendKeys_GuiShow("", "", "Placeholders")
+GetCurrentSubEvent().GuiShow("", "Placeholders")
 return
 
 Action_SendKeys_KeyNames:
 run http://www.autohotkey.com/docs/commands/Send.htm ,, UseErrorLevel
 return
-
-Action_SendKeys_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-}

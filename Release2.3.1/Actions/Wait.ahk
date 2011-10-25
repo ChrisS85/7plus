@@ -1,37 +1,31 @@
-Action_Wait_Init(Action)
+Class CWaitAction Extends CAction
 {
-	Action.Category := "7plus"
-	Action.Time := 1000
-}
-Action_Wait_ReadXML(Action, XMLAction)
-{
-	Action.ReadVar(XMLAction, "Time")
-}
-Action_Wait_Execute(Action,Event)
-{
-	if(!Action.tmpStartTime) ;First trigger, store start time
+	static Type := RegisterType(CWaitAction, "Wait")
+	static Category := RegisterCategory(CWaitAction, "7plus")
+	static Time := 1000
+	
+	Execute(Event)
 	{
-		Action.tmpStartTime := A_TickCount
-		return -1
+		if(!this.tmpStartTime) ;First trigger, store start time
+		{
+			this.tmpStartTime := A_TickCount
+			return -1
+		}
+		else if(A_TickCount > this.tmpStartTime + this.Time) ;If wait time has run out
+		{
+			this.Time := 0
+			return 1
+		}
+		else ;Still waiting
+			return -1
 	}
-	else if(A_TickCount > Action.tmpStartTime + Action.Time) ;If wait time has run out
+	DisplayString()
 	{
-		Action.Time := 0
-		return 1
+		return "Wait " this.Time "ms"
 	}
-	else ;Still waiting
-		return -1
+	GuiShow(GUI)
+	{
+		this.AddControl(GUI, "Text", "Desc", "This action waits by a specified amount of time. Afterwards the next event is executed.")
+		this.AddControl(GUI, "Edit", "Time", "", "", "Time (ms):", "", "")
+	}
 }
-Action_Wait_DisplayString(Action)
-{
-	return "Wait " Action.Time "ms"
-}
-Action_Wait_GuiShow(Action, ActionGUI, GoToLabel = "")
-{
-	SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action waits by a specified amount of time. Afterwards the next event is executed.")
-	SubEventGUI_Add(Action, ActionGUI, "Edit", "Time", "", "", "Time (ms):", "", "")
-}
-Action_Wait_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-} 

@@ -1,21 +1,14 @@
-Action_TaskButtonClose_Init(Action)
+Class CTaskButtonClose Extends CAction
 {
-	Action.Category := "Window"
-}
-Action_TaskButtonClose_ReadXML(Action, XMLAction)
-{
-}
-Action_TaskButtonClose_Execute(Action, Event)
-{
-	TaskButtonClose()
-}
-Action_TaskButtonClose_DisplayString(Action)
-{
-	return "Close window belonging to task button under the mouse"
-}
-Action_TaskButtonClose_GuiShow(Action, ActionGUI, GoToLabel = "")
-{
-}
-Action_TaskButtonClose_GuiSubmit(Action, ActionGUI)
-{
+	static Type := RegisterType(CTaskButtonClose, "Close taskbar button under mouse")
+	static Category := RegisterCategory(CTaskButtonClose, "Window")
+	
+	Execute(Event)
+	{
+		TaskButtonClose()
+	}
+	DisplayString()
+	{
+		return "Close window belonging to task button under the mouse"
+	}
 }

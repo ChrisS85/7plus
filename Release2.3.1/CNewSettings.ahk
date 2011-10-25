@@ -222,7 +222,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		if(!this.Events)
 		{
 			for index, Event in EventSystem.Events
-				Event.Trigger.PrepareCopy(Event)		
+				Event.Trigger.PrepareCopy(Event)
 			
 			this.Events := EventSystem.Events.DeepCopy()
 			Page.editEventFilter.Text := ""
@@ -678,7 +678,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 	}
 	listAccessorPlugins_CheckedChanged(Row)
 	{
-		this.AccessorPlugins[Row._.RowNumber].Enabled := Row.Enabled
+		this.AccessorPlugins[Row._.RowNumber].Enabled := Row.Checked
 	}
 	listAccessorPlugins_DoubleClick(Row)
 	{
@@ -991,28 +991,25 @@ Finally, here are some settings that you're likely to change at the beginning:
 	}
 	InitFTPProfiles()
 	{
-		global FTPProfiles
 		Page := this.Pages.FTPProfiles.Tabs[1].Controls
-		this.FTPProfiles := FTPProfiles.DeepCopy()
+		this.FTPProfiles := CFTPUploadAction.FTPProfiles.DeepCopy()
 		Page.ddlFTPProfile.Items.Clear()
-		Loop % FTPProfiles.MaxIndex()
-			Page.ddlFTPProfile.Items.Add(A_Index ": " FTPProfiles[A_Index].Hostname)
+		Loop % this.FTPProfiles.MaxIndex()
+			Page.ddlFTPProfile.Items.Add(A_Index ": " this.FTPProfiles[A_Index].Hostname)
 		Page.ddlFTPProfile.SelectedIndex := 1
 		Page.ddlFTPProfile.Enabled := this.FTPProfiles.MaxIndex() > 0
 		this.ddlFTPProfile_SelectionChanged()
 	}
 	ApplyFTPProfiles()
 	{
-		global FTPProfiles
 		Page := this.Pages.FTPProfiles.Tabs[1].Controls
 		this.StoreCurrentFTPProfile(this.FTPProfiles[Page.ddlFTPProfile.SelectedIndex])
-		FTPProfiles := this.FTPProfiles
+		CFTPUploadAction.FTPProfiles := this.FTPProfiles
 	}
 	HideFTPProfiles()
 	{
 		Page := this.Pages.FTPProfiles.Tabs[1].Controls
 		this.StoreCurrentFTPProfile(this.FTPProfiles[Page.ddlFTPProfile.SelectedIndex])
-		;~ ObjTree(this.FTPProfiles)
 	}
 	StoreCurrentFTPProfile(CurrentProfile)
 	{
@@ -1035,7 +1032,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page := this.Pages.FTPProfiles.Tabs[1].Controls
 		this.FTPProfiles.Insert(Object("Hostname", "Hostname.com", "Port", 21, "User", "SomeUser", "Password", "", "URL", "http://somehost.com"))
 		len := this.FTPProfiles.MaxIndex()
-		Page.ddlFTPProfile.Items.Add(len ": " this.FTPProfiles[this.FTPProfiles.MaxIndex()].Hostname)
+		Page.ddlFTPProfile.Items.Add(len ": " this.FTPProfiles[len].Hostname)
 		Page.ddlFTPProfile.SelectedIndex := len
 		Page.ddlFTPProfile.Enabled := true
 	}

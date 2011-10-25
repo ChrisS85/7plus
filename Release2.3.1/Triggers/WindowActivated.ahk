@@ -1,29 +1,26 @@
-Trigger_WindowActivated_Init(Trigger)
+Class CWindowActivatedTrigger Extends CTrigger
 {
-	Trigger.Category := "Window"
-	WindowFilter_Init(Trigger)
-}
-Trigger_WindowActivated_ReadXML(Trigger, XMLTrigger)
-{	
-	WindowFilter_ReadXML(Trigger, XMLTrigger)
-}
+	static Type := RegisterType(CWindowActivatedTrigger, "Window activated")
+	static Category := RegisterCategory(CWindowActivatedTrigger, "Window")
+	static _ImplementsWindowFilter := ImplementWindowFilterInterface(CWindowActivatedTrigger)
+	
+	Matches(Filter)
+	{
+		return this.WindowFilterMatches("A", Filter)
+	}
 
-Trigger_WindowActivated_Matches(Trigger, Filter)
-{
-	return WindowFilter_Matches(Trigger, "A", Filter)
-}
+	DisplayString()
+	{
+		return "Window activated: " this.WindowFilterDisplayString()
+	}
 
-Trigger_WindowActivated_DisplayString(Trigger)
-{
-	return "Window Activated: " WindowFilter_DisplayString(Trigger)
-}
+	GuiShow(GUI)
+	{
+		this.WindowFilterGuiShow(GUI)
+	}
 
-Trigger_WindowActivated_GuiShow(Trigger, TriggerGUI)
-{
-	WindowFilter_GuiShow(Trigger, TriggerGUI)
-}
-
-Trigger_WindowActivated_GuiSubmit(Trigger, TriggerGUI)
-{
-	WindowFilter_GuiSubmit(Trigger, TriggerGUI)
+	GuiSubmit(GUI)
+	{
+		this.WindowFilterGuiSubmit(GUI)
+	}
 }

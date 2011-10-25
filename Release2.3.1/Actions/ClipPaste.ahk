@@ -1,27 +1,27 @@
- Action_ClipPaste_Init(Action)
+Class CClipPasteAction Extends CAction
 {
-	Action.Category := "System"
-	Action.Index := 0
-}
-Action_ClipPaste_ReadXML(Action, XMLAction)
-{
-	Action.ReadVar(XMLAction, "Index")
-}
-Action_ClipPaste_Execute(Action, Event)
-{
-	ClipboardMenuClicked(Action.Index)
-} 
+	static Type := RegisterType(CClipPasteAction, "Paste clipboard entry")
+	static Category := RegisterCategory(CClipPasteAction, "System")
+	static Index := 0
+	
+	Execute(Event)
+	{
+		ClipboardMenuClicked(this.Index)
+	} 
 
-Action_ClipPaste_DisplayString(Action)
-{
-	return "Paste clipboard history entry"
-}
-Action_ClipPaste_GuiShow(Action, ActionGUI)
-{
-	SubEventGUI_Add(Action, ActionGUI, "Edit", "Index", "", "", "Index:")
-}
-Action_ClipPaste_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-	return !(Action.Index >= 1 && Action.Index <= 10)
+	DisplayString()
+	{
+		return "Paste clipboard history entry"
+	}
+	
+	GuiShow(GUI)
+	{
+		this.AddControl(GUI, "Edit", "Index", "", "", "Index:")
+	}
+	
+	GuiSubmit(GUI)
+	{
+		Base.GuiSubmit(GUI)
+		return !(this.Index >= 1 && this.Index <= 10)
+	}
 }

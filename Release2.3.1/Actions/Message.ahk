@@ -1,114 +1,83 @@
-Action_Message_Init(Action)
+Class CMessageAction Extends CAction
 {
-	Action.Category := "System"
-	Action.Text := "Example Message"
-	Action.Title := "7plus"
-	Action.Timeout := 0
-}	
-Action_Message_ReadXML(Action, XMLAction)
-{
-	Action.ReadVar(XMLAction, "Text")
-	Action.ReadVar(XMLAction, "Title")
-	Action.ReadVar(XMLAction, "Timeout")
-}
-Action_Message_Execute(Action,Event)
-{
-	if(!Action.tmpGuiNum)
+	static Type := RegisterType(CMessageAction, "Message")
+	static Category := RegisterCategory(CMessageAction, "System")
+	static Text := "Example Message"
+	static Title := "7plus"
+	static Timeout := 0
+	Execute(Event)
 	{
-		result := CustomMsgBox(Event.ExpandPlaceHolders(Action.Title), Event.ExpandPlaceHolders(Action.Text))
-		if(result) ;
+		if(!this.tmpGuiNum)
 		{
-			Action.tmpGuiNum := result
-			Action.Time := A_TickCount
-			return -1
-		}
-		else
-			return 0 ;Msgbox wasn't created
-	}
-	else
-	{
-		GuiNum := Action.tmpGuiNum
-		;outputdebug waiting for messagebox close %guinum%
-		Gui,%GuiNum%:+LastFound 
-		WinGet, Msgbox_hwnd,ID
-		DetectHiddenWindows, Off
-		;outputdebug %A_IsCritical%
-		If(WinExist("ahk_id " Msgbox_hwnd)) ;Box not closed yet, need more processing time
-		{
-			if(Action.Timeout * 1000 > 0 && A_TickCount - Action.Time > Action.Timeout * 1000)
+			result := CustomMsgBox(Event.ExpandPlaceHolders(this.Title), Event.ExpandPlaceHolders(this.Text))
+			if(result) ;
 			{
-				Gui, %GuiNum%:Destroy 
-				return 0
+				this.tmpGuiNum := result
+				this.Time := A_TickCount
+				return -1
 			}
-			return -1
+			else
+				return 0 ;Msgbox wasn't created
 		}
 		else
-			return 1 ;Box closed, all fine
+		{
+			GuiNum := this.tmpGuiNum
+			;outputdebug waiting for messagebox close %guinum%
+			Gui,%GuiNum%:+LastFound 
+			WinGet, Msgbox_hwnd,ID
+			DetectHiddenWindows, Off
+			;outputdebug %A_IsCritical%
+			If(WinExist("ahk_id " Msgbox_hwnd)) ;Box not closed yet, need more processing time
+			{
+				if(this.Timeout * 1000 > 0 && A_TickCount - this.Time > this.Timeout * 1000)
+				{
+					Gui, %GuiNum%:Destroy 
+					return 0
+				}
+				return -1
+			}
+			else
+				return 1 ;Box closed, all fine
+		}
 	}
-} 
-Action_Message_DisplayString(Action)
-{
-	return "Message " Action.Text
-}
-
-Action_Message_GuiShow(Action, ActionGUI, GoToLabel = "")
-{
-	static sActionGUI
-	if(GoToLabel = "")
+	DisplayString()
 	{
-		sActionGUI := ActionGUI
-		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action shows a message box.")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Text", "", "", "Text:", "Placeholders", "Action_Message_Text_Placeholders")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Title", "", "", "Window Title:", "Placeholders", "Action_Message_Title_Placeholders")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Timeout", "", "", "Timeout:","","","","","The message box is closed after this time.`nUse 0 or empty string to disable timeout.")
+		return "Message " this.Text
 	}
-	else if(GoToLabel = "Text_Placeholders")
-		SubEventGUI_Placeholders(sActionGUI, "Text")
-	else if(GoToLabel = "Title_Placeholders")
-		SubEventGUI_Placeholders(sActionGUI, "Title")
+
+	GuiShow(ActionGUI, GoToLabel = "")
+	{
+		static sActionGUI
+		if(GoToLabel = "")
+		{
+			sActionGUI := ActionGUI
+			this.AddControl(ActionGUI, "Text", "Desc", "This action shows a message box.")
+			this.AddControl(ActionGUI, "Edit", "Text", "", "", "Text:", "Placeholders", "Action_Message_Text_Placeholders")
+			this.AddControl(ActionGUI, "Edit", "Title", "", "", "Window Title:", "Placeholders", "Action_Message_Title_Placeholders")
+			this.AddControl(ActionGUI, "Edit", "Timeout", "", "", "Timeout:","","","","","The message box is closed after this time.`nUse 0 or empty string to disable timeout.")
+		}
+		else if(GoToLabel = "Text_Placeholders")
+			ShowPlaceholderMenu(sActionGUI, "Text")
+		else if(GoToLabel = "Title_Placeholders")
+			ShowPlaceholderMenu(sActionGUI, "Title")
+	}
 }
 Action_Message_Text_Placeholders:
-Action_Message_GuiShow("", "", "Text_Placeholders")
+GetCurrentSubEvent().GuiShow("", "Text_Placeholders")
 return
 
 Action_Message_Title_Placeholders:
-Action_Message_GuiShow("", "", "Title_Placeholders")
+GetCurrentSubEvent().GuiShow("", "Title_Placeholders")
 return
-
-Action_Message_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-}
 
 ;Non blocking message box (can wait for closing in event system though)
 CustomMsgBox(Title,Message) 
 {
 	WasCritical := A_IsCritical
 	Critical, Off
-	l_GUI:=10
-    loop
-	{
-		;-- Window available?
-		gui %l_GUI%:+LastFoundExist
-		IfWinNotExist
-			break
-
-		;-- Nothing available?
-		if l_GUI=99
-		{
-			MsgBox 262160
-				,HotkeyGUI Error
-				,Unable to create Msgbox window. GUI windows 10 to 99 are already in use.
-			ErrorLevel=9999
-			if(WasCritical)
-				Critical
-			return ""
-		}
-
-		;-- Increment window
-		l_GUI++
-	}
-
+	l_GUI := GetFreeGUINum(1, "MsgBox")
+	if(!l_GUI)
+		return 0
 	Gui,%l_GUI%:Destroy 
 	Gui,%l_GUI%:Add,Text,,%Message%
 

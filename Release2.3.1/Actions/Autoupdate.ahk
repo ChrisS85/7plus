@@ -1,22 +1,14 @@
-Action_AutoUpdate_Init(Action)
+Class CAutoUpdateAction Extends CAction
 {
-	Action.Category := "7plus"
+	static Type := RegisterType(CAutoUpdateAction, "Check for updates")
+	static Category := RegisterCategory(CAutoUpdateAction, "7plus")
+	Execute(Event)
+	{
+		AutoUpdate()
+		return 1
+	} 
+	DisplayString()
+	{
+		return "7plus Autoupdate"
+	}
 }
-Action_AutoUpdate_ReadXML(Action, XMLAction)
-{
-}
-Action_AutoUpdate_Execute(Action, Event)
-{
-	AutoUpdate()
-	return 1
-} 
-Action_AutoUpdate_DisplayString(Action)
-{
-	return "7plus Autoupdate"
-}
-Action_AutoUpdate_GuiShow(Action, ActionGUI)
-{
-}
-Action_AutoUpdate_GuiSubmit(Action, ActionGUI)
-{
-}     

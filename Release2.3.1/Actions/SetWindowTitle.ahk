@@ -1,41 +1,42 @@
-Action_SetWindowTitle_Init(Action)
+Class CSetWindowTitleAction Extends CAction
 {
-	WindowFilter_Init(Action)
-	Action.Category := "System"
-	Action.Title := "7plus rocks!"
-}
-Action_SetWindowTitle_ReadXML(Action, XMLAction)
-{
-	WindowFilter_ReadXML(Action, XMLAction)
-	Action.ReadVar(XMLAction, "Title")
-}
-Action_SetWindowTitle_Execute(Action,Event)
-{
-	hwnd := WindowFilter_Get(Action)
-	Title := Event.ExpandPlaceholders(Action.Title)
-	SendMessage, 0xC, 0, "" Title "", , ahk_id %hwnd%
-	return 1
-}
-Action_SetWindowTitle_DisplayString(Action)
-{
-	return "Set window title of " WindowFilter_DisplayString(Action) " to " Action.Title
-}
-Action_SetWindowTitle_GuiShow(Action, ActionGUI, GoToLabel = "")
-{
-	static sActionGUI
-	if(GoToLabel = "")
+	static Type := RegisterType(CSetWindowTitleAction, "Set window title")
+	static Category := RegisterCategory(CSetWindowTitleAction, "Window")
+	static _ImplementsWindowFilter := ImplementWindowFilterInterface(CSetWindowTitleAction)
+	static Title := "7plus rocks!"
+	
+	Execute(Event)
 	{
-		sActionGUI := ActionGUI
-		WindowFilter_GuiShow(Action,ActionGUI)
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Title", "", "", "Title:", "Placeholders", "Action_SetWindowTitle_Placeholders_Title")
+		hwnd := this.WindowFilterGet()
+		Title := Event.ExpandPlaceholders(this.Title)
+		SendMessage, 0xC, 0, "" Title "", , ahk_id %hwnd%
+		return 1
 	}
-	else if(GoToLabel = "Placeholders_Title")
-		SubEventGUI_Placeholders(sActionGUI, "Title")
+	
+	DisplayString()
+	{
+		return "Set window title of " this.WindowFilterDisplayString() " to " this.Title
+	}
+	
+	GuiShow(GUI, GoToLabel = "")
+	{
+		static sGUI
+		if(GoToLabel = "")
+		{
+			sGUI := GUI
+			this.WindowFilterGuiShow(GUI)
+			this.AddControl(GUI, "Edit", "Title", "", "", "Title:", "Placeholders", "Action_SetWindowTitle_Placeholders_Title")
+		}
+		else if(GoToLabel = "Placeholders_Title")
+			ShowPlaceholderMenu(sGUI, "Title")
+	}
+
+	GuiSubmit(GUI)
+	{
+		this.WindowFilterGUISubmit(GUI)
+		Base.GUISubmit(GUI)
+	}
 }
 Action_SetWindowTitle_Placeholders_Title:
-Action_SetWindowTitle_GuiShow("", "", "Placeholders_Title")
+GetCurrentSubEvent().GuiShow("", "Placeholders_Title")
 return
-Action_SetWindowTitle_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-}  

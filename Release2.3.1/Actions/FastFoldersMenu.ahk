@@ -1,25 +1,25 @@
- Action_FastFoldersMenu_Init(Action)
+Class CFastFoldersMenuAction Extends CAction
 {
-	global Vista7
-	Action.Category := "FastFolders"
+	static Type := RegisterType(CFastFoldersMenuAction, "Fast Folders menu")
+	static Category := RegisterCategory(CFastFoldersMenuAction, "Fast Folders")
+	
+	Execute(Event)
+	{
+		if(!this.tmpShowing)
+		{
+			this.tmpShowing := true
+			FastFolderMenu()
+		}
+		else if(!IsContextMenuActive()) ;Menu closed
+		{
+			this.tmpShowing := false
+			return 1
+		}
+		return -1 ;Waiting for menu to close
+	}
+
+	DisplayString()
+	{
+		return "Show Fast Folders menu"
+	}
 }
-
-Action_FastFoldersMenu_Execute(Action, Event)
-{
-	if(!Action.tmpShowing)
-	{
-		Action.tmpShowing := true
-		FastFolderMenu()
-	}
-	else if(!IsContextMenuActive()) ;Menu closed
-	{
-		Action.tmpShowing := false
-		return 1
-	}
-	return -1 ;Waiting for menu to close
-} 
-
-Action_FastFoldersMenu_DisplayString(Action)
-{
-	return "Show FastFolders Menu"
-} 

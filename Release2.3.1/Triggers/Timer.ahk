@@ -187,21 +187,21 @@ Class CTimerTrigger Extends CTrigger
 	} 
 }
 Timer_StartPause:
-TimerEventFromGUINumber(A_GUI).Trigger.StartPause()
+TimerEventFromGUINumber().Trigger.StartPause()
 return
 Timer_Stop:
-TimerEventFromGUINumber(A_GUI).Trigger.Stop(TimerEventFromGUINumber(A_GUI))
+TimerEventFromGUINumber().Trigger.Stop(TimerEventFromGUINumber())
 return
 Timer_Reset:
-TimerEventFromGUINumber(A_GUI).Trigger.Reset()
+TimerEventFromGUINumber().Trigger.Reset()
 return
-TimerEventFromGUINumber(number)
+TimerEventFromGUINumber()
 {
 	for index, Event in EventSystem.Events
-		if(Event.Trigger.Type = "Timer" && Event.Trigger.tmpGUINum = number)
+		if(Event.Trigger.Is("CTimerTrigger") && Event.Trigger.tmpGUINum = A_GUI)
 			return Event
 	for index, TemporaryEvent in EventSystem.TemporaryEvents
-		if(TemporaryEvent.Trigger.Type = "Timer" && TemporaryEvent.Trigger.tmpGUINum = number)
+		if(TemporaryEvent.Trigger.Is("CTimerTrigger") && TemporaryEvent.Trigger.tmpGUINum = A_GUI)
 			return TemporaryEvent
 	return 0
 }

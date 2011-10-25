@@ -1,109 +1,100 @@
- Action_ControlEvent_Init(Action)
+Class CControlEventAction Extends CAction
 {
-	Condition_If_Init(Action)
-	Action.Category := "7plus"
-	Action.Action := "Enable Event"
-	Action.Compare := ""
-}
-
-Action_ControlEvent_ReadXML(Action, XMLAction)
-{
-	Condition_If_ReadXML(Action, XMLAction)
-	Action.ReadVar(XMLAction, "EventID")
-	Action.ReadVar(XMLAction, "Action")
-	if(Action.Action = "Copy Event")
+	static Type := RegisterType(CControlEventAction, "Control event")
+	static Category := RegisterCategory(CControlEventAction, "7plus")
+	static _ImplementsIf := ImplementIfInterface(CControlEventAction)
+	static Action := "Enable Event"
+	static Compare := ""
+	static EventID := ""
+	static EvaluateOnCopy := 1
+	static Placeholder := ""
+	static DeleteAfterUse := 1
+	
+	Execute(Event)
 	{
-		Action.ReadVar(XMLAction, "EvaluateOnCopy")
-		Action.ReadVar(XMLAction, "Placeholder")
-		Action.ReadVar(XMLAction, "DeleteAfterUse")
-	}
-}
-
-Action_ControlEvent_Execute(Action, Event)
-{
-	if(Condition_If_Evaluate(Action, Event))
-	{
-		outputdebug condition fulfilled
-		TargetEvent := EventSystem.Events.GetItemWithValue("ID", Event.ExpandPlaceholders(Action.EventID))
-		if(Action.Action = "Enable Event")
-			TargetEvent.Enable()
-		else if(Action.Action = "Disable Event")
+		if(this.IfEvaluate(Event))
 		{
-			outputdebug % "disable " TargetEvent.ID
-			TargetEvent.Disable()
-		}
-		else if(Action.Action = "Toggle Enable/Disable")
-			if(TargetEvent.Enabled)
-				TargetEvent.Disable()
-			else
+			TargetEvent := EventSystem.Events.GetItemWithValue("ID", Event.ExpandPlaceholders(this.EventID))
+			if(this.Action = "Enable Event")
 				TargetEvent.Enable()
-		else if(Action.Action = "Trigger Event")
-		{
-			Trigger := new CTriggerTrigger()
-			Trigger.TargetID := Action.EventID
-			EventSystem.OnTrigger(Trigger)
-		}
-		else if(Action.Action = "Copy Event")
-		{
-			Copy := EventSystem.TemporaryEvents.RegisterEvent(TargetEvent.DeepCopy(), 0)
-			Copy.DeleteAfterUse := Action.DeleteAfterUse
-			;Placeholders may be evaluated at the time of the copy operation, 
-			;so they don't use placeholders which may have changed in the meantime
-			if(Action.EvaluateOnCopy)
-				objDeepPerform(Copy, "Event_ExpandPlaceHolders", Copy)
-			EventSystem.Events.GlobalPlaceholders[Action.Placeholder] := Copy.ID
-		}
-	}
-	return 1
-} 
-
-Action_ControlEvent_DisplayString(Action)
-{
-	return Action.Action ": " Action.EventID ": " SettingsWindow.Events.GetItemWithValue("ID", Action.EventID).Name	
-}
-
-Action_ControlEvent_GuiShow(Action, ActionGUI, GoToLabel = "")
-{	
-	static sActionGUI, sAction, PreviousSelection
-	if(GoToLabel = "")
-	{
-		sActionGUI := ActionGUI
-		sAction := Action
-		PreviousSelection := ""
-		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action can do various stuff with other events. It is only performed if the condition below is matched. Leave both text fields empty to always perform it.")
-		Condition_If_GuiShow(Action, ActionGUI, "")
-		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "Action", "Copy Event|Disable Event|Enable Event|Toggle Enable/Disable|Trigger Event", "Action_ControlEvent_SelectionChange", "Action:")
-		SubEventGUI_Add(Action, ActionGUI, "ComboBox", "EventID", "TriggerType:", "", "Event:")
-		Action_ControlEvent_GuiShow("", "","ControlEvent_SelectionChange")
-	}
-	else if(GoToLabel = "ControlEvent_SelectionChange")
-	{
-		ControlGetText, Action, , % "ahk_id " sActionGUI.DropDown_Action
-		if(Action = "Copy Event")
-		{
-			if(Action != PreviousSelection)
+			else if(this.Action = "Disable Event")
 			{
-				sAction.EvaluateOnCopy := true
-				sAction.DeleteAfterUse := true
-				SubEventGUI_Add(sAction, sActionGUI, "Text", "Text", "Copied event is stored in placeholder (Enter without ${})")
-				SubEventGUI_Add(sAction, sActionGUI, "Edit", "Placeholder", "", "", "Placeholder:")				
-				; SubEventGUI_Add(sAction, sActionGUI, "Text", "Text1", "Placeholders can be evaluated when copying to make them use the current value.")
-				SubEventGUI_Add(sAction, sActionGUI, "Checkbox", "EvaluateOnCopy", "Evaluate placeholders when copying to make them use the current value")
-				SubEventGUI_Add(sAction, sActionGUI, "Checkbox", "DeleteAfterUse", "Delete copy after use")
+				outputdebug % "disable " TargetEvent.ID
+				TargetEvent.Disable()
+			}
+			else if(this.Action = "Toggle Enable/Disable")
+				if(TargetEvent.Enabled)
+					TargetEvent.Disable()
+				else
+					TargetEvent.Enable()
+			else if(this.Action = "Trigger Event")
+			{
+				Trigger := new CTriggerTrigger()
+				Trigger.TargetID := this.EventID
+				EventSystem.OnTrigger(Trigger)
+			}
+			else if(this.Action = "Copy Event")
+			{
+				Copy := EventSystem.TemporaryEvents.RegisterEvent(TargetEvent.DeepCopy(), 0)
+				Copy.DeleteAfterUse := this.DeleteAfterUse
+				;Placeholders may be evaluated at the time of the copy operation, 
+				;so they don't use placeholders which may have changed in the meantime
+				if(this.EvaluateOnCopy)
+					objDeepPerform(Copy, "ExpandPlaceHolders", Copy)
+				EventSystem.Events.GlobalPlaceholders[this.Placeholder] := Copy.ID
 			}
 		}
-		else
+		return 1
+	} 
+
+	DisplayString()
+	{
+		return this.Action ": " this.EventID ": " SettingsWindow.Events.GetItemWithValue("ID", this.EventID).Name	
+	}
+
+	GuiShow(GUI, GoToLabel = "")
+	{
+		if(GoToLabel = "")
 		{
-			if(PreviousSelection = "Window")
-				sActionGUI.y := sActionGUI.y - 130
+			this.tmpGUI := GUI
+			this.tmpPreviousSelection := ""
+			this.AddControl(GUI, "Text", "Desc", "This action can do various stuff with other events. It is only performed if the condition below is matched. Leave both text fields empty to always perform it.")
+			this.IfGuiShow(GUI)
+			this.AddControl(GUI, "DropDownList", "Action", "Copy Event|Disable Event|Enable Event|Toggle Enable/Disable|Trigger Event", "Action_ControlEvent_SelectionChange", "Action:")
+			this.AddControl(GUI, "ComboBox", "EventID", "TriggerType:", "", "Event:")
+			this.GuiShow("", "ControlEvent_SelectionChange")
 		}
-		PreviousSelection := Action
+		else if(GoToLabel = "ControlEvent_SelectionChange")
+		{
+			ControlGetText, Action, , % "ahk_id " this.tmpGUI.DropDown_Action
+			if(Action = "Copy Event")
+			{
+				if(Action != this.tmpPreviousSelection)
+				{
+					this.EvaluateOnCopy := true
+					this.DeleteAfterUse := true
+					this.AddControl(this.tmpGUI, "Text", "Text", "Copied event is stored in placeholder (Enter without ${})")
+					this.AddControl(this.tmpGUI, "Edit", "Placeholder", "", "", "Placeholder:")
+					this.AddControl(this.tmpGUI, "Checkbox", "EvaluateOnCopy", "Evaluate placeholders when copying to make them use the current value")
+					this.AddControl(this.tmpGUI, "Checkbox", "DeleteAfterUse", "Delete copy after use")
+				}
+			}
+			else
+			{
+				if(this.tmpPreviousSelection = "Window")
+					this.tmpGUI.y := this.tmpGUI.y - 130
+			}
+			this.tmpPreviousSelection := Action
+		}
+	}
+	GuiSubmit(GUI)
+	{
+		this.IfGuiSubmit(GUI)
+		this.Remove("tmpGUI")
+		this.Remove("tmpPreviousSelection")
+		Base.GuiSubmit(GUI)
 	}
 }
 Action_ControlEvent_SelectionChange:
-Action_ControlEvent_GuiShow("","","ControlEvent_SelectionChange")
+GetCurrentSubEvent().GuiShow("","ControlEvent_SelectionChange")
 return
-Action_ControlEvent_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-}  

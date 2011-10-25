@@ -1,45 +1,35 @@
-Action_SlideWindowOut_Init(Action)
+Class CSlideWindowOutAction Extends CAction
 {
-	Action.Category := "Window"
-	Action.Direction := 1 ;Left
-}
-Action_SlideWindowOut_ReadXML(Action, XMLAction)
-{
-	Action.ReadVar(XMLAction, "Direction")
-}
-Action_SlideWindowOut_Execute(Action)
-{
-	global CSlideWindow, SlideWindows
-	outputdebug slide out action
-	hwnd := WinExist("A")
-	SlideWindow := SlideWindows.GetByWindowHandle(hwnd, ChildIndex)
-	if(IsObject(SlideWindow))
+	static Type := RegisterType(CSlideWindowOutAction, "Move Slide Window out of screen")
+	static Category := RegisterCategory(CSlideWindowOutAction, "Window")
+	static Direction := 1 ;Left
+	
+	Execute()
 	{
-		if(Action.Direction = SlideWindow.Direction)
-			SlideWindow.SlideOut()
-		else if(abs(Action.Direction - SlideWindow.Direction) = 2) ;Opposite direction
-			SlideWindow.Release()
+		global SlideWindows
+		hwnd := WinExist("A")
+		SlideWindow := SlideWindows.GetByWindowHandle(hwnd, ChildIndex)
+		if(IsObject(SlideWindow))
+		{
+			if(this.Direction = SlideWindow.Direction)
+				SlideWindow.SlideOut()
+			else if(abs(this.Direction - SlideWindow.Direction) = 2) ;Opposite direction
+				SlideWindow.Release()
+			return 1
+		}
+		SlideWindow := new CSlideWindow(hwnd, this.Direction)
+		if(IsObject(SlideWindow))
+			SlideWindows.Insert(SlideWindow)
 		return 1
+	} 
+
+	DisplayString()
+	{
+		return "Slide active window out of the screen"
 	}
-	SlideWindow := new CSlideWindow(hwnd, Action.Direction)
-	outputdebug object created
-	if(IsObject(SlideWindow))
-		SlideWindows.Insert(SlideWindow)
-	outputdebug % "len: " SlideWindows.MaxIndex()
-	return 1
-} 
-
-Action_SlideWindowOut_DisplayString(Action)
-{
-	return "Slide active window out of the screen"
-}
-Action_SlideWindowOut_GuiShow(Action, ActionGUI)
-{
-	SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action slides windows out of the screen (if possible) or releases slide windows")
-	SubEventGUI_Add(Action, ActionGUI, "DropDownList", "Direction", "1: Left|2: Top|3: Right|4: Bottom", "", "Direction:")
-}
-
-Action_SlideWindowOut_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
+	GuiShow(GUI)
+	{
+		this.AddControl(GUI, "Text", "Desc", "This action slides windows out of the screen (if possible) or releases slide windows")
+		this.AddControl(GUI, "DropDownList", "Direction", "1: Left|2: Top|3: Right|4: Bottom", "", "Direction:")
+	}
 }

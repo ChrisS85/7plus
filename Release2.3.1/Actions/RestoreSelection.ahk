@@ -1,22 +1,15 @@
-Action_RestoreSelection_Init(Action)
+Class CRestoreSelectionAction Extends CAction
 {
-	Action.Category := "Explorer"
+	static Type := RegisterType(CRestoreSelectionAction, "Restore file selection")
+	static Category := RegisterCategory(CRestoreSelectionAction, "Explorer")
+	
+	Execute(Event)
+	{
+		RestoreExplorerSelection()
+		return 1
+	} 
+	DisplayString()
+	{
+		return "Restore file selection"
+	}
 }
-Action_RestoreSelection_ReadXML(Action, XMLAction)
-{
-}
-Action_RestoreSelection_Execute(Action, Event)
-{
-	RestoreExplorerSelection()
-	return 1
-} 
-Action_RestoreSelection_DisplayString(Action)
-{
-	return "Restore file selection"
-}
-Action_RestoreSelection_GuiShow(Action, ActionGUI)
-{
-}
-Action_RestoreSelection_GuiSubmit(Action, ActionGUI)
-{
-}   

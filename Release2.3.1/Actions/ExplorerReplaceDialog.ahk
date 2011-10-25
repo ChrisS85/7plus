@@ -1,42 +1,35 @@
-Action_ExplorerReplaceDialog_Init(Action)
+Class CExplorerReplaceDialogAction Extends CAction
 {
-	Action.Category := "Explorer"
-	Action.View := "Filenames"
-	Action.SelectedFiles := 0
-}
-Action_ExplorerReplaceDialog_ReadXML(Action, XMLAction)
-{	
-	Action.ReadVar(XMLAction, "View")
-	Action.ReadVar(XMLAction, "SelectedFiles")
-}
-Action_ExplorerReplaceDialog_Execute(Action, Event)
-{
-	global ExplorerWindows, CReplaceDialog
-	if(IsObject(ExplorerWindows.GetItemWithValue("hwnd", WinActive("ahk_group ExplorerGroup")).ReplaceDialog))
-		Gui, % ExplorerWindows.GetItemWithValue("hwnd", WinActive("ahk_group ExplorerGroup")).ReplaceDialog.GUINum ":Show"
-	else
+	static Type := RegisterType(CExplorerReplaceDialogAction, "Explorer replace dialog")
+	static Category := RegisterCategory(CExplorerReplaceDialogAction, "Explorer")
+	static View := "Filenames"
+	static SelectedFiles := false
+	Execute(Event)
 	{
-		ReplaceDialog := new CReplaceDialog(Action, Event)
-		if(IsObject(ReplaceDialog))
+		global ExplorerWindows
+		if(IsObject(ExplorerWindows.GetItemWithValue("hwnd", WinActive("ahk_group ExplorerGroup")).ReplaceDialog))
+			Gui, % ExplorerWindows.GetItemWithValue("hwnd", WinActive("ahk_group ExplorerGroup")).ReplaceDialog.GUINum ":Show"
+		else
 		{
-			ExplorerWindows.GetItemWithValue("hwnd", ReplaceDialog.Parent).ReplaceDialog := ReplaceDialog
-			return 1
+			ReplaceDialog := new CReplaceDialog(this, Event)
+			if(IsObject(ReplaceDialog))
+			{
+				ExplorerWindows.GetItemWithValue("hwnd", ReplaceDialog.Parent).ReplaceDialog := ReplaceDialog
+				return 1
+			}
+			return 0
 		}
+		return 1
+	} 
+	DisplayString()
+	{
+		return "Show Explorer Rename/Replace dialog"
 	}
-	return 0
-} 
-Action_ExplorerReplaceDialog_DisplayString(Action)
-{
-	return "Show Explorer Rename/Replace dialog"
-}
-Action_ExplorerReplaceDialog_GuiShow(Action, ActionGUI)
-{
-	SubEventGUI_Add(Action, ActionGUI, "DropDownList", "View", "Filenames|Files", "", "Replace in:")
-	SubEventGUI_Add(Action, ActionGUI, "Checkbox", "SelectedFiles", "In selected files")
-}
-Action_ExplorerReplaceDialog_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ACtionGUI)
+	GuiShow(GUI)
+	{
+		this.AddControl(GUI, "DropDownList", "View", "Filenames|Files", "", "Replace in:")
+		this.AddControl(GUI, "Checkbox", "SelectedFiles", "In selected files")
+	}
 }
 Class CReplaceDialog
 {

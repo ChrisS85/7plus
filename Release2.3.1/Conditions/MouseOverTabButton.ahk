@@ -1,24 +1,14 @@
-Condition_MouseOverTabButton_Init(Condition)
+Class CMouseOverTabButton Extends CCondition
 {
-	Condition.Category := "Mouse"
+	static Type := RegisterType(CMouseOverTabButton, "Mouse over tab button")
+	static Category := RegisterType(CMouseOverTabButton, "Mouse")
+	
+	Evaluate()
+	{
+		return IsMouseOverTabButton()
+	}
+	DisplayString()
+	{
+		return "Mouse is over Explorer tab button"
+	}
 }
-Condition_MouseOverTabButton_ReadXML(Condition, XMLCondition)
-{
-}
-Condition_MouseOverTabButton_Evaluate(Condition)
-{
-	return IsMouseOverTabButton()
-}
-Condition_MouseOverTabButton_DisplayString(Condition)
-{
-	return "Mouse is over Explorer tab button"
-}
-
-Condition_MouseOverTabButton_GuiShow(Condition, ConditionGUI,GoToLabel="")
-{
-}
-;Using WindowFilter_GUISubmit is not required, as it does the same basically
-Condition_MouseOverTabButton_GuiSubmit(Condition, ConditionGUI)
-{	
-	SubEventGUI_GUISubmit(Condition, ConditionGUI)
-} 

@@ -1,100 +1,100 @@
-Action_WindowState_Init(Action)
+Class CWindowStateAction Extends CAction
 {
-	WindowFilter_Init(Action)
-	Action.Category := "Window"
-	Action.Action := "Maximize"
-}
-Action_WindowState_ReadXML(Action, XMLAction)
-{
-	WindowFilter_ReadXML(Action, XMLAction)
-	Action.ReadVar(XMLAction, "Action")
-	if(Action.Action = "Set Transparency")
-		Action.ReadVar(XMLAction, "CenterY")
-}
-Action_WindowState_Execute(Action,Event)
-{
-	hwnd := WindowFilter_Get(Action)
-	WinGet, state, minmax, ahk_id %hwnd%
-	if(Action.Action = "Maximize")
-		WinMaximize("ahk_id " hwnd)
-	else if(Action.Action = "Minimize")
-		WinMinimize("ahk_id " hwnd)
-	else if(Action.Action = "Restore")
-		WinRestore, ahk_id %hwnd%
-	else if(Action.Action = "Toggle Max/Normal" && state = 1)
-		WinRestore, ahk_id %hwnd%
-	else if(Action.Action = "Toggle Max/Normal")
-		WinMaximize("ahk_id " hwnd)
-	else if(Action.Action = "Toggle Min/Normal" && state = -1)
-		WinRestore, ahk_id %hwnd%
-	else if(Action.Action = "Toggle Min/Normal")
-		WinMinimize("ahk_id " hwnd)
-	else if(Action.Action = "Toggle Min/Max" && state = -1)
-		WinMaximize("ahk_id " hwnd)
-	else if(Action.Action = "Toggle Min/Max")
-		WinMinimize("ahk_id " hwnd)
-	else if(Action.Action = "Toggle Min/Previous state" && state = -1)
-		WinActivate, ahk_id %hwnd%
-	else if(Action.Action = "Toggle Min/Previous state")
-		WinMinimize("ahk_id " hwnd)
-	else if(Action.Action = "Maximize->Normal->Minimize" && state = 1)
-		WinRestore, ahk_id %hwnd%
-	else if(Action.Action = "Maximize->Normal->Minimize" && state = 0)
-		WinMinimize("ahk_id " hwnd)
-	else if(Action.Action = "Minimize->Normal->Maximize" && state = -1)
-		WinRestore, ahk_id %hwnd%
-	else if(Action.Action = "Minimize->Normal->Maximize" && state = 0)
-		WinMaximize("ahk_id " hwnd)
-	else if(Action.Action = "Set always on top")
-		WinSet, AlwaysOnTop, On, ahk_id %hwnd%
-	else if(Action.Action = "Disable always on top")
-		WinSet, AlwaysOnTop, Off, ahk_id %hwnd%
-	else if(Action.Action = "Toggle always on top")
-		WinSet, AlwaysOnTop, Toggle, ahk_id %hwnd%
-	else if(Action.Action = "Set Transparency")
+	static Type := RegisterType(CWindowStateAction, "Change window state")
+	static Category := RegisterCategory(CWindowStateAction, "Window")
+	static _ImplementsWindowFilter := ImplementWindowFilterInterface(CWindowStateAction)
+	static Action := "Maximize"
+	static Value := 100
+	
+	Execute(Event)
 	{
-		newValue := Event.ExpandPlaceholders(Action.Value)
-		if(strStartsWith(newValue,"+")||strStartsWith(newValue,"-")||strStartsWith(newValue,"*")||strStartsWith(newValue,"/"))
+		hwnd := this.WindowFilterGet()
+		WinGet, state, minmax, ahk_id %hwnd%
+		if(this.Action = "Maximize")
+			WinMaximize("ahk_id " hwnd)
+		else if(this.Action = "Minimize")
+			WinMinimize("ahk_id " hwnd)
+		else if(this.Action = "Restore")
+			WinRestore, ahk_id %hwnd%
+		else if(this.Action = "Toggle Max/Normal" && state = 1)
+			WinRestore, ahk_id %hwnd%
+		else if(this.Action = "Toggle Max/Normal")
+			WinMaximize("ahk_id " hwnd)
+		else if(this.Action = "Toggle Min/Normal" && state = -1)
+			WinRestore, ahk_id %hwnd%
+		else if(this.Action = "Toggle Min/Normal")
+			WinMinimize("ahk_id " hwnd)
+		else if(this.Action = "Toggle Min/Max" && state = -1)
+			WinMaximize("ahk_id " hwnd)
+		else if(this.Action = "Toggle Min/Max")
+			WinMinimize("ahk_id " hwnd)
+		else if(this.Action = "Toggle Min/Previous state" && state = -1)
+			WinActivate, ahk_id %hwnd%
+		else if(this.Action = "Toggle Min/Previous state")
+			WinMinimize("ahk_id " hwnd)
+		else if(this.Action = "Maximize->Normal->Minimize" && state = 1)
+			WinRestore, ahk_id %hwnd%
+		else if(this.Action = "Maximize->Normal->Minimize" && state = 0)
+			WinMinimize("ahk_id " hwnd)
+		else if(this.Action = "Minimize->Normal->Maximize" && state = -1)
+			WinRestore, ahk_id %hwnd%
+		else if(this.Action = "Minimize->Normal->Maximize" && state = 0)
+			WinMaximize("ahk_id " hwnd)
+		else if(this.Action = "Set always on top")
+			WinSet, AlwaysOnTop, On, ahk_id %hwnd%
+		else if(this.Action = "Disable always on top")
+			WinSet, AlwaysOnTop, Off, ahk_id %hwnd%
+		else if(this.Action = "Toggle always on top")
+			WinSet, AlwaysOnTop, Toggle, ahk_id %hwnd%
+		else if(this.Action = "Set Transparency")
 		{
-			operator := SubStr(newValue,1,1)
-			newValue := SubStr(newValue,2)
-			WinGet, oldValue, Transparent, ahk_id %hwnd%
-			if(operator = "+")
-				newValue += oldValue
-			else if(operator = "-")
-				newValue := oldValue - newValue
-			else if(operator = "*")
-				newValue := oldValue * newValue
-			else if(operator = "/")
-				newValue := oldValue / newValue
+			newValue := Event.ExpandPlaceholders(this.Value)
+			if(strStartsWith(newValue,"+")||strStartsWith(newValue,"-")||strStartsWith(newValue,"*")||strStartsWith(newValue,"/"))
+			{
+				operator := SubStr(newValue,1,1)
+				newValue := SubStr(newValue,2)
+				WinGet, oldValue, Transparent, ahk_id %hwnd%
+				if(operator = "+")
+					newValue += oldValue
+				else if(operator = "-")
+					newValue := oldValue - newValue
+				else if(operator = "*")
+					newValue := oldValue * newValue
+				else if(operator = "/")
+					newValue := oldValue / newValue
+			}
+			outputdebug % "old value " oldvalue " new value " newvalue " operator " operator
+			WinSet, Transparent, %newValue%, ahk_id %hwnd%
 		}
-		outputdebug % "old value " oldvalue " new value " newvalue " operator " operator
-		WinSet, Transparent, %newValue%, ahk_id %hwnd%
+		return 1
 	}
-	return 1
-}
-Action_WindowState_DisplayString(Action)
-{
-	return Action.Action " " WindowFilter_DisplayString(Action)
-}
-Action_WindowState_GuiShow(Action, ActionGUI,GoToLabel="")
-{
-	static sActionGUI
-	if(GoToLabel = "")
+	
+	DisplayString()
 	{
-		sActionGUI := ActionGUI
-		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "Action", "Maximize|Minimize|Restore|Toggle Max/Normal|Toggle Min/Normal|Toggle Min/Max|Toggle Min/Previous state|Maximize->Normal->Minimize|Minimize->Normal->Maximize|Set always on top|Disable always on top|Toggle always on top|Set Transparency", "", "Action:")
-		SubEventGUI_Add(Action, ActionGUI, "Text", "tmpHint", "The value below is only used for transparency. Prepend +,-,* and / for relative changes.")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Value", "", "", "Value:", "Placeholders", "WindowState_Placeholders")
-		WindowFilter_GuiShow(Action,ActionGUI)
+		return this.Action " " this.WindowFilterDisplayString()
 	}
-	else if(GoToLabel = "WindowState_Placeholders")
-		SubEventGUI_Placeholders(sActionGUI, "Value")
+	
+	GuiShow(GUI,GoToLabel="")
+	{
+		static sGUI
+		if(GoToLabel = "")
+		{
+			sGUI := GUI
+			this.AddControl(GUI, "DropDownList", "Action", "Maximize|Minimize|Restore|Toggle Max/Normal|Toggle Min/Normal|Toggle Min/Max|Toggle Min/Previous state|Maximize->Normal->Minimize|Minimize->Normal->Maximize|Set always on top|Disable always on top|Toggle always on top|Set Transparency", "", "Action:")
+			this.AddControl(GUI, "Text", "tmpHint", "The value below is only used for transparency. Prepend +,-,* and / for relative changes.")
+			this.AddControl(GUI, "Edit", "Value", "", "", "Value:", "Placeholders", "WindowState_Placeholders")
+			this.WindowFilterGuiShow(GUI)
+		}
+		else if(GoToLabel = "WindowState_Placeholders")
+			ShowPlaceholderMenu(sGUI, "Value")
+	}
+	
+	GuiSubmit(GUI)
+	{
+		this.WindowFilterGUISubmit(GUI)
+		Base.GUISubmit(GUI)
+	}
 }
 WindowState_Placeholders:
-Action_WindowState_GuiShow("", "","WindowState_Placeholders")
+GetCurrentSubEvent().GuiShow("","WindowState_Placeholders")
 return
-Action_WindowState_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-}

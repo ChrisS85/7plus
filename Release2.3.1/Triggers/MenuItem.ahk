@@ -1,67 +1,56 @@
-Trigger_MenuItem_Init(Trigger)
+Class CMenuItemTrigger Extends CTrigger
 {
-	Trigger.Category := "System"
-	Trigger.Menu := "MenuName"
-	Trigger.Name := "Menu entry"
-	Trigger.Submenu := ""
-}
-Trigger_MenuItem_ReadXML(Trigger, XMLTrigger)
-{
-	Trigger.ReadVar(XMLTrigger, "Menu")
-	Trigger.ReadVar(XMLTrigger, "Name")
-	Trigger.ReadVar(XMLTrigger, "Submenu")
-}
+	static Type := RegisterType(CMenuItemTrigger, "Menu item clicked")
+	static Category := RegisterCategory(CMenuItemTrigger, "System")
+	static Menu := "MenuName"
+	static Name := "Menu entry"
+	static Submenu := ""
 
-Trigger_MenuItem_Enable(Trigger)
-{
-	if(Trigger.Menu = "Tray")
-		BuildMenu("Tray")
-}
-Trigger_MenuItem_Disable(Trigger)
-{
-	if(Trigger.Menu = "Tray")
-		BuildMenu("Tray")
-}
-
-Trigger_MenuItem_Delete(Trigger)
-{
-	if(Trigger.Menu = "Tray")
-		BuildMenu("Tray")
-}
-
-Trigger_MenuItem_Matches(Trigger, Filter)
-{
-	return false
-}
-
-Trigger_MenuItem_DisplayString(Trigger)
-{
-	return "MenuItem " Trigger.Name " in " Trigger.Menu
-}
-
-Trigger_MenuItem_GuiShow(Trigger, TriggerGUI)
-{
-	sTriggerGUI := TriggerGUI
-	; SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Menu", "", "", "Menu:")
-	Menus := Array()
-	Loop % SettingsWindow.Events.MaxIndex()
+	Enable()
 	{
-		if(SettingsWindow.Events[A_Index].Trigger.Type = "MenuItem" && Menus.indexOf(SettingsWindow.Events[A_Index].Trigger.Menu) = 0)
-		{
-			Menus.Insert(SettingsWindow.Events[A_Index].Trigger.Menu)
-			MenuString .= (Menus.MaxIndex() = 1 ? "" : "|") SettingsWindow.Events[A_Index].Trigger.Menu
-		}
+		if(this.Menu = "Tray")
+			BuildMenu("Tray")
 	}
-	
-	SubEventGUI_Add(Trigger, TriggerGUI, "ComboBox", "Menu", MenuString, "", "Menu:","","","","","The name of the menu to which this item gets added. If it does not exist, it is created here. You can later reference this menu name for submenus.")
-	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Name", "", "", "Name:","","","","","The name of the menu item")
-	SubEventGUI_Add(Trigger, TriggerGUI, "Edit", "Submenu", "", "", "Submenu:","","","","","If you specify a menu name here, this event will not be able to get triggered. Instead it will show all MenuItem entries that use the same value as menu name as submenu.")
+	Disable()
+	{
+		if(this.Menu = "Tray")
+			BuildMenu("Tray")
+	}
+
+	Delete()
+	{
+		if(this.Menu = "Tray")
+			BuildMenu("Tray")
+	}
+
+	Matches(Filter)
+	{
+		return false ;This event is triggered through a CTriggerTrigger when appropriate
+	}
+
+	DisplayString()
+	{
+		return "MenuItem " this.Name " in " this.Menu
+	}
+
+	GuiShow(TriggerGUI)
+	{
+		Menus := Array()
+		Loop % SettingsWindow.Events.MaxIndex()
+		{
+			if(SettingsWindow.Events[A_Index].Trigger.Is(CMenuItemTrigger) && Menus.indexOf(SettingsWindow.Events[A_Index].Trigger.Menu) = 0)
+			{
+				Menus.Insert(SettingsWindow.Events[A_Index].Trigger.Menu)
+				MenuString .= (Menus.MaxIndex() = 1 ? "" : "|") SettingsWindow.Events[A_Index].Trigger.Menu
+			}
+		}
+		
+		this.AddControl(TriggerGUI, "ComboBox", "Menu", MenuString, "", "Menu:","","","","","The name of the menu to which this item gets added. If it does not exist, it is created here. You can later reference this menu name for submenus.")
+		this.AddControl(TriggerGUI, "Edit", "Name", "", "", "Name:","","","","","The name of the menu item")
+		this.AddControl(TriggerGUI, "Edit", "Submenu", "", "", "Submenu:","","","","","If you specify a menu name here, this event will not be able to get triggered. Instead it will show all MenuItem entries that use the same value as menu name as submenu.")
+	}
 }
 
-Trigger_MenuItem_GuiSubmit(Trigger, TriggerGUI)
-{
-	SubEventGUI_GUISubmit(Trigger, TriggerGUI)
-} 
 
 MenuItemHandler:
 MenuItemTriggered(A_ThisMenu, A_ThisMenuItem, A_ThisMenuItemPos)
@@ -69,18 +58,17 @@ return
 
 MenuItemTriggered(menu, item, pos)
 {
-	global Events
 	if(menu = "Tray")
 		pos -= 10
 	index := 1
-	Loop % Events.MaxIndex()
+	Loop % EventSystem.Events.MaxIndex()
 	{
-		if(Events[A_Index].Trigger.Type = "MenuItem" && Events[A_Index].Trigger.Menu = menu)
+		if(EventSystem.Events[A_Index].Trigger.Type = "MenuItem" && EventSystem.Events[A_Index].Trigger.Menu = menu)
 		{
 			if(index = pos)
 			{
 				Trigger := new CTriggerTrigger()
-				Trigger.TargetID := Events[A_Index].ID
+				Trigger.TargetID := EventSystem.Events[A_Index].ID
 				EventSystem.OnTrigger(Trigger)				
 				return
 			}

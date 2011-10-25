@@ -12,8 +12,8 @@ GetCurrentSubEvent()
 	}
 	else if(CurrentTab = "Actions")
 	{
-		Gui, ListView, SysListView321
-		return Event.Conditions[LV_GetNext()]
+		Gui, ListView, SysListView322
+		return Event.Actions[LV_GetNext()]
 	}
 	return 
 }
@@ -440,7 +440,8 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 						return
 					SetControlDelay, 0
 					Event[EditEventTab][i].GuiSubmit(SubeventGUI)
-					Event[EditEventTab][i] := new EventSystem[EditEventTab = "Conditions" ? "Conditions" : "Actions"][type]()
+					SubEventTemplate := EventSystem[EditEventTab = "Conditions" ? "Conditions" : "Actions"][type]
+					Event[EditEventTab][i] := new SubEventTemplate()
 				}
 			}
 		}
@@ -543,7 +544,8 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 		if(EditEventTab = "Conditions" || EditEventTab = "Actions")
 		{
 			Gui, ListView, EditEvent%EditEventTab%
-			Subevent := new EventSystem[EditEventTab = "Conditions" ? "Conditions" : "Actions"][EditEventTab = "Conditions" ? "If" : "Message"]()
+			EventTemplate := EventSystem[EditEventTab = "Conditions" ? "Conditions" : "Actions"][EditEventTab = "Conditions" ? "If" : "Message"]
+			Subevent := new EventTemplate()
 			Event[EditEventTab].Insert(Subevent)
 			LV_Add("Select", Subevent.DisplayString())
 		}

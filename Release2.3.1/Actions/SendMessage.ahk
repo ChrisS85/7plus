@@ -1,99 +1,95 @@
-Action_SendMessage_Init(Action)
+Class CSendMessageAction Extends CAction
 {
-	WindowFilter_Init(Action)
-	Action.Category := "System"
-	Action.TargetControl := "Edit1"
-	Action.Message := ""
-	Action.wParam := ""
-	Action.lParam := ""
-	Action.MessageMode := "Post"
-}
-Action_SendMessage_ReadXML(Action, XMLAction)
-{
-	WindowFilter_ReadXML(Action, XMLAction)
-	Action.ReadVar(XMLAction, "TargetControl")
-	Action.ReadVar(XMLAction, "Message")
-	Action.ReadVar(XMLAction, "wParam")
-	Action.ReadVar(XMLAction, "lParam")
-	Action.ReadVar(XMLAction, "MessageMode")
-}
-Action_SendMessage_Execute(Action,Event)
-{
-	hwnd := WindowFilter_Get(Action)
-	TargetControl := Event.ExpandPlaceholders(Action.TargetControl)
-	Message := Event.ExpandPlaceholders(Action.Message)
-	wParam := Event.ExpandPlaceholders(Action.wParam)
-	lParam := Event.ExpandPlaceholders(Action.lParam)
+	static Type := RegisterType(CSendMessageAction, "Send a window message")
+	static Category := RegisterCategory(CSendMessageAction, "System")
+	static _ImplementsWindowFilter := ImplementWindowFilterInterface(CSendMessageAction)
 	
-	if(IsNumeric(TargetControl))
+	static TargetControl := "Edit1"
+	static Message := ""
+	static wParam := ""
+	static lParam := ""
+	static MessageMode := "Post"
+	
+	Execute(Event)
 	{
-		hwnd := TargetControl
-		TargetControl := ""
-	}
-	if(Action.MessageMode = "Post")
-	{
-		if((!wParam || IsNumeric(wParam) ) && (!lParam || IsNumeric(lParam)))
-			PostMessage, %Message%, %wParam%, %lParam%, %TargetControl%, ahk_id %hwnd%
-		else if(!lParam || IsNumeric(lParam))
-			PostMessage, %Message%, "" wParam "", %lParam%, %TargetControl%, ahk_id %hwnd%
-		else if(!wParam || IsNumeric(wParam))
-			PostMessage, %Message%, %wParam%, "" lParam "", %TargetControl%, ahk_id %hwnd%
-		else
-			PostMessage, %Message%, "" wParam "", "" lParam "", %TargetControl%, ahk_id %hwnd%
-	}
-	else
-	{
-		if((!wParam || IsNumeric(wParam) ) && (!lParam || IsNumeric(lParam)))
-			SendMessage, %Message%, %wParam%, %lParam%, %TargetControl%, ahk_id %hwnd%
-		else if(!lParam || IsNumeric(lParam))
-			SendMessage, %Message%, "" wParam "", %lParam%, %TargetControl%, ahk_id %hwnd%
-		else if(!wParam || IsNumeric(wParam))
+		hwnd := this.WindowFilterGet()
+		TargetControl := Event.ExpandPlaceholders(this.TargetControl)
+		Message := Event.ExpandPlaceholders(this.Message)
+		wParam := Event.ExpandPlaceholders(this.wParam)
+		lParam := Event.ExpandPlaceholders(this.lParam)
+		
+		if(IsNumeric(TargetControl))
 		{
-			SendMessage, %Message%, %wParam%, "" lParam "", %TargetControl%, ahk_id %hwnd%
-			outputdebug send2 %lParam%
+			hwnd := TargetControl
+			TargetControl := ""
+		}
+		if(this.MessageMode = "Post")
+		{
+			if((!wParam || IsNumeric(wParam) ) && (!lParam || IsNumeric(lParam)))
+				PostMessage, %Message%, %wParam%, %lParam%, %TargetControl%, ahk_id %hwnd%
+			else if(!lParam || IsNumeric(lParam))
+				PostMessage, %Message%, "" wParam "", %lParam%, %TargetControl%, ahk_id %hwnd%
+			else if(!wParam || IsNumeric(wParam))
+				PostMessage, %Message%, %wParam%, "" lParam "", %TargetControl%, ahk_id %hwnd%
+			else
+				PostMessage, %Message%, "" wParam "", "" lParam "", %TargetControl%, ahk_id %hwnd%
 		}
 		else
-			SendMessage, %Message%, "" wParam "", "" lParam "", %TargetControl%, ahk_id %hwnd%
-		Event.Placeholders.MessageResult := ErrorLevel
+		{
+			if((!wParam || IsNumeric(wParam) ) && (!lParam || IsNumeric(lParam)))
+				SendMessage, %Message%, %wParam%, %lParam%, %TargetControl%, ahk_id %hwnd%
+			else if(!lParam || IsNumeric(lParam))
+				SendMessage, %Message%, "" wParam "", %lParam%, %TargetControl%, ahk_id %hwnd%
+			else if(!wParam || IsNumeric(wParam))
+			{
+				SendMessage, %Message%, %wParam%, "" lParam "", %TargetControl%, ahk_id %hwnd%
+				outputdebug send2 %lParam%
+			}
+			else
+				SendMessage, %Message%, "" wParam "", "" lParam "", %TargetControl%, ahk_id %hwnd%
+			Event.Placeholders.MessageResult := ErrorLevel
+		}
+		return 1
 	}
-	return 1
-}
-Action_SendMessage_DisplayString(Action)
-{
-	return Action.MessageMode "Message to " Action.TargetControl ", " WindowFilter_DisplayString(Action)
-}
-Action_SendMessage_GuiShow(Action, ActionGUI, GoToLabel = "")
-{
-	static sActionGUI
-	if(GoToLabel = "")
+	DisplayString()
 	{
-		sActionGUI := ActionGUI
-		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action sends a window message to another window/program. This allows to trigger actions in other programs (such as winamp).")		
-		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "MessageMode", "Post|Send", "", "Message mode:")
-		SubEventGUI_Add(Action, ActionGUI, "Text", "tmpText", "Send waits for a response and allows ${MessageResult} to be used.")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Message", "", "", "Message:", "Placeholders", "Action_SendMessage_Placeholders_Message")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "wParam", "", "", "wParam:", "Placeholders", "Action_SendMessage_Placeholders_wParam")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "lParam", "", "", "lParam:", "Placeholders", "Action_SendMessage_Placeholders_lParam")
-		WindowFilter_GuiShow(Action,ActionGUI)
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "TargetControl", "", "", "Target Control:")
+		return this.MessageMode "Message to " this.TargetControl ", " this.WindowFilterDisplayString()
 	}
-	else if(GoToLabel = "Placeholders_Message")
-		SubEventGUI_Placeholders(sActionGUI, "Message")
-	else if(GoToLabel = "Placeholders_wParam")
-		SubEventGUI_Placeholders(sActionGUI, "wParam")
-	else if(GoToLabel = "Placeholders_lParam")
-		SubEventGUI_Placeholders(sActionGUI, "lParam")
+	GuiShow(GUI, GoToLabel = "")
+	{
+		static sGUI
+		if(GoToLabel = "")
+		{
+			sGUI := GUI
+			this.AddControl(GUI, "Text", "Desc", "This action sends a window message to another window/program. This allows to trigger actions in other programs (such as winamp).")		
+			this.AddControl(GUI, "DropDownList", "MessageMode", "Post|Send", "", "Message mode:")
+			this.AddControl(GUI, "Text", "tmpText", "Send waits for a response and allows ${MessageResult} to be used.")
+			this.AddControl(GUI, "Edit", "Message", "", "", "Message:", "Placeholders", "Action_SendMessage_Placeholders_Message")
+			this.AddControl(GUI, "Edit", "wParam", "", "", "wParam:", "Placeholders", "Action_SendMessage_Placeholders_wParam")
+			this.AddControl(GUI, "Edit", "lParam", "", "", "lParam:", "Placeholders", "Action_SendMessage_Placeholders_lParam")
+			this.WindowFilterGuiShow(GUI)
+			this.AddControl(GUI, "Edit", "TargetControl", "", "", "Target Control:")
+		}
+		else if(GoToLabel = "Placeholders_Message")
+			ShowPlaceholderMenu(sGUI, "Message")
+		else if(GoToLabel = "Placeholders_wParam")
+			ShowPlaceholderMenu(sGUI, "wParam")
+		else if(GoToLabel = "Placeholders_lParam")
+			ShowPlaceholderMenu(sGUI, "lParam")
+	}
+	
+	GuiSubmit(GUI)
+	{
+		this.WindowFilterGUISubmit(GUI)
+		Base.GUISubmit(GUI)
+	}
 }
 Action_SendMessage_Placeholders_Message:
-Action_SendMessage_GuiShow("", "", "Placeholders_Message")
+GetCurrentSubEvent().GuiShow("", "Placeholders_Message")
 return
 Action_SendMessage_Placeholders_wParam:
-Action_SendMessage_GuiShow("", "", "Placeholders_wParam")
+GetCurrentSubEvent().GuiShow("", "Placeholders_wParam")
 return
 Action_SendMessage_Placeholders_lParam:
-Action_SendMessage_GuiShow("", "", "Placeholders_lParam")
+GetCurrentSubEvent().GuiShow("", "Placeholders_lParam")
 return
-Action_SendMessage_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-} 

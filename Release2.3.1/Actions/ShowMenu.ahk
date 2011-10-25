@@ -1,73 +1,61 @@
-Action_ShowMenu_Init(Action)
+Class CShowMenuAction Extends CAction
 {
-	Action.Category := "System"
-	Action.Menu := ""
-	Action.X := ""
-	Action.Y := ""
-}
-
-Action_ShowMenu_ReadXML(Action, XMLAction)
-{
-	Action.ReadVar(XMLAction, "Menu")
-	Action.ReadVar(XMLAction, "X")
-	Action.ReadVar(XMLAction, "Y")
-}
-
-Action_ShowMenu_Execute(Action, Event)
-{
-	X := Event.ExpandPlaceholders(Action.X)
-	Y := Event.ExpandPlaceholders(Action.Y)
-	BuildMenu(Action.Menu)
-	Menu, Tray, UseErrorLevel
-	Menu, % Action.Menu, Show, %X%, %Y%
-	Menu, Tray, UseErrorLevel, Off
-	return 1
-} 
-
-Action_ShowMenu_DisplayString(Action)
-{
-	return "Show menu " Action.Menu
-}
-
-Action_ShowMenu_GuiShow(Action, ActionGUI, GoToLabel = "")
-{
-	static sActionGUI
-	if(GoToLabel = "")
-	{
-		sActionGUI := ActionGUI
-		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action shows a menu which is made up out of events with a Menu trigger and the same name as the name specified here.")
-		;Look for menus in SettingsWindow.Events to catch unsaved menus
-		Menus := Array()
-		Loop % SettingsWindow.Events.MaxIndex()
-		{
-			if(SettingsWindow.Events[A_Index].Trigger.Type = "MenuItem" && Menus.indexOf(SettingsWindow.Events[A_Index].Trigger.Menu) = 0)
-			{
-				Menus.Insert(SettingsWindow.Events[A_Index].Trigger.Menu)
-				MenuString .= (Menus.MaxIndex() = 1 ? "" : "|") SettingsWindow.Events[A_Index].Trigger.Menu
-			}
-		}
+	static Type := RegisterType(CShowMenuAction, "Show menu")
+	static Category := RegisterCategory(CShowMenuAction, "System")
+	static Menu := ""
+	static X := ""
+	static Y := ""
 	
-		SubEventGUI_Add(Action, ActionGUI, "ComboBox", "Menu", MenuString, "", "Menu:")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "X", "", "", "X:", "Placeholders", "Action_ShowMenu_PlaceholdersX")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Y", "", "", "Y:", "Placeholders", "Action_ShowMenu_PlaceholdersY")
+	Execute(Event)
+	{
+		X := Event.ExpandPlaceholders(this.X)
+		Y := Event.ExpandPlaceholders(this.Y)
+		BuildMenu(this.Menu)
+		Menu, Tray, UseErrorLevel
+		Menu, % this.Menu, Show, %X%, %Y%
+		Menu, Tray, UseErrorLevel, Off
+		return 1
+	} 
+
+	DisplayString()
+	{
+		return "Show menu " this.Menu
 	}
-	else if(GoToLabel = "PlaceholdersX")
-		SubEventGUI_Placeholders(sActionGUI, "X")
-	else if(GoToLabel = "PlaceholdersY")
-		SubEventGUI_Placeholders(sActionGUI, "Y")
+
+	GuiShow(GUI, GoToLabel = "")
+	{
+		static sGUI
+		if(GoToLabel = "")
+		{
+			sGUI := GUI
+			this.AddControl(GUI, "Text", "Desc", "This action shows a menu which is made up out of events with a Menu trigger and the same name as the name specified here.")
+			;Look for menus in SettingsWindow.Events to catch unsaved menus
+			Menus := Array()
+			Loop % SettingsWindow.Events.MaxIndex()
+			{
+				if(SettingsWindow.Events[A_Index].Trigger.Type = "MenuItem" && Menus.indexOf(SettingsWindow.Events[A_Index].Trigger.Menu) = 0)
+				{
+					Menus.Insert(SettingsWindow.Events[A_Index].Trigger.Menu)
+					MenuString .= (Menus.MaxIndex() = 1 ? "" : "|") SettingsWindow.Events[A_Index].Trigger.Menu
+				}
+			}
+		
+			this.AddControl(GUI, "ComboBox", "Menu", MenuString, "", "Menu:")
+			this.AddControl(GUI, "Edit", "X", "", "", "X:", "Placeholders", "PlaceholdersX")
+			this.AddControl(GUI, "Edit", "Y", "", "", "Y:", "Placeholders", "PlaceholdersY")
+		}
+		else if(GoToLabel = "PlaceholdersX")
+			ShowPlaceholderMenu(sGUI, "X")
+		else if(GoToLabel = "PlaceholdersY")
+			ShowPlaceholderMenu(sGUI, "Y")
+	}
 }
-
-Action_ShowMenu_PlaceholdersX:
-Action_ShowMenu_GuiShow(Action, ActionGUI, "PlaceholdersX")
+PlaceholdersX:
+GetCurrentSubEvent().GuiShow("", "PlaceholdersX")
 return
-Action_ShowMenu_PlaceholdersY:
-Action_ShowMenu_GuiShow(Action, ActionGUI, "PlaceholdersY")
+PlaceholdersY:
+GetCurrentSubEvent().GuiShow("", "PlaceholdersY")
 return
-
-Action_ShowMenu_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-} 
 
 BuildMenu(Name)
 {

@@ -8,6 +8,9 @@ Class CApplicationState
 	HookProcAdr := ""
 	ClipboardListenerRegistered := false
 	ProgramStartupFinished := false
+	
+	;Notify ID for volume OSD
+	VolumeNotifyID := ""
 	__New()
 	{
 	

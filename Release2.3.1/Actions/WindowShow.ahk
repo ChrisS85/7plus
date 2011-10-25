@@ -1,28 +1,29 @@
-Action_WindowShow_Init(Action)
+Class CWindowShowAction Extends CAction
 {
-	WindowFilter_Init(Action)
-	Action.Category := "Window"
-}
-Action_WindowShow_ReadXML(Action, XMLAction)
-{
-	WindowFilter_ReadXML(Action, XMLAction)
-}
-Action_WindowShow_Execute(Action)
-{
-	hwnd := WindowFilter_Get(Action)
-	if(hwnd != 0)
-		WinShow ahk_id %hwnd%
-	return 1
-}
-Action_WindowShow_DisplayString(Action)
-{
-	return "Show Window " WindowFilter_DisplayString(Action)
-}
-Action_WindowShow_GuiShow(Action, ActionGUI)
-{
-	WindowFilter_GuiShow(Action,ActionGUI)
-}
-Action_WindowShow_GuiSubmit(Action, ActionGUI)
-{
-	WindowFilter_GuiSubmit(Action,ActionGUI)
+	static Type := RegisterType(CWindowShowAction, "Show a window")
+	static Category := RegisterCategory(CWindowShowAction, "Window")
+	static _ImplementsWindowFilter := ImplementWindowFilterInterface(CWindowShowAction)
+	
+	Execute()
+	{
+		hwnd := this.WindowFilterGet()
+		if(hwnd != 0)
+			WinShow ahk_id %hwnd%
+		return 1
+	}
+	
+	DisplayString()
+	{
+		return "Show Window " this.WindowFilterDisplayString()
+	}
+	
+	GUIShow(GUI)
+	{
+		this.WindowFilterGUIShow(GUI)
+	}
+	
+	GUISubmit(GUI)
+	{
+		this.WindowFilterGUISubmit(GUI)
+	}
 }

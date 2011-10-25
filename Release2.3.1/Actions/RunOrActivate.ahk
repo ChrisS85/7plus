@@ -1,36 +1,38 @@
-Action_RunOrActivate_Init(Action)
+Class CRunOrActivateAction Extends CAction
 {
-	Action_Run_Init(Action)
-	Action.Category := "System"
-}
-Action_RunOrActivate_ReadXML(Action, XMLAction)
-{
-	Action_Run_ReadXML(Action, XMLAction)
-}
-Action_RunOrActivate_Execute(Action, Event)
-{
-	if(Action.tmpPid)
-		return Action_Run_Execute(Action, Event)
-	else
+	static Type := RegisterType(CRunOrActivateAction, "Run a program or activate it")
+	static Category := RegisterCategory(CRunOrActivateAction, "System")
+	static _ImplementsRun := ImplementRunInterface(CRunOrActivateAction)
+	
+	Execute(Event)
 	{
-		Process, Exist, %name%
-		if(Errorlevel != 0)
-			WinActivate ahk_pid %ErrorLevel%
+		if(this.tmpPid)
+			return this.RunExecute(Event)
 		else
-			return Action_Run_Execute(Action, Event)
+		{
+			Process, Exist, %name%
+			if(Errorlevel != 0)
+				WinActivate ahk_pid %ErrorLevel%
+			else
+				return this.RunExecute(Event)
+		}
+		return 1
 	}
-	return 1
+	
+	DisplayString()
+	{
+		return "Run or activate " this.Command
+	}
+	
+	GuiShow(GUI)
+	{
+		this.AddControl(GUI, "Text", "Desc", "This action will run a program or activate it if it is already running.")
+		this.RunGUIShow(GUI)
+	}
+	
+	GuiSubmit(GUI)
+	{
+		Base.GuiSubmit(GUI)
+		this.RunGUISubmit(GUI)
+	}
 }
-Action_RunOrActivate_DisplayString(Action)
-{
-	return "Run or activate " Action.Command
-}
-Action_RunOrActivate_GuiShow(Action, ActionGUI, GoToLabel = "")
-{
-	SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action will run a program or activate it if it is already running.")
-	Action_Run_GuiShow(Action, ActionGUI)
-}
-Action_RunOrActivate_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-} 

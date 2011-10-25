@@ -1,7 +1,7 @@
 Class CHotkeyTrigger Extends CTrigger
 {
-	static Category := RegisterCategory(CHotkeyTrigger, "Hotkeys")
 	static Type := RegisterType(CHotkeyTrigger, "Hotkey")
+	static Category := RegisterCategory(CHotkeyTrigger, "Hotkeys")
 	static Key := ""
 
 	Enable()
@@ -12,6 +12,7 @@ Class CHotkeyTrigger Extends CTrigger
 		Hotkey, %key%, HotkeyTrigger, On
 		Hotkey, If
 	}
+	
 	Disable()
 	{
 		key := this.Key
@@ -21,6 +22,7 @@ Class CHotkeyTrigger Extends CTrigger
 		Hotkey, %key%, Off
 		Hotkey, If
 	}
+	
 	;When hotkey is deleted, it needs to be removed from hotkeyarrays
 	Delete()
 	{
@@ -35,28 +37,28 @@ Class CHotkeyTrigger Extends CTrigger
 	{
 		return FormatHotkey(this.Key)
 	}
-	GuiShow(TriggerGUI, GoToLabel = "")
+	GuiShow(GUI, GoToLabel = "")
 	{
-		static sTriggerGUI
+		static sGUI
 		if(GoToLabel = "")
 		{
-			sTriggerGUI := TriggerGUI
-			this.CreateHotkeyGUI(sTriggerGUI)
+			sGUI := GUI
+			this.CreateHotkeyGUI(sGUI)
 		}
 		else if(GoToLabel = "UpdateHotkey")
 		{
 			;Get values from GUI
-			ControlGet, Key, Choice,,, % "ahk_id " sTriggerGUI.tmphKeyList
-			ControlGet, CtrlModifier, Checked,,, % "ahk_id " sTriggerGUI.tmphCtrlModifier
-			ControlGet, ShiftModifier, Checked,,, % "ahk_id " sTriggerGUI.tmphShiftModifier
-			ControlGet, WinModifier, Checked,,, % "ahk_id " sTriggerGUI.tmphWinModifier
-			ControlGet, AltModifier, Checked,,, % "ahk_id " sTriggerGUI.tmphAltModifier
+			ControlGet, Key, Choice,,, % "ahk_id " sGUI.tmphKeyList
+			ControlGet, CtrlModifier, Checked,,, % "ahk_id " sGUI.tmphCtrlModifier
+			ControlGet, ShiftModifier, Checked,,, % "ahk_id " sGUI.tmphShiftModifier
+			ControlGet, WinModifier, Checked,,, % "ahk_id " sGUI.tmphWinModifier
+			ControlGet, AltModifier, Checked,,, % "ahk_id " sGUI.tmphAltModifier
 			
-			ControlGet, NativeOption, Checked,,, % "ahk_id " sTriggerGUI.tmphNativeOption
-			ControlGet, WildcardOption, Checked,,, % "ahk_id " sTriggerGUI.tmphWildcardOption
-			ControlGet, LeftPairOption, Checked,,, % "ahk_id " sTriggerGUI.tmphLeftPairOption
-			ControlGet, RightPairOption, Checked,,, % "ahk_id " sTriggerGUI.tmphRightPairOption
-			ControlGet, UpOption, Checked,,, % "ahk_id " sTriggerGUI.tmphUpOption
+			ControlGet, NativeOption, Checked,,, % "ahk_id " sGUI.tmphNativeOption
+			ControlGet, WildcardOption, Checked,,, % "ahk_id " sGUI.tmphWildcardOption
+			ControlGet, LeftPairOption, Checked,,, % "ahk_id " sGUI.tmphLeftPairOption
+			ControlGet, RightPairOption, Checked,,, % "ahk_id " sGUI.tmphRightPairOption
+			ControlGet, UpOption, Checked,,, % "ahk_id " sGUI.tmphUpOption
 			;Substitute Pause|Break for CtrlBreak?
 			if Key in Pause,Break
 				if(CtrlModifier)
@@ -117,31 +119,31 @@ Class CHotkeyTrigger Extends CTrigger
 				Hotkey .= " UP"
 				Desc .= " UP"
 			}
-			ControlSetText,,%Desc%,% "ahk_id " sTriggerGUI.tmphHotkey
-			sTriggerGUI.tmpHotkey := Hotkey
+			ControlSetText,,%Desc%,% "ahk_id " sGUI.tmphHotkey
+			sGUI.tmpHotkey := Hotkey
 			return
 		}
 		else if(GoToLabel = "LeftPair")
 		{
-			ClassNN := HWNDToClassNN(sTriggerGUI.tmphRightPairOption)
+			ClassNN := HWNDToClassNN(sGUI.tmphRightPairOption)
 			GuiControl,,%ClassNN%,0
 			this.GuiShow("", "UpdateHotkey")
 		}
 		else if(GoToLabel = "RightPair")
 		{
-			ClassNN := HWNDToClassNN(sTriggerGUI.tmphLeftPairOption)
+			ClassNN := HWNDToClassNN(sGUI.tmphLeftPairOption)
 			GuiControl,,%ClassNN%,0
 			this.GuiShow("", "UpdateHotkey")
 		}
 		else if(GoToLabel = "UpdateKeyList")
 		{
 			;Get values from GUI
-			ControlGet, StandardKeysView, Checked,,, % "ahk_id " sTriggerGUI.tmphStandardKeysView
-			ControlGet, FunctionKeysView, Checked,,, % "ahk_id " sTriggerGUI.tmphFunctionKeysView
-			ControlGet, NumpadKeysView, Checked,,, % "ahk_id " sTriggerGUI.tmphNumpadKeysView
-			ControlGet, MouseKeysView, Checked,,, % "ahk_id " sTriggerGUI.tmphMouseKeysView
-			ControlGet, MultimediaKeysView, Checked,,, % "ahk_id " sTriggerGUI.tmphMultimediaKeysView
-			ControlGet, SpecialKeysView, Checked,,, % "ahk_id " sTriggerGUI.tmphSpecialKeysView
+			ControlGet, StandardKeysView, Checked,,, % "ahk_id " sGUI.tmphStandardKeysView
+			ControlGet, FunctionKeysView, Checked,,, % "ahk_id " sGUI.tmphFunctionKeysView
+			ControlGet, NumpadKeysView, Checked,,, % "ahk_id " sGUI.tmphNumpadKeysView
+			ControlGet, MouseKeysView, Checked,,, % "ahk_id " sGUI.tmphMouseKeysView
+			ControlGet, MultimediaKeysView, Checked,,, % "ahk_id " sGUI.tmphMultimediaKeysView
+			ControlGet, SpecialKeysView, Checked,,, % "ahk_id " sGUI.tmphSpecialKeysView
 			Gui, +Delimiterƒ
 			;Standard
 			if(StandardKeysView)
@@ -166,7 +168,7 @@ Class CHotkeyTrigger Extends CTrigger
 			;Special
 			if(SpecialKeysView)
 				KeyList := "HelpƒSleepƒ"
-			Key := ExtractKey(sTriggerGUI.tmpHotkey)
+			Key := ExtractKey(sGUI.tmpHotkey)
 			if(Key)
 				KeyList := StringReplace(KeyList, "ƒ" Key "ƒ", "ƒ" Key "ƒƒ")
 			if(!InStr(KeyList, "ƒƒ"))
@@ -177,12 +179,12 @@ Class CHotkeyTrigger Extends CTrigger
 			this.GuiShow("", "UpdateHotkey")
 		}
 	}
-	CreateHotkeyGUI(TriggerGUI)
+	CreateHotkeyGUI(GUI)
 	{
 		Critical, Off    
 		;Modifier
-		x := TriggerGUI.x
-		y := TriggerGUI.y
+		x := GUI.x
+		y := GUI.y
 		CtrlModifier := InStr(this.Key, "^") > 0
 		ShiftModifier := InStr(this.Key, "+") > 0
 		WinModifier := InStr(this.Key, "#") > 0
@@ -200,80 +202,80 @@ Class CHotkeyTrigger Extends CTrigger
 		SpecialKeys := InStr("ƒHelpƒSleepƒ", "ƒ" Key "ƒ") > 0
 		StandardKeys := !FunctionKeys && !NumpadKeys && !MouseKeys && !MultimediaKeys && !SpecialKeys
 		Gui, Add, GroupBox, x%x% y%y% w120 h140 hwndhModifier Section, Modifier
-		TriggerGUI.tmphModifier := hModifier
+		GUI.tmphModifier := hModifier
 		
 		Gui, Add, CheckBox, xs+10 ys+20 h20 hwndhCtrlModifier gHotkeyGUI_UpdateHotkey Checked%CtrlModifier%, Ctrl
-		TriggerGUI.tmphCtrlModifier := hCtrlModifier
+		GUI.tmphCtrlModifier := hCtrlModifier
 		
 		Gui, Add, CheckBox, y+0 h20 gHotkeyGUI_UpdateHotkey hwndhShiftModifier Checked%ShiftModifier%, Shift
-		TriggerGUI.tmphShiftModifier := hShiftModifier
+		GUI.tmphShiftModifier := hShiftModifier
 		
 		Gui, Add, CheckBox, y+0 h20 gHotkeyGUI_UpdateHotkey hwndhWinModifier Checked%WinModifier%, Win
-		TriggerGUI.tmphWinModifier := hWinModifier
+		GUI.tmphWinModifier := hWinModifier
 		
 		Gui, Add, CheckBox, y+0 h20 gHotkeyGUI_UpdateHotkey hwndhAltModifier Checked%AltModifier%, Alt
-		TriggerGUI.tmphAltModifier := hAltModifier    
+		GUI.tmphAltModifier := hAltModifier    
 		
 		;Optional Attributes
 		Gui, Add, GroupBox, xs+120 ys w140 h140 hwndhOptionalAttributes, Optional Attributes
-		TriggerGUI.tmphOptionalAttributes := hOptionalAttributes
+		GUI.tmphOptionalAttributes := hOptionalAttributes
 		
 		Gui, Add, CheckBox, xs+130 ys+20 h20 gHotkeyGUI_UpdateHotkey hwndhNativeOption Checked%NativeOption%, ~ (Native)
-		TriggerGUI.tmphNativeOption := hNativeOption
+		GUI.tmphNativeOption := hNativeOption
 		
 		Gui, Add, CheckBox, y+0 h20 gHotkeyGUI_UpdateHotkey hwndhWildcardOption Checked%WildcardOption%, * (Wildcard)
-		TriggerGUI.tmphWildcardOption := hWildcardOption
+		GUI.tmphWildcardOption := hWildcardOption
 		
 		Gui, Add, CheckBox, y+0 h20 gHotkeyGUI_LeftPair hwndhLeftPairOption Checked%LeftPairOption%, < (Left pair only)
-		TriggerGUI.tmphLeftPairOption := hLeftPairOption
+		GUI.tmphLeftPairOption := hLeftPairOption
 		
 		Gui, Add, CheckBox, y+0 h20 gHotkeyGUI_RightPair hwndhRightPairOption Checked%RightPairOption%, > (Right pair only)
-		TriggerGUI.tmphRightPairOption := hRightPairOption
+		GUI.tmphRightPairOption := hRightPairOption
 		
 		Gui, Add, CheckBox, y+0 h20 gHotkeyGUI_UpdateHotkey hwndhUpOption Checked%UpOption%, UP (Key release)
-		TriggerGUI.tmphUpOption := hUpOption
+		GUI.tmphUpOption := hUpOption
 		
 		;Keys
 		Gui, Add, GroupBox, xs ys+140 w260 h180 hwndhKeys, Keys
-		TriggerGUI.tmphKeys := hKeys
+		GUI.tmphKeys := hKeys
 		
 		Gui, Add, Radio, xs+10 ys+160 w100 h20 gHotkeyGUI_UpdateKeyList Checked%StandardKeys% hwndhStandardKeysView, Standard
-		TriggerGUI.tmphStandardKeysView := hStandardKeysView
+		GUI.tmphStandardKeysView := hStandardKeysView
 		
 		Gui, Add, Radio, y+0 w100 h20 gHotkeyGUI_UpdateKeyList Checked%FunctionKeys% hwndhFunctionKeysView, Function keys
-		TriggerGUI.tmphFunctionKeysView := hFunctionKeysView
+		GUI.tmphFunctionKeysView := hFunctionKeysView
 		
 		Gui, Add, Radio, y+0 w100 h20 gHotkeyGUI_UpdateKeyList Checked%NumpadKeys% hwndhNumpadKeysView, Numpad
-		TriggerGUI.tmphNumpadKeysView := hNumpadKeysView
+		GUI.tmphNumpadKeysView := hNumpadKeysView
 		
 		Gui, Add, Radio, y+0 w100 h20 gHotkeyGUI_UpdateKeyList Checked%MouseKeys% hwndhMouseKeysView, Mouse
-		TriggerGUI.tmphMouseKeysView := hMouseKeysView
+		GUI.tmphMouseKeysView := hMouseKeysView
 		
 		Gui, Add, Radio, y+0 w100 h20 gHotkeyGUI_UpdateKeyList Checked%MultimediaKeys% hwndhMultimediaKeysView, Multimedia
-		TriggerGUI.tmphMultimediaKeysView := hMultimediaKeysView
+		GUI.tmphMultimediaKeysView := hMultimediaKeysView
 		
 		Gui, Add, Radio, y+0 w100 h20 gHotkeyGUI_UpdateKeyList Checked%SpecialKeys% hwndhSpecialKeysView, Special
-		TriggerGUI.tmphSpecialKeysView := hSpecialKeysView
+		GUI.tmphSpecialKeysView := hSpecialKeysView
 		
 		Gui, Add, ListBox, xs+130 ys+160 w120 h150 gHotkeyGUI_UpdateHotkey hwndhKeyList
-		TriggerGUI.tmphKeyList := hKeyList
+		GUI.tmphKeyList := hKeyList
 		
 		;Hotkey Display
 		Gui, Add, Text, xs ys+332 w40 h20 hwndhHotkeyLabel, Hotkey:
-		TriggerGUI.tmphHotkeyLabel := hHotkeyLabel
+		GUI.tmphHotkeyLabel := hHotkeyLabel
 		
 		Gui, Add, Edit, x+5 ys+330 w215 h20 +ReadOnly hwndhHotkey
-		TriggerGUI.tmphHotkey := hHotkey
-		TriggerGUI.tmpHotkey := this.Key
+		GUI.tmphHotkey := hHotkey
+		GUI.tmpHotkey := this.Key
 		this.GuiShow("", "UpdateKeyList")
 		
 		return
 	}
 
-	GuiSubmit(TriggerGUI)
+	GuiSubmit(GUI)
 	{
 		;Any key?
-		if(!TriggerGUI.tmpHotkey)
+		if(!GUI.tmpHotkey)
 		{
 			MsgBox 262160, Select Hotkey Error, A key must be selected.
 			Abort := true
@@ -282,34 +284,34 @@ Class CHotkeyTrigger Extends CTrigger
 		;[===================]
 		;[  Collision Check  ]
 		;[===================]
-		if(CollisionCheck(TriggerGUI.tmpHotkey, 0, ""))
+		if(CollisionCheck(GUI.tmpHotkey, 0, ""))
 		{
 			MsgBox 262160, Select Hotkey Error, This hotkey is already in use.
 			Abort := true
 		}
-		this.Key := TriggerGUI.tmpHotkey
+		this.Key := GUI.tmpHotkey
 		
-		WinKill, % "ahk_id " TriggerGUI.tmphModifier
-		WinKill, % "ahk_id " TriggerGUI.tmphCtrlModifier
-		WinKill, % "ahk_id " TriggerGUI.tmphShiftModifier
-		WinKill, % "ahk_id " TriggerGUI.tmphWinModifier
-		WinKill, % "ahk_id " TriggerGUI.tmphAltModifier
-		WinKill, % "ahk_id " TriggerGUI.tmphOptionalAttributes
-		WinKill, % "ahk_id " TriggerGUI.tmphNativeOption
-		WinKill, % "ahk_id " TriggerGUI.tmphWildcardOption
-		WinKill, % "ahk_id " TriggerGUI.tmphLeftPairOption
-		WinKill, % "ahk_id " TriggerGUI.tmphRightPairOption
-		WinKill, % "ahk_id " TriggerGUI.tmphUpOption
-		WinKill, % "ahk_id " TriggerGUI.tmphKeys
-		WinKill, % "ahk_id " TriggerGUI.tmphStandardKeysView
-		WinKill, % "ahk_id " TriggerGUI.tmphFunctionKeysView
-		WinKill, % "ahk_id " TriggerGUI.tmphNumpadKeysView
-		WinKill, % "ahk_id " TriggerGUI.tmphMouseKeysView
-		WinKill, % "ahk_id " TriggerGUI.tmphMultimediaKeysView
-		WinKill, % "ahk_id " TriggerGUI.tmphSpecialKeysView
-		WinKill, % "ahk_id " TriggerGUI.tmphKeyList
-		WinKill, % "ahk_id " TriggerGUI.tmphHotkeyLabel
-		WinKill, % "ahk_id " TriggerGUI.tmphHotkey
+		WinKill, % "ahk_id " GUI.tmphModifier
+		WinKill, % "ahk_id " GUI.tmphCtrlModifier
+		WinKill, % "ahk_id " GUI.tmphShiftModifier
+		WinKill, % "ahk_id " GUI.tmphWinModifier
+		WinKill, % "ahk_id " GUI.tmphAltModifier
+		WinKill, % "ahk_id " GUI.tmphOptionalAttributes
+		WinKill, % "ahk_id " GUI.tmphNativeOption
+		WinKill, % "ahk_id " GUI.tmphWildcardOption
+		WinKill, % "ahk_id " GUI.tmphLeftPairOption
+		WinKill, % "ahk_id " GUI.tmphRightPairOption
+		WinKill, % "ahk_id " GUI.tmphUpOption
+		WinKill, % "ahk_id " GUI.tmphKeys
+		WinKill, % "ahk_id " GUI.tmphStandardKeysView
+		WinKill, % "ahk_id " GUI.tmphFunctionKeysView
+		WinKill, % "ahk_id " GUI.tmphNumpadKeysView
+		WinKill, % "ahk_id " GUI.tmphMouseKeysView
+		WinKill, % "ahk_id " GUI.tmphMultimediaKeysView
+		WinKill, % "ahk_id " GUI.tmphSpecialKeysView
+		WinKill, % "ahk_id " GUI.tmphKeyList
+		WinKill, % "ahk_id " GUI.tmphHotkeyLabel
+		WinKill, % "ahk_id " GUI.tmphHotkey
 		;Return to sender
 		return Abort = true
 	}

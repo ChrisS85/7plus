@@ -1,202 +1,180 @@
-Action_Input_Init(Action)
+Class CInputAction Extends CAction
 {
-	Action.Category := "Input"
-	Action.Cancel := 0
-	Action.Placeholder := "Input"
-	Action.DataType := "Text"
-	Action.Validate := 1
-	Action.Selection := "Default Selection"
-}	
-Action_Input_ReadXML(Action, XMLAction)
-{
-	Action.ReadVar(XMLAction, "Text")
-	Action.ReadVar(XMLAction, "Title")
-	Action.ReadVar(XMLAction, "Cancel")
-	Action.ReadVar(XMLAction, "Placeholder")
-	Action.ReadVar(XMLAction, "DataType")
-	Action.ReadVar(XMLAction, "Selection")
-	Action.ReadVar(XMLAction, "Validate")
-}
-Action_Input_Execute(Action,Event)
-{
-	if(!Action.tmpGuiNum)
+	static Type := RegisterType(CInputAction, "Ask for user input")
+	static Category := RegisterCategory(CInputAction, "Input")
+	
+	static Cancel := false
+	static Placeholder := "Input"
+	static DataType := "Text"
+	static Validate := true
+	static Selection := "Default Selection"
+	static Text := ""
+	static Title := ""
+	
+	Execute(Event)
 	{
-		result := UserInputBox(Action,Event)
-		if(result)
-			return -1
-		else
-			return 0 ;Msgbox wasn't created
-	}
-	else
-	{
-		GuiNum := Action.tmpGuiNum
-		Gui,%GuiNum%:+LastFound 
-		WinGet, InputBox_hwnd,ID
-		DetectHiddenWindows, Off
-		;outputdebug %A_IsCritical%
-		If(WinExist("ahk_id " InputBox_hwnd)) ;Box not closed yet, need more processing time
-			return -1
-		else
+		if(!this.tmpGuiNum)
 		{
-			Action.Remove("tmpGUINum") ;Remove so other actions in this event may reuse this GUI number
-			return Action.tmpResult != "Cancel" ;Box closed, all fine
+			result := this.UserInputBox(Event)
+			if(result)
+				return -1
+			else
+				return 0 ;Msgbox wasn't created
 		}
-	}
-} 
-Action_Input_DisplayString(Action)
-{
-	return "Ask user input"
-}
-
-Action_Input_GuiShow(Action, ActionGUI, GoToLabel = "")
-{
-	static sActionGUI, PreviousSelection
-	if(GoToLabel = "")
-	{
-		sActionGUI := ActionGUI
-		PreviousSelection := ""
-		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action shows a dialog asking for user input. The result is stored in a placeholder that may be used in further actions.")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Text", "", "", "Text:", "Placeholders", "Action_Input_Placeholders_Text")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Title", "", "", "Window Title:", "Placeholders", "Action_Input_Placeholders_Title")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Placeholder", "", "", "Placeholder:","","","","","The name of the placeholder in which the result is stored. This is just the name without the enclosing ${ }.")
-		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Cancel", "Show Cancel/Close Button")
-		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Validate", "Validate input (file, path and text only)")
-		SubEventGUI_Add(Action, ActionGUI, "DropDownList", "DataType", "File|Number|Path|Selection|Text|Time", "Action_Input_DataType", "Data type:")
-		Action_Input_GuiShow(Action, ActionGUI, "DataType_SelectionChange")
-	}
-	else if(GoToLabel = "Text_Placeholders")
-		SubEventGUI_Placeholders(sActionGUI, "Text")
-	else if(GoToLabel = "Title_Placeholders")
-		SubEventGUI_Placeholders(sActionGUI, "Title")
-	else if(GoToLabel = "DataType_SelectionChange")
-	{
-		ControlGetText, DataType, , % "ahk_id " sActionGUI.DropDown_DataType
-		if(DataType != PreviousSelection)
+		else
 		{
-			if(PreviousSelection)
-				if(PreviousSelection = "Selection")
-					Action_Input_GuiShow(Action, ActionGUI, "ListViewSubmit")
-			
-			if(DataType = "Selection")
+			GuiNum := this.tmpGuiNum
+			Gui,%GuiNum%:+LastFound 
+			WinGet, InputBox_hwnd,ID
+			DetectHiddenWindows, Off
+			;outputdebug %A_IsCritical%
+			If(WinExist("ahk_id " InputBox_hwnd)) ;Box not closed yet, need more processing time
+				return -1
+			else
 			{
-				Gui, Add, ListView, % "AltSubmit -Hdr -ReadOnly -Multi hwndListView w300 h100 x" sActionGUI.x " y" sActionGUI.y, Selection
-				Selection := Action.Selection
-				Loop, Parse, Selection, |
-					LV_Add("Select", A_LoopField)
-				Gui, Add, Button, % "hwndAdd gAction_Input_Add w60 x+10 y" sActionGUI.y, Add
-				Gui, Add, Button, % "hwndRemove gAction_Input_Remove w60 y+10", Remove
-				sActionGUI.ListView := ListView
-				sActionGUI.Add := Add
-				sActionGUI.Remove := Remove
+				this.Remove("tmpGUINum") ;Remove so other actions in this event may reuse this GUI number
+				return this.tmpResult != "Cancel" ;Box closed, all fine
 			}
 		}
-		PreviousSelection := DataType
 	}
-	else if(GoToLabel = "ListViewSubmit")
+	
+	DisplayString()
 	{
-		GuiNum := sActionGUI.GUINum
-		Gui, %GuiNum%:ListView, SysListView321
-		Action.Selection := ""
-		Loop % LV_GetCount()
-		{
-			LV_GetText(line, A_Index)
-			if(line)
-				Action.Selection .= (A_Index != 1 ? "|" : "") line
-		}
-		WinKill, % "ahk_id " sActionGUI.ListView
-		WinKill, % "ahk_id " sActionGUI.Add
-		WinKill, % "ahk_id " sActionGUI.Remove
+		return "Ask user input"
 	}
-	else if(GoToLabel = "ListView_Add")
-	{
-		GuiNum := sActionGUI.GUINum
-		Gui, %GuiNum%:ListView, SysListView321
-		LV_Add("Select","Option")
-		ControlFocus, SysListView321, A
-		ControlSend, SysListView321, {F2}, A
-	}
-	else if(GoToLabel = "ListView_Remove")
-	{
-		GuiNum := sActionGUI.GUINum
-		Gui, %GuiNum%:ListView, SysListView321
-		LV_Delete(LV_GetNext("Selected"))
-	}
-}
-Action_Input_Placeholders_Text:
-Action_Input_GuiShow("", "", "Text_Placeholders")
-return
 
-Action_Input_Placeholders_Title:
-Action_Input_GuiShow("", "", "Title_Placeholders")
-return
-Action_Input_DataType:
-Action_Input_GuiShow("", "", "DataType_SelectionChange")
-return
-Action_Input_Add:
-Action_Input_GuiShow("", "", "ListView_Add")
-return
-Action_Input_Remove:
-Action_Input_GuiShow("", "", "ListView_Remove")
-return
-Action_Input_GuiSubmit(Action, ActionGUI)
-{
-	Action_Input_GuiShow(Action, ActionGUI, "ListViewSubmit")
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-	if(!Action.Placeholder)
+	GuiShow(GUI, GoToLabel = "")
 	{
-		Msgbox Placeholder must not be empty! It is now being set to "Input".
-		Action.Placeholder := "Input"
+		static sGUI, sPreviousSelection
+		if(GoToLabel = "")
+		{
+			sGUI := GUI
+			sPreviousSelection := ""
+			this.AddControl(GUI, "Text", "Desc", "This action shows a dialog asking for user input. The result is stored in a placeholder that may be used in further actions.")
+			this.AddControl(GUI, "Edit", "Text", "", "", "Text:", "Placeholders", "Action_Input_Placeholders_Text")
+			this.AddControl(GUI, "Edit", "Title", "", "", "Window Title:", "Placeholders", "Action_Input_Placeholders_Title")
+			this.AddControl(GUI, "Edit", "Placeholder", "", "", "Placeholder:","","","","","The name of the placeholder in which the result is stored. This is just the name without the enclosing ${ }.")
+			this.AddControl(GUI, "Checkbox", "Cancel", "Show Cancel/Close Button")
+			this.AddControl(GUI, "Checkbox", "Validate", "Validate input (file, path and text only)")
+			this.AddControl(GUI, "DropDownList", "DataType", "File|Number|Path|Selection|Text|Time", "Action_Input_DataType", "Data type:")
+			this.GuiShow(GUI, "DataType_SelectionChange")
+		}
+		else if(GoToLabel = "Text_Placeholders")
+			ShowPlaceholderMenu(sGUI, "Text")
+		else if(GoToLabel = "Title_Placeholders")
+			ShowPlaceholderMenu(sGUI, "Title")
+		else if(GoToLabel = "DataType_SelectionChange")
+		{
+			ControlGetText, DataType, , % "ahk_id " sGUI.DropDown_DataType
+			if(DataType != sPreviousSelection)
+			{
+				if(sPreviousSelection)
+					if(sPreviousSelection = "Selection")
+						this.GuiShow(sGUI, "ListViewSubmit")
+				
+				if(DataType = "Selection")
+				{
+					Gui, Add, ListView, % "AltSubmit -Hdr -ReadOnly -Multi hwndListView w300 h100 x" sGUI.x " y" sGUI.y, Selection
+					Selection := this.Selection
+					Loop, Parse, Selection, |
+						LV_Add("Select", A_LoopField)
+					Gui, Add, Button, % "hwndAdd gAction_Input_Add w60 x+10 y" sGUI.y, Add
+					Gui, Add, Button, % "hwndRemove gAction_Input_Remove w60 y+10", Remove
+					sGUI.ListView := ListView
+					sGUI.Add := Add
+					sGUI.Remove := Remove
+				}
+			}
+			sPreviousSelection := DataType
+		}
+		else if(GoToLabel = "ListViewSubmit")
+		{
+			GuiNum := sGUI.GUINum
+			Gui, %GuiNum%:ListView, % sGUI.ListView
+			this.Selection := ""
+			Loop % LV_GetCount()
+			{
+				LV_GetText(line, A_Index)
+				if(line)
+					this.Selection .= (A_Index != 1 ? "|" : "") line
+			}
+			WinKill, % "ahk_id " sGUI.ListView
+			WinKill, % "ahk_id " sGUI.Add
+			WinKill, % "ahk_id " sGUI.Remove
+		}
+		else if(GoToLabel = "ListView_Add")
+		{
+			GuiNum := sGUI.GUINum
+			Gui, %GuiNum%:ListView, % sGUI.ListView
+			LV_Add("Select","Option")
+			ControlFocus,, % "ahk_id " sGUI.ListView
+			ControlSend,, {F2}, % "ahk_id " sGUI.ListView
+		}
+		else if(GoToLabel = "ListView_Remove")
+		{
+			GuiNum := sGUI.GUINum
+			Gui, %GuiNum%:ListView, % sGUI.ListView
+			LV_Delete(LV_GetNext("Selected"))
+		}
 	}
-}
-;Non blocking Input box (can wait for closing in event system though)
-UserInputBox(Action, Event, GoToLabel = "")
-{
-	static sAction
-	if(GoToLabel = "")
+	
+	GuiSubmit(GUI)
 	{
-		sAction := Action
+		this.GuiShow(GUI, "ListViewSubmit")
+		Base.GuiSubmit(GUI)
+		if(!this.Placeholder)
+		{
+			Msgbox Placeholder must not be empty! It is now being set to "Input".
+			this.Placeholder := "Input"
+		}
+	}
+	
+	;Non blocking Input box (can wait for closing in event system though)
+	UserInputBox(Event)
+	{
 		WasCritical := A_IsCritical
 		Critical, Off
-		Title := Event.ExpandPlaceHolders(Action.Title)
-		Text :=	Event.ExpandPlaceHolders(Action.Text)
-		GuiNum:=GetFreeGUINum(10)
+		Title := Event.ExpandPlaceHolders(this.Title)
+		Text :=	Event.ExpandPlaceHolders(this.Text)
+		GuiNum:=GetFreeGUINum(1, "InputBox")
+		this.tmpGuiNum := GuiNum
 		StringReplace, Text, Text, ``n, `n
 		Gui,%GuiNum%:Destroy
 		Gui,%GuiNum%:Add,Text,y10,%Text% 
 		
-		if(Action.DataType = "Text" || Action.DataType = "Path" || Action.DataType = "File")
+		if(this.DataType = "Text" || this.DataType = "Path" || this.DataType = "File")
 		{
 			Gui,%GuiNum%:Add, Edit, x+10 yp-4 w200 hwndEdit gAction_Input_Edit
-			Action.tmpEdit := Edit
-			if(Action.DataType = "Path" || Action.DataType = "File")
+			this.tmpEdit := Edit
+			if(this.DataType = "Path" || this.DataType = "File")
 			{
 				Gui,%GuiNum%:Add, Button, x+10 w80 hwndButton gInputBox_Browse, Browse
-				Action.tmpButton := Button
+				this.tmpButton := Button
 			}
 		}
-		else if(Action.DataType = "Number")
+		else if(this.DataType = "Number")
 		{
 			Gui,%GuiNum%:Add, Edit, x+10 yp-4 w200 hwndEdit Number
-			Action.tmpEdit := Edit
+			this.tmpEdit := Edit
 		}
-		else if(Action.DataType = "Time")
+		else if(this.DataType = "Time")
 		{
 			Gui, %GuiNum%:Add, Edit, x+2 yp-4 w30 hwndHours Number, 00
 			Gui, %GuiNum%:Add, Text, x+2 yp+4, :
 			Gui, %GuiNum%:Add, Edit, x+2 yp-4 w30 hwndMinutes Number, 10
 			Gui, %GuiNum%:Add, Text, x+2 yp+4, :
 			Gui, %GuiNum%:Add, Edit, x+2 yp-4 w30 hwndSeconds Number, 00
-			Action.tmpHours := Hours
-			Action.tmpHours := Minutes
-			Action.tmpSeconds := Seconds
+			this.tmpHours := Hours
+			this.tmpHours := Minutes
+			this.tmpSeconds := Seconds
 		}
-		else if(Action.DataType = "Selection")
+		else if(this.DataType = "Selection")
 		{
-			Selection := Action.Selection
+			Selection := this.Selection
 			Loop, Parse, Selection, |
 			{
 				Gui, %GuiNum%:Add, Radio, % "hwndRadio" (A_Index = 1 ? " Checked" : ""), %A_LoopField%
-				Action["tmpRadio" A_Index] := Radio
+				this["tmpRadio" A_Index] := Radio
 			}
 		}
 		Gui, %GuiNum%:Add, Text, x+-80 hwndTest, test
@@ -204,115 +182,129 @@ UserInputBox(Action, Event, GoToLabel = "")
 		WinKill, ahk_id %Test%
 		if(PosX < 160)
 			PosX := 160
-		if(!Action.Cancel)
-			Gui, %GuiNum%:Add, Button, % "Default x" PosX " y" PosY " w80 gInputBox_OK " (Action.Validate && (Action.DataType = "Text" || Action.DataType = "Path" || Action.DataType = "File") ? "Disabled" : ""), OK
-		if(Action.Cancel)
+		if(!this.Cancel)
+			Gui, %GuiNum%:Add, Button, % "Default x" PosX " y" PosY " w80 gInputBox_OK " (this.Validate && (this.DataType = "Text" || this.DataType = "Path" || this.DataType = "File") ? "Disabled" : ""), OK
+		if(this.Cancel)
 		{
 			PosX -= 90
-			Gui, %GuiNum%:Add, Button, % "Default x" PosX " y" PosY " w80 gInputBox_OK " (Action.Validate && (Action.DataType = "Text" || Action.DataType = "Path" || Action.DataType = "File") ? "Disabled" : ""), OK
+			Gui, %GuiNum%:Add, Button, % "Default x" PosX " y" PosY " w80 gInputBox_OK " (this.Validate && (this.DataType = "Text" || this.DataType = "Path" || this.DataType = "File") ? "Disabled" : ""), OK
 			Gui, %GuiNum%:Add, Button, x+10 w80 gInputBox_Cancel, Cancel
 		}
 		Gui,%GuiNum%:-MinimizeBox -MaximizeBox +LabelInputbox
 		Gui,%GuiNum%:Show,,%Title%
-		Action.tmpGuiNum := GuiNum
 		;return Gui number to indicate that the Input box is still open
 		if(WasCritical)
 			Critical
 		return GuiNum
 	}
-	else if(GoToLabel = "Browse")
+	
+	InputBoxBrowse()
 	{
-		if(sAction.DataType = "Path")
+		if(this.DataType = "Path")
 		{
 			FileSelectFolder, result,, 3, Select Folder
 			if(!Errorlevel)
 				ControlSetText, Edit1, %result%, A
 		}
-		else if(sAction.DataType = "File")
+		else if(this.DataType = "File")
 		{
 			FileSelectFile, result,,, Select File
 			if(!Errorlevel)
 				ControlSetText, Edit1, %result%, A
 		}
 	}
-}
-Action_Input_Edit:
-Action_Input_Edit()
-return
-Action_Input_Edit()
-{
-	EventFromGUINumber(A_Gui, "Input", Event, Action)
-	if(Action.Validate)
+	
+	InputBoxEdit()
 	{
-		ControlGetText, input, Edit1
-		if(Action.DataType = "Text")
+		if(this.Validate)
 		{
-			if(input = "")
-				Control, Disable,, Button1
-			else
-				Control, Enable,, Button1
-		}
-		else if(Action.DataType = "File" || Action.DataType = "Path")
-		{
-			if(FileExist(input))
-				Control, Enable,, Button2
-			else
-				Control, Disable,, Button2
+			ControlGetText, input, Edit1
+			if(this.DataType = "Text")
+			{
+				if(input = "")
+					Control, Disable,, Button1
+				else
+					Control, Enable,, Button1
+			}
+			else if(this.DataType = "File" || this.DataType = "Path")
+			{
+				if(FileExist(input))
+					Control, Enable,, Button2
+				else
+					Control, Disable,, Button2
+			}
 		}
 	}
+	
+	InputBoxCancel()
+	{
+		if(!this.Cancel)
+			return
+		this.tmpResult := "Cancel"
+		EventSystem.Events.GlobalPlaceholders[this.Placeholder] := ""
+		Gui, Destroy
+	}
+	
+	InputBoxOK(Event)
+	{
+		this.tmpResult := "OK"
+		if(this.DataType = "Text" || this.DataType = "Number" || this.DataType = "Path" || this.DataType = "File")
+			ControlGetText, input, Edit1
+		else if(this.DataType = "Time")
+		{
+			ControlGetText, Hours, Edit1
+			ControlGetText, Minutes, Edit2
+			ControlGetText, Seconds, Edit3
+			input := (SubStr("00" Hours, -1) ":" SubStr("00" Minutes, -1) ":" SubStr("00" Seconds, -1))
+		}
+		else if(this.DataType = "Selection")
+		{			
+			Loop
+			{
+				ControlGet, Selected, Checked, , , % "ahk_id " this["tmpRadio" A_Index]
+				if(Errorlevel)
+					break
+				if(Selected)
+				{
+					ControlGetText, input, , % "ahk_id " this["tmpRadio" A_Index]
+					break
+				}
+			}
+		}
+		if(!this.Placeholder)
+			this.Placeholder := "Input"
+		EventSystem.Events.GlobalPlaceholders[this.Placeholder] := input
+		Gui, Destroy
+	}
 }
+
+Action_Input_Placeholders_Text:
+GetCurrentSubEvent().GuiShow("", "Text_Placeholders")
+return
+Action_Input_Placeholders_Title:
+GetCurrentSubEvent().GuiShow("", "Title_Placeholders")
+return
+Action_Input_DataType:
+GetCurrentSubEvent().GuiShow("", "DataType_SelectionChange")
+return
+Action_Input_Add:
+GetCurrentSubEvent().GuiShow("", "ListView_Add")
+return
+Action_Input_Remove:
+GetCurrentSubEvent().GuiShow("", "ListView_Remove")
+return
+
+Action_Input_Edit:
+EventSystem.SubEventEventFromGUI().InputBoxEdit()
+return
 InputBox_Browse:
-UserInputBox("","","Browse")
+EventSystem.SubEventEventFromGUI().InputBoxBrowse()
 return
 InputboxClose:
 InputboxEscape:
 InputBox_Cancel:
-InputBoxCancel()
+EventSystem.SubEventEventFromGUI().InputBoxCancel()
 return
 InputBox_OK:
-InputBoxOK()
+EventSystem.SubEventEventFromGUI().InputBoxOK()
 return
-InputBoxCancel()
-{
-	global Events
-	EventFromGUINumber(A_Gui, "Input", Event, Action)
-	if(!Action.Cancel)
-		return
-	Action.tmpResult := "Cancel"
-	Events.GlobalPlaceholders[Action.Placeholder] := ""
-	Gui, Destroy
-}
-InputBoxOK()
-{
-	global Events
-	EventFromGUINumber(A_Gui, "Input", Event, Action)
-	Action.tmpResult := "OK"
-	if(Action.DataType = "Text" || Action.DataType = "Number" || Action.DataType = "Path" || Action.DataType = "File")
-		ControlGetText, input, Edit1
-	else if(Action.DataType = "Time")
-	{
-		ControlGetText, Hours, Edit1
-		ControlGetText, Minutes, Edit2
-		ControlGetText, Seconds, Edit3
-		input := (SubStr("00" Hours, -1) ":" SubStr("00" Minutes, -1) ":" SubStr("00" Seconds, -1))
-	}
-	else if(Action.DataType = "Selection")
-	{
-		
-		Loop
-		{
-			ControlGet, Selected, Checked, , , % "ahk_id " Action["tmpRadio" A_Index]
-			if(Errorlevel)
-				break
-			if(Selected)
-			{
-				ControlGetText, input, , % "ahk_id " Action["tmpRadio" A_Index]
-				break
-			}
-		}
-	}
-	if(!Action.Placeholder)
-		Action.Placeholder := "Input"
-	Events.GlobalPlaceholders[Action.Placeholder] := input
-	Gui, Destroy
-}

@@ -1,22 +1,22 @@
 ;Main function to expand placeholders. Placeholders are marked by ${key} and by %PATH%
-Event_ExpandPlaceHolders(Event,text)
+;Also see Placeholders.ahk
+ExpandPlaceholders(SubEvent, Text)
 {
-	global Events
-	if(IsObject(text)) ;Internally arrays may be supplied as parameters which mustn't be expanded here
-		return text
+	if(IsObject(Text)) ;Internally arrays may be supplied as parameters which mustn't be expanded here
+		return Text
 	;Expand local dynamic placeholders (for example ${MessageResult} defined by SendMessage action)
-	for key, value in Event.Placeholders
+	for key, value in SubEvent.Placeholders
 	{
-		if(InStr(text,"${" key "}"))
-			text := StringReplace(text, "${" key "}", value, 1)
+		if(InStr(Text,"${" key "}"))
+			text := StringReplace(Text, "${" key "}", value, 1)
 	}
 	;Expand dynamic placeholders with global scope (for example the result of an Input action)
-	for key, value in Events.GlobalPlaceholders
+	for key, value in EventSystem.Events.GlobalPlaceholders
 	{
-		if(InStr(text,"${" key "}"))
-			text := StringReplace(text, "${" key "}", value, 1)
+		if(InStr(Text,"${" key "}"))
+			Text := StringReplace(Text, "${" key "}", value, 1)
 	}
-	return ExpandInternalPlaceHolders(text)
+	return ExpandInternalPlaceHolders(Text)
 }
 
 ;Expands internal placeholders found inside text

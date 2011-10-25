@@ -1,33 +1,20 @@
-Trigger_None_Init(Trigger)
+Class CTriggerTrigger extends CTrigger
 {
-	Trigger.Category := "Other"
-}
-Trigger_None_ReadXML(Trigger, XMLTrigger)
-{
-}
+	static Type := RegisterType(CTriggerTrigger, "Triggered by an action")
+	static Category := RegisterCategory(CTriggerTrigger, "Other")
+	
+	Matches(Filter)
+	{
+		return false ;This trigger is only be triggered by trigger actions which are handled elsewhere.
+	}
 
-Trigger_None_Enable(Trigger)
-{
-}
-Trigger_None_Disable(Trigger)
-{
-}
-Trigger_None_Matches(Trigger, Filter)
-{
-	return false
-}
+	DisplayString()
+	{
+		return "Triggered by a trigger action"
+	}
 
-Trigger_None_DisplayString(Trigger)
-{
-	return "None"
-}
-
-Trigger_None_GuiShow(Trigger, TriggerGUI)
-{
-	SubEventGUI_Add(Trigger, TriggerGUI, "Text", "Text", "This trigger type can only be triggered by a trigger action.", "", "")
-}
-
-Trigger_None_GuiSubmit(Trigger, TriggerGUI)
-{
-	SubEventGUI_GUISubmit(Trigger, TriggerGUI)
+	GuiShow(GUI)
+	{
+		this.AddControl(GUI, "Text", "Text", "This trigger type can only be triggered by a trigger action.", "", "")
+	}
 }

@@ -1,62 +1,56 @@
-Action_MD5_Init(Action)
+Class CChecksumDialogAction Extends CAction
 {
-	Action.Category := "File"
-	Action.Files := "${SelNM}"
-}	
-Action_MD5_ReadXML(Action, XMLAction)
-{
-	Action.ReadVar(XMLAction, "Files")
-}
-Action_MD5_Execute(Action,Event)
-{
-	if(!Action.tmpGuiNum)
+	static Type := RegisterType(CChecksumDialogAction, "Show Explorer checksum dialog")
+	static Category := RegisterCategory(CChecksumDialogAction, "Explorer")	
+	static Files := "${SelNM}"
+	
+	Execute(Event)
 	{
-		result := MD5Dialog(Event.ExpandPlaceHolders(Action.Files))
-		if(result) ;
+		if(!this.tmpGuiNum)
 		{
-			Action.tmpGuiNum := result
-			Action.Time := A_TickCount
-			return -1
+			result := MD5Dialog(Event.ExpandPlaceHolders(this.Files))
+			if(result) ;
+			{
+				this.tmpGuiNum := result
+				return -1
+			}
+			else
+				return 0 ;Msgbox wasn't created
 		}
 		else
-			return 0 ;Msgbox wasn't created
+		{
+			GuiNum := this.tmpGuiNum
+			Gui,%GuiNum%:+LastFound 
+			WinGet, MD5_hwnd,ID
+			DetectHiddenWindows, Off
+			If(WinExist("ahk_id " MD5_hwnd)) ;Box not closed yet, need more processing time
+				return -1
+			else
+				return 1 ;Box closed, all fine
+		}
 	}
-	else
+	
+	DisplayString()
 	{
-		GuiNum := Action.tmpGuiNum
-		Gui,%GuiNum%:+LastFound 
-		WinGet, MD5_hwnd,ID
-		DetectHiddenWindows, Off
-		If(WinExist("ahk_id " MD5_hwnd)) ;Box not closed yet, need more processing time
-			return -1
-		else
-			return 1 ;Box closed, all fine
+		return "Calculate MD5 Checksum on " this.Files
 	}
-} 
-Action_MD5_DisplayString(Action)
-{
-	return "Calculate MD5 Checksum on " Action.Files
-}
 
-Action_MD5_GuiShow(Action, ActionGUI, GoToLabel = "")
-{
-	static sActionGUI
-	if(GoToLabel = "")
+	GuiShow(GUI, GoToLabel = "")
 	{
-		sActionGUI := ActionGUI
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Files", "", "", "Files:", "Placeholders", "Action_MD5_Files_Placeholders")
+		static sGUI
+		if(GoToLabel = "")
+		{
+			sGUI := GUI
+			this.AddControl(GUI, "Edit", "Files", "", "", "Files:", "Placeholders", "Action_MD5_Files_Placeholders")
+		}
+		else if(GoToLabel = "Files_Placeholders")
+			ShowPlaceholderMenu(sGUI, "Files")
 	}
-	else if(GoToLabel = "Files_Placeholders")
-		SubEventGUI_Placeholders(sActionGUI, "Files")
 }
 Action_MD5_Files_Placeholders:
-Action_MD5_GuiShow("", "", "Files_Placeholders")
+GetCurrentSubEvent().GuiShow("", "Files_Placeholders")
 return
 
-Action_MD5_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-}
 
 ;Non blocking MD5 box (can wait for closing in event system though)
 MD5Dialog(Files) 

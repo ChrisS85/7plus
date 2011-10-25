@@ -20,7 +20,8 @@ Class CImageUploadAction Extends CAction
 		global Vista7
 		if(!this.HasKey("tmpFiles"))
 		{
-			this.tmpFiles := ToArray(Event.ExpandPlaceholders(this.SourceFiles))
+			Files := Event.ExpandPlaceholders(this.SourceFiles)
+			this.tmpFiles := ToArray(Files)
 			this.tmpFailed := Array()
 			if(this.tmpFiles.MaxIndex() < 1)
 				return 0

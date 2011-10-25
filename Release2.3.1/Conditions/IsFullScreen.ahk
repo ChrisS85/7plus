@@ -1,6 +1,6 @@
 Class CIsFullScreenCondition Extends CCondition
 {
-	static Type := RegisterType(CIsFullScreenCondition, "IsFullScreen")
+	static Type := RegisterType(CIsFullScreenCondition, "Fullscreen window active")
 	static Category := RegisterCategory(CIsFullScreenCondition, "Window")
 	static UseIncludeList := 1
 	static UseExcludeList := 1
@@ -12,10 +12,10 @@ Class CIsFullScreenCondition Extends CCondition
 	{
 		return "In fullscreen"
 	}
-	GuiShow(SubEventGUI)
+	GuiShow(GUI)
 	{
-		this.AddControl(SubEventGUI, "Text", "Desc", "This condition checks if a fullscreen window is active (such as a game or a movie).")
-		this.AddControl(SubEventGUI, "Checkbox", "UseIncludeList", "Use include list","","","","","","","The include list is specified in Misc settings. All window classes on this list are always recognized as fullscreen.")
-		this.AddControl(SubEventGUI, "Checkbox", "UseExcludeList", "Use exclude list","","","","","","","The exclude list is specified in Misc settings. All window classes on this list are never recognized as fullscreen.")
+		this.AddControl(GUI, "Text", "Desc", "This condition checks if a fullscreen window is active (such as a game or a movie).")
+		this.AddControl(GUI, "Checkbox", "UseIncludeList", "Use include list","","","","","","","The include list is specified in Misc settings. All window classes on this list are always recognized as fullscreen.")
+		this.AddControl(GUI, "Checkbox", "UseExcludeList", "Use exclude list","","","","","","","The exclude list is specified in Misc settings. All window classes on this list are never recognized as fullscreen.")
 	}
 }

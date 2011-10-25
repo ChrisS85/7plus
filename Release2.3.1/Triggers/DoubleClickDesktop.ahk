@@ -1,24 +1,10 @@
-Trigger_DoubleClickDesktop_Init(Trigger)
+Class CDoubleClickDesktopTrigger Extends CTrigger
 {
-	Trigger.Category := "Hotkeys"
+	static Type := RegisterType(CDoubleClickDesktopTrigger, "Double click on desktop")
+	static Category := RegisterCategory(CDoubleClickDesktopTrigger, "Hotkeys")
+	
+	Matches(Filter)
+	{
+		return true ;type is checked elsewhere
+	}
 }
-Trigger_DoubleClickDesktop_ReadXML(Trigger, XMLTrigger)
-{
-}
-Trigger_DoubleClickDesktop_Enable(Trigger)
-{
-}
-Trigger_DoubleClickDesktop_Matches(Trigger, Filter)
-{
-	return true ;type is checked elsewhere
-}
-Trigger_DoubleClickDesktop_DisplayString(Trigger)
-{
-	return "Double click on empty desktop area"
-}
-Trigger_DoubleClickDesktop_GuiShow(Trigger, TriggerGUI)
-{
-}
-Trigger_DoubleClickDesktop_GuiSubmit(Trigger, TriggerGUI)
-{
-}      

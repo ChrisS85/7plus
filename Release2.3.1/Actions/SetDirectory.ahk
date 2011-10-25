@@ -1,57 +1,57 @@
-Action_SetDirectory_Init(Action)
+Class CSetDirectoryAction Extends CAction
 {
-	Action.Category := "Explorer"
-	Action.WindowMatchType := "Active"
-}
-Action_SetDirectory_ReadXML(Action, XMLAction)
-{
-	Action.ReadVar(XMLAction, "Path")
-	WindowFilter_ReadXML(Action,XMLAction)
-}
-Action_SetDirectory_Execute(Action, Event)
-{
-	hwnd := WindowFilter_Get(Action)
-	path := Event.ExpandPlaceholders(Action.Path)
-	StringReplace, path, path, ",,All
-	outputdebug navigate %path% %hwnd%
-	if(Path = "Back")
-		Shell_GoBack(hwnd)
-	else if(Path = "Forward")
-		Shell_GoForward(hwnd)
-	else if(Path = "Upward")
-		Shell_GoUpward()
-	else
-		ShellNavigate(Path,hwnd)
-	return 1
-} 
-
-Action_SetDirectory_DisplayString(Action)
-{
-	return "Set Explorer directory to: " Action.Path
-}
-Action_SetDirectory_GuiShow(Action, ActionGUI, GoToLabel = "")
-{
-	static sActionGUI
-	if(GoToLabel = "")
+	static Type := RegisterType(CSetDirectoryAction, "Set current directory")
+	static Category := RegisterCategory(CSetDirectoryAction, "Explorer")
+	static _ImplementsWindowFilter := ImplementWindowFilterInterface(CSetDirectoryAction)
+	static WindowMatchType := "Active"
+	static Path := ""
+	
+	Execute(Event)
 	{
-		sActionGUI := ActionGUI
-		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action sets the explorer directory and navigates forward/backward/up.")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Path", "", "", "Path:","Browse", "Action_SetDirectory_Browse", "Placeholders", "Action_SetDirectory_Placeholders","You may also enter ""Back"",""Forward"" and ""Upward"" here.")
-		WindowFilter_GuiShow(Action, ActionGUI)
+		hwnd := this.WindowFilterGet()
+		path := Event.ExpandPlaceholders(this.Path)
+		StringReplace, path, path, ",,All
+		if(Path = "Back")
+			Shell_GoBack(hwnd)
+		else if(Path = "Forward")
+			Shell_GoForward(hwnd)
+		else if(Path = "Upward")
+			Shell_GoUpward()
+		else
+			ShellNavigate(Path,hwnd)
+		return 1
 	}
-	else if(GoToLabel = "Browse")
-		SubEventGUI_Browse(sActionGUI, "Path")
-	else if(GoToLabel = "Placeholders")
-		SubEventGUI_Placeholders(sActionGUI, "Path")
+
+	DisplayString()
+	{
+		return "Set Explorer directory to: " this.Path
+	}
+	
+	GuiShow(GUI, GoToLabel = "")
+	{
+		static sGUI
+		if(GoToLabel = "")
+		{
+			sGUI := GUI
+			this.AddControl(GUI, "Text", "Desc", "This action sets the explorer directory and navigates forward/backward/up.")
+			this.AddControl(GUI, "Edit", "Path", "", "", "Path:","Browse", "Action_SetDirectory_Browse", "Placeholders", "Action_SetDirectory_Placeholders","You may also enter ""Back"",""Forward"" and ""Upward"" here.")
+			this.WindowFilterGuiShow(GUI)
+		}
+		else if(GoToLabel = "Browse")
+			this.Browse(sGUI, "Path")
+		else if(GoToLabel = "Placeholders")
+			ShowPlaceholderMenu(sGUI, "Path")
+	}
+	
+	GuiSubmit(Action, GUI)
+	{
+		this.WindowFilterGUISubmit(GUI)
+		Base.GUISubmit(GUI)
+	}
 }
 Action_SetDirectory_Browse:
-Action_SetDirectory_GuiShow("", "", "Browse")
+GetCurrentSubEvent().GuiShow("", "Browse")
 return
 Action_SetDirectory_Placeholders:
-Action_SetDirectory_GuiShow("", "", "Placeholders")
+GetCurrentSubEvent().GuiShow("", "Placeholders")
 return
-
-Action_SetDirectory_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-} 

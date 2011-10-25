@@ -1,23 +1,29 @@
-Action_FlashingWindows_Init(Action)
+Class CFlashingWindowsAction Extends CAction
 {
-	Action.Category := "Window"
-	Action.Notifications := 1
-	Action.FlashingWindows := 1
-	Action.ToggleWindows := 1
-}
+	static Type := RegisterType(CFlashingWindowsAction, "Flashing windows")
+	static Category := RegisterCategory(CFlashingWindowsAction, "Window")
+	static FlashingWindows := 1 ;Activate flashing windows from taskbar
+	static ToggleWindows := 1 ;Toggle between current and last window
+	static Notifications := 1 ;Activate notification windows
 
-Action_FlashingWindows_ReadXML(Action, XMLAction)
-{
-	Action.ReadVar(XMLAction, "Notifications")
-	Action.ReadVar(XMLAction, "FlashingWindows")
-	Action.ReadVar(XMLAction, "ToggleWindows")
-}
+	Execute(Event)
+	{
+		FlashingWindows(this)
+		return 1
+	}
 
-Action_FlashingWindows_Execute(Action, Event)
-{
-	FlashingWindows(Action)
-	return 1
-} 
+	DisplayString()
+	{
+		return "Activate notification/flashing/previous window"
+	}
+
+	GuiShow(ActionGUI)
+	{
+		this.AddControl(ActionGUI, "Checkbox", "FlashingWindows", "Activate flashing windows")
+		this.AddControl(ActionGUI, "Checkbox", "Notifications", "Activate notification windows")
+		this.AddControl(ActionGUI, "Checkbox", "ToggleWindows", "Toggle between previous and active window")
+	}
+}
 FlashingWindows(Action)
 {
 	global BlinkingWindows,PreviousWindow
@@ -103,18 +109,3 @@ FlashingWindows(Action)
 	}
 	return 0
 }
-Action_FlashingWindows_DisplayString(Action)
-{
-	return "Activate notification/flashing/previous window"
-}
-
-Action_FlashingWindows_GuiShow(Action, ActionGUI, GoToLabel = "")
-{
-	SubEventGUI_Add(Action, ActionGUI, "Checkbox", "FlashingWindows", "Activate flashing windows")
-	SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Notifications", "Activate notification windows")
-	SubEventGUI_Add(Action, ActionGUI, "Checkbox", "ToggleWindows", "Toggle between previous and active window")
-}
-Action_FlashingWindows_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-} 

@@ -1,33 +1,29 @@
-Action_FileOperation_Init(Action)
+ImplementFileOperationInterface(SubEvent)
 {
-	Action.Category := "File"
-	Action.Silent := 0
-	Action.Overwrite := 0
-	Action.SourceFile := ""
-	Action.TargetPath := ""
-	Action.TargetFile := ""
+	SubEvent.Silent := false
+	SubEvent.Overwrite := false
+	SubEvent.SourceFile := ""
+	SubEvent.TargetPath := ""
+	SubEvent.TargetFile := ""
+	if(SubEvent.HasKey("__Class"))
+	{
+		SubEvent.FileOperationDisplayString := Func("Action_FileOperation_DisplayString")
+		SubEvent.FileOperationGuiShow := Func("Action_FileOperation_GuiShow")
+		SubEvent.FileOperationGuiSubmit := Func("Action_FileOperation_GuiSubmit")
+		SubEvent.FileOperationProcessPaths := Func("Action_FileOperation_ProcessPaths")
+	}
 }
 
-Action_FileOperation_ReadXML(Action, XMLFileOperation)
+Action_FileOperation_DisplayString(SubEvent)
 {
-	Action.ReadVar(XMLFileOperation, "Silent")
-	Action.ReadVar(XMLFileOperation, "Overwrite")
-	Action.ReadVar(XMLFileOperation, "SourceFile")
-	Action.ReadVar(XMLFileOperation, "TargetPath")
-	Action.ReadVar(XMLFileOperation, "TargetFile")
-}
-
-Action_FileOperation_DisplayString(Action)
-{
-	return Action.Type " " Action.SourceFile (Action.TargetPath || Action.TargetFile ? " to " : " ") Action.TargetPath (Action.TargetFile && Action.TargetPath ? "\" : "") Action.TargetFile
+	return SubEvent.Type " " SubEvent.SourceFile (SubEvent.TargetPath || SubEvent.TargetFile ? " to " : " ") SubEvent.TargetPath (SubEvent.TargetFile && SubEvent.TargetPath ? "\" : "") SubEvent.TargetFile
 }
 
 Action_FileOperation_GuiShow(SubEvent, GUI, GoToLabel = "")
-{	
-	static sGUI
+{
 	if(GoToLabel = "")
 	{
-		sGUI := GUI
+		SubEvent.tmpFileOperationGUI := GUI
 		AddControl(SubEvent, GUI, "Edit", "SourceFile", "", "", "Source file(s):", "Browse", "Action_FileOperation_Browse_Source", "Placeholders", "Action_FileOperation_Placeholders_Source")
 		AddControl(SubEvent, GUI, "Edit", "TargetPath", "", "", "Target path:", "Browse", "Action_FileOperation_Browse_Target", "Placeholders", "Action_FileOperation_Placeholders_TargetPath")
 		AddControl(SubEvent, GUI, "Edit", "TargetFile", "", "", "Target file(s):", "Placeholders", "Action_FileOperation_Placeholders_TargetName")
@@ -35,32 +31,36 @@ Action_FileOperation_GuiShow(SubEvent, GUI, GoToLabel = "")
 		AddControl(SubEvent, GUI, "Checkbox", "Overwrite", "Overwrite existing files", "", "")
 	}
 	else if(GoToLabel = "PlaceholdersSource")
-		ShowPlaceholderMenu(sGUI, "SourceFile")
+		ShowPlaceholderMenu(SubEvent.tmpFileOperationGUI, "SourceFile")
 	else if(GoToLabel = "Browse_Source")
-		ShowPlaceholderMenu(sGUI, "SourceFile")
+		ShowPlaceholderMenu(SubEvent.tmpFileOperationGUI, "SourceFile")
 	else if(GoToLabel = "Browse_Target")
-		ShowPlaceholderMenu(sGUI, "TargetPath")
+		ShowPlaceholderMenu(SubEvent.tmpFileOperationGUI, "TargetPath")
 	else if(GoToLabel = "PlaceholdersTargetPath")
-		ShowPlaceholderMenu(sGUI, "TargetPath")
+		ShowPlaceholderMenu(SubEvent.tmpFileOperationGUI, "TargetPath")
 	else if(GoToLabel = "PlaceholdersTargetName")
-		ShowPlaceholderMenu(sGUI, "TargetFile")	
+		ShowPlaceholderMenu(SubEvent.tmpFileOperationGUI, "TargetFile")	
 }
 Action_FileOperation_Placeholders_Source:
-Action_FileOperation_GuiShow("", "", "PlaceholdersSource")
+GetCurrentSubEvent().FileOperationGuiShow("", "PlaceholdersSource")
 return
 Action_FileOperation_Browse_Source:
-Action_FileOperation_GuiShow("", "", "Browse_Source")
+GetCurrentSubEvent().FileOperationGuiShow("", "Browse_Source")
 return
 Action_FileOperation_Browse_Target:
-Action_FileOperation_GuiShow("", "", "Browse_Target")
+GetCurrentSubEvent().FileOperationGuiShow("", "Browse_Target")
 return
 Action_FileOperation_Placeholders_TargetPath:
-Action_FileOperation_GuiShow("", "", "PlaceholdersTargetPath")
+GetCurrentSubEvent().FileOperationGuiShow("", "PlaceholdersTargetPath")
 return
 Action_FileOperation_Placeholders_TargetName:
-Action_FileOperation_GuiShow("", "", "PlaceholdersTargetName")
+GetCurrentSubEvent().FileOperationGuiShow("", "PlaceholdersTargetName")
 return
 
+Action_FileOperation_GuiSubmit(SubEvent, GUI)
+{
+	SubEvent.Remove("tmpFileOperationGUI")
+}
 Action_FileOperation_ProcessPaths(Action, Event, ByRef Sources, ByRef Targets, ByRef Flags)
 {
 	SourceFiles := Event.ExpandPlaceholders(Action.SourceFile)

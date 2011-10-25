@@ -1,90 +1,80 @@
-Action_MouseWindowResize_Init(Action)
+Class CMouseWindowResizeAction Extends CAction
 {
-	Action.Category := "Window"
-}
-Action_MouseWindowResize_ReadXML(Action, XMLAction)
-{
-}
-Action_MouseWindowResize_Execute(Action, Event, Parameter="")
-{
-	global EventSchedule
-	static sAction, sEvent
-	if(!Parameter)
+	static Type := RegisterType(CMouseWindowResizeAction, "Resize window with mouse")
+	static Category := RegisterCategory(CMouseWindowResizeAction, "Window")
+	
+	Execute(Event)
 	{
-		if(IsObject(sEvent) && !IsObject(sAction)) ;This only happens when the event has finished already
-		{
-			sEvent := ""
+		if(this.HasKey("tmpResizingWindow") && this.tmpResizingWindow = false) ;This only happens when the event has finished already
 			return 1
-		}
-		else if(IsObject(sAction)) ;Dragging still in progress
+		else if(this.HasKey("tmpResizingWindow")) ;Resizeging still in progress
 			return -1
-		Loop % EventSchedule.MaxIndex() ;Make sure no drag event is in progress
+		for index, QueuedEvent in EventSystem.EventSchedule ;Make sure no Resize event is in progress
 		{
-			if(EventSchedule[A_Index].ID = Event.ID)
+			if(QueuedEvent.ID = Event.ID)
 				continue
-			outputdebug % EventSchedule[A_Index].Actions.GetItemWithValue("Type", "MouseWindowResize") "||" EventSchedule[A_Index].Actions.GetItemWithValue("Type", "MouseWindowDrag")
-			if(EventSchedule[A_Index].Actions.GetItemWithValue("Type", "MouseWindowResize") || EventSchedule[A_Index].Actions.GetItemWithValue("Type", "MouseWindowDrag"))
+			if(QueuedEvent.Actions.GetItemWithValue("Type", "MouseWindowResize").HasKey("tmpResizingWindow") || QueuedEvent.Actions.GetItemWithValue("Type", "MouseWindowDrag").HasKey("tmpDraggingWindow"))
 				return 0
 		}
-		sAction := Action
-		sEvent := Event
+		this.tmpResizingWindow := true
 		CoordMode, Mouse, Screen
 		MouseGetPos, Drag_OriginalMouseX, Drag_OriginalMouseY, Drag_HWND
 		WinGetPos, Drag_OriginalWindowX, Drag_OriginalWindowY,Drag_OriginalWindowW,Drag_OriginalWindowH, ahk_id %Drag_HWND%
-		Action.tmpOriginalMouseX := Drag_OriginalMouseX
-		Action.tmpOriginalMouseY := Drag_OriginalMouseY
-		Action.tmpOriginalWindowX := Drag_OriginalWindowX
-		Action.tmpOriginalWindowY := Drag_OriginalWindowY
-		Action.tmpOriginalWindowW := Drag_OriginalWindowW
-		Action.tmpOriginalWindowH := Drag_OriginalWindowH
-		Action.tmpLeft := Drag_OriginalMouseX < Drag_OriginalWindowX + Drag_OriginalWindowW / 2
-		Action.tmpTop := Drag_OriginalMouseY < Drag_OriginalWindowY + Drag_OriginalWindowH / 2
-		Action.tmpHWND := Drag_HWND
-		Action.tmpActiveWindow := WinExist("A")
+		this.tmpOriginalMouseX := Drag_OriginalMouseX
+		this.tmpOriginalMouseY := Drag_OriginalMouseY
+		this.tmpOriginalWindowX := Drag_OriginalWindowX
+		this.tmpOriginalWindowY := Drag_OriginalWindowY
+		this.tmpOriginalWindowW := Drag_OriginalWindowW
+		this.tmpOriginalWindowH := Drag_OriginalWindowH
+		this.tmpLeft := Drag_OriginalMouseX < Drag_OriginalWindowX + Drag_OriginalWindowW / 2
+		this.tmpTop := Drag_OriginalMouseY < Drag_OriginalWindowY + Drag_OriginalWindowH / 2
+		this.tmpHWND := Drag_HWND
+		this.tmpActiveWindow := WinExist("A")
 		SetTimer, Action_MouseWindowResize_Timer, 10
-	}
-	else
+		return -1
+	} 
+	ResizeLoop(Event)
 	{
-		Key := ExtractKey(sEvent.Trigger.Type = "Hotkey" && sEvent.Trigger.Key ? sEvent.Trigger.Key : "LButton")
+		Key := ExtractKey(Event.Trigger.Type = "Hotkey" && Event.Trigger.Key ? Event.Trigger.Key : "LButton")
 		GetKeyState, KeyState, %Key%, P
-		if(KeyState = "U")  ; Button has been released, so drag is complete.
+		if(KeyState = "U")  ; Button has been released, so Resize is complete.
 		{
 			SetTimer, Action_MouseWindowResize_Timer, off
-			sAction := ""
-			return 1
+			this.tmpResizingWindow := false ;This will make Execute() return 1 to finish the Resize action.
+			return
 		}
 		GetKeyState, EscapeState, Escape, P
-		if(EscapeState = "D" || WinExist("A") != sAction.tmpActiveWindow)  ; Escape has been pressed or another program was activated, so drag is cancelled.
+		if(EscapeState = "D" || WinExist("A") != this.tmpActiveWindow)  ; Escape has been pressed or another program was activated, so Resize is cancelled.
 		{
 			SetTimer, Action_MouseWindowResize_Timer, off
-			WinMove, % "ahk_id " sAction.tmpHWND,, % sAction.tmpOriginalWindowX, % sAction.tmpOriginalWindowY, % sAction.tmpOriginalWindowW, % sAction.tmpOriginalWindowH
-			sAction := ""
-			return 0
+			WinMove, % "ahk_id " this.tmpHWND,, % this.tmpOriginalWindowX, % this.tmpOriginalWindowY, % this.tmpOriginalWindowW, % this.tmpOriginalWindowH
+			this.tmpResizingWindow := false ;This will make Execute() return 1 to finish the Resize action.
+			return
 		}
+		
+		;Do the resizing
 		CoordMode, Mouse, Screen
 		MouseGetPos, MouseX, MouseY
-		WinGetPos, WinX, WinY,,, % "ahk_id " sAction.tmpHWND
+		WinGetPos, WinX, WinY,,, % "ahk_id " this.tmpHWND
 		SetWinDelay, -1 
-		newx := sAction.tmpLeft ? sAction.tmpOriginalWindowX + MouseX - sAction.tmpOriginalMouseX : sAction.tmpOriginalWindowX
-		newy := sAction.tmpTop ? sAction.tmpOriginalWindowY + MouseY - sAction.tmpOriginalMouseY : sAction.tmpOriginalWindowY
-		neww := sAction.tmpLeft ? sAction.tmpOriginalWindowW + sAction.tmpOriginalWindowX - newx  : sAction.tmpOriginalWindowW + MouseX - sAction.tmpOriginalMouseX 
-		newh := sAction.tmpTop ? sAction.tmpOriginalWindowH + sAction.tmpOriginalWindowY - newy  : sAction.tmpOriginalWindowH + MouseY - sAction.tmpOriginalMouseY 
-		if(abs(MouseX - sAction.tmpOriginalMouseX) > 10 || abs(MouseY - sAction.tmpOriginalMouseY) > 10)
-			WinMove, % "ahk_id " sAction.tmpHWND,, newx, newy, neww, newh
+		newx := this.tmpLeft ? this.tmpOriginalWindowX + MouseX - this.tmpOriginalMouseX : this.tmpOriginalWindowX
+		newy := this.tmpTop ? this.tmpOriginalWindowY + MouseY - this.tmpOriginalMouseY : this.tmpOriginalWindowY
+		neww := this.tmpLeft ? this.tmpOriginalWindowW + this.tmpOriginalWindowX - newx  : this.tmpOriginalWindowW + MouseX - this.tmpOriginalMouseX 
+		newh := this.tmpTop ? this.tmpOriginalWindowH + this.tmpOriginalWindowY - newy  : this.tmpOriginalWindowH + MouseY - this.tmpOriginalMouseY 
+		if(abs(MouseX - this.tmpOriginalMouseX) > 10 || abs(MouseY - this.tmpOriginalMouseY) > 10)
+			WinMove, % "ahk_id " this.tmpHWND,, newx, newy, neww, newh
 	}
-	return -1
-} 
-Action_MouseWindowResize_DisplayString(Action)
-{
-	return "Resize window under cursor with mouse"
+	DisplayString()
+	{
+		return "Resize window under cursor with mouse"
+	}
 }
-Action_MouseWindowResize_GuiShow(Action, ActionGUI)
-{
-}
-Action_MouseWindowResize_GuiSubmit(Action, ActionGUI)
-{
-}
-
 Action_MouseWindowResize_Timer:
-Action_MouseWindowResize_Execute("","","Timer")
+MouseWindowResizeRouter()
 return
+
+MouseWindowResizeRouter()
+{
+	EventSystem.EventFromSubEventKey(Event, Action, "tmpResizingWindow", true, "A")
+	Action.ResizeLoop(Event)
+}

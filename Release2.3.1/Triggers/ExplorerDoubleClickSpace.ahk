@@ -1,26 +1,17 @@
-Trigger_ExplorerDoubleClickSpace_Init(Trigger)
+Class CExplorerDoubleClickSpaceTrigger Extends CTrigger
 {
-	Trigger.Category := "Explorer"
+	static Type := RegisterType(CExplorerDoubleClickSpaceTrigger, "Double click on empty space")
+	static Category := RegisterCategory(CExplorerDoubleClickSpaceTrigger, "Explorer")
+	Matches(Filter)
+	{
+		return true ;type is checked elsewhere
+	}
+	DisplayString()
+	{
+		return "Explorer: Double click on empty space"
+	}
+	GuiShow(GUI)
+	{
+		this.AddControl(GUI, "Text", "Desc", "This trigger executes when an empty space in the explorer file list is double-clicked.")
+	}
 }
-Trigger_ExplorerDoubleClickSpace_ReadXML(Trigger, XMLTrigger)
-{
-}
-Trigger_ExplorerDoubleClickSpace_Enable(Trigger)
-{
-}
-Trigger_ExplorerDoubleClickSpace_Matches(Trigger, Filter)
-{
-	return true ;type is checked elsewhere
-}
-Trigger_ExplorerDoubleClickSpace_DisplayString(Trigger)
-{
-	return "Explorer: Double click on empty space"
-}
-Trigger_ExplorerDoubleClickSpace_GuiShow(Trigger, TriggerGUI)
-{
-	SubEventGUI_Add(Trigger, TriggerGUI, "Text", "Desc", "This trigger executes when an empty space in the explorer file list is double-clicked.")
-}
-Trigger_ExplorerDoubleClickSpace_GuiSubmit(Trigger, TriggerGUI)
-{
-	SubEventGUI_GUISubmit(Trigger, TriggerGUI)
-}    

@@ -1,47 +1,36 @@
-Action_FlatView_Init(Action)
+Class CFlatViewAction Extends CAction
 {
-	Action.Category := "Explorer"
-	Action.Paths := "${SelN}"
-}
-
-Action_FlatView_ReadXML(Action, XMLAction)
-{	
-	Action.ReadVar(XMLAction, "Paths")
-}
-Action_FlatView_Execute(Action, Event)
-{
-	global Vista7
-	if(Vista7)
-		FlatView(ToArray(Event.ExpandPlaceholders(Action.Paths)))
-	return 1
-} 
-
-Action_FlatView_DisplayString(Action)
-{
-	return "Show flat view of these files: " Action.Paths
-}
-
-Action_FlatView_GuiShow(Action, ActionGUI, GoToLabel = "")
-{
-	static sActionGUI
-	if(GoToLabel = "")
+	static Type := RegisterType(CFlatViewAction, "Show Explorer flat view")
+	static Category := RegisterCategory(CFlatViewAction, "Explorer")
+	static Paths := "${SelN}"
+	Execute(Event)
 	{
-		sActionGUI := ActionGUI
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Paths", "", "", "Paths:", "Placeholders", "Action_FlatView_Placeholders","","","This can be multiple, newline-delimited paths such as ${SelNM}")
+		if(Vista7)
+			FlatView(ToArray(Event.ExpandPlaceholders(this.Paths)))
+		return 1
+	} 
+
+	DisplayString(Action)
+	{
+		return "Show flat view of these files: " this.Paths
 	}
-	else if(GoToLabel = "Placeholders")
-		SubEventGUI_Placeholders(sActionGUI, "Paths")
+
+	GuiShow(GUI, GoToLabel = "")
+	{
+		static sGUI
+		if(GoToLabel = "")
+		{
+			sGUI := GUI
+			this.AddControl(GUI, "Edit", "Paths", "", "", "Paths:", "Placeholders", "Action_FlatView_Placeholders","","","This can be multiple, newline-delimited paths such as ${SelNM}")
+		}
+		else if(GoToLabel = "Placeholders")
+			ShowPlaceholderMenu(sGUI, "Paths")
+	}
 }
+
 Action_FlatView_Placeholders:
-Action_FlatView_GuiShow("", "", "Placeholders")
+GetCurrentSubEvent().GuiShow("", "Placeholders")
 return
-
-Action_FlatView_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-	Action.Slot := min(max(Action.Slot, 0), 9)
-}
-
 
 ;Makes a currently active explorer window show all files contained in "files" list. Only folders are used, files are ignored.
 ;files is a `n separated list of complete paths

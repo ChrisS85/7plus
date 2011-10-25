@@ -1,22 +1,14 @@
-Action_Restart7plus_Init(Action)
+Class CRestart7plusAction Extends CAction
 {
-	Action.Category := "7plus"
-}
-Action_Restart7plus_ReadXML(Action, XMLAction)
-{
-}
-Action_Restart7plus_Execute(Action, Event)
-{
-	OnExit(1)
-	return 1
-} 
-Action_Restart7plus_DisplayString(Action)
-{
-	return "Restart 7plus"
-}
-Action_Restart7plus_GuiShow(Action, ActionGUI)
-{
-}
-Action_Restart7plus_GuiSubmit(Action, ActionGUI)
-{
+	static Type := RegisterType(CRestart7plusAction, "Restart 7plus")
+	static Category := RegisterCategory(CRestart7plusAction, "7plus")
+	Execute(Event)
+	{
+		OnExit(1)
+		return 1
+	} 
+	DisplayString()
+	{
+		return "Restart 7plus"
+	}
 }   

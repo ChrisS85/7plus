@@ -1,7 +1,7 @@
 #include %A_ScriptDir%\Lib\FTP.ahk
 Class CFTPUploadAction Extends CAction
 {
-	static Type := RegisterType(CFTPUploadAction, "FTPUpload")
+	static Type := RegisterType(CFTPUploadAction, "Upload to FTP")
 	static Category := RegisterCategory(CFTPUploadAction, "File")
 	static SourceFiles := "${SelNM}" ;All upload actions need to have SourceFiles property (used in ImageConverter)
 	static TargetFolder := ""
@@ -9,18 +9,13 @@ Class CFTPUploadAction Extends CAction
 	static Silent := 0
 	static Clipboard := 1
 	static FTPProfile := 1
-	
-	__New()
-	{
-		this.ReadFTPProfiles()
-	}
+	static FTPProfiles := CFTPUploadAction.ReadFTPProfiles()
 	OnExit()
 	{
 		this.WriteFTPProfiles()
 	}
 	ReadFTPProfiles()
 	{
-		global FTPProfiles
 		FTPProfiles := Array()
 		FileRead, xml, % Settings.ConfigPath "\FTPProfiles.xml"
 		if(!xml)
@@ -45,19 +40,19 @@ Class CFTPUploadAction Extends CAction
 			ListEntry := XMLObject.List[A_Index]
 			FTPProfiles.Insert(Object("Hostname", ListEntry.Hostname, "Port", ListEntry.Port, "User", ListEntry.User, "Password", ListEntry.Password, "URL", ListEntry.URL))
 		}
+		return FTPProfiles
 	}
 	WriteFTPProfiles()
 	{
-		global FTPProfiles
 		ConfigPath := Settings.ConfigPath
 		SplitPath, ConfigPath,,path
 		path .= "\FTPProfiles.xml"
 		FileDelete, %ConfigPath%\FTPProfiles.xml
 		
 		XMLObject := Object("List",Array())
-		Loop % FTPProfiles.MaxIndex()
+		Loop % this.FTPProfiles.MaxIndex()
 		{
-			ListEntry := FTPProfiles[A_Index]
+			ListEntry := this.FTPProfiles[A_Index]
 			XMLObject.List.Insert(Object("Hostname", ListEntry.Hostname, "Port", ListEntry.Port, "User", ListEntry.User, "Password", ListEntry.Password, "URL", ListEntry.URL))
 		}
 		XML_Save(XMLObject, ConfigPath "\FTPProfiles.xml")
@@ -65,7 +60,7 @@ Class CFTPUploadAction Extends CAction
 	Execute(Event)
 	{
 		global FTP
-		SourceFiles := Event.ExpandPlaceholders(this.SourceFiles)
+		SourceFiles := ToArray(Event.ExpandPlaceholders(this.SourceFiles))
 		TargetFolder := Event.ExpandPlaceholders(this.TargetFolder)
 		TargetFile := Event.ExpandPlaceholders(this.TargetFile)
 		files := ToArray(SourceFiles)
@@ -204,12 +199,11 @@ Class CFTPUploadAction Extends CAction
 	
 	GetFTPVariables(id, ByRef Hostname, ByRef Port, ByRef User, ByRef Password, ByRef URL)
 	{
-		global FTPProfiles
-		Hostname := FTPProfiles[id].Hostname
-		Port := FTPProfiles[id].Port
-		User := FTPProfiles[id].User
-		Password := FTPProfiles[id].Password
-		URL := FTPProfiles[id].URL
+		Hostname := this.FTPProfiles[id].Hostname
+		Port := this.FTPProfiles[id].Port
+		User := this.FTPProfiles[id].User
+		Password := this.FTPProfiles[id].Password
+		URL := this.FTPProfiles[id].URL
 	}
 }
 Action_FTPUpload_Progress()

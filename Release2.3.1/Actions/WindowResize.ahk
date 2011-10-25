@@ -1,94 +1,91 @@
-Action_WindowResize_Init(Action)
+Class CWindowResizeAction Extends CAction
 {
-	WindowFilter_Init(Action)
-	Action.Category := "Window"
-	Action.CenterX := 0
-	Action.CenterY := 0
-	Action.Width := "100%"
-	Action.Height := "100%"
-}
-Action_WindowResize_ReadXML(Action, XMLAction)
-{
-	WindowFilter_ReadXML(Action, XMLAction)
-	Action.ReadVar(XMLAction, "Width")
-	Action.ReadVar(XMLAction, "Height")
-	Action.ReadVar(XMLAction, "CenterX")
-	Action.ReadVar(XMLAction, "CenterY")
-}
-Action_WindowResize_Execute(Action,Event)
-{
-	hwnd := WindowFilter_Get(Action)
-	WinGetPos, curX, curY, curW, curH, ahk_id %hwnd%
+	static Type := RegisterType(CWindowResizeAction, "Resize a window")
+	static Category := RegisterCategory(CWindowResizeAction, "Window")
+	static _ImplementsWindowFilter := ImplementWindowFilterInterface(CWindowResizeAction)
+	static CenterX := 0
+	static CenterY := 0
+	static Width := "100%"
+	static Height := "100%"
 	
-	Width := Event.ExpandPlaceholders(Action.Width)
-	Height := Event.ExpandPlaceholders(Action.Height)
-	
-	WidthValue := strTrimLeft(strTrimLeft(strTrimLeft(strTrimLeft(strTrimRight(Width,"%"),"*"),"/"),"-"),"+")
-	HeightValue := strTrimLeft(strTrimLeft(strTrimLeft(strTrimLeft(strTrimRight(Height,"%"),"*"),"/"),"-"),"+")
-	
-	if(strEndsWith(Width,"%"))
-		WidthValue *= A_ScreenWidth/100
-	if(strEndsWith(Height,"%"))
-		HeightValue *= A_ScreenHeight/100
-		
-	if(strStartsWith(Width,"+"))
-		WidthValue += curW
-	if(strStartsWith(Height,"+"))
-		HeightValue += curH
-		
-	if(strStartsWith(Width,"-"))
-		WidthValue -= curW
-	if(strStartsWith(Height,"-"))
-		HeightValue -= curH
-		
-	if(strStartsWith(Width,"*"))
-		WidthValue *= curW
-	if(strStartsWith(Height,"*"))
-		HeightValue *= curH
-		
-	if(strStartsWith(Width,"/"))
-		WidthValue /= curW
-	if(strStartsWith(Height,"/"))
-		HeightValue /= curH
-		
-	if(Action.CenterX)
-		curX -= (WidthValue - curW) / 2
-	if(Action.CenterY)
-		curY -= (HeightValue - curH) / 2
-		
-	WinMove,ahk_id %hwnd%,,%curX%,%curY%,%WidthValue%,%HeightValue%
-	return 1
-}
-Action_WindowResize_DisplayString(Action)
-{
-	return "Resize Window " WindowFilter_DisplayString(Action) " to " Action.Width "/" Action.Height
-}
-Action_WindowResize_GuiShow(Action, ActionGUI, GoToLabel = "")
-{
-	static sActionGUI
-	if(GoToLabel = "")
+	Execute(Event)
 	{
-		sActionGUI := ActionGUI
-		WindowFilter_GuiShow(Action,ActionGUI)
-		SubEventGUI_Add(Action, ActionGUI, "Text", "tmpText", "Formats: ""100"", ""100%"", ""10%"", ""*2""")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Width", "", "", "Width:", "Placeholders", "Action_WindowResize_Placeholders_X")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Height", "", "", "Height:", "Placeholders", "Action_WindowResize_Placeholders_Y")
-		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "CenterX", "Use X center of window")
-		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "CenterY", "Use Y center of window")
+		hwnd := this.WindowFilterGet()
+		WinGetPos, curX, curY, curW, curH, ahk_id %hwnd%
+		
+		Width := Event.ExpandPlaceholders(this.Width)
+		Height := Event.ExpandPlaceholders(this.Height)
+		
+		WidthValue := strTrimLeft(strTrimLeft(strTrimLeft(strTrimLeft(strTrimRight(Width,"%"),"*"),"/"),"-"),"+")
+		HeightValue := strTrimLeft(strTrimLeft(strTrimLeft(strTrimLeft(strTrimRight(Height,"%"),"*"),"/"),"-"),"+")
+		
+		if(strEndsWith(Width,"%"))
+			WidthValue *= A_ScreenWidth/100
+		if(strEndsWith(Height,"%"))
+			HeightValue *= A_ScreenHeight/100
+			
+		if(strStartsWith(Width,"+"))
+			WidthValue += curW
+		if(strStartsWith(Height,"+"))
+			HeightValue += curH
+			
+		if(strStartsWith(Width,"-"))
+			WidthValue -= curW
+		if(strStartsWith(Height,"-"))
+			HeightValue -= curH
+			
+		if(strStartsWith(Width,"*"))
+			WidthValue *= curW
+		if(strStartsWith(Height,"*"))
+			HeightValue *= curH
+			
+		if(strStartsWith(Width,"/"))
+			WidthValue /= curW
+		if(strStartsWith(Height,"/"))
+			HeightValue /= curH
+			
+		if(this.CenterX)
+			curX -= (WidthValue - curW) / 2
+		if(this.CenterY)
+			curY -= (HeightValue - curH) / 2
+			
+		WinMove,ahk_id %hwnd%,,%curX%,%curY%,%WidthValue%,%HeightValue%
+		return 1
 	}
-	else if(GoToLabel = "Placeholders_X")
-		SubEventGUI_Placeholders(sActionGUI, "X")
-	else if(GoToLabel = "Placeholders_Y")
-		SubEventGUI_Placeholders(sActionGUI, "Y")
+	
+	DisplayString()
+	{
+		return "Resize Window " this.WindowFilterDisplayString() " to " this.Width "/" this.Height
+	}
+	
+	GUIShow(GUI, GoToLabel = "")
+	{
+		static sGUI
+		if(GoToLabel = "")
+		{
+			sGUI := GUI
+			this.WindowFilterGuiShow(GUI)
+			this.AddControl(GUI, "Text", "tmpText", "Formats: ""100"", ""100%"", ""10%"", ""*2""")
+			this.AddControl(GUI, "Edit", "Width", "", "", "Width:", "Placeholders", "Action_WindowResize_Placeholders_X")
+			this.AddControl(GUI, "Edit", "Height", "", "", "Height:", "Placeholders", "Action_WindowResize_Placeholders_Y")
+			this.AddControl(GUI, "Checkbox", "CenterX", "Use X center of window")
+			this.AddControl(GUI, "Checkbox", "CenterY", "Use Y center of window")
+		}
+		else if(GoToLabel = "Placeholders_X")
+			ShowPlaceholderMenu(sGUI, "X")
+		else if(GoToLabel = "Placeholders_Y")
+			ShowPlaceholderMenu(sGUI, "Y")
+	}
+
+	GUISubmit(GUI)
+	{
+		this.WindowFilterGUISubmit(GUI)
+		Base.GUISubmit(GUI)
+	}
 }
 Action_WindowResize_Placeholders_X:
-Action_SetDirectory_GuiShow("", "", "Placeholders_X")
+GetCurrentSubEvent().GuiShow("", "Placeholders_X")
 return
 Action_WindowResize_Placeholders_Y:
-Action_SetDirectory_GuiShow("", "", "Placeholders_Y")
+GetCurrentSubEvent().GuiShow("", "Placeholders_Y")
 return
-Action_WindowResize_GuiSubmit(Action, ActionGUI)
-{
-	;WindowFilter_GuiSubmit(Action,ActionGUI)
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-}

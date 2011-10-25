@@ -1,36 +1,27 @@
-  Condition_KeyIsDown_Init(Condition)
+Class CKeyIsDownCondition Extends CCondition
 {
-	Condition.Category := "Other"
-	Condition.Physical := 1
-	Condition.Toggle := 0
-	Condition.Key := ""
-}
-Condition_KeyIsDown_ReadXML(Condition, XMLCondition)
-{
-	Condition.ReadVar(XMLCondition, "Key")
-	Condition.ReadVar(XMLCondition, "Physical")
-	Condition.ReadVar(XMLCondition, "Toggle")
-}
-Condition_KeyIsDown_Evaluate(Condition, Event)
-{
-	return GetKeyState(Condition.Key, (Condition.Toggle ? "T" : (Condition.Physical ? "P" : "")))
-}
-Condition_KeyIsDown_DisplayString(Condition)
-{
-	return Condition.Key " is " (Condition.Toggle ? "on" : "down")
-}
+	static Type := RegisterType(CKeyIsDownCondition, "Key is down")
+	static Category := RegisterCategory(CKeyIsDownCondition, "Other")
+	static Physical := 1
+	static Toggle := 0
+	static Key := ""
+	
+	Evaluate(Event)
+	{
+		return GetKeyState(this.Key, (this.Toggle ? "T" : (this.Physical ? "P" : "")))
+	}
+	DisplayString()
+	{
+		return this.Key " is " (this.Toggle ? "on" : "down")
+	}
 
-Condition_KeyIsDown_GuiShow(Condition, ConditionGUI)
-{
-	SubEventGUI_Add(Condition, ConditionGUI, "Edit", "Key", "", "", "Key:", "Key names", "Condition_KeyIsDown_KeyNames")
-	SubEventGUI_Add(Condition, ConditionGUI, "Checkbox", "Physical", "Use physical keystate")
-	SubEventGUI_Add(Condition, ConditionGUI, "Checkbox", "Toggle", "Use toggle state (capslock,numlock, etc only)")
+	GuiShow(GUI)
+	{
+		this.AddControl(GUI, "Edit", "Key", "", "", "Key:", "Key names", "KeyNames")
+		this.AddControl(GUI, "Checkbox", "Physical", "Use physical keystate")
+		this.AddControl(GUI, "Checkbox", "Toggle", "Use toggle state (capslock,numlock, etc only)")
+	}
 }
-Condition_KeyIsDown_KeyNames:
+KeyNames:
 run http://www.autohotkey.com/docs/KeyList.htm,,UseErrorLevel
 return
-
-Condition_KeyIsDown_GuiSubmit(Condition, ConditionGUI)
-{	
-	SubEventGUI_GUISubmit(Condition, ConditionGUI)
-} 

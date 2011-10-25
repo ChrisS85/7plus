@@ -1,24 +1,9 @@
-Trigger_ExplorerPathChanged_Init(Trigger)
+Class CExplorerPathChangedTrigger Extends CTrigger
 {
-	Trigger.Category := "Explorer"
+	static Type := RegisterType(CExplorerPathChangedTrigger, "Explorer path changed")
+	static Category := RegisterCategory(CExplorerPathChangedTrigger, "Explorer")
+	Matches(Filter)
+	{
+		return true ;type is checked elsewhere
+	}
 }
-Trigger_ExplorerPathChanged_ReadXML(Trigger, XMLTrigger)
-{
-}
-Trigger_ExplorerPathChanged_Enable(Trigger)
-{
-}
-Trigger_ExplorerPathChanged_Matches(Trigger, Filter)
-{
-	return true ;type is checked elsewhere
-}
-Trigger_ExplorerPathChanged_DisplayString(Trigger)
-{
-	return "Explorer path changed"
-}
-Trigger_ExplorerPathChanged_GuiShow(Trigger, TriggerGUI)
-{
-}
-Trigger_ExplorerPathChanged_GuiSubmit(Trigger, TriggerGUI)
-{
-}   

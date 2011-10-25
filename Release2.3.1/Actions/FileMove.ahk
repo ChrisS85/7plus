@@ -1,29 +1,28 @@
-Action_Move_Init(Action)
+Class CFileMoveAction Extends CAction
 {
-	Action_FileOperation_Init(Action)
-}
+	static Type := RegisterType(CFileMoveAction, "Move file")
+	static Category := RegisterCategory(CFileMoveAction, "File")
+	static _ImplementsFileOperation := ImplementFileOperationInterface(CFileMoveAction)
 
-Action_Move_ReadXML(Action, XMLAction)
-{
-	Action_FileOperation_ReadXML(Action, XMLAction)
-}
+	Execute(Event)
+	{
+		this.FileOperationProcessPaths(Event, sources, targets, flags)
+		ShellFileOperation(0x1, sources, targets, flags)  
+		return 1
+	}
 
-Action_Move_Execute(Action, Event)
-{
-	Action_FileOperation_ProcessPaths(Action, Event, sources, targets, flags)
-	ShellFileOperation(0x1, sources, targets, flags)  
-	return 1
-}
-Action_Move_DisplayString(Action)
-{
-	return Action_FileOperation_DisplayString(Action)
-}
+	DisplayString()
+	{
+		return this.FileOperationDisplayString()
+	}
 
-Action_Move_GuiShow(Action, ActionGUI, GoToLabel = "")
-{	
-	Action_FileOperation_GuiShow(Action, ActionGUI)
+	GuiShow(GUI, GoToLabel = "")
+	{	
+		this.FileOperationGuiShow(GUI)
+	}
+	GuiSubmit(GUI)
+	{
+		this.FileOperationGuiSubmit(GUI)
+		Base.GuiSubmit(GUI)
+	}
 }
-Action_Move_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-}   

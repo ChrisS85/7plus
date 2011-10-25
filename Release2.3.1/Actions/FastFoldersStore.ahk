@@ -1,56 +1,51 @@
-Action_FastFoldersStore_Init(Action)
+Class CFastFoldersStoreAction Extends CAction
 {
-	Action.Category := "FastFolders"
-}
-
-Action_FastFoldersStore_ReadXML(Action, XMLAction)
-{
-	Action.ReadVar(XMLAction, "Folder")
-	Action.ReadVar(XMLAction, "Slot")
-}
-Action_FastFoldersStore_Execute(Action, Event)
-{
-	global
-	local Slot
-	if(IsPortable)
+	static Type := RegisterType(CFastFoldersStoreAction, "Save Fast Folder")
+	static Category := RegisterCategory(CFastFoldersStoreAction, "Fast Folders")
+	static Slot := 0
+	
+	Execute(Event)
 	{
-		MsgBox 7plus is running in portable mode. Features which need to make changes to the registry won't be available.
-		return
-	}	
-	if(!A_IsAdmin)
-	{
-		MsgBox 7plus is running without admin priviledges. Features which need to make changes to the registry won't be available.
-		return
+		if(ApplicationState.IsPortable)
+		{
+			MsgBox 7plus is running in portable mode. Features which need to make changes to the registry won't be available.
+			return
+		}	
+		if(!A_IsAdmin)
+		{
+			MsgBox 7plus is running without admin priviledges. Features which need to make changes to the registry won't be available.
+			return
+		}
+		Slot := this.Slot
+		Folder := Event.ExpandPlaceholders(this.Folder)
+		if(Slot >= 0 && Slot <= 9)
+			UpdateStoredFolder(Slot, Folder)
+		return 1
 	}
-	Slot := Action.Slot
-	Folder := Event.ExpandPlaceholders(Action.Folder)
-	if(Slot >= 0 && Slot <= 9)
-		UpdateStoredFolder(Slot, Folder)
-	return 1
-}
 
-Action_FastFoldersStore_DisplayString(Action)
-{
-	return "Store FastFolder: " Action.Slot
-} 
-Action_FastFoldersStore_GuiShow(Action, ActionGUI, GoToLabel = "")
-{
-	static sActionGUI	
-	if(GoToLabel = "")
+	DisplayString()
 	{
-		sActionGUI := ActionGUI
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Folder", "", "", "Folder:", "Placeholders", "Action_FastFoldersStore_Placeholders")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "Slot", "", "", "Slot (0-9):")
+		return "Store Fast Folder: " this.Slot
+	} 
+	GuiShow(GUI, GoToLabel = "")
+	{
+		static sGUI	
+		if(GoToLabel = "")
+		{
+			sGUI := GUI
+			this.AddControl(GUI, "Edit", "Folder", "", "", "Folder:", "Placeholders", "FastFoldersStore_Placeholders")
+			this.AddControl(GUI, "Edit", "Slot", "", "", "Slot (0-9):")
+		}
+		else if(GoToLabel = "Placeholders")
+			ShowPlaceholderMenu(sGUI, "Folder")
 	}
-	else if(GoToLabel = "Placeholders")
-		SubEventGUI_Placeholders(sActionGUI, "Folder")
+
+	GuiSubmit(GUI)
+	{
+		Base.GuiSubmit(GUI)
+		this.Slot := Clamp(this.Slot, 0, 9)
+	}
 }
-Action_FastFoldersStore_Placeholders:
-Action_FastFoldersStore_GuiShow("", "", "Placeholders")
+FastFoldersStore_Placeholders:
+GetCurrentSubEvent().GuiShow("", "Placeholders")
 return
-
-Action_FastFoldersStore_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-	Action.Slot := min(max(Action.Slot, 0), 9)
-} 

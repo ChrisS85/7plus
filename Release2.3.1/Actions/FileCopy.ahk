@@ -1,29 +1,28 @@
- Action_Copy_Init(Action)
+Class CFileCopyAction Extends CAction
 {
-	Action_FileOperation_Init(Action)
-}
+	static Type := RegisterType(CFileCopyAction, "Copy file")
+	static Category := RegisterCategory(CFileCopyAction, "File")
+	static _ImplementsFileOperation := ImplementFileOperationInterface(CFileCopyAction)
 
-Action_Copy_ReadXML(Action, XMLAction)
-{
-	Action_FileOperation_ReadXML(Action, XMLAction)
-}
+	Execute(Event)
+	{
+		this.FileOperationProcessPaths(Event, sources, targets, flags)
+		ShellFileOperation(0x2, sources, targets, flags)  
+		return 1
+	}
 
-Action_Copy_Execute(Action, Event)
-{
-	Action_FileOperation_ProcessPaths(Action, Event, sources, targets, flags)
-	ShellFileOperation(0x2, sources, targets, flags)  
-	return 1
-}
-Action_Copy_DisplayString(Action)
-{
-	return Action_FileOperation_DisplayString(Action)
-}
+	DisplayString()
+	{
+		return this.FileOperationDisplayString()
+	}
 
-Action_Copy_GuiShow(Action, ActionGUI, GoToLabel = "")
-{	
-	Action_FileOperation_GuiShow(Action, ActionGUI)
+	GuiShow(GUI, GoToLabel = "")
+	{	
+		this.FileOperationGuiShow(GUI)
+	}
+	GuiSubmit(GUI)
+	{
+		this.FileOperationGuiSubmit(GUI)
+		Base.GuiSubmit(GUI)
+	}
 }
-Action_Copy_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-}   

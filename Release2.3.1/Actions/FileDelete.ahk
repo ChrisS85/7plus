@@ -1,41 +1,34 @@
- Action_Delete_Init(Action)
+Class CFileDeleteAction Extends CAction
 {
-	Action_FileOperation_Init(Action)
-}
+	static Type := RegisterType(CFileDeleteAction, "Delete file")
+	static Category := RegisterCategory(CFileDeleteAction, "File")
+	static _ImplementsFileOperation := ImplementFileOperationInterface(CFileDeleteAction)
 
-Action_Delete_ReadXML(Action, XMLAction)
-{
-	Action_FileOperation_ReadXML(Action, XMLAction)
-}
-
-Action_Delete_Execute(Action, Event)
-{
-	Action_FileOperation_ProcessPaths(Action, Event, sources, targets, flags)
-	ShellFileOperation(0x3, sources, "", flags)  
-	return 1
-}
-Action_Delete_DisplayString(Action)
-{
-	return Action_FileOperation_DisplayString(Action)
-}
-
-Action_Delete_GuiShow(Action, ActionGUI, GoToLabel = "")
-{	
-	static sActionGUI
-	if(GoToLabel = "")
+	Execute(Event)
 	{
-		sActionGUI := ActionGUI
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "SourceFile", "", "", "Source File(s):", "Placeholders", "Action_Delete_Placeholders_Source")
-		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "Silent", "Silent", "", "")
+		this.FileOperationProcessPaths(Event, sources, targets, flags)
+		ShellFileOperation(0x3, sources, "", flags)  
+		return 1
 	}
-	else if(GoToLabel = "PlaceholdersSource")
-		SubEventGUI_Placeholders(sActionGUI, "SourceFile")
-}
-Action_Delete_Placeholders_Source:
-Action_Delete_GuiShow("", "", "PlaceholdersSource")
-return
 
-Action_Delete_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-}    
+	DisplayString()
+	{
+		return this.FileOperationDisplayString()
+	}
+
+	GuiShow(GUI, GoToLabel = "")
+	{	
+		static sGUI
+		if(GoToLabel = "")
+		{
+			sGUI := GUI
+			this.AddControl(GUI, "Edit", "SourceFile", "", "", "Source File(s):", "Placeholders", "Action_Delete_Placeholders_Source")
+		}
+		else if(GoToLabel = "PlaceholdersSource")
+			ShowPlaceholderMenu(sGUI, "SourceFile")
+	}
+}
+
+Action_Delete_Placeholders_Source:
+GetCurrentSubEvent().GuiShow("", "PlaceholdersSource")
+return

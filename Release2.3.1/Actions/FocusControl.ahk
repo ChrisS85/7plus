@@ -1,37 +1,34 @@
-Action_FocusControl_Init(Action)
+Class CFocusControlAction Extends CAction
 {
-	WindowFilter_Init(Action)
-	Action.Category := "Window"
-	Action.TargetControl := "Edit1"
-}
-Action_FocusControl_ReadXML(Action, XMLAction)
-{
-	WindowFilter_ReadXML(Action, XMLAction)
-	Action.ReadVar(XMLAction, "TargetControl")
-}
-Action_FocusControl_Execute(Action,Event)
-{
-	hwnd := WindowFilter_Get(Action)
-	TargetControl := Action.TargetControl
-	if(IsNumeric(TargetControl))
-		ControlFocus, ,ahk_id %TargetControl%
-	else
-		ControlFocus, %TargetControl%, ahk_id %hwnd%
-	return 1
-}
-Action_FocusControl_DisplayString(Action)
-{
-	return "Focus " Action.TargetControl ", " WindowFilter_DisplayString(Action)
-}
-Action_FocusControl_GuiShow(Action, ActionGUI)
-{
-	SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action can set the keyboard focus to a control .")
-	WindowFilter_GuiShow(Action,ActionGUI)
-	SubEventGUI_Add(Action, ActionGUI, "Text", "tmpText", "Enter a window handle, a ClassNN (e.g. ""Edit1""), or text of the control here.")
-	SubEventGUI_Add(Action, ActionGUI, "Edit", "TargetControl", "", "", "Target Control:")
-}
+	static Type := RegisterType(CFocusControlAction, "Focus a control")
+	static Category := RegisterCategory(CFocusControlAction, "Window")
+	static _ImplementsWindowFilter := ImplementWindowFilterInterface(CFocusControlAction)
+	static TargetControl := "Edit1"
+	Execute(Event)
+	{
+		hwnd := this.WindowFilterGet()
+		TargetControl := this.TargetControl
+		if(IsNumeric(TargetControl))
+			ControlFocus, ,ahk_id %TargetControl%
+		else
+			ControlFocus, %TargetControl%, ahk_id %hwnd%
+		return 1
+	}
+	DisplayString()
+	{
+		return "Focus " this.TargetControl ", " this.WindowFilterDisplayString()
+	}
+	GuiShow(GUI)
+	{
+		this.AddControl(GUI, "Text", "Desc", "This action can set the keyboard focus to a control .")
+		this.WindowFilterGuiShow(GUI)
+		this.AddControl(GUI, "Text", "tmpText", "Enter a window handle, a ClassNN (e.g. ""Edit1""), or text of the control here.")
+		this.AddControl(GUI, "Edit", "TargetControl", "", "", "Target Control:")
+	}
 
-Action_FocusControl_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-} 
+	GuiSubmit(GUI)
+	{
+		this.WindowFilterGuiSubmit(GUI)
+		Base.GUISubmit(GUI)
+	}
+}

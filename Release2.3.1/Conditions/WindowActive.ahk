@@ -1,27 +1,26 @@
-Condition_WindowActive_Init(Condition)
+Class CWindowActiveCondition Extends CCondition
 {
-	Condition.Category := "Window"
-	WindowFilter_Init(Condition)
-}
-Condition_WindowActive_ReadXML(Condition, XMLCondition)
-{
-	WindowFilter_ReadXML(Condition, XMLCondition)
-}
-Condition_WindowActive_Evaluate(Condition)
-{
-	return WindowFilter_Matches(Condition, "A")
-}
-Condition_WindowActive_DisplayString(Condition)
-{
-	return "Window Active: " WindowFilter_DisplayString(Condition)
-}
+	static Type := RegisterType(CWindowActiveCondition, "Window active")
+	static Category := RegisterCategory(CWindowActiveCondition, "WIndow")
+	static _ImplementsWindowFilter := ImplementWindowFilterInterface(CWindowActiveCondition)
+	
+	Evaluate()
+	{
+		return this.WindowFilterMatches("A")
+	}
+	
+	DisplayString()
+	{
+		return "Window Active: " this.WindowFilterDisplayString()
+	}
 
-Condition_WindowActive_GuiShow(Condition, ConditionGUI)
-{
-	WindowFilter_GuiShow(Condition, ConditionGUI)
-}
-
-Condition_WindowActive_GuiSubmit(Condition, ConditionGUI)
-{
-	WindowFilter_GuiSubmit(Condition, ConditionGUI)
+	GuiShow(GUI)
+	{
+		this.WindowFilterGuiShow(GUI)
+	}
+	GuiSubmit(GUI)
+	{
+		this.WindowFilterGuiSubmit(GUI)
+		Base.GuiSubmit(GUI)
+	}
 }

@@ -1,33 +1,23 @@
-Trigger_WindowStateChange_Init(Trigger)
+Class CWindowStateChangeTrigger Extends CTrigger
 {
-	Trigger.Category := "Window"
-	Trigger.Event := "Window minimized"
-	WindowFilter_Init(Trigger)
-}
+	static Type := RegisterType(CWindowStateChangeTrigger, "Window state changed")
+	static Category := RegisterCategory(CWindowStateChangeTrigger, "Window")
+	static _ImplementsWindowFilter := ImplementWindowFilterInterface(CWindowStateChangeTrigger)
+	static Event := "Window minimized"
+	
+	Matches(Filter)
+	{
+		return Trigger.Event = Filter.Event && this.WindowFilterMatches(Filter.Window, Filter)
+	}
 
-Trigger_WindowStateChange_ReadXML(Trigger, XMLTrigger)
-{
-	WindowFilter_ReadXML(Trigger, XMLTrigger)
-	Trigger.ReadVar(XMLTrigger, "Event")
-}
+	DisplayString()
+	{
+		return "Window state changed: " this.WindowFilterDisplayString()
+	}
 
-Trigger_WindowStateChange_Matches(Trigger, Filter)
-{
-	return Trigger.Event = Filter.Event && WindowFilter_Matches(Trigger, Trigger.Window, Filter)
+	GuiShow(GUI)
+	{
+		this.AddControl(GUI, "DropDownList", "Event", "Window minimized|Window maximized", "", "Event:")
+		this.WindowFilterGuiShow(GUI)
+	}
 }
-
-Trigger_WindowStateChange_DisplayString(Trigger)
-{
-	return Trigger.Event ": " WindowFilter_DisplayString(Trigger)
-}
-
-Trigger_WindowStateChange_GuiShow(Trigger, TriggerGUI)
-{
-	SubEventGUI_Add(Trigger, TriggerGUI, "DropDownList", "Event", "Window minimized|Window maximized", "", "Event:")
-	WindowFilter_GuiShow(Trigger, TriggerGUI)
-}
-
-Trigger_WindowStateChange_GuiSubmit(Trigger, TriggerGUI)
-{
-	SubEventGUI_GuiSubmit(Trigger, TriggerGUI)
-} 

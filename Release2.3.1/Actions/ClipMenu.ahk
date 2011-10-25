@@ -1,25 +1,25 @@
- Action_ClipMenu_Init(Action)
+ Class CClipMenuAction Extends CAction
 {
-	global Vista7
-	Action.Category := "System"
-}
-
-Action_ClipMenu_Execute(Action, Event)
-{
-	if(!Action.tmpShowing)
+	static Type := RegisterType(CClipMenuAction, "Clipboard Manager menu")
+	static Category := RegisterCategory(CClipMenuAction, "System")
+	
+	Execute(Event)
 	{
-		Action.tmpShowing := true
-		ClipboardManagerMenu()
-	}
-	else if(!IsContextMenuActive()) ;Menu closed
-	{
-		Action.tmpShowing := false
-		return 1
-	}
-	return -1 ;Waiting for menu to close
-} 
+		if(!this.tmpShowing)
+		{
+			this.tmpShowing := true
+			ClipboardManagerMenu()
+		}
+		else if(!IsContextMenuActive()) ;Menu closed
+		{
+			this.tmpShowing := false
+			return 1
+		}
+		return -1 ;Waiting for menu to close
+	} 
 
-Action_ClipMenu_DisplayString(Action)
-{
-	return "Show Clipboard Manager Menu"
+	DisplayString()
+	{
+		return "Show Clipboard Manager Menu"
+	}
 }

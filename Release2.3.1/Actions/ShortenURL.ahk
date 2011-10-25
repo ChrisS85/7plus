@@ -1,64 +1,55 @@
-Action_ShortenURL_Init(Action)
+Class CShortenURLAction Extends CAction
 {
-	Action.Category := "7plus"
-	Action.URL := "${Clip}"
-	Action.Method := "Goo.gl"
-	Action.WriteToClipboard := true
-	Action.WriteToPlaceholder := "ShortURL"
-}
-Action_ShortenURL_ReadXML(Action, XMLAction)
-{
-	Action.ReadVar(XMLAction, "URL")
-	Action.ReadVar(XMLAction, "Method")
-	Action.ReadVar(XMLAction, "WriteToClipboard")
-	Action.ReadVar(XMLAction, "WriteToPlaceholder")
-}
-Action_ShortenURL_Execute(Action, Event)
-{
-	URL := Event.ExpandPlaceholders(Action.URL)
-	if(!IsURL(URL))
-		return 0
-	if(Action.Method = "Goo.gl")
-		ShortURL := googl(URL)
+	static Type := RegisterType(CShortenURLAction, "Shorten a URL")
+	static Category := RegisterCategory(CShortenURLAction, "7plus")
+	static URL := "${Clip}"
+	static Method := "Goo.gl"
+	static WriteToClipboard := true
+	static WriteToPlaceholder := "ShortURL"
 	
-	if(ShortURL)
+	Execute(Event)
 	{
-		if(Action.WriteToClipboard)
-			Clipboard := ShortURL			
-		if(Action.WriteToPlaceholder)
-			Events.GlobalPlaceholders[Action.WriteToPlaceholder] := ShortURL
-		Notify("URL shortened!", "URL shortened" (Action.WriteToClipboard ? " and copied to clipboard!" : "!"), 2, "GC=555555 TC=White MC=White",NotifyIcons.Success)
-		return 1
-	}
-	return 0
-} 
+		URL := Event.ExpandPlaceholders(this.URL)
+		if(!IsURL(URL))
+			return 0
+		if(this.Method = "Goo.gl")
+			ShortURL := googl(URL)
+		
+		if(ShortURL)
+		{
+			if(this.WriteToClipboard)
+				Clipboard := ShortURL			
+			if(this.WriteToPlaceholder)
+				Events.GlobalPlaceholders[this.WriteToPlaceholder] := ShortURL
+			Notify("URL shortened!", "URL shortened" (this.WriteToClipboard ? " and copied to clipboard!" : "!"), 2, "GC=555555 TC=White MC=White",NotifyIcons.Success)
+			return 1
+		}
+		return 0
+	} 
 
-Action_ShortenURL_DisplayString(Action)
-{
-	return "Shorten URL: " Action.URL
-}
-Action_ShortenURL_GuiShow(Action, ActionGUI, GoToLabel = "")
-{
-	static sActionGUI
-	if(GoToLabel = "")
+	DisplayString()
 	{
-		sActionGUI := ActionGUI
-		SubEventGUI_Add(Action, ActionGUI, "Text", "Desc", "This action shortens the URL in the clipboard by using the Goo.gl service. The shortened URL can be written back to clipboard or stored in a placeholder.")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "URL", "", "", "URL:", "Placeholders", "Action_ShortenURL_Placeholders")
-		SubEventGUI_Add(Action, ActionGUI, "Edit", "WriteToPlaceholder", "", "", "hPlaceholder:")
-		SubEventGUI_Add(Action, ActionGUI, "Checkbox", "WriteToClipboard", "Copy shortened URL to clipboard")
+		return "Shorten URL: " this.URL
 	}
-	else if(GoToLabel = "Placeholders")
-		SubEventGUI_Placeholders(sActionGUI, "URL")
+	
+	GuiShow(GUI, GoToLabel = "")
+	{
+		static sGUI
+		if(GoToLabel = "")
+		{
+			sGUI := GUI
+			this.AddControl(GUI, "Text", "Desc", "This action shortens the URL in the clipboard by using the Goo.gl service. The shortened URL can be written back to clipboard or stored in a placeholder.")
+			this.AddControl(GUI, "Edit", "URL", "", "", "URL:", "Placeholders", "Action_ShortenURL_Placeholders")
+			this.AddControl(GUI, "Edit", "WriteToPlaceholder", "", "", "hPlaceholder:")
+			this.AddControl(GUI, "Checkbox", "WriteToClipboard", "Copy shortened URL to clipboard")
+		}
+		else if(GoToLabel = "Placeholders")
+			ShowPlaceholderMenu(sGUI, "URL")
+	}
 }
 Action_ShortenURL_Placeholders:
-Action_ShortenURL_GuiShow("", "", "Placeholders")
+GetCurrentSubEvent().GuiShow("", "Placeholders")
 return
-
-Action_ShortenURL_GuiSubmit(Action, ActionGUI)
-{
-	SubEventGUI_GUISubmit(Action, ActionGUI)
-} 
 
 ;Shortens a URL using goo.gl service
 ;Written By Flak
