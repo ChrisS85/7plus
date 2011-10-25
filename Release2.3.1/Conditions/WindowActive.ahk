@@ -20,7 +20,7 @@ Class CWindowActiveCondition Extends CCondition
 	}
 	GuiSubmit(GUI)
 	{
-		this.WindowFilterGuiSubmit(GUI)
+		this.WindowFilterGUISubmit(GUI)
 		Base.GuiSubmit(GUI)
 	}
 }
