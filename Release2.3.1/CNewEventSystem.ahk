@@ -125,7 +125,7 @@ Class CEventSystem extends CRichObject
 				;if the conditions were not fulfilled, remove this event and continue with the next one
 				if(Success = 0)
 				{
-					EventSchedule.Remove(EventPos)
+					this.EventSchedule.Remove(EventPos)
 					outputdebug % "Conditions of event " event.id " were not fulfilled."
 					continue
 				}
@@ -396,20 +396,26 @@ Class CEvents extends CArray
 			return
 		}
 		
-		;Disable the event
-		Event.Disable()
+		if(this != SettingsWindow.Events)
+		{
+			;Disable the event
+			Event.Disable()
+			
+			;Call the delete function of the event so it may do further processing
+			Event.Delete()
+			
+			;Remove the event on the settings page too
+			if(SettingsActive())
+			{
+				SettingsWindow.Events.Delete(SettingsWindow.Events.GetEventWithValue("ID", Event.ID), false)
+				if(UpdateGUI)
+					SettingsWindow.RecreateTreeView()
+			}
+		}
 		
-		;Call the delete function of the event so it may do further processing
-		Event.Delete()
+		;Actually remove the event from the list
 		this.Remove(index)
 		
-		;Remove the event on the settings page too
-		if(SettingsActive() && this != SettingsWindow.Events)
-		{
-			SettingsWindow.Events.Delete(SettingsWindow.Events.GetEventWithValue("ID", Event.ID), false)
-			if(UpdateGUI)
-				SettingsWindow.RecreateTreeView()
-		}
 		;Decrease HighestID to prevent ID changes when "reimporting" all events from the gui
 		this.HighestID := -1
 		

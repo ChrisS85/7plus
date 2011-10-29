@@ -9,28 +9,24 @@ Class CExplorerButtonTrigger Extends CTrigger
 
 	Enable(Event)
 	{
-		global
 		if(!ApplicationState.IsPortable && A_IsAdmin && Vista7 && !FindButton("IsExplorerButton", Event))
 			AddButton("","",Event.ID, this.Name, this.Tooltip, (this.ShowSelected && this.ShowNoSelected ? "Both" : this.ShowSelected ? "Selected" : this.ShowNoSelected ? "NoSelected" : "")) ;Event.ID here
 	}
 	
 	Disable(Event)
 	{
-		global
 		if(Event.Disabled && A_IsAdmin && Vista7 && !ApplicationState.IsPortable)
 			RemoveButton("IsExplorerButton", Event)
 	}
 	
 	Delete(Event)
 	{
-		global
 		if(!ApplicationState.IsPortable && Vista7 && A_IsAdmin)
 			RemoveButton("IsExplorerButton", Event)
 	}
 	
 	PrepareReplacement(Event1, Event2)
 	{
-		global
 		if(this.Name = Event2.Trigger.Name && this.Tooltip = Event2.Trigger.Tooltip && this.ShowSelected = Event2.Trigger.ShowSelected && this.ShowNoSelected = Event2.Trigger.ShowNoSelected) ; Check if something changed
 			return
 		if(!ApplicationState.IsPortable && Vista7 && A_IsAdmin)
@@ -65,9 +61,9 @@ RemoveAllExplorerButtons()
 return
 IsExplorerButton(value, key, Event)
 {
-	if(!Event.this.ShowSelected && InStr(key, "TasksItemsSelected"))
+	if(!Event.Trigger.ShowSelected && InStr(key, "TasksItemsSelected"))
 		return false
-	else if(!Event.this.ShowNoSelected && InStr(key, "TasksNoItemsSelected"))
+	else if(!Event.Trigger.ShowNoSelected && InStr(key, "TasksNoItemsSelected"))
 		return false
 	RegRead, command, HKLM, %key%
 	RegexMatch(command,""" -id:(\d+)$", command)

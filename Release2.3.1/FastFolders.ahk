@@ -416,6 +416,7 @@ FindButton(function, param)
 {
 	if(!IsFunc(function))
 		return false
+	OutputDebug FindButton
 	;go into view folders (clsid)
 	Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes, 2, 0
 	{
@@ -433,10 +434,14 @@ FindButton(function, param)
 				{
 					RegRead, value, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%\%A_LoopRegName%\shell\InvokeTask\command
 					if(%function%(value, "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\" regkey "\TasksItemsSelected\" numberfolder "\" A_LoopRegName "\shell\InvokeTask\command", param))
+					{
+						OutputDebug found
 						return true
+					}
 				}
 			}
 		}
 	}
+	OutputDebug not found
 	return false
 }

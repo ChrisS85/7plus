@@ -45,21 +45,34 @@ Class CSettingsWindow Extends CGUI
 		this.Title := "7plus Settings"
 	}
 	
+	;Shows the settings window, optionally specifying a page to show
 	Show(Page="Events")
 	{
+		;On first run of 7plus, start with Introduction page
 		if(!Page)
 			Page := Settings.General.FirstRun ? "Introduction" : "Events"
+		
 		PageNames := this.PageNames
 		
+		;Initialize the pages when the window was hidden
 		if(!this.Visible)
+		{
 			Loop, Parse, PageNames, |
 			{
 				Name := StringReplace(A_LoopField, " ", "")
 				this["Init"  Name]()			
 			}
-		for index, item in this.treePages.Items
-			if(item.Text = Page || (Page = "Events" && item.Text = "All Events"))
-				this.treePages.SelectedItem := Item
+		}
+		
+		;Select the appropriate page
+		if(this.treePages.SelectedItem.Text != Page && !((Page = "Events" && this.treePages.SelectedItem.Text = "All Events")))
+		{
+			for index, item in this.treePages.Items
+				if(item.Text = Page || (Page = "Events" && item.Text = "All Events"))
+					this.treePages.SelectedItem := Item
+		}
+		else
+			this.RecreateTreeView()
 		base.Show()
 	}
 	btnApply_Click()
@@ -240,20 +253,24 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Settings.General.ShowAdvancedEvents := Page.chkShowAdvancedEvents.Checked
 		
 		;TODO: Improve code quality here.
-		;Disable all events first (without setting enabled to false, so triggers can decide what they want to do themselves)
-		for index, Event in EventSystem.Events
-			Event.Trigger.Disable(Event)
 		;Remove events that were deleted in settings window and refresh the settings copies to consider recent changes in the original events (such as timer state)
 		pos := 1
-		this.Events.IsSettings := true
-		Loop % Events.MaxIndex()
+		Loop % EventSystem.Events.MaxIndex()
 		{
-			if(!this.Events.GetItemWithValue("ID", EventSystem.Events[pos].id)) ;separate destroy routine instead of simple disable is needed for removed events because of hotkey/timer discrepancy
+			OldEvent := EventSystem.Events[pos]
+			NewEvent := this.Events.GetItemWithValue("ID", OldEvent.id)
+			
+			;Disable all events first (without setting enabled to false, so triggers can decide what they want to do themselves)
+			OldEvent.Trigger.Disable(OldEvent)
+			
+			;separate destroy routine instead of simple disable is needed for removed events because of hotkey/timer discrepancy
+			if(!NewEvent)
 			{
-				EventSystem.Events.Delete(Events[pos], false)
+				EventSystem.Events.Delete(OldEvent, false)
 				continue
 			}
-			Events[pos].Trigger.PrepareReplacement(Events[pos], this.Events.GetItemWithValue("ID", Events[pos].id))
+			
+			OldEvent.Trigger.PrepareReplacement(OldEvent, NewEvent)
 			pos++
 		}
 		;Replace the original events with the copies
@@ -381,6 +398,10 @@ Finally, here are some settings that you're likely to change at the beginning:
 	{
 		this.EditEvent(0)
 	}
+	listEvents_CheckedChanged(Row)
+	{
+		this.Events[Row._.RowNumber].Enabled := Row.Checked
+	}
 	btnAddEvent_Click()
 	{
 		this.AddEvent()
@@ -487,6 +508,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 			this.RecreateTreeView()
 		else
 			this.ActiveControl := Page.listEvents
+		ToolTip done
 	}
 	CopyEvent()
 	{
@@ -966,6 +988,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 	btnRemoveCustomButtons_Click()
 	{
 		RemoveAllExplorerButtons()
+		MsgBox If you have defined any custom explorer buttons (or use FastFolder buttons) and you press OK or Apply now, they will reappear!
 	}
 	
 	
@@ -1426,12 +1449,17 @@ Finally, here are some settings that you're likely to change at the beginning:
 		if(hwnd = PageEvents.listEvents.hwnd)
 		{
 			if(wParam = VK_DELETE)
+			{
 				this.DeleteEvents()
+				return true
+			}
 			else if(wParam = VK_A && GetKeyState("Control", "P"))
+			{
 				PageEvents.listEvents.SelectedItems := PageEvents.listEvents.Items
-			
+				return true
+			}
 			;Forward regular keys to event filter edit control
-			if(wParam != 17 && (wParam <= 32 || wParam >= 41) && !GetKeyState("Control", "P"))
+			else if(wParam != 17 && (wParam <= 32 || wParam >= 41) && !GetKeyState("Control", "P"))
 			{
 				PostMessage, Message, %wParam%, %lParam%,, % "ahk_id " PageEvents.editEventFilter.hwnd
 				return true
@@ -1440,12 +1468,18 @@ Finally, here are some settings that you're likely to change at the beginning:
 		else if(hwnd = PageAccessorKeywords.listAccessorKeywords.hwnd)
 		{
 			if(wParam = VK_DELETE)
+			{
 				this.DeleteAccessorKeyword()
+				return true
+			}
 		}
 		else if(hwnd = PageHotStrings.listHotStrings.hwnd)
 		{
 			if(wParam = VK_DELETE)
+			{
 				this.DeleteHotString()
+				return true
+			}
 		}
 	}
 	WM_KEYUP(Message, wParam, lParam, hwnd)
