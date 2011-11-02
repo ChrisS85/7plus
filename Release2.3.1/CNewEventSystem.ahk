@@ -14,11 +14,17 @@ Class CEventSystem extends CRichObject
 	static Conditions := Array()
 	static Actions := Array()
 	
+	;Global placeholders can be shared between different events
+	static GlobalPlaceholders := Array()
+	
+	;EventSchedule (contains copies of the event objects in the Events list) is a list of events that are currently being processed.
+	static EventSchedule := Array()
+	
+	;An object containing events that are currently being edited so they can be found by their gui name in labels of subevents.
+	static CurrentlyEditingEvents := RichObject()
+	
 	Startup()
-	{
-		;TODO: Why does this need to be here?
-		;~ Action_Upload_ReadFTPProfiles()
-		
+	{		
 		;Create CEvents instance
 		this.Events := new CEvents()
 		
@@ -35,12 +41,6 @@ Class CEventSystem extends CRichObject
 		
 		;Load main events file. This will create event objects for all stored event configs in Events object.
 		this.Events.ReadMainEventsFile()
-		
-		;EventSchedule (contains copies of the event objects in the Events list ) is a list of events that are currently being processed.
-		this.EventSchedule := Array()
-		
-		;Create an object containing events that are currently being edited so they can be found by their gui name in labels of subevents.
-		this.CurrentlyEditingEvents := RichObject()
 		
 		;Make sure the subevents can enabled themselves
 		for index, Event in this.Events
@@ -346,7 +346,6 @@ Class CEvent extends CRichObject
 Class CEvents extends CArray
 {
 	Categories := Array()
-	GlobalPlaceholders := Array()
 	HighestID := -1
 	
 	;Creates an event, adds it to this CEvents instance and assigns an ID that is based on the max ID of EventSystem.Events and its settings copy, and increases HighestID count of this CEvents instance

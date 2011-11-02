@@ -41,7 +41,7 @@ Class CControlEventAction Extends CAction
 				;so they don't use placeholders which may have changed in the meantime
 				if(this.EvaluateOnCopy)
 					objDeepPerform(Copy, "ExpandPlaceHolders", Copy)
-				EventSystem.Events.GlobalPlaceholders[this.Placeholder] := Copy.ID
+				EventSystem.GlobalPlaceholders[this.Placeholder] := Copy.ID
 			}
 		}
 		return 1

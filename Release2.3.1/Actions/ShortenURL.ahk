@@ -20,7 +20,7 @@ Class CShortenURLAction Extends CAction
 			if(this.WriteToClipboard)
 				Clipboard := ShortURL			
 			if(this.WriteToPlaceholder)
-				Events.GlobalPlaceholders[this.WriteToPlaceholder] := ShortURL
+				EventSystem.GlobalPlaceholders[this.WriteToPlaceholder] := ShortURL
 			Notify("URL shortened!", "URL shortened" (this.WriteToClipboard ? " and copied to clipboard!" : "!"), 2, "GC=555555 TC=White MC=White",NotifyIcons.Success)
 			return 1
 		}

@@ -149,61 +149,6 @@ RegRead(RootKey, SubKey, ValueName = "") {
 	RegRead, v, %RootKey%, %SubKey%, %ValueName%
 	Return, v
 }
-Run(Target, WorkingDir = "", Mode = "", NonElevated=1) {
-	global Vista7
-	;run as current user
-	if(!Vista7 || (!A_IsAdmin && NonElevated) || (A_IsAdmin && !NonElevated))
-	{
-		Run, %Target% , %WorkingDir%, %Mode% UseErrorLevel, v
-		if(A_LastError)
-			Msgbox Error launching %Target%
-		Return, v
-	}
-	
-	;Split command and argument
-	if(InStr(Target, """")=1 && InStr(Target, """",false,3)) ;command has quotes, split it
-	{
-		Args := SubStr(Target,InStr(Target, """", false, 3) + 2)
-		Target := SubStr(Target, 2,InStr(Target, """", false, 3) - 2)
-	}
-	else if(InStr(Target, " ")) ;look for spaces after the command, e.g. "C:\Program Files\bla.exe -arg"
-	{
-		if(InStr(Target, " ", false, InStr(Target, ".")))
-		{
-			Args := SubStr(Target, InStr(Target, " ", false, InStr(Target, ".")) + 1)
-			Target := SubStr(Target, 1, InStr(Target, " ", false, InStr(Target, ".")))
-		}
-		else
-		{
-			Args := ""
-		}
-	}
-	else if(InStr(Target, " ")) ;cases like "cmd /D bla". "C:\Program Files\Program -args" won't be parsed correctly.
-	{
-		Args := SubStr(Target, InStr(Target, " ") + 1)
-		Target := SubStr(Target, 1, InStr(Target, " "))
-	}
-	else
-		Args := "" ;Single Command
-	
-	;Run under explorer process as normal user
-	if(A_IsAdmin && NonElevated)
-	{		
-		outputdebug run %target% args %args%
-		result := DllCall("Explorer.dll\ShellExecInExplorerProcess","Str",Target, "Str", Args, "Str", WorkingDir)
-		if(result >= 0 )
-			return result
-	}
-	;Show UAC prompt and run elevated
-	if(!A_IsAdmin && !NonElevated)
-	{
-		uacrep := DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, target, str, args, str, WorkingDir, int, 1)
-		If(uacrep = 42) ;UAC prompt confirmed
-			return 0
-	}
-	;Still here, error
-	Msgbox Error launching %Target%
-}
 RunWait(Target, WorkingDir = "", Mode = "") {
 	RunWait, %Target%, %WorkingDir%, %Mode%, v
 	Return v

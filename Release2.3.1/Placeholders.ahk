@@ -11,7 +11,7 @@ ExpandPlaceholders(SubEvent, Text)
 			text := StringReplace(Text, "${" key "}", value, 1)
 	}
 	;Expand dynamic placeholders with global scope (for example the result of an Input action)
-	for key, value in EventSystem.Events.GlobalPlaceholders
+	for key, value in EventSystem.GlobalPlaceholders
 	{
 		if(InStr(Text,"${" key "}"))
 			Text := StringReplace(Text, "${" key "}", value, 1)

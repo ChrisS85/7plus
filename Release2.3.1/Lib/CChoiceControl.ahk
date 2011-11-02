@@ -253,8 +253,9 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 		Parameters:
 			Text - The text of the new item.
 			Position - The position at which the item will be inserted. Items with indices >= this value will be appended.
+			Select - Set to true to select the freshly added item.
 		*/
-		Add(Text, Position = -1)
+		Add(Text, Position = -1, Select = false)
 		{
 			;~ global CGUI
 			GUI := CGUI.GUIList[this._.GUINum]
@@ -275,7 +276,9 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 			this._.Insert(Position, new this.CItem(Position, this._.GUINum, this._.hwnd)) ;Insert new item object
 			for index, item in this ;Move existing indices
 				item._.Index := index
-			if(Selected)
+			if(Select)
+				GuiControl, % this._.GUINum ":Choose", % Control.hwnd, % Position
+			else if(Selected)
 				GuiControl, % this._.GUINum ":Choose", % Control.hwnd, % (Selected < Position ? Selected : Selected + 1)
 		}
 		/*

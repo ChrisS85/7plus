@@ -169,11 +169,12 @@ Finally, here are some settings that you're likely to change at the beginning:
 			Page.chkAutoRun.Checked := IsAutoRunEnabled()
 		Page.ddlRunAsAdmin.Text := Settings.Misc.RunAsAdmin
 		Page.ddlLanguage.Items.Clear()
-		for key, language in Languages.Languages
-			Page.ddlLanguage.Items.Add(Language.FullName)
+		for key, Language in Languages.Languages
+			Page.ddlLanguage.Items.Add(Language.FullName, -1, Language.ShortName = Settings.General.Language)
 	}
 	ApplyIntroduction()
 	{
+		global Languages
 		Page := this.Pages.Introduction.Tabs[1].Controls
 		
 		Settings.General.AutoUpdate := Page.chkAutoUpdate.Checked

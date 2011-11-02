@@ -241,7 +241,7 @@ Class CInputAction Extends CAction
 		if(!this.Cancel)
 			return
 		this.tmpResult := "Cancel"
-		EventSystem.Events.GlobalPlaceholders[this.Placeholder] := ""
+		EventSystem.GlobalPlaceholders[this.Placeholder] := ""
 		Gui, Destroy
 	}
 	
@@ -273,7 +273,7 @@ Class CInputAction Extends CAction
 		}
 		if(!this.Placeholder)
 			this.Placeholder := "Input"
-		EventSystem.Events.GlobalPlaceholders[this.Placeholder] := input
+		EventSystem.GlobalPlaceholders[this.Placeholder] := input
 		Gui, Destroy
 	}
 }
@@ -295,16 +295,21 @@ GetCurrentSubEvent().GuiShow("", "ListView_Remove")
 return
 
 Action_Input_Edit:
-EventSystem.SubEventEventFromGUI().InputBoxEdit()
+EventSystem.SubEventFromGUI().InputBoxEdit()
 return
 InputBox_Browse:
-EventSystem.SubEventEventFromGUI().InputBoxBrowse()
+EventSystem.SubEventFromGUI().InputBoxBrowse()
 return
 InputboxClose:
 InputboxEscape:
 InputBox_Cancel:
-EventSystem.SubEventEventFromGUI().InputBoxCancel()
+EventSystem.SubEventFromGUI().InputBoxCancel()
 return
 InputBox_OK:
-EventSystem.SubEventEventFromGUI().InputBoxOK()
+Action_InputBoxOK()
 return
+Action_InputBoxOK()
+{
+	EventSystem.EventFromGUI(Event, SubEvent)
+	SubEvent.InputBoxOK(Event)
+}

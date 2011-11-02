@@ -14,18 +14,18 @@ Class CImageConverter extends CGUI
 		this.TemporaryFiles := Action.TemporaryFiles
 		this.ReuseWindow := Action.ReuseWindow
 		
-		this.Add("ListView", "ListView", "-Multi NoSort r19 w300", "File|Target Filename")
+		this.ListView := this.AddControl("ListView", "ListView", "-Multi NoSort r19 w300", "File|Target Filename")
 		this.ListView.IndependentSorting := true
 		this.ListView.ModifyCol(1,150)
 		this.ListView.ModifyCol(2,"AutoHdr")
-		this.Add("Picture", "Picture", "x+10 w560 h350 +0xE +0x40", "") ; +0xE is needed for setting the picture to a hbitmap
+		this.Picture := this.AddControl("Picture", "Picture", "x+10 w560 h350 +0xE +0x40", "") ; +0xE is needed for setting the picture to a hbitmap
 		this.Picture.Tooltip := "Click the image to edit it in the registered image editing program.`n Save it and quit the program to refresh it here."
 		
-		this.Add("Text", "txtPath", "x10 y375 Section", "Save Path:")
-		this.Add("Edit", "editPath", "x+10 ys-4 w206", "")
-		this.Add("Button", "btnBrowse", "x+5 ys-6 w26", "...")
-		this.Add("Text", "txtTargetFormat", "x10 ys+30", "Target Format:")
-		this.Add("DropDownList", "ddlTargetExtension", "Choose1 x+10 ys+26", "Keep Extension|bmp|dib|rle|jpg|jpeg|jpe|jfif|gif|tif|tiff|png")
+		this.txtPath := this.AddControl("Text", "txtPath", "x10 y375 Section", "Save Path:")
+		this.editPath := this.AddControl("Edit", "editPath", "x+10 ys-4 w206", "")
+		this.btnBrowse := this.AddControl("Button", "btnBrowse", "x+5 ys-6 w26", "...")
+		this.txtTargetFormat := this.AddControl("Text", "txtTargetFormat", "x10 ys+30", "Target Format:")
+		this.ddlTargetExtension := this.AddControl("DropDownList", "ddlTargetExtension", "Choose1 x+10 ys+26", "Keep Extension|bmp|dib|rle|jpg|jpeg|jpe|jfif|gif|tif|tiff|png")
 		
 		;Make sure to show quality setting only on specific items
 		for index, item in this.ddlTargetExtension.Items
@@ -44,13 +44,13 @@ Class CImageConverter extends CGUI
 				}
 			}
 		}
-		this.Add("Checkbox", "chkOverwriteFiles", "xs ys+60", "Overwrite existing files")
-		this.Add("Checkbox", "chkDeleteSourceFiles", "x+10" (Action.TemporaryFiles ? " Checked Disabled" : ""), "Delete source files")
+		this.chkOverwriteFiles := this.AddControl("Checkbox", "chkOverwriteFiles", "xs ys+60", "Overwrite existing files")
+		this.chkDeleteSourceFiles := this.AddControl("Checkbox", "chkDeleteSourceFiles", "x+10" (Action.TemporaryFiles ? " Checked Disabled" : ""), "Delete source files")
 		
 		
-		this.Add("GroupBox", "GrpResize", "x320 y360 w300 h100 Section", "Resize")
-		this.Add("Radio", "Radio1","xs+10 ys+20", "Absolute [px]")
-		this.Add("Radio", "Radio2", "xs+10 ys+50 Checked", "Relative  [`%]")
+		this.GrpResize := this.AddControl("GroupBox", "GrpResize", "x320 y360 w300 h100 Section", "Resize")
+		this.Radio1 := this.AddControl("Radio", "Radio1","xs+10 ys+20", "Absolute [px]")
+		this.Radio2 := this.AddControl("Radio", "Radio2", "xs+10 ys+50 Checked", "Relative  [`%]")
 		this.txtWidth1 := this.Radio1.AddControl("Text", "txtWidth1", "xs+100 ys+20", "Width:", 1)
 		this.txtWidth2 := this.Radio2.AddControl("Text", "txtWidth2", "xs+100 ys+50", "Width:", 1)
 		this.txtHeight1 := this.Radio1.AddControl("Text", "txtHeight1", "xs+200 ys+20", "Height:", 1)
@@ -60,27 +60,27 @@ Class CImageConverter extends CGUI
 		this.editAbsHeight := this.Radio1.AddControl("Edit", "editAbsHeight", "xs+240 ys+16 w50 disabled", "0", 1)
 		this.editRelWidth := this.Radio2.AddControl("Edit", "editRelWidth", "xs+140 ys+46 w50", "0", 1)
 		this.editRelHeight := this.Radio2.AddControl("Edit", "editRelHeight", "xs+240 ys+46 w50", "0", 1)
-		this.Add("Checkbox", "chkKeepAspectRatio", "xs+10 ys+75 Checked", "Keep aspect ratio")
+		this.chkKeepAspectRatio := this.AddControl("Checkbox", "chkKeepAspectRatio", "xs+10 ys+75 Checked", "Keep aspect ratio")
 		
 		
-		this.Add("GroupBox", "grpCrop", "x630 y360 w210 h100 Section", "Crop pixels")
-		this.Add("Text", "txtLeft", "xs+10 ys+20", "Left:")
-		this.Add("Text", "txtRight", "xs+110 ys+20", "Right:")
-		this.Add("Text", "txtTop", "xs+10 ys+50", "Top:")
-		this.Add("Text", "txtBottom", "xs+110 ys+50", "Bottom:")
-		this.Add("Edit", "editCropLeft", "xs+50 y376 w50", "0")
-		this.Add("Edit", "editCropRight", "xs+150 y376 w50", "0")
-		this.Add("Edit", "editCropTop", "xs+50 y406 w50", "0")
-		this.Add("Edit", "editCropBottom", "xs+150 y406 w50", "0")
-		this.Add("Text", "txtUpload", "x10 y486", "Upload")
-		this.Add("DropDownList", "ddlWhichFiles", "x+10 y482 w70", "selected||all")
-		this.Add("Text", "txtFilesTo", "x+10 y486", "files to:")
+		this.grpCrop := this.AddControl("GroupBox", "grpCrop", "x630 y360 w210 h100 Section", "Crop pixels")
+		this.txtLeft := this.AddControl("Text", "txtLeft", "xs+10 ys+20", "Left:")
+		this.txtRight := this.AddControl("Text", "txtRight", "xs+110 ys+20", "Right:")
+		this.txtTop := this.AddControl("Text", "txtTop", "xs+10 ys+50", "Top:")
+		this.txtBottom := this.AddControl("Text", "txtBottom", "xs+110 ys+50", "Bottom:")
+		this.editCropLeft := this.AddControl("Edit", "editCropLeft", "xs+50 y376 w50", "0")
+		this.editCropRight := this.AddControl("Edit", "editCropRight", "xs+150 y376 w50", "0")
+		this.editCropTop := this.AddControl("Edit", "editCropTop", "xs+50 y406 w50", "0")
+		this.editCropBottom := this.AddControl("Edit", "editCropBottom", "xs+150 y406 w50", "0")
+		this.txtUpload := this.AddControl("Text", "txtUpload", "x10 y486", "Upload")
+		this.ddlWhichFiles := this.AddControl("DropDownList", "ddlWhichFiles", "x+10 y482 w70", "selected||all")
+		this.txtFilesTo := this.AddControl("Text", "txtFilesTo", "x+10 y486", "files to:")
 		Loop % FTPProfiles.MaxIndex()
 			Hosters .= (A_Index != 1 ? "|" : "") A_Index ": " FTPProfiles[A_Index].Hostname (Action.Hoster = A_Index ? "|" : "")
 		Hosters .= "|" GetImageHosterList().ToString("|")
 		if(!IsNumeric(Action.Hoster))
 			Hosters := RegexReplace(Hosters, Action.Hoster "\|?", Action.Hoster "||")
-		this.Add("DropDownList", "ddlHoster", "x+10 y482 w140", Hosters)
+		this.ddlHoster := this.AddControl("DropDownList", "ddlHoster", "x+10 y482 w140", Hosters)
 		
 		;Make ftp target directory controls enabled only when an ftp server is selected
 		for index, item in this.ddlHoster.Items
@@ -99,11 +99,11 @@ Class CImageConverter extends CGUI
 				}
 			}
 		}
-		this.Add("Button", "btnUpload", "x+5 y481 w69", "Upload")
-		this.Add("Button", "btnCopyToClipboard", "x+10 y481 w95", "Copy to Clipboard")
-		this.Add("Button", "btnConvertAndSave", "x+10 y481 w124", "Convert && Save && Close")
-		this.Add("Button", "btnCancel", "x+5 y481 w60", "Cancel")
-		OnMessage(WM_COMMAND:=0x111,"ImageConverter_MessageHandler")
+		this.btnUpload := this.AddControl("Button", "btnUpload", "x+5 y481 w69", "Upload")
+		this.btnCopyToClipboard := this.AddControl("Button", "btnCopyToClipboard", "x+10 y481 w95", "Copy to Clipboard")
+		this.btnConvertAndSave := this.AddControl("Button", "btnConvertAndSave", "x+10 y481 w124", "Convert && Save && Close")
+		this.btnCancel := this.AddControl("Button", "btnCancel", "x+5 y481 w60", "Cancel")
+		this.OnMessage(WM_COMMAND:=0x111, "MessageHandler") ;Might not be working right now
 		LV_Modify(1,"Select")
 		this.CloseOnEscape := true
 		this.DestroyOnClose := true
@@ -591,33 +591,15 @@ Class CImageConverter extends CGUI
 			}
 		}
 	}
+	;Not working right now
+	ImageConverter_MessageHandler(wParam, lParam, msg, hwnd)
+	{
+		for index, Event in EventSystem.EventSchedule
+			for index2, Action in Event
+				if(Action.tmpImageConverterClass.GUINum = A_GUI)
+					Action.tmpImageConverterClass.MessageHandler(wParam, lParam, msg, hwnd)
+	}
 }
-return
-
-CImageConverter_chkKeepAspectRatio:
-CImageConverter_btnCopyToClipboard:
-CImageConverter_btnUpload:
-CImageConverter_btnConvertAndSave:
-CImageConverter_btnCancel:
-CImageConverter_ddlTargetExtension:
-CImageConverter_ddlHoster:
-CImageConverter_editAbsWidth:
-CImageConverter_editAbsHeight:
-CImageConverter_editRelWidth:
-CImageConverter_editRelHeight:
-CImageConverter_editCropLeft:
-CImageConverter_editCropRight:
-CImageConverter_editCropTop:
-CImageConverter_editCropBottom:
-CImageConverter_Picture:
-CImageConverter_Radio1:
-CImageConverter_Radio2:
-CImageConverter_ListView:
-CImageConverter_ddlWhichFiles:
-CImageConverter_chkOverwriteFiles:
-CImageConverter_btnBrowse:
-CGUI.HandleEvent()
-return
 
 ImageConverter_OpenedFileChange(from, to) ;This gets called when a file that is being watched was modified
 {
@@ -630,13 +612,4 @@ ImageConverter_OpenedFileChange(from, to) ;This gets called when a file that is 
 	; outputdebug file change %from% %to%
 	; ImageConverter("","","ImageConverter_LoadPicture")
 	; WatchDirectory(from, "")
-}
-
-;Not working right now
-ImageConverter_MessageHandler(wParam, lParam, msg, hwnd)
-{
-	for index, Event in EventSystem.EventSchedule
-		for index2, Action in Event
-			if(Action.tmpImageConverterClass.GUINum = A_GUI)
-				Action.tmpImageConverterClass.MessageHandler(wParam, lParam, msg, hwnd)
 }
