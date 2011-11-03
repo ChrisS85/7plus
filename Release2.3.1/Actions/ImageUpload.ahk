@@ -17,7 +17,6 @@ Class CImageUploadAction Extends CAction
 	}
 	Execute(Event)
 	{
-		global Vista7
 		if(!this.HasKey("tmpFiles"))
 		{
 			Files := Event.ExpandPlaceholders(this.SourceFiles)

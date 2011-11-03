@@ -7,7 +7,6 @@ Class CImageConverter extends CGUI
 	*/
 	__New(Action)
 	{
-		global FTPProfiles, Vista7, TemporaryEvents
 		Base.__New()
 		this.Title := "Image Converter"
 		this.Files := Array()
@@ -21,11 +20,13 @@ Class CImageConverter extends CGUI
 		this.Picture := this.AddControl("Picture", "Picture", "x+10 w560 h350 +0xE +0x40", "") ; +0xE is needed for setting the picture to a hbitmap
 		this.Picture.Tooltip := "Click the image to edit it in the registered image editing program.`n Save it and quit the program to refresh it here."
 		
-		this.txtPath := this.AddControl("Text", "txtPath", "x10 y375 Section", "Save Path:")
-		this.editPath := this.AddControl("Edit", "editPath", "x+10 ys-4 w206", "")
+		this.txtPath := this.AddControl("Text", "txtPath", "x10 y375 Section", "Target Path:")
+		this.editPath := this.AddControl("Edit", "editPath", "x+14 ys-4 w196", "")
 		this.btnBrowse := this.AddControl("Button", "btnBrowse", "x+5 ys-6 w26", "...")
-		this.txtTargetFormat := this.AddControl("Text", "txtTargetFormat", "x10 ys+30", "Target Format:")
-		this.ddlTargetExtension := this.AddControl("DropDownList", "ddlTargetExtension", "Choose1 x+10 ys+26", "Keep Extension|bmp|dib|rle|jpg|jpeg|jpe|jfif|gif|tif|tiff|png")
+		this.txtName := this.AddControl("Text", "txtName", "x10 ys+30", "Target Name:")
+		this.editName := this.AddControl("Edit", "editName", "x+8 ys+26 w196", "")
+		this.txtTargetFormat := this.AddControl("Text", "txtTargetFormat", "x10 ys+60", "Target Format:")
+		this.ddlTargetExtension := this.AddControl("DropDownList", "ddlTargetExtension", "Choose1 x+4 ys+56", "Keep Extension|bmp|dib|rle|jpg|jpeg|jpe|jfif|gif|tif|tiff|png")
 		
 		;Make sure to show quality setting only on specific items
 		for index, item in this.ddlTargetExtension.Items
@@ -34,8 +35,8 @@ Class CImageConverter extends CGUI
 			{
 				if(!this.txtQuality)
 				{
-					this.txtQuality := item.AddControl("Text", "txtQuality", "x+10 ys+30", "Quality:")
-					this.editQuality := item.AddControl("Edit", "EditQuality", "x+10 ys+26", Settings.Misc.ImageQuality)
+					this.txtQuality := item.AddControl("Text", "txtQuality", "x+10 ys+60", "Quality:")
+					this.editQuality := item.AddControl("Edit", "EditQuality", "x+10 ys+56", Settings.Misc.ImageQuality)
 				}
 				else
 				{
@@ -44,8 +45,8 @@ Class CImageConverter extends CGUI
 				}
 			}
 		}
-		this.chkOverwriteFiles := this.AddControl("Checkbox", "chkOverwriteFiles", "xs ys+60", "Overwrite existing files")
-		this.chkDeleteSourceFiles := this.AddControl("Checkbox", "chkDeleteSourceFiles", "x+10" (Action.TemporaryFiles ? " Checked Disabled" : ""), "Delete source files")
+		this.chkOverwriteFiles := this.AddControl("Checkbox", "chkOverwriteFiles", "xs ys+90", "Overwrite existing files")
+		this.chkDeleteSourceFiles := this.AddControl("Checkbox", "chkDeleteSourceFiles", "x+4" (Action.TemporaryFiles ? " Checked Disabled" : ""), "Delete source files")
 		
 		
 		this.GrpResize := this.AddControl("GroupBox", "GrpResize", "x320 y360 w300 h100 Section", "Resize")
@@ -75,8 +76,8 @@ Class CImageConverter extends CGUI
 		this.txtUpload := this.AddControl("Text", "txtUpload", "x10 y486", "Upload")
 		this.ddlWhichFiles := this.AddControl("DropDownList", "ddlWhichFiles", "x+10 y482 w70", "selected||all")
 		this.txtFilesTo := this.AddControl("Text", "txtFilesTo", "x+10 y486", "files to:")
-		Loop % FTPProfiles.MaxIndex()
-			Hosters .= (A_Index != 1 ? "|" : "") A_Index ": " FTPProfiles[A_Index].Hostname (Action.Hoster = A_Index ? "|" : "")
+		for index, FTPProfile in  CFTPUploadAction.FTPProfiles
+			Hosters .= (index != 1 ? "|" : "") index ": " FTPProfiles.Hostname (Action.Hoster = index ? "|" : "")
 		Hosters .= "|" GetImageHosterList().ToString("|")
 		if(!IsNumeric(Action.Hoster))
 			Hosters := RegexReplace(Hosters, Action.Hoster "\|?", Action.Hoster "||")
@@ -108,7 +109,6 @@ Class CImageConverter extends CGUI
 		this.CloseOnEscape := true
 		this.DestroyOnClose := true
 		this.Show("Autosize")
-		return
 	}
 	PreClose()
 	{
@@ -118,22 +118,22 @@ Class CImageConverter extends CGUI
 		TargetDir := this.editPath.Text
 		for index, Item in this.ListView.Items
 		{
-			SplitPath(this.Files[index], "", SourceDir)
+			SplitPath(this.Files[index].SourceFile, "", SourceDir)
 			Target := (TargetDir ? TargetDir : SourceDir) "\" Item[2]
 			;Strategy: Delete all files from temp directory (from screenshots) and source files if the user chooses to delete them after the conversion process.
 			;		   Images which couldn't be converted (and therefore don't exist in their target destination) are left untouched, same for overwritten files
-			if((this.chkDeleteSourceFiles.Checked && FileExist(Target) && this.Files[index] != Target) || InStr(this.Files[index], A_Temp "\7plus\"))
-				Files.Insert(this.Files[index])
+			if((this.chkDeleteSourceFiles.Checked && FileExist(Target) && this.Files[index].SourceFile != Target) || InStr(this.Files[index].SourceFile, A_Temp "\7plus\"))
+				Files.Insert(this.Files[index].SourceFile)
 		}
 		;Check if an upload is still running and possibly attach an action to it to delete the involved files
 		;Enable Critical so the event processing doesn't interfere here (should be unlikely but better be sure)
 		Critical, On
-		if(this.QueuedUploadEvent && EventSystem.EventSchedule.IndexOf(this.QueuedUploadEvent))
+		if(this.tmpQueuedUploadEvent && EventSystem.EventSchedule.IndexOf(this.tmpQueuedUploadEvent))
 		{
 			Action := new CDeleteAction()
-			Action.SourceFile := this.ddlWhichFiles.Text = "All" ? Files : this.QueuedUploadEvent.Actions[1].SourceFiles
+			Action.SourceFile := this.ddlWhichFiles.Text = "All" ? Files : this.tmpQueuedUploadEvent.Actions[1].SourceFiles
 			Action.Silent := 1
-			this.QueuedUploadEvent.Actions.Insert(Action)
+			this.tmpQueuedUploadEvent.Actions.Insert(Action)
 			for index, File in Action.SourceFile ;Remove all files which will be delete when the upload action finishes so that all other files can be deleted here
 				Files.Delete(File)
 		}
@@ -160,25 +160,21 @@ Class CImageConverter extends CGUI
 				Msgbox % file " is no supported image format!"
 				continue
 			}
-			if(this.Files.IndexOf(file) = 0) ;Append files which aren't yet in the list
+			if(!this.Files.GetItemWithValue("SourceFile", file)) ;Append files which aren't yet in the list
 			{
-				SplitPath(File, Filename)
 				this.ListView.Items.Add("", Filename)
-				this.Files.Insert(File)
+				this.Files.Insert({SourceFile : File})
 				Added := true
 			}
 		}
 		if(Added)
 		{
 			this.FillTargetFilenames()
-			if(this.Files.MaxIndex() = Files.MaxIndex()) ;Select first file if list was empty before
+			this.ListView.SelectedIndex := this.Files.MaxIndex() - Files.MaxIndex() + 1
+			if(this.TemporaryFiles && this.Files.MaxIndex() = Files.MaxIndex()) ;Select first file if list was empty before
 			{
-				this.ListView.SelectedIndex := 1
-				if(!this.TemporaryFiles)
-				{
-					SplitPath(this.Files[1],"",Path)
-					this.editPath.Text := Path
-				}
+				SplitPath(this.Files[1].SourceFile,"",Path)
+				this.editPath.Text := Path
 			}
 			this.Show()
 		}
@@ -193,7 +189,9 @@ Class CImageConverter extends CGUI
 		Targets := Array()
 		for index, item in this.ListView.Items
 		{
-			SplitPath(this.Files[A_Index], "", dir, Extension, Filename)
+			SplitPath(this.Files[A_Index].SourceFile, "", dir, Extension, Filename)
+			if(this.Files[A_Index].HasKey("TargetFilename") && this.Files[A_Index].TargetFilename != "")
+				Filename := this.Files[A_Index].TargetFilename
 			if(this.ddlTargetExtension.Text != "Keep extension")
 				Extension := this.ddlTargetExtension.Text
 				
@@ -212,12 +210,11 @@ Class CImageConverter extends CGUI
 	}
 	LoadImage()
 	{
-		Selected := this.Files[this.ListView.SelectedIndex ? this.ListView.SelectedIndex : this.ListView.FocusedIndex]
+		Selected := this.Files[this.ListView.SelectedIndex ? this.ListView.SelectedIndex : this.ListView.FocusedIndex].SourceFile
 		if(Selected != this.Picture.Picture)
 		{
 			this.PreviousPicturePath := this.Picture.Picture
 			SplitPath(this.Picture.Picture, cFilename, cPath)
-			msgbox watchdir
 			WatchDirectory(cPath "|" cFilename "\", "")
 		}
 		pBitmap := Gdip_CreateBitmapFromFile(Selected)
@@ -248,14 +245,23 @@ Class CImageConverter extends CGUI
 		SplitPath(Selected, Filename, Path)
 		WatchDirectory(Path "|" Filename "\", "ImageConverter_OpenedFileChange")
 	}
-	ListView_ItemSelected()
+	ListView_SelectionChanged(Row)
 	{
 		if(this.ListView.SelectedIndex && this.ListView.SelectedIndex != this.ListView.PreviouslySelectedIndex)
+		{
 			this.LoadImage()
+			SplitPath(this.ListView.SelectedItem[2], "", "", "", FileName)
+			this.editName.Text := FileName
+		}
+	}
+	editName_TextChanged()
+	{
+		this.Files[(index := this.ListView.SelectedIndex) ? index : this.ListView.FocusedIndex].TargetFilename := this.editName.Text
+		this.FillTargetFilenames()
 	}
 	Picture_Click()
 	{
-		; DllCall("shell32\ShellExecute"uint, 0, str, "Edit"str, this.Files[Selected], str, "", str, "", int, 1)
+		; DllCall("shell32\ShellExecute"uint, 0, str, "Edit"str, this.Files[Selected].SourceFile, str, "", str, "", int, 1)
 		run, % "edit """ this.Picture.Picture """",,UseErrorLevel
 	}
 	editAbsWidth_TextChanged()
@@ -359,16 +365,6 @@ Class CImageConverter extends CGUI
 		}
 		else
 			Msgbox Failed to convert image!
-		for index, file in this.files
-		{
-			if(!InStr(file, "temp\7plus\"))
-			{
-				DontClose := true
-				break
-			}
-		}
-		if(!DontClose)
-			this.Destroy()
 	}
 	btnUpload_Click()
 	{
@@ -389,7 +385,7 @@ Class CImageConverter extends CGUI
 	btnBrowse_Click()
 	{
 		FolderDialog := new CFolderDialog()
-		SplitPath(this.editPath.Text ? this.editPath.Text : this.Files[1], "", Path)
+		SplitPath(this.editPath.Text ? this.editPath.Text : this.Files[this.ListView.SelectedIndex ? this.Listview.SelectedIndex : this.ListView.FocusedIndex].SourceFile, "", Path)
 		FolderDialog.Folder := Path
 		FolderDialog.Title := "Select output directory"
 		if(!FolderDialog.Show())
@@ -415,7 +411,7 @@ Class CImageConverter extends CGUI
 		{
 			if(SelectedOnly && !item.Selected)
 				continue
-			Source := this.Files[A_Index]
+			Source := this.Files[A_Index].SourceFile
 			SplitPath(Source,"", SourceDir)
 			Target := TemporaryFiles ? A_Temp "\7plus\Upload\" item[1] : ((this.editPath.Text ? this.editPath.Text : (this.TemporaryFiles ? FolderDialog.Folder : SourceDir)) "\" item[2])
 			pConverted := this.ConvertSingleImage(Source, Target, changed)
@@ -434,7 +430,6 @@ Class CImageConverter extends CGUI
 	}
 	ConvertAndSave()
 	{
-		global Vista7
 		if(this.ConvertImages(ConvertedImages := Array(), FailedImages := Array()))
 		{
 			if(FailedImages.MaxIndex() > 0)
@@ -470,7 +465,7 @@ Class CImageConverter extends CGUI
 		Event.Actions[2].SourceFile := ConvertedImages
 		Event.Actions[2].Silent := 1
 		EventSystem.TemporaryEvents.RegisterEvent(Event)
-		this.QueuedUploadEvent := Event.TriggerThisEvent()
+		this.tmpQueuedUploadEvent := Event.TriggerThisEvent()
 	}
 	
 	ConvertSingleImage(OldFile, NewFile, ByRef changed)
@@ -483,11 +478,15 @@ Class CImageConverter extends CGUI
 		CropRight := abs(this.editCropRight.Text)
 		CropTop := abs(this.editCropTop.Text)
 		CropBottom := abs(this.editCropBottom.Text)
-		Assert(OldFile && FileExist(OldFile) && Width > 0 && Height > 0)
+		Assert(OldFile && FileExist(OldFile))
 		Changed := false
 		pBitmap := Gdip_CreateBitmapFromFile(OldFile)
 		if(pBitmap > 0)
 		{
+			if(!(Width > 0))
+				Width := UseAbsoluteSizes ? Gdip_GetImageWidth(pBitmap) : 100
+			if(!(Height > 0))
+				Height := UseAbsoluteSizes ? Gdip_GetImageHeight(pBitmap) : 100
 			SplitPath(OldFile,"","",OldExt)		
 			SplitPath(NewFile,"","",NewExt)
 			;Calculate sizes
@@ -521,7 +520,6 @@ Class CImageConverter extends CGUI
 				w_new := w_old * Width / 100
 				h_new := h_old * Height / 100
 			}
-			
 			;Save image
 			if(w_new != w_old || h_new != h_old || CropLeft > 0 || CropRight > 0 || CropTop > 0 || CropBottom > 0)
 			{
@@ -603,7 +601,6 @@ Class CImageConverter extends CGUI
 
 ImageConverter_OpenedFileChange(from, to) ;This gets called when a file that is being watched was modified
 {
-	global CImageConverter
 	for index, ImageConverter in CImageConverter.Instances
 	{
 		if(ImageConverter.Picture.Picture = from)

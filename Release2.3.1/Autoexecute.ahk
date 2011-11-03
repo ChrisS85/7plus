@@ -248,9 +248,9 @@ WriteClipboard()
 {
 	global ClipboardList, Events
 	FileDelete, % Settings.ConfigPath "\Clipboard.xml"
-	Loop % Events.MaxIndex() ;Check if clipboard history is actually used and don't store the history when it isn't
+	for index, Event in EventSystem.Events ;Check if clipboard history is actually used and don't store the history when it isn't
 	{
-		if((Events[A_Index].GetItemWithValue("Type", "Clipmenu") || Events[A_Index].GetItemWithValue("Type", "ClipPaste"))&& Events[A_Index].Enabled)
+		if((Event.GetItemWithValue("Type", "Clipmenu") || Event.GetItemWithValue("Type", "ClipPaste"))&& Event.Enabled)
 		{
 			XMLObject := Object("List",Array())
 			Loop % min(ClipboardList.MaxIndex(), 10)

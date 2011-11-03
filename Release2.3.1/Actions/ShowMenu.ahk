@@ -64,21 +64,21 @@ BuildMenu(Name)
 	Menu, %Name%, DeleteAll
 	if(Name = "Tray")
 		Menu, Tray, Standard
-	Loop % Events.MaxIndex()
+	for index, Event in EventSystem.Events
 	{
-		if(Events[A_Index].Trigger.Type = "MenuItem" && Events[A_Index].Trigger.Menu = Name)
+		if(Event.Trigger.Type = "MenuItem" && Event.Trigger.Menu = Name)
 		{
-			if(Events[A_Index].Trigger.Submenu = "")
+			if(Event.Trigger.Submenu = "")
 			{
-				Menu, %Name%, add, % Events[A_Index].Trigger.Name, MenuItemHandler
-				if(!Events[A_Index].Enabled)
-					Menu, %Name%, disable, % Events[A_Index].Trigger.Name
+				Menu, %Name%, add, % Event.Trigger.Name, MenuItemHandler
+				if(!Event.Enabled)
+					Menu, %Name%, disable, % Event.Trigger.Name
 			}
 			else
 			{
-				entries := BuildMenu(Events[A_Index].Trigger.Submenu)
+				entries := BuildMenu(Event.Trigger.Submenu)
 				if(entries)
-					Menu, %Name%, add, % Events[A_Index].Trigger.Name, % ":" Events[A_Index].Trigger.Submenu
+					Menu, %Name%, add, % Event.Trigger.Name, % ":" Event.Trigger.Submenu
 			}
 			entries := true
 		}

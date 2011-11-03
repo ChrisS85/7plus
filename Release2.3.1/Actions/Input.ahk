@@ -11,6 +11,10 @@ Class CInputAction Extends CAction
 	static Text := ""
 	static Title := ""
 	
+	ReadXML(XML)
+	{
+		Base.ReadXML(XML)
+	}
 	Execute(Event)
 	{
 		if(!this.tmpGuiNum)
@@ -122,10 +126,10 @@ Class CInputAction Extends CAction
 	{
 		this.GuiShow(GUI, "ListViewSubmit")
 		Base.GuiSubmit(GUI)
-		if(!this.Placeholder)
+		if(!this.HasKey("Placeholder"))
 		{
 			Msgbox Placeholder must not be empty! It is now being set to "Input".
-			this.Placeholder := "Input"
+			this.Placeholder := "Input"q
 		}
 	}
 	

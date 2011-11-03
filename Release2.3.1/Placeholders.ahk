@@ -24,7 +24,7 @@ ExpandInternalPlaceholders(text)
 {
 	text := ExpandPathPlaceholders(text)
 	len := strLen(text)
-	pos := 1	
+	pos := 1
 	Loop % len
 	{
 		2chars := SubStr(text, pos, 2)

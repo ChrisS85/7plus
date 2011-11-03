@@ -15,7 +15,7 @@ Class CEventSystem extends CRichObject
 	static Actions := Array()
 	
 	;Global placeholders can be shared between different events
-	static GlobalPlaceholders := Array()
+	static GlobalPlaceholders := RichObject()
 	
 	;EventSchedule (contains copies of the event objects in the Events list) is a list of events that are currently being processed.
 	static EventSchedule := Array()
@@ -330,7 +330,7 @@ Class CEvent extends CRichObject
 	;Tests if this event matches to a trigger. If it does, this event is schedule for execution.
 	;To just trigger it without performing trigger matching, leave Trigger Parameter empty.
 	;It returns the event on the EventSchedule so its state can be examined later.
-	TriggerThisEvent(Trigger)
+	TriggerThisEvent(Trigger="")
 	{
 		;Order of this if condition is important here, because Event.Trigger.Matches() can disable the event for timers
 		if(this.Enabled && (!IsObject(Trigger) || (this.Trigger.Type = Trigger.Type && this.Trigger.Matches(Trigger, this)) || (Trigger.Type = "Trigger" && this.ID = Trigger.TargetID)))
@@ -880,7 +880,7 @@ Class CSubEvent extends CRichObject
 	ReadXML(XML)
 	{
 		for key, value in this.base
-			if(InStr(key, "__") != 1 && key != "base" && key != "Type" && key != "Category" && !IsFunc(this[key]))
+			if(InStr(key, "__") != 1 && key != "base" && key != "Type" && key != "Category" && (!IsFunc(this[key]) || !this[key].Name))
 				this.ReadVar(XML, key)
 	}
 	

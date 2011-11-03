@@ -558,6 +558,7 @@ ExplorerActivated(hwnd)
 		; ;SetTimer, UpdatePosition, 100
 	; }
 }
+
 WaitForClose:
 DetectHiddenWindows, On
 Loop % ExplorerWindows.MaxIndex()
@@ -578,8 +579,8 @@ Loop % ExplorerWindows.MaxIndex()
 		break
 	}
 }
-
 return
+
 ;Called when an explorer window gets deactivated.
 ExplorerDeactivated(hwnd)
 {

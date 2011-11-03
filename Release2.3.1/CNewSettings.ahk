@@ -515,9 +515,9 @@ Finally, here are some settings that you're likely to change at the beginning:
 	{
 		Page := this.Pages.Events.Tabs[1].Controls
 		count := Page.listEvents.SelectedItems.MaxIndex()
-		if(count=0)
+		if(!count)
 			return
-		ClipboardEvents := Array()
+		ClipboardEvents := new CEvents()
 		for index, item in Page.listEvents.SelectedItems
 		{	
 			Event := this.Events.GetItemWithValue("ID", item[2])
@@ -526,7 +526,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 			if((!Settings.IsPortable && A_IsAdmin) || Event.Trigger.Type != "ExplorerButton")
 				ClipboardEvents.Insert(copy)
 		}
-		EventSystem.WriteEventsFile(ClipboardEvents, A_Temp "/7plus/EventsClipboard.xml")	
+		ClipboardEvents.WriteEventsFile(A_Temp "/7plus/EventsClipboard.xml")	
 		Page.btnPasteEvent.Enabled := true
 	}
 	PasteEvent()
