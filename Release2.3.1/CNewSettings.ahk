@@ -378,11 +378,13 @@ Finally, here are some settings that you're likely to change at the beginning:
 		{
 			Page.btnDeleteEvents.Enabled := false
 			Page.btnCopyEvent.Enabled := false
+			Page.btnExportEvents.Enabled := false
 		}
 		else if(Items >= 1)
 		{
 			Page.btnDeleteEvents.Enabled := true
 			Page.btnCopyEvent.Enabled := true
+			Page.btnExportEvents.Enabled := true
 		}
 		if(items = 1)
 		{
