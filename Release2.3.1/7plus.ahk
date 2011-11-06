@@ -79,12 +79,12 @@ ComObjError(0)
 #include %A_ScriptDir%\CustomHotkeys.ahk
 #include %A_ScriptDir%\Profiling.ahk
 #include *i %A_ScriptDir%\Tools\ObjTree.ahk
-Default__Warn(nonobj, p1="", p2="", p3="", p4="")
-{
-    ListLines
-    MsgBox A non-object value was improperly invoked.`n`nSpecifically: %nonobj%, %p1%q
-}
-ReportChanges(a,b)
-{
-  MsgBox change  
-}
+;~ Default__Warn(nonobj, p1="", p2="", p3="", p4="")
+;~ {
+    ;~ ListLines
+    ;~ MsgBox A non-object value was improperly invoked.`n`nSpecifically: %nonobj%, %p1%q
+;~ }
+;~ ReportChanges(a,b)
+;~ {
+  ;~ MsgBox change  
+;~ }

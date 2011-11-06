@@ -609,7 +609,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 						if(!FTP && Event.Actions.FindKeyWithValue("Type", "Upload"))
 							FTP := true
 				}
-				EventSystem.WriteEventsFile(ExportEvents, File)
+				ExportEvents.WriteEventsFile(File)
 				if(FTP)
 					Notify("Note", "FTP profiles won't be exported by this function. To save them, create a backup of FTPProfiles.xml. This file is only updated at program exit!", 2, "GC=555555 TC=White MC=White", NotifyIcons.Info)
 			}
