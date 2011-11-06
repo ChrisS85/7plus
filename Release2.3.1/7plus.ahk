@@ -1,3 +1,4 @@
+;~ WatchDirectory("C:\test\|*.txt", "ReportChanges")
 ;~ "".base.__Get := "".base.__Set := "".base.__Call := Func("Default__Warn")
 Suspend, On
 #SingleInstance off
@@ -82,4 +83,8 @@ Default__Warn(nonobj, p1="", p2="", p3="", p4="")
 {
     ListLines
     MsgBox A non-object value was improperly invoked.`n`nSpecifically: %nonobj%, %p1%q
+}
+ReportChanges(a,b)
+{
+  MsgBox change  
 }

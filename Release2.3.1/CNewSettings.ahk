@@ -509,7 +509,6 @@ Finally, here are some settings that you're likely to change at the beginning:
 			this.RecreateTreeView()
 		else
 			this.ActiveControl := Page.listEvents
-		ToolTip done
 	}
 	CopyEvent()
 	{

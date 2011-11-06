@@ -1368,3 +1368,13 @@ uuid(c = false) { ; v1.1 - by Titan
    SetFormat, Integer, %f% 
    Return, SubStr(t, 10) . s . SubStr(t, 6, 4) . s . 1 . SubStr(t, 3, 3) . s . (c ? i : x) 
 }
+
+;Extracted from HotkeyIts WatchDirectory function
+ConvertFilterStringToRegex(FilterString)
+{
+	StringToRegEx := "\\\|.\.|+\+|[\[|{\{|(\(|)\)|^\^|$\$|?\.?|*.*"
+	Loop,Parse,StringToRegEx,|
+		StringReplace,FilterString,FilterString,% SubStr(A_LoopField,1,1),% SubStr(A_LoopField,2),A
+	StringReplace,FilterString,FilterString,%A_Space%,\s,A
+	return "i)" FilterString
+}

@@ -1158,6 +1158,7 @@ Class CExampleAction extends CAction
 	}
 }
 #include %A_ScriptDir%\Triggers\ContextMenu.ahk
+#include %A_ScriptDir%\Triggers\DirectoryChangeTrigger.ahk
 #include %A_ScriptDir%\Triggers\DoubleClickDesktop.ahk
 #include %A_ScriptDir%\Triggers\DoubleClickTaskbar.ahk
 #include %A_ScriptDir%\Triggers\ExplorerButton.ahk
