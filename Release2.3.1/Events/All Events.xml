@@ -3,13 +3,13 @@
 <Event>
 <Actions>
 <Action>
-<Type>ShowSettings</Type>
+<Type>Show settings</Type>
 </Action></Actions>
 <Category>7plus</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
-<Type>IsFullScreen</Type>
+<Type>Fullscreen window active</Type>
 <UseExcludeList>0</UseExcludeList>
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
@@ -29,7 +29,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<Type>Restart7plus</Type>
+<Type>Restart 7plus</Type>
 </Action></Actions>
 <Category>7plus</Category>
 <Conditions>
@@ -55,7 +55,7 @@
 <Content>${SelNM}</Content>
 <Cut>0</Cut>
 <InsertType>File</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -67,7 +67,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>0</Negate>
@@ -96,7 +96,7 @@
 <Content>${SelNM}</Content>
 <Cut>1</Cut>
 <InsertType>File</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -108,7 +108,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>0</Negate>
@@ -133,10 +133,7 @@
 <Actions>
 <Action>
 <Path>Upward</Path>
-<Type>SetDirectory</Type>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Set current directory</Type>
 <WindowMatchType>Active</WindowMatchType>
 </Action></Actions>
 <Category>Explorer</Category>
@@ -149,7 +146,7 @@
 <With>(CabinetWClass|ExploreWClass)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>0</Negate>
@@ -175,9 +172,8 @@
 <Action>
 <Command>cmd.exe /k cd /D "${P}\"</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -209,7 +205,7 @@
 <Content>${SelNNEM}</Content>
 <Cut>0</Cut>
 <InsertType>Text</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -241,7 +237,7 @@
 <Content>${SelNM}</Content>
 <Cut>0</Cut>
 <InsertType>Text</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -273,7 +269,7 @@
 <Content>${SelNNEM}</Content>
 <Cut>0</Cut>
 <InsertType>Text</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -305,7 +301,7 @@
 <Content>${SelNM}</Content>
 <Cut>0</Cut>
 <InsertType>Text</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -332,9 +328,8 @@
 </Event><Event>
 <Actions>
 <Action>
-<BaseFile></BaseFile>
 <Rename>1</Rename>
-<Type>NewFile</Type>
+<Type>Create new file</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -346,7 +341,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Create a new text file in the directory of the currently active explorer/desktop.</Description>
@@ -365,7 +360,7 @@
 <Actions>
 <Action>
 <Rename>1</Rename>
-<Type>NewFolder</Type>
+<Type>Create new folder</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -377,7 +372,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Create a new folder in the directory of the currently active explorer/desktop.</Description>
@@ -397,9 +392,8 @@
 <Action>
 <Command>"%WinDir%\explorer.exe" /n,/e,${P}</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -414,16 +408,13 @@
 <OfficialEvent>236</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Type>DoubleClickDesktop</Type>
+<Type>Double click on desktop</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Path>Upward</Path>
-<Type>SetDirectory</Type>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Set current directory</Type>
 <WindowMatchType>Active</WindowMatchType>
 </Action></Actions>
 <Category>Explorer</Category>
@@ -439,7 +430,7 @@
 <OfficialEvent>238</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Type>ExplorerDoubleClickSpace</Type>
+<Type>Double click on empty space</Type>
 </Trigger>
 </Event><Event>
 <Actions>
@@ -449,14 +440,12 @@
 <Filter>(.*\.jpg|.*\.bmp|.*\.png|.*\.gif)</Filter>
 <List>${SelNQ}</List>
 <Operator>that match regular expression</Operator>
-<Separator></Separator>
-<Type>FilterList</Type>
+<Type>Filter list</Type>
 </Action><Action>
 <Command>"%ProgramFiles%\Paint.NET\PaintDotNet.exe" ${SelNQ}</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -489,13 +478,12 @@
 <List>${SelNQ}</List>
 <Operator>that match regular expression</Operator>
 <Separator>`n</Separator>
-<Type>FilterList</Type>
+<Type>Filter list</Type>
 </Action><Action>
 <Command>"%ProgramFiles%\Notepad++\notepad++.exe" ${SelNQ}</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -524,20 +512,16 @@
 <Action>
 <Cancel>1</Cancel>
 <DataType>Text</DataType>
-<Placeholder>Input</Placeholder>
 <Text>Filter Text</Text>
 <Title>Select Files</Title>
-<Type>Input</Type>
+<Type>Ask for user input</Type>
 <Validate>1</Validate>
 </Action><Action>
 <Clear>1</Clear>
 <Deselect>0</Deselect>
 <Filter>${Input}</Filter>
-<Type>SelectFiles</Type>
+<Type>Select files</Type>
 <Wildcard>1</Wildcard>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Active</WindowMatchType>
 </Action></Actions>
 <Category>Explorer</Category>
@@ -565,12 +549,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<ForceClose></ForceClose>
-<Type>WindowClose</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Close a window</Type>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action></Actions>
 <Category>Window Handling</Category>
@@ -578,11 +557,7 @@
 <Condition>
 <MouseOverType>Titlebar</MouseOverType>
 <Negate>0</Negate>
-<Type>MouseOver</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Mouse over</Type>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition><Condition>
 <Compare>${MC}</Compare>
@@ -610,7 +585,7 @@
 <FlashingWindows>1</FlashingWindows>
 <Notifications>1</Notifications>
 <ToggleWindows>1</ToggleWindows>
-<Type>FlashingWindows</Type>
+<Type>Flashing windows</Type>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
@@ -632,55 +607,39 @@
 <Actions>
 <Action>
 <Action>Toggle always on top</Action>
-<Type>WindowState</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Change window state</Type>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action><Action>
 <Action>Start timer</Action>
 <TimerID>311</TimerID>
-<Type>ControlTimer</Type>
+<Type>Control timer</Type>
 </Action><Action>
 <Action>Enable Event</Action>
-<Compare></Compare>
 <EventID>309</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action><Action>
 <Action>Enable Event</Action>
-<Compare></Compare>
 <EventID>310</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action><Action>
 <Action>Trigger Event</Action>
-<Compare></Compare>
 <EventID>309</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action><Action>
 <Action>Trigger Event</Action>
-<Compare></Compare>
 <EventID>310</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
 <Condition>
 <MouseOverType>Titlebar</MouseOverType>
 <Negate>0</Negate>
-<Type>MouseOver</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Mouse over</Type>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -701,99 +660,85 @@
 <Action>
 <KeyDelay>0</KeyDelay>
 <Keys>{Esc}</Keys>
-<Type>SendKeys</Type>
+<Type>Send keyboard input</Type>
 <WriteText>0</WriteText>
 </Action><Action>
 <Action>Disable Event</Action>
-<Compare></Compare>
 <EventID>311</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action><Action>
 <Action>Disable Event</Action>
-<Compare></Compare>
 <EventID>310</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
 <Condition>
 <Negate>0</Negate>
-<Type>IsContextMenuActive</Type>
+<Type>Context menu active</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>1</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>309</ID>
 <Name>Toggle always on top -&gt; Context menu active</Name>
 <OfficialEvent>310</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Type>None</Type>
+<Type>Triggered by an action</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Action>Trigger Event</Action>
-<Compare></Compare>
 <EventID>309</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action><Action>
 <Action>Trigger Event</Action>
-<Compare></Compare>
 <EventID>310</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
-<Type>IsContextMenuActive</Type>
+<Type>Context menu active</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>310</ID>
 <Name>Toggle always on top -&gt; No context menu active</Name>
 <OfficialEvent>311</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Type>None</Type>
+<Type>Triggered by an action</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Action>Disable Event</Action>
-<Compare></Compare>
 <EventID>309</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action><Action>
 <Action>Disable Event</Action>
-<Compare></Compare>
 <EventID>310</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action><Action>
 <Action>Disable Event</Action>
-<Compare></Compare>
 <EventID>311</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
@@ -801,7 +746,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>311</ID>
 <Name>Toggle always on top -&gt; context menu timeout</Name>
@@ -810,7 +755,6 @@
 <Trigger>
 <Restart>0</Restart>
 <ShowProgress>0</ShowProgress>
-<Text></Text>
 <Time>2000</Time>
 <Type>Timer</Type>
 </Trigger>
@@ -818,11 +762,7 @@
 <Actions>
 <Action>
 <Action>Disable always on top</Action>
-<Type>WindowState</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Change window state</Type>
 <WindowMatchType>Active</WindowMatchType>
 </Action></Actions>
 <Category>Window Handling</Category>
@@ -839,22 +779,14 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <Event>Window maximized</Event>
-<Type>WindowStateChange</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Window state changed</Type>
 <WindowMatchType>Active</WindowMatchType>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <ForceClose>1</ForceClose>
-<Type>WindowClose</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Close a window</Type>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action></Actions>
 <Category>Window Handling</Category>
@@ -862,11 +794,7 @@
 <Condition>
 <MouseOverType>CloseButton</MouseOverType>
 <Negate>0</Negate>
-<Type>MouseOver</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Mouse over</Type>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -885,12 +813,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<ForceClose></ForceClose>
-<Type>WindowClose</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Close a window</Type>
 <WindowMatchType>Active</WindowMatchType>
 </Action></Actions>
 <Category>Window Handling</Category>
@@ -913,11 +836,7 @@
 <Actions>
 <Action>
 <Action>Minimize-&gt;Normal-&gt;Maximize</Action>
-<Type>WindowState</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Change window state</Type>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action></Actions>
 <Category>Window Handling</Category>
@@ -940,11 +859,7 @@
 <Actions>
 <Action>
 <Action>Maximize-&gt;Normal-&gt;Minimize</Action>
-<Type>WindowState</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Change window state</Type>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action></Actions>
 <Category>Window Handling</Category>
@@ -967,13 +882,13 @@
 <Actions>
 <Action>
 <FlashingWindows>1</FlashingWindows>
-<Type>Accessor</Type>
+<Type>Show Accessor</Type>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
-<Type>IsFullScreen</Type>
+<Type>Fullscreen window active</Type>
 <UseExcludeList>1</UseExcludeList>
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
@@ -993,20 +908,14 @@
 </Event><Event>
 <Actions>
 <Action>
-<Type>WindowActivate</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Activate a window</Type>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action><Action>
 <Button>Right</Button>
 <Double>0</Double>
 <Relative>1</Relative>
 <RestorePosition>1</RestorePosition>
-<Type>MouseClick</Type>
-<X></X>
-<Y></Y>
+<Type>Mouse click</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -1018,11 +927,7 @@
 <With>DirectUIHWND3</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>WindowActive</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Window active</Type>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Condition><Condition>
 <Compare>${MC}</Compare>
@@ -1048,7 +953,7 @@
 <Actions>
 <Action>
 <Slot>0</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1060,7 +965,13 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>Edit1</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 0.</Description>
@@ -1079,17 +990,17 @@
 <Actions>
 <Action>
 <Slot>0</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 0.</Description>
@@ -1108,7 +1019,7 @@
 <Actions>
 <Action>
 <Slot>1</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1120,7 +1031,13 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>Edit1</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 1.</Description>
@@ -1139,17 +1056,17 @@
 <Actions>
 <Action>
 <Slot>1</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 1.</Description>
@@ -1168,7 +1085,7 @@
 <Actions>
 <Action>
 <Slot>2</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1180,7 +1097,13 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>Edit1</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 2.</Description>
@@ -1199,17 +1122,17 @@
 <Actions>
 <Action>
 <Slot>2</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 3.</Description>
@@ -1228,7 +1151,7 @@
 <Actions>
 <Action>
 <Slot>3</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1240,7 +1163,13 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>Edit1</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 3.</Description>
@@ -1259,17 +1188,17 @@
 <Actions>
 <Action>
 <Slot>3</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 4.</Description>
@@ -1288,7 +1217,7 @@
 <Actions>
 <Action>
 <Slot>4</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1300,7 +1229,13 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>Edit1</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 4.</Description>
@@ -1319,17 +1254,17 @@
 <Actions>
 <Action>
 <Slot>4</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 5.</Description>
@@ -1348,7 +1283,7 @@
 <Actions>
 <Action>
 <Slot>5</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1360,7 +1295,13 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>Edit1</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 5.</Description>
@@ -1379,17 +1320,17 @@
 <Actions>
 <Action>
 <Slot>5</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 6.</Description>
@@ -1408,7 +1349,7 @@
 <Actions>
 <Action>
 <Slot>6</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1420,7 +1361,13 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>Edit1</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 6.</Description>
@@ -1439,17 +1386,17 @@
 <Actions>
 <Action>
 <Slot>6</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 7.</Description>
@@ -1468,7 +1415,7 @@
 <Actions>
 <Action>
 <Slot>7</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1480,7 +1427,13 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>Edit1</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 7.</Description>
@@ -1499,17 +1452,17 @@
 <Actions>
 <Action>
 <Slot>7</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 8.</Description>
@@ -1528,7 +1481,7 @@
 <Actions>
 <Action>
 <Slot>8</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1540,7 +1493,13 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>Edit1</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 8.</Description>
@@ -1559,17 +1518,17 @@
 <Actions>
 <Action>
 <Slot>8</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 9.</Description>
@@ -1588,7 +1547,7 @@
 <Actions>
 <Action>
 <Slot>9</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1600,7 +1559,13 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>Edit1</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 9.</Description>
@@ -1619,17 +1584,17 @@
 <Actions>
 <Action>
 <Slot>9</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 9.</Description>
@@ -1647,9 +1612,8 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>0</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1661,7 +1625,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active explorer window in FastFolders Slot 0.</Description>
@@ -1679,19 +1643,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>0</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 0.</Description>
@@ -1709,9 +1672,8 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>1</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1723,7 +1685,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active explorer window in FastFolders Slot 1.</Description>
@@ -1741,19 +1703,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>1</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 1.</Description>
@@ -1771,9 +1732,8 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>2</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1785,7 +1745,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active explorer window in FastFolders Slot 2.</Description>
@@ -1803,19 +1763,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>2</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 2.</Description>
@@ -1833,9 +1792,8 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>3</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1847,7 +1805,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active explorer window in FastFolders Slot 3.</Description>
@@ -1865,19 +1823,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>3</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 3.</Description>
@@ -1895,9 +1852,8 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>4</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1909,7 +1865,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active explorer window in FastFolders Slot 4.</Description>
@@ -1927,19 +1883,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>4</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 4.</Description>
@@ -1957,9 +1912,8 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>5</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1971,7 +1925,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active explorer window in FastFolders Slot 5.</Description>
@@ -1989,19 +1943,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>5</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 5.</Description>
@@ -2019,9 +1972,8 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>6</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -2033,7 +1985,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active explorer window in FastFolders Slot 6.</Description>
@@ -2051,19 +2003,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>6</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 6.</Description>
@@ -2081,9 +2032,8 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>7</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -2095,7 +2045,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active explorer window in FastFolders Slot 7.</Description>
@@ -2113,19 +2063,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>7</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 7.</Description>
@@ -2143,9 +2092,8 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>8</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -2157,7 +2105,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active explorer window in FastFolders Slot 8.</Description>
@@ -2175,19 +2123,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>8</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 8.</Description>
@@ -2205,9 +2152,8 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>9</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -2219,7 +2165,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active explorer window in FastFolders Slot 9.</Description>
@@ -2237,19 +2183,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>9</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 9.</Description>
@@ -2268,7 +2213,7 @@
 <Actions>
 <Action>
 <Slot>0</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -2302,14 +2247,14 @@
 <Actions>
 <Action>
 <Slot>0</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -2334,7 +2279,7 @@
 <Actions>
 <Action>
 <Slot>1</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -2368,14 +2313,14 @@
 <Actions>
 <Action>
 <Slot>1</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -2400,7 +2345,7 @@
 <Actions>
 <Action>
 <Slot>2</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -2434,14 +2379,14 @@
 <Actions>
 <Action>
 <Slot>2</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -2466,7 +2411,7 @@
 <Actions>
 <Action>
 <Slot>3</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -2500,14 +2445,14 @@
 <Actions>
 <Action>
 <Slot>3</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -2532,7 +2477,7 @@
 <Actions>
 <Action>
 <Slot>4</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -2566,14 +2511,14 @@
 <Actions>
 <Action>
 <Slot>4</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -2598,7 +2543,7 @@
 <Actions>
 <Action>
 <Slot>5</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -2632,14 +2577,14 @@
 <Actions>
 <Action>
 <Slot>5</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -2664,7 +2609,7 @@
 <Actions>
 <Action>
 <Slot>6</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -2698,14 +2643,14 @@
 <Actions>
 <Action>
 <Slot>6</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -2730,7 +2675,7 @@
 <Actions>
 <Action>
 <Slot>7</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -2764,14 +2709,14 @@
 <Actions>
 <Action>
 <Slot>7</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -2796,7 +2741,7 @@
 <Actions>
 <Action>
 <Slot>8</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -2830,14 +2775,14 @@
 <Actions>
 <Action>
 <Slot>8</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -2862,7 +2807,7 @@
 <Actions>
 <Action>
 <Slot>9</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -2896,14 +2841,14 @@
 <Actions>
 <Action>
 <Slot>9</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -2931,14 +2876,13 @@
 <Quality>95</Quality>
 <TargetFile>Screenshot.jpg</TargetFile>
 <TargetFolder>%Temp%</TargetFolder>
-<Type>Screenshot</Type>
+<Type>Take a screenshot</Type>
 </Action><Action>
 <Cancel>1</Cancel>
 <DataType>Text</DataType>
-<Placeholder>Input</Placeholder>
 <Text>Enter image filename:</Text>
 <Title>Enter filename</Title>
-<Type>Input</Type>
+<Type>Ask for user input</Type>
 <Validate>1</Validate>
 </Action><Action>
 <Clipboard>1</Clipboard>
@@ -2946,15 +2890,12 @@
 <Silent>0</Silent>
 <SourceFiles>%temp%\Screenshot.jpg</SourceFiles>
 <TargetFile>${Input}</TargetFile>
-<TargetFolder></TargetFolder>
-<Type>Upload</Type>
+<Type>Upload to FTP</Type>
 </Action><Action>
 <Overwrite>0</Overwrite>
 <Silent>1</Silent>
 <SourceFile>%temp%\Screenshot.jpg</SourceFile>
-<TargetFile></TargetFile>
-<TargetPath></TargetPath>
-<Type>Delete</Type>
+<Type>Delete file</Type>
 </Action></Actions>
 <Category>FTP</Category>
 <Conditions>
@@ -2979,14 +2920,13 @@
 <Quality>95</Quality>
 <TargetFile>Screenshot.jpg</TargetFile>
 <TargetFolder>%Temp%</TargetFolder>
-<Type>Screenshot</Type>
+<Type>Take a screenshot</Type>
 </Action><Action>
 <Cancel>1</Cancel>
 <DataType>Text</DataType>
-<Placeholder>Input</Placeholder>
 <Text>Enter image filename:</Text>
 <Title>Enter filename</Title>
-<Type>Input</Type>
+<Type>Ask for user input</Type>
 <Validate>1</Validate>
 </Action><Action>
 <Clipboard>1</Clipboard>
@@ -2994,15 +2934,12 @@
 <Silent>0</Silent>
 <SourceFiles>%temp%\Screenshot.jpg</SourceFiles>
 <TargetFile>${Input}</TargetFile>
-<TargetFolder></TargetFolder>
-<Type>Upload</Type>
+<Type>Upload to FTP</Type>
 </Action><Action>
 <Overwrite>0</Overwrite>
 <Silent>1</Silent>
 <SourceFile>%temp%\Screenshot.jpg</SourceFile>
-<TargetFile></TargetFile>
-<TargetPath></TargetPath>
-<Type>Delete</Type>
+<Type>Delete file</Type>
 </Action></Actions>
 <Category>FTP</Category>
 <Conditions>
@@ -3027,9 +2964,7 @@
 <FTPProfile>1</FTPProfile>
 <Silent>0</Silent>
 <SourceFiles>${SelNQ}</SourceFiles>
-<TargetFile></TargetFile>
-<TargetFolder></TargetFolder>
-<Type>Upload</Type>
+<Type>Upload to FTP</Type>
 </Action></Actions>
 <Category>FTP</Category>
 <Conditions>
@@ -3041,7 +2976,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Upload the file(s) selected in the currently active explorer window to the FTP server defined in FTP profile 1. Make sure to configure the FTP profile with your FTP login data.</Description>
@@ -3063,19 +2998,17 @@
 <FTPProfile>1</FTPProfile>
 <Silent>0</Silent>
 <SourceFiles>${SelNQ}</SourceFiles>
-<TargetFile></TargetFile>
-<TargetFolder></TargetFolder>
-<Type>Upload</Type>
+<Type>Upload to FTP</Type>
 </Action></Actions>
 <Category>FTP</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Upload the file(s) selected in the currently active file dialog window to the FTP server defined in FTP profile 1. Make sure to configure the FTP profile with your FTP login data.</Description>
@@ -3093,7 +3026,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<Type>Clipmenu</Type>
+<Type>Clipboard Manager menu</Type>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
 <Conditions>
@@ -3116,9 +3049,8 @@
 <Action>
 <Command>cmd.exe /k cd /D c:\</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>CMD</Category>
 <Conditions>
@@ -3133,11 +3065,10 @@
 <Negate>0</Negate>
 <Operator>equals</Operator>
 <Type>If</Type>
-<With></With>
 </Condition><Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>1</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Open CMD in C:\ when no useful directory can be extracted from the current context.</Description>
@@ -3157,9 +3088,8 @@
 <Action>
 <Command>cmd.exe /k cd /D "${TitlePath}\"</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>CMD</Category>
 <Conditions>
@@ -3174,11 +3104,10 @@
 <Negate>1</Negate>
 <Operator>equals</Operator>
 <Type>If</Type>
-<With></With>
 </Condition><Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>1</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Open CMD with the path extracted from the title of the active window.</Description>
@@ -3196,23 +3125,15 @@
 </Event><Event>
 <Actions>
 <Action>
-<ForceClose></ForceClose>
-<Type>WindowClose</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Close a window</Type>
 <WindowMatchType>Active</WindowMatchType>
 </Action></Actions>
 <Category>CMD</Category>
 <Conditions>
 <Condition>
 <Negate>0</Negate>
-<Type>WindowActive</Type>
-<WindowFilter></WindowFilter>
+<Type>Window active</Type>
 <WindowFilterClass>ConsoleWindowClass</WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -3235,24 +3156,21 @@
 <Double>0</Double>
 <Relative>1</Relative>
 <RestorePosition>1</RestorePosition>
-<Type>MouseClick</Type>
+<Type>Mouse click</Type>
 <X>40</X>
 <Y>40</Y>
 </Action><Action>
 <KeyDelay>0</KeyDelay>
 <Keys>{Down 3}{Enter}</Keys>
-<Type>SendKeys</Type>
+<Type>Send keyboard input</Type>
 <WriteText>0</WriteText>
 </Action></Actions>
 <Category>CMD</Category>
 <Conditions>
 <Condition>
 <Negate>0</Negate>
-<Type>WindowActive</Type>
-<WindowFilter></WindowFilter>
+<Type>Window active</Type>
 <WindowFilterClass>ConsoleWindowClass</WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -3273,16 +3191,15 @@
 <Action>
 <Command>cmd.exe /k cd /D "${TitlePath}\"</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Open CMD in the current directory of the active file dialog window.</Description>
@@ -3305,17 +3222,17 @@
 <Content>${SelNM}</Content>
 <Cut>0</Cut>
 <InsertType>File</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>0</Negate>
@@ -3344,17 +3261,17 @@
 <Content>${SelNM}</Content>
 <Cut>1</Cut>
 <InsertType>File</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>0</Negate>
@@ -3379,21 +3296,23 @@
 <Actions>
 <Action>
 <Path>Upward</Path>
-<Type>SetDirectory</Type>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Set current directory</Type>
 <WindowMatchType>Active</WindowMatchType>
+</Action><Action>
+<Text>Example Message</Text>
+<Timeout>0</Timeout>
+<Title>7plus</Title>
+<Type>Message</Type>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>0</Negate>
@@ -3422,7 +3341,7 @@
 <Content>${SelNNEM}</Content>
 <Cut>0</Cut>
 <InsertType>Text</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
@@ -3435,7 +3354,7 @@
 </Condition><Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Copy the names of the selected files to the clipboard.</Description>
@@ -3458,7 +3377,7 @@
 <Content>${SelNM}</Content>
 <Cut>0</Cut>
 <InsertType>Text</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
@@ -3471,7 +3390,7 @@
 </Condition><Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Copy the paths of the selected files to the clipboard.</Description>
@@ -3494,7 +3413,7 @@
 <Content>${SelNNEM}</Content>
 <Cut>0</Cut>
 <InsertType>Text</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
@@ -3507,7 +3426,7 @@
 </Condition><Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Append the names of the selected files to the clipboard.</Description>
@@ -3530,7 +3449,7 @@
 <Content>${SelNM}</Content>
 <Cut>0</Cut>
 <InsertType>Text</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
@@ -3543,7 +3462,7 @@
 </Condition><Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Append the paths of the selected files to the clipboard.</Description>
@@ -3561,19 +3480,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<BaseFile></BaseFile>
 <Rename>1</Rename>
-<Type>NewFile</Type>
+<Type>Create new file</Type>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Create a new text file in the directory of the currently active file dialog.</Description>
@@ -3592,17 +3510,17 @@
 <Actions>
 <Action>
 <Rename>1</Rename>
-<Type>NewFolder</Type>
+<Type>Create new folder</Type>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Create a new folder in the directory of the currently active file dialog.</Description>
@@ -3625,21 +3543,19 @@
 <Filter>(.*\.jpg|.*\.bmp|.*\.png|.*\.gif)</Filter>
 <List>${SelNQ}</List>
 <Operator>that match regular expression</Operator>
-<Separator></Separator>
-<Type>FilterList</Type>
+<Type>Filter list</Type>
 </Action><Action>
 <Command>"%ProgramFiles%\Paint.NET\PaintDotNet.exe" ${SelNQ}</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Open selected image files in an image editor (Paint.NET by default).</Description>
@@ -3663,20 +3579,19 @@
 <List>${SelNQ}</List>
 <Operator>that match regular expression</Operator>
 <Separator>`n</Separator>
-<Type>FilterList</Type>
+<Type>Filter list</Type>
 </Action><Action>
 <Command>"%ProgramFiles%\Notepad++\notepad++.exe" ${SelNQ}</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Open selected non-image files in a text editor (Notepad++ by default).</Description>
@@ -3694,11 +3609,11 @@
 </Event><Event>
 <Actions>
 <Action>
-<Command>taskmgr</Command>
+<Command>C:\Windows\System32\taskmgr.exe</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
+<WorkingDirectory>C:\Windows\System32</WorkingDirectory>
 </Action></Actions>
 <Category>Taskbar</Category>
 <Conditions>
@@ -3713,14 +3628,14 @@
 <OfficialEvent>898</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Type>DoubleClickTaskbar</Type>
+<Type>Double click on taskbar</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Action>Set volume</Action>
 <ShowVolume>1</ShowVolume>
-<Type>Volume</Type>
+<Type>Change sound volume</Type>
 <Volume>+5</Volume>
 </Action></Actions>
 <Category>Taskbar</Category>
@@ -3728,11 +3643,8 @@
 <Condition>
 <MouseOverType>Window</MouseOverType>
 <Negate>0</Negate>
-<Type>MouseOver</Type>
-<WindowFilter></WindowFilter>
+<Type>Mouse over</Type>
 <WindowFilterClass>Shell_TrayWnd</WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -3753,7 +3665,7 @@
 <Action>
 <Action>Set volume</Action>
 <ShowVolume>1</ShowVolume>
-<Type>Volume</Type>
+<Type>Change sound volume</Type>
 <Volume>-5</Volume>
 </Action></Actions>
 <Category>Taskbar</Category>
@@ -3761,11 +3673,8 @@
 <Condition>
 <MouseOverType>Window</MouseOverType>
 <Negate>0</Negate>
-<Type>MouseOver</Type>
-<WindowFilter></WindowFilter>
+<Type>Mouse over</Type>
 <WindowFilterClass>Shell_TrayWnd</WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -3786,18 +3695,15 @@
 <Action>
 <KeyDelay>0</KeyDelay>
 <Keys>^.</Keys>
-<Type>SendKeys</Type>
+<Type>Send keyboard input</Type>
 <WriteText>0</WriteText>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
 <Conditions>
 <Condition>
 <Negate>0</Negate>
-<Type>WindowActive</Type>
-<WindowFilter></WindowFilter>
+<Type>Window active</Type>
 <WindowFilterClass>Photo_Lightweight_Viewer</WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition><Condition>
 <Compare>${WinVer}</Compare>
@@ -3824,18 +3730,15 @@
 <Action>
 <KeyDelay>0</KeyDelay>
 <Keys>^,</Keys>
-<Type>SendKeys</Type>
+<Type>Send keyboard input</Type>
 <WriteText>0</WriteText>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
 <Conditions>
 <Condition>
 <Negate>0</Negate>
-<Type>WindowActive</Type>
-<WindowFilter></WindowFilter>
+<Type>Window active</Type>
 <WindowFilterClass>Photo_Lightweight_Viewer</WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition><Condition>
 <Compare>${WinVer}</Compare>
@@ -3865,8 +3768,7 @@
 <Silent>0</Silent>
 <SourceFiles>${SelNNEM}</SourceFiles>
 <TargetFile>${Input}</TargetFile>
-<TargetFolder></TargetFolder>
-<Type>Upload</Type>
+<Type>Upload to FTP</Type>
 </Action></Actions>
 <Category>Explorer Buttons</Category>
 <Conditions>
@@ -3885,14 +3787,13 @@
 <ShowNoSelected>0</ShowNoSelected>
 <ShowSelected>1</ShowSelected>
 <Tooltip>Upload a file</Tooltip>
-<Type>ExplorerButton</Type>
+<Type>Explorer bar button</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
-<BaseFile></BaseFile>
 <Rename>1</Rename>
-<Type>NewFile</Type>
+<Type>Create new file</Type>
 </Action></Actions>
 <Category>Explorer Buttons</Category>
 <Conditions>
@@ -3911,12 +3812,12 @@
 <ShowNoSelected>1</ShowNoSelected>
 <ShowSelected>1</ShowSelected>
 <Tooltip>Creates a new text file</Tooltip>
-<Type>ExplorerButton</Type>
+<Type>Explorer bar button</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
-<Type>RestoreSelection</Type>
+<Type>Restore file selection</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -3928,7 +3829,7 @@
 <With>(CabinetWClass|ExploreWClass)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>0</Negate>
@@ -3953,7 +3854,7 @@
 <Actions>
 <Action>
 <Action>Toggle show hidden files</Action>
-<Type>ViewMode</Type>
+<Type>Change explorer view mode</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -3965,7 +3866,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Toggles the "Show hidden files" explorer setting.</Description>
@@ -3983,11 +3884,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<Type>WindowSendToBottom</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Put window in background</Type>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action></Actions>
 <Category>Window Handling</Category>
@@ -4011,9 +3908,8 @@
 <Action>
 <Command>cmd.exe /k cd /D "%Desktop%"</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>CMD</Category>
 <Conditions>
@@ -4042,15 +3938,14 @@
 <Action>
 <Cancel>1</Cancel>
 <DataType>Text</DataType>
-<Placeholder>Input</Placeholder>
 <Text>Enter parameters. Paths might need`n to be enclosed in double quotes.</Text>
 <Title>Enter Parameters</Title>
-<Type>Input</Type>
+<Type>Ask for user input</Type>
 <Validate>1</Validate>
 </Action><Action>
 <Command>${Context} ${Input}</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
 <WorkingDirectory>${P}</WorkingDirectory>
 </Action></Actions>
@@ -4072,17 +3967,15 @@
 <Desktop>0</Desktop>
 <Directory>0</Directory>
 <DirectoryBackground>0</DirectoryBackground>
-<FileTypes>exe,bat,cmd</FileTypes>
 <Name>Run with parameters...</Name>
 <SingleFileOnly>1</SingleFileOnly>
-<SubMenu></SubMenu>
-<Type>ContextMenu</Type>
+<Type>Context menu</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Files>${Context}</Files>
-<Type>ImageConverter</Type>
+<Type>Show Image Converter</Type>
 </Action></Actions>
 <Category>Context Menu</Category>
 <Conditions>
@@ -4102,17 +3995,15 @@
 <Desktop>0</Desktop>
 <Directory>0</Directory>
 <DirectoryBackground>0</DirectoryBackground>
-<FileTypes>BMP,DIB,RLE,JPG,JPEG,JPE,JFIF,GIF,TIF,TIFF,PNG</FileTypes>
 <Name>Convert Images</Name>
 <SingleFileOnly>0</SingleFileOnly>
-<SubMenu></SubMenu>
-<Type>ContextMenu</Type>
+<Type>Context menu</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Files>${Context}</Files>
-<Type>MD5</Type>
+<Type>Show Explorer checksum dialog</Type>
 </Action></Actions>
 <Category>Context Menu</Category>
 <Conditions>
@@ -4132,11 +4023,9 @@
 <Desktop>0</Desktop>
 <Directory>0</Directory>
 <DirectoryBackground>0</DirectoryBackground>
-<FileTypes>*</FileTypes>
 <Name>MD5 Checksum(s)</Name>
 <SingleFileOnly>0</SingleFileOnly>
-<SubMenu></SubMenu>
-<Type>ContextMenu</Type>
+<Type>Context menu</Type>
 </Trigger>
 </Event><Event>
 <Actions>
@@ -4145,9 +4034,7 @@
 <FTPProfile>1</FTPProfile>
 <Silent>0</Silent>
 <SourceFiles>${Context}</SourceFiles>
-<TargetFile></TargetFile>
-<TargetFolder></TargetFolder>
-<Type>Upload</Type>
+<Type>Upload to FTP</Type>
 </Action></Actions>
 <Category>Context Menu</Category>
 <Conditions>
@@ -4167,17 +4054,15 @@
 <Desktop>0</Desktop>
 <Directory>0</Directory>
 <DirectoryBackground>0</DirectoryBackground>
-<FileTypes>*</FileTypes>
 <Name>Upload</Name>
 <SingleFileOnly>0</SingleFileOnly>
-<SubMenu></SubMenu>
-<Type>ContextMenu</Type>
+<Type>Context menu</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Action>Toggle show hidden files</Action>
-<Type>ViewMode</Type>
+<Type>Change explorer view mode</Type>
 </Action></Actions>
 <Category>Context Menu</Category>
 <Conditions>
@@ -4197,25 +4082,23 @@
 <Desktop>0</Desktop>
 <Directory>0</Directory>
 <DirectoryBackground>1</DirectoryBackground>
-<FileTypes></FileTypes>
 <Name>Toggle hidden files</Name>
 <SingleFileOnly>0</SingleFileOnly>
-<SubMenu></SubMenu>
-<Type>ContextMenu</Type>
+<Type>Context menu</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Action>Toggle mute/unmute</Action>
 <ShowVolume>1</ShowVolume>
-<Type>Volume</Type>
+<Type>Change sound volume</Type>
 <Volume>100</Volume>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
-<Type>IsFullScreen</Type>
+<Type>Fullscreen window active</Type>
 <UseExcludeList>1</UseExcludeList>
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
@@ -4237,14 +4120,14 @@
 <Action>
 <Action>Set volume</Action>
 <ShowVolume>1</ShowVolume>
-<Type>Volume</Type>
+<Type>Change sound volume</Type>
 <Volume>-2</Volume>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
-<Type>IsFullScreen</Type>
+<Type>Fullscreen window active</Type>
 <UseExcludeList>1</UseExcludeList>
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
@@ -4266,14 +4149,14 @@
 <Action>
 <Action>Set volume</Action>
 <ShowVolume>1</ShowVolume>
-<Type>Volume</Type>
+<Type>Change sound volume</Type>
 <Volume>+2</Volume>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
-<Type>IsFullScreen</Type>
+<Type>Fullscreen window active</Type>
 <UseExcludeList>1</UseExcludeList>
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
@@ -4294,11 +4177,9 @@
 <Actions>
 <Action>
 <Action>Trigger Event</Action>
-<Compare></Compare>
 <EventID>1599</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action></Actions>
 <Category>Taskbar</Category>
 <Conditions>
@@ -4315,48 +4196,45 @@
 <Trigger>
 <Menu>Tray</Menu>
 <Name>Start timer</Name>
-<Submenu></Submenu>
-<Type>MenuItem</Type>
+<Type>Menu item clicked</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Cancel>1</Cancel>
 <DataType>Selection</DataType>
-<Placeholder>TimerType</Placeholder>
 <Selection>Message timer|Shutdown timer|Run program timer</Selection>
 <Text>What type of timer would you like to start?</Text>
 <Title>Dynamic timer</Title>
-<Type>Input</Type>
+<Type>Ask for user input</Type>
 <Validate>1</Validate>
 </Action><Action>
 <Cancel>1</Cancel>
 <DataType>Time</DataType>
-<Placeholder>TimerTime</Placeholder>
 <Text>Enter time [HH:MM:SS]:</Text>
 <Title>Dynamic timer - Enter time</Title>
-<Type>Input</Type>
+<Type>Ask for user input</Type>
 <Validate>1</Validate>
 </Action><Action>
 <Action>Trigger Event</Action>
 <Compare>${TimerType}</Compare>
 <EventID>1602</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
+<Type>Control event</Type>
 <With>Message Timer</With>
 </Action><Action>
 <Action>Trigger Event</Action>
 <Compare>${TimerType}</Compare>
 <EventID>1603</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
+<Type>Control event</Type>
 <With>Run program timer</With>
 </Action><Action>
 <Action>Trigger Event</Action>
 <Compare>${TimerType}</Compare>
 <EventID>1606</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
+<Type>Control event</Type>
 <With>Shutdown timer</With>
 </Action></Actions>
 <Category>Taskbar</Category>
@@ -4372,13 +4250,12 @@
 <OfficialEvent>6</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Type>None</Type>
+<Type>Triggered by an action</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Text>${TimerMessage}</Text>
-<Timeout></Timeout>
 <Title>Timer</Title>
 <Type>Message</Type>
 </Action></Actions>
@@ -4406,30 +4283,27 @@
 <Action>
 <Cancel>1</Cancel>
 <DataType>Text</DataType>
-<Placeholder>TimerMessage</Placeholder>
 <Text>Enter message text:</Text>
 <Title>Message text</Title>
-<Type>Input</Type>
+<Type>Ask for user input</Type>
 <Validate>1</Validate>
 </Action><Action>
 <Action>Copy Event</Action>
-<Compare></Compare>
 <DeleteAfterUse>1</DeleteAfterUse>
 <EvaluateOnCopy>1</EvaluateOnCopy>
 <EventID>1600</EventID>
 <Operator>equals</Operator>
 <Placeholder>MessageTimer</Placeholder>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action><Action>
 <Action>Set time</Action>
 <Time>${TimerTime}</Time>
 <TimerID>${MessageTimer}</TimerID>
-<Type>ControlTimer</Type>
+<Type>Control timer</Type>
 </Action><Action>
 <Action>Start timer</Action>
 <TimerID>${MessageTimer}</TimerID>
-<Type>ControlTimer</Type>
+<Type>Control timer</Type>
 </Action></Actions>
 <Category>Taskbar</Category>
 <Conditions>
@@ -4444,37 +4318,34 @@
 <OfficialEvent>9</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Type>None</Type>
+<Type>Triggered by an action</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Cancel>1</Cancel>
 <DataType>File</DataType>
-<Placeholder>TimerProgram</Placeholder>
 <Text>Enter program to launch</Text>
 <Title>Select program</Title>
-<Type>Input</Type>
+<Type>Ask for user input</Type>
 <Validate>1</Validate>
 </Action><Action>
 <Action>Copy Event</Action>
-<Compare></Compare>
 <DeleteAfterUse>1</DeleteAfterUse>
 <EvaluateOnCopy>1</EvaluateOnCopy>
 <EventID>1604</EventID>
 <Operator>equals</Operator>
 <Placeholder>RunTimer</Placeholder>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action><Action>
 <Action>Set time</Action>
 <Time>${TimerTime}</Time>
 <TimerID>${RunTimer}</TimerID>
-<Type>ControlTimer</Type>
+<Type>Control timer</Type>
 </Action><Action>
 <Action>Start timer</Action>
 <TimerID>${RunTimer}</TimerID>
-<Type>ControlTimer</Type>
+<Type>Control timer</Type>
 </Action></Actions>
 <Category>Taskbar</Category>
 <Conditions>
@@ -4489,16 +4360,15 @@
 <OfficialEvent>11</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Type>None</Type>
+<Type>Triggered by an action</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Command>${TimerProgram}</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>Taskbar</Category>
 <Conditions>
@@ -4524,7 +4394,7 @@
 <Action>
 <ForceClose>0</ForceClose>
 <ShutDownSelection>Shutdown</ShutDownSelection>
-<Type>Shutdown</Type>
+<Type>Shutdown computer</Type>
 </Action></Actions>
 <Category>Taskbar</Category>
 <Conditions>
@@ -4549,23 +4419,21 @@
 <Actions>
 <Action>
 <Action>Copy Event</Action>
-<Compare></Compare>
 <DeleteAfterUse>1</DeleteAfterUse>
 <EvaluateOnCopy>1</EvaluateOnCopy>
 <EventID>1605</EventID>
 <Operator>equals</Operator>
 <Placeholder>ShutdownTimer</Placeholder>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action><Action>
 <Action>Set time</Action>
 <Time>${TimerTime}</Time>
 <TimerID>${ShutdownTimer}</TimerID>
-<Type>ControlTimer</Type>
+<Type>Control timer</Type>
 </Action><Action>
 <Action>Start timer</Action>
 <TimerID>${ShutdownTimer}</TimerID>
-<Type>ControlTimer</Type>
+<Type>Control timer</Type>
 </Action></Actions>
 <Category>Taskbar</Category>
 <Conditions>
@@ -4580,28 +4448,22 @@
 <OfficialEvent>14</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Type>None</Type>
+<Type>Triggered by an action</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Action>Trigger Event</Action>
-<Compare></Compare>
 <EventID>1599</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action></Actions>
 <Category>Taskbar</Category>
 <Conditions>
 <Condition>
 <MouseOverType>Clock</MouseOverType>
 <Negate>0</Negate>
-<Type>MouseOver</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Mouse over</Type>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -4622,7 +4484,7 @@
 <Action>
 <KeyDelay>0</KeyDelay>
 <Keys>^k</Keys>
-<Type>SendKeys</Type>
+<Type>Send keyboard input</Type>
 <WriteText>0</WriteText>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
@@ -4658,7 +4520,7 @@
 <Action>
 <KeyDelay>0</KeyDelay>
 <Keys>`r`n</Keys>
-<Type>SendKeys</Type>
+<Type>Send keyboard input</Type>
 <WriteText>1</WriteText>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
@@ -4682,7 +4544,7 @@
 <Action>
 <KeyDelay>0</KeyDelay>
 <Keys>^l</Keys>
-<Type>SendKeys</Type>
+<Type>Send keyboard input</Type>
 <WriteText>0</WriteText>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
@@ -4717,7 +4579,7 @@
 <Actions>
 <Action>
 <Paths>${SelNM}</Paths>
-<Type>FlatView</Type>
+<Type>Show Explorer flat view</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -4729,7 +4591,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition><Condition>
 <Compare>${WinVer}</Compare>
 <Negate>1</Negate>
@@ -4754,18 +4616,18 @@
 <Actions>
 <Action>
 <Action>Tab in Background</Action>
-<Type>OpenInNewFolder</Type>
+<Type>Open folder in new window / tab</Type>
 </Action></Actions>
 <Category>Uncategorized</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
-<Type>IsFullScreen</Type>
+<Type>Fullscreen window active</Type>
 <UseExcludeList>1</UseExcludeList>
 <UseIncludeList>1</UseIncludeList>
 </Condition><Condition>
 <Negate>0</Negate>
-<Type>MouseOverFileList</Type>
+<Type>Mouse over file list</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Opens the explorer folder under the mouse in a new window or tab.</Description>
@@ -4783,18 +4645,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<Type>TaskButtonClose</Type>
+<Type>Close taskbar button under mouse</Type>
 </Action></Actions>
 <Category>Uncategorized</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
-<Type>IsFullScreen</Type>
+<Type>Fullscreen window active</Type>
 <UseExcludeList>1</UseExcludeList>
 <UseIncludeList>1</UseIncludeList>
 </Condition><Condition>
 <Negate>0</Negate>
-<Type>MouseOverTaskList</Type>
+<Type>Mouse over taskbar list</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Closes the window belonging to the taskbar button under the mouse.</Description>
@@ -4812,13 +4674,13 @@
 </Event><Event>
 <Actions>
 <Action>
-<Type>ToggleWallpaper</Type>
+<Type>Change desktop wallpaper</Type>
 </Action></Actions>
 <Category>Uncategorized</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
-<Type>IsFullScreen</Type>
+<Type>Fullscreen window active</Type>
 <UseExcludeList>1</UseExcludeList>
 <UseIncludeList>1</UseIncludeList>
 </Condition><Condition>
@@ -4844,18 +4706,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<Type>MouseCloseTab</Type>
+<Type>Close tab under mouse</Type>
 </Action></Actions>
 <Category>Uncategorized</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
-<Type>IsFullScreen</Type>
+<Type>Fullscreen window active</Type>
 <UseExcludeList>1</UseExcludeList>
 <UseIncludeList>1</UseIncludeList>
 </Condition><Condition>
 <Negate>0</Negate>
-<Type>MouseOverTabButton</Type>
+<Type>Mouse over tab button</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Closes the explorer tab under the mouse.</Description>
@@ -4874,7 +4736,7 @@
 <Actions>
 <Action>
 <SelectedFiles>0</SelectedFiles>
-<Type>ExplorerReplaceDialog</Type>
+<Type>Explorer replace dialog</Type>
 <View>Filenames</View>
 </Action></Actions>
 <Category>Explorer</Category>
@@ -4887,7 +4749,7 @@
 <With>(CabinetWClass|ExploreWClass)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event shows the Explorer Rename/Replace dialog which is used to replace text in filenames and files.</Description>
@@ -4906,7 +4768,7 @@
 <Actions>
 <Action>
 <Paths>${Context}</Paths>
-<Type>FlatView</Type>
+<Type>Show Explorer flat view</Type>
 </Action></Actions>
 <Category>Context Menu</Category>
 <Conditions>
@@ -4926,22 +4788,20 @@
 <Desktop>0</Desktop>
 <Directory>1</Directory>
 <DirectoryBackground>0</DirectoryBackground>
-<FileTypes></FileTypes>
 <Name>Flat View</Name>
 <SingleFileOnly>0</SingleFileOnly>
-<SubMenu></SubMenu>
-<Type>ContextMenu</Type>
+<Type>Context menu</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
-<Type>ShowAeroFlip</Type>
+<Type>Show Aero Flip</Type>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
-<Type>IsFullScreen</Type>
+<Type>Fullscreen window active</Type>
 <UseExcludeList>1</UseExcludeList>
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
@@ -4957,13 +4817,13 @@
 <Trigger>
 <Corner>1</Corner>
 <Time>100</Time>
-<Type>ScreenCorner</Type>
+<Type>Screen corner</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Method>Goo.gl</Method>
-<Type>ShortenURL</Type>
+<Type>Shorten a URL</Type>
 <URL>${Clip}</URL>
 <WriteToClipboard>1</WriteToClipboard>
 <WriteToPlaceholder>ShortURL</WriteToPlaceholder>
@@ -4972,7 +4832,7 @@
 <Conditions>
 <Condition>
 <Negate>1</Negate>
-<Type>IsFullScreen</Type>
+<Type>Fullscreen window active</Type>
 <UseExcludeList>1</UseExcludeList>
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
@@ -4992,7 +4852,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<Type>MergeTabs</Type>
+<Type>Merge Explorer windows</Type>
 </Action></Actions>
 <Category>Uncategorized</Category>
 <Conditions>
@@ -5019,13 +4879,13 @@
 </Event><Event>
 <Actions>
 <Action>
-<Type>MouseWindowDrag</Type>
+<Type>Drag window with mouse</Type>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
 <Condition>
 <Negate>0</Negate>
-<Type>IsDragable</Type>
+<Type>Window is dragable</Type>
 </Condition><Condition>
 <Compare>${MC}</Compare>
 <Negate>1</Negate>
@@ -5049,13 +4909,13 @@
 </Event><Event>
 <Actions>
 <Action>
-<Type>MouseWindowDrag</Type>
+<Type>Drag window with mouse</Type>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
 <Condition>
 <Negate>0</Negate>
-<Type>IsDragable</Type>
+<Type>Window is dragable</Type>
 </Condition><Condition>
 <Compare>${MC}</Compare>
 <Negate>0</Negate>
@@ -5079,13 +4939,13 @@
 </Event><Event>
 <Actions>
 <Action>
-<Type>MouseWindowResize</Type>
+<Type>Resize window with mouse</Type>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
 <Condition>
 <Negate>0</Negate>
-<Type>IsDragable</Type>
+<Type>Window is dragable</Type>
 </Condition><Condition>
 <Compare>${MC}</Compare>
 <Negate>0</Negate>
@@ -5109,13 +4969,13 @@
 </Event><Event>
 <Actions>
 <Action>
-<Type>MouseWindowResize</Type>
+<Type>Resize window with mouse</Type>
 </Action></Actions>
 <Category>Uncategorized</Category>
 <Conditions>
 <Condition>
 <Negate>0</Negate>
-<Type>IsDragable</Type>
+<Type>Window is dragable</Type>
 </Condition><Condition>
 <Compare>${MC}</Compare>
 <Negate>1</Negate>
@@ -5139,7 +4999,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<Type>InvertSelection</Type>
+<Type>Invert file selection</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -5167,7 +5027,7 @@
 <Actions>
 <Action>
 <SelectedFiles>0</SelectedFiles>
-<Type>ExplorerReplaceDialog</Type>
+<Type>Explorer replace dialog</Type>
 <View>Files</View>
 </Action></Actions>
 <Category>Explorer</Category>
@@ -5180,7 +5040,7 @@
 <With>(CabinetWClass|ExploreWClass)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event shows the explorer batch rename/replace dialog with "Replace in Files" preselected.</Description>
@@ -5199,7 +5059,7 @@
 <Actions>
 <Action>
 <SelectedFiles>1</SelectedFiles>
-<Type>ExplorerReplaceDialog</Type>
+<Type>Explorer replace dialog</Type>
 <View>Filenames</View>
 </Action></Actions>
 <Category>Context Menu</Category>
@@ -5226,17 +5086,15 @@
 <Desktop>0</Desktop>
 <Directory>1</Directory>
 <DirectoryBackground>0</DirectoryBackground>
-<FileTypes>*</FileTypes>
 <Name>Replace in filenames</Name>
 <SingleFileOnly>0</SingleFileOnly>
-<SubMenu></SubMenu>
-<Type>ContextMenu</Type>
+<Type>Context menu</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <SelectedFiles>1</SelectedFiles>
-<Type>ExplorerReplaceDialog</Type>
+<Type>Explorer replace dialog</Type>
 <View>Files</View>
 </Action></Actions>
 <Category>Context Menu</Category>
@@ -5263,11 +5121,147 @@
 <Desktop>0</Desktop>
 <Directory>1</Directory>
 <DirectoryBackground>0</DirectoryBackground>
-<FileTypes>*</FileTypes>
 <Name>Replace in file contents</Name>
 <SingleFileOnly>0</SingleFileOnly>
-<SubMenu></SubMenu>
-<Type>ContextMenu</Type>
+<Type>Context menu</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Area>Screen</Area>
+<Quality>95</Quality>
+<TargetFile>Screenshot.png</TargetFile>
+<TargetFolder>%Temp%\7plus</TargetFolder>
+<Type>Take a screenshot</Type>
+</Action><Action>
+<Cancel>1</Cancel>
+<DataType>Text</DataType>
+<Placeholder>NewName</Placeholder>
+<Selection>Take screenshot|Ask user input|Move file %Temp%\7plus\Screenshot.png to %Temp%\7plus\${NewName}|Open Image Converter: %Temp%\7plus\${NewName}.png</Selection>
+<Text>Enter a filename for the screenshot (without extension)</Text>
+<Title>Enter filename</Title>
+<Type>Ask for user input</Type>
+<Validate>1</Validate>
+</Action><Action>
+<Overwrite>0</Overwrite>
+<Silent>0</Silent>
+<SourceFile>%Temp%\7plus\Screenshot.png</SourceFile>
+<TargetFile>${NewName}</TargetFile>
+<TargetPath>%Temp%\7plus</TargetPath>
+<Type>Move file</Type>
+</Action><Action>
+<Files>%Temp%\7plus\${NewName}.png</Files>
+<Hoster>ImgUr</Hoster>
+<ReuseWindow>1</ReuseWindow>
+<TemporaryFiles>1</TemporaryFiles>
+<Type>Show Image Converter</Type>
+</Action></Actions>
+<Category>Misc Hotkeys</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event takes a screenshot and shows it in image converter for further processing.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1637</ID>
+<Name>Take screenshot: Use Image Converter</Name>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>PrintScreen</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Area>User selection</Area>
+<Quality>95</Quality>
+<TargetFile>Screenshot.png</TargetFile>
+<TargetFolder>%Temp%\7plus</TargetFolder>
+<Type>Take a screenshot</Type>
+</Action><Action>
+<Cancel>1</Cancel>
+<DataType>Text</DataType>
+<Placeholder>NewName</Placeholder>
+<Selection>Take screenshot|Ask user input|Move file %Temp%\7plus\Screenshot.png to %Temp%\7plus\${NewName}|Open Image Converter: %Temp%\7plus\${NewName}.png</Selection>
+<Text>Enter a filename for the screenshot (without extension)</Text>
+<Title>Enter filename</Title>
+<Type>Ask for user input</Type>
+<Validate>1</Validate>
+</Action><Action>
+<Overwrite>0</Overwrite>
+<Silent>0</Silent>
+<SourceFile>%Temp%\7plus\Screenshot.png</SourceFile>
+<TargetFile>${NewName}</TargetFile>
+<TargetPath>%Temp%\7plus</TargetPath>
+<Type>Move file</Type>
+</Action><Action>
+<Files>%Temp%\7plus\${NewName}.png</Files>
+<Hoster>ImgUr</Hoster>
+<ReuseWindow>1</ReuseWindow>
+<TemporaryFiles>1</TemporaryFiles>
+<Type>Show Image Converter</Type>
+</Action></Actions>
+<Category>Misc Hotkeys</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event takes a screenshot of an area that can be selected by the user and shows it in image converter for further processing.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1638</ID>
+<Name>Take screenshot of custom area: Use Image Converter</Name>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>#PrintScreen</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Area>Window</Area>
+<Quality>95</Quality>
+<TargetFile>Screenshot.png</TargetFile>
+<TargetFolder>%Temp%\7plus</TargetFolder>
+<Type>Take a screenshot</Type>
+</Action><Action>
+<Cancel>1</Cancel>
+<DataType>Text</DataType>
+<Placeholder>NewName</Placeholder>
+<Selection>Take screenshot|Ask user input|Move file %Temp%\7plus\Screenshot.png to %Temp%\7plus\${NewName}|Open Image Converter: %Temp%\7plus\${NewName}.png</Selection>
+<Text>Enter a filename for the screenshot (without extension)</Text>
+<Title>Enter filename</Title>
+<Type>Ask for user input</Type>
+<Validate>1</Validate>
+</Action><Action>
+<Overwrite>0</Overwrite>
+<Silent>0</Silent>
+<SourceFile>%Temp%\7plus\Screenshot.png</SourceFile>
+<TargetFile>${NewName}</TargetFile>
+<TargetPath>%Temp%\7plus</TargetPath>
+<Type>Move file</Type>
+</Action><Action>
+<Files>%Temp%\7plus\${NewName}.png</Files>
+<Hoster>ImgUr</Hoster>
+<ReuseWindow>1</ReuseWindow>
+<TemporaryFiles>1</TemporaryFiles>
+<Type>Show Image Converter</Type>
+</Action></Actions>
+<Category>Misc Hotkeys</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event takes a screenshot of the active window and shows it in image converter for further processing.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1639</ID>
+<Name>Take screenshot of window: Use Image Converter</Name>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!PrintScreen</Key>
+<Type>Hotkey</Type>
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
