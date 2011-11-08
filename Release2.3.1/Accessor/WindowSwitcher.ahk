@@ -123,7 +123,7 @@ WindowSwitcherEndProcess()
 	LV_GetText(id,selected,2)
 	hwnd := Accessor.List[id].hwnd
 	WinKill ahk_id %hwnd%
-	FillAccessorList()
+	AccessorClose()
 }
 WindowSwitcherCloseWindow()
 {
@@ -138,9 +138,7 @@ WindowSwitcherCloseWindow()
 	hwnd := Accessor.List[id].hwnd
 	outputdebug hwnd %hwnd%
 	PostMessage, 0x112, 0xF060,,, ahk_id %hwnd%
-	WindowSwitcher := AccessorPlugins.GetItemWithValue("Type","WindowSwitcher")
-	WindowSwitcher.List.Delete(WindowSwitcher.List.FindKeyWithValue("hwnd",hwnd))
-	FillAccessorList()
+	AccessorClose()
 }
 WindowSwitcherAlwaysOnTop()
 {

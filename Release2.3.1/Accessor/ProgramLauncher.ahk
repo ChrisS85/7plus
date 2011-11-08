@@ -31,9 +31,9 @@ Accessor_ProgramLauncher_ShowSettings(ProgramLauncher, PluginSettings, PluginGUI
 		AddControl(PSettings, PGUI, "Checkbox", "IgnoreExtensions", "Ignore file extensions", "", "")
 		AddControl(PSettings, PGUI, "Edit", "Exclude", "", "", "Exclude:")
 		x := PGUI.x
-		GUI, Add, ListView, vProgramLauncherListView gProgramLauncherListView AltSubmit -Hdr -Multi x%x% y+10 w330 R8, ID|Path
+		GUI, Add, ListView, vProgramLauncherListView gProgramLauncherListView AltSubmit -Hdr -Multi -ReadOnly x%x% y+10 w330 R8, Path
 		Loop % PSettings.tmpPaths.MaxIndex()
-			LV_Add(A_Index = 1 ? "Select" : "", A_Index, PSettings.tmpPaths[A_Index].Path)
+			LV_Add(A_Index = 1 ? "Select" : "", PSettings.tmpPaths[A_Index].Path)
 		GUI, Add, Button, x+10 gProgramLauncherAddPath w80, Add Path
 		GUI, Add, Button, y+10 gProgramLauncherEditPath vProgramLauncherEditPath w80, Browse
 		GUI, Add, Button, y+10 gProgramLauncherDeletePath vProgramLauncherDeletePath w80, Delete Path
@@ -50,15 +50,13 @@ Accessor_ProgramLauncher_ShowSettings(ProgramLauncher, PluginSettings, PluginGUI
 		{	
 			GuiControl, enable, ProgramLauncherDeletePath
 			GuiControl, enable, ProgramLauncherEditPath
-			LV_GetText(pos,A_EventInfo,1)
-			extensions := PSettings.tmpPaths[pos].Extensions
+			extensions := PSettings.tmpPaths[A_EventInfo].Extensions
 			ControlSetText,,%extensions%, ahk_id %hEdit%
 		}
 		else if(A_GuiEvent="I" && InStr(ListEvent, "s", true))
 		{
-			LV_GetText(pos,A_EventInfo,1)
 			ControlGetText, extensions,, ahk_id %hEdit%
-			PSettings.tmpPaths[pos].Extensions := extensions
+			PSettings.tmpPaths[A_EventInfo].Extensions := extensions
 			GuiControl, disable, ProgramLauncherEditPath
 			GuiControl, disable, ProgramLauncherDeletePath
 		}
@@ -70,7 +68,7 @@ Accessor_ProgramLauncher_ShowSettings(ProgramLauncher, PluginSettings, PluginGUI
 		if(path!="")
 		{
 			PSettings.tmpPaths.Insert(Object("Path", path, "Extensions", "exe"))
-			LV_Add("Select", PSettings.tmpPaths.MaxIndex(), path)
+			LV_Add("Select", path)
 		}
 	}
 	else if(GoToLabel = "EditPath")
@@ -83,9 +81,8 @@ Accessor_ProgramLauncher_ShowSettings(ProgramLauncher, PluginSettings, PluginGUI
 			; path:=COMObjCreate("Shell.Application").BrowseForFolder(0, "Add indexing path", 0x50).Self.Path
 			if(path!="")
 			{
-				LV_GetText(pos,selected,1)
-				PSettings.tmpPaths[pos].Path := path
-				LV_Modify(selected, "Select Col2", path)
+				PSettings.tmpPaths[selected].Path := path
+				LV_Modify(selected, "Select Col1", path)
 			}
 		}
 	}
@@ -94,8 +91,7 @@ Accessor_ProgramLauncher_ShowSettings(ProgramLauncher, PluginSettings, PluginGUI
 		selected := LV_GetNext()
 		if(selected)
 		{
-			LV_GetText(pos,selected,1)
-			PSettings.tmpPaths.Delete(pos)
+			PSettings.tmpPaths.Delete(selected)
 			LV_Delete(selected)
 		}
 	}
@@ -103,10 +99,18 @@ Accessor_ProgramLauncher_ShowSettings(ProgramLauncher, PluginSettings, PluginGUI
 	{		
 		Gui, ListView, ProgramLauncherListView
 		selected := LV_GetNext()
-		LV_GetText(pos,selected,1)
 		ControlGetText, extensions,, ahk_id %hEdit%
-		PSettings.tmpPaths[pos].Extensions := extensions
-		PLauncher.Paths := PSettings.tmpPaths.DeepCopy()
+		PSettings.tmpPaths[selected].Extensions := extensions
+		PLauncher.Paths := Array()
+		Loop % LV_GetCount()
+		{
+			LV_GetText(Path, A_Index, 1)
+			if(InStr(FileExist(ExpandPathPlaceholders(Path)), "D"))
+				PLauncher.Paths.Insert(Object("Path", Path,"Extensions",PSettings.tmpPaths[A_Index].Extensions))
+			else
+				MsgBox Ignoring %Path% because it is invalid.
+		}
+		RefreshProgramLauncherCache(PLauncher)
 	}
 	else if(GoToLabel = "RefreshCache")
 		RefreshProgramLauncherCache(PLauncher)
