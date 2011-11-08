@@ -17,21 +17,20 @@ Class CSliderControl Extends CControl
 		this._.Insert("Invert", InStr(Options, "Invert"))
 		this._.Insert("Messages", {0x004E : "Notify"}) ;This control uses WM_NOTIFY with NM_SETFOCUS and NM_KILLFOCUS
 		this._.Insert("Events", ["SliderMoved"])
-	}	
+	}
 	
 	/*
-	Variable: Value
+	Property: Value
 	The value of the Slider control. Relative offsets are possible by adding a sign when assigning it, i.e. Slider.Value := "+10". Slider.Value += 10 is also possible but less efficient.
 	
-	Variable: Min
+	Property: Min
 	The minimum value of the Slider control.
 	
-	Variable: Max
+	Property: Max
 	The maximum value of the Slider control.
 	*/
 	__Get(Name, Params*)
 	{
-		;~ global CGUI
 		if(Name != "GUINum" && !CGUI.GUIList[this.GUINum].IsDestroyed)
 		{
 			DetectHidden := A_DetectHiddenWindows
@@ -61,20 +60,15 @@ Class CSliderControl Extends CControl
 	}
 	__Set(Name, Params*)
 	{
-		;~ global CGUI
 		if(!CGUI.GUIList[this.GUINum].IsDestroyed)
 		{
 			;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
-			Value := Params[Params.MaxIndex()]
-			Params.Remove(Params.MaxIndex())
+			Value := Params.Remove()
 			if(Params.MaxIndex())
 			{
 				Params.Insert(1, Name)
-				Name :=  Params[Params.MaxIndex()]
-				Params.Remove(Params.MaxIndex())
-				Object := this[Params*]
-				Object[Name] := Value
-				return Value
+				Name := Params.Remove()
+				return (this[Params*])[Name] := Value
 			}
 			DetectHidden := A_DetectHiddenWindows
 			DetectHiddenWindows, On
@@ -120,7 +114,7 @@ Class CSliderControl Extends CControl
 	To handle control events you need to create a function with this naming scheme in your window class: ControlName_EventName(params)
 	The parameters depend on the event and there may not be params at all in some cases.
 	Additionally it is required to create a label with this naming scheme: GUIName_ControlName
-	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent(). 
+	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent().
 	For better readability labels may be chained since they all execute the same code.
 	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
 	

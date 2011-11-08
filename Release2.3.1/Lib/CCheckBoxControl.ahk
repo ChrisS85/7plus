@@ -17,12 +17,11 @@ Class CCheckBoxControl Extends CControl ;This class is a radio control as well
 		this._.Insert("Messages", {7 : "KillFocus", 6 : "SetFocus" }) ;Used for automatically registering message callbacks
 	}
 	/*
-	Variable: Checked
+	Property: Checked
 	If true, the control is checked.
 	*/
 	__Get(Name)
     {
-		;~ global CGUI
 		if(Name != "GUINum" && !CGUI.GUIList[this.GUINum].IsDestroyed)
 		{
 			DetectHidden := A_DetectHiddenWindows
@@ -39,20 +38,15 @@ Class CCheckBoxControl Extends CControl ;This class is a radio control as well
 	}
 	__Set(Name, Params*)
 	{
-		;~ global CGUI
 		if(!CGUI.GUIList[this.GUINum].IsDestroyed)
 		{
 			;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
-			Value := Params[Params.MaxIndex()]
-			Params.Remove(Params.MaxIndex())
+			Value := Params.Remove()
 			if(Params.MaxIndex())
 			{
 				Params.Insert(1, Name)
-				Name :=  Params[Params.MaxIndex()]
-				Params.Remove(Params.MaxIndex())
-				Object := this[Params*]
-				Object[Name] := Value
-				return Value
+				Name := Params.Remove()
+				return (this[Params*])[Name] := Value
 			}
 			DetectHidden := A_DetectHiddenWindows
 			DetectHiddenWindows, On
@@ -86,7 +80,6 @@ Class CCheckBoxControl Extends CControl ;This class is a radio control as well
 	*/
 	AddControl(type, Name, Options, Text, UseEnabledState = 0)
 	{
-		;~ global CGUI
 		GUI := CGUI.GUIList[this.GUINum]
 		if(!this.Checked)
 			Options .= UseEnabledState ? " Disabled" : " Hidden"
@@ -101,7 +94,6 @@ Class CCheckBoxControl Extends CControl ;This class is a radio control as well
 	*/
 	GetRadioButtonGroup()
 	{
-		;~ global CGUI
 		GUI := CGUI.GUIList[this.GUINum]
 		if(GUI.IsDestroyed)
 			return []
@@ -172,7 +164,7 @@ Class CCheckBoxControl Extends CControl ;This class is a radio control as well
 	To handle control events you need to create a function with this naming scheme in your window class: ControlName_EventName(params)
 	The parameters depend on the event and there may not be params at all in some cases.
 	Additionally it is required to create a label with this naming scheme: GUIName_ControlName
-	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent(). 
+	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent().
 	For better readability labels may be chained since they all execute the same code.
 	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
 	

@@ -24,7 +24,7 @@ Class CEditControl Extends CControl
 	*/
 	AddUpDown(Min, Max)
 	{
-		WM_USER := 0x0400 
+		WM_USER := 0x0400
 		UDM_SETBUDDY := WM_USER + 105
 		;If this edit control belongs to a tab, set the correct tab first and unset it afterwards
 		if(this.hParentControl && CGUI.GUIList[this.GUINum].Controls[this.hParentControl].Type = "Tab")
@@ -60,7 +60,6 @@ Class CEditControl Extends CControl
 	;~ }
 	__Get(Name)
     {
-		;~ global CGUI
 		;~ if(Name != "GUINum" && !CGUI.GUIList[this.GUINum].IsDestroyed)
 		;~ {
 			;~ if(Name = "Text" && this._.UpDownHwnd) ;Use text from UpDown control if possible
@@ -71,28 +70,23 @@ Class CEditControl Extends CControl
 	}
 	
 	/*
-	Variable: Min
+	Property: Min
 	If AddUpDown() has been called befored, the minimum value can be changed here.
 	
-	Variable: Max
+	Property: Max
 	If AddUpDown() has been called befored, the maximum value can be changed here.
 	*/
 	__Set(Name, Params*)
 	{
-		;~ global CGUI
 		if(Name != "GUINum" && !CGUI.GUIList[this.GUINum].IsDestroyed)
 		{
 			;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
-			Value := Params[Params.MaxIndex()]
-			Params.Remove(Params.MaxIndex())
+			Value := Params.Remove()
 			if(Params.MaxIndex())
 			{
 				Params.Insert(1, Name)
-				Name :=  Params[Params.MaxIndex()]
-				Params.Remove(Params.MaxIndex())
-				Object := this[Params*]
-				Object[Name] := Value
-				return Value
+				Name := Params.Remove()
+				return (this[Params*])[Name] := Value
 			}
 			if(this._.UpDownHwnd && this._.HasKey({Min : "Min", Max : "Max"}[Name]))
 			{
@@ -107,7 +101,7 @@ Class CEditControl Extends CControl
 	To handle control events you need to create a function with this naming scheme in your window class: ControlName_EventName(params)
 	The parameters depend on the event and there may not be params at all in some cases.
 	Additionally it is required to create a label with this naming scheme: GUIName_ControlName
-	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent(). 
+	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent().
 	For better readability labels may be chained since they all execute the same code.
 	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
 	

@@ -32,16 +32,16 @@ Class CTabControl Extends CControl
 			this._.Tabs._.Insert(new this.CTabs.CTab(A_LoopField, A_Index, this.GUINum, this.hwnd))
 	}
 	/*
-	Variable: Tabs
+	Property: Tabs
 	A list of all tabs. Each tab contains a list of controls that belong to it. The returned object is of type <CTabControl.CTabs>
 	
-	Variable: Text
+	Property: Text
 	The text of the first tab.
 	
-	Variable: SelectedItem
+	Property: SelectedItem
 	The selected tab item.
 	
-	Variable: SelectedIndex
+	Property: SelectedIndex
 	The index of the selected tab item.
 	*/
 	__Get(Name, Params*)
@@ -69,16 +69,12 @@ Class CTabControl Extends CControl
 	__Set(Name, Params*)
 	{
 		;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
-		Value := Params[Params.MaxIndex()]
-		Params.Remove(Params.MaxIndex())
+		Value := Params.Remove()
 		if(Params.MaxIndex())
 		{
 			Params.Insert(1, Name)
-			Name :=  Params[Params.MaxIndex()]
-			Params.Remove(Params.MaxIndex())
-			Object := this[Params*]
-			Object[Name] := Value
-			return Value
+			Name := Params.Remove()
+			return (this[Params*])[Name] := Value
 		}
 		Handled := true
 		if(Name = "Text") ;Assign text -> assign text of first Tab
@@ -91,12 +87,12 @@ Class CTabControl Extends CControl
 				{
 					this._.Tabs[Params[1]].Text := Value.Text
 					;Maybe do this later when icons are available?
-					;~ Tab := new this.CTabs.CTab(Value.HasKey("Text") ? Value.Text : "", Params[1], this.GUINum, this.Name)					
+					;~ Tab := new this.CTabs.CTab(Value.HasKey("Text") ? Value.Text : "", Params[1], this.GUINum, this.Name)
 					;~ this._.Tabs._.Remove(Params[1])
 					;~ this._.Tabs._.Insert(Params[1], Tab)
 				}
 				else ;Just set text directly
-					this._Tabs[Params[1]].Text := Value
+					this._.Tabs[Params[1]].Text := Value
 			}
 		}
 		else if(Name = "SelectedItem" && CGUI_TypeOf(Value) = "CTabControl.CTabs.CTab")
@@ -113,7 +109,7 @@ Class CTabControl Extends CControl
 	To handle control events you need to create a function with this naming scheme in your window class: ControlName_EventName(params)
 	The parameters depend on the event and there may not be params at all in some cases.
 	Additionally it is required to create a label with this naming scheme: GUIName_ControlName
-	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent(). 
+	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent().
 	For better readability labels may be chained since they all execute the same code.
 	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
 	
@@ -149,7 +145,7 @@ Class CTabControl Extends CControl
 			this.hwnd := hwnd
 		}
 		/*
-		Variable: 1,2,3,4,...
+		Property: 1,2,3,4,...
 		Individual tabs can be accessed by their index.
 		*/
 		__Get(Name, Params*)
@@ -160,7 +156,7 @@ Class CTabControl Extends CControl
 				{
 					if(Params.MaxIndex() >= 1)
 						return this._[Name][Params*]
-					else						
+					else
 						return this._[Name]
 				}
 			}
@@ -175,23 +171,17 @@ Class CTabControl Extends CControl
 		}
 		_NewEnum()
 		{
-			;~ global CEnumerator
 			return new CEnumerator(this._)
 		}
 		__Set(Name, Params*)
 		{
-			;~ global CGUI
 			;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
-			Value := Params[Params.MaxIndex()]
-			Params.Remove(Params.MaxIndex())
+			Value := Params.Remove()
 			if(Params.MaxIndex())
 			{
 				Params.Insert(1, Name)
-				Name :=  Params[Params.MaxIndex()]
-				Params.Remove(Params.MaxIndex())
-				Object := this[Params*]
-				Object[Name] := Value
-				return Value
+				Name := Params.Remove()
+				return (this[Params*])[Name] := Value
 			}
 			if Name is Integer
 			{
@@ -219,7 +209,6 @@ Class CTabControl Extends CControl
 		*/
 		Add(Text)
 		{
-			;~ global CGUI
 			Tabs := []
 			Loop, Parse, Text, |
 			{
@@ -266,7 +255,6 @@ Class CTabControl Extends CControl
 			*/
 			AddControl(type, Name, Options, Text)
 			{
-				;~ global CGUI
 				if(type != "Tab")
 				{
 					GUI := CGUI.GUIList[this.GUINum]
@@ -282,13 +270,13 @@ Class CTabControl Extends CControl
 					Msgbox Tabs may not be added in a tab container.
 			}
 			/*
-			Variable: Text
+			Property: Text
 			The text of the tab.
 			
-			Variable: Icon
+			Property: Icon
 			The filename of the icon associated with this tab.
 			
-			Variable: IconNumber
+			Property: IconNumber
 			The index of the icon in a multi-icon file.
 			*/
 			__Get(Name, Params*)
@@ -303,18 +291,13 @@ Class CTabControl Extends CControl
 			}
 			__Set(Name, Params*)
 			{
-				;~ global CGUI
 				;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
-				Value := Params[Params.MaxIndex()]
-				Params.Remove(Params.MaxIndex())
+				Value := Params.Remove()
 				if(Params.MaxIndex())
 				{
 					Params.Insert(1, Name)
-					Name :=  Params[Params.MaxIndex()]
-					Params.Remove(Params.MaxIndex())
-					Object := this[Params*]
-					Object[Name] := Value
-					return Value
+					Name := Params.Remove()
+					return (this[Params*])[Name] := Value
 				}
 				if(Name = "Text")
 				{
@@ -352,7 +335,6 @@ Class CTabControl Extends CControl
 			*/
 			SetIcon(Filename, IconNumber = 1)
 			{
-				;~ global CGUI
 				this._.Icon := Filename
 				this._.IconNumber := IconNumber
 				Control := CGUI.GUIList[this.GUINum].Controls[this.hwnd]

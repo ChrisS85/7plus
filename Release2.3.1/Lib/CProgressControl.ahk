@@ -14,21 +14,20 @@ Class CProgressControl Extends CControl
 		;TODO: Range in options is not parsed but could potentially be set by the user
 		this._.Insert("Min", 0)
 		this._.Insert("Max", 100)
-	}	
+	}
 	
 	/*
-	Variable: Value
+	Property: Value
 	The Value of the progress indicator. Relative offsets are possible by adding a sign when assigning it, i.e. Progress.Value := "+10". Progress.Value += 10 is also possible but less efficient.
 	
-	Variable: Min
+	Property: Min
 	The minimum value of the progress indicator.
 	
-	Variable: Max
+	Property: Max
 	The maximum value of the progress indicator.
 	*/
 	__Get(Name, Params*)
 	{
-		;~ global CGUI
 		if(Name != "GUINum" && !CGUI.GUIList[this.GUINum].IsDestroyed)
 		{
 			DetectHidden := A_DetectHiddenWindows
@@ -50,20 +49,15 @@ Class CProgressControl Extends CControl
 	}
 	__Set(Name, Value, Params*)
 	{
-		;~ global CGUI
 		if(!CGUI.GUIList[this.GUINum].IsDestroyed)
 		{
 			;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
-			Value := Params[Params.MaxIndex()]
-			Params.Remove(Params.MaxIndex())
+			Value := Params.Remove()
 			if(Params.MaxIndex())
 			{
 				Params.Insert(1, Name)
-				Name :=  Params[Params.MaxIndex()]
-				Params.Remove(Params.MaxIndex())
-				Object := this[Params*]
-				Object[Name] := Value
-				return Value
+				Name := Params.Remove()
+				return (this[Params*])[Name] := Value
 			}
 			DetectHidden := A_DetectHiddenWindows
 			DetectHiddenWindows, On

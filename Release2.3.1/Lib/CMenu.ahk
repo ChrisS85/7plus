@@ -13,7 +13,6 @@ Class CMenu
 	*/
 	__New(Name)
 	{
-		;~ global CGUI
 		this.Name := Name
 		if(!CGUI_Assert(!this.Menus.HasKey(Name), "Menu Name" Name " is not unique! Submenus must have unique names!"))
 			return
@@ -107,7 +106,7 @@ Class CMenu
 			this.Remove(CGUI_IndexOf(this, Menu))
 		}
 		else if(CGUI_TypeOf(Menu) = "CMenu.CMenuItem")
-		{			
+		{
 			Menu, % this.Name, Delete, % Menu.Text
 			this.Remove(CGUI_IndexOf(this, Menu))
 			Menu.IsDisposed := true
@@ -128,7 +127,6 @@ Class CMenu
 	}
 	RouteCallback()
 	{
-		;~ global CGUI
 		Item := this.Menus[A_ThisMenu][A_ThisMenuItemPos]
 		if(IsObject(Item) && Item.HasKey("Callback"))
 		{
@@ -150,7 +148,7 @@ Class CMenu
 	Parameters:
 	GUINum - The GUI number of the window owning this menu. This is required if the callback functions are contained in a class deriving from CGUI. Leave it empty to use global callback functions
 	X - X position of the menu.
-	Y - Y position of the menu.	
+	Y - Y position of the menu.
 	*/
 	Show(GUINum, X="", Y="")
 	{
@@ -178,38 +176,38 @@ Class CMenu
 	}
 		
 	/*
-	Variable: Text
+	Property: Text
 	The text under which this menu appears as a submenu in another menu.
 	
-	Variable: Enabled
+	Property: Enabled
 	Sets whether this submenu is enabled/disabled.
 	
-	Variable: Checked
+	Property: Checked
 	Sets whether this submenu has a checkmark.
 	
-	Variable: Default
+	Property: Default
 	Sets whether this submenu is rendered with bold font.
 	
-	Variable: Icon
+	Property: Icon
 	The path to the icon of the menu item.
 	
-	Variable: IconNumber
+	Property: IconNumber
 	The number of the menu item icon in a grouped icon file.
 	
-	Variable: IconWidth
+	Property: IconWidth
 	The width of an icon (>0), a resource identifier (<0) or the actual size of the icon (=0). Use the latter if you have transparency issues.
 	*/
 	__Set(Name, Value)
 	{
 		Handled := true
 		if(Name = "Text")
-		{			
+		{
 			if(CGUI_Assert(CGUI_TypeOf(this.Menus[this.Parent]) = "CMenu", "Can't set Text on a menu object that is no submenu.") && CGUI_Assert(!this.IsDisposed, "This menu is disposed and can not be changed anymore."))
 			{
 				Menu, % this.Parent, Rename, % this.Text, %Value%
 				this.Insert("Text", Value)
 			}
-		}	
+		}
 		else if(Name = "Enabled")
 		{
 			this._.Enabled := Value
@@ -236,13 +234,13 @@ Class CMenu
 						this.Menus[this.Parent][A_Index]._.Default := false
 			}
 			else
-				Menu, % this.Menu, NoDefault				
+				Menu, % this.Menu, NoDefault
 			this._.Insert("Default", Value)
 		}
 		else if(Name = "Icon")
 			this.SetIcon(Value)
 		else if(Name = "IconNumber")
-			this.SetIcon(this.Icon, Value, this._.HasKey("IconWidth") ? this._IconWidth : 0)
+			this.SetIcon(this.Icon, Value, this._.HasKey("IconWidth") ? this._.IconWidth : 0)
 		else if(Name = "IconWidth")
 			this.SetIcon(this.Icon,  this._.HasKey("IconNumber") ? this._.IconNumber : 1, Value)
 		else
@@ -288,30 +286,29 @@ Class CMenu
 			Menu, % this.Menu, Icon, % this.Name, %Icon%, %IconNumber%, %IconWidth%
 		}
 		/*
-		Variable: Text
+		Property: Text
 		The text of this menu item.
 		
-		Variable: Enabled
+		Property: Enabled
 		Sets whether this menu item is enabled/disabled.
 		
-		Variable: Checked
+		Property: Checked
 		Sets whether this menu item has a checkmark.
 		
-		Variable: Default
+		Property: Default
 		Sets whether this menu item is rendered with bold font.
 		
-		Variable: Icon
+		Property: Icon
 		The path to the icon of the menu item.
 		
-		Variable: IconNumber
+		Property: IconNumber
 		The number of the menu item icon in a grouped icon file.
 		
-		Variable: IconWidth
+		Property: IconWidth
 		The width of an icon (>0), a resource identifier (<0) or the actual size of the icon (=0). Use the latter if you have transparency issues.
 		*/
 		__Set(Name, Value)
 		{
-			;~ global CMenu
 			Handled := true
 			if(Name = "Text")
 			{
@@ -347,13 +344,13 @@ Class CMenu
 							CMenu.Menus[this.Menu][A_Index]._.Default := false
 				}
 				else
-					Menu, % this.Menu, NoDefault				
+					Menu, % this.Menu, NoDefault
 				this._.Insert("Default", Value)
 			}
 			else if(Name = "Icon")
 				this.SetIcon(Value)
 			else if(Name = "IconNumber")
-				this.SetIcon(this.Icon, Value, this._.HasKey("IconWidth") ? this._IconWidth : 0)
+				this.SetIcon(this.Icon, Value, this._.HasKey("IconWidth") ? this._.IconWidth : 0)
 			else if(Name = "IconWidth")
 				this.SetIcon(this.Icon,  this._.HasKey("IconNumber") ? this._.IconNumber : 1, Value)
 			else

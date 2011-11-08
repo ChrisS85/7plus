@@ -3,19 +3,19 @@
    Class: CGUI
    The main GUI class. User created GUIs need to extend this class and call Base.__New() in their constructor before doing anything related to this class.
    
-   Variable: Accessing Controls
+   Property: Accessing Controls
    Controls may be accessed by their name by using GUI.Name or by their window handle by using GUI.Controls[hwnd] (assuming Name is a string and hwnd is a variable).
    The difference between these two methods is that controls which are added as sub-controls to other controls are not accessible by their name through the main GUI object. They can either be accessed by hwnd like described above or by GUI.ParentControl.Controls.SubControlName (again assuming that SubControlName is a string).
 */
 Class CGUI
 {
-	static GUIList := Object()
+	static GUIList := {}
 	static EventQueue := []
 	static WindowMessageListeners := []
-	;~ _ := Object() ;Proxy object
-	/*	
+	;~ _ := {} ;Proxy object
+	/*
 	Get only:
-	var Controls := Object()
+	var Controls := {}
 	var hwnd := 0
 	var GUINum := 0
 	MinMax
@@ -45,11 +45,10 @@ Class CGUI
 	*/
 	
 	;The _Constructor key is never actually assigned (see __Set()). This line simply calls the __New() constructor of CGUI so that window classes deriving from CGUI do not need to call the base constructor.
-	_Constructor := this.base.base.__New(this) 
+	_Constructor := this.base.base.__New(this)
 	
 	__New(instance)
 	{
-		;~ global CGUI, CFont
 		if(!CGUI_Assert(IsObject(instance) && !instance.HasKey("hwnd"), "CGUI constructor must not be called!"))
 			return
 		this.Insert("_", {}) ;Create proxy object to store some keys in it and still trigger __Get and __Set
@@ -66,10 +65,10 @@ Class CGUI
 		}
 		if(!instance.GUINum) ;Should not happen unless instance uses a faulty __Set() mechanism
 			return
-		instance.Controls := Object()
+		instance.Controls := {}
 		instance.Font := new CFont(instance.GUINum)
 		CGUI.GUIList[instance.GUINum] := instance
-		GUI, % instance.GUINum ":+LabelCGUI_ +LastFound"		
+		GUI, % instance.GUINum ":+LabelCGUI_ +LastFound"
 		instance.hwnd := WinExist()
 		
 		/*
@@ -118,7 +117,6 @@ Class CGUI
 		*/
 		RegisterListener(Message, hwnd, FunctionName)
 		{
-			;~ global CGUI
 			;Don't allow calling this function on the contained instances
 			if(this.Base.__Class = this.__Class)
 				return
@@ -140,19 +138,19 @@ Class CGUI
 					OnMessage(Message, "CGUI_WindowMessageHandler")
 				}
 				
+				Listeners := this.WindowMessageListeners[Message]
 				;If this instance isn't already registered for this message, increase listener count for this message
-				if(!this.WindowMessageListeners[Message].Listeners.HasKey(hwnd))
-					this.WindowMessageListeners[Message].ListenerCount++
+				if(!Listeners.Listeners.HasKey(hwnd))
+					Listeners.ListenerCount++
 				
 				;Register the message in the listeners list of the CWindowMessageHandler object associated with the current Message
-				this.WindowMessageListeners[Message].Listeners[hwnd] := FunctionName
+				Listeners.Listeners[hwnd] := FunctionName
 				
 			}
 			CGUI_Assert(IsFunc(GUI[FunctionName]), "Invalid function definition " GUI[FunctionName] ". Function takes 3 parameters, Msg, wParam and lParam.")
 		}
 		UnregisterListener(hwnd, Message = "")
 		{
-			;~ global CGUI
 			;Don't allow calling this function on the contained instances
 			if(this.Base.__Class = this.__Class)
 				return
@@ -160,34 +158,32 @@ Class CGUI
 			if(GUI)
 			{
 				;Remove one or all registered listeners associated with the window handle
-				Messages := Message ? [Message]  : []
 				if(!Message)
+				{
+					Messages := []
 					for Msg, Handler in this.WindowMessageListeners
 						Messages.Insert(MSG)
+				}
+				Else
+					Messages := [Message]
 				for index, CurrentMessage in Messages ;Process all messages that are affected
 				{
-					/* THIS IS PROBLEMATIC because it would be removed from all windows and not just the current one
-					;If removing all handlers, also remove the internal handlers
-					hwnds := Message ? [hwnd] : [0, hwnd]
-					*/
-					hwnd := [hwnd]
-					for index, CurrentHWND in hwnds
+					;Make sure the window is actually registered right now so it doesn't get unregistered multiple times if this function happens to be called more than once with the same parameters
+					Listeners := this.WindowMessageListeners
+					if(Listeners.HasKey(CurrentMessage) && Listeners[CurrentMessage].Listeners.HasKey(hwnd))
 					{
-						;Make sure the window is actually registered right now so it doesn't get unregistered multiple times if this function happens to be called more than once with the same parameters
-						if(this.WindowMessageListeners.HasKey(CurrentMessage) && this.WindowMessageListeners[CurrentMessage].Listeners.HasKey(CurrentHWND))
+						Listeners := Listeners[CurrentMessage]
+						;Remove this window from the listener array
+						Listeners.Listeners.Remove(hwnd, "")
+						
+						;Decrease count of window class instances that listen to this message
+						Listeners.ListenerCount --
+						
+						;If no more instances listening to a window message, remove the CWindowMessageHandler object from WindowMessageListeners and deactivate the OnMessage callback for the current message
+						if(Listeners.ListenerCount = 0)
 						{
-							;Remove this window from the listener array
-							this.WindowMessageListeners[CurrentMessage].Listeners.Remove(CurrentHWND, "")
-							
-							;Decrease count of window class instances that listen to this message
-							this.WindowMessageListeners[CurrentMessage].ListenerCount--						
-							
-							;If no more instances listening to a window message, remove the CWindowMessageHandler object from WindowMessageListeners and deactivate the OnMessage callback for the current message				
-							if(this.WindowMessageListeners[CurrentMessage].ListenerCount = 0)
-							{
-								this.WindowMessageListeners.Remove(CurrentMessage, "")
-								OnMessage(CurrentMessage, "")
-							}
+							this.WindowMessageListeners.Remove(CurrentMessage, "")
+							OnMessage(CurrentMessage, "")
 						}
 					}
 				}
@@ -225,12 +221,11 @@ Class CGUI
 	*/
 	Destroy()
 	{
-		;~ global CGUI
 		if(this.IsDestroyed)
 			return
 		;Remove it from GUI list
 		CGUI.GUIList.Remove(this.GUINum) ;make sure not to alter other GUIs here
-		this.IsDestroyed := true		
+		this.IsDestroyed := true
 		this.WindowMessageHandler.UnregisterListener(this.hwnd) ;Unregister all registered window message listener functions
 		;Destroy the GUI
 		Gui, % this.GUINum ":Destroy"
@@ -457,7 +452,6 @@ Class CGUI
 	*/
 	AddControl(Control, Name, Options, Text, ControlList="", ParentControl = "")
 	{
-		;~ global
 		local hControl, type, testHWND, vName, NeedsGLabel
 		if(this.IsDestroyed)
 			return
@@ -471,27 +465,18 @@ Class CGUI
 		type := Control
 		;Some control classes represent multiple controls, those are handled separately here.
 		if(Control = "DropDownList" || Control = "ComboBox" || Control = "ListBox")
-		{
-			Control := object("base", CChoiceControl)
-			Control.__New(Name, Options, Text, this.GUINum, type)
-		}
+			Control := new CChoiceControl(Name, Options, Text, this.GUINum, type)
 		else if(Control = "Checkbox" || Control = "Radio" )
-		{
-			Control := object("base", CCheckboxControl)
-			Control.__New(Name, Options, Text, this.GUINum, type)
-		}
+			Control := new CCheckboxControl(Name, Options, Text, this.GUINum, type)
 		else if(Control = "Tab" )
-		{
-			Control := object("base", CTabControl)
-			Control.__New(Name, Options, Text, this.GUINum)
-		}
+			Control := new CTabControl(Name, Options, Text, this.GUINum)
 		else
 		{
 			Control := "C" Control "Control"
 			;Make sure that a control of this type exists.
 			if(CGUI_Assert(IsObject(%Control%), "The control " Control " was not found!", -2))
 			{
-				Control := object("base", %Control%)
+				Control := {base: %Control%}
 				hControl := Control.__New(Name, Options, Text, this.GUINum)
 				if(!CGUI_Assert(hControl != 0, "Error creating " Type "Control", -2))
 					return
@@ -575,125 +560,124 @@ Class CGUI
 		return this.GUIList[GUINum][Name]
 	}
 	/*
-	Variable: GUIList
+	Property: GUIList
 	This static array contains a list of all GUIs created with this library.
 	It is maintained automatically and should not need to be used directly.
 	
-	Variable: IsDestroyed
+	Property: IsDestroyed
 	True if the window has been destroyed and this object is not usable anymore.
 	
-	Variable: x
+	Property: x
 	x-Position of the window.
 	
-	Variable: y
+	Property: y
 	y-Position of the window.
 	
-	Variable: width
+	Property: width
 	Width of the window.
 	
-	Variable: height
+	Property: height
 	Height of the window.
 	
-	Variable: Position
+	Property: Position
 	An object containing the x and y values. They can not be set separately through this object, only both at once.
 	
-	Variable: Size
+	Property: Size
 	An object containing the width and height values. They can not be set separately through this object, only both at once.
 	
-	Variable: Title
+	Property: Title
 	The window title.
 	
-	Variable: Style
+	Property: Style
 	The window style.
 	
-	Variable: ExStyle
+	Property: ExStyle
 	The window extended style.
 	
-	Variable: Transcolor
+	Property: Transcolor
 	A color that will be made invisible/see-through on the window. Values: RGB|ColorName|Off
 	
-	Variable: Transparent
+	Property: Transparent
 	The window style.
 	
-	Variable: MinMax
+	Property: MinMax
 	The window state: -1: minimized / 1: maximized / 0: neither. Can not be set this way.
 	
-	Variable: ActiveControl
+	Property: ActiveControl
 	The control object that is focused. Can also be set.
 	
-	Variable: Enabled
+	Property: Enabled
 	If false, the user can not interact with this window. Used for creating modal windows.
 	
-	Variable: Visible
+	Property: Visible
 	Sets wether the window is visible or hidden.
 	
-	Variable: AlwaysOnTop
+	Property: AlwaysOnTop
 	If true, the window will be in front of other windows.
 	
-	Variable: Border
+	Property: Border
 	Provides a thin border around the window.
 	
-	Variable: Caption
+	Property: Caption
 	Set to false to remove the title bar.
 	
-	Variable: MinimizeBox
+	Property: MinimizeBox
 	Determines if the window has a minimize button in the title bar.
 	
-	Variable: MaximizeBox
+	Property: MaximizeBox
 	Determines if the window has a maximize button in the title bar.
 	
-	Variable: Resize
+	Property: Resize
 	Determines if the window can be resized by the user.
 	
-	Variable: SysMenu
+	Property: SysMenu
 	If true, the window will show a it's program icon in the title bar and show its system menu there.
 	
-	Variable: Instances
+	Property: Instances
 	A list of all instances of the current window class. If you inherit from CGUI you can use this to find all windows of this type.
 	
-	Variable: Menu
+	Property: Menu
 	If this variable contains an instance of <CMenu> and there is no ContextMenu() event handler for this window, this menu will be shown when the user right clicks on an empty window area.
 	
-	Variable: MinSize
+	Property: MinSize
 	Minimum window size when Resize is enabled.
 	
-	Variable: MaxSize
+	Property: MaxSize
 	Maximum window size when Resize is enabled.
 	
-	Variable: Theme
+	Property: Theme
 	
-	Variable: Toolwindow
+	Property: Toolwindow
 	Provides a thin title bar.
 	
-	Variable: Owner
+	Property: Owner
 	Assigning a hwnd to this property makes this window owned by another so it will act like a tool window of said window. Supports any window, not just windows from this process.
 	
-	Variable: OwnerAutoClose
+	Property: OwnerAutoClose
 	By enabling this, an owned window (which has its Owner property set to the window handle of its parent window) will automatically close itself when its parent window closes.
 	The window can use its PreClose() event to decide if it should really be closed, but the owner status will be removed anyway.
 	To archive this behaviour a shell message hook is used. If there is already such a hook present in the script, this library will intercept it and forward any messages to the original callback function.
 	
-	Variable: OwnDialogs
+	Property: OwnDialogs
 	Determines if the dialogs that this window shows will be owned by it.
 	
-	Variable: Region
+	Property: Region
 	
-	Variable: WindowColor
+	Property: WindowColor
 	
-	Variable: ControlColor
+	Property: ControlColor
 	
-	Variable: DestroyOnClose
+	Property: DestroyOnClose
 	If set, the window will be destroyed when it gets closed.
 	
-	Variable: CloseOnEscape
-	If set, the window will close itself when escape is pressed.	
+	Property: CloseOnEscape
+	If set, the window will close itself when escape is pressed.
 	
-	Variable: ValidateOnFocusLeave
+	Property: ValidateOnFocusLeave
 	If set, <CGUI.Validate> is called each time a text-containing variable loses focus.
 	*/
 	__Get(Name)
 	{
-		;~ global CGUI	
 		if Name not in base,_,GUINum
 		{
 			DetectHidden := A_DetectHiddenWindows
@@ -767,23 +751,18 @@ Class CGUI
 	}
 	__Set(Name, Params*)
 	{
-		;~ global CGUI
 		DetectHidden := A_DetectHiddenWindows
 		DetectHiddenWindows, On
 		Handled := true
 		if(!this.IsDestroyed)
 		{
 			;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
-			Value := Params[Params.MaxIndex()]
-			Params.Remove(Params.MaxIndex())
+			Value := Params.Remove()
 			if(Params.MaxIndex())
 			{
 				Params.Insert(1, Name)
-				Name :=  Params[Params.MaxIndex()]
-				Params.Remove(Params.MaxIndex())
-				Object := this[Params*]
-				Object[Name] := Value
-				return Value
+				Name := Params.Remove()
+				return (this[Params*])[Name] := Value
 			}
 			if Name in AlwaysOnTop,Border,Caption,LastFound,LastFoundExist,MaximizeBox,MaximizeBox,MinimizeBox,Resize,SysMenu
 				Gui, % this.GUINum ":" (Value = 1 ? "+" : "-") Name
@@ -824,8 +803,8 @@ Class CGUI
 				{
 					if(!CGUI._.ShelllHook)
 					{
-						DllCall( "RegisterShellHookWindow", "Ptr", A_ScriptHWND) 
-						CGUI._.ShellHookMsg := DllCall( "RegisterWindowMessage", Str,"SHELLHOOK" ) 
+						DllCall( "RegisterShellHookWindow", "Ptr", A_ScriptHWND)
+						CGUI._.ShellHookMsg := DllCall( "RegisterWindowMessage", Str,"SHELLHOOK" )
 						CGUI._.ShellHook := OnMessage(CGUI._.ShellHookMsg, "CGUI_ShellMessage")
 						if(CGUI._.ShellHook = "CGUI_ShellMessage")
 							CGUI._.ShellHook := 1
@@ -881,7 +860,7 @@ Class CGUI
 			else if(Name = "Enabled")
 				this.Style := (Value ? "-" : "+") 0x8000000 ;WS_DISABLED
 			else if(Name = "Visible")
-				this.Style := (Value ? "+" : "-") 0x10000000 ;WS_VISIBLE			
+				this.Style := (Value ? "+" : "-") 0x10000000 ;WS_VISIBLE
 			else if(Name = "ValidateOnFocusLeave")
 				this._[Name] := Value = 1
 			else if(Name = "_Constructor") ;_Constructor is just a temporary variable name for automatically calling the CGUI constructor
@@ -931,7 +910,6 @@ Class CGUI
 	*/
 	HandleEvent()
 	{
-		;~ global CGUI
 		WasCritical := A_IsCritical
 		Critical ;Critical needs to be used to catch all events, especially from ListViews
 		if(this.IsDestroyed)
@@ -959,24 +937,23 @@ Class CGUI
 	*/
 	RerouteEvent(Event)
 	{
-		;~ global CGUI
 		GUI := CGUI.GUIList[Event.GUI]
 		if(IsObject(GUI))
 		{
 			if(Event.Label != "CGUI_HandleEvent" && InStr(Event.Label, "CGUI_")) ;Handle default gui events (Close, Escape, DropFiles, ContextMenu)
 			{
-				func := SubStr(Event.Label, InStr(Event.Label, "_") + 1)				
+				func := SubStr(Event.Label, InStr(Event.Label, "_") + 1)
 				;Call PreClose before closing a window so it can be skipped
-				func := func = "Escape" && GUI.CloseOnEscape ? "PreClose" : func
-				func := func = "Close" ? "PreClose" : func
+				If((func = "Escape" && GUI.CloseOnEscape) || func = "Close")
+					func := "PreClose"
 				if(func != "ContextMenu")
 				{
 					if(IsFunc(GUI[func]))
 					{
 						if(Event.Label = "CGUI_Size")
-							result := `(GUI)[func](Event.EventInfo)
+							result := (GUI)[func](Event.EventInfo)
 						else
-							result := `(GUI)[func]() ;PreClose can return false to prevent closing the window
+							result := (GUI)[func]() ;PreClose can return false to prevent closing the window
 					}
 				}
 				else
@@ -989,7 +966,7 @@ Class CGUI
 							Gui.ShowMenu(Gui.Controls[hControl].Menu)
 					}
 					else if(IsFunc(GUI[func]))
-						result := `(GUI)[func]()
+						result := (GUI)[func]()
 					else if(CGUI_TypeOf(Gui.Menu) = "CMenu")
 						Gui.ShowMenu(Gui.Menu)
 				}
@@ -1103,7 +1080,7 @@ Class CGUI
 						this.Controls[this._.LastHoveredControl].Font.Options := "norm cBlue"
 						DllCall("SetCursor", "Ptr", GUI._.h_old_cursor)
 						this._.Hovering := false
-					}					
+					}
 				}
 			}
 		}
@@ -1127,7 +1104,7 @@ CGUI_HandleEventTimer:
 while(CGUI.EventQueue.MaxIndex())
 {
 	SetTimer, CGUI_HandleEventTimer, Off
-	CGUI.GUIList[CGUI.EventQueue[1].GUI].RerouteEvent(CGUI.EventQueue.Remove(1))	
+	CGUI.GUIList[CGUI.EventQueue[1].GUI].RerouteEvent(CGUI.EventQueue.Remove(1))
 	SetTimer, CGUI_HandleEventTimer, -1
 }
 return
@@ -1138,37 +1115,36 @@ It is still possible to use a shell message hook as usual in your script as long
 This library will intercept all ShellMessage calls and forward it to the previously used ShellMessage callback function.
 This callback function will only be used when there are owned windows which have OwnerAutoClose activated. In all other cases it won't be used and can safely be ignored.
 */
-CGUI_ShellMessage(wParam, lParam, msg, hwnd) 
-{ 
-   ;~ global CGUI 
-   if(wParam = 2) ;Window Destroyed 
+CGUI_ShellMessage(wParam, lParam, msg, hwnd)
+{
+   if(wParam = 2) ;Window Destroyed
    {
-	  Loop % CGUI.GUIList.MaxIndex() 
-	  { 
-		 if(CGUI.GUIList[A_Index]._.hOwner = lParam && CGUI.GUIList[A_Index]._.OwnerAutoClose)
+	  For Index, Entry In CGUI.GUIList
+	  {
+		 if(Entry._.hOwner = lParam && Entry._.OwnerAutoClose)
 		 {
-			PostMessage, 0x112, 0xF060,,, % "ahk_id " CGUI.GUIList[A_Index].hwnd  ; 0x112 = WM_SYSCOMMAND, 0xF060 = SC_CLOSE --> this should trigger AHK CGUI_Close label so the GUI class may process the close request
-			CGUI.GUIList[A_Index]._.Remove("hOwner")
-			CGUI.GUIList[A_Index]._.Remove("OwnerAutoClose")
+			PostMessage, 0x112, 0xF060,,, % "ahk_id " Entry.hwnd  ; 0x112 = WM_SYSCOMMAND, 0xF060 = SC_CLOSE --> this should trigger AHK CGUI_Close label so the GUI class may process the close request
+			Entry._.Remove("hOwner")
+			Entry._.Remove("OwnerAutoClose")
 			for GUINum, GUI in CGUI.GUIList
 				if(GUI._.OwnerAutoClose)
 					found := true
-			if(!found) ;No more tool windows, remove shell hook 
-			{ 
+			if(!found) ;No more tool windows, remove shell hook
+			{
 				OnMessage(CGUI._.ShellHookMsg, (CGUI._.ShellHook && CGUI._.ShellHook != 1) ? CGUI._.ShellHook : "")
 				if(!CGUI._.ShellHook)
 					DllCall("DeRegisterShellHookWindow", "Ptr", A_ScriptHWND)
 				CGUI._.Remove("ShellHook")
-			} 
-			break 
-		 } 
-	  } 
-   } 
-   if(IsFunc(CGUI._.ShellHook)) 
-   { 
-	  ShellHook := CGUI._.ShellHook 
-	  %ShellHook%(wParam, lParam, msg, hwnd) ;This is allowed even if the function uses less parameters 
-   } 
+			}
+			break
+		 }
+	  }
+   }
+   if(IsFunc(CGUI._.ShellHook))
+   {
+	  ShellHook := CGUI._.ShellHook
+	  %ShellHook%(wParam, lParam, msg, hwnd) ;This is allowed even if the function uses less parameters
+   }
 }
 ;Global window message handler for CGUI library that reroutes all registered window messages to the window instances.
 CGUI_WindowMessageHandler(wParam, lParam, msg, hwnd)
@@ -1180,13 +1156,10 @@ CGUI_WindowMessageHandler(wParam, lParam, msg, hwnd)
 	if(GUI)
 	{
 		;Internal message handlers are processed first.
-		if(CGUI.WindowMessageHandler.WindowMessageListeners[Msg].Listeners.HasKey(0))
-		{
-			internalfunc := CGUI.WindowMessageHandler.WindowMessageListeners[Msg].Listeners[0]
-			result := `(GUI.base.base)[internalfunc](Msg, wParam, lParam, hwnd)
-		}
-		func := CGUI.WindowMessageHandler.WindowMessageListeners[Msg].Listeners[GUI.hwnd]
-		result := GUI[func](Msg, wParam, lParam, hwnd)
+		Listeners := CGUI.WindowMessageHandler.WindowMessageListeners[Msg].Listeners
+		if(Listeners.HasKey(0))
+			result := (GUI.base.base)[Listeners[0]](Msg, wParam, lParam, hwnd)
+		result := GUI[Listeners[GUI.hwnd]](Msg, wParam, lParam, hwnd)
 		return result
 	}
 }
@@ -1203,15 +1176,14 @@ Class CFont
 		this._.hwnd := hwnd
 	}
 	/*
-	Variable: Options
+	Property: Options
 	An options string used for describing the font. Syntax is identical to GUI, Font command in AHK.
 	
-	Variable: Font
+	Property: Font
 	The name of the font.
 	*/
 	__Set(Name, Value)
 	{
-		;~ global CGUI
 		if(Name = "Options")
 		{
 			if(this._.hwnd) ;belonging to a control
@@ -1229,7 +1201,7 @@ Class CFont
 		}
 		else if(Name = "Size" && Value > 0)
 		{
-			return (this.Options := "s" Value)
+			return this.Options := "s" Value
 		}
 		else if(Name = "Font")
 		{

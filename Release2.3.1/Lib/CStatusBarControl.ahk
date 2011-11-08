@@ -21,10 +21,10 @@ Class CStatusBarControl Extends CControl
 			this._.Parts._.Insert(1, new this.CParts.CPart(Text, 1, "", "", "", "", this.GUINum, this.hwnd))
 	}
 	/*
-	Variable: Parts
+	Property: Parts
 	An array of status bar parts/segments. See <CStatusBarControl.CParts>
 	
-	Variable: Text
+	Property: Text
 	The text of the first part.
 	*/
 	__Get(Name, Params*)
@@ -42,25 +42,20 @@ Class CStatusBarControl Extends CControl
 	__Set(Name, Params*)
 	{
 		;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
-		Value := Params[Params.MaxIndex()]
-		Params.Remove(Params.MaxIndex())
+		Value := Params.Remove()
 		if(Params.MaxIndex())
 		{
 			Params.Insert(1, Name)
-			Name :=  Params[Params.MaxIndex()]
-			Params.Remove(Params.MaxIndex())
-			Object := this[Params*]
-			Object[Name] := Value
-			return Value
+			Name := Params.Remove()
+			return (this[Params*])[Name] := Value
 		}
 		if(Name = "Text") ;Assign text -> assign text of first part
 		{
-			this._.Parts[1].Text := Value
-			return true
+			return this._.Parts[1].Text := Value
 		}
 		if(Name = "Parts") ;Assign all parts at once
 		{
-			if(Params[1] >= 1 && Params[1] <= this._.Parts.MaxIndex()) ;Set a single part
+			if(Params[1] >= 1 && Params[1] <= this._.Parts._.MaxIndex()) ;Set a single part
 			{
 				if(IsObject(Value)) ;Set an object
 				{
@@ -70,9 +65,8 @@ Class CStatusBarControl Extends CControl
 					this.RebuildStatusBar()
 				}
 				else ;Just set text directly
-					this._Parts[Params[1]].Text := Value
-				;~ PartNumber := Params[Params.MaxIndex()]
-				;~ Params.Remove(Params.MaxIndex())
+					this._.Parts[Params[1]].Text := Value
+				;~ PartNumber := Params.Remove()
 				;~ Part := this._.Parts[PartNumber]
 				;~ Part := Value ;ASLDIHSVO)UGBOQWFH)=RFZS
 				return Value
@@ -128,7 +122,7 @@ Class CStatusBarControl Extends CControl
 			this.hwnd := hwnd
 		}
 		/*
-		Variable: 1,2,3,4,...
+		Property: 1,2,3,4,...
 		Individual parts can be accessed by their index. Returns an object of type <CStatusBarControl.CParts.CPart>
 		*/
 		__Get(Name, Params*)
@@ -139,7 +133,7 @@ Class CStatusBarControl Extends CControl
 				{
 					if(Params.MaxIndex() >= 1)
 						return this._[Name][Params*]
-					else						
+					else
 						return this._[Name]
 				}
 			}
@@ -154,32 +148,24 @@ Class CStatusBarControl Extends CControl
 		}
 		_NewEnum()
 		{
-			;~ global CEnumerator
 			return new CEnumerator(this._)
 		}
 		__Set(Name, Params*)
 		{
 			;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
-			Value := Params[Params.MaxIndex()]
-			Params.Remove(Params.MaxIndex())
+			Value := Params.Remove()
 			if(Params.MaxIndex())
 			{
 				Params.Insert(1, Name)
-				Name :=  Params[Params.MaxIndex()]
-				Params.Remove(Params.MaxIndex())
-				Object := this[Params*]
-				Object[Name] := Value
-				return Value
+				Name := Params.Remove()
+				return (this[Params*])[Name] := Value
 			}
 			if Name is Integer
 			{
 				if(Name <= this._.MaxIndex())
 				{
 					if(Params.MaxIndex() >= 1) ;Set a property of CPart
-					{
-						Part := this._[Name]
-						Part[Params*] := Value
-					}
+						(this._[Name])[Params*] := Value
 					return Value
 				}
 			}
@@ -198,7 +184,6 @@ Class CStatusBarControl Extends CControl
 		*/
 		Add(Text, PartNumber = "", Width = 50, Style = "", Icon = "", IconNumber = "")
 		{
-			;~ global CGUI
 			if(PartNumber)
 				this._.Insert(PartNumber, new this.CPart(Text, PartNumber, Width, Style, Icon, IconNumber, this.GUINum, this.hwnd))
 			else
@@ -216,7 +201,6 @@ Class CStatusBarControl Extends CControl
 		*/
 		Remove(PartNumber)
 		{
-			;~ global CGUI
 			if PartNumber is Integer
 			{
 				this._.Remove(PartNumber)
@@ -244,22 +228,22 @@ Class CStatusBarControl Extends CControl
 				this._.hwnd := hwnd
 			}
 			/*
-			Variable: Text
+			Property: Text
 			The text of this part.
 			
-			Variable: PartNumber
+			Property: PartNumber
 			The index of this part.
 			
-			Variable: Width
+			Property: Width
 			The width of this part.
 			
-			Variable: Style
+			Property: Style
 			The style of this part. See AHK docs.
 			
-			Variable: Icon
+			Property: Icon
 			The path to the icon file assigned to this part.
 			
-			Variable: IconNumber
+			Property: IconNumber
 			The index of the icon in a multi-icon file.
 			*/
 			__Get(Name)
@@ -269,18 +253,13 @@ Class CStatusBarControl Extends CControl
 			}
 			__Set(Name, Params*)
 			{
-				;~ global CGUI
 				;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
-				Value := Params[Params.MaxIndex()]
-				Params.Remove(Params.MaxIndex())
+				Value := Params.Remove()
 				if(Params.MaxIndex())
 				{
 					Params.Insert(1, Name)
-					Name :=  Params[Params.MaxIndex()]
-					Params.Remove(Params.MaxIndex())
-					Object := this[Params*]
-					Object[Name] := Value
-					return Value
+					Name := Params.Remove()
+					return (this[Params*])[Name] := Value
 				}
 				Control := CGUI.GUIList[this.GUINum].Controls[this.hwnd]
 				if(Name = "Width")
@@ -314,7 +293,7 @@ Class CStatusBarControl Extends CControl
 	To handle control events you need to create a function with this naming scheme in your window class: ControlName_EventName(params)
 	The parameters depend on the event and there may not be params at all in some cases.
 	Additionally it is required to create a label with this naming scheme: GUIName_ControlName
-	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent(). 
+	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent().
 	For better readability labels may be chained since they all execute the same code.
 	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
 	

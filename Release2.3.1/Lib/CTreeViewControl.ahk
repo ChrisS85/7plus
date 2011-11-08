@@ -8,7 +8,6 @@ Class CTreeViewControl Extends CControl
 {
 	__New(Name, ByRef Options, Text, GUINum)
 	{
-		;~ global CGUI
 		Events := ["_Click", "_RightClick", "_EditingStart", "_FocusReceived", "_FocusLost", "_KeyPress", "_ItemExpanded", "_ItemCollapsed"]
 		if(!InStr(Options, "AltSubmit")) ;Automagically add AltSubmit when necessary
 		{
@@ -57,22 +56,21 @@ Class CTreeViewControl Extends CControl
 		
 	}
 	/*
-	Variable: Items
+	Property: Items
 	Contains the nodes of the tree. Each level can be iterated and indexed. A node is of type <CTreeViewControl.CItem>
 	
-	Variable: SelectedItem
+	Property: SelectedItem
 	Contains the node of type <CItem> that is currently selected.
 	
-	Variable: PreviouslySelectedItem
+	Property: PreviouslySelectedItem
 	Contains the node of type <CItem> that was previously selected.
 	*/
 	__Get(Name, Params*)
 	{
-		;~ global CGUI		
 		if(Name = "Items")
 			Value := this._.Items
 		else if(Name = "SelectedItem")
-		{			
+		{
 			GUI := CGUI.GUIList[this.GUINum]
 			if(GUI.IsDestroyed)
 				return
@@ -89,20 +87,15 @@ Class CTreeViewControl Extends CControl
 	
 	__Set(Name, Params*)
 	{
-		;~ global CGUI
 		if(!CGUI.GUIList[this.GUINum].IsDestroyed)
 		{
 			;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
-			Value := Params[Params.MaxIndex()]
-			Params.Remove(Params.MaxIndex())
+			Value := Params.Remove()
 			if(Params.MaxIndex())
 			{
 				Params.Insert(1, Name)
-				Name :=  Params[Params.MaxIndex()]
-				Params.Remove(Params.MaxIndex())
-				Object := this[Params*]
-				Object[Name] := Value
-				return Value
+				Name := Params.Remove()
+				return (this[Params*])[Name] := Value
 			}
 			DetectHidden := A_DetectHiddenWindows
 			DetectHiddenWindows, On
@@ -129,7 +122,7 @@ Class CTreeViewControl Extends CControl
 	To handle control events you need to create a function with this naming scheme in your window class: ControlName_EventName(params)
 	The parameters depend on the event and there may not be params at all in some cases.
 	Additionally it is required to create a label with this naming scheme: GUIName_ControlName
-	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent(). 
+	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent().
 	For better readability labels may be chained since they all execute the same code.
 	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
 	
@@ -162,7 +155,7 @@ Class CTreeViewControl Extends CControl
 	*/
 	HandleEvent(Event)
 	{
-		;~ global CGUI
+		start := A_TickCount
 		if(CGUI.GUIList[this.GUINum].IsDestroyed)
 			return
 		;Handle visibility of controls associated with tree nodees
@@ -178,9 +171,9 @@ Class CTreeViewControl Extends CControl
 			this.CallEvent("FocusReceived")
 		else if(Event.GUIEvent == "f")
 			this.CallEvent("FocusLost")
-		if(Event.GUIEvent = "S")			
+		if(Event.GUIEvent = "S")
 			this.PreviouslySelectedItem := SelectedItem
-		OutputDebug % "HandleEvent: " Event.GUIEvent
+		OutputDebug % "HandleEvent: " A_TickCount - start
 	}
 	
 	/*
@@ -210,7 +203,6 @@ Class CTreeViewControl Extends CControl
 		*/
 		Add(Text, Options = "")
 		{
-			;~ global CGUI, CTreeViewControl
 			GUI := CGUI.GUIList[this._.GUINum]
 			if(GUI.IsDestroyed)
 				return
@@ -237,7 +229,6 @@ Class CTreeViewControl Extends CControl
 		*/
 		AddControl(type, Name, Options, Text, UseEnabledState = 0)
 		{
-			;~ global CGUI
 			GUI := CGUI.GUIList[this._.GUINum]
 			if(!this.Selected)
 				Options .= UseEnabledState ? " Disabled" : " Hidden"
@@ -256,7 +247,6 @@ Class CTreeViewControl Extends CControl
 		*/
 		Remove(ObjectOrIndex)
 		{
-			;~ global CGUI
 			GUI := CGUI.GUIList[this._.GUINum]
 			if(GUI.IsDestroyed)
 				return
@@ -273,7 +263,7 @@ Class CTreeViewControl Extends CControl
 			for Index, Item in ObjectOrIndex.Parent
 				if(Item = ObjectOrIndex)
 				{
-					ObjectOrIndex.Parent._Remove(A_Index)
+					ObjRemove(ObjectOrIndex.Parent, A_Index)
 					break
 				}
 			TV_Delete(ObjectOrIndex.ID)
@@ -302,7 +292,6 @@ Class CTreeViewControl Extends CControl
 		*/
 		Move(Position=1, Parent = "")
 		{
-			;~ global CGUI
 			GUI := CGUI.GUIList[this._.GUINum]
 			if(GUI.IsDestroyed)
 				return
@@ -365,7 +354,6 @@ Class CTreeViewControl Extends CControl
 		*/
 		SetIcon(Filename, IconNumberOrTransparencyColor = 1)
 		{
-			;~ global CGUI
 			GUI := CGUI.GUIList[this._.GUINum]
 			if(GUI.IsDestroyed)
 				return
@@ -376,11 +364,10 @@ Class CTreeViewControl Extends CControl
 		}
 		/*
 		Function: MaxIndex
-		Returns the number of child nodes.		
+		Returns the number of child nodes.
 		*/
 		MaxIndex()
 		{
-			;~ global CGUI
 			GUI := CGUI.GUIList[this._.GUINum]
 			if(GUI.IsDestroyed)
 				return
@@ -416,61 +403,59 @@ Class CTreeViewControl Extends CControl
 		}
 		_NewEnum()
 		{
-			;~ global CEnumerator
 			return new CEnumerator(this)
 		}
 		
 		/*
-		Variable: 1,2,3,4,...
+		Property: 1,2,3,4,...
 		The child nodes of a tree node may be accessed by their index, e.g. this.TreeView1.Items[1][2][3].Text := "AHK"
 		
-		Variable: CheckedItems
+		Property: CheckedItems
 		An array containing all checked child nodes of type <CTreeViewControl.CItem>.
 		
-		Variable: CheckedIndices
+		Property: CheckedIndices
 		An array containing all checked child indices.
 		
-		Variable: Parent
+		Property: Parent
 		The parent node of this node.
 		
-		Variable: ID
+		Property: ID
 		The ID used internally in the TreeView control.
 		
-		Variable: Icon
+		Property: Icon
 		The path of an icon assigned to this node.
 		
-		Variable: IconNumber
+		Property: IconNumber
 		The icon number used when an icon file contains more than one icon.
 		
-		Variable: Count
+		Property: Count
 		The number of child nodes.
 		
-		Variable: HasChildren
+		Property: HasChildren
 		True if there is at least one child node.
 		
-		Variable: Text
+		Property: Text
 		The text of this tree node.
 		
-		Variable: Checked
+		Property: Checked
 		True if the tree node is checked.
 		
-		Variable: Selected
+		Property: Selected
 		True if the tree node is selected.
 		
-		Variable: Expanded
+		Property: Expanded
 		True if the tree node is expanded.
 		
-		Variable: Bold
+		Property: Bold
 		If true, the text of this node is bold.
 		*/
 		__Get(Name, Params*)
 		{
-			;~ global CTreeViewControl, CGUI
 			if(Name != "_")
 			{
 				GUI := CGUI.GUIList[this._.GUINum]
 				if(!GUI.IsDestroyed)
-				{					
+				{
 					;~ if Name is Integer ;get a child node
 					;~ {
 						;~ if(Name <= this.MaxIndex())
@@ -489,14 +474,14 @@ Class CTreeViewControl Extends CControl
 						Value := []
 						for index, Item in this
 							if(Item.Checked)
-								Value.Insert(Item)				
+								Value.Insert(Item)
 					}
 					else if(Name = "CheckedIndices")
 					{
 						Value := []
 						for index, Item in this
 							if(Item.Checked)
-								Value.Insert(index)				
+								Value.Insert(index)
 					}
 					else if(Name = "Parent")
 					{
@@ -549,18 +534,13 @@ Class CTreeViewControl Extends CControl
 		}
 		__Set(Name, Params*)
 		{
-			;~ global CGUI
 			;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
-			Value := Params[Params.MaxIndex()]
-			Params.Remove(Params.MaxIndex())
+			Value := Params.Remove()
 			if(Params.MaxIndex())
 			{
 				Params.Insert(1, Name)
-				Name :=  Params[Params.MaxIndex()]
-				Params.Remove(Params.MaxIndex())
-				Object := this[Params*]
-				Object[Name] := Value
-				return Value
+				Name := Params.Remove()
+				return (this[Params*])[Name] := Value
 			}
 			GUI := CGUI.GUIList[this._.GUINum]
 			if(!GUI.IsDestroyed)
@@ -590,7 +570,7 @@ Class CTreeViewControl Extends CControl
 				{
 					Control := GUI.Controls[this._.hwnd]
 					Gui, % this._.GUINum ":Default"
-					Gui, TreeView, % Control.ClassNN				
+					Gui, TreeView, % Control.ClassNN
 					TV_Modify(this._.ID, (Value = 1 ? "+" : "-") Option)
 				}
 				else if(Name = "Icon")

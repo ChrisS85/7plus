@@ -47,7 +47,7 @@ Class CReplaceDialog
 		Gui, % this.GUINum ":Default"
 		Gui, % this.GUINum ":Add",Text, x10 y10, Search in:
 		Gui, % this.GUINum ":Add",Radio, x77 y10 hwndhFilenames gExplorerReplaceDialogFilenames Checked, File names
-		Gui, % this.GUINum ":Add",Radio, x150 y10 hwndhFiles gExplorerReplaceDialogFiles Checked, Files
+		Gui, % this.GUINum ":Add",Radio, x150 y10 hwndhFiles gExplorerReplaceDialogFiles, Files
 		Gui, % this.GUINum ":Add",Text, x10 y36, Search:
 		Gui, % this.GUINum ":Add",Edit, x66 y35 w346 hwndhReplace
 		Gui, % this.GUINum ":Add",Text, x10 y62, Replace:
@@ -776,11 +776,9 @@ Class CReplaceDialog
 			SetControlDelay, 0
 			Control, Disable,,, % "ahk_id " this.hIncludeDirectories
 			Control, Disable,,, % "ahk_id " this.hCollidingAction
-			enum := this.QuicknDirtyFilenames._newEnum()
-			while enum[key,value]
+			for key, value in this.QuicknDirtyFilenames
 				Control, Hide,,,  ahk_id %value%
-			enum := this.QuicknDirtyFiles._newEnum()
-			while enum[key,value]
+			for key, value in this.QuicknDirtyFiles
 				Control, Show,,, ahk_id %value%
 			LV_ModifyCol(1,100, "File")
 			LV_ModifyCol(2,38, "Line")

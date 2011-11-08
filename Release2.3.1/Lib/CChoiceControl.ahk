@@ -18,7 +18,7 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 			this._.Insert("ControlStyles", {Multi : 0x800, ReadOnly : 0x4000, Sort : 0x2, ToggleSelection : 0x8})
 		this._.Insert("Events", ["SelectionChanged"])
 		if(Type = "ListBox")
-			this._.Insert("Messages", {5 : "KillFocus", 4 : "SetFocus" }) ;Used for automatically registering message callbacks		
+			this._.Insert("Messages", {5 : "KillFocus", 4 : "SetFocus" }) ;Used for automatically registering message callbacks
 		else if(Type = "ComboBox" || Type = "DropDownList")
 			this._.Insert("Messages", {4 : "KillFocus", 3 : "SetFocus" }) ;Used for automatically registering message callbacks
 	}
@@ -32,18 +32,17 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 		this._.PreviouslySelectedItem := this.SelectedItem
 	}
 	/*
-	Variable: SelectedItem
+	Property: SelectedItem
 	The text of the selected item.
 	
-	Variable: SelectedIndex
+	Property: SelectedIndex
 	The index of the selected item.
 	
-	Variable: Items
+	Property: Items
 	An array containing all items. See <CChoiceControl.CItems>.
 	*/
 	__Get(Name, Params*)
     {
-		;~ global CGUI
 		if(Name != "GUINum" && !CGUI.GUIList[this.GUINum].IsDestroyed)
 		{
 			DetectHidden := A_DetectHiddenWindows
@@ -73,7 +72,7 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 				;~ ControlGet, List, List,,, % " ahk_id " this.hwnd
 				;~ Value := Array()
 				;~ Loop, Parse, List, `n
-					;~ Value.Insert(A_LoopField)			
+					;~ Value.Insert(A_LoopField)
 			;~ }
 			Loop % Params.MaxIndex()
 				if(IsObject(Value)) ;Fix unlucky multi parameter __GET
@@ -86,20 +85,15 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 	}
 	__Set(Name, Params*)
 	{
-		;~ global CGUI
 		if(!CGUI.GUIList[this.GUINum].IsDestroyed)
 		{
 			;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
-			Value := Params[Params.MaxIndex()]
-			Params.Remove(Params.MaxIndex())
+			Value := Params.Remove()
 			if(Params.MaxIndex())
 			{
 				Params.Insert(1, Name)
-				Name :=  Params[Params.MaxIndex()]
-				Params.Remove(Params.MaxIndex())
-				Object := this[Params*]
-				Object[Name] := Value
-				return Value
+				Name := Params.Remove()
+				return (this[Params*])[Name] := Value
 			}
 			DetectHidden := A_DetectHiddenWindows
 			DetectHiddenWindows, On
@@ -121,7 +115,7 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 				;~ if(!IsObject(Value))
 				;~ {
 					;~ if(InStr(Value, "|") = 1) ;Overwrite current items
-					;~ {						
+					;~ {
 						;~ ;Hide overwritten controls for now (until they can be removed properly).
 						;~ for index, item in this.Items
 							;~ for index2, control in item.Controls
@@ -199,7 +193,7 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 	To handle control events you need to create a function with this naming scheme in your window class: ControlName_EventName(params)
 	The parameters depend on the event and there may not be params at all in some cases.
 	Additionally it is required to create a label with this naming scheme: GUIName_ControlName
-	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent(). 
+	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent().
 	For better readability labels may be chained since they all execute the same code.
 	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
 	
@@ -226,15 +220,14 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 		}
 		
 		/*
-		Variable: 1,2,3,4,...
+		Property: 1,2,3,4,...
 		Individual items can be accessed by their index.
 		
-		Variable: Count
+		Property: Count
 		The number of items in this control.
-		*/		
+		*/
 		__Get(Name)
 		{
-			;~ global CGUI
 			if(this._.HasKey(Name))
 				return this._[Name]
 			else if(Name = "Count")
@@ -242,9 +235,8 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 		}
 		__Set(Name, Value)
 		{
-			;~ global CGUI
 			if Name is Integer
-				return
+				return Value
 		}
 		/*
 		Function: Add
@@ -257,7 +249,6 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 		*/
 		Add(Text, Position = -1, Select = false)
 		{
-			;~ global CGUI
 			GUI := CGUI.GUIList[this._.GUINum]
 			Control := GUI.Controls[this._.hwnd]
 			Selected := Control.SelectedIndex
@@ -305,7 +296,6 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 		*/
 		Delete(IndexTextOrItem)
 		{
-			;~ global CGUI
 			GUI := CGUI.GUIList[this._.GUINum]
 			Control := GUI.Controls[this.hwnd]
 			if(IsObject(IndexTextOrItem))
@@ -350,7 +340,6 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 		*/
 		MaxIndex()
 		{
-			;~ global CGUI
 			DetectHidden := A_DetectHiddenWindows
 			DetectHiddenWindows, On
 			GUI := CGUI.GUIList[this._.GUINum]
@@ -364,7 +353,6 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 		}
 		_NewEnum()
 		{
-			;~ global CEnumerator
 			return new CEnumerator(this)
 		}
 		/*
@@ -394,7 +382,6 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 			*/
 			AddControl(type, Name, Options, Text, UseEnabledState = 0)
 			{
-				;~ global CGUI
 				GUI := CGUI.GUIList[this._.GUINum]
 				if(!this.Selected)
 					Options .= UseEnabledState ? " Disabled" : " Hidden"
@@ -404,15 +391,14 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 				return Control
 			}
 			/*
-			Variable: Selected
+			Property: Selected
 			If true, the item is selected.
 			
-			Variable: Text
+			Property: Text
 			The text of the list item.
 			*/
 			__Get(Name, Params*)
 			{
-				;~ global CGUI
 				DetectHidden := A_DetectHiddenWindows
 				DetectHiddenWindows, On
 				if(Name = "Text")
@@ -446,18 +432,13 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 			}
 			__Set(Name, Params*)
 			{
-				;~ global CGUI
 				;Fix completely weird __Set behavior. If one tries to assign a value to a sub item, it doesn't call __Get for each sub item but __Set with the subitems as parameters.
-				Value := Params[Params.MaxIndex()]
-				Params.Remove(Params.MaxIndex())
+				Value := Params.Remove()
 				if(Params.MaxIndex())
 				{
 					Params.Insert(1, Name)
-					Name :=  Params[Params.MaxIndex()]
-					Params.Remove(Params.MaxIndex())
-					Object := this[Params*]
-					Object[Name] := Value
-					return Value
+					Name := Params.Remove()
+					return (this[Params*])[Name] := Value
 				}
 				if(Name = "Text")
 				{
