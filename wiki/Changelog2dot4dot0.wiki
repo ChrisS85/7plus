@@ -29,6 +29,7 @@ Bugfixes:
  * Fixed Alt window drag not being able to drag a window to the outer left side of the screen
  * Fixed some access right modifications for registry keys required for explorer buttons. If they didn't show up before they should do so now. It may be necessary to disable/enable the FastFolder setting to make them show up.
  * Fixed colon character in Accessor.
+ * Improved Program launcher Accessor plugin program caching. It now refreshes the program list whenever the OK button of the plugin settings window is pressed.
 
 Changes:
  * Complete rewrite of the event system and about half of all the trigger/conditions/actions code. This will make 7plus much easier to maintain and a few (unnoticed) bugs could also be fixed along the way.
