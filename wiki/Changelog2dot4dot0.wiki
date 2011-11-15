@@ -12,6 +12,7 @@ New Functions:
  * Added DoubleClick option to MosueClick action
  * Added ClipPaste action to paste a specific entry from the clipboard manager list without showing the menu (Useful when active window must not be changed, i.e. explorer renaming)
  * New Accessor plugin: Run. It executes the entered text directly, like Start menu->Run does. Useful when the command is not recognized by the Program Launcher plugin.
+ * New Accessor plugin and new Trigger for defining custom Accessor commands that will trigger events.
  * New trigger: DirectoryChangeTrigger. It triggers if a specified directory or a file is modified and can be used for backup/synchronization purposes.
  * Added the ability to create new files of any type by selecting a base file in the New File action that is copied to the target destination
  * Added screen corner triggers and made AeroFlip3D an event rather than a setting
@@ -33,6 +34,7 @@ Changes:
  * Complete rewrite of the event system and about half of all the trigger/conditions/actions code. This will make 7plus much easier to maintain and a few (unnoticed) bugs could also be fixed along the way.
  * Huge code rewrite for some key portions related to explorer. As a result, status bar enhancements and explorer tabs are now visible on all explorer windows at once.
  * Complete rewrite of Slide Windows feature. It should be much better now, with more options, multi-monitor support, support for child windows and no windows getting lost anymore.
+ * Some code cleanup and improvement for Accessor.
  * Redesign of the "Edit Event" and "Edit Subevent" window. There is now only one window in which everything can be edited.
  * Moved hotkey editing into the trigger configuration GUI so it can be edited in the same window. Also it will now show the previously selected hotkey.
  * Clipboard history is now stored in encrypted form. In addition, if there is no enabled event that makes use of the clipboard history it will not be stored at all for privacy reasons.
