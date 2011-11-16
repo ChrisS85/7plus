@@ -5,7 +5,7 @@ Accessor_WindowSwitcher_Init(ByRef WindowSwitcher, PluginSettings)
 	WindowSwitcher.KeywordOnly := false
 	WindowSwitcher.MinChars := 0
 	WindowSwitcher.OKName := "Activate"
-	WindowSwitcher.Settings.FuzzySearch := PluginSettings.HasKey("FuzzySearch") ? PluginSettings.FuzzySearch : 1
+	WindowSwitcher.Settings.FuzzySearch := PluginSettings.HasKey("FuzzySearch") ? PluginSettings.FuzzySearch : 0
 	WindowSwitcher.Settings.IgnoreFileExtensions := PluginSettings.HasKey("IgnoreFileExtensions") ? PluginSettings.IgnoreFileExtensions : 1
 	WindowSwitcher.Description := "Activate windows by typing a part of their title or their executable filename. `nThis also shows CPU usage, shows/sets Always on Top state and `nallows to close and kill processes."
 	WindowSwitcher.HasSettings := True

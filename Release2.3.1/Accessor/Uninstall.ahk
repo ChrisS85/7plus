@@ -6,11 +6,13 @@ Accessor_Uninstall_Init(ByRef Uninstall, PluginSettings)
 	Uninstall.MinChars := 0
 	Uninstall.OKName := "Uninstall"
 	Uninstall.Description := "This plugin lets you uninstall programs or remove the uninstall entries from the list."
+	Uninstall.Settings.FuzzySearch := PluginSettings.HasKey("FuzzySearch") ? PluginSettings.FuzzySearch : 0
 	Uninstall.HasSettings := True
 }
 Accessor_Uninstall_ShowSettings(Uninstall, PluginSettings, PluginGUI)
 {
 	AddControl(PluginSettings, PluginGUI, "Edit", "Keyword", "", "", "Keyword:")
+	AddControl(PluginSettings, PluginGUI, "Checkbox", "FuzzySearch", "Use fuzzy search (slower)", "", "")
 }
 Accessor_Uninstall_IsInSinglePluginContext(Uninstall, Filter, LastFilter)
 {

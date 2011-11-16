@@ -8,7 +8,7 @@ Accessor_ProgramLauncher_Init(ByRef ProgramLauncher, PluginSettings)
 	ProgramLauncher.KeywordOnly := false
 	ProgramLauncher.MinChars := 2
 	ProgramLauncher.OKName := "Run"	
-	ProgramLauncher.Settings.FuzzySearch := PluginSettings.HasKey("FuzzySearch") ? PluginSettings.FuzzySearch : 1
+	ProgramLauncher.Settings.FuzzySearch := PluginSettings.HasKey("FuzzySearch") ? PluginSettings.FuzzySearch : 0
 	ProgramLauncher.Settings.IgnoreExtensions := PluginSettings.HasKey("IgnoreExtensions") ? PluginSettings.IgnoreExtensions : 1
 	ProgramLauncher.Settings.Exclude := PluginSettings.HasKey("Exclude") ? PluginSettings.Exclude : 1
 	ProgramLauncher.Description := "Run programs/files by typing a part of their name. All programs/files from the folders in the list `nbelow can be used. 7plus also looks for running programs and automatically adds them `nto the index, so you don't have to add large directories like Program Files or WinDir usually."

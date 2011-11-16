@@ -9,7 +9,7 @@ Accessor_SciTE4AutoHotkey_Init(ByRef SciTE4AutoHotkey, PluginSettings)
 	SciTE4AutoHotkey.MinChars := 0 ;This is actually 2, but not when SciTE4AutoHotkey is active
 	SciTE4AutoHotkey.MRUList := Array()
 	SciTE4AutoHotkey.OKName := "Open Tab"
-	SciTE4AutoHotkey.Settings.FuzzySearch := PluginSettings.HasKey("FuzzySearch") ? PluginSettings.FuzzySearch : 1
+	SciTE4AutoHotkey.Settings.FuzzySearch := PluginSettings.HasKey("FuzzySearch") ? PluginSettings.FuzzySearch : 0
 	SciTE4AutoHotkey.Description := "Activate a specific SciTE4AutoHotkey tab by typing a part of its name. This plugin restores the text `nwhich was previously entered when the current tab was last active. `nThis way you can quicly switch between the most used tabs."
 	SciTE4AutoHotkey.HasSettings := True
 	
