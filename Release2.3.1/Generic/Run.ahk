@@ -95,6 +95,15 @@ Run(Target, WorkingDir = "", Mode = "", NonElevated=1)
 			Msgbox Error launching %Target%
 		Return, v
 	}
+	
+	;Run under explorer process as normal user
+	if(A_IsAdmin && NonElevated)
+	{
+		return RunAsUser(Target, WorkingDir, Mode)
+		;~ result := DllCall("Explorer.dll\ShellExecInExplorerProcess","Str",Target, "Str", Args, "Str", WorkingDir)
+		;~ if(result >= 0 )
+			;~ return result
+	}
 	;Split command and argument
 	if(InStr(Target, """")=1 && InStr(Target, """",false,3)) ;command has quotes, split it
 	{
@@ -110,14 +119,6 @@ Run(Target, WorkingDir = "", Mode = "", NonElevated=1)
 		Args := "" ;Single Command
 	
 	;~ MsgBox target "%target%"`nargs "%args%"
-	;Run under explorer process as normal user
-	if(A_IsAdmin && NonElevated)
-	{
-		return RunAsUser(Target, args, WorkingDir)
-		;~ result := DllCall("Explorer.dll\ShellExecInExplorerProcess","Str",Target, "Str", Args, "Str", WorkingDir)
-		;~ if(result >= 0 )
-			;~ return result
-	}
 	;Show UAC prompt and run elevated
 	if(!A_IsAdmin && !NonElevated)
 	{		
@@ -128,94 +129,20 @@ Run(Target, WorkingDir = "", Mode = "", NonElevated=1)
 	Msgbox Error launching %Target%
 }
 
-/*
-RunAsUser(Command, WorkingDirectory)
+InitRunHelper()
 {
-	static STARTUPINFO := "DWORD cb,LPTSTR lpReserved,LPTSTR lpDesktop,LPTSTR lpTitle,DWORD dwX,DWORD dwY,DWORD dwXSize,DWORD dwYSize,DWORD dwXCountChars,DWORD dwYCountChars,DWORD dwFillAttribute,DWORD dwFlags,WORD wShowWindow,WORD cbReserved2,LPBYTE lpReserved2,HANDLE hStdInput,HANDLE hStdOutput,HANDLE hStdError"
-	static PROCESS_INFORMATION := "HANDLE hProcess, HANDLE hThread, DWORD dwProcessId, DWORD dwThreadId"
-	hModule := DllCall("LoadLibrary", Str, "Advapi32.dll") 
-	
-	; OpenProcess - http://msdn.microsoft.com/en-us/library/windows/desktop/ms684320(v=vs.85).aspx 
-	; PROCESS_QUERY_INFORMATION = 0x0400 
-	hProcess := DllCall(   "Kernel32.dll\OpenProcess", UInt, 0x0400, Int, 0, UInt, DllCall("Kernel32.dll\GetCurrentProcessId"), "Ptr") 
-	;~ MsgBox open process: %A_LastError%, %hProcess%
-	; OpenProcessToken - http://msdn.microsoft.com/en-us/library/windows/desktop/aa379295(v=vs.85).aspx 
-	; TOKEN_ASSIGN_PRIMARY = 0x0001 
-	; TOKEN_DUPLICATE = 0x0002 
-	; TOKEN_QUERY = 0x0008 
-	result := DllCall(   "Advapi32.dll\OpenProcessToken", Ptr, hProcess, UInt, 0x0001 | 0x0002 | 0x0008, PtrP, hToken) 
-	;~ MsgBox OpenProcessToken: %A_LastError%, %result%
-	; CreateRestrictedToken - http://msdn.microsoft.com/en-us/library/Aa446583 
-	; LUA_TOKEN = 0x4 
-	result := DllCall(   "Advapi32.dll\CreateRestrictedToken", Ptr, hToken, UInt, 0x4, UInt, 0, Ptr, 0, UInt, 0, Ptr, 0, UInt, 0, Ptr, 0, PtrP, hResToken) 
-	;~ MsgBox CreateRestrictedToken: %A_LastError%, %result%
-	
-	; Assuming 32bit pointer size 
-	;~ VarSetCapacity(sInfo, 68, 0) 
-	;~ VarSetCapacity(pInfo, 16, 0) 
-	
-	sInfo := new _Struct(STARTUPINFO)
-	sInfo.cb := sizeof(STARTUPINFO)
-	sInfo.lpDesktop := "winsta0\default"
-	pInfo := new _Struct(PROCESS_INFORMATION)
-	;~ NumPut(68, sInfo, 0, "UInt") 
-	;~ NumPut("winsta0\\default", sInfo, 8, "Str") 
-	
-	; CreateProcessAsUser - http://msdn.microsoft.com/en-us/library/ms682429 
-	; NORMAL_PRIORITY_CLASS = 0x00000020 
-	;~ VarSetCapacity(name, 1024)
-	result := DllCall(   "Advapi32.dll\CreateProcessAsUser" , Ptr, hResToken, PtrP, 0, Str, "C:\Windows\system32\cmd.exe", Ptr, 0, Ptr, 0, Int, 0, UInt, 0x00000020, Ptr, 0, Ptr, 0, PtrP, sInfo, PtrP, pInfo)
-	MsgBox % "result: " result "`nerrorLevel: " ErrorLevel "`nLast error: " A_LastError "`nCommand: " Command "`nWorking directory: " WorkingDirectory
-	DllCall("CloseHandle", PTR, hProcess)
-	DllCall("CloseHandle", PTR, hToken)
-	DllCall("CloseHandle", PTR, sInfo.hStdInput)
-	DllCall("CloseHandle", PTR, sInfo.hStdOutput)
-	DllCall("CloseHandle", PTR, sInfo.hStdError)
-	DllCall("CloseHandle", PTR, pInfo.hProcess)
-	DllCall("CloseHandle", PTR, pInfo.hThread)
-	return pInfo.dwProcessId
+	global hwndRunHelper
+	Prev_DetectHiddenWindows := A_DetectHiddenWindows
+	DetectHiddenWindows, On
+	Run, %A_ScriptDir%\RunHelper.ahk,,, PID
+	WinWait, ahk_pid %PID%
+	hwndRunHelper := WinExist("ahk_pid " PID)
+	DllCall("ChangeWindowMessageFilter", "UInt", 0x4a, "UInt", 1)
+	DetectHiddenWindows %Prev_DetectHiddenWindows%
 }
-*/
-RunAsUser(Target, Arguments, WorkingDirectory)
+RunAsUser(Command, WorkingDir, Options)
 {
-	static TASK_TRIGGER_REGISTRATION := 7   ; trigger on registration. 
-	static TASK_ACTION_EXEC := 0  ; specifies an executable action. 
-	static TASK_CREATE := 2
-	static TASK_RUNLEVEL_LUA := 0
-	static TASK_LOGON_INTERACTIVE_TOKEN := 3
-	objService := ComObjCreate("Schedule.Service") 
-	objService.Connect() 
-
-	objFolder := objService.GetFolder("\") 
-	objTaskDefinition := objService.NewTask(0) 
-
-	principal := objTaskDefinition.Principal 
-	principal.LogonType := TASK_LOGON_INTERACTIVE_TOKEN    ; Set the logon type to TASK_LOGON_PASSWORD 
-	principal.RunLevel := TASK_RUNLEVEL_LUA  ; Tasks will be run with the least privileges. 
-
-	colTasks := objTaskDefinition.Triggers
-	objTrigger := colTasks.Create(TASK_TRIGGER_REGISTRATION) 
-	endTime += 1, Minutes  ;end time = 1 minutes from now 
-	FormatTime,endTime,%endTime%,yyyy-MM-ddTHH`:mm`:ss
-	objTrigger.EndBoundary := endTime
-	colActions := objTaskDefinition.Actions 
-	objAction := colActions.Create(TASK_ACTION_EXEC) 
-	objAction.ID := "7plus run" 
-	objAction.Path := Target
-	objAction.Arguments := Arguments
-	objAction.WorkingDirectory := WorkingDirectory ? WorkingDirectory : A_WorkingDir
-	objInfo := objTaskDefinition.RegistrationInfo
-	objInfo.Author := "7plus" 
-	objInfo.Description := "Runs a program as non-elevated user" 
-	objSettings := objTaskDefinition.Settings 
-	objSettings.Enabled := True 
-	objSettings.Hidden := False 
-	objSettings.DeleteExpiredTaskAfter := "PT0S"
-	objSettings.StartWhenAvailable := True 
-	objSettings.ExecutionTimeLimit := "PT0S"
-	objSettings.DisallowStartIfOnBatteries := False
-	objSettings.StopIfGoingOnBatteries := False
-	objFolder.RegisterTaskDefinition("", objTaskDefinition, TASK_CREATE , "", "", TASK_LOGON_INTERACTIVE_TOKEN ) 
+	return DllCall("Explorer.dll\CreateProcessMediumIL", Str, Command, Str, WorkingDir, Str, Options, "UInt")
 }
 RunAsAdmin(target, args, WorkingDir)
 {

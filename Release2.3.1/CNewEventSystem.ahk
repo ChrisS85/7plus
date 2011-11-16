@@ -1157,6 +1157,7 @@ Class CExampleAction extends CAction
 		return "ExampleAction"
 	}
 }
+#include %A_ScriptDir%\Triggers\AccessorTrigger.ahk
 #include %A_ScriptDir%\Triggers\ContextMenu.ahk
 #include %A_ScriptDir%\Triggers\DirectoryChangeTrigger.ahk
 #include %A_ScriptDir%\Triggers\DoubleClickDesktop.ahk

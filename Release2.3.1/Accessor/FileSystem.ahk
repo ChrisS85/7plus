@@ -79,17 +79,7 @@ Accessor_FileSystem_FillAccessorList(FileSystem, Accessor, Filter, LastFilter, B
 }
 Accessor_FileSystem_PerformAction(FileSystem, Accessor, AccessorListEntry)
 {
-	global AccessorPlugins
-	ProgramLauncher := AccessorPlugins.GetItemWithValue("Type", "ProgramLauncher")
-	if(!AccessorListEntry.Path)
-		return
-	if(ProgramLauncher.List.FindKeyWithValue("Command",AccessorListEntry.Path) = 0)
-	{
-		path := AccessorListEntry.Path
-		SplitPath, path, name
-		ProgramLauncher.List.Insert(Object("Name",name, "Command", path, "BasePath", ""))
-	}
-	Run("""" AccessorListEntry.Path """")
+	AccessorRun()
 }
 Accessor_FileSystem_OnExit(FileSystem)
 {

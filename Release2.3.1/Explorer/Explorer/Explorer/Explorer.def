@@ -4,3 +4,4 @@ EXPORTS
    SetPath @1
    ExecuteContextMenuCommand @2
    ShellExecInExplorerProcess @3
+   CreateProcessMediumIL @5

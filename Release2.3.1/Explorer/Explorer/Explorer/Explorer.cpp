@@ -5,6 +5,7 @@
 
 #include <tchar.h>
 #include <windows.h>
+#include <WinBase.h>
 #include <shobjidl.h>
 #include <shlobj.h>
 #include <shlwapi.h>
@@ -41,6 +42,9 @@ LPSAFEARRAY MakeSafeArrayFromData(LPBYTE pData,DWORD cbData);
 HRESULT InitVARIANTFromPidl(LPVARIANT pVar, LPITEMIDLIST pidl);
 UINT ILGetSize(LPITEMIDLIST pidl);
 
+#define ShellExecuteW ShellExecute
+#include "comutil.h"
+#include <comdef.h>
 
 /*
 // This is an example of an exported variable
@@ -59,6 +63,332 @@ CExplorer::CExplorer()
 	return;
 }
 */
+/*
+int _stdcall RunAsUser(LPCWSTR Command, LPCWSTR WorkingDir)
+{
+	// OpenProcess - http://msdn.microsoft.com/en-us/library/windows/desktop/ms684320(v=vs.85).aspx 
+	// PROCESS_QUERY_INFORMATION = 0x0400 
+	HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, 0, GetCurrentProcessId());
+	// OpenProcessToken - http://msdn.microsoft.com/en-us/library/windows/desktop/aa379295(v=vs.85).aspx 
+	// TOKEN_ASSIGN_PRIMARY = 0x0001 
+	// TOKEN_DUPLICATE = 0x0002 
+	// TOKEN_QUERY = 0x0008 
+	HANDLE hToken;
+	BOOL result = OpenProcessToken(hProcess, TOKEN_ASSIGN_PRIMARY | TOKEN_DUPLICATE | TOKEN_QUERY, &hToken);
+	// CreateRestrictedToken - http://msdn.microsoft.com/en-us/library/Aa446583 
+	// LUA_TOKEN = 0x4 
+	HANDLE hResToken;
+	result = CreateRestrictedToken(hToken, LUA_TOKEN, 0, 0, 0, 0, 0, 0, &hResToken);
+	
+	STARTUPINFO sInfo;
+	sInfo.cb = sizeof(STARTUPINFO);
+	sInfo.lpDesktop = LPWSTR("winsta0\\default");
+	PROCESS_INFORMATION pInfo;
+
+	// CreateProcessAsUser - http://msdn.microsoft.com/en-us/library/ms682429 
+	// NORMAL_PRIORITY_CLASS = 0x00000020
+	result = CreateProcessAsUser(hResToken, 0, LPWSTR(Command), 0, 0, 0, NORMAL_PRIORITY_CLASS, 0, NULL, &sInfo, &pInfo);
+	DWORD error = GetLastError();
+	CloseHandle(hProcess);
+	CloseHandle(hToken);
+	CloseHandle(sInfo.hStdInput);
+	CloseHandle(sInfo.hStdOutput);
+	CloseHandle(sInfo.hStdError);
+	CloseHandle(pInfo.hProcess);
+	CloseHandle(pInfo.hThread);
+	return error;
+}
+*/
+
+#ifndef SECURITY_MANDATORY_HIGH_RID
+	#define SECURITY_MANDATORY_UNTRUSTED_RID            (0x00000000L)
+	#define SECURITY_MANDATORY_LOW_RID                  (0x00001000L)
+	#define SECURITY_MANDATORY_MEDIUM_RID               (0x00002000L)
+	#define SECURITY_MANDATORY_HIGH_RID                 (0x00003000L)
+	#define SECURITY_MANDATORY_SYSTEM_RID               (0x00004000L)
+	#define SECURITY_MANDATORY_PROTECTED_PROCESS_RID    (0x00005000L)
+#endif
+ 
+#ifndef TokenIntegrityLevel
+	#define TokenIntegrityLevel ((TOKEN_INFORMATION_CLASS)25)
+#endif
+
+/*
+#ifndef TOKEN_MANDATORY_LABEL
+typedef struct
+{
+	SID_AND_ATTRIBUTES Label;
+} TOKEN_MANDATORY_LABEL;
+#endif
+*/
+typedef BOOL (WINAPI *defCreateProcessWithTokenW)
+		(HANDLE,DWORD,LPCWSTR,LPWSTR,DWORD,LPVOID,LPCWSTR,LPSTARTUPINFOW,LPPROCESS_INFORMATION);
+
+
+// Writes Integration Level of the process with the given ID into pu32_ProcessIL
+// returns Win32 API error or 0 if succeeded
+DWORD GetProcessIL(DWORD u32_PID, DWORD* pu32_ProcessIL)
+{
+	*pu32_ProcessIL = 0;
+	
+	HANDLE h_Process   = 0;
+	HANDLE h_Token     = 0;
+	DWORD  u32_Size    = 0;
+	BYTE*  pu8_Count   = 0;
+	DWORD* pu32_ProcIL = 0;
+	TOKEN_MANDATORY_LABEL* pk_Label = 0;
+ 
+	h_Process = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, u32_PID);
+	if (!h_Process)
+		goto _CleanUp;
+ 
+	if (!OpenProcessToken(h_Process, TOKEN_QUERY, &h_Token))
+		goto _CleanUp;
+				
+	if (!GetTokenInformation(h_Token, TokenIntegrityLevel, NULL, 0, &u32_Size) &&
+		 GetLastError() != ERROR_INSUFFICIENT_BUFFER)
+		goto _CleanUp;
+						
+	pk_Label = (TOKEN_MANDATORY_LABEL*) HeapAlloc(GetProcessHeap(), 0, u32_Size);
+	if (!pk_Label)
+		goto _CleanUp;
+ 
+	if (!GetTokenInformation(h_Token, TokenIntegrityLevel, pk_Label, u32_Size, &u32_Size))
+		goto _CleanUp;
+ 
+	pu8_Count = GetSidSubAuthorityCount(pk_Label->Label.Sid);
+	if (!pu8_Count)
+		goto _CleanUp;
+					
+	pu32_ProcIL = GetSidSubAuthority(pk_Label->Label.Sid, *pu8_Count-1);
+	if (!pu32_ProcIL)
+		goto _CleanUp;
+ 
+	*pu32_ProcessIL = *pu32_ProcIL;
+	SetLastError(ERROR_SUCCESS);
+ 
+	_CleanUp:
+	DWORD u32_Error = GetLastError();
+	if (pk_Label)  HeapFree(GetProcessHeap(), 0, pk_Label);
+	if (h_Token)   CloseHandle(h_Token);
+	if (h_Process) CloseHandle(h_Process);
+	return u32_Error;
+}
+LPTSTR tcscasestr(LPCTSTR phaystack, LPCTSTR pneedle)
+	// To make this work with MS Visual C++, this version uses tolower/toupper() in place of
+	// _tolower/_toupper(), since apparently in GNU C, the underscore macros are identical
+	// to the non-underscore versions; but in MS the underscore ones do an unconditional
+	// conversion (mangling non-alphabetic characters such as the zero terminator).  MSDN:
+	// tolower: Converts c to lowercase if appropriate
+	// _tolower: Converts c to lowercase
+
+	// Return the offset of one string within another.
+	// Copyright (C) 1994,1996,1997,1998,1999,2000 Free Software Foundation, Inc.
+	// This file is part of the GNU C Library.
+
+	// The GNU C Library is free software; you can redistribute it and/or
+	// modify it under the terms of the GNU Lesser General Public
+	// License as published by the Free Software Foundation; either
+	// version 2.1 of the License, or (at your option) any later version.
+
+	// The GNU C Library is distributed in the hope that it will be useful,
+	// but WITHOUT ANY WARRANTY; without even the implied warranty of
+	// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	// Lesser General Public License for more details.
+
+	// You should have received a copy of the GNU Lesser General Public
+	// License along with the GNU C Library; if not, write to the Free
+	// Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+	// 02111-1307 USA.
+
+	// My personal strstr() implementation that beats most other algorithms.
+	// Until someone tells me otherwise, I assume that this is the
+	// fastest implementation of strstr() in C.
+	// I deliberately chose not to comment it.  You should have at least
+	// as much fun trying to understand it, as I had to write it :-).
+	// Stephen R. van den Berg, berg@pool.informatik.rwth-aachen.de
+
+	// Faster looping by precalculating bl, bu, cl, cu before looping.
+	// 2004 Apr 08	Jose Da Silva, digital@joescat@com
+{
+	register const TBYTE *haystack, *needle;
+	register unsigned bl, bu, cl, cu;
+	
+	haystack = (const TBYTE *) phaystack;
+	needle = (const TBYTE *) pneedle;
+
+	// Since ctolower returns TCHAR (which is signed in ANSI builds), typecast to
+	// TBYTE first to promote characters \x80-\xFF to unsigned 32-bit correctly:
+	bl = (TBYTE)ctolower(*needle);
+	if (bl != '\0')
+	{
+		// Scan haystack until the first character of needle is found:
+		bu = (TBYTE)ctoupper(bl);
+		haystack--;				/* possible ANSI violation */
+		do
+		{
+			cl = *++haystack;
+			if (cl == '\0')
+				goto ret0;
+		}
+		while ((cl != bl) && (cl != bu));
+
+		// See if the rest of needle is a one-for-one match with this part of haystack:
+		cl = (TBYTE)ctolower(*++needle);
+		if (cl == '\0')  // Since needle consists of only one character, it is already a match as found above.
+			goto foundneedle;
+		cu = (TBYTE)ctoupper(cl);
+		++needle;
+		goto jin;
+		
+		for (;;)
+		{
+			register unsigned a;
+			register const TBYTE *rhaystack, *rneedle;
+			do
+			{
+				a = *++haystack;
+				if (a == '\0')
+					goto ret0;
+				if ((a == bl) || (a == bu))
+					break;
+				a = *++haystack;
+				if (a == '\0')
+					goto ret0;
+shloop:
+				;
+			}
+			while ((a != bl) && (a != bu));
+
+jin:
+			a = *++haystack;
+			if (a == '\0')  // Remaining part of haystack is shorter than needle.  No match.
+				goto ret0;
+
+			if ((a != cl) && (a != cu)) // This promising candidate is not a complete match.
+				goto shloop;            // Start looking for another match on the first char of needle.
+			
+			rhaystack = haystack-- + 1;
+			rneedle = needle;
+			a = (TBYTE)ctolower(*rneedle);
+			
+			if ((TBYTE)ctolower(*rhaystack) == (int) a)
+			do
+			{
+				if (a == '\0')
+					goto foundneedle;
+				++rhaystack;
+				a = (TBYTE)ctolower(*++needle);
+				if ((TBYTE)ctolower(*rhaystack) != (int) a)
+					break;
+				if (a == '\0')
+					goto foundneedle;
+				++rhaystack;
+				a = (TBYTE)ctolower(*++needle);
+			}
+			while ((TBYTE)ctolower(*rhaystack) == (int) a);
+			
+			needle = rneedle;		/* took the register-poor approach */
+			
+			if (a == '\0')
+				break;
+		} // for(;;)
+	} // if (bl != '\0')
+foundneedle:
+	return (LPTSTR) haystack;
+ret0:
+	return 0;
+}
+
+static int ConvertRunMode(LPTSTR aBuf)
+// Returns the matching WinShow mode, or SW_SHOWNORMAL if none.
+// These are also the modes that AutoIt3 uses.
+{
+	// For v1.0.19, this was made more permissive (the use of strcasestr vs. stricmp) to support
+	// the optional word UseErrorLevel inside this parameter:
+	if (!aBuf || !*aBuf) return SW_SHOWNORMAL;
+	if (tcscasestr(aBuf, _T("MIN"))) return SW_MINIMIZE;
+	if (tcscasestr(aBuf, _T("MAX"))) return SW_MAXIMIZE;
+	if (tcscasestr(aBuf, _T("HIDE"))) return SW_HIDE;
+	return SW_SHOWNORMAL;
+}
+// Creates a new process u16_Path with the integration level of the Explorer process (MEDIUM IL)
+// If you need this function in a service you must replace FindWindow() with another API to find Explorer process
+// The parent process of the new process will be svchost.exe if this EXE was run "As Administrator"
+// returns Win32 API error or 0 if succeeded
+DWORD _stdcall CreateProcessMediumIL(WCHAR* u16_CmdLine, WCHAR* u16_WorkingDir, WCHAR* aRunShowMode)
+{
+	HANDLE h_Process = 0;
+	HANDLE h_Token   = 0;
+	HANDLE h_Token2  = 0;
+	PROCESS_INFORMATION k_ProcInfo    = {0};
+	STARTUPINFOW        k_StartupInfo = {0};
+	k_StartupInfo.dwFlags = STARTF_USESHOWWINDOW;
+	k_StartupInfo.wShowWindow = (aRunShowMode && *aRunShowMode) ? ConvertRunMode(aRunShowMode) : SW_SHOWNORMAL;
+	BOOL b_UseToken = FALSE;
+ 
+	// Detect Windows Vista, 2008, Windows 7 and higher
+	if (GetProcAddress(GetModuleHandleA("Kernel32"), "GetProductInfo"))
+	{
+		DWORD u32_CurIL;
+		DWORD u32_Err = GetProcessIL(GetCurrentProcessId(), &u32_CurIL);
+		if (u32_Err)
+			return u32_Err;
+ 
+		if (u32_CurIL > SECURITY_MANDATORY_MEDIUM_RID)
+			b_UseToken = TRUE;
+	}
+ 
+	// Create the process normally (before Windows Vista or if current process runs with a medium IL)
+	if (!b_UseToken)
+	{
+		if (!CreateProcessW(0, u16_CmdLine, 0, 0, FALSE, 0, 0, 0, &k_StartupInfo, &k_ProcInfo))
+			return GetLastError();
+ 
+		CloseHandle(k_ProcInfo.hThread);
+		CloseHandle(k_ProcInfo.hProcess); 
+		return ERROR_SUCCESS;
+	}
+ 
+	defCreateProcessWithTokenW f_CreateProcessWithTokenW = 
+		(defCreateProcessWithTokenW) GetProcAddress(GetModuleHandleA("Advapi32"), "CreateProcessWithTokenW");
+ 
+	if (!f_CreateProcessWithTokenW) // This will never happen on Vista!
+		return ERROR_INVALID_FUNCTION; 
+	
+	HWND h_Progman = ::GetShellWindow();
+ 
+	DWORD u32_ExplorerPID = 0;		
+	GetWindowThreadProcessId(h_Progman, &u32_ExplorerPID);
+ 
+	// ATTENTION:
+	// If UAC is turned OFF all processes run with SECURITY_MANDATORY_HIGH_RID, also Explorer!
+	// But this does not matter because to start the new process without UAC no elevation is required.
+	h_Process = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, u32_ExplorerPID);
+	if (!h_Process)
+		goto _CleanUp;
+ 
+	if (!OpenProcessToken(h_Process, TOKEN_DUPLICATE, &h_Token))
+		goto _CleanUp;
+ 
+	if (!DuplicateTokenEx(h_Token, TOKEN_ALL_ACCESS, 0, SecurityImpersonation, TokenPrimary, &h_Token2))
+		goto _CleanUp;
+	
+	if (!f_CreateProcessWithTokenW(h_Token2, 0, 0, u16_CmdLine, 0, 0, (u16_WorkingDir && *u16_WorkingDir) ? u16_WorkingDir : 0, &k_StartupInfo, &k_ProcInfo))
+		goto _CleanUp;
+ 
+	SetLastError(k_ProcInfo.dwProcessId);
+ 
+	_CleanUp:
+	DWORD u32_Error = GetLastError();
+	if (h_Token)   CloseHandle(h_Token);
+	if (h_Token2)  CloseHandle(h_Token2);
+	if (h_Process) CloseHandle(h_Process);
+	CloseHandle(k_ProcInfo.hThread);
+	CloseHandle(k_ProcInfo.hProcess); 
+	return u32_Error;
+}
+
 int _stdcall SetPath(HWND hWnd, LPCWSTR Path)
 {
     IShellWindows* psw;
@@ -711,9 +1041,6 @@ bool _stdcall Filter(LPTSTR filter, HWND hWnd)
     return bReturn;
 }
 */
-#define ShellExecuteW ShellExecute
-#include "comutil.h"
-#include <comdef.h>
 // THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF
 // ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO
 // THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A

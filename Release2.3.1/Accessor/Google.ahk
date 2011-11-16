@@ -47,7 +47,6 @@ Accessor_Google_FillAccessorList(Google, Accessor, Filter, LastFilter, ByRef Ico
 {
 	if(!KeywordSet)
 		return
-	outputdebug fillaccessorlist %filter%
 	Loop % Google.List.MaxIndex()
 		Accessor.List.Insert(Object("Title",Google.List[A_Index].titleNoFormatting,"Path",Google.List[A_Index].visibleUrl, "Type","Google", "URL", Google.List[A_Index].unescapedURL,"Icon", 3))
 }

@@ -22,10 +22,30 @@ extern EXPLORER_API int nExplorer;
 
 EXPLORER_API int fnExplorer(void);
 */
+
+DWORD _stdcall CreateProcessMediumIL(WCHAR* u16_CmdLine, WCHAR* u16_WorkingDir, WCHAR* aRunShowMode);
+// int _stdcall RunAsUser(LPWSTR Command, LPCWSTR WorkingDir);
 int _stdcall SetPath(HWND hWnd, LPCWSTR Path);
 int _stdcall ExecuteContextMenuCommand(LPWSTR strPath, int idn, HWND hWnd);
 bool _stdcall Filter(LPTSTR filter, HWND hWnd);
 HRESULT GetUIObjectOfFile(HWND hwnd, LPCWSTR pszPath, REFIID riid, void **ppv);
 /// returns the explorer list view control
 HWND                    GetListView32(IShellView * shellView);
-BOOL CALLBACK    EnumChildProc(HWND hwnd, LPARAM lParam);
+
+// Some source code from AHK
+// Locale independent ctype (applied to the ASCII characters only)
+// isctype/iswctype affects the some non-ASCII characters.
+inline int cisctype(TBYTE c, int type)
+{
+	return (c & (~0x7F)) ? 0 : _isctype(c, type);
+}
+#define cisupper(c)		cisctype(c, _UPPER)
+#define cislower(c)		cisctype(c, _LOWER)
+inline TCHAR ctoupper(TBYTE c)
+{
+	return cislower(c) ? (c & ~0x20) : c;
+}
+inline TCHAR ctolower(TBYTE c)
+{
+	return cisupper(c) ? (c | 0x20) : c;
+}

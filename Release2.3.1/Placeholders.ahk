@@ -4,19 +4,26 @@ ExpandPlaceholders(SubEvent, Text)
 {
 	if(IsObject(Text)) ;Internally arrays may be supplied as parameters which mustn't be expanded here
 		return Text
-	;Expand local dynamic placeholders (for example ${MessageResult} defined by SendMessage action)
-	for key, value in SubEvent.Placeholders
+	
+	;Iteratively expand all placeholders
+	while(OriginalText != Text && !IsObject(Text))
 	{
-		if(InStr(Text,"${" key "}"))
-			text := StringReplace(Text, "${" key "}", value, 1)
+		OriginalText := Text
+		;Expand local dynamic placeholders (for example ${MessageResult} defined by SendMessage action)
+		for key, value in SubEvent.Placeholders
+		{
+			if(InStr(Text,"${" key "}"))
+				Text := StringReplace(Text, "${" key "}", value, 1)
+		}
+		;Expand dynamic placeholders with global scope (for example the result of an Input action)
+		for key, value in EventSystem.GlobalPlaceholders
+		{
+			if(InStr(Text,"${" key "}"))
+				Text := StringReplace(Text, "${" key "}", value, 1)
+		}
+		Text := ExpandInternalPlaceHolders(Text)
 	}
-	;Expand dynamic placeholders with global scope (for example the result of an Input action)
-	for key, value in EventSystem.GlobalPlaceholders
-	{
-		if(InStr(Text,"${" key "}"))
-			Text := StringReplace(Text, "${" key "}", value, 1)
-	}
-	return ExpandInternalPlaceHolders(Text)
+	return Text
 }
 
 ;Expands internal placeholders found inside text
@@ -207,13 +214,26 @@ ShowPlaceholderMenu(SubEventGUI, name, ClickedMenu="")
 		Menu, Placeholders_System, DeleteAll
 		Menu, Placeholders_Windows, add, 1,PlaceholderHandler
 		Menu, Placeholders_Windows, DeleteAll
+		Menu, Placeholders_Accessor, add, 1,PlaceholderHandler
+		Menu, Placeholders_Accessor, DeleteAll
 		
+		Menu, Placeholders, add, Accessor, :Placeholders_Accessor
 		Menu, Placeholders, add, Date and Time, :Placeholders_DateTime
 		Menu, Placeholders, add, Explorer, :Placeholders_Explorer
 		Menu, Placeholders, add, File Paths, :Placeholders_FilePaths
 		Menu, Placeholders, add, Mouse, :Placeholders_Mouse
 		Menu, Placeholders, add, System, :Placeholders_System
 		Menu, Placeholders, add, Windows, :Placeholders_Windows
+		
+		Menu, Placeholders_Accessor, add, ${Acc1} - First parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
+		Menu, Placeholders_Accessor, add, ${Acc2} - First parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
+		Menu, Placeholders_Accessor, add, ${Acc3} - First parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
+		Menu, Placeholders_Accessor, add, ${Acc4} - First parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
+		Menu, Placeholders_Accessor, add, ${Acc5} - First parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
+		Menu, Placeholders_Accessor, add, ${Acc6} - First parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
+		Menu, Placeholders_Accessor, add, ${Acc7} - First parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
+		Menu, Placeholders_Accessor, add, ${Acc8} - First parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
+		Menu, Placeholders_Accessor, add, ${Acc9} - First parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
 		
 		Menu, Placeholders_DateTime, add, ${DateTime} - Language-specific time and date (4:55 PM Saturday`, November 27`, 2010), PlaceholderHandler
 		Menu, Placeholders_DateTime, add, ${DateTimeLongDate} - Language-specific long date (Friday`, April 23`, 2010), PlaceholderHandler

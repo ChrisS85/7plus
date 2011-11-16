@@ -40,16 +40,12 @@ Accessor_Run_OnExit(Run)
 
 Accessor_Run_FillAccessorList(RunPlugin, Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet)
 {
-	Accessor.List.Insert(Object("Title",Filter,"Path", "","Type", "Run", "Icon", 1)) ;Use generic icon
+	Accessor.List.Insert(Object("Title",Filter,"Path", Filter,"Type", "Run", "Icon", 1)) ;Use generic icon
 }
 
 Accessor_Run_PerformAction(Run, Accessor, AccessorListEntry)
 {
-	AccessorRunAsUser(AccessorListEntry)
-}
-
-Accessor_Run_ListViewEvents(Run, AccessorListEntry)
-{
+	AccessorRun()
 }
 
 Accessor_Run_EditEvents(Run, AccessorListEntry, Filter, LastFilter)
@@ -63,27 +59,18 @@ Accessor_Run_OnKeyDown(Run, wParam, lParam, Filter, selected, AccessorListEntry)
 }
 Accessor_Run_SetupContextMenu(Run, AccessorListEntry)
 {
-	Menu, AccessorMenu, add, Run as user, AccessorRunAsUser
+	Menu, AccessorMenu, add, Run as user, AccessorRun
 	Menu, AccessorMenu, add, Run as admin, AccessorRunAsAdmin
 	Menu, AccessorMenu, Default, Run as user
 }
 
-AccessorRunAsUser:
+#if (Accessor.GUINum)
 ^Enter::
-AccessorRunAsUser(Accessor.List.GetItemWithValue("Type", "Run"))
+AccessorRun(Accessor.List.GetItemWithValue("Type", "Run"))
 AccessorClose()
 return
 ^+Enter::
-AccessorRunAsAdmin:
 AccessorRunAsAdmin(Accessor.List.GetItemWithValue("Type", "Run"))
 AccessorClose()
 return
-
-AccessorRunAsUser(AccessorListEntry)
-{
-	Run(AccessorListEntry.Title, "", "", 1)	
-}
-AccessorRunAsAdmin(AccessorListEntry)
-{
-	Run(AccessorListEntry.Title, "", "", 0)
-}
+#if

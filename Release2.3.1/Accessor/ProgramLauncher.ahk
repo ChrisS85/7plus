@@ -187,7 +187,7 @@ Accessor_ProgramLauncher_FillAccessorList(ProgramLauncher, Accessor, Filter, Las
 }
 Accessor_ProgramLauncher_PerformAction(ProgramLauncher, Accessor, AccessorListEntry)
 {
-	Run(AccessorListEntry.Path)
+	AccessorRun()
 }
 Accessor_ProgramLauncher_ListViewEvents(ProgramLauncher, AccessorListEntry)
 {
@@ -207,9 +207,10 @@ Accessor_ProgramLauncher_OnKeyDown(ProgramLauncher, wParam, lParam, Filter, sele
 }
 Accessor_ProgramLauncher_SetupContextMenu(ProgramLauncher, AccessorListEntry)
 {
-	Menu, AccessorMenu, add, Run program,AccessorOK
+	Menu, AccessorMenu, add, Run program,AccessorRun
 	Menu, AccessorMenu, Default,Run program
 	Menu, AccessorMenu, add, Run program with arguments,AccessorRunWithArgs
+	Menu, AccessorMenu, add, Run program as admin,AccessorRunAsAdmin
 	Menu, AccessorMenu, add, Open executable path in explorer,AccessorOpenExplorer
 	Menu, AccessorMenu, add, Open executable path in CMD,AccessorOpenCMD
 	Menu, AccessorMenu, add, Copy executable path (CTRL+C),AccessorCopyPath
@@ -221,6 +222,22 @@ Accessor_ProgramLauncher_OnExit(ProgramLauncher)
 		DestroyIcon(ProgramLauncher.List.Icon)	
 	WriteProgramLauncherCache(ProgramLauncher)
 }
+
+;Possibly add the selected program to ProgramLauncher cache
+ProgramLauncherAddToCache(AccessorListEntry)
+{
+	global AccessorPlugins
+	ProgramLauncher := AccessorPlugins.GetItemWithValue("Type", "ProgramLauncher")
+	if(!AccessorListEntry.Path)
+		return
+	if(ProgramLauncher.List.FindKeyWithValue("Command",AccessorListEntry.Path) = 0)
+	{
+		path := AccessorListEntry.Path
+		SplitPath, path, name
+		ProgramLauncher.List.Insert(Object("Name",name, "Command", path, "BasePath", ""))
+	}
+}
+
 ReadProgramLauncherCache(ProgramLauncher)
 {
 	ProgramLauncher.List := Array()

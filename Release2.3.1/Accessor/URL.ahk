@@ -66,42 +66,18 @@ Accessor_URL_OnExit(URL)
 		XMLObject.List.Insert(Object("URL",URL.History[A_Index].URL))
 	XML_Save(XMLObject, Settings.ConfigPath "\History.xml")
 }
-Accessor_URL_FillAccessorList(URL, Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet)
+Accessor_URL_FillAccessorList(URL, Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet, Parameters)
 {
-	;ImageList_ReplaceIcon(Accessor.ImageListID, -1, URL.Icon)
-	; IconCount++
-	outputdebug Accessor_URL_FillAccessorList %filter%
+	OutputDebug Filter %filter%
 	if(!CouldBeURL(Filter))
 		return
-	outputdebug couldbeurl
-	Filter := strTrim(Filter, " ")
-	if(pos := RegexMatch(Filter, "\${(\d+)}", Parameter) && (ArgumentsStart := InStr(Filter, " ")))
-	{
-		Parameters := Array()
-		outputdebug placeholder %Parameter1%
-		Parameters.Insert(Parameter1)
-		p0 := Parse(Filter, "1 2 3 4 5 6 7 8 9 10", Filter, p1, p2, p3, p4, p5, p6, p7, p8, p9)
-		while(pos := RegexMatch(Filter, "\${(\d+)}", Parameter, pos + 1))
-			Parameters.Insert(Parameter1)
-		
-		Loop % Parameters.MaxIndex()
-		{
-			outputdebug % "param " A_Index ": " p%A_Index%
-			Filter := StringReplace(Filter, "${" A_Index "}", p%A_Index%)
-		}
-	}
-	outputdebug url filter %filter%
+	
 	Accessor.List.Insert(Object("Title",Filter,"Path", "Open URL", "Type","URL", "Detail1", "URL", "Detail2", "","Icon", 3))
+	
 	if(URL.Settings.UseHistory)
-	{
-		outputdebug % "history len: " URL.History.MaxIndex()
-		Loop % URL.History.MaxIndex()
-		{
-			outputdebug % history URL.History[A_Index].URL
-			if(InStr(URL.History[A_Index].URL, Filter) && URL.History[A_Index].URL != Filter && CouldBeURL(URL.History[A_Index].URL))
-				Accessor.List.Insert(Object("Title", URL.History[A_Index].URL, "Path", "Open URL", "Type", "URL", "Detail1", "URL", "Detail2", "","Icon", 3, "History", true))
-		}
-	}
+		for index, HistoryEntry in URL.History
+			if(InStr(HistoryEntry.URL, Filter) && HistoryEntry.URL != Filter && CouldBeURL(HistoryEntry.URL))
+				Accessor.List.Insert(Object("Title", HistoryEntry.URL, "Path", "Open URL", "Type", "URL", "Detail1", "URL", "Detail2", "","Icon", 3, "History", true))
 }
 Accessor_URL_PerformAction(URLPlugin, Accessor, AccessorListEntry)
 {

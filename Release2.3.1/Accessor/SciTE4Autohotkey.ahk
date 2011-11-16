@@ -48,7 +48,7 @@ Accessor_SciTE4AutoHotkey_OnAccessorOpen(SciTE4AutoHotkey, Accessor)
 		path := GetSciTE4AutoHotkeyPath()
 		SciTE4AutoHotkey.Icon := ExtractIcon(path, 1, 64)
 	}
-	;if SciTEWindow is open and there is an entry with the last usd command for the current tab, put it in edit box
+	;if SciTEWindow is open and there is an entry with the last used command for the current tab, put it in edit box
 	if(WinExist("ahk_class SciTEWindow") = Accessor.PreviousWindow)
 	{
 		SciTE4AutoHotkey.Priority := 10000

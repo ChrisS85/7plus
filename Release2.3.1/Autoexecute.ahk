@@ -38,7 +38,6 @@ FileCreateDir %A_Temp%\7plus
 Settings.SetupConfigurationPath()
 Settings.Load()
 
-
 ;If program is run without admin privileges, try to run it again as admin, and exit this instance when the user confirms it
 if(!A_IsAdmin && Settings.Misc.RunAsAdmin = "Always/Ask")
 {

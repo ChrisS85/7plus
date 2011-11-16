@@ -40,6 +40,7 @@ Class CAccessorPlugin
 	{
 	}
 }
+#include %A_ScriptDir%\Accessor\AccessorEventPlugin.ahk
 #include %A_ScriptDir%\Accessor\Calc.ahk
 #include %A_ScriptDir%\Accessor\FastFolders.ahk
 #include %A_ScriptDir%\Accessor\FileSystem.ahk
@@ -56,7 +57,7 @@ Class CAccessorPlugin
 Accessor_Init()
 {
 	global AccessorPlugins, Accessor
-	AccessorPluginsList := "WindowSwitcher,FileSystem,Google,Calc,ProgramLauncher,NotepadPlusPlus,SciTE4AutoHotkey,Notes,FastFolders,Uninstall,URL,Weather,Run" ;The order here partly determines the order in the window, so choose carefully
+	AccessorPluginsList := "WindowSwitcher,FileSystem,EventPlugin,Google,Calc,ProgramLauncher,NotepadPlusPlus,SciTE4AutoHotkey,Notes,FastFolders,Uninstall,URL,Weather,Run" ;The order here partly determines the order in the window, so choose carefully
 	AccessorPlugins := Array()
 	Accessor := Object("Base", Object("OnExit", "Accessor_OnExit", "History", Array()))
 	FileRead, xml, % Settings.ConfigPath "\Accessor.xml"
@@ -260,20 +261,41 @@ FillAccessorList()
 	Gui, %guinum%: Default
 	Gui, ListView, AccessorListView	
 	GuiControlGet, BaseFilter, , AccessorEdit
-	outputdebug pre keyword:%BaseFilter%
-	Loop % Accessor.Keywords.MaxIndex()
+	for Index, Keyword in Accessor.Keywords
 	{
+		OutputDebug % "filter: " BaseFilter ", key: " keyword.key ", command: " Keyword.Command
 		;if filter starts with keyword and ends directly after it or has a space after it
-		if(InStr(BaseFilter, Accessor.Keywords[A_Index].Key) = 1 && (strlen(BaseFilter) = strlen(Accessor.Keywords[A_Index].Key) || InStr(BaseFilter, " ") = strLen(Accessor.Keywords[A_Index].Key) + 1))
+		if(InStr(BaseFilter, Keyword.Key) = 1 && (strlen(BaseFilter) = strlen(Keyword.Key) || InStr(BaseFilter, " ") = strLen(Keyword.Key) + 1))
 		{
-			outputdebug replace
-			Filter := StringReplace(BaseFilter, Accessor.Keywords[A_Index].Key, Accessor.Keywords[A_Index].Command)
+			Filter := StringReplace(BaseFilter, Keyword.Key, Keyword.Command)
+			;Code below treats the ${1}-${9} placeholders that may be used with URLs (mostly for Accessor keywords, e.g. to launch a search engine url with a specific query).
+			for index, Parameter in Parameters
+				Filter := StringReplace(Filter, "${" index "}", Parameter)
+			UsingKeyword := true
 			break
 		}
 	}
 	Filter := Filter ? Filter : BaseFilter
-	outputdebug post keyword:%filter%
 	
+	;Parse parameters. They are split by spaces. Quotes (" ") can be used to treat multiple words as one parameter. The first parameter is the Filter variable without the options.
+	Parameters := Array()
+	p0 := Parse(Filter, "q"")1 2 3 4 5 6 7 8 9 10", "", p1, p2, p3, p4, p5, p6, p7, p8, p9)
+	
+	Loop % p0 - 1
+		Parameters.Insert(p%A_Index%)
+	OutputDebug % "1: " p1
+	if(UsingKeyword)
+	{
+		;Code below treats the ${1}-${9} placeholders that may be used with keywords, e.g. to launch a search engine url with a specific query.
+		Loop % Parameters.MaxIndex()
+		{
+			if(InStr(Filter, "${" A_Index "}"))
+				Filter := StringReplace(Filter, "${" A_Index "}", Parameters.Remove(1))
+			else
+				break
+		}
+	}
+	OutputDebug Filter %filter%
 	; if(filter = "run ")
 	; {
 		; Send % "$" Accessor.LauncherHotkey
@@ -285,7 +307,7 @@ FillAccessorList()
 	LV_Delete()
 	if(Accessor.ImageListID)
 		IL_Destroy(Accessor.ImageListID)
-	Accessor.ImageListID := IL_Create(10,5,1) ; Create an ImageList so that the ListView can display some icons
+	Accessor.ImageListID := IL_Create(20,5,1) ; Create an ImageList so that the ListView can display some icons
 	IconCount := 4
 	ImageList_ReplaceIcon(Accessor.ImageListID, -1, Accessor.GenericIcons.Application)
 	ImageList_ReplaceIcon(Accessor.ImageListID, -1, Accessor.GenericIcons.Folder)
@@ -294,12 +316,15 @@ FillAccessorList()
 	Accessor.List := Array()
 	;Find out if we are in a single plugin context, and add only those items
 	Loop % AccessorPlugins.MaxIndex()
-		if(AccessorPlugins[A_Index].Enabled && SingleContext := ((AccessorPlugins[A_Index].Settings.Keyword && Filter && KeywordSet := strStartsWith(Filter, AccessorPlugins[A_Index].Settings.Keyword " ")) || AccessorPlugins[A_Index].IsInSinglePluginContext(Filter, LastFilter))) 
+	{
+		Plugin := AccessorPlugins[A_Index]
+		if(Plugin.Enabled && SingleContext := ((Plugin.Settings.Keyword && Filter && KeywordSet := InStr(Filter, Plugin.Settings.Keyword " ") = 1) || Plugin.IsInSinglePluginContext(Filter, LastFilter))) 
 		{
-			Filter := strTrim(Filter, AccessorPlugins[A_Index].Settings.Keyword " ")
-			AccessorPlugins[A_Index].FillAccessorList(Accessor, Filter, LastFilter, IconCount, KeywordSet)
+			Filter := strTrim(Filter, Plugin.Settings.Keyword " ")
+			Plugin.FillAccessorList(Accessor, Filter, LastFilter, IconCount, KeywordSet, Parameters)
 			break
 		}
+	}
 	;If we aren't, let all plugins add the items we want according to their priorities
 	if(!SingleContext)
 	{
@@ -308,8 +333,11 @@ FillAccessorList()
 			Pluginlist .= (Pluginlist ? "," : "") A_Index
 		Sort, Pluginlist, F AccessorPrioritySort D`,
 		Loop, Parse, Pluginlist, `,
-			if(AccessorPlugins[A_Index].Enabled && !AccessorPlugins[A_LoopField].KeywordOnly && StrLen(Filter) >= AccessorPlugins[A_LoopField].MinChars)
-				AccessorPlugins[A_LoopField].FillAccessorList(Accessor, Filter, LastFilter, IconCount, False)
+		{
+			Plugin := AccessorPlugins[A_LoopField]
+			if(Plugin.Enabled && !Plugin.KeywordOnly && StrLen(Filter) >= Plugin.MinChars)
+				Plugin.FillAccessorList(Accessor, Filter, LastFilter, IconCount, False, Parameters)
+		}
 	}
 	;Now that items are added, add them to the listview
 	LV_SetImageList(Accessor.ImageListID, 1) ; Attach the ImageLists to the ListView so that it can later display the icons
@@ -321,7 +349,8 @@ FillAccessorList()
 		LV_Add("Icon" AccessorListEntry.Icon, "", A_Index, Title, Path, Detail1, Detail2)
 	}
 	Accessor.ListViewReady := true
-	Accessor.LastFilter := Filter	
+	Accessor.LastFilter := Filter
+	Accessor.LastParameters := Parameters
 	selected := LV_GetNext()
 	if(!selected)
 		LV_Modify(1,"Select")
@@ -400,7 +429,7 @@ AccessorListViewEvents()
 	AccessorListEntry := Accessor.List[id]
 	Loop % AccessorPlugins.MaxIndex()
 	{
-		if(AccessorPlugins[A_Index].Enabled && AccessorListentry.Type = AccessorPlugins[A_Index].Type)
+		if(AccessorPlugins[A_Index].Enabled && AccessorListEntry.Type = AccessorPlugins[A_Index].Type)
 		{	
 			handled := AccessorPlugins[A_Index].ListViewEvents(AccessorListEntry)
 			GUIControlGet, name, , AccessorOKButton
@@ -602,6 +631,16 @@ AccessorContextMenu()
 	}
 }
 
+AccessorGetSelectedListEntry()
+{
+	global Accessor, AccessorListView
+	Gui, % Accessor.GUINum ": Default"
+	Gui, ListView, AccessorListView
+	selected := LV_GetNext()
+	LV_GetText(id,selected,2)
+	return id ? Accessor.List[id] : ""
+}
+;Some generic functions and labels that may be used by different plugins
 AccessorOpenExplorer:
 AccessorOpenExplorer()
 return
@@ -610,6 +649,12 @@ AccessorOpenCMD()
 return
 AccessorRunWithArgs:
 AccessorRunWithArgs()
+return
+AccessorRunAsAdmin:
+AccessorRunAsAdmin()
+return
+AccessorRun:
+AccessorRun()
 return
 AccessorExplorerContextMenu:
 AccessorExplorerContextMenu()
@@ -620,80 +665,88 @@ return
 AccessorCopyTitle:
 AccessorCopyField("Title")
 return
-AccessorCopyField(Field = "Path")
+AccessorCopyField(Field = "Path", AccessorListEntry = "")
 {
-	global Accessor, AccessorListView
-	GUINum := Accessor.GUINum
-	Gui, %GUINum%: Default
-	Gui, ListView, AccessorListView
-	selected := LV_GetNext()
-	if(!selected)
-		return
-	LV_GetText(id,selected,2)
-	Clipboard := Accessor.List[id][Field]
+	if(!IsObject(AccessorListEntry))
+		AccessorListEntry := AccessorGetSelectedListEntry()
+	if(IsObject(AccessorListEntry))
+		Clipboard := AccessorListEntry[Field]
 }
-AccessorExplorerContextMenu()
+AccessorExplorerContextMenu(AccessorListEntry = "")
 {
-	global Accessor
-	GUINum := Accessor.GUINum
-	Gui, %GUINum%: Default
-	GUI, ListView, AccessorListView
-	selected := LV_GetNext()
-	LV_GetText(id,selected,2)
-	ShellContextMenu(Accessor.List[id].Path)
+	if(!IsObject(AccessorListEntry))
+		AccessorListEntry := AccessorGetSelectedListEntry()
+	if(AccessorListEntry.Path)
+		ShellContextMenu(AccessorListEntry.Path)
 }
-AccessorRunWithArgs()
+AccessorRun(AccessorListEntry = "")
 {
-	global Accessor, TemporaryEvents
-	GUINum := Accessor.GUINum
-	Gui, %GUINum%: Default
-	GUI, ListView, AccessorListView
-	selected := LV_GetNext()
-	LV_GetText(id,selected,2)
-	Event := new CEvent()
-	Event.Name := "Run with arguments"
-	Event.Temporary := true
-	Event.Actions.Insert(new CInputAction())
-	Event.Actions[1].Text := "Enter program arguments"
-	Event.Actions[1].Title := "Enter program arguments"
-	Event.Actions.Insert(new CRunAction())
-	Event.Actions[2].Command := """" Accessor.List[id].Path """ ${Input}"
-	EventSystem.TemporaryEvents.RegisterEvent(Event)
-	Event.TriggerThisEvent()
-	AccessorClose()
+	if(!IsObject(AccessorListEntry))
+		AccessorListEntry := AccessorGetSelectedListEntry()
+	if(AccessorListEntry.Path)
+	{
+		ProgramLauncherAddToCache(AccessorListEntry)
+		Run(AccessorListEntry.Path)
+		AccessorClose()
+	}
 }
-AccessorOpenExplorer()
+AccessorRunAsAdmin(AccessorListEntry = "")
 {
-	global Accessor, AccessorListView
-	GUINum := Accessor.GUINum
-	Gui, %GUINum%: Default
-	Gui, ListView, AccessorListView
-	selected := LV_GetNext()
-	if(!selected)
-		return
-	LV_GetText(id,selected,2)
-	path := Accessor.List[id].Path
-	if(!InStr(FileExist(path),"D"))
-		Run(A_WinDir "\explorer.exe /Select," path)
-	else
-		Run(A_WinDir "\explorer.exe /n,/e," path)
-	AccessorClose()
+	if(!IsObject(AccessorListEntry))
+		AccessorListEntry := AccessorGetSelectedListEntry()
+	if(AccessorListEntry.Path)
+	{
+		ProgramLauncherAddToCache(AccessorListEntry)
+		Run(AccessorListEntry.Path, "", "", 0)
+		AccessorClose()
+	}
 }
-AccessorOpenCMD()
+AccessorRunWithArgs(AccessorListEntry = "")
 {
-	global Accessor, AccessorListView
-	GUINum := Accessor.GUINum
-	Gui, %GUINum%: Default
-	Gui, ListView, AccessorListView
-	selected := LV_GetNext()
-	if(!selected)
-		return
-	LV_GetText(id,selected,2)
-	path := Accessor.List[id].Path
-	if(!InStr(FileExist(path),"D"))
-		SplitPath, path,, path
-	Run("cmd.exe /k cd /D """ path """")
-	AccessorClose()
+	global TemporaryEvents
+	if(!IsObject(AccessorListEntry))
+		AccessorListEntry := AccessorGetSelectedListEntry()
+	if(AccessorListEntry.Path)
+	{
+		ProgramLauncherAddToCache(AccessorListEntry)
+		Event := new CEvent()
+		Event.Name := "Run with arguments"
+		Event.Temporary := true
+		Event.Actions.Insert(new CInputAction())
+		Event.Actions[1].Text := "Enter program arguments"
+		Event.Actions[1].Title := "Enter program arguments"
+		Event.Actions.Insert(new CRunAction())
+		Event.Actions[2].Command := """" AccessorListEntry.Path """ ${Input}"
+		EventSystem.TemporaryEvents.RegisterEvent(Event)
+		Event.TriggerThisEvent()
+		AccessorClose()
+	}
+}
+AccessorOpenExplorer(AccessorListEntry = "")
+{
+	if(!IsObject(AccessorListEntry))
+		AccessorListEntry := AccessorGetSelectedListEntry()
+	if(AccessorListEntry)
+	{
+		if(!InStr(FileExist(AccessorListEntry.Path),"D"))
+			Run(A_WinDir "\explorer.exe /Select," AccessorListEntry.Path)
+		else
+			Run(A_WinDir "\explorer.exe /n,/e," AccessorListEntry.Path)
+		AccessorClose()
+	}
+}
+AccessorOpenCMD(AccessorListEntry = "")
+{
+	if(!IsObject(AccessorListEntry))
+		AccessorListEntry := AccessorGetSelectedListEntry()
+	if(AccessorListEntry)
+	{
+		path := AccessorListEntry.Path
+		if(!InStr(FileExist(path),"D"))
+			SplitPath, path,, path
+		Run("cmd.exe /k cd /D """ path """")
+		AccessorClose()
+	}
 }
 GUI_EditAccessorPlugin(TemporaryPlugin,GoToLabel="")
 {
