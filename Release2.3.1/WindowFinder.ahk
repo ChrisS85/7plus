@@ -22,18 +22,20 @@ GUI_WindowFinder(PreviousGUINum, GoToLabel="")
 			OutputDebug hwnd %hwnd%
 			hwnd := hwnds%A_Index%
 			WinGetClass, class, ahk_id %hwnd%
+			if(Class = "WorkerW")
+				debug := true
 			WinGetTitle, title, ahk_id %hwnd%
 			WinGet, exe, ProcessName, ahk_id %hwnd%
-			if((!title && exe != "Explorer.exe") || title = "Edit Event" || title = "7plus Settings" || InStr(class, "Tooltip") || InStr(class, "SysShadow")) ;Filter some windows
+			if((!title && exe != "Explorer.exe") || Class = "WorkerW" ||title = "Edit Event" || title = "7plus Settings" || InStr(class, "Tooltip") || InStr(class, "SysShadow")) ;Filter some windows
 				continue
 			pBitmap := Gdip_BitmapFromHWND(hwnd)
 			w := Gdip_GetImageWidth(pBitmap)
 			h := Gdip_GetImageHeight(pBitmap)
 			ratio := w/h
 			sw := min(500 / w, 1)
-			sh := min(330 / h, 1)
-			s := min(min(sw, sh), 1)
-			pThumbnail := Gdip_CreateBitmap(500,330)
+			sh := min(350 / h, 1)
+			s := min(sw, sh)
+			pThumbnail := Gdip_CreateBitmap(500,350)
 			pGraphics := Gdip_GraphicsFromImage(pThumbnail)			
 			Gdip_SetInterpolationMode(pGraphics, 7)
 			Gdip_DrawImage(pGraphics, pBitmap, 0, 0, w*s, h*s)
@@ -78,7 +80,7 @@ GUI_WindowFinder(PreviousGUINum, GoToLabel="")
 		Loop % WindowList.MaxIndex()
 		{
 			DestroyIcon(WindowList[A_Index].hIcon)
-			;~ Gdip_DisposeImage(WindowList[A_Index].pThumbnail)
+			Gdip_DisposeImage(WindowList[A_Index].Bitmap)
 		}
 		return result
 	}

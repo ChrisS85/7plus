@@ -1,16 +1,13 @@
 ; see http://msdn.microsoft.com/en-us/library/dd318066(VS.85).aspxs
 HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEventTime ){ 
-	global Vista7, ResizeWindow, Profiler, SlideWindows, WindowList
+	global ResizeWindow, Profiler, SlideWindows, WindowList
 	ListLines, Off
-	StartTime := A_TickCount
 	hwnd += 0
 	;On dialog popup, check if its an explorer confirmation dialog
 	if(event=0x00008002) ;EVENT_OBJECT_SHOW
 	{
 		if(Settings.Explorer.AutoCheckApplyToAllFiles && Vista7)
-			FixExplorerConfirmationDialogs()		
-		Profiler.Total.HookProc += A_TickCount - StartTime
-		Profiler.Current.HookProc += A_TickCount - StartTime
+			FixExplorerConfirmationDialogs()
 		return
 	}
 	if idObject or idChild ;Doesn't each much time, skip for profiling
@@ -61,9 +58,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 		SetTimer, ResizeWindowTooltip, Off
 		ResizeWindowTooltip(true)
 		Tooltip
-	}	
-	Profiler.Total.HookProc := Profiler.Total.HookProc + A_TickCount - StartTime
-	Profiler.Current.HookProc := Profiler.Current.HookProc + A_TickCount - StartTime
+	}
 	ListLines, On
 }
 ResizeWindowTooltip:
@@ -161,13 +156,8 @@ ShellMessage( wParam, lParam, Msg)
 	else if(wParam=32774)
 	{
 		lParam += 0
-		class:=WinGetClass("ahk_id " lParam)
-		; outputdebug blinking window %class%
-		if(BlinkingWindows.indexOf(lParam)=0)
-		{			
+		if(!BlinkingWindows.indexOf(lParam))
 			BlinkingWindows.Insert(lParam)
-			ct:=BlinkingWindows.MaxIndex()
-		}
 	}	
 	;Window Activation
 	else if(wParam=4||wParam=32772) ;HSHELL_WINDOWACTIVATED||HSHELL_RUDEAPPACTIVATED

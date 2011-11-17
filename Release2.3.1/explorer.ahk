@@ -253,24 +253,27 @@ RunExplorer()
 		}
 	}
 	if(Settings.Explorer.RememberPath && Settings.Explorer.CurrentPath)
-		Run("""" Settings.Explorer.CurrentPath """")
+		Run, % "Explorer """ Settings.Explorer.CurrentPath """"
 	Else
-		run, C:,, UseErrorLevel
+		run, % "Explorer C:"
 	if(Settings.Explorer.AlignNewExplorer && active)
 	{
-		WinWaitNotActive ahk_id %active%	
+		WinWaitNotActive ahk_id %active%
+		Timeout := 10000
+		Start := A_TickCount
 		Loop ;Make sure new window is really active
 		{ 
 			Sleep 10 
 			active2 := WinActive("ahk_group ExplorerGroup")
-			if(active2 && active2 != active)
+			if((active2 && active2 != active) || A_TickCount - Start > Timeout)
 				   Break 
 		}
+		Start := A_TickCount
 		Loop ;Wait until new window is visible
 		{
 			Sleep 10
 			WinGet,visible,style, ahk_id %active2%
-			if(visible & 0x10000000)
+			if(visible & 0x10000000 || A_TickCount - Start > Timeout)
 				break
 		}
 		if(A_OSVersion="WIN_7")
@@ -634,7 +637,6 @@ ExplorerPathChanged(ExplorerWindow)
 	if(OldPath = Path)
 		return
 	ExplorerWindow.DisplayName := GetCurrentFolder(ExplorerWindow.hwnd, 1)
-	outputdebug ExplorerPathChanged
 	if(Settings.Explorer.Tabs.UseTabs)
 		ExplorerWindow.TabContainer.UpdateTabs()
 	;focus first file

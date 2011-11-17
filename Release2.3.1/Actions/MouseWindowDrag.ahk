@@ -20,15 +20,15 @@ Class CMouseWindowDragAction Extends CAction
 		CoordMode, Mouse, Screen
 		MouseGetPos, Drag_OriginalMouseX, Drag_OriginalMouseY, Drag_HWND
 		WinGetPos, Drag_OriginalWindowX, Drag_OriginalWindowY,,, ahk_id %Drag_HWND%
-		Action.tmpOriginalMouseX := Drag_OriginalMouseX
-		Action.tmpOriginalMouseY := Drag_OriginalMouseY
-		Action.tmpOriginalWindowX := Drag_OriginalWindowX
-		Action.tmpOriginalWindowY := Drag_OriginalWindowY
-		Action.tmpHWND := Drag_HWND
-		Action.tmpActiveWindow := WinExist("A")
+		this.tmpOriginalMouseX := Drag_OriginalMouseX
+		this.tmpOriginalMouseY := Drag_OriginalMouseY
+		this.tmpOriginalWindowX := Drag_OriginalWindowX
+		this.tmpOriginalWindowY := Drag_OriginalWindowY
+		this.tmpHWND := Drag_HWND
+		this.tmpActiveWindow := WinExist("A")
 		SetTimer, Action_MouseWindowDrag_Timer, 10
 		return -1
-	} 
+	}
 	DragLoop(Event)
 	{
 		Key := ExtractKey(Event.Trigger.Type = "Hotkey" && Event.Trigger.Key ? Event.Trigger.Key : "LButton")
@@ -42,6 +42,7 @@ Class CMouseWindowDragAction Extends CAction
 		GetKeyState, EscapeState, Escape, P
 		if(EscapeState = "D" || WinExist("A") != this.tmpActiveWindow)  ; Escape has been pressed or another program was activated, so drag is cancelled.
 		{
+			OutputDebug % "Active " WinExist("A") " temp: " this.tmpActiveWindow
 			SetTimer, Action_MouseWindowDrag_Timer, off
 			WinMove, % "ahk_id " this.tmpHWND,, % this.tmpOriginalWindowX, % this.tmpOriginalWindowY
 			this.tmpDraggingWindow := false ;This will make Execute() return 1 to finish the drag action.

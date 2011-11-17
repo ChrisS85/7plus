@@ -139,10 +139,14 @@ QueryCalcResult()
 	
 	if(InStr(GoogleQuery, "More about calculator"))
 	{
-		RegexMatch(GoogleQuery, "<b>.*?=.*?</b>", result)
-		result := strTrim(strTrim(result, "<b>"), "</b>")
-		StringReplace, result, result, <sup>, ^
-		outputdebug result %result%
+		RegexMatch(GoogleQuery, "s)<h2 class=""r"".*?=.*?</h2>.*?More about calculator", result)
+		Result := SubStr(Result, start := InStr(Result, """>") + 2, InStr(Result, "</h2>") - start)
+		StringReplace, result, result, ">,,All
+		StringReplace, result, result, </h2>,,All
+		StringReplace, result, result, `r,,All
+		StringReplace, result, result, `n,,All
+		StringReplace, result, result, <sup>, ^,,All
+		Result := RegExReplace(Result, "[ ]{2,}", " ")
 		result := unhtml(Deref_Umlauts(result))
 		if(result)
 		{

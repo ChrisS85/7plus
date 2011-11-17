@@ -711,14 +711,16 @@ CreateTab(hwnd, path=-1,Activate=-1)
 		outputdebug add new tab container
 		TabContainer := new CTabContainer(ExplorerWindow)
 	}
+	Prev_DetectHiddenWindows := A_DetectHiddenWindows
 	DetectHiddenWindows, On
 	DisableMinimizeAnim(1)	
-	;msgbox tab path: %path%
-	Run("""" path """")
+	Run, explorer "%path%"
 	WinWaitNotActive ahk_id %hwnd%
 	WinWaitNotActive % "ahk_id " TabContainer.TabWindow
 	WinWaitNotActive ahk_id %hwnd%
 	
+	Timeout := 10000
+	start := A_TickCount
 	Loop ;Make sure new window is really active
 	{ 
 		Sleep 10 
@@ -730,16 +732,28 @@ CreateTab(hwnd, path=-1,Activate=-1)
 			If (hwndnew <> hwnd )
 			   Break 
 		}
+		if(A_TickCount - start > Timeout)
+		{
+			gosub CreateTab_Cleanup
+			return 0
+		}
 	}
+	start := A_TickCount
 	Loop ;Wait until new window is visible
 	{
 		Sleep 10
 		WinGet,visible,style, ahk_id %hwndnew%
 		if(visible & 0x10000000)
 			break
+		if(A_TickCount - start > Timeout)
+		{
+			gosub CreateTab_Cleanup
+			return 0
+		}
 	}
 	if(!Activate)
 	{
+		start := A_TickCount
 		Loop ;and hide it until it is invisible again
 		{
 			Sleep 10
@@ -754,11 +768,16 @@ CreateTab(hwnd, path=-1,Activate=-1)
 			}
 			Else
 				break
+				
+			if(A_TickCount - start > Timeout)
+			{
+				gosub CreateTab_Cleanup
+				return 0
+			}
 		}		
 		outputdebug hide tab %hwndnew%
 	}
 	
-	DisableMinimizeAnim(0)
 	WinGetPlacement(hwnd,x,y,w,h,state)
 	WinSetPlacement(hwndnew,x,y,w,h,state)
 	if(!Activate)
@@ -786,7 +805,6 @@ CreateTab(hwnd, path=-1,Activate=-1)
 		TabContainer.add(ExplorerWindows.GetItemWithValue("hwnd", hwndnew+0),TabContainer.tabs.FindKeyWithValue("hwnd", hwnd+0) + 1,1) ;Add new tab right to the current tab
 	else if(Settings.Explorer.Tabs.NewTabPosition = 2)
 		TabContainer.add(ExplorerWindows.GetItemWithValue("hwnd", hwndnew+0),"",1) ;Add new tab to end of list
-	DetectHiddenWindows, Off
 	; TabContainer.CalculateVerticalTabPosition(TabContainer.tabs.FindKeyWithValue("hwnd", hwndnew))
 	if(Activate)
 		AttachToolWindow(TabContainer.Active, TabContainer.TabNum, false)
@@ -794,9 +812,13 @@ CreateTab(hwnd, path=-1,Activate=-1)
 	this.UpdatePosition()
 	; this.DrawTabWindow()
 	; GuiControl, %TabNum%:MoveDraw, TabControl
+	CreateTab_Cleanup:
+	DetectHiddenWindows, %Prev_DetectHiddenWindows%
+	DisableMinimizeAnim(0)
 	if(!WasCritical)
 		Critical, Off
 	ExplorerWindows.TabContainerList.TabCreationInProgress := false
+	return
 }
 
 ; Class TabContainerList

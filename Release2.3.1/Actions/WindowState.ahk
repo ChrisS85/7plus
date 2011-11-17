@@ -49,7 +49,7 @@ Class CWindowStateAction Extends CAction
 		else if(this.Action = "Set Transparency")
 		{
 			newValue := Event.ExpandPlaceholders(this.Value)
-			if(strStartsWith(newValue,"+")||strStartsWith(newValue,"-")||strStartsWith(newValue,"*")||strStartsWith(newValue,"/"))
+			if(InStr(newValue,"+") = 1||InStr(newValue,"-") = 1||InStr(newValue,"*") = 1||InStr(newValue,"/") = 1)
 			{
 				operator := SubStr(newValue,1,1)
 				newValue := SubStr(newValue,2)
@@ -63,7 +63,6 @@ Class CWindowStateAction Extends CAction
 				else if(operator = "/")
 					newValue := oldValue / newValue
 			}
-			outputdebug % "old value " oldvalue " new value " newvalue " operator " operator
 			WinSet, Transparent, %newValue%, ahk_id %hwnd%
 		}
 		return 1

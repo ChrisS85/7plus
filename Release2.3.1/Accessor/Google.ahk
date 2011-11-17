@@ -14,7 +14,7 @@ Accessor_Google_ShowSettings(Google, PluginSettings, PluginGUI)
 }
 Accessor_Google_IsInSinglePluginContext(Google, Filter, LastFilter)
 {
-	if(strStartsWith(Filter, Google.Settings.Keyword " "))
+	if(InStr(Filter, Google.Settings.Keyword " ") = 1)
 	{
 		if(!Google.Cleared)
 		{
@@ -37,12 +37,6 @@ Accessor_Google_OnAccessorOpen(Google, Accessor)
 	Google.List := Array()
 	Google.Cleared := false
 }
-Accessor_Google_OnAccessorClose(Google, Accessor)
-{
-}
-Accessor_Google_OnExit(Google)
-{
-}
 Accessor_Google_FillAccessorList(Google, Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet)
 {
 	if(!KeywordSet)
@@ -53,9 +47,6 @@ Accessor_Google_FillAccessorList(Google, Accessor, Filter, LastFilter, ByRef Ico
 Accessor_Google_PerformAction(Google, Accessor, AccessorListEntry)
 {
 	Run(AccessorListEntry.URL)
-}
-Accessor_Google_ListViewEvents(Google, AccessorListEntry)
-{
 }
 Accessor_Google_EditEvents(Google, AccessorListEntry, Filter, LastFilter)
 {
@@ -90,12 +81,17 @@ QueryGoogleResult()
 		return
 	Filter := strTrim(Filter, GooglePlugin.Settings.Keyword " ")
 	
-	URL := uriEncode("http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=") uriEncode(Filter, 1) "&rsz=8"
+	URL := uriEncode("http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=") uriEncode(Filter, 1) "&rsz=8&key=ABQIAAAA7YzZ21dHSNKA2c0eu0LVKRTn4CuOUlhiyluSCHXJ1XXcqBr54RRnE69I0b16vHAVgBri6LxRQYtELw"
+	Headers := "Referer: http://code.google.com/p/7plus/"
+	;~ https://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=Paris%20Hilton&key=INSERT-YOUR-KEY
+	HTTPRequest(URL, GoogleQuery, Headers, "")
+	/*
 	FileDelete, %A_Temp%\7plus\GoogleQuery.htm
 	URLDownloadToFile, %URL%, %A_Temp%\7plus\GoogleQuery.htm
 	FileEncoding, UTF-8
 	FileRead, GoogleQuery, %A_Temp%\7plus\GoogleQuery.htm
 	FileEncoding
+	*/
 	GooglePlugin.List := Array()
 	
 	pos1 := 0, pos2 := 0, pos3 := 0

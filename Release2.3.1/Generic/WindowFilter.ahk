@@ -9,7 +9,7 @@ ImplementWindowFilterInterface(WindowFilter)
 	WindowFilter.WindowFilterTitle := ""
 	if(WindowFilter.HasKey("__Class"))
 	{
-		WindowFilter.Get := Func("WindowFilter_Get")
+		WindowFilter.WindowFilterGet := Func("WindowFilter_Get")
 		WindowFilter.WindowFilterMatches := Func("WindowFilter_Matches")
 		WindowFilter.WindowFilterDisplayString := Func("WindowFilter_DisplayString")
 		WindowFilter.WindowFilterGUIShow := Func("WindowFilter_GUIShow")
