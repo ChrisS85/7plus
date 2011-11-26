@@ -9,6 +9,10 @@ Class CVolumeAction Extends CAction
 	Execute(Event)
 	{
 		Volume := Event.ExpandPlaceholders(this.Volume)
+		;TODO: Here's a bug with that statement above in AHK.
+		;~ Volume := this.test(this.Volume)
+		;~ Volume := this.Volume
+		;~ ToolTip % volume
 		if(Vista7)
 		{
 			if(this.Action = "Mute")
@@ -22,7 +26,13 @@ Class CVolumeAction Extends CAction
 			else
 			{
 				if(InStr(Volume, "+") = 1 || InStr(Volume, "-") = 1)
+				{
+					;~ if(InStr(Volume, "+") = 1)
+						;~ Volume := SubStr(Volume, 2)
+					vol := Volume
 					Volume := VA_GetMasterVolume() + Volume
+				}
+				ToolTip % "Current volume: " VA_GetMasterVolume() "`nnew volume: " volume "`n Delta: " vol "`norig: " this.Volume
 				VA_SetMasterVolume(Volume)
 			}
 			if(this.ShowVolume)

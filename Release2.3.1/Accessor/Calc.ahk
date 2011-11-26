@@ -56,6 +56,7 @@ Accessor_Calc_ShowSettings(Calc, PluginSettings, PluginGUI)
 }
 Accessor_Calc_IsInSinglePluginContext(Calc, Filter, LastFilter)
 {
+	return InStr(Filter, "=") = 1
 }
 Accessor_Calc_GetDisplayStrings(Calc, AccessorListEntry, ByRef Title, ByRef Path, ByRef Detail1, ByRef Detail2)
 {

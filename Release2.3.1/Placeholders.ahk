@@ -9,6 +9,7 @@ ExpandPlaceholders(SubEvent, Text)
 	while(OriginalText != Text && !IsObject(Text))
 	{
 		OriginalText := Text
+		
 		;Expand local dynamic placeholders (for example ${MessageResult} defined by SendMessage action)
 		for key, value in SubEvent.Placeholders
 		{

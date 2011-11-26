@@ -162,6 +162,9 @@ InitExplorerWindows()
 
 LoadHotstrings()
 
+;Try closing the windows update window if needed on startup since it might already be there.
+AutoCloseWindowsUpdate(WinExist("Windows Update ahk_class #32770"))
+
 ThemedWindows:=DllCall("uxtheme.dll\IsThemeActive") ; On non-themed environments, standard icon is used
 ; if(A_IsCompiled)
 ; {
