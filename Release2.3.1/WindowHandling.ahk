@@ -394,7 +394,7 @@ FlashWindows()
 
 AutoCloseWindowsUpdate(hwnd)
 {
-	if(Settings.Windows.AutoCloseWindowsUpdate && WinExist("Windows Update ahk_class #32770") = hwnd)
+	if(Settings.Windows.AutoCloseWindowsUpdate && hwnd && WinExist("Windows Update ahk_class #32770") = hwnd)
 	{
 		WinActivate ahk_id %hwnd%
 		Send {Up}{Down 2}{Tab 2}{Enter}

@@ -45,17 +45,24 @@ Class CTimerTrigger Extends CTrigger
 	}
 	PrepareReplacement(Original, Copy)
 	{
-		Copy.Trigger.tmpIsPaused := Original.Trigger.tmpIsPaused
-		Copy.Trigger.tmpStart := Original.Trigger.tmpStart
-		Copy.Trigger.tmpStartNice := Original.Trigger.tmpStartNice
-		Copy.Trigger.tmpProgress := Original.Trigger.tmpProgress
-		Copy.Trigger.tmpText := Original.Trigger.tmpText
-		Copy.Trigger.tmpStartPause := Original.Trigger.tmpStartPause
-		Copy.Trigger.tmpStop := Original.Trigger.tmpStop
-		Copy.Trigger.tmpResetHandle := Original.Trigger.tmpResetHandle
-		Copy.Trigger.tmpGUINum := Original.Trigger.tmpGUINum
-		Copy.Trigger.tmpReset := Original.Trigger.tmpReset
-		Copy.Trigger.tmpEventName := Original.Trigger.tmpEventName
+		if(Copy.Trigger.Is("CTimerTrigger"))
+		{
+			Copy.Trigger.tmpIsPaused := Original.Trigger.tmpIsPaused
+			Copy.Trigger.tmpStart := Original.Trigger.tmpStart
+			Copy.Trigger.tmpStartNice := Original.Trigger.tmpStartNice
+			Copy.Trigger.tmpProgress := Original.Trigger.tmpProgress
+			Copy.Trigger.tmpText := Original.Trigger.tmpText
+			Copy.Trigger.tmpStartPause := Original.Trigger.tmpStartPause
+			Copy.Trigger.tmpStop := Original.Trigger.tmpStop
+			Copy.Trigger.tmpResetHandle := Original.Trigger.tmpResetHandle
+			Copy.Trigger.tmpGUINum := Original.Trigger.tmpGUINum
+			Copy.Trigger.tmpReset := Original.Trigger.tmpReset
+			Copy.Trigger.tmpEventName := Original.Trigger.tmpEventName
+		}
+		else
+		{
+			Original.Trigger.Stop(Original)
+		}
 	}
 	StartPause()
 	{
