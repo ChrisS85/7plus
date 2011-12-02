@@ -18,15 +18,14 @@ Class CControlEventAction Extends CAction
 			if(this.Action = "Enable Event")
 				TargetEvent.Enable()
 			else if(this.Action = "Disable Event")
-			{
-				outputdebug % "disable " TargetEvent.ID
 				TargetEvent.Disable()
-			}
 			else if(this.Action = "Toggle Enable/Disable")
+			{
 				if(TargetEvent.Enabled)
 					TargetEvent.Disable()
 				else
 					TargetEvent.Enable()
+			}
 			else if(this.Action = "Trigger Event")
 			{
 				Trigger := new CTriggerTrigger()

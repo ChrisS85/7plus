@@ -90,11 +90,12 @@ Class CEventSystem extends CRichObject
 	;that is used by the triggers of events to decide if the event should be triggered.
 	OnTrigger(Trigger)
 	{
-		if(!Trigger)
+		if(!Trigger.Extends("CTrigger"))
 		{
-			OutputDebug Invalid trigger!
+			MsgBox % "Invalid trigger!`nName: " Trigger.Name "`nID: " Trigger.ID
 			return
 		}
+		
 		;Find matching triggers
 		for index, Event in EventSystem.Events
 			Event.TriggerThisEvent(Trigger)
@@ -333,7 +334,7 @@ Class CEvent extends CRichObject
 	TriggerThisEvent(Trigger="")
 	{
 		;Order of this if condition is important here, because Event.Trigger.Matches() can disable the event for timers
-		if(this.Enabled && (!IsObject(Trigger) || (this.Trigger.Type = Trigger.Type && this.Trigger.Matches(Trigger, this)) || (Trigger.Type = "Trigger" && this.ID = Trigger.TargetID)))
+		if(this.Enabled && (!IsObject(Trigger) || (this.Trigger.Type = Trigger.Type && this.Trigger.Matches(Trigger, this)) || (Trigger.Is("CTriggerTrigger") && this.ID = Trigger.TargetID)))
 		{
 			;Test if the event is already running and mustn't be run multiple times
 			if(!this.OneInstance || !EventSystem.EventSchedule.FindKeyWithValue("ID", this.ID))
