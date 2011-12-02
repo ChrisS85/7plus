@@ -74,62 +74,63 @@ Class CInputAction Extends CAction
 			{
 				if(sPreviousSelection)
 					if(sPreviousSelection = "Selection")
-						this.GuiShow(sGUI, "ListViewSubmit")
+						this.GuiShow(sGUI, "ListBoxSubmit")
 				
 				if(DataType = "Selection")
 				{
-					Gui, Add, ListView, % "AltSubmit -Hdr -ReadOnly -Multi hwndListView w300 h100 x" sGUI.x " y" sGUI.y, Selection
-					Selection := this.Selection
-					Loop, Parse, Selection, |
-						LV_Add("Select", A_LoopField)
+					Gui, Add, ListBox, % "-ReadOnly -Multi AltSubmit hwndListBox w300 h100 x" sGUI.x " y" sGUI.y, % this.Selection
 					Gui, Add, Button, % "hwndAdd gAction_Input_Add w60 x+10 y" sGUI.y, Add
 					Gui, Add, Button, % "hwndRemove gAction_Input_Remove w60 y+10", Remove
-					sGUI.ListView := ListView
+					sGUI.ListBox := ListBox
 					sGUI.Add := Add
 					sGUI.Remove := Remove
 				}
 			}
 			sPreviousSelection := DataType
 		}
-		else if(GoToLabel = "ListViewSubmit")
+		else if(GoToLabel = "ListBoxSubmit")
 		{
-			GuiNum := sGUI.GUINum
-			Gui, %GuiNum%:ListView, % sGUI.ListView
 			this.Selection := ""
-			Loop % LV_GetCount()
-			{
-				LV_GetText(line, A_Index)
-				if(line)
-					this.Selection .= (A_Index != 1 ? "|" : "") line
-			}
-			WinKill, % "ahk_id " sGUI.ListView
+			ControlGet, list, list,,,% "ahk_id " sGUI.ListBox
+			StringReplace,list, list,`n,|, A
+			this.Selection := list
+			WinKill, % "ahk_id " sGUI.ListBox
 			WinKill, % "ahk_id " sGUI.Add
 			WinKill, % "ahk_id " sGUI.Remove
 		}
-		else if(GoToLabel = "ListView_Add")
+		else if(GoToLabel = "ListBox_Add")
 		{
-			GuiNum := sGUI.GUINum
-			Gui, %GuiNum%:ListView, % sGUI.ListView
-			LV_Add("Select","Option")
-			ControlFocus,, % "ahk_id " sGUI.ListView
-			ControlSend,, {F2}, % "ahk_id " sGUI.ListView
+			ControlGet, list, list,,,% "ahk_id " sGUI.ListBox
+			StringReplace,list, list,`n,|,UseErrorLevel
+			NewItemIndex := ErrorLevel + 2
+			GuiControl,,% sGUI.ListBox, |%list%|Option
+			GuiControl,Choose, % sGUI.ListBox, %NewItemIndex%
+			ControlFocus,, % "ahk_id " sGUI.ListBox
+			ControlSend,, {F2}, % "ahk_id " sGUI.ListBox
 		}
-		else if(GoToLabel = "ListView_Remove")
+		else if(GoToLabel = "ListBox_Remove")
 		{
-			GuiNum := sGUI.GUINum
-			Gui, %GuiNum%:ListView, % sGUI.ListView
-			LV_Delete(LV_GetNext("Selected"))
+			GuiControlGet, SelectedIndex,, % sGUI.ListBox
+			ControlGet, list, list,,,% "ahk_id " sGUI.ListBox
+			newlist := ""
+			Loop, Parse, list, `n
+			{
+				if(A_Index = SelectedIndex)
+					continue
+				newlist .= "|" A_LoopField
+			}
+			GuiControl, , % sGUI.ListBox, %newlist%
 		}
 	}
 	
 	GuiSubmit(GUI)
 	{
-		this.GuiShow(GUI, "ListViewSubmit")
+		this.GuiShow(GUI, "ListBoxSubmit")
 		Base.GuiSubmit(GUI)
 		if(!this.HasKey("Placeholder"))
 		{
 			Msgbox Placeholder must not be empty! It is now being set to "Input".
-			this.Placeholder := "Input"q
+			this.Placeholder := "Input"
 		}
 	}
 	
@@ -292,10 +293,10 @@ Action_Input_DataType:
 GetCurrentSubEvent().GuiShow("", "DataType_SelectionChange")
 return
 Action_Input_Add:
-GetCurrentSubEvent().GuiShow("", "ListView_Add")
+GetCurrentSubEvent().GuiShow("", "ListBox_Add")
 return
 Action_Input_Remove:
-GetCurrentSubEvent().GuiShow("", "ListView_Remove")
+GetCurrentSubEvent().GuiShow("", "ListBox_Remove")
 return
 
 Action_Input_Edit:
