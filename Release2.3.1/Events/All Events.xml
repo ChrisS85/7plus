@@ -645,7 +645,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>309</ID>
 <Name>Toggle always on top -&gt; No context menu active</Name>
@@ -678,7 +678,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>310</ID>
 <Name>Toggle always on top -&gt; context menu timeout</Name>
@@ -4834,7 +4834,7 @@
 <OfficialEvent>29</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Key>~!LButton</Key>
+<Key>~#LButton</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event><Event>
@@ -4864,7 +4864,7 @@
 <OfficialEvent>30</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Key>!LButton</Key>
+<Key>#LButton</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event><Event>
@@ -4894,7 +4894,7 @@
 <OfficialEvent>31</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Key>!RButton</Key>
+<Key>#RButton</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event><Event>
@@ -4924,7 +4924,7 @@
 <OfficialEvent>32</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Key>~!RButton</Key>
+<Key>~#RButton</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event><Event>
@@ -5193,34 +5193,6 @@
 <Trigger>
 <Key>!PrintScreen</Key>
 <Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Text>${Acc1}</Text>
-<Timeout>0</Timeout>
-<Title>7plus</Title>
-<Type>Message</Type>
-</Action></Actions>
-<Category>Uncategorized</Category>
-<Conditions>
-</Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description></Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>1639</ID>
-<Name>New event</Name>
-<OneInstance>0</OneInstance>
-<Trigger>
-<ButtonText>Test</ButtonText>
-<Detail1>bla</Detail1>
-<Detail2>blup</Detail2>
-<Keyword>Test</Keyword>
-<Path>some path</Path>
-<Title>Accessor Trigger Test</Title>
-<Type>Accessor Trigger</Type>
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
