@@ -111,7 +111,6 @@ Class CEventSystem extends CRichObject
 	{
 		global Profiler
 		Critical, Off
-		StartTime := A_TickCount
 		;First, check the conditions of all events in the queue to make sure an event can't influence the result of a condition check of another event.
 		EventPos := 1
 		Loop % this.EventSchedule.MaxIndex()
@@ -175,8 +174,6 @@ Class CEventSystem extends CRichObject
 			}
 			EventPos++
 		}
-		Profiler.Total.EventLoop := Profiler.Total.EventLoop + A_TickCount - StartTime
-		Profiler.Current.EventLoop := Profiler.Current.EventLoop + A_TickCount - StartTime
 	}
 	
 	;Finds the queued event and subevent in which a subevent has a specific key with a specific value. Filter specifies which types of subevents should be searched.
@@ -560,7 +557,7 @@ Class CEvents extends CArray
 				Event.Remove("EventComplexityLevel")
 			
 			;Read trigger values
-			if(XMLEvent.HasKey("Trigger") && XMLEvent.Trigger.HasKey("Type"))
+			if(IsObject(XMLEvent.Trigger) && XMLEvent.Trigger.HasKey("Type"))
 			{
 				if(!EventSystem.Triggers.HasKey(XMLEvent.Trigger.Type))
 				{
@@ -581,60 +578,66 @@ Class CEvents extends CArray
 				Event.Remove("Trigger")
 			
 			;Read conditions
-			if(XMLEvent.Conditions.HasKey("Condition") && !XMLEvent.Conditions.Condition.Is("CArray")) ;Single condition
-				XMLEvent.Conditions.Condition := new CArray(XMLEvent.Conditions.Condition)
-			
-			for index, XMLCondition in XMLEvent.Conditions.Condition
+			if(IsObject(XMLEvent.Conditions) && XMLEvent.Conditions.HasKey("Condition"))
 			{
-				;Create new condition
-				if(!EventSystem.Conditions.HasKey(XMLCondition.Type))
+				if(!XMLEvent.Conditions.Condition.Is("CArray")) ;Single condition
+					XMLEvent.Conditions.Condition := new CArray(XMLEvent.Conditions.Condition)
+			
+				for index, XMLCondition in XMLEvent.Conditions.Condition
 				{
-					if(!CCondition.CLegacyTypes.HasKey(XMLCondition.Type) || !IsObject(EventSystem.Conditions[CCondition.CLegacyTypes[XMLCondition.Type]]))
+					;Create new condition
+					if(!EventSystem.Conditions.HasKey(XMLCondition.Type))
 					{
-						MsgBox % "No known Condition of Type " XMLCondition.Type ", skipping event " Event.ID ": " Event.Name
-						continue
+						if(!CCondition.CLegacyTypes.HasKey(XMLCondition.Type) || !IsObject(EventSystem.Conditions[CCondition.CLegacyTypes[XMLCondition.Type]]))
+						{
+							MsgBox % "No known Condition of Type " XMLCondition.Type ", skipping event " Event.ID ": " Event.Name
+							continue
+						}
+						else
+							ConditionTemplate := EventSystem.Conditions[CCondition.CLegacyTypes[XMLCondition.Type]]
 					}
 					else
-						ConditionTemplate := EventSystem.Conditions[CCondition.CLegacyTypes[XMLCondition.Type]]
+						ConditionTemplate := EventSystem.Conditions[XMLCondition.Type]
+					Condition :=  new ConditionTemplate()
+					
+					;Read Negation
+					Condition.Negate := XMLCondition.Negate
+					
+					;Read condition values
+					Condition.ReadXML(XMLCondition)
+					
+					Event.Conditions.Insert(Condition)
 				}
-				else
-					ConditionTemplate := EventSystem.Conditions[XMLCondition.Type]
-				Condition :=  new ConditionTemplate()
-				
-				;Read Negation
-				Condition.Negate := XMLCondition.Negate
-				
-				;Read condition values
-				Condition.ReadXML(XMLCondition)
-				
-				Event.Conditions.Insert(Condition)
 			}
 			
 			;Read actions
-			if(XMLEvent.Actions.HasKey("Action") && !XMLEvent.Actions.Action.Is("CArray")) ;Single Action
-				XMLEvent.Actions.Action := new CArray(XMLEvent.Actions.Action)
-			
-			for index, XMLAction in XMLEvent.Actions.Action
+			if(IsObject(XMLEvent.Actions) && XMLEvent.Actions.HasKey("Action"))
 			{
-				;Create new action
-				if(!EventSystem.Actions.HasKey(XMLAction.Type))
+				if(!XMLEvent.Actions.Action.Is("CArray")) ;Single Action
+					XMLEvent.Actions.Action := new CArray(XMLEvent.Actions.Action)
+				
+				for index, XMLAction in XMLEvent.Actions.Action
 				{
-					if(!CAction.CLegacyTypes.HasKey(XMLAction.Type) || !IsObject(EventSystem.Actions[CAction.CLegacyTypes[XMLAction.Type]]))
+					;Create new action
+					if(!EventSystem.Actions.HasKey(XMLAction.Type))
 					{
-						MsgBox % "No known Action of Type " XMLAction.Type ", skipping event " Event.ID ": " Event.Name
-						continue
+						if(!CAction.CLegacyTypes.HasKey(XMLAction.Type) || !IsObject(EventSystem.Actions[CAction.CLegacyTypes[XMLAction.Type]]))
+						{
+							MsgBox % "No known Action of Type " XMLAction.Type ", skipping event " Event.ID ": " Event.Name
+							continue
+						}
+						else
+							ActionTemplate := EventSystem.Actions[CAction.CLegacyTypes[XMLAction.Type]]
 					}
 					else
-						ActionTemplate := EventSystem.Actions[CAction.CLegacyTypes[XMLAction.Type]]
+						ActionTemplate := EventSystem.Actions[XMLAction.Type]
+					Action := new ActionTemplate()
+					
+					;Read action values
+					Action.ReadXML(XMLAction)
+					
+					Event.Actions.Insert(Action)
 				}
-				else
-					ActionTemplate := EventSystem.Actions[XMLAction.Type]
-				Action := new ActionTemplate()
-				
-				;Read action values
-				Action.ReadXML(XMLAction)
-				
-				Event.Actions.Insert(Action)
 			}
 			
 			if(Event.HasKey("OfficialEvent") && (OldEvent := this.GetEventWithValue("OfficialEvent", Event.OfficialEvent))) ;If an official event already exists, apply this as patch
@@ -881,7 +884,7 @@ Class CSubEvent extends CRichObject
 	ReadXML(XML)
 	{
 		for key, value in this.base
-			if(InStr(key, "__") != 1 && key != "base" && key != "Type" && key != "Category" && (!IsFunc(this[key]) || !this[key].Name))
+			if(InStr(key, "__") != 1 && key != "base" && key != "Type" && key != "Category" && (!IsFunc(this[key]) || (IsObject(this[key]) && !this[key].Name)))
 				this.ReadVar(XML, key)
 	}
 	
@@ -916,21 +919,6 @@ Class CSubEvent extends CRichObject
 	GuiSubmit(GUI)
 	{
 		this.SubmitControls(GUI)
-	}
-	
-	;This __Set routine is currently only used to automatically register all subevents on program startup.
-	;It requires that a subevent assigns a static "Type" property with its name.
-	__Set(Name, Value)
-	{
-		global
-		if(Name = "Type")
-		{
-			
-		}
-		else if(Name = "Category")
-		{
-			
-		}
 	}
 }
 

@@ -17,7 +17,7 @@ OnClipboardChange()
 		CreateFileFromClipboard()
 	text:=ReadClipboardText()
 	FileAppend, %A_Now%: Clipboard changed to %text%`n, %A_Temp%\7plus\Log.log
-	if(text)
+	if(text && IsObject(ClipboardList))
 		ClipboardList.Push(text)
 	return
 }

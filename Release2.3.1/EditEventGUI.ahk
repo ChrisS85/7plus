@@ -490,7 +490,8 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 				GuiControl, disable, EditEvent_%SingularName%_MoveDown
 			GuiControl, enable, EditEvent%EditEventTab%Category
 			GuiControl, enable, EditEvent%EditEventTab%Type
-			GuiControl, ChooseString, EditEvent%EditEventTab%Category, % Event[EditEventTab][A_EventInfo].Category
+			if(IsObject(Event[EditEventTab][A_EventInfo]))
+				GuiControl, ChooseString, EditEvent%EditEventTab%Category, % Event[EditEventTab][A_EventInfo].Category
 			if(EditEventTab = "Conditions")
 					GuiControl, enable, EditConditionNegate
 			if(EditEventTab = "Conditions")

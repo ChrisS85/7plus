@@ -14,14 +14,17 @@ Accessor_Notes_Init(ByRef Notes, PluginSettings)
 	FileRead, xml, % Settings.ConfigPath "\Notes.xml"
 	XMLObject := XML_Read(xml)
 	;Convert empty and single arrays to real array
-	if(!XMLObject.List.MaxIndex())
-		XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()		
-	
-	Loop % XMLObject.List.MaxIndex()
+	if(IsObject(XMLObject) && IsObject(XMLObject.List))
 	{
-		XMLObjectListEntry := XMLObject.List[A_Index]
-		Text := XMLObjectListEntry.Text
-		Notes.List.Insert(Object("Text",Text))
+		if(!XMLObject.List.MaxIndex())
+			XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()		
+	
+		Loop % XMLObject.List.MaxIndex()
+		{
+			XMLObjectListEntry := XMLObject.List[A_Index]
+			Text := XMLObjectListEntry.Text
+			Notes.List.Insert(Object("Text",Text))
+		}
 	}
 }
 Accessor_Notes_ShowSettings(Notes, PluginSettings, PluginGUI)

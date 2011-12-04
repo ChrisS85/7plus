@@ -7,7 +7,7 @@ Class CWindowStateChangeTrigger Extends CTrigger
 	
 	Matches(Filter)
 	{
-		return Trigger.Event = Filter.Event && this.WindowFilterMatches(Filter.Window, Filter)
+		return this.Event = Filter.Event && this.WindowFilterMatches(Filter.Window, Filter)
 	}
 
 	DisplayString()

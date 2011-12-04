@@ -29,7 +29,7 @@ Class CRichObject
 		if !isobject(this) 
 			return this
 		func := "CRichObject.DeepCopy"
-		if(this.base.HasKey("__Class"))
+		if(IsObject(this.base) && this.base.HasKey("__Class"))
 			copy := Object("base", this.base)
 		else
 			copy := object("base", %func%(this.base))

@@ -1,6 +1,5 @@
 CollisionCheck(key1,filter1,exclude)
 {
-	global CustomHotkeys
 	7PlusHotkeys := "#e,^i,^t,^Tab,^+Tab,^w,#Delete"
 	if(key1 = exclude) 
 		return false
@@ -27,24 +26,6 @@ CollisionCheck(key1,filter1,exclude)
 		KeyCollision:=(key1_stripped = key2_stripped)
 		StateCollision:=((key1_Win = key2_Win && key1_Alt = key2_Alt && key1_Control = key2_Control && key1_Shift = key2_Shift) || key1_WildCard || key2_WildCard)
 		if(KeyCollision && StateCollision && DirCollision)
-			return true
-	}
-    Loop % CustomHotkeys.MaxIndex()
-	{
-		key2 := CustomHotkeys[A_Index].key
-		filter2 := CustomHotkeys[A_Index].key
-		key2_Win := InStr(key2, "#") > 0
-		key2_Alt := InStr(key2, "!") > 0
-		key2_Control := InStr(key2, "^") > 0
-		key2_Shift := InStr(key2, "+") > 0
-		key2_Left := InStr(key2, "<") > 0 || !InStr(key2, ">")
-		key2_Right := InStr(key2, ">") > 0 || !InStr(key2, "<")
-		key2_WildCard := InStr(key2, "*") > 0
-		key2_stripped := RegExReplace(key2, "[\*\+\^#><!~]*")
-		DirCollision:=((key1_Left = true && key1_Left = key2_Left)||(key1_Right = true && key1_Right = key2_Right))
-		KeyCollision:=(key1_stripped = key2_stripped)
-		StateCollision:=((key1_Win = key2_Win && key1_Alt = key2_Alt && key1_Control = key2_Control && key1_Shift = key2_Shift) || key1_WildCard || key2_WildCard)
-		if(KeyCollision && StateCollision && DirCollision && filter1 = filter2)
 			return true
 	}
 	return false

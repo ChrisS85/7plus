@@ -25,14 +25,17 @@ LoadHotstrings()
 	FileRead, xml, % Settings.ConfigPath "\Hotstrings.xml"
 	XMLObject := XML_Read(xml)
 	;Convert empty and single arrays to real array
-	if(!XMLObject.List.MaxIndex())
-		XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()
-	Loop % XMLObject.List.MaxIndex()
+	if(IsObject(XMLObject) && IsObject(XMLObject.List))
 	{
-		if(XMLObject.List[A_Index].keyword != "")
+		if(!XMLObject.List.MaxIndex())
+			XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()
+		Loop % XMLObject.List.MaxIndex()
 		{
-			Hotstrings.Insert(Object("key", XMLObject.List[A_Index].keyword, "value", XMLObject.List[A_Index].value))
-			hotstrings(XMLObject.List[A_Index].keyword, XMLObject.List[A_Index].value)
+			if(XMLObject.List[A_Index].keyword != "")
+			{
+				Hotstrings.Insert(Object("key", XMLObject.List[A_Index].keyword, "value", XMLObject.List[A_Index].value))
+				hotstrings(XMLObject.List[A_Index].keyword, XMLObject.List[A_Index].value)
+			}
 		}
 	}
 }

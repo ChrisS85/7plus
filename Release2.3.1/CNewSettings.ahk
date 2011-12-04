@@ -111,7 +111,7 @@ Class CSettingsWindow Extends CGUI
 	;Called when a settings page gets selected
 	PageSelected(Item)
 	{
-		if(PreviousText := StringReplace(this.treePages.PreviouslySelectedItem.Text, " ", ""))
+		if(IsObject(this.treePages.PreviouslySelectedItem) && PreviousText := StringReplace(this.treePages.PreviouslySelectedItem.Text, " ", ""))
 			this["Hide" PreviousText]()
 		;This property is stored specifically for this routine to speed things up! It helps at least 500ms to do this than to check for item parent and item text like this: if(Item.Parent.ID != 0 || Item.Text = "All Events")
 		if(Item.IsEvents)
@@ -122,7 +122,7 @@ Class CSettingsWindow Extends CGUI
 		GuiControl, % this.GUINum ":MoveDraw", % this.BtnOK.hwnd
 		GuiControl, % this.GUINum ":MoveDraw", % this.BtnCancel.hwnd
 		GuiControl, % this.GUINum ":MoveDraw", % this.BtnApply.hwnd
-		GuiControl, % this.GUINum ":MoveDraw", % thisTutLabel.hwnd
+		;~ GuiControl, % this.GUINum ":MoveDraw", % this.TutLabel.hwnd
 		;~ GuiControl, % this.GUINum ":MoveDraw", % this.Wait.hwnd
 	}
 	
@@ -224,7 +224,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("Text", "txtEventSearch", "x508 y65 w75 h13", "Event Search:")
 		;ListView uses indices that are independent of the listview sorting so it can access the array with the data more easily
 		Page.AddControl("ListView", "listEvents", "x197 y88 w536 h271 Grid Checked -LV0x10 Count300", "Enabled|ID|Trigger|Name")
-		Page.listEvents.IndependentSorting := true
+		Page.Controls.listEvents.IndependentSorting := true
 		Page.AddControl("Text", "txtEventDescription", "x194 y28 w606 h26", "You can add events here that are triggered under certain conditions. When triggered, the event can launch a series of actions.`n This is a very powerful tool to add all kinds of features, and many features from 7plus are now implemented with this system.")
 		Page.Controls.editEventDescription.Multi := 1
 	}	
@@ -405,7 +405,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 	}
 	listEvents_CheckedChanged(Row)
 	{
-		this.Events[Row._.RowNumber].Enabled := Row.Checked
+		if(IsObject(Row))
+			this.Events[Row._.RowNumber].Enabled := Row.Checked
 	}
 	btnAddEvent_Click()
 	{
@@ -476,7 +477,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		}
 		if(NewEvent)
 		{
-			this.editEventFilter.Text := ""
+			Page.editEventFilter.Text := ""
 			this.Events[this.Events.FindKeyWithValue("ID", ID)] := NewEvent ;overwrite edited event
 			if(NewEvent.Category = "")
 				NewEvent.Category := "Uncategorized"
@@ -553,6 +554,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		oldlen := this.Events.MaxIndex()
 		if(FileDialog.Show())
 		{
+			this.Enabled := false
 			this.Events.ReadEventsFile(FileDialog.Filename)
 			this.RecreateTreeView()
 			
@@ -568,13 +570,14 @@ Finally, here are some settings that you're likely to change at the beginning:
 			}
 			if(found)
 				Notify("Note", "Make sure to assign the FTP profiles of all imported FTP actions!", 2, "GC=555555 TC=White MC=White", NotifyIcons.Info)
+			this.Enabled := true
 		}
 	}
 	ExportEvents()
 	{
 		global MajorVersion, MinorVersion, BugFixVersion
 		Page := this.Pages.Events.Tabs[1].Controls	
-	
+		this.Enabled := false
 		;Uncomment the following lines to export all events separated by category to Events\Category.xml instead	
 		;~ Loop % this.Events.Categories.MaxIndex()
 		;~ {
@@ -618,8 +621,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 					Notify("Note", "FTP profiles won't be exported by this function. To save them, create a backup of FTPProfiles.xml. This file is only updated at program exit!", 2, "GC=555555 TC=White MC=White", NotifyIcons.Info)
 			}
 		}
+		this.Enabled := true
 	}
-		
 	
 	;Accessor Plugins
 	CreateAccessorPlugins()
@@ -629,7 +632,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("Button", "btnAccessorHelp", "x730 y60 w90 h23", "Help")
 		Page.AddControl("Button", "btnAccessorSettings", "x730 y31 w90 h23", "Plugin Settings")
 		Page.AddControl("ListView", "listAccessorPlugins", "x197 y31 w525 h332 Checked", "Enabled|Plugin Name")
-		Page.listAccessorPlugins.IndependentSorting := true
+		Page.Controls.listAccessorPlugins.IndependentSorting := true
 	}
 	InitAccessorPlugins()
 	{
@@ -704,7 +707,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 	}
 	listAccessorPlugins_CheckedChanged(Row)
 	{
-		this.AccessorPlugins[Row._.RowNumber].Enabled := Row.Checked
+		if(IsObject(Row))
+			this.AccessorPlugins[Row._.RowNumber].Enabled := Row.Checked
 	}
 	listAccessorPlugins_DoubleClick(Row)
 	{
@@ -726,7 +730,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("Button", "btnDeleteAccessorKeyword", "x730 y60 w90 h23", "Delete Keyword")
 		Page.AddControl("Button", "btnAddAccessorKeyword", "x730 y31 w90 h23", "Add Keyword")
 		Page.AddControl("ListView", "listAccessorKeywords", "x197 y31 w525 h332", "Keyword|Command")
-		Page.listAccessorKeywords.IndependentSorting := true
+		Page.Controls.listAccessorKeywords.IndependentSorting := true
 	}
 	InitAccessorKeywords()
 	{
@@ -743,7 +747,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 	ApplyAccessorKeywords()
 	{
 		global Accessor
-		Page := this.Pages.listAccessorKeywords.Tabs[1].Controls
+		Page := this.Pages.AccessorKeywords.Tabs[1].Controls
 		;Find duplicates
 		pos := 1
 		len := this.AccessorKeywords.MaxIndex()
@@ -1081,7 +1085,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 	ddlFTPProfile_SelectionChanged()
 	{
 		Page := this.Pages.FTPProfiles.Tabs[1].Controls
-		this.StoreCurrentFTPProfile(this.FTPProfiles[Page.ddlFTPProfile.PreviouslySelectedItem._.Index])
+		if(IsObject(Page.ddlFTPProfile.PreviouslySelectedItem))
+			this.StoreCurrentFTPProfile(this.FTPProfiles[Page.ddlFTPProfile.PreviouslySelectedItem._.Index])
 		SelectedIndex := Page.ddlFTPProfile.SelectedIndex
 		FTPProfile := this.FTPProfiles[SelectedIndex]
 		Page.editFTPHostname.Text := FTPProfile ? FTPProfile.Hostname : ""
@@ -1136,7 +1141,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page := this.Pages.HotStrings.Tabs[1]
 		Page.AddControl("Text", "txtHotStringDescription", "x197 y376", "HotStrings are used to expand abbreviations and acronyms, such as ""btw"" -> ""by the way"". They support regular`nexpressions in PCRE format. If you want a HotString to trigger only when typed as a seperate word, prepend \b`nand append \s.  For case-insensitive HotStrings, put i) at the start. You can also use keys like {Enter}.")
 		Page.AddControl("ListView", "listHotStrings", "x197 y31 w525 h282", "HotString|Output")
-		Page.listHotStrings.IndependentSorting := true
+		Page.Controls.listHotStrings.IndependentSorting := true
 		Page.AddControl("Button", "btnAddHotString", "x730 y31 w90 h23", "Add HotString")
 		Page.AddControl("Button", "btnDeleteHotString", "x730 y60 w90 h23", "Delete HotString")
 		Page.AddControl("Text", "txtHotStringInput", "x197 y322 w50 h13", "HotString:")
@@ -1272,7 +1277,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.ddlModifierKey.Text := Settings.Windows.SlideWindows.ModifierKey
 		
 		Page.chkAutoCloseWindowsUpdate.Checked := Settings.Windows.AutoCloseWindowsUpdate
-		Page.Controls.chkShowResizeTooltip.Checked := Settings.Windows.ShowResizeToolTip
+		Page.chkShowResizeTooltip.Checked := Settings.Windows.ShowResizeToolTip
 	}
 	ApplyWindows()
 	{
@@ -1465,7 +1470,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 			;Forward regular keys to event filter edit control
 			else if(wParam != 17 && (wParam <= 32 || wParam >= 41) && !GetKeyState("Control", "P"))
 			{
-				PostMessage, Message, %wParam%, %lParam%,, % "ahk_id " PageEvents.editEventFilter.hwnd
+				PostMessage, Message, %wParam%, %lParam%,, % "ahk_id " Page.Events.editEventFilter.hwnd
 				return true
 			}
 		}

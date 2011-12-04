@@ -26,7 +26,7 @@ XML_Save(xmlObject, path, xml = "", level = 0)
 	enum := xmlObject._newEnum()
 	while enum[k,v]
 	{
-		if(v.Is("CArray")) ;If current value is an array
+		if(IsObject(v) && v.Is("CArray")) ;If current value is an array
 		{
 			Loop % v.MaxIndex()
 			{

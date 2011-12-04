@@ -1055,6 +1055,7 @@ DeAttachToolWindow(GUINumber)
 				DllCall("SetWindowLongPtr", "Ptr", hGui, "int", -8, "PTR", 0) ;Remove tool window behavior
 			DllCall("SetWindowLongPtr", "Ptr", hGui, "int", -8, "PTR", 0)
 			ToolWindows.Remove(A_Index)
+			break
 		}
 	}
 }

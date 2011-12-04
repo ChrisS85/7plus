@@ -357,7 +357,7 @@ return
 UpdateLauncherPrograms(ProgramLauncher)
 {
 	global Accessor
-	if(Accessor.GUINum)
+	if(!IsObject(Accessor) || !IsObject(Accessor.List) || Accessor.GUINum)
 		return
 	Loop % Accessor.List.MaxIndex()
 	{

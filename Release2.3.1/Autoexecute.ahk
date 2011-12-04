@@ -221,6 +221,7 @@ OnExit(Reload=0)
 	{
 		EventSystem.OnExit()
 		Gdip_Shutdown(pToken)
+		SlideWindows.OnExit()
 		Settings.Save()
 		WriteClipboard()
 		CloseAllInactiveTabs()

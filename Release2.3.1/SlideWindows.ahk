@@ -384,12 +384,12 @@ Class CSlideWindows
 		{
 			FileRead, xml, % Settings.ConfigPath "\ClosedWindowsOutsideScreen.xml"
 			XMLObject := XML_Read(xml)
-			this.ClosedWindowsOutsideScreen := XMLObject.Window.MaxIndex() > 0 ? XMLObject.Window : Array(XMLObject.Window)
+			this.ClosedWindowsOutsideScreen := IsObject(XMLObject) && IsObject(XMLObject.Window) && XMLObject.Window.MaxIndex() > 0 ? XMLObject.Window : Array(XMLObject.Window)
 		}
 		else
 			this.ClosedWindowsOutsideScreen := Array()
 	}
-	__Delete()
+	OnExit()
 	{
 		if(this.ClosedWindowsOutsideScreen.MaxIndex() > 0)
 			XML_Save(Object("Window", this.ClosedWindowsOutsideScreen), Settings.ConfigPath "\ClosedWindowsOutsideScreen.xml")
@@ -499,7 +499,7 @@ Class CSlideWindows
 		}
 		;Check if a window was closed outside of the screen and add it to a list so it can be moved inside again when it gets opened again
 		GetVirtualScreenCoordinates(VirtualLeft, VirtualTop, VirtualWidth, VirtualHeight)
-		if(RectsSeparate(VirtualLeft, VirtualTop, VirtualWidth, VirtualHeight, WindowList[hwnd].x, WindowList[hwnd].y, WindowList[hwnd].w, WindowList[hwnd].h))
+		if(IsObject(WindowList[hwnd]) && RectsSeparate(VirtualLeft, VirtualTop, VirtualWidth, VirtualHeight, WindowList[hwnd].x, WindowList[hwnd].y, WindowList[hwnd].w, WindowList[hwnd].h))
 		{
 			class := WindowList[hwnd].class
 			if(!this.ClosedWindowsOutsideScreen.IndexOf(class))
@@ -515,7 +515,7 @@ Class CSlideWindows
 		this.ActivatedWindow := hwnd
 		SetTimer, CheckForNewChildWindows, -100
 		SlideWindow:=this.GetByWindowHandle(hwnd, ChildIndex)
-		if(SlideWindow.SlideState = 1)
+		if(IsObject(SlideWindow) && SlideWindow.SlideState = 1)
 			SlideWindow.Active := WinExist("A")+0 ;Last active slide window
 		index := this.FindKeyWithValueBetween("SlideState", 1, 4)
 		CurrentSlideWindow:=this[index]

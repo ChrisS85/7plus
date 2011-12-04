@@ -562,27 +562,33 @@ ExplorerActivated(hwnd)
 	; }
 }
 
+;This routine polls the existance of explorer windows since they disappear rather randomly.
 WaitForClose:
-DetectHiddenWindows, On
-Loop % ExplorerWindows.MaxIndex()
-{
-	if(!WinExist("ahk_id " ExplorerWindows[A_Index].hwnd))
-	{
-		ExplorerDestroyed(ExplorerWindows[A_Index].hwnd)
-		Loop % ToolWindows.MaxIndex() ;This code from Messagehooks.ahk is added here again since explorer close events don't work properly and need to be handled this way
-		{
-			if(ToolWindows[A_Index].hParent = ExplorerWindows[A_Index].hwnd && ToolWindows[A_Index].AutoClose)
-			{
-				WinClose % "ahk_id " ToolWindows[A_Index].hGui
-				ToolWindows.Remove(A_Index)
-				break
-			}
-		}
-		SlideWindows.WindowClosed(ExplorerWindows[A_Index].hwnd)
-		break
-	}
-}
+CheckForClosedExplorerWindows()
 return
+CheckForClosedExplorerWindows()
+{
+	DetectHiddenWindows, On
+	for index, ExplorerWindow in ExplorerWindows
+	{
+		if(!WinExist("ahk_id " ExplorerWindow.hwnd))
+		{
+			ExplorerDestroyed(ExplorerWindow.hwnd)
+			Loop % ToolWindows.MaxIndex() ;This code from Messagehooks.ahk is added here again since explorer close events don't work properly and need to be handled this way
+			{
+				if(ToolWindows[A_Index].hParent = ExplorerWindow.hwnd && ToolWindows[A_Index].AutoClose)
+				{
+					WinClose % "ahk_id " ToolWindows[A_Index].hGui
+					ToolWindows.Remove(A_Index)
+					break
+				}
+			}
+			SlideWindows.WindowClosed(ExplorerWindow.hwnd)
+			break
+		}
+	}
+	return
+}
 
 ;Called when an explorer window gets deactivated.
 ExplorerDeactivated(hwnd)
@@ -621,23 +627,30 @@ ExplorerDestroyed(hwnd)
 ExplorerMoved(hwnd)
 {
 	global ExplorerWindows
+	if(!IsObject(ExplorerWindows))
+		return
 	ExplorerWindow := ExplorerWindows.GetItemWithValue("hwnd", hwnd)
-	if(Settings.Explorer.Tabs.UseTabs && !ExplorerWindows.TabContainerList.TabActivationInProgress)
-		ExplorerWindow.TabContainer.UpdatePosition()
-	if(Settings.Explorer.AdvancedStatusBarInfo && A_OsVersion = "WIN_7")
-		ExplorerWindow.InfoGUI.UpdateInfoPosition()
+	if(IsObject(ExplorerWindow))
+	{
+		if(Settings.Explorer.Tabs.UseTabs && IsObject(ExplorerWindow.TabContainer) && IsObject(ExplorerWindows.TabContainerList) &&  !ExplorerWindows.TabContainerList.TabActivationInProgress)
+			ExplorerWindow.TabContainer.UpdatePosition()
+		if(Settings.Explorer.AdvancedStatusBarInfo && A_OsVersion = "WIN_7")
+			ExplorerWindow.InfoGUI.UpdateInfoPosition()
+	}
 }
 ;Called when active explorer changes its path.
 ExplorerPathChanged(ExplorerWindow)
 {
 	global vista7
+	if(!IsObject(ExplorerWindow))
+		return
 	OldPath := ExplorerWindow.Path
 	ExplorerWindow.RegisterSelectionChangedEvent() ;This will also refresh the path in ExplorerWindow
 	Path := ExplorerWindow.Path
 	if(OldPath = Path)
 		return
 	ExplorerWindow.DisplayName := GetCurrentFolder(ExplorerWindow.hwnd, 1)
-	if(Settings.Explorer.Tabs.UseTabs)
+	if(Settings.Explorer.Tabs.UseTabs && IsObject(ExplorerWindow.TabContainer))
 		ExplorerWindow.TabContainer.UpdateTabs()
 	;focus first file
 	if(Settings.Explorer.AutoSelectFirstFile)

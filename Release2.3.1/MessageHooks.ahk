@@ -6,7 +6,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 	;On dialog popup, check if its an explorer confirmation dialog
 	if(event=0x00008002) ;EVENT_OBJECT_SHOW
 	{
-		if(Settings.Explorer.AutoCheckApplyToAllFiles && Vista7)
+		if(IsObject(Settings) && Settings.Explorer.AutoCheckApplyToAllFiles && Vista7)
 			FixExplorerConfirmationDialogs()
 		return
 	}
@@ -22,7 +22,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 		Trigger.Event := "Window minimized"
 		EventSystem.OnTrigger(Trigger)
 	}
-	else if(event=0x8001 && Settings.Explorer.Tabs.UseTabs) ;EVENT_OBJECT_DESTROY
+	else if(event=0x8001 && IsObject(Settings) && Settings.Explorer.Tabs.UseTabs) ;EVENT_OBJECT_DESTROY
 	{
 		; DecToHex(hwnd)
 		; if(TabContainerList.ContainsHWND(hwnd))
@@ -39,8 +39,9 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 		}
 		if(InStr("CabinetWClass,ExploreWClass", WinGetClass("ahk_id " hwnd)))
 			ExplorerMoved(hwnd)
-		SlideWindows.CheckResizeReleaseCondition(hwnd)
-		if(state != -1)
+		if(IsObject(SlideWindows))
+			SlideWindows.CheckResizeReleaseCondition(hwnd)
+		if(state != -1 && IsObject(WindowList))
 		{
 			WindowList.MovedWindow := hwnd
 			SetTimer, UpdateWindowPosition, -1000
@@ -88,7 +89,6 @@ ShellMessage( wParam, lParam, Msg)
 	Critical
 	ListLines, Off
 	global BlinkingWindows, WindowList, Accessor, RecentCreateCloseEvents, Profiler, ToolWindows, ExplorerWindows, LastWindow, LastWindowClass, SlideWindows, CurrentWindow, PreviousWindow
-	StartTime := A_TickCount
 	Trigger := new COnMessageTrigger()
 	Trigger.Message := wParam
 	Trigger.lParam := lParam
@@ -105,7 +105,7 @@ ShellMessage( wParam, lParam, Msg)
 		{
 			RecentCreateCloseEvents[lParam] := 1
 			Trigger := wParam = 1 ? new CWindowCreatedTrigger() : new CWindowClosedTrigger()
-			class:= wParam = 1 ? WinGetClass("ahk_Id " lParam) : WindowList[lParam].class
+			class:= wParam = 1 ? WinGetClass("ahk_Id " lParam) : (IsObject(WindowList) && IsObject(WindowList[lParam]) ? WindowList[lParam].class : "INVALID WINDOW CLASS")
 			Trigger.Window := lParam
 			EventSystem.OnTrigger(Trigger)
 			;Keep a list of windows and their required info stored. This allows to identify windows which were closed recently.
@@ -128,7 +128,7 @@ ShellMessage( wParam, lParam, Msg)
 		}
 		if(wParam=2)
 		{
-			if(InStr("CabinetWClass,ExploreWClass", WindowList[lParam].class))
+			if(IsObject(WindowList[lParam]) && InStr("CabinetWClass,ExploreWClass", WindowList[lParam].class))
 				GoSub WaitForClose
 			else ;Code below is also executed in WaitForClose for separate Explorer handling (why can't explorer send close messages properly like a normal window??)
 			{
@@ -146,7 +146,8 @@ ShellMessage( wParam, lParam, Msg)
 		}
 		if(wParam = 1)
 		{
-			SlideWindows.WindowCreated(lParam)
+			if(IsObject(SlideWindows))
+				SlideWindows.WindowCreated(lParam)
 			AutoCloseWindowsUpdate(lParam)
 			;~ SlideWindows.CreatedWindow := lParam
 			;~ SetTimer, SlideWindows_WindowCreated, -100
@@ -193,7 +194,8 @@ ShellMessage( wParam, lParam, Msg)
 		LastWindowClass := WinGetClass("ahk_id " lParam)
 		if(InStr("CabinetWClass,ExploreWClass", LastWindowClass) && LastWindowClass && !ExplorerWindows.TabContainerList.TabCreationInProgress && !ExplorerWindows.TabContainerList.TabActivationInProgress)
 			ExplorerActivated(LastWindow)
-		SlideWindows.WindowActivated()
+		if(IsObject(SlideWindows))
+			SlideWindows.WindowActivated()
 	}
 	;Redraw is fired on Explorer path change
 	else if(wParam=6)
@@ -217,8 +219,6 @@ ShellMessage( wParam, lParam, Msg)
 			; }
 		}
 	}
-	Profiler.Total.ShellMessage := Profiler.Total.ShellMessage + A_TickCount - StartTime
-	Profiler.Current.ShellMessage := Profiler.Current.ShellMessage + A_TickCount - StartTime
 	ListLines, On
 	if(!WasCritical)
 		Critical, Off
@@ -234,7 +234,11 @@ return
 UpdateWindowPosition()
 {
 	global WindowList
+	if(!IsObject(WindowList))
+		return
 	WinGetPos, x, y, w, h, % "ahk_id " WindowList.MovedWindow
+	if(!IsObject(WindowList[WindowList.MovedWindow]))
+		return
 	WindowList[WindowList.MovedWindow].x := x
 	WindowList[WindowList.MovedWindow].y := y
 	WindowList[WindowList.MovedWindow].w := w

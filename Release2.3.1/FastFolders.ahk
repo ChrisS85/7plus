@@ -9,7 +9,7 @@ ClearStoredFolder(Slot)
 	Slot+=1
 	FastFolders[Slot].Path := ""
 	FastFolders[Slot].Title := ""
-	if (HKFolderBand)
+	if (Settings.Explorer.FastFolders.ShowInFolderBand)
 	{
 		RemoveAllExplorerButtons("IsFastFolderButton")
 		loop 10

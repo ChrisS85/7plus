@@ -167,7 +167,7 @@ Class CSettings
 				; value := Category[key]
 			
 			;Skip classes
-			if(SubStr(key, 1, 1) = "C" && value.HasKey("__Class"))
+			if(SubStr(key, 1, 1) = "C" && IsObject(value) && value.HasKey("__Class"))
 				continue
 			
 			if(IsObject(value))
@@ -186,7 +186,7 @@ Class CSettings
 				; value := Category[key]
 			
 			;Skip classes
-			if(SubStr(key, 1, 1) = "C" && value.HasKey("__Class"))
+			if(SubStr(key, 1, 1) = "C" && IsObject(value) && value.HasKey("__Class"))
 				continue
 			
 			if(!IsObject(value) && !IsFunc(this[key]))
@@ -259,7 +259,7 @@ Class CSettings
 				; value := Category[key]
 			
 			;Skip classes
-			if(SubStr(key, 1, 1) = "C" && value.HasKey("__Class"))
+			if(IsObject(value) && SubStr(key, 1, 1) = "C" && value.HasKey("__Class"))
 				continue
 			
 			;Value is an instance of a class
@@ -278,7 +278,7 @@ Class CSettings
 				value := Category[key]
 			
 			;Skip classes
-			if(SubStr(key, 1, 1) = "C" && value.HasKey("__Class"))
+			if(IsObject(value) && SubStr(key, 1, 1) = "C" && value.HasKey("__Class"))
 				continue
 			
 			;Value is a key in this category

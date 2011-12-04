@@ -21,7 +21,7 @@ CloseActiveTab()
 IsTabbedWindow(hwnd)
 {
 	global ExplorerWindows
-	if(IsObject(ExplorerWindows.GetItemWithValue("hwnd", hwnd+0).TabContainer))
+	if(IsObject(ExplorerWindow) && IsObject(ExplorerWindow := ExplorerWindows.GetItemWithValue("hwnd", hwnd+0)) && IsObject(ExplorerWIndow.TabContainer))
 		return hwnd+0
 	return false
 }
@@ -808,8 +808,8 @@ CreateTab(hwnd, path=-1,Activate=-1)
 	; TabContainer.CalculateVerticalTabPosition(TabContainer.tabs.FindKeyWithValue("hwnd", hwndnew))
 	if(Activate)
 		AttachToolWindow(TabContainer.Active, TabContainer.TabNum, false)
-	this.UpdateTabs()
-	this.UpdatePosition()
+	TabContainer.UpdateTabs()
+	TabContainer.UpdatePosition()
 	; this.DrawTabWindow()
 	; GuiControl, %TabNum%:MoveDraw, TabControl
 	CreateTab_Cleanup:
