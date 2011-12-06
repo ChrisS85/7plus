@@ -22,6 +22,7 @@ ClearStoredFolder(Slot)
 	if(!WasCritical)
 		Critical, Off
 }
+
 UpdateStoredFolder(Slot, Folder="")
 {
 	global FastFolders
@@ -47,6 +48,7 @@ RefreshFastFolders()
 		RemoveAllExplorerButtons("IsFastFolderButton")
 	AddAllButtons(Settings.Explorer.FastFolders.ShowInFolderBand, Settings.Explorer.FastFolders.ShowInPlacesBar)
 }
+
 AddAllButtons(FolderBand,PlacesBar)
 {
 	global
@@ -70,6 +72,7 @@ AddAllButtons(FolderBand,PlacesBar)
 	if(!WasCritical)
 		Critical, Off
 }
+
 ;Callback function for determining if a specific registry key was created by 7plus
 IsFastFolderButton(Command,Title,Tooltip)
 {

@@ -77,7 +77,7 @@ Class CImageConverter extends CGUI
 		this.ddlWhichFiles := this.AddControl("DropDownList", "ddlWhichFiles", "x+10 y482 w70", "selected||all")
 		this.txtFilesTo := this.AddControl("Text", "txtFilesTo", "x+10 y486", "files to:")
 		for index, FTPProfile in  CFTPUploadAction.FTPProfiles
-			Hosters .= (index != 1 ? "|" : "") index ": " FTPProfiles.Hostname (Action.Hoster = index ? "|" : "")
+			Hosters .= (index != 1 ? "|" : "") index ": " FTPProfile.Hostname (Action.Hoster = index ? "|" : "")
 		Hosters .= "|" GetImageHosterList().ToString("|")
 		if(!IsNumeric(Action.Hoster))
 			Hosters := RegexReplace(Hosters, Action.Hoster "\|?", Action.Hoster "||")

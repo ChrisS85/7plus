@@ -40,9 +40,9 @@ Accessor_Weather_OnAccessorOpen(Weather, Accessor)
 }
 Accessor_Weather_OnAccessorClose(Weather, Accessor)
 {
-	Loop % Weather.List.MaxIndex()	
-		if(Weather.List[A_Index].Icon)
-			DestroyIcon(Weather.List[A_Index].Icon)
+	for index, ListEntry in Weather.List
+		if(ListEntry.Icon)
+			DestroyIcon(ListEntry.Icon)
 }
 Accessor_Weather_OnExit(Weather)
 {

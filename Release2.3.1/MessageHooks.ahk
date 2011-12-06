@@ -41,7 +41,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 			ExplorerMoved(hwnd)
 		if(IsObject(SlideWindows))
 			SlideWindows.CheckResizeReleaseCondition(hwnd)
-		if(state != -1 && IsObject(WindowList))
+		if(state != -1)
 		{
 			WindowList.MovedWindow := hwnd
 			SetTimer, UpdateWindowPosition, -1000
@@ -109,8 +109,6 @@ ShellMessage( wParam, lParam, Msg)
 			Trigger.Window := lParam
 			EventSystem.OnTrigger(Trigger)
 			;Keep a list of windows and their required info stored. This allows to identify windows which were closed recently.
-			if(!WindowList)
-				WindowList := Object()
 			WinGet, hwnds, list,,, Program Manager
 			Loop, %hwnds%
 			{
@@ -177,7 +175,7 @@ ShellMessage( wParam, lParam, Msg)
 			BlinkingWindows.Delete(x)
 		; DecToHex(lParam)
 		class:=WinGetClass("ahk_id " lParam)
-		if(Accessor.GUINum && WinGetTitle("A") != Accessor.WindowTitle)
+		if(IsObject(Accessor) && Accessor.GUINum && WinGetTitle("A") != Accessor.WindowTitle)
 			AccessorClose()
 		;If we change from another program to explorer/desktop/dialog
 		if(WinActive("ahk_group ExplorerGroup")||WinActive("ahk_group DesktopGroup")||IsDialog())
@@ -234,8 +232,6 @@ return
 UpdateWindowPosition()
 {
 	global WindowList
-	if(!IsObject(WindowList))
-		return
 	WinGetPos, x, y, w, h, % "ahk_id " WindowList.MovedWindow
 	if(!IsObject(WindowList[WindowList.MovedWindow]))
 		return

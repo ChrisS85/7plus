@@ -1,5 +1,4 @@
 ;~ WatchDirectory("C:\test\|*.txt", "ReportChanges")
-"".base.__Get := "".base.__Set := "".base.__Call := Func("Default__Warn")
 Suspend, On
 #SingleInstance off
 #NoTrayIcon ;Added later
@@ -79,12 +78,7 @@ ComObjError(0)
 #include %A_ScriptDir%\CustomHotkeys.ahk
 #include %A_ScriptDir%\Profiling.ahk
 #include *i %A_ScriptDir%\Tools\ObjTree.ahk
-;Test for attempted function calls on invalid objects
-Default__Warn(nonobj, p1="", p2="", p3="", p4="")
-{
-    MsgBox, 262420, , % "A non-object value was improperly invoked:`nSpecifically: "nonobj ", " p1 " at`n " Exception("",-1).File ", line: " Exception("",-1).line 
-                     .    "`n`nContinue Script?"
-}
+
 ;~ ReportChanges(a,b)
 ;~ {
   ;~ MsgBox change  

@@ -11,10 +11,6 @@ Class CInputAction Extends CAction
 	static Text := ""
 	static Title := ""
 	
-	ReadXML(XML)
-	{
-		Base.ReadXML(XML)
-	}
 	Execute(Event)
 	{
 		if(!this.tmpGuiNum)

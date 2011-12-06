@@ -428,7 +428,7 @@ return
 ;Middle click on desktop -> Change wallpaper
 
 ;Scroll tree list with mouse wheel
-#if (Settings.Explorer.ScrollTreeUnderMouse && ((IsWindowUnderCursor("#32770") && IsDialog()) || IsWindowUnderCursor("CabinetWClass")||IsWindowUnderCursor("ExploreWClass")) && !IsRenaming())||(Accessor.GUINum && WinActive(Accessor.WindowTitle))
+#if (Settings.Explorer.ScrollTreeUnderMouse && ((IsWindowUnderCursor("#32770") && IsDialog()) || IsWindowUnderCursor("CabinetWClass")||IsWindowUnderCursor("ExploreWClass")) && !IsRenaming())||(IsObject(Accessor) && Accessor.GUINum && WinActive(Accessor.WindowTitle))
 WheelUp::
 WheelDown::
 Wheel()

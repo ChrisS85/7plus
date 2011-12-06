@@ -137,7 +137,7 @@ Accessor_Init()
 	Accessor.Keywords := Array()
 	if(!IsObject(XMLObject.Keywords))
 		XMLObject.Keywords := Object()
-	if(!XMLObject.Keywords.Keyword.MaxIndex())
+	if(!IsObject(XMLObject.Keywords.Keyword) || !XMLObject.Keywords.Keyword.MaxIndex())
 		XMLObject.Keywords.Keyword := IsObject(XMLObject.Keywords.Keyword) ? Array(XMLObject.Keywords.Keyword) : Array()
 	Loop % XMLObject.Keywords.Keyword.MaxIndex()
 		Accessor.Keywords.Insert(Object("Key", XMLObject.Keywords.Keyword[A_Index].Key, "Command", XMLObject.Keywords.Keyword[A_Index].Command))
@@ -427,17 +427,20 @@ AccessorListViewEvents()
 	SplitPath, Filter, name, dir,,,drive
 	LV_GetText(id,A_EventInfo,2)
 	AccessorListEntry := Accessor.List[id]
-	Loop % AccessorPlugins.MaxIndex()
+	if(IsObject(AccessorListEntry))
 	{
-		if(AccessorPlugins[A_Index].Enabled && AccessorListEntry.Type = AccessorPlugins[A_Index].Type)
-		{	
-			handled := AccessorPlugins[A_Index].ListViewEvents(AccessorListEntry)
-			GUIControlGet, name, , AccessorOKButton
-			if(name != AccessorPlugins[A_Index].OKName)
-				GuiControl,,AccessorOKButton, % AccessorPlugins[A_Index].OKName
-			break
+		for Index, AccessorPlugin in AccessorPlugins
+		{
+			if(AccessorPlugin.Enabled && AccessorListEntry.Type = AccessorPlugin.Type)
+			{	
+				handled := AccessorPlugin.ListViewEvents(AccessorListEntry)
+				GUIControlGet, name, , AccessorOKButton
+				if(name != AccessorPlugin.OKName)
+					GuiControl,,AccessorOKButton, % AccessorPlugin.OKName
+				break
+			}
 		}
-	}	
+	}
 	if(!handled)
 	{
 		if(A_GUIEvent = "DoubleClick")
@@ -525,25 +528,20 @@ Accessor_WM_KEYDOWN(wParam,lParam)
 		AccessorListEntry := Accessor.List[id]
 	}
 	
-	Loop % AccessorPlugins.MaxIndex()
-		if(AccessorPlugins[A_Index].Enabled && SingleContext := ((AccessorPlugins[A_Index].Settings.Keyword && Filter && strStartsWith(Filter, AccessorPlugins[A_Index].Settings.Keyword)) || AccessorPlugins[A_Index].IsInSinglePluginContext(Filter, Accessor.LastFilter)))
-		{
-			outputdebug single context keydown
-			handled := AccessorPlugins[A_Index].OnKeyDown(wParam, lParam, Filter, selected, AccessorListEntry)
-			if(handled)
+	for Index, AccessorPlugin in AccessorPlugins
+		if(AccessorPlugin.Enabled && SingleContext := ((AccessorPlugin.Settings.Keyword && Filter && strStartsWith(Filter, AccessorPlugin.Settings.Keyword)) || AccessorPlugin.IsInSinglePluginContext(Filter, Accessor.LastFilter)))
+			if(AccessorPlugin.OnKeyDown(wParam, lParam, Filter, selected, AccessorListEntry))
 				return 1
-		}
-	if(!SingleContext)
-		Loop % AccessorPlugins.MaxIndex()
-		{
-			if(AccessorPlugins[A_Index].Enabled && AccessorPlugins[A_Index].Type = AccessorListEntry.Type && !AccessorPlugins[A_Index].KeywordOnly)
+	
+	if(!SingleContext && IsObject(AccessorListEntry))
+		for Index, AccessorPlugin in AccessorPlugins
+			if(AccessorPlugin.Enabled && AccessorPlugin.Type = AccessorListEntry.Type && !AccessorPlugin.KeywordOnly)
 			{
-				handled := AccessorPlugins[A_Index].OnKeyDown(wParam, lParam, Filter, selected, AccessorListEntry)
-				if(handled)
+				if(AccessorPlugin.OnKeyDown(wParam, lParam, Filter, selected, AccessorListEntry))
 					return 1
 				break
 			}
-		}
+	
 	if(wParam = 9) ;Tab
 	{
 		if(count = 0)

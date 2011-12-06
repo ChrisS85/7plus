@@ -40,7 +40,7 @@ Class CControlTimerAction Extends CAction
 
 	DisplayString()
 	{
-		return this.Action ": " this.TimerID ": " SettingsWindow.Events.GetItemWithValue("ID", this.TimerID).Name	
+		return this.Action ": " this.TimerID ": " (this.TimerID >= 0 ? SettingsWindow.Events.GetItemWithValue("ID", this.TimerID).Name : this.TimerID)
 	}
 
 	GuiShow(GUI, GoToLabel = "")

@@ -1,6 +1,7 @@
 ;Call this to use debug view
 DebuggingStart()
-{	
+{
+	global ErrorCollector := new CErrorCollector()
 	if(FileExist(A_ScriptDir "\DebugView\Dbgview.exe"))
 	{
 		CoordMode, Mouse, Relative 
@@ -32,6 +33,11 @@ DebuggingStart()
 		MsgBox DebugView not found! Please make sure that it's located in %A_ScriptDir%\DebugView\Dbgview.exe, or disable debugging in the Settings.ini file.
 }
 
+DebuggingEnd()
+{
+	global ErrorCollector
+	ErrorCollector.OnExit()
+}
 ;output debug command->function wrapper
 OutputDebug(text)
 {
@@ -65,3 +71,92 @@ GetLastError()
 		} 
 	} 
 }
+
+Class CErrorCollector
+{
+	static Errors := Array()
+	__New()
+	{
+		if(!IsObject(Settings) || !Settings.HasKey("ConfigPath"))
+			return
+		"".base.__Get := "".base.__Set := "".base.__Call := Func("CollectErrors")
+		Loop, Read, % Settings.ConfigPath "\InvalidObjectAccess.log"
+		{
+			state := Mod(A_Index, 5)
+			if(state = 1)
+				Error := {File : A_LoopReadLine}
+			else if(state = 2)
+				Error.Line := A_LoopReadLine
+			else if(state = 3)
+				Error.Key := A_LoopReadLine
+			else if(state = 4)
+				Error.Value := A_LoopReadLine
+			else if(state = 0)
+			{
+				Error.LineText := A_LoopReadLine
+				this.Errors.Insert(Error)
+			}
+		}
+	}
+	OnExit()
+	{
+		FileDelete, % Settings.ConfigPath "\InvalidObjectAccess.log"
+		for index, Error in this.Errors
+			FileAppend, % Error.File "`n" Error.Line "`n" Error.Key "`n" Error.Value "`n" Error.LineText "`n", % Settings.ConfigPath "\InvalidObjectAccess.log"
+	}
+}
+;Test for attempted key access on invalid objects
+CollectErrors(nonobj, p1="", p2="", p3="", p4="")
+{
+	ex := Exception("", -1)
+	for index, Error in CErrorCollector.Errors
+		if(Error.File = ex.File && Error.Line = ex.Line && Error.Key = p1)
+			return
+	CErrorCollector.Errors.Insert(Error := {File : ex.File, Line : ex.Line, Key : p1, Value : nonobj, LineText : ex.What})
+	FileAppend, % ex.File "`n" ex.Line "`n" p1 "`n" nonobj "`n" ex.What "`n", % Settings.ConfigPath "\InvalidObjectAccess.log"
+	if(CErrorDisplay.HasKey("Instance"))
+	{
+		CErrorDisplay.Instance.lstErrors.Items.Add("", Error.File, Error.Line, Error.Key, Error.Value, Error.LineText)
+		CErrorDisplay.Instance.lstErrors.ModifyCol()
+	}
+}
+Class CErrorDisplay extends CGUI
+{
+	lstErrors := this.AddControl("ListView", "lstErrors", "w1000 h500", "File|Line|Key|Value|LineText")
+	__New()
+	{
+		this.DestroyOnClose := true
+		this.lstErrors.IndependentSorting := true
+		this.CloseOnEscape := true
+		for index, Error in CErrorCollector.Errors
+			this.lstErrors.Items.Add("", Error.File, Error.Line, Error.Key, Error.Value, Error.LineText)
+		this.lstErrors.ModifyCol()
+		this.base.Instance := this
+		this.Show()
+	}
+	PreClose()
+	{
+		base.Remove("Instance")
+	}
+	lstErrors_DoubleClick(Row)
+	{
+		run % """" A_ProgramFiles "\AutoHotkey\SciTE_beta5\Scite.exe"" """ Row[1] """"
+		Sleep 1000
+		Send ^g
+		Send % Row[2] "{Enter}"
+	}
+	lstErrors_KeyPress(Key)
+	{
+		if(Key = 46 && IsObject(this.lstErrors.SelectedItem))
+		{
+			CErrorCollector.Errors.Remove(this.lstErrors.SelectedIndex)
+			this.lstErrors.Items.Delete(this.lstErrors.SelectedItem)
+		}
+	}
+}
+
+#if Settings.General.DebugEnabled
+#i::
+x := new CErrorDisplay()
+return
+#if

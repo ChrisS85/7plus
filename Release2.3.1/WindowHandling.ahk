@@ -65,11 +65,6 @@ MouseMovePolling()
 				hoverstart := A_TickCount
 			}
 		}
-		; if (Vista7  && (MouseX != lastx || MouseY != lasty) && MouseX=0 && MouseY=0 && !WinActive("ahk_class Flip3D"))
-		; { 
-			; z:=-(AeroFlipTime*1000+1)
-			; SetTimer, hovering, %z%
-		; }	
 	}
 	else
 	{
@@ -217,21 +212,6 @@ ControlDeleteFix()
 		Send {Delete %count%} ;Send backspace to remove the last %count% letters
 	return
 }
-;Hovering timer for Aero Flip 3D
-; hovering: 	
-; if (GetKeyState("LButton") || GetKeyState("RButton") || WinActive("ahk_class Flip3D")) 
-	; return 
-; if(MouseX!=0||MouseY!=0)
-	; return 
-; if(IsFullscreen("A",false,false))
-	; return
-; DllCall("Dwmapi.dll\DwmIsCompositionEnabled","IntP",Aero_On)
-; if(Aero_On)
-	; Send ^#{Tab} 
-; Else
-	; Send ^!{Tab}
-; SetTimer, hovering, off
-; return
 
 ;Key remappers for Aero Flip 3D
 #IfWinActive, ahk_class Flip3D 
@@ -246,151 +226,6 @@ LWin::Esc
 WheelUp::WheelDown
 WheelDown::WheelUp
 #if
-
-; Alt + MouseWheel Min/Max
-; #if HKAltMinMax && !MouseMinMaxRunning
-; !WheelDown::MouseMin()
-; #if
-; #if HKAltMinMax && !MouseMinMaxRunning
-; !WheelUp::MouseMax()
-; #if
-MouseMin()
-{	
-	global MouseMinMaxRunning
-	MouseGetPos, , , MouseWin
-	WinGet, WinState, MinMax, ahk_id %MouseWin%
-	MouseMinMaxRunning:=true
-	if(WinState = 0)
-		PostMessage, 0x112, 0xF020,,, ahk_id %MouseWin% ;Winminimize, but apparently more reliable
-	else
-		WinRestore ahk_id %MouseWin%
-	Sleep 500 ;Sleep some time to prevent accidental min/max
-	MouseMinMaxRunning:=false
-}
-
-MouseMax()
-{
-	global MouseMinMaxRunning
-	MouseMinMaxRunning:=true
-	MouseGetPos, , , MouseWin
-	WinGet, WinState, MinMax, ahk_id %MouseWin%
-	if(WinState = 0)
-		WinMaximize ahk_id %MouseWin%
-	Sleep 500 ;Sleep some time to prevent accidental min/max
-	MouseMinMaxRunning:=false
-}
-
-; ctrl+v in cmd->paste, alt+F4 in cmd->close
-; #if HKImproveConsole && WinActive("ahk_class ConsoleWindowClass")
-; ^v::
-	; Coordmode,Mouse,Relative
-	; MouseGetPos, MouseX, MouseY
-	; Click right 40,40
-	; Send {Down 3}
-	; send {Enter}
-	; MouseMove MouseX,MouseY
-	; return
-; !F4::
-	; WinClose, A
-	; return
-; #If
-
-; Alt+F5: Kill active window
-; #if HKKillWindows
-; !F5::
-	; CloseKill(WinExist("A"))
-	; return
-; #if
-
-; Close on middle click titlebar
-; TitleBarClose()
-; {
-	; global
-	; if(!HKTitleClose)
-		; return false
-	; x:=MouseHittest()
-	; if(x=2)
-		; WinClose, A
-	; else
-		; return false
-	; return true
-; }
-
-
-; Flash Windows activation
-; Current/Previous Window toggle
-; #if (HKFlashWindow||HKToggleWindows) && !IsFullscreen()
-; Capslock::FlashWindows()
-; #if
-
-FlashWindows()
-{ 
-	global BlinkingWindows,HKToggleWindows,PreviousWindow
-	CoordMode, Mouse, Screen
-	if(z:=FindWindow("","",0x16CF0000,0x00000188,"trillian.exe")) ;Trillian isn't needed usually, but if tabs are used, clicking the window is preferred
-	{
-		WinGetPos x,y,w,h,ahk_id %z%
-		x+=w/2
-		y+=5
-		MouseGetPos,mx,my
-		ControlClick,, ahk_id %z%
-		MouseMove %mx%,%my%,0
-	}
-	else if (BlinkingWindows.MaxIndex()>0)
-	{
-		z:=BlinkingWindows[1]
-		WinActivate ahk_id %z%
-	}
-	else if(z:=FindWindow("","OpWindow", 0x96000000, 0x88))
-	{
-		WinGetPos x,y,w,h,ahk_id %z%
-		MouseGetPos,mx,my
-		ControlClick,,ahk_id %z% ;for some reason clicking the notification window isn't enough, so we manually activate opera window
-		MouseMove %mx%,%my%,0
-		z:=FindWindow("","OpWindow","",0x00000110)
-		WinActivate ahk_id %z%
-	}
-	else if(z:=FindWindow("","MozillaUIWindowClass", 0x94000000, 0x88))
-	{
-		WinGetPos x,y,w,h,ahk_id %z%
-		x+=w/2
-		y+=h/2
-		MouseGetPos,mx,my
-		ControlClick,,ahk_id %z%
-		MouseMove %mx%,%my%,0
-	}	
-	else if(z:=FindWindow("","",0x96000000,0x00000088,"Steam.exe"))
-	{
-		WinGetPos x,y,w,h,ahk_id %z%
-		x+=w/2
-		y+=h/2
-		MouseGetPos,mx,my
-		Click %x% %y%
-		MouseMove %mx%,%my%,0
-	}
-	else if(z:=FindWindow("TTrayAlert"))
-	{
-		WinGetPos x,y,w,h,ahk_id %z%
-		x+=w/2
-		y+=h/2
-		MouseGetPos,mx,my
-		Click %x% %y%
-		MouseMove %mx%,%my%,0
-	}
-	else if(z:=FindWindow("","tooltips_class32", 0x940001C2, ""))
-	{
-		WinGetPos x,y,w,h,ahk_id %z%
-		x+=w/2
-		y+=h/2
-		outputdebug click tooltip %x% %y%
-		MouseGetPos,mx,my
-		Click %x% %y%
-		MouseMove %mx%,%my%,0
-	}
-	else if(HKToggleWindows)
-		WinActivate ahk_id %PreviousWindow%
-	return
-}
 
 AutoCloseWindowsUpdate(hwnd)
 {

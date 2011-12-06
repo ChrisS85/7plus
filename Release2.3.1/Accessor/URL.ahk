@@ -13,15 +13,18 @@ Accessor_URL_Init(ByRef URL, PluginSettings)
 		return
 	FileRead, xml, % Settings.ConfigPath "\History.xml"
 	XMLObject := XML_Read(xml)
-	;Convert empty and single arrays to real array
-	if(!XMLObject.List.MaxIndex())
-		XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()		
-	
-	Loop % min(XMLObject.List.MaxIndex(), URL.Settings.MaxHistoryLen)
+	if(IsObject(XMLObject))
 	{
-		XMLObjectListEntry := XMLObject.List[A_Index]
-		HistoryURL := XMLObjectListEntry.URL
-		URL.History.Insert(Object("URL",HistoryURL))
+		;Convert empty and single arrays to real array
+		if(!IsObject(XMLObject.List) || !XMLObject.List.MaxIndex())
+			XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()		
+		
+		Loop % min(XMLObject.List.MaxIndex(), URL.Settings.MaxHistoryLen)
+		{
+			XMLObjectListEntry := XMLObject.List[A_Index]
+			HistoryURL := XMLObjectListEntry.URL
+			URL.History.Insert(Object("URL",HistoryURL))
+		}
 	}
 }
 Accessor_URL_ShowSettings(URL, PluginSettings, PluginGUI)

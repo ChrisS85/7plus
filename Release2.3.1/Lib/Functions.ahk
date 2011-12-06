@@ -123,10 +123,12 @@ IniWrite(Value, Filename, Section, Key)
 {
 	IniWrite, %Value%, %Filename%, %Section%, %Key%
 }
+/*
 Input(Options = "", EndKeys = "", MatchList = "") {
 	Input, v, %Options%, %EndKeys%, %MatchList%
 	Return, v
 }
+*/
 InputBox(Title = "", Prompt = "", HIDE = "", Width = "", Height = "", X = "", Y = "", Font = "", Timeout = "", Default = "") {
 	InputBox, v, %Title%, %Prompt%, %HIDE%, %Width%, %Height%, %X%, %Y%, , %Timeout%, %Default%
 	Return, v

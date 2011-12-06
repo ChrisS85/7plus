@@ -152,7 +152,7 @@ Class CGUI
 		UnregisterListener(hwnd, Message = "")
 		{
 			;Don't allow calling this function on the contained instances
-			if(this.Base.__Class = this.__Class)
+			if(IsObject(this.Base) && this.Base.__Class = this.__Class)
 				return
 			GUI := CGUI.GUIFromHWND(hwnd)
 			if(GUI)
@@ -1152,7 +1152,7 @@ CGUI_WindowMessageHandler(wParam, lParam, msg, hwnd)
 	GUI := CGUI.GUIFromHWND(hwnd)
 	;If no window found, it might be the handle of a control:
 	if(!GUI)
-		GUI := CGUI.GUIList[CGUI.ControlFromHWND(hwnd).GUINum]
+		GUI := (Control := CGUI.ControlFromHWND(hwnd)) ? CGUI.GUIList[Control.GUINum] : ""
 	if(GUI)
 	{
 		;Internal message handlers are processed first.
@@ -1255,7 +1255,7 @@ CGUI_IndexOf(Array, Value)
 
 CGUI_TypeOf(Object)
 {
-	return Object.__Class
+	return IsObject(Object) ? Object.__Class : "[NO OBJECT]"
 }
 #include <gdip>
 #include <CControl>

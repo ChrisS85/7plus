@@ -153,34 +153,36 @@ Accessor_ProgramLauncher_FillAccessorList(ProgramLauncher, Accessor, Filter, Las
 {
 	FuzzyList := Array()
 	InStrList := Array()
-	strippedFilter := WindowSwitcher.Settings.IgnoreFileExtensions ? RegexReplace(Filter, "\.\w+") : Filter
+	strippedFilter := ProgramLauncher.Settings.IgnoreFileExtensions ? RegexReplace(Filter, "\.\w+") : Filter
 	Filter := ExpandInternalPlaceHolders(Filter)
+	index := 1
 	Loop % ProgramLauncher.List.MaxIndex()
 	{
+		ListEntry := ProgramLauncher.List[index]
 		x := 0
-		strippedExeName := WindowSwitcher.Settings.IgnoreFileExtensions ? RegexReplace(ProgramLauncher.List[A_Index].ExeName, "\.\w+") : ProgramLauncher.List[A_Index].ExeName 
-		if(ProgramLauncher.List[A_Index].Command
+		strippedExeName := ProgramLauncher.Settings.IgnoreFileExtensions ? RegexReplace(ListEntry.ExeName, "\.\w+") : ListEntry.ExeName 
+		if(ListEntry.Command
 		   && (strippedExeName && ((x := InStr(strippedExeName,StrippedFilter)) || (ProgramLauncher.Settings.FuzzySearch && strlen(StrippedFilter) < 5 && FuzzySearch(strippedExeName,StrippedFilter) < 0.4)))
-		   || (ProgramLauncher.List[A_Index].Name && ((x := InStr(ProgramLauncher.List[A_Index].Name,StrippedFilter)) || (ProgramLauncher.Settings.FuzzySearch && strlen(StrippedFilter) < 5 && FuzzySearch(ProgramLauncher.List[A_Index].Name,StrippedFilter) < 0.4))))
+		   || (ListEntry.Name && ((x := InStr(ListEntry.Name,StrippedFilter)) || (ProgramLauncher.Settings.FuzzySearch && strlen(StrippedFilter) < 5 && FuzzySearch(ListEntry.Name,StrippedFilter) < 0.4))))
 		{
-			if(!FileExist(ProgramLauncher.List[A_Index].Command))
+			if(!FileExist(ListEntry.Command))
 			{
 				ProgramLauncher.List.Delete(A_Index)
 				continue
 			}
-			
 			IconCount++
-			if(!ProgramLauncher.List[A_Index].hIcon) ;Program launcher icons are cached lazy, only when needed
-				ProgramLauncher.List[A_Index].hIcon := ExtractAssociatedIcon(0, ProgramLauncher.List[A_Index].Command, iIndex)
-			ImageList_ReplaceIcon(Accessor.ImageListID, -1, ProgramLauncher.List[A_Index].hIcon)
-			Name := ProgramLauncher.List[A_Index].Name ? ProgramLauncher.List[A_Index].Name : ProgramLauncher.List[A_Index].ExeName
+			if(!ListEntry.hIcon) ;Program launcher icons are cached lazy, only when needed
+				ListEntry.hIcon := ExtractAssociatedIcon(0, ListEntry.Command, iIndex)
+			ImageList_ReplaceIcon(Accessor.ImageListID, -1, ListEntry.hIcon)
+			Name := ListEntry.Name ? ListEntry.Name : ListEntry.ExeName
 			if(x = 1)
-				Accessor.List.Insert(Object("Title", Name, "Path", ProgramLauncher.List[A_Index].Command, "Type", "ProgramLauncher", "Icon", IconCount))
+				Accessor.List.Insert(Object("Title", Name, "Path", ListEntry.Command, "Type", "ProgramLauncher", "Icon", IconCount))
 			else if(x)
-				InStrList.Insert(Object("Title", Name, "Path", ProgramLauncher.List[A_Index].Command, "Type", "ProgramLauncher", "Icon", IconCount))
+				InStrList.Insert(Object("Title", Name, "Path", ListEntry.Command, "Type", "ProgramLauncher", "Icon", IconCount))
 			else
-				FuzzyList.Insert(Object("Title", Name, "Path", ProgramLauncher.List[A_Index].Command, "Type", "ProgramLauncher", "Icon", IconCount))
-		}
+				FuzzyList.Insert(Object("Title", Name, "Path", ListEntry.Command, "Type", "ProgramLauncher", "Icon", IconCount))
+		}		
+		index++
 	}
 	Accessor.List.Extend(InStrList)
 	Accessor.List.Extend(FuzzyList)
@@ -218,7 +220,7 @@ Accessor_ProgramLauncher_SetupContextMenu(ProgramLauncher, AccessorListEntry)
 }
 Accessor_ProgramLauncher_OnExit(ProgramLauncher)
 {
-	Loop % ProgramLauncher.List.MaxIndex()
+	for index, ListEntry in ProgramLauncher.List
 		DestroyIcon(ProgramLauncher.List.Icon)	
 	WriteProgramLauncherCache(ProgramLauncher)
 }
@@ -275,10 +277,10 @@ WriteProgramLauncherCache(ProgramLauncher)
 {
 	FileDelete, % Settings.ConfigPath "\ProgramCache.xml"
 	XMLObject := Object("List", Array(), "Paths", Array())
-	Loop % ProgramLauncher.List.MaxIndex()
-		XMLObject.List.Insert(Object("Command", ProgramLauncher.List[A_Index].Command, "Name", ProgramLauncher.List[A_Index].Name, "BasePath", ProgramLauncher.List[A_Index].BasePath))
-	Loop % ProgramLauncher.Paths.MaxIndex()
-		XMLObject.Paths.Insert(Object("Path", ProgramLauncher.Paths[A_Index].Path, "Extensions", ProgramLauncher.Paths[A_Index].Extensions))
+	for index, ListEntry in ProgramLauncher.List
+		XMLObject.List.Insert(Object("Command", ListEntry.Command, "Name", ListEntry.Name, "BasePath", ListEntry.BasePath))
+	for index, ListEntry in ProgramLauncher.Paths
+		XMLObject.Paths.Insert(Object("Path", ListEntry.Path, "Extensions", ListEntry.Extensions))
 	
 	XML_Save(XMLObject, Settings.ConfigPath "\ProgramCache.xml")
 }
@@ -359,18 +361,17 @@ UpdateLauncherPrograms(ProgramLauncher)
 	global Accessor
 	if(!IsObject(Accessor) || !IsObject(Accessor.List) || Accessor.GUINum)
 		return
-	Loop % Accessor.List.MaxIndex()
+	for i, Window in Accessor.List
 	{
-		Window := Accessor.List[A_Index]
 		if(Window.Type = "WindowSwitcher")
 		{
 			WindowFullPath := GetModuleFileNameEx(Window.PID)
 			if(WindowFullPath) ;Fails sometimes for some reason
 			{
 				found := false
-				Loop % ProgramLauncher.List.MaxIndex()
+				for index, ListEntry in ProgramLauncher.List
 				{
-					if(ProgramLauncher.List[A_Index].Command = WindowFullPath)
+					if(ListEntry.Command = WindowFullPath)
 					{
 						found := true
 						break

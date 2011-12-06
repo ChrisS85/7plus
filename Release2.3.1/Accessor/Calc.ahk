@@ -69,9 +69,10 @@ Accessor_Calc_OnAccessorOpen(Calc, Accessor)
 }
 Accessor_Calc_OnAccessorClose(Calc, Accessor)
 {
-	Loop % Calc.List.MaxIndex()
-		if(Calc.List[A_Index].Icon != Accessor.GenericIcons.Application)			
-			DestroyIcon(Calc.List[A_Index].Icon)
+	if(IsObject(Calc.List))
+		for index, ListEntry in Calc.List
+			if(ListEntry.Icon != Accessor.GenericIcons.Application)			
+				DestroyIcon(ListEntry.Icon)
 }
 Accessor_Calc_OnExit(Calc)
 {

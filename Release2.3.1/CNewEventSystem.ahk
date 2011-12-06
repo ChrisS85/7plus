@@ -263,9 +263,13 @@ Class CEvent extends CRichObject
 		;if settings are open and updating a regular event, update its counterpart in SettingsWindow.Events
 		;Note that GetItemWithValue is called instead of GetEventWithValue so that only events from this CEvent instance are retrieved.
 		if(SettingsActive() && EventSystem.Events.GetItemWithValue("ID", this.ID))
-		{	
-			SettingsWindow.Events.GetItemWithValue("ID", this.ID).Enabled := Value
-			SettingsWindow.FillEventsList()
+		{
+			SettingsEvent := SettingsWindow.Events.GetItemWithValue("ID", this.ID)
+			if(IsObject(SettingsEvent))
+			{
+				SettingsEvent.Enabled := Value
+				SettingsWindow.FillEventsList()
+			}
 		}
 	}
 	
@@ -383,8 +387,7 @@ Class CEvents extends CArray
 	;It returns true when a category was deleted.
 	Delete(Event, UpdateGUI=true) 
 	{
-		index := this.FindKeyWithValue("ID", Event.ID)
-		if(!index)
+		if(!IsObject(Event) || ! (index := this.FindKeyWithValue("ID", Event.ID)))
 			return
 		Event := this[index]	
 		if(this != EventSystem.TemporaryEvents && Event.ID < 0)
@@ -884,7 +887,7 @@ Class CSubEvent extends CRichObject
 	ReadXML(XML)
 	{
 		for key, value in this.base
-			if(InStr(key, "__") != 1 && key != "base" && key != "Type" && key != "Category" && (!IsFunc(this[key]) || (IsObject(this[key]) && !this[key].Name)))
+			if(InStr(key, "__") != 1 && key != "base" && key != "Type" && key != "Category" && !IsObject(this.base[key]))
 				this.ReadVar(XML, key)
 	}
 	

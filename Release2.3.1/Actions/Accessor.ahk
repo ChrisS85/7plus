@@ -6,7 +6,6 @@ Class CAccessorAction Extends CAction
 	
 	__New()
 	{
-		Accessor_Init()
 	}
 	Execute(Event)
 	{
@@ -14,11 +13,11 @@ Class CAccessorAction Extends CAction
 		{		
 			if(this.FlashingWindows)
 			{
-				result:=FlashingWindows(Action) ;Since FlashingWindows function also uses an object value called FlashingWindows, it can straightly use this action here
+				result:=FlashingWindows(this) ;Since FlashingWindows function also uses an object value called FlashingWindows, it can straightly use this action here
 				if(result)
 					return 1
 			}
-			result := CreateAccessorWindow(Action)
+			result := CreateAccessorWindow(this)
 			return result > 1 ? 1 : (result = 1 ? 1 : 0)
 		}
 		else

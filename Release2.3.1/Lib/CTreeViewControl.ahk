@@ -155,7 +155,6 @@ Class CTreeViewControl Extends CControl
 	*/
 	HandleEvent(Event)
 	{
-		start := A_TickCount
 		if(CGUI.GUIList[this.GUINum].IsDestroyed)
 			return
 		;Handle visibility of controls associated with tree nodees
@@ -173,7 +172,6 @@ Class CTreeViewControl Extends CControl
 			this.CallEvent("FocusLost")
 		if(Event.GUIEvent = "S")
 			this.PreviouslySelectedItem := SelectedItem
-		OutputDebug % "HandleEvent: " A_TickCount - start
 	}
 	
 	/*

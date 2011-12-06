@@ -24,9 +24,10 @@ Class CFlashingWindowsAction Extends CAction
 		this.AddControl(ActionGUI, "Checkbox", "ToggleWindows", "Toggle between previous and active window")
 	}
 }
+
 FlashingWindows(Action)
 {
-	global BlinkingWindows,PreviousWindow
+	global BlinkingWindows, PreviousWindow
 	CoordMode, Mouse, Screen
 	if(Action.Notifications && z:=FindWindow("","",0x16CF0000,0x00000188,"trillian.exe")) ;Trillian isn't needed usually, but if tabs are used, clicking the window is preferred
 	{

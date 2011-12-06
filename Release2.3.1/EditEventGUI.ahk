@@ -17,6 +17,200 @@ GetCurrentSubEvent()
 	}
 	return 
 }
+Class CEventEditor extends CGUI
+{
+	static Instance := new CEventEditor("")
+	btnOK := this.AddControl("Button", "btnOK", "x729 y557 w70 h23", "&OK")
+	btnCancel := this.AddControl("Button", "btnCancel", "x809 y557 w80 h23", "&Cancel")
+	Tab := this.AddControl("Tab", "Tab", "x17 y8 w872 h512", "Trigger|Conditions|Actions|Options")
+	
+	;Trigger controls
+	txtTrigger := this.Tab.Tabs[1].AddControl("Text", "txtTrigger", "x31 y36", "Here you can define how this event gets triggered.")
+	txtTriggerCategory := this.Tab.Tabs[1].AddControl("Text", "txtTriggerCategory", "x31 y60", "Category:")
+	txtTriggerTrigger := this.Tab.Tabs[1].AddControl("Text", "txtTriggerTrigger", "x31 y90", "Trigger:")
+	ddlTriggerCategory := this.Tab.Tabs[1].AddControl("DropDownList", "ddlTriggerCategory", "x101 y56 w300", "")
+	ddlTriggerType := this.Tab.Tabs[1].AddControl("DropDownList", "ddlTriggerType", "x101 y86 w300", "")
+	btnTriggerHelp := this.Tab.Tabs[1].AddControl("Button", "btnTriggerHelp", "x+10 y85", "Help")
+	grpTriggerOptions := this.Tab.Tabs[1].AddControl("GroupBox", "grpTriggerOptions", "x31 y116 w846 h384", "Options")
+	
+	;Condition controls
+	txtCondition := this.Tab.Tabs[2].AddControl("Text", "txtCondition", "x31 y36", "The conditions below must be fullfilled to allow this event to execute.")
+	listConditions := this.Tab.Tabs[2].AddControl("ListBox", "listConditions", "x31 y56 w270 h454", "")
+	btnAddCondition := this.Tab.Tabs[2].AddControl("Button", "btnAddCondition", "x311 y56 w90", "Add Condition")
+	btnDeleteCondition := this.Tab.Tabs[2].AddControl("Button", "btnDeleteCondition", "x311 y86 w90", "Delete Condition")
+	btnCopyCondition := this.Tab.Tabs[2].AddControl("Button", "btnCopyCondition", "x311 y116 w90", "Copy Condition")
+	btnPasteCondition := this.Tab.Tabs[2].AddControl("Button", "btnPasteCondition", "x311 y146 w90", "Paste Condition")
+	btnMoveConditionUp := this.Tab.Tabs[2].AddControl("Button", "btnMoveConditionUp", "x311 y176 w90", "Move Up")
+	btnMoveConditionDown := this.Tab.Tabs[2].AddControl("Button", "btnMoveConditionDown", "x311 y206 w90", "Move Down")
+	txtCondition2 := this.Tab.Tabs[2].AddControl("Text", "txtCondition2", "x431 y36", "Here you can define the selected condition.")
+	chkNegateCondition := this.Tab.Tabs[2].AddControl("Checkbox", "chkNegateCondition", "x431 y56", "Negate Condition")
+	txtConditionCategory := this.Tab.Tabs[2].AddControl("Text", "txtConditionCategory", "x431 y86", "Category:")
+	txtConditionType := this.Tab.Tabs[2].AddControl("Text", "txtConditionType", "x431 y109", "Condition:")
+	ddlConditionCategory := this.Tab.Tabs[2].AddControl("DropDownList", "ddlConditionCategory", "x501 y86 w300", "")
+	btnConditionHelp := this.Tab.Tabs[2].AddControl("Button", "btnConditionHelp", "x+10 y114", "Help")
+	ddlConditionType := this.Tab.Tabs[2].AddControl("DropDownList", "ddlConditionType", "x501 y116 w300", "")
+	grpConditionOptions := this.Tab.Tabs[2].AddControl("GroupBox", "grpConditionOptions", "x431 y146 w446 h364", "Options")
+	
+	;Action controls
+	txtAction := this.Tab.Tabs[3].AddControl("Text", "txtAction", "x31 y36", "These actions will be executed when the event gets triggered.")
+	listActions := this.Tab.Tabs[3].AddControl("ListBox", "listActions", "x31 y56 w270 h454", "")
+	btnAddAction := this.Tab.Tabs[3].AddControl("Button", "btnAddAction", "x311 y56 w90", "Add Action")
+	btnDeleteAction := this.Tab.Tabs[3].AddControl("Button", "btnDeleteAction", "x311 y86 w90", "Delete Action")
+	btnCopyAction := this.Tab.Tabs[3].AddControl("Button", "btnCopyAction", "x311 y116 w90", "Copy Action")
+	btnPasteAction := this.Tab.Tabs[3].AddControl("Button", "btnPasteAction", "x311 y146 w90", "Paste Action")
+	btnMoveActionUp := this.Tab.Tabs[3].AddControl("Button", "btnMoveActionUp", "x311 y176 w90", "Move Up")
+	btnMoveActionDown := this.Tab.Tabs[3].AddControl("Button", "btnMoveActionDown", "x311 y206 w90", "Move Down")
+	txtAction2 := this.Tab.Tabs[3].AddControl("Text", "txtAction2", "x431 y36", "Here you can define what this action does.")
+	txtActionCategory := this.Tab.Tabs[3].AddControl("Text", "txtActionCategory", "x431 y60", "Category:")
+	txtActionType := this.Tab.Tabs[3].AddControl("Text", "txtActionType", "x431 y80", "Action:")
+	ddlActionCategory := this.Tab.Tabs[3].AddControl("DropDownList", "ddlActionCategory", "x501 y56 w300", "")
+	btnActionHelp := this.Tab.Tabs[3].AddControl("Button", "btnActionHelp", "x+10 y85", "Help")
+	ddlActionType := this.Tab.Tabs[3].AddControl("DropDownList", "ddlActionType", "x501 y86 w300", "")
+	grpActionOptions := this.Tab.Tabs[3].AddControl("GroupBox", "grpActionOptions", "x431 y116 w446 h364", "Options")
+	
+	;Option controls
+	txtEventName := this.Tab.Tabs[4].AddControl("Text", "txtEventName", "x31 y48", "Event Name:")
+	editEventName := this.Tab.Tabs[4].AddControl("Edit", "editEventName", "x131 y44 w300", "")
+	txtEventDescription := this.Tab.Tabs[4].AddControl("Text", "txtEventDescription", "x31 y74", "Event Description:")
+	editEventDescription := this.Tab.Tabs[4].AddControl("Edit", "editEventDescription", "x131 y70 w300 h60 Multi", "")
+	txtEventCategory := this.Tab.Tabs[4].AddControl("Text", "txtEventCategory", "x31 y140", "Event Category:")
+	comboEventCategory := this.Tab.Tabs[4].AddControl("ComboBox", "comboEventCategory", "x131 y139 w300", "")
+	chkDisableEventAfterUse := this.Tab.Tabs[4].AddControl("CheckBox", "chkDisableEventAfterUse", "x31 y166", "Disable after use")
+	chkDeleteEventAfterUse := this.Tab.Tabs[4].AddControl("CheckBox", "chkDeleteEventAfterUse", "x31 y196", "Delete after use")
+	chkEventOneInstance := this.Tab.Tabs[4].AddControl("CheckBox", "chkEventOneInstance", "x31 y226", "Disallow this event from being run in parallel")
+	chkComplexEvent := this.Tab.Tabs[4].AddControl("CheckBox", "chkComplexEvent", "x31 y256", "Advanced event (hidden from simple view)")
+	
+	;SubeventGUI contains information about specific subparts of the GUI which are handled by the sub-events like triggers, conditions and actions
+	TriggerGUI := ""
+	ConditionGUI := ""
+	ActionGUI := ""
+	__New(Event)
+	{
+		if(!Event)
+			MsgBox Event Editor: Event not found!
+		this.Event := Event
+		
+		;Disable the settings window that opened this dialog if it exists
+		Gui CSettingsWindow1:+LastFoundExist
+		IfWinExist		
+			Gui, CSettingsWindow1:+Disabled
+		
+		;Add the event to the list of events that are currently being edited so it can be found by a subevent label
+		EventSystem.CurrentlyEditingEvents[GUIName] := Event
+		
+		
+		;Setup control states
+		
+		;Initialize trigger tab (categories and types and trigger gui)
+		IndexToSelect := 1
+		for CategoryName, Category in CTrigger.Categories
+		{
+			this.ddlTriggerCategory.Items.Add(CategoryName)
+			if(CategoryName = this.Event.Trigger.Category)
+				IndexToSelect := A_Index
+		}
+		this.ddlTriggerCategory.SelectedIndex := IndexToSelect
+		
+		;Initilialize conditions tab (conditions, categories, types and condition gui)
+		if(!IsObject(ConditionClipboard))
+			this.btnPasteCondition.Enabled := false
+		
+		;Fill conditions list
+		for index, Condition in this.Event.Conditions
+			this.listConditions.Items.Add(Condition.DisplayString())
+		
+		;Fill condition categories
+		for CategoryName, Category in CCondition.Categories
+			this.ddlConditionCategory.Items.Add(CategoryName)
+		
+		if(this.listConditions.Items.MaxIndex())
+			this.listConditions.SelectedIndex := 1
+		
+		
+		;Initilialize actions tab (actions, categories, types and action gui)
+		if(!IsObject(ActionClipboard))
+			this.btnPasteAction.Enabled := false
+		
+		;Fill actions list
+		for index, Action in this.Event.Actions
+			this.listActions.Items.Add(Action.DisplayString())
+		
+		;Fill action categories
+		for CategoryName, Category in CAction.Categories
+			this.ddlActionCategory.Items.Add(CategoryName)
+		
+		if(this.listActions.Items.MaxIndex())
+			this.listActions.SelectedIndex := 1
+		
+		
+		;Initialize options tab
+		for index, Category in SettingsWindow.Events.Categories
+			this.comboEventCategory.Items.Add(Category)
+		this.comboEventCategory.Text := Event.Category
+		
+		this.chkDisableEventAfterUse.Checked := Event.DisableAfterUse = 1
+		this.chkDeleteEventAfterUse.Checked := Event.DeleteAfterUse = 1
+		this.chkEventOneInstance.Checked := Event.OneInstance = 1
+		this.chkComplexEvent.Checked := Event.EventComplexityLevel = 1
+		
+		
+		;Setup some window options
+		this.DestroyOnClose := true
+		this.CloseOnEscape := true
+		this.Title := "Event Editor"
+		
+		this.Show()
+	}
+	;Positions:
+	;Condition: 438/178
+	;Action: 438/148
+	ddlTriggerCategory_SelectionChanged(Item)
+	{
+		;SubeventGUI contains all control hwnds for the Subevent-specific part of the gui (i.e. Triggers, Conditions, Actions). If it exists, a Subevent is currently visible.
+		if(this.TriggerGUI) ;Refresh the category of the selected subevent
+			if(this.Event.Trigger.Category = Item.Text) ;selecting same item, ignore
+				return
+			
+		;Set the subevent to the currently selected one
+		category := CTrigger.Categories[Item.Text]
+		
+		this.ddlTriggerType.DisableNotifications := true
+		this.ddlTriggerType.Items.Clear()
+		IndexToSelect := 1
+		for index, Type in CTrigger.Categories[Item.Text]
+		{
+			this.ddlTriggerType.Items.Add(Type)
+			if(this.Event.Trigger.Type = Type)
+				IndexToSelect := index
+		}
+		this.ddlTriggerType.DisableNotifications := false
+		this.ddlTriggerType.SelectedIndex := IndexToSelect
+		return
+	}
+	ddlTriggerType_SelectionChanged(Item)
+	{
+		Type := Item.Text
+		Category := this.ddlTriggerCategory.SelectedItem.Text
+		;At startup, TriggerGUI isn't set, and so the original Trigger doesn't get overriden
+		;If it is set, the code below treats a change of type by destroying the previous window elements and creates a new Subevent
+		if(this.TriggerGUI)
+		{	
+			;TriggerGUI contains all control hwnds for the trigger-specific part of the gui
+			if(this.Event.Trigger.Type = Type && this.Event.Trigger.Category = Category) ;selecting same item, ignore
+				return
+			this.Event.Trigger.GuiSubmit(this.TriggerGUI)
+			this.Event.Trigger := new EventSystem.Triggers[Type]()
+		}
+		;Show trigger-specific part of the gui and store hwnds in TriggerGUI
+		this.TriggerGUI := {Type: Type}
+		this.TriggerGUI.x := 38 ;+ (EditEventTab != "Trigger" ? 400 : 0)
+		this.TriggerGUI.y := 148 ;+ (EditEventTab = "Conditions" ? 30 : 0)
+		this.TriggerGUI.GUINum := this.GUINum
+		this.TriggerBackup := this.Event.Trigger.DeepCopy()
+		this.Event.Trigger.GuiShow(this.TriggerGUI)
+		return
+	}
+}
 GUI_EditEvent(e,GoToLabel="", Parameter="")
 {
 	static Event, result, SubeventGUI,SubEventBackup, EditEventTab, EditEventTriggerCategory, EditEventTriggerType, EditEventConditions, EditEvent_EditCondition, EditEvent_RemoveCondition, EditEvent_AddCondition, EditEventActions, EditEvent_EditAction, EditEvent_RemoveAction, EditEvent_AddAction, EditEvent_Condition_MoveDown, EditEvent_Condition_MoveUp, EditEvent_Action_MoveUp, EditEvent_Action_MoveDown, EditEvent_Name, EditEvent_Description, EditEvent_DisableAfterUse, EditEvent_DeleteAfterUse, EditEvent_OneInstance, EditEvent_Category, EditEvent_CopyCondition, EditEvent_PasteCondition, EditEvent_CopyAction, EditEvent_PasteAction, ActionClipboard, ConditionClipboard,EditConditionNegate,EditEventConditionsType,EditEventConditionsCategory,EditEventActionsType,EditEventActionsCategory,EditEvent_ComplexEvent
@@ -457,12 +651,14 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 		{			
 			SubEventBackup := Event.Trigger.DeepCopy()			
 			SetControlDelay, 0
+			MsgBox % "Trigger: " SubEventGUI.x "/" SubEventGUI.y "/" SubEventGUI.width "/" SubEventGUI.height
 			Event.Trigger.GuiShow(SubeventGUI)
 		}
 		else if(i && (EditEventTab = "Conditions" || EditEventTab = "Actions"))
 		{
 			SubEventBackup := Event[EditEventTab][i].DeepCopy()
 			SetControlDelay, 0
+			MsgBox % EditEventTab ": " SubEventGUI.x "/" SubEventGUI.y "/" SubEventGUI.width "/" SubEventGUI.height
 			Event[EditEventTab][i].GuiShow(SubeventGUI)
 			LV_Modify(i, "", (EditEventTab = "Conditions" && Event[EditEventTab][i].Negate ? "NOT " : "") Event[EditEventTab][i].DisplayString())
 		}
@@ -493,7 +689,7 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 			if(IsObject(Event[EditEventTab][A_EventInfo]))
 				GuiControl, ChooseString, EditEvent%EditEventTab%Category, % Event[EditEventTab][A_EventInfo].Category
 			if(EditEventTab = "Conditions")
-					GuiControl, enable, EditConditionNegate
+				GuiControl, enable, EditConditionNegate
 			if(EditEventTab = "Conditions")
 				GuiControl, , EditConditionNegate, % Event[EditEventTab][A_EventInfo].Negate ? 1 : 0
 			GUI_EditEvent("", "EditSubEventCategory", 1)
@@ -524,7 +720,6 @@ GUI_EditEvent(e,GoToLabel="", Parameter="")
 			SubEventBackup := ""
 			SubEventGUI := ""
 			LV_Modify(A_EventInfo, "", (EditEventTab = "Conditions" && Event[EditEventTab][A_EventInfo].Negate ? "NOT " : "") Event[EditEventTab][A_EventInfo].DisplayString())
-			; }
 		}
 		Critical, Off
 		return

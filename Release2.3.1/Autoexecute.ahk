@@ -58,19 +58,10 @@ if(Settings.General.DebugEnabled)
 	DebuggingStart()
 outputdebug 7plus Starting...
 
-;Some performance monitoring
-if(Settings.General.ProfilingEnabled)
-{
-	Profiler := Object("Total", Object("StartTime", A_TickCount, "EventLoop", 0, "ShellMessage", 0, "HookProc", 0), "Current", Object("StartTime", A_TickCount, "EventLoop", 0, "ShellMessage", 0, "HookProc", 0))
-	SetTimer, ShowProfiling, 1000
-}
-
 ;If the current config path is set to the program directory but there is no write access because UAC is activated and 7plus is running as user,
 ;7plus cannot store its settings and warns the user about it
 if((ApplicationState.IsPortable && !WriteAccess(Settings.ConfigPath "\Accessor.xml")))
 	MsgBox No file access to settings files in 7plus directory. 7plus will not be able to store its settings. Please move 7plus to a folder with write permissions, run it as administrator, or grant write permissions to this directory.
-
-
 
 ;Fresh install, copy default events file into config directory
 if(!FileExist(Settings.ConfigPath "\Events.xml") && FileExist(A_ScriptDir "\Events\All Events.xml")) 
@@ -95,6 +86,10 @@ menu, tray, Default, Settings
 if(shell32MUIpath := LocateShell32MUI())
 	if(Vista7)
 		AcquireExplorerConfirmationDialogStrings()
+	
+;Keep a list of windows and their required info stored. This allows to identify windows which were closed recently.
+if(!WindowList)
+	WindowList := Object()
 
 ;Init event system
 outputdebug starting event system
@@ -117,7 +112,7 @@ if(CompareVersion(XMLMajorVersion, MajorVersion, XMLMinorVersion, MinorVersion, 
 if(Settings.GamepadRemoteControl)
 	JoystickStart()
 
-
+Accessor_Init()
 
 ;Hwnd.txt is written to allow other processes to find the main window of 7plus
 FileDelete, %A_Temp%\7plus\hwnd.txt
@@ -225,7 +220,9 @@ OnExit(Reload=0)
 		Settings.Save()
 		WriteClipboard()
 		CloseAllInactiveTabs()
-		SaveHotstrings()
+		SaveHotstrings()		
+		if(Settings.General.DebugEnabled)
+			DebuggingEnd()
 	}
 	if(Reload)
 	{

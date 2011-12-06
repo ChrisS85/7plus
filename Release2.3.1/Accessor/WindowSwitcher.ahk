@@ -36,9 +36,10 @@ Accessor_WindowSwitcher_OnAccessorOpen(WindowSwitcher, Accessor)
 }
 Accessor_WindowSwitcher_OnAccessorClose(WindowSwitcher, Accessor)
 {
-	Loop % WindowSwitcher.List.MaxIndex()
-		if(WindowSwitcher[A_Index].Icon != Accessor.GenericIcons.Application)
-			DestroyIcon(WindowSwitcher[A_Index].Icon)
+	if(IsObject(WindowSwitcher.List))
+		for index, ListEntry in WindowSwitcher.List
+			if(ListEntry.Icon != Accessor.GenericIcons.Application)
+				DestroyIcon(ListEntry.Icon)
 	SetTimer, UpdateTimes, Off
 }
 Accessor_WindowSwitcher_FillAccessorList(WindowSwitcher, Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet)

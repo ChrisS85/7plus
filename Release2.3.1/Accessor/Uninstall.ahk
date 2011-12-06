@@ -28,9 +28,10 @@ Accessor_Uninstall_OnAccessorOpen(Uninstall, Accessor)
 }
 Accessor_Uninstall_OnAccessorClose(Uninstall, Accessor)
 {
-	Loop % Uninstall.List.MaxIndex()
-		if(Uninstall.List[A_Index].Icon != Accessor.GenericIcons.Application)			
-			DestroyIcon(Uninstall.List[A_Index].Icon)
+	if(IsObject(Uninstall.List))
+	for index, ListEntry in Uninstall.List
+		if(ListEntry.Icon != Accessor.GenericIcons.Application)			
+			DestroyIcon(ListEntry.Icon)
 }
 Accessor_Uninstall_OnExit(Uninstall)
 {
