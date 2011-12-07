@@ -343,7 +343,7 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 			DetectHidden := A_DetectHiddenWindows
 			DetectHiddenWindows, On
 			GUI := CGUI.GUIList[this._.GUINum]
-			ControlGet, List, List,,, % " ahk_id " this._.hwnd
+			ControlGet, List, List,,, % "ahk_id " this._.hwnd
 			count := 0
 			Loop, Parse, List, `n
 				count++
@@ -423,6 +423,8 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 				}
 				else if(Name = "Controls")
 					Value := this._.Controls
+				else if(Name = "Index")
+					Value := this._.Index
 				Loop % Params.MaxIndex()
 					if(IsObject(Value)) ;Fix unlucky multi parameter __GET
 						Value := Value[Params[A_Index]]

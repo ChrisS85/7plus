@@ -7,7 +7,6 @@ ShowSettings()
 return
 ShowSettings(Page = "Events")
 {
-	global SettingsWindow
 	;Settings window is created in AutoExecute to save some time when this function is called the first time.
 	while(!IsObject(SettingsWindow))
 		Sleep 10
@@ -465,9 +464,14 @@ Finally, here are some settings that you're likely to change at the beginning:
 			Msgbox ExplorerButton trigger events may not be modified in portable or non-admin mode, as this might cause inconsistencies with the registry.
 			return
 		}
-		Suspend, On
-		NewEvent:=GUI_EditEvent(OriginalEvent.DeepCopy())
-		Suspend, Off
+		;~ Suspend, On
+		;~ NewEvent:=GUI_EditEvent(OriginalEvent.DeepCopy())
+		NewEvent := new CEventEditor(OriginalEvent.DeepCopy(), TemporaryEvent)
+	}
+	FinishEditing(NewEvent, TemporaryEvent)
+	{
+		;~ Suspend, Off
+		Page := this.Pages.Events.Tabs[1].Controls
 		if(NewEvent && (Settings.IsPortable || !A_IsAdmin) && NewEvent.Trigger.Type = "ExplorerButton") ;Explorer buttons may not be added in portable/non-admin mode
 		{
 			Msgbox ExplorerButton trigger events may not be modified in portable or non-admin mode, as this might cause inconsistencies with the registry.
@@ -478,9 +482,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		if(NewEvent)
 		{
 			Page.editEventFilter.Text := ""
-			this.Events[this.Events.FindKeyWithValue("ID", ID)] := NewEvent ;overwrite edited event
-			if(NewEvent.Category = "")
-				NewEvent.Category := "Uncategorized"
+			this.Events[this.Events.FindKeyWithValue("ID", NewEvent.ID)] := NewEvent ;overwrite edited event
 			if(!this.Events.Categories.indexOf(NewEvent.Category))
 				this.Events.Categories.Insert(NewEvent.Category)
 			this.RecreateTreeView() ;Refresh Event display

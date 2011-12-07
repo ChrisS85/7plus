@@ -19,7 +19,7 @@ GetCurrentSubEvent()
 }
 Class CEventEditor extends CGUI
 {
-	static Instance := new CEventEditor("")
+	;~ static Instance := new CEventEditor("")
 	btnOK := this.AddControl("Button", "btnOK", "x729 y557 w70 h23", "&OK")
 	btnCancel := this.AddControl("Button", "btnCancel", "x809 y557 w80 h23", "&Cancel")
 	Tab := this.AddControl("Tab", "Tab", "x17 y8 w872 h512", "Trigger|Conditions|Actions|Options")
@@ -80,20 +80,19 @@ Class CEventEditor extends CGUI
 	chkEventOneInstance := this.Tab.Tabs[4].AddControl("CheckBox", "chkEventOneInstance", "x31 y226", "Disallow this event from being run in parallel")
 	chkComplexEvent := this.Tab.Tabs[4].AddControl("CheckBox", "chkComplexEvent", "x31 y256", "Advanced event (hidden from simple view)")
 	
-	;SubeventGUI contains information about specific subparts of the GUI which are handled by the sub-events like triggers, conditions and actions
+	;SubeventGUIs contain information about specific subparts of the GUI which are handled by the sub-events like triggers, conditions and actions
 	TriggerGUI := ""
 	ConditionGUI := ""
 	ActionGUI := ""
-	__New(Event)
+	__New(Event, TemporaryEvent)
 	{
 		if(!Event)
 			MsgBox Event Editor: Event not found!
 		this.Event := Event
+		this.TemporaryEvent := TemporaryEvent
 		
 		;Disable the settings window that opened this dialog if it exists
-		Gui CSettingsWindow1:+LastFoundExist
-		IfWinExist		
-			Gui, CSettingsWindow1:+Disabled
+		SettingsWindow.Enabled := false
 		
 		;Add the event to the list of events that are currently being edited so it can be found by a subevent label
 		EventSystem.CurrentlyEditingEvents[GUIName] := Event
@@ -161,26 +160,47 @@ Class CEventEditor extends CGUI
 		
 		this.Show()
 	}
-	;Positions:
-	;Condition: 438/178
-	;Action: 438/148
+	
+	btnOK_Click()
+	{
+		this.Event.Name := this.editEventName.Text
+		this.Event.Description := this.editEventDescription.Text
+		this.Event.Category := this.comboEventCategory.Text ? this.comboEventCategory.Text : "Uncategorized"
+		this.Event.DisableAfterUse := this.chkDisableEventAfterUse.Checked
+		this.Event.DeleteAfterUse := this.chkDeleteEventAfterUse.Checked
+		this.Event.OneInstance := this.chkEventOneInstance.Checked
+		this.Event.ComplexEvent := this.chkComplexEvent.Checked
+		this.Result := this.Event
+		this.Close()
+	}
+	btnCancel_Click()
+	{
+		this.Result := ""
+		this.Close()
+	}
+	
+	PreClose()
+	{
+		;Enable the settings window that opened this dialog if it exists
+		SettingsWindow.Enabled := true
+		SettingsWindow.FinishEditing(this.Result, this.TemporaryEvent)
+	}
 	ddlTriggerCategory_SelectionChanged(Item)
 	{
-		;SubeventGUI contains all control hwnds for the Subevent-specific part of the gui (i.e. Triggers, Conditions, Actions). If it exists, a Subevent is currently visible.
-		if(this.TriggerGUI) ;Refresh the category of the selected subevent
+		if(this.TriggerGUI) ;if a trigger is already showing a gui, check if the new one is different
 			if(this.Event.Trigger.Category = Item.Text) ;selecting same item, ignore
 				return
-			
-		;Set the subevent to the currently selected one
+		
+		;Get all triggers of the new category
 		category := CTrigger.Categories[Item.Text]
 		
 		this.ddlTriggerType.DisableNotifications := true
 		this.ddlTriggerType.Items.Clear()
 		IndexToSelect := 1
-		for index, Type in CTrigger.Categories[Item.Text]
+		for index, Trigger in CTrigger.Categories[Item.Text]
 		{
-			this.ddlTriggerType.Items.Add(Type)
-			if(this.Event.Trigger.Type = Type)
+			this.ddlTriggerType.Items.Add(Trigger.Type)
+			if(this.Event.Trigger.Type = Trigger.Type)
 				IndexToSelect := index
 		}
 		this.ddlTriggerType.DisableNotifications := false
@@ -192,22 +212,156 @@ Class CEventEditor extends CGUI
 		Type := Item.Text
 		Category := this.ddlTriggerCategory.SelectedItem.Text
 		;At startup, TriggerGUI isn't set, and so the original Trigger doesn't get overriden
-		;If it is set, the code below treats a change of type by destroying the previous window elements and creates a new Subevent
+		;If it is set, the code below treats a change of type by destroying the previous window elements and creates a new trigger
 		if(this.TriggerGUI)
-		{	
-			;TriggerGUI contains all control hwnds for the trigger-specific part of the gui
+		{
 			if(this.Event.Trigger.Type = Type && this.Event.Trigger.Category = Category) ;selecting same item, ignore
 				return
+			Gui, % this.GUINum ": Default"
+			Gui, Tab, 1
 			this.Event.Trigger.GuiSubmit(this.TriggerGUI)
-			this.Event.Trigger := new EventSystem.Triggers[Type]()
+			Gui, Tab
+			TriggerTemplate := EventSystem.Triggers[Type]
+			this.Event.Trigger := new TriggerTemplate()
 		}
 		;Show trigger-specific part of the gui and store hwnds in TriggerGUI
 		this.TriggerGUI := {Type: Type}
-		this.TriggerGUI.x := 38 ;+ (EditEventTab != "Trigger" ? 400 : 0)
-		this.TriggerGUI.y := 148 ;+ (EditEventTab = "Conditions" ? 30 : 0)
+		this.TriggerGUI.x := 38
+		this.TriggerGUI.y := 148
 		this.TriggerGUI.GUINum := this.GUINum
 		this.TriggerBackup := this.Event.Trigger.DeepCopy()
+		
+		Gui, % this.GUINum ": Default"
+		Gui, Tab, 1
 		this.Event.Trigger.GuiShow(this.TriggerGUI)
+		Gui, Tab
+		return
+	}
+	
+	listConditions_SelectionChanged(Item)
+	{
+		if(this.Condition)
+			this.Condition.GuiSubmit(this.ConditionGUI)
+		if(Item)
+		{
+			this.Condition :=  this.Event.Conditions[Item.Index]
+			this.ddlConditionCategory.Text := this.Condition.Category
+		}
+	}
+	ddlConditionCategory_SelectionChanged(Item)
+	{
+		if(this.ConditionGUI) ;if a Condition is already showing a gui, check if the new one is different
+			if(this.Condition.Category = Item.Text) ;selecting same item, ignore
+				return
+		
+		;Get all Conditions of the new category
+		category := CCondition.Categories[Item.Text]
+		
+		this.ddlConditionType.DisableNotifications := true
+		this.ddlConditionType.Items.Clear()
+		IndexToSelect := 1
+		for index, Condition in CCondition.Categories[Item.Text]
+		{
+			this.ddlConditionType.Items.Add(Condition.Type)
+			if(this.Condition.Type = Condition.Type)
+				IndexToSelect := index
+		}
+		this.ddlConditionType.DisableNotifications := false
+		this.ddlConditionType.SelectedIndex := IndexToSelect
+		return
+	}
+	ddlConditionType_SelectionChanged(Item)
+	{
+		Type := Item.Text
+		Category := this.ddlConditionCategory.SelectedItem.Text
+		Condition := this.Event.Conditions[this.listConditions.SelectedIndex]
+		;At startup, ConditionGUI isn't set, and so the original Condition doesn't get overriden
+		;If it is set, the code below treats a change of type by destroying the previous window elements and creates a new Condition
+		if(this.ConditionGUI)
+		{
+			if(this.Condition.Type = Type && this.Condition.Category = Category) ;selecting same item, ignore
+				return
+			Gui, % this.GUINum ": Default"
+			Gui, Tab, 2
+			this.Condition.GuiSubmit(this.ConditionGUI)
+			Gui, Tab
+			ConditionTemplate := EventSystem.Conditions[Type]
+			this.Event.Conditions[this.listConditions.SelectedIndex] := this.Condition := new ConditionTemplate()
+		}
+		;Show Condition-specific part of the gui and store hwnds in ConditionGUI
+		this.ConditionGUI := {Type: Type}
+		this.ConditionGUI.x := 438
+		this.ConditionGUI.y := 178
+		this.ConditionGUI.GUINum := this.GUINum
+		this.ConditionBackup := this.Condition.DeepCopy()
+		Gui, % this.GUINum ": Default"
+		Gui, Tab, 2
+		this.Condition.GuiShow(this.ConditionGUI)
+		Gui, Tab
+		return
+	}
+	
+	listActions_SelectionChanged(Item)
+	{
+		if(this.Action)
+			this.Action.GuiSubmit(this.ActionGUI)
+		if(Item)
+		{
+			this.Action :=  this.Event.Actions[Item.Index]
+			this.ddlActionCategory.Text := this.Action.Category
+		}
+	}
+	ddlActionCategory_SelectionChanged(Item)
+	{
+		Action := this.Event.Actions[this.listActions.SelectedIndex]
+		if(this.ActionGUI) ;if a Action is already showing a gui, check if the new one is different
+			if(Action.Category = Item.Text) ;selecting same item, ignore
+				return
+		
+		;Get all Actions of the new category
+		category := CAction.Categories[Item.Text]
+		
+		this.ddlActionType.DisableNotifications := true
+		this.ddlActionType.Items.Clear()
+		IndexToSelect := 1
+		for index, Action in CAction.Categories[Item.Text]
+		{
+			this.ddlActionType.Items.Add(Action.Type)
+			if(Action.Type = Action.Type)
+				IndexToSelect := index
+		}
+		this.ddlActionType.DisableNotifications := false
+		this.ddlActionType.SelectedIndex := IndexToSelect
+		return
+	}
+	ddlActionType_SelectionChanged(Item)
+	{
+		Type := Item.Text
+		Category := this.ddlActionCategory.SelectedItem.Text
+		Action := this.Event.Actions[this.listActions.SelectedIndex]
+		;At startup, ActionGUI isn't set, and so the original Action doesn't get overriden
+		;If it is set, the code below treats a change of type by destroying the previous window elements and creates a new Action
+		if(this.ActionGUI)
+		{
+			if(Action.Type = Type && Action.Category = Category) ;selecting same item, ignore
+				return
+			Gui, % this.GUINum ": Default"
+			Gui, Tab, 3
+			Action.GuiSubmit(this.ActionGUI)
+			Gui, Tab
+			ActionTemplate := EventSystem.Actions[Type]
+			this.Event.Actions[this.listActions.SelectedIndex] := Action := new ActionTemplate()
+		}
+		;Show Action-specific part of the gui and store hwnds in ActionGUI
+		this.ActionGUI := {Type: Type}
+		this.ActionGUI.x := 438
+		this.ActionGUI.y := 148
+		this.ActionGUI.GUINum := this.GUINum
+		this.ActionBackup := Action.DeepCopy()
+		Gui, % this.GUINum ": Default"
+		Gui, Tab, 3
+		Action.GuiShow(this.ActionGUI)
+		Gui, Tab
 		return
 	}
 }

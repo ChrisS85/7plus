@@ -63,27 +63,27 @@ Class CHotkeyTrigger Extends CTrigger
 			if Key in Pause,Break
 				if(CtrlModifier)
 					Key := "CtrlBreak"
-
-
+			
+			
 			;Substitute CtrlBreak for Pause (Break would work OK too)
 			if(Key = "CtrlBreak")
 				if(!CtrlModifier)
 					Key := "Pause"
-
+			
 			;Initialize
 			Hotkey := ""
 			Desc := ""
-
+			
 			;Options
 			if(NativeOption)
 				Hotkey .= "~"
-
+			
 			if(WildcardOption)
 				Hotkey .= "*"
-
+			
 			if(LeftPairOption)
 				Hotkey .= "<"
-
+			
 			if(RightPairOption)
 				Hotkey .= ">"
 			
@@ -93,25 +93,25 @@ Class CHotkeyTrigger Extends CTrigger
 				Hotkey .= "^"
 				Desc .= "Ctrl + "
 			}
-
+			
 			if(ShiftModifier)
 			{
 				Hotkey .= "+"
 				Desc .= "Shift + "
 			}
-
+			
 			if(WinModifier)
 			{
 				Hotkey .= "#"
 				Desc .= "Win + "
 			}
-
+			
 			if(AltModifier)
 			{
 				Hotkey .= "!"
 				Desc .= "Alt + "
 			}
-
+			
 			Hotkey .= Key
 			Desc .= Key
 			if(UpOption)
@@ -125,14 +125,12 @@ Class CHotkeyTrigger Extends CTrigger
 		}
 		else if(GoToLabel = "LeftPair")
 		{
-			ClassNN := HWNDToClassNN(sGUI.tmphRightPairOption)
-			GuiControl,,%ClassNN%,0
+			GuiControl,,% sGUI.tmphRightPairOption,0
 			this.GuiShow("", "UpdateHotkey")
 		}
 		else if(GoToLabel = "RightPair")
 		{
-			ClassNN := HWNDToClassNN(sGUI.tmphLeftPairOption)
-			GuiControl,,%ClassNN%,0
+			GuiControl,,% sGUI.tmphLeftPairOption,0
 			this.GuiShow("", "UpdateHotkey")
 		}
 		else if(GoToLabel = "UpdateKeyList")
@@ -173,7 +171,7 @@ Class CHotkeyTrigger Extends CTrigger
 				KeyList := StringReplace(KeyList, "ƒ" Key "ƒ", "ƒ" Key "ƒƒ")
 			if(!InStr(KeyList, "ƒƒ"))
 				KeyList := StringReplace(KeyList, "ƒ", "ƒƒ")
-			GUIControl ,,ListBox1,ƒ%KeyList%
+			GUIControl ,, % sGUI.tmphKeyList,ƒ%KeyList%
 			Gui, +Delimiter|
 			;Reset Hotkey and HKDesc
 			this.GuiShow("", "UpdateHotkey")
