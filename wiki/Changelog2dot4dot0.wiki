@@ -34,7 +34,7 @@ Changes:
  * Complete rewrite of the event system and about half of all the trigger/conditions/actions code. This will make 7plus much easier to maintain and a few (unnoticed) bugs could also be fixed along the way.
  * Huge code rewrite for some key portions related to explorer. As a result, status bar enhancements and explorer tabs are now visible on all explorer windows at once.
  * Complete rewrite of Slide Windows feature. It should be much better now, with more options, multi-monitor support, support for child windows and no windows getting lost anymore.
- * Redesign of the "Edit Event" and "Edit Subevent" window. There is now only one window in which everything can be edited.
+ * Redesign of the "Edit Event" and "Edit Subevent" window. There is now only one window in which everything can be edited. Events won't be disabled anymore while these windows are open.
  * Moved hotkey editing into the trigger configuration GUI so it can be edited in the same window. Also it will now show the previously selected hotkey.
  * Some code cleanup and improvements for Accessor. Sort order of results is also slightly improved.
  * Clipboard history is now stored in encrypted form. In addition, if there is no enabled event that makes use of the clipboard history it will not be stored at all for privacy reasons.
