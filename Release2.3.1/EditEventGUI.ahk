@@ -35,7 +35,7 @@ Class CEventEditor extends CGUI
 	
 	;Condition controls
 	txtCondition := this.Tab.Tabs[2].AddControl("Text", "txtCondition", "x31 y36", "The conditions below must be fullfilled to allow this event to execute.")
-	listConditions := this.Tab.Tabs[2].AddControl("ListBox", "listConditions", "x31 y56 w270 h454", "")
+	listConditions := this.Tab.Tabs[2].AddControl("ListView", "listConditions", "x31 y56 w270 h454", "Conditions")
 	btnAddCondition := this.Tab.Tabs[2].AddControl("Button", "btnAddCondition", "x311 y56 w90", "Add Condition")
 	btnDeleteCondition := this.Tab.Tabs[2].AddControl("Button", "btnDeleteCondition", "x311 y86 w90", "Delete Condition")
 	btnCopyCondition := this.Tab.Tabs[2].AddControl("Button", "btnCopyCondition", "x311 y116 w90", "Copy Condition")
@@ -53,7 +53,7 @@ Class CEventEditor extends CGUI
 	
 	;Action controls
 	txtAction := this.Tab.Tabs[3].AddControl("Text", "txtAction", "x31 y36", "These actions will be executed when the event gets triggered.")
-	listActions := this.Tab.Tabs[3].AddControl("ListBox", "listActions", "x31 y56 w270 h454", "")
+	listActions := this.Tab.Tabs[3].AddControl("ListView", "listActions", "x31 y56 w270 h454", "Actions")
 	btnAddAction := this.Tab.Tabs[3].AddControl("Button", "btnAddAction", "x311 y56 w90", "Add Action")
 	btnDeleteAction := this.Tab.Tabs[3].AddControl("Button", "btnDeleteAction", "x311 y86 w90", "Delete Action")
 	btnCopyAction := this.Tab.Tabs[3].AddControl("Button", "btnCopyAction", "x311 y116 w90", "Copy Action")
@@ -116,7 +116,7 @@ Class CEventEditor extends CGUI
 		
 		;Fill conditions list
 		for index, Condition in this.Event.Conditions
-			this.listConditions.Items.Add(Condition.DisplayString())
+			this.listConditions.Items.Add("", Condition.DisplayString())
 		
 		;Fill condition categories
 		for CategoryName, Category in CCondition.Categories
@@ -125,14 +125,13 @@ Class CEventEditor extends CGUI
 		if(this.listConditions.Items.MaxIndex())
 			this.listConditions.SelectedIndex := 1
 		
-		
 		;Initilialize actions tab (actions, categories, types and action gui)
 		if(!IsObject(ActionClipboard))
 			this.btnPasteAction.Enabled := false
 		
 		;Fill actions list
 		for index, Action in this.Event.Actions
-			this.listActions.Items.Add(Action.DisplayString())
+			this.listActions.Items.Add("", Action.DisplayString())
 		
 		;Fill action categories
 		for CategoryName, Category in CAction.Categories
@@ -143,6 +142,8 @@ Class CEventEditor extends CGUI
 		
 		
 		;Initialize options tab
+		this.editEventName.Text := this.Event.Name
+		this.editEventDescription.Text := this.Event.Description
 		for index, Category in SettingsWindow.Events.Categories
 			this.comboEventCategory.Items.Add(Category)
 		this.comboEventCategory.Text := Event.Category
@@ -163,6 +164,9 @@ Class CEventEditor extends CGUI
 	
 	btnOK_Click()
 	{
+		this.SubmitTrigger()
+		this.SubmitCondition()
+		this.SubmitAction()
 		this.Event.Name := this.editEventName.Text
 		this.Event.Description := this.editEventDescription.Text
 		this.Event.Category := this.comboEventCategory.Text ? this.comboEventCategory.Text : "Uncategorized"
@@ -217,15 +221,24 @@ Class CEventEditor extends CGUI
 		{
 			if(this.Event.Trigger.Type = Type && this.Event.Trigger.Category = Category) ;selecting same item, ignore
 				return
-			Gui, % this.GUINum ": Default"
-			Gui, Tab, 1
-			this.Event.Trigger.GuiSubmit(this.TriggerGUI)
-			Gui, Tab
+			this.SubmitTrigger()
 			TriggerTemplate := EventSystem.Triggers[Type]
 			this.Event.Trigger := new TriggerTemplate()
 		}
 		;Show trigger-specific part of the gui and store hwnds in TriggerGUI
-		this.TriggerGUI := {Type: Type}
+		this.ShowTrigger()
+		return
+	}
+	SubmitTrigger()
+	{
+		Gui, % this.GUINum ": Default"
+		Gui, Tab, 1
+		this.Event.Trigger.GuiSubmit(this.TriggerGUI)
+		Gui, Tab
+	}
+	ShowTrigger()
+	{
+		this.TriggerGUI := {Type: this.Event.Trigger.Type}
 		this.TriggerGUI.x := 38
 		this.TriggerGUI.y := 148
 		this.TriggerGUI.GUINum := this.GUINum
@@ -235,28 +248,37 @@ Class CEventEditor extends CGUI
 		Gui, Tab, 1
 		this.Event.Trigger.GuiShow(this.TriggerGUI)
 		Gui, Tab
-		return
 	}
 	
 	listConditions_SelectionChanged(Item)
 	{
-		if(this.Condition)
-			this.Condition.GuiSubmit(this.ConditionGUI)
-		if(Item)
+		OutputDebug selection changed
+		if(Item && this.listConditions.SelectedIndices.MaxIndex() = 1 && this.listConditions.SelectedIndex != this.listConditions.PreviouslySelectedIndex)
 		{
+			OutputDebug % "to " this.listConditions.SelectedIndex
+			if(this.Condition)
+				this.SubmitCondition()
+			this.ddlConditionCategory.Enabled := true
+			this.ddlConditionType.Enabled := true
 			this.Condition :=  this.Event.Conditions[Item.Index]
-			this.ddlConditionCategory.Text := this.Condition.Category
+			this.UseCondition := true
+			if(this.Condition.Category != this.ddlConditionCategory.Text)
+				this.ddlConditionCategory.Text := this.Condition.Category
+			else if(this.Condition.Type != this.ddlConditionType.Text)
+				this.ddlConditionType.Text := this.Condition.Type
+			else
+				this.ddlConditionType_SelectionChanged(this.ddlConditionType.SelectedItem)
+		}		
+		else if(!this.listConditions.SelectedIndices.MaxIndex())
+		{
+			OutputDebug to empty
+			this.ddlConditionCategory.Enabled := false
+			this.ddlConditionType.Enabled := false
+			this.SubmitCondition()
 		}
 	}
 	ddlConditionCategory_SelectionChanged(Item)
 	{
-		if(this.ConditionGUI) ;if a Condition is already showing a gui, check if the new one is different
-			if(this.Condition.Category = Item.Text) ;selecting same item, ignore
-				return
-		
-		;Get all Conditions of the new category
-		category := CCondition.Categories[Item.Text]
-		
 		this.ddlConditionType.DisableNotifications := true
 		this.ddlConditionType.Items.Clear()
 		IndexToSelect := 1
@@ -272,24 +294,29 @@ Class CEventEditor extends CGUI
 	}
 	ddlConditionType_SelectionChanged(Item)
 	{
-		Type := Item.Text
-		Category := this.ddlConditionCategory.SelectedItem.Text
-		Condition := this.Event.Conditions[this.listConditions.SelectedIndex]
-		;At startup, ConditionGUI isn't set, and so the original Condition doesn't get overriden
-		;If it is set, the code below treats a change of type by destroying the previous window elements and creates a new Condition
-		if(this.ConditionGUI)
+		if(!this.UseCondition)
 		{
-			if(this.Condition.Type = Type && this.Condition.Category = Category) ;selecting same item, ignore
-				return
-			Gui, % this.GUINum ": Default"
-			Gui, Tab, 2
-			this.Condition.GuiSubmit(this.ConditionGUI)
-			Gui, Tab
-			ConditionTemplate := EventSystem.Conditions[Type]
+			ConditionTemplate := EventSystem.Conditions[Item.Text]
 			this.Event.Conditions[this.listConditions.SelectedIndex] := this.Condition := new ConditionTemplate()
 		}
-		;Show Condition-specific part of the gui and store hwnds in ConditionGUI
-		this.ConditionGUI := {Type: Type}
+		this.UseCondition := false
+		
+		;Show Condition-specific part of the gui and store hwnds in ConditionGUI		
+		this.ShowCondition()
+		return
+	}
+	SubmitCondition()
+	{
+		Gui, % this.GUINum ": Default"
+		Gui, Tab, 2
+		this.Condition.GuiSubmit(this.ConditionGUI)
+		Gui, Tab
+		this.Remove("Condition")
+		this.Remove("ConditionGUI")
+	}
+	ShowCondition()
+	{
+		this.ConditionGUI := {Type: this.Condition.Type}
 		this.ConditionGUI.x := 438
 		this.ConditionGUI.y := 178
 		this.ConditionGUI.GUINum := this.GUINum
@@ -298,36 +325,40 @@ Class CEventEditor extends CGUI
 		Gui, Tab, 2
 		this.Condition.GuiShow(this.ConditionGUI)
 		Gui, Tab
-		return
 	}
-	
 	listActions_SelectionChanged(Item)
 	{
-		if(this.Action)
-			this.Action.GuiSubmit(this.ActionGUI)
-		if(Item)
+		if(Item && this.listActions.SelectedIndices.MaxIndex() = 1 && this.listActions.SelectedIndex != this.listActions.PreviouslySelectedIndex)
+		{			
+			if(this.Action)
+				this.SubmitAction()
+			this.ddlActionCategory.Enabled := true
+			this.ddlActionType.Enabled := true
+			this.Action :=  this.Event.Actions[this.listActions.SelectedIndex]
+			this.UseAction := true
+			if(this.Action.Category != this.ddlActionCategory.Text)
+				this.ddlActionCategory.Text := this.Action.Category
+			else if(this.Action.Type != this.ddlActionType.Text)
+				this.ddlActionType.Text := this.Action.Type
+			else
+				this.ddlActionType_SelectionChanged(this.ddlActionType.SelectedItem)
+		}
+		else if(!this.listActions.SelectedIndices.MaxIndex())
 		{
-			this.Action :=  this.Event.Actions[Item.Index]
-			this.ddlActionCategory.Text := this.Action.Category
+			this.ddlActionCategory.Enabled := false
+			this.ddlActionType.Enabled := false
+			this.SubmitAction()
 		}
 	}
 	ddlActionCategory_SelectionChanged(Item)
 	{
-		Action := this.Event.Actions[this.listActions.SelectedIndex]
-		if(this.ActionGUI) ;if a Action is already showing a gui, check if the new one is different
-			if(Action.Category = Item.Text) ;selecting same item, ignore
-				return
-		
-		;Get all Actions of the new category
-		category := CAction.Categories[Item.Text]
-		
 		this.ddlActionType.DisableNotifications := true
 		this.ddlActionType.Items.Clear()
 		IndexToSelect := 1
 		for index, Action in CAction.Categories[Item.Text]
 		{
 			this.ddlActionType.Items.Add(Action.Type)
-			if(Action.Type = Action.Type)
+			if(this.Action.Type = Action.Type)
 				IndexToSelect := index
 		}
 		this.ddlActionType.DisableNotifications := false
@@ -336,33 +367,37 @@ Class CEventEditor extends CGUI
 	}
 	ddlActionType_SelectionChanged(Item)
 	{
-		Type := Item.Text
-		Category := this.ddlActionCategory.SelectedItem.Text
-		Action := this.Event.Actions[this.listActions.SelectedIndex]
-		;At startup, ActionGUI isn't set, and so the original Action doesn't get overriden
-		;If it is set, the code below treats a change of type by destroying the previous window elements and creates a new Action
-		if(this.ActionGUI)
+		if(!this.UseAction)
 		{
-			if(Action.Type = Type && Action.Category = Category) ;selecting same item, ignore
-				return
-			Gui, % this.GUINum ": Default"
-			Gui, Tab, 3
-			Action.GuiSubmit(this.ActionGUI)
-			Gui, Tab
-			ActionTemplate := EventSystem.Actions[Type]
-			this.Event.Actions[this.listActions.SelectedIndex] := Action := new ActionTemplate()
+			this.SubmitAction()
+			ActionTemplate := EventSystem.Actions[Item.Text]
+			this.Event.Actions[this.listActions.SelectedIndex] := this.Action := new ActionTemplate()
 		}
+		this.UseAction := false
 		;Show Action-specific part of the gui and store hwnds in ActionGUI
-		this.ActionGUI := {Type: Type}
+		this.ShowAction()
+		return
+	}
+	SubmitAction()
+	{
+		Gui, % this.GUINum ": Default"
+		Gui, Tab, 3
+		this.Action.GuiSubmit(this.ActionGUI)
+		Gui, Tab
+		this.Remove("Action")
+		this.Remove("ActionGUI")
+	}
+	ShowAction()
+	{
+		this.ActionGUI := {Type: this.Action.Type}
 		this.ActionGUI.x := 438
 		this.ActionGUI.y := 148
 		this.ActionGUI.GUINum := this.GUINum
-		this.ActionBackup := Action.DeepCopy()
+		this.ActionBackup := this.Action.DeepCopy()
 		Gui, % this.GUINum ": Default"
 		Gui, Tab, 3
-		Action.GuiShow(this.ActionGUI)
+		this.Action.GuiShow(this.ActionGUI)
 		Gui, Tab
-		return
 	}
 }
 GUI_EditEvent(e,GoToLabel="", Parameter="")
