@@ -35,7 +35,7 @@ Class CEventEditor extends CGUI
 	
 	;Condition controls
 	txtCondition := this.Tab.Tabs[2].AddControl("Text", "txtCondition", "x31 y36", "The conditions below must be fullfilled to allow this event to execute.")
-	listConditions := this.Tab.Tabs[2].AddControl("ListView", "listConditions", "x31 y56 w270 h454", "Conditions")
+	listConditions := this.Tab.Tabs[2].AddControl("ListView", "listConditions", "x31 y56 w270 h454 -Multi", "Conditions")
 	btnAddCondition := this.Tab.Tabs[2].AddControl("Button", "btnAddCondition", "x311 y56 w90", "Add Condition")
 	btnDeleteCondition := this.Tab.Tabs[2].AddControl("Button", "btnDeleteCondition", "x311 y86 w90", "Delete Condition")
 	btnCopyCondition := this.Tab.Tabs[2].AddControl("Button", "btnCopyCondition", "x311 y116 w90", "Copy Condition")
@@ -53,7 +53,7 @@ Class CEventEditor extends CGUI
 	
 	;Action controls
 	txtAction := this.Tab.Tabs[3].AddControl("Text", "txtAction", "x31 y36", "These actions will be executed when the event gets triggered.")
-	listActions := this.Tab.Tabs[3].AddControl("ListView", "listActions", "x31 y56 w270 h454", "Actions")
+	listActions := this.Tab.Tabs[3].AddControl("ListView", "listActions", "x31 y56 w270 h454 -Multi", "Actions")
 	btnAddAction := this.Tab.Tabs[3].AddControl("Button", "btnAddAction", "x311 y56 w90", "Add Action")
 	btnDeleteAction := this.Tab.Tabs[3].AddControl("Button", "btnDeleteAction", "x311 y86 w90", "Delete Action")
 	btnCopyAction := this.Tab.Tabs[3].AddControl("Button", "btnCopyAction", "x311 y116 w90", "Copy Action")
@@ -116,7 +116,7 @@ Class CEventEditor extends CGUI
 		
 		;Fill conditions list
 		for index, Condition in this.Event.Conditions
-			this.listConditions.Items.Add("", Condition.DisplayString())
+			this.listConditions.Items.Add("", (Condition.Negate ? "NOT " : "" ) Condition.DisplayString())
 		
 		;Fill condition categories
 		for CategoryName, Category in CCondition.Categories
@@ -124,6 +124,8 @@ Class CEventEditor extends CGUI
 		
 		if(this.listConditions.Items.MaxIndex())
 			this.listConditions.SelectedIndex := 1
+		
+		this.btnPasteCondition.Enabled := EventSystem.IsObject(ConditionClipboard)
 		
 		;Initilialize actions tab (actions, categories, types and action gui)
 		if(!IsObject(ActionClipboard))
@@ -140,6 +142,7 @@ Class CEventEditor extends CGUI
 		if(this.listActions.Items.MaxIndex())
 			this.listActions.SelectedIndex := 1
 		
+		this.btnPasteAction.Enabled := EventSystem.IsObject(ActionClipboard)
 		
 		;Initialize options tab
 		this.editEventName.Text := this.Event.Name
@@ -249,17 +252,20 @@ Class CEventEditor extends CGUI
 		this.Event.Trigger.GuiShow(this.TriggerGUI)
 		Gui, Tab
 	}
-	
+	btnTriggerHelp_Click()
+	{
+		static OldTypes := {"On 7plus start" : "7plusStart", "Context menu" : "ContextMenu", "Double click on desktop" : "DoubleClickDesktop", "Double click on taskbar" : "DoubleClickTaskbar", "Explorer bar button" : "ExplorerButton", "Double click on empty space" : "ExplorerDoubleClickSpace", "Explorer path changed" : "ExplorerPathChanged", "Menu item clicked" : "MenuItem", "On window message" : "OnMessage", "Screen corner" : "ScreenCorner", "Triggered by an action" : "None", "Window activated" : "WindowActivated", "Window closed" : "WindowClosed", "Window created" : "WindowCreated", "Window state changed" : "WindowStateChange"}
+		OpenWikiPage("docsTriggers" (OldTypes.HasKey(this.Event.Trigger.Type) ? OldTypes[this.Event.Trigger.Type] : this.Event.Trigger.Type))
+	}
 	listConditions_SelectionChanged(Item)
 	{
-		OutputDebug selection changed
 		if(Item && this.listConditions.SelectedIndices.MaxIndex() = 1 && this.listConditions.SelectedIndex != this.listConditions.PreviouslySelectedIndex)
 		{
-			OutputDebug % "to " this.listConditions.SelectedIndex
 			if(this.Condition)
 				this.SubmitCondition()
 			this.ddlConditionCategory.Enabled := true
 			this.ddlConditionType.Enabled := true
+			this.chkNegateCondition.Enabled := true
 			this.Condition :=  this.Event.Conditions[Item.Index]
 			this.UseCondition := true
 			if(this.Condition.Category != this.ddlConditionCategory.Text)
@@ -271,10 +277,11 @@ Class CEventEditor extends CGUI
 		}		
 		else if(!this.listConditions.SelectedIndices.MaxIndex())
 		{
-			OutputDebug to empty
 			this.ddlConditionCategory.Enabled := false
 			this.ddlConditionType.Enabled := false
+			this.chkNegateCondition.Enabled := false
 			this.SubmitCondition()
+			this.chkNegateCondition.Checked := false
 		}
 	}
 	ddlConditionCategory_SelectionChanged(Item)
@@ -316,6 +323,7 @@ Class CEventEditor extends CGUI
 	}
 	ShowCondition()
 	{
+		this.chkNegateCondition.Checked := this.Condition.Negate
 		this.ConditionGUI := {Type: this.Condition.Type}
 		this.ConditionGUI.x := 438
 		this.ConditionGUI.y := 178
@@ -326,6 +334,59 @@ Class CEventEditor extends CGUI
 		this.Condition.GuiShow(this.ConditionGUI)
 		Gui, Tab
 	}
+	chkNegateCondition_CheckedChanged()
+	{
+		if(this.HasKey("Condition"))
+		{
+			this.Condition.Negate := this.chkNegateCondition.Checked
+			this.listConditions.SelectedItem.Text := (this.Condition.Negate ? "NOT " : "" ) this.Condition.DisplayString()
+		}
+	}
+	btnAddCondition_Click()
+	{
+		this.Event.Conditions.Insert(Condition := new CWindowActiveCondition())
+		this.listConditions.Items.Add("", (Condition.Negate ? "NOT " : "" ) Condition.DisplayString())
+		this.UseCondition := true
+		this.listConditions.SelectedIndex := this.listConditions.MaxIndex()
+	}
+	btnDeleteCondition_Click()
+	{
+		if(this.listConditions.SelectedIndices.MaxIndex() = 1)
+		{
+			this.Event.Conditions.Remove(this.listConditions.SelectedIndex)
+			this.Remove("Condition")
+			this.listConditions.Items.Delete(this.listConditions.SelectedIndex)
+		}
+	}
+	
+	btnCopyCondition_Click()
+	{
+		EventSystem.ConditionClipboard := this.Event.Conditions[this.listConditions.SelectedIndex].DeepCopy()
+		this.btnPasteCondition.Enabled := true
+	}
+	btnPasteCondition_Click()
+	{
+		this.Event.Conditions.Insert(EventSystem.ConditionClipboard.DeepCopy())
+		this.listConditions.Items.Add("Select", (EventSystem.ConditionClipboard.Negate ? "NOT " : "") EventSystem.ConditionClipboard.DisplayString())
+	}
+	btnMoveConditionUp_Click()
+	{
+		SelectedIndex := this.listConditions.SelectedIndex
+		this.Event.Conditions.swap(SelectedIndex, SelectedIndex + 1)
+		this.listConditions.SelectedIndex := SelectedIndex + 1
+	}
+	btnMoveConditionDown_Click()
+	{
+		SelectedIndex := this.listConditions.SelectedIndex
+		this.Event.Conditions.swap(SelectedIndex, SelectedIndex - 1)
+		this.listConditions.SelectedIndex := SelectedIndex - 1
+	}
+	btnConditionHelp_Click()
+	{
+		static OldTypes := {"Context menu active" : "IsContextMenuActive", "Window is file dialog" : "IsDialog", "Window is dragable" : "IsDragable", "Fullscreen window active" : "IsFullScreen", "Explorer is renaming" : "IsRenaming", "Key is down" : "KeyIsDown", "Mouse over" : "MouseOver", "Mouse over file list" : "MouseOverFileList", "Mouse over tab button" : "MouseOverTabButton", "Mouse over taskbar list" : "MouseOverTaskList", "Window active" : "WindowActive", "Window exists" : "WindowExists"}
+		OpenWikiPage("docsConditions" (OldTypes.HasKey(this.Condition.Type) ? OldTypes[this.Condition.Type] : this.Condition.Type))
+	}
+	
 	listActions_SelectionChanged(Item)
 	{
 		if(Item && this.listActions.SelectedIndices.MaxIndex() = 1 && this.listActions.SelectedIndex != this.listActions.PreviouslySelectedIndex)
@@ -398,6 +459,57 @@ Class CEventEditor extends CGUI
 		Gui, Tab, 3
 		this.Action.GuiShow(this.ActionGUI)
 		Gui, Tab
+	}
+	btnAddAction_Click()
+	{
+		this.Event.Actions.Insert(Action := new CRunAction())
+		this.listActions.Items.Add("", Action.DisplayString())
+		this.UseAction := true
+		this.listActions.SelectedIndex := this.listActions.MaxIndex()
+	}
+	btnDeleteAction_Click()
+	{
+		if(this.listActions.SelectedIndices.MaxIndex() = 1)
+		{
+			this.Event.Actions.Remove(this.listActions.SelectedIndex)
+			this.Remove("Action")
+			this.listActions.Items.Delete(this.listActions.SelectedIndex)
+		}
+	}
+	
+	btnCopyAction_Click()
+	{
+		EventSystem.ActionClipboard := this.Event.Actions[this.listActions.SelectedIndex].DeepCopy()
+		this.btnPasteAction.Enabled := true
+	}
+	btnPasteAction_Click()
+	{
+		this.Event.Actions.Insert(EventSystem.ActionClipboard.DeepCopy())
+		this.listActions.Items.Add("Select", EventSystem.ActionClipboard.DisplayString())
+	}
+	btnMoveActionUp_Click()
+	{
+		SelectedIndex := this.listActions.SelectedIndex
+		Text := this.listActions.Items[SelectedIndex].Text
+		this.Event.Actions.swap(SelectedIndex, SelectedIndex - 1)
+		this.listActions.DisableNotifications := true		
+		this.listActions.Items.Delete(SelectedIndex)
+		this.listActions.Items.Insert(SelectedIndex - 1, "Select", Text)
+		;~ this.listActions.SelectedIndex := SelectedIndex - 1
+		this.listActions.DisableNotifications := false
+	}
+	btnMoveActionDown_Click()
+	{
+		SelectedIndex := this.listActions.SelectedIndex
+		this.Event.Actions.swap(SelectedIndex, SelectedIndex + 1)
+		this.listActions.DisableNotifications := true
+		this.listActions.SelectedIndex := SelectedIndex + 1
+		this.listActions.DisableNotifications := false
+	}
+	btnActionHelp_Click()
+	{
+		static OldTypes := {"Show Accessor" : "Accessor", "Show Aero Flip" : "ShowAeroFlip", "Check for updates" : "AutoUpdate", "Write to clipboard" : "Clipboard", "Clipboard Manager menu" : "ClipMenu", "Paste clipboard entry" : "ClipPaste", "Control event" : "ControlEvent", "Control timer" : "ControlTimer", "Exit 7plus" : "Exit7plus", "Explorer replace dialog" : "ExplorerReplaceDialog", "Clear Fast Folder" : "FastFoldersClear", "Fast Folders menu" : "FastFoldersMenu", "Open Fast Folder" : "FastFoldersRecall", "Save Fast Folder" : "FastFoldersStore", "Copy file" : "Copy", "Delete file" : "Delete", "Move file" : "Move", "Write to file" : "Write", "Filter list" : "FilterList", "Flashing windows" : "FlashingWindows", "Show Explorer flat view" : "FlatView", "Focus a control" : "FocusControl", "Upload to FTP" : "Upload", "Show Image Converter" : "ImageConverter", "Ask for user input" : "Input", "Invert file selection" : "InvertSelection", "Show Explorer checksum dialog" : "MD5", "Merge Explorer windows" : "MergeTabs", "Mouse click" : "MouseClick", "Close tab under mouse" : "MouseCloseTab", "Drag window with mouse" : "MouseWindowDrag", "Resize window with mouse" : "MouseWindowResize", "Create new file" : "NewFile", "Create new folder" : "NewFolder", "Open folder in new window / tab" : "OpenInNewFolder", "Play a sound" : "PlaySound", "Restart 7plus" : "Restart7plus", "Restore file selection" : "RestoreSelection", "Run a program" : "Run", "Run a program or activate it" : "RunOrActivate", "Take a screenshot" : "Screenshot", "Select files" : "SelectFiles", "Send keyboard input" : "SendKeys", "Send a window message" : "SendMessage", "Set current directory" : "SetDirectory", "Set window title" : "SetWindowTitle", "Shorten a URL" : "ShortenURL", "Show menu" : "ShowMenu", "Show settings" : "ShowSettings", "Shutdown computer" : "Shutdown", "Move Slide Window out of screen" : "SlideWindowOut", "Close taskbar button under mouse" : "TaskButtonClose", "Change desktop wallpaper" : "ToggleWallpaper", "Show a tooltip" : "ToolTip", "Change explorer view mode" : "ViewMode", "Change sound volume" : "Volume", "Activate a window" : "WindowActivate", "Close a window" : "WindowClose", "Hide a window" : "WindowHide", "Move a window" : "WindowMove", "Resize a window" : "WindowResize", "Put window in background" : "WindowSendToBottom", "Show a window" : "WindowShow", "Change window state" : "WindowState"}
+		OpenWikiPage("docsActions" (OldTypes.HasKey(this.Action.Type) ? OldTypes[this.Action.Type] : this.Action.Type))
 	}
 }
 GUI_EditEvent(e,GoToLabel="", Parameter="")

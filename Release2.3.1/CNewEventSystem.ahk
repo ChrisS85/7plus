@@ -1006,6 +1006,9 @@ Class CCondition extends CSubEvent
 	;This is an object containing condition categories. It is automatically populated by the conditions when they set the "Category" key.
 	static Categories := RichObject()
 	
+	;If true, the condition must evaluate to false to be accepted.
+	Negate := false
+	
 	;This class is used to convert old subevent types into changed ones during loading
 	Class CLegacyTypes
 	{

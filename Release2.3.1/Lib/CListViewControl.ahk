@@ -801,6 +801,11 @@ Class CListViewControl Extends CControl
 							LV_Modify(this.GetSortedIndex(this._.RowNumber, Control.hwnd), "Col" Name, Value)
 						return Value
 					}
+					else if(Name = "Text")
+					{
+						LV_Modify(this.GetSortedIndex(this._.RowNumber, Control.hwnd), "Col" 1, Value)
+						return Value
+					}
 					else if(Key := {Checked : "Check", Focused : "Focus", "Selected" : ""}[Name])
 					{
 						Gui, % Control.GUINum ":Default"
@@ -916,7 +921,6 @@ Class CListViewControl Extends CControl
 	HandleEvent(Event)
 	{
 		Row := this.Items[this.IndependentSorting ? this.CItems.CRow.GetUnsortedIndex(Event.EventInfo, this.hwnd) : Event.EventInfo]
-		OutputDebug % Event.GUIEvent ", " Event.ErrorLevel
 		if(Event.GUIEvent == "E")
 			this.CallEvent("EditingStart", Row)
 		else if(EventName := {DoubleClick : "DoubleClick", R : "DoubleRightClick",e : "EditingEnd", Normal : "Click", RightClick : "RightClick",  A : "ItemActivate"}[Event.GUIEvent])
