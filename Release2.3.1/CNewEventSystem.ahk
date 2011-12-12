@@ -862,7 +862,33 @@ RegisterCategory(Class, Category)
 	Categories[Category].Insert(Class)
 	return Category
 }
-	
+
+;Called when an external program sends a message to 7plus to make it execute an event.
+TriggerFromOtherInstance(wParam, lParam)
+{
+	Critical, On
+	if(lParam = 0) ;0 = Single trigger from something else than context menus
+	{
+		Trigger := new CTriggerTrigger()
+		Trigger.TargetID := wParam
+		EventSystem.OnTrigger(Trigger)
+	}
+	else if(lParam = 1) ;1 = Trigger from context menu
+	{		
+		;Read list of selected files written by shell extension
+		if(FileExist(A_Temp "\7plus\files.txt"))
+			FileRead, files, % "*t " A_Temp "\7plus\files.txt"
+		FileDelete, % A_Temp "\7plus\files.txt"
+		;if it failed (because static context menu is used), try to get it from explorer window
+		EventSystem.GlobalPlaceholders.Context := files ? files : GetSelectedFiles()
+		
+		Trigger := new CTriggerTrigger()
+		Trigger.TargetID := wParam
+		EventSystem.OnTrigger(Trigger)
+	}
+	Critical, Off
+}
+
 Class CSubEvent extends CRichObject
 {
 	;Some functions which are defined outside this class because they are also used elsewhere.

@@ -10,6 +10,7 @@ Class CContextMenuTrigger Extends CTrigger
 	static Desktop := false
 	static Computer := false
 	static SingleFileOnly := false
+	static FileTypes := "*"
 	
 	Enable(Event)
 	{
@@ -121,7 +122,7 @@ RegisterShellExtension(Silent=1)
 			uacrep := DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, "regsvr32", str, "/s """ A_ScriptDir "\ShellExtension.dll""", str, A_ScriptDir, int, 1)
 		else
 			run regsvr32 /s "%A_ScriptDir%\ShellExtension.dll"
-		If(uacrep = 42|| !Vista7) ;UAC Prompt confirmed, application may run as admin
+		If(uacrep = 42 || !Vista7) ;UAC Prompt confirmed, application may run as admin
 		{
 			if(!Silent)
 				MsgBox Shell extension successfully installed. Context menu entries defined in 7plus should now be visible.
@@ -141,7 +142,7 @@ UnregisterShellExtension(Silent=1)
 			uacrep := DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, "regsvr32", str, "/s /u """ A_ScriptDir "\ShellExtension.dll""", str, A_ScriptDir, int, 1)
 		else
 			run regsvr32 /s /u "%A_ScriptDir%\ShellExtension.dll"
-		If(uacrep = 42) ;UAC Prompt confirmed, application may run as admin
+		If(uacrep = 42 || !Vista7) ;UAC Prompt confirmed, application may run as admin
 		{
 			if(!Silent)
 				MsgBox Shell extension successfully deinstalled. All 7plus context menu entries should now be gone.

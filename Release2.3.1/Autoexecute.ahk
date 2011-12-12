@@ -220,7 +220,7 @@ OnExit(Reload=0)
 		Settings.Save()
 		WriteClipboard()
 		CloseAllInactiveTabs()
-		SaveHotstrings()		
+		SaveHotstrings()
 		if(Settings.General.DebugEnabled)
 			DebuggingEnd()
 	}

@@ -3933,6 +3933,8 @@
 <Action>
 <Cancel>1</Cancel>
 <DataType>Text</DataType>
+<Placeholder>Input</Placeholder>
+<Selection></Selection>
 <Text>Enter parameters. Paths might need`n to be enclosed in double quotes.</Text>
 <Title>Enter Parameters</Title>
 <Type>Ask for user input</Type>
@@ -3962,14 +3964,20 @@
 <Desktop>0</Desktop>
 <Directory>0</Directory>
 <DirectoryBackground>0</DirectoryBackground>
+<FileTypes>exe,bat,cmd</FileTypes>
 <Name>Run with parameters...</Name>
 <SingleFileOnly>1</SingleFileOnly>
+<SubMenu></SubMenu>
 <Type>Context menu</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Files>${Context}</Files>
+<FTPTargetDir></FTPTargetDir>
+<Hoster>ImgUr</Hoster>
+<ReuseWindow>0</ReuseWindow>
+<TemporaryFiles>0</TemporaryFiles>
 <Type>Show Image Converter</Type>
 </Action></Actions>
 <Category>Context Menu</Category>
@@ -3990,8 +3998,10 @@
 <Desktop>0</Desktop>
 <Directory>0</Directory>
 <DirectoryBackground>0</DirectoryBackground>
+<FileTypes>BMP,DIB,RLE,JPG,JPEG,JPE,JFIF,GIF,TIF,TIFF,PNG</FileTypes>
 <Name>Convert Images</Name>
 <SingleFileOnly>0</SingleFileOnly>
+<SubMenu></SubMenu>
 <Type>Context menu</Type>
 </Trigger>
 </Event><Event>
@@ -4018,8 +4028,10 @@
 <Desktop>0</Desktop>
 <Directory>0</Directory>
 <DirectoryBackground>0</DirectoryBackground>
+<FileTypes>*</FileTypes>
 <Name>MD5 Checksum(s)</Name>
 <SingleFileOnly>0</SingleFileOnly>
+<SubMenu></SubMenu>
 <Type>Context menu</Type>
 </Trigger>
 </Event><Event>
@@ -4182,7 +4194,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event starts a dynamic timer when the "Start timer" menu entry from the 7plus tray menu is selected.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>1597</ID>
 <Name>Dynamic Timer: tray menu item</Name>
@@ -4306,7 +4318,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event asks for a message and starts the message timer.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>1602</ID>
 <Name>Dynamic Timer: Ask for message and start message timer</Name>
@@ -5256,6 +5268,29 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!PrintScreen</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<KeyDelay>0</KeyDelay>
+<Keys>y</Keys>
+<Type>Send keyboard input</Type>
+<WriteText>0</WriteText>
+</Action></Actions>
+<Category>Uncategorized</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description></Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1640</ID>
+<Name>New event</Name>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>#A</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event></Events>
