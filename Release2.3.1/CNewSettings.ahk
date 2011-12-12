@@ -466,7 +466,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		}
 		;~ Suspend, On
 		;~ NewEvent:=GUI_EditEvent(OriginalEvent.DeepCopy())
-		NewEvent := new CEventEditor(OriginalEvent.DeepCopy(), TemporaryEvent)
+		EventEditor := new CEventEditor(OriginalEvent.DeepCopy(), TemporaryEvent)
 	}
 	FinishEditing(NewEvent, TemporaryEvent)
 	{

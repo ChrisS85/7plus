@@ -19,10 +19,7 @@ Class CEventSystem extends CRichObject
 	
 	;EventSchedule (contains copies of the event objects in the Events list) is a list of events that are currently being processed.
 	static EventSchedule := Array()
-	
-	;An object containing events that are currently being edited so they can be found by their gui name in labels of subevents.
-	static CurrentlyEditingEvents := RichObject()
-	
+		
 	Startup()
 	{		
 		;Create CEvents instance

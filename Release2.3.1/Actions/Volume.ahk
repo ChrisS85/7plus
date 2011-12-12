@@ -26,7 +26,10 @@ Class CVolumeAction Extends CAction
 			else if(this.Action = "Toggle mute/unmute")
 				VA_SetMasterMute(1)
 			else
+			{
+				VA_SetMasterMute(0) ;If setting volume we probably don't want to stay muted.
 				VA_SetMasterVolume(Current+Volume)
+			}
 			if(this.ShowVolume)
 			{
 				if(!ApplicationState.VolumeNotifyID)
@@ -52,7 +55,10 @@ Class CVolumeAction Extends CAction
 			else if(this.Action = "Toggle mute/unmute")
 				SoundSet, 0,, Mute
 			else
+			{
+				SoundSet, 0,, Mute ;If setting volume we probably don't want to stay muted.
 				SoundSet, % Current + Volume
+			}
 			if(this.ShowVolume)
 			{
 				if(!ApplicationState.VolumeNotifyID)

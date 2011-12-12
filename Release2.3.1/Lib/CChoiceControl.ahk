@@ -251,6 +251,7 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 		{
 			GUI := CGUI.GUIList[this._.GUINum]
 			Control := GUI.Controls[this._.hwnd]
+			OutputDebug % Control.Name " add " text
 			Selected := Control.SelectedIndex
 			ItemsString := ""
 			Pos := 1
@@ -274,7 +275,7 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 		}
 		/*
 		Function: Clear
-		Deletes all items
+		Deletes all items. This will always fire a selection changed event, even if no items were deleted.
 		*/
 		Clear()
 		{

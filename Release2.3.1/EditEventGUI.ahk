@@ -1,20 +1,18 @@
 ;Gets the event which is currently being edited by the GUI Name of the editor window
 GetCurrentSubEvent()
 {
-	Event := EventSystem.CurrentlyEditingEvents[A_GUI]
-	GuiControlGet,CurrentTab,,SysTabControl321
+	if(!IsObject(EventEditor := CGUI.GUIList[A_GUI]))
+	{
+		MsgBox Can't find the trigger/condition or action of the currently edited event because the event editor was not found!
+		return
+	}
+	CurrentTab := EventEditor.Tab.SelectedItem.Text
 	if(CurrentTab = "Trigger")
-		return Event.Trigger
+		return EventEditor.Event.Trigger
 	else if(CurrentTab = "Conditions")
-	{
-		Gui, ListView, SysListView321
-		return Event.Conditions[LV_GetNext()]
-	}
+		return EventEditor.Event.Conditions[EventEditor.listConditions.SelectedIndex]
 	else if(CurrentTab = "Actions")
-	{
-		Gui, ListView, SysListView322
-		return Event.Actions[LV_GetNext()]
-	}
+		return EventEditor.Event.Actions[EventEditor.listActions.SelectedIndex]
 	return 
 }
 Class CEventEditor extends CGUI
@@ -93,10 +91,6 @@ Class CEventEditor extends CGUI
 		
 		;Disable the settings window that opened this dialog if it exists
 		SettingsWindow.Enabled := false
-		
-		;Add the event to the list of events that are currently being edited so it can be found by a subevent label
-		EventSystem.CurrentlyEditingEvents[GUIName] := Event
-		
 		
 		;Setup control states
 		
@@ -259,7 +253,8 @@ Class CEventEditor extends CGUI
 	}
 	listConditions_SelectionChanged(Item)
 	{
-		if(Item && this.listConditions.SelectedIndices.MaxIndex() = 1 && this.listConditions.SelectedIndex != this.listConditions.PreviouslySelectedIndex)
+		;A new item was selected
+		if(Item && this.listConditions.SelectedIndices.MaxIndex() = 1 && this.listConditions.SelectedIndex != this.listConditions.PreviouslySelectedIndex && this.listConditions.SelectedItem = item)
 		{
 			if(this.Condition)
 				this.SubmitCondition()
@@ -267,15 +262,16 @@ Class CEventEditor extends CGUI
 			this.ddlConditionType.Enabled := true
 			this.chkNegateCondition.Enabled := true
 			this.Condition :=  this.Event.Conditions[Item.Index]
+			;Mark that the Condition stored under this.Condition should be used instead of creating a new one of the type set in the type dropdownlist.
 			this.UseCondition := true
-			if(this.Condition.Category != this.ddlConditionCategory.Text)
+			if(this.Condition.Category != this.ddlConditionCategory.Text) ;The category of the new Condition is different from the old one
 				this.ddlConditionCategory.Text := this.Condition.Category
-			else if(this.Condition.Type != this.ddlConditionType.Text)
+			else if(this.Condition.Type != this.ddlConditionType.Text) ;The type of the new Condition is different from the old one
 				this.ddlConditionType.Text := this.Condition.Type
-			else
+			else ;The Condition is of the same type
 				this.ddlConditionType_SelectionChanged(this.ddlConditionType.SelectedItem)
 		}		
-		else if(!this.listConditions.SelectedIndices.MaxIndex())
+		else if(!this.listConditions.SelectedIndices.MaxIndex()) ;Item deselected
 		{
 			this.ddlConditionCategory.Enabled := false
 			this.ddlConditionType.Enabled := false
@@ -301,6 +297,9 @@ Class CEventEditor extends CGUI
 	}
 	ddlConditionType_SelectionChanged(Item)
 	{
+		if(!IsObject(Item)) ;Make sure not to do anything when type DropDownList is cleared
+			return
+		;Instantiate new condition if this value is set
 		if(!this.UseCondition)
 		{
 			ConditionTemplate := EventSystem.Conditions[Item.Text]
@@ -317,6 +316,7 @@ Class CEventEditor extends CGUI
 		Gui, % this.GUINum ": Default"
 		Gui, Tab, 2
 		this.Condition.GuiSubmit(this.ConditionGUI)
+		this.listConditions.Items[this.Event.Conditions.IndexOf(this.Condition)].Text := (this.Condition.Negate ? "NOT " : "" ) this.Condition.DisplayString()
 		Gui, Tab
 		this.Remove("Condition")
 		this.Remove("ConditionGUI")
@@ -332,7 +332,8 @@ Class CEventEditor extends CGUI
 		Gui, % this.GUINum ": Default"
 		Gui, Tab, 2
 		this.Condition.GuiShow(this.ConditionGUI)
-		Gui, Tab
+		Gui, Tab		
+		this.listConditions.Items[this.Event.Conditions.IndexOf(this.Condition)].Text := (this.Condition.Negate ? "NOT " : "" ) this.Condition.DisplayString()
 	}
 	chkNegateCondition_CheckedChanged()
 	{
@@ -372,14 +373,26 @@ Class CEventEditor extends CGUI
 	btnMoveConditionUp_Click()
 	{
 		SelectedIndex := this.listConditions.SelectedIndex
-		this.Event.Conditions.swap(SelectedIndex, SelectedIndex + 1)
-		this.listConditions.SelectedIndex := SelectedIndex + 1
+		if(!(SelectedIndex > 1))
+			return
+		Text := this.listConditions.Items[SelectedIndex].Text
+		this.Event.Conditions.swap(SelectedIndex, SelectedIndex - 1)
+		this.listConditions.DisableNotifications := true
+		this.listConditions.Items.Delete(SelectedIndex)
+		this.listConditions.Items.Insert(SelectedIndex - 1, "Select", Text)
+		this.listConditions.DisableNotifications := false
 	}
 	btnMoveConditionDown_Click()
 	{
 		SelectedIndex := this.listConditions.SelectedIndex
-		this.Event.Conditions.swap(SelectedIndex, SelectedIndex - 1)
-		this.listConditions.SelectedIndex := SelectedIndex - 1
+		if(SelectedIndex >= this.listConditions.Items.MaxIndex())
+			return
+		Text := this.listConditions.Items[SelectedIndex].Text
+		this.Event.Conditions.swap(SelectedIndex, SelectedIndex + 1)
+		this.listConditions.DisableNotifications := true
+		this.listConditions.Items.Delete(SelectedIndex)
+		this.listConditions.Items.Insert(SelectedIndex + 1, "Select", Text)
+		this.listConditions.DisableNotifications := false
 	}
 	btnConditionHelp_Click()
 	{
@@ -389,22 +402,24 @@ Class CEventEditor extends CGUI
 	
 	listActions_SelectionChanged(Item)
 	{
-		if(Item && this.listActions.SelectedIndices.MaxIndex() = 1 && this.listActions.SelectedIndex != this.listActions.PreviouslySelectedIndex)
-		{			
+		;A new item was selected
+		if(Item && this.listActions.SelectedIndices.MaxIndex() = 1 && this.listActions.SelectedIndex != this.listActions.PreviouslySelectedIndex && this.listActions.SelectedItem = item)
+		{
 			if(this.Action)
 				this.SubmitAction()
 			this.ddlActionCategory.Enabled := true
 			this.ddlActionType.Enabled := true
 			this.Action :=  this.Event.Actions[this.listActions.SelectedIndex]
+			;Mark that the action stored under this.Action should be used instead of creating a new one of the type set in the type dropdownlist.
 			this.UseAction := true
-			if(this.Action.Category != this.ddlActionCategory.Text)
+			if(this.Action.Category != this.ddlActionCategory.Text) ;The category of the new action is different from the old one
 				this.ddlActionCategory.Text := this.Action.Category
-			else if(this.Action.Type != this.ddlActionType.Text)
+			else if(this.Action.Type != this.ddlActionType.Text) ;The type of the new action is different from the old one
 				this.ddlActionType.Text := this.Action.Type
-			else
+			else ;The action is of the same type
 				this.ddlActionType_SelectionChanged(this.ddlActionType.SelectedItem)
 		}
-		else if(!this.listActions.SelectedIndices.MaxIndex())
+		else if(!this.listActions.SelectedIndices.MaxIndex()) ;item deselected
 		{
 			this.ddlActionCategory.Enabled := false
 			this.ddlActionType.Enabled := false
@@ -428,6 +443,9 @@ Class CEventEditor extends CGUI
 	}
 	ddlActionType_SelectionChanged(Item)
 	{
+		if(!IsObject(Item)) ;Make sure not to do anything when type DropDownList is cleared
+			return
+		;Instantiate new action if this value is set
 		if(!this.UseAction)
 		{
 			this.SubmitAction()
@@ -490,20 +508,25 @@ Class CEventEditor extends CGUI
 	btnMoveActionUp_Click()
 	{
 		SelectedIndex := this.listActions.SelectedIndex
+		if(!(SelectedIndex > 1))
+			return
 		Text := this.listActions.Items[SelectedIndex].Text
 		this.Event.Actions.swap(SelectedIndex, SelectedIndex - 1)
 		this.listActions.DisableNotifications := true		
 		this.listActions.Items.Delete(SelectedIndex)
 		this.listActions.Items.Insert(SelectedIndex - 1, "Select", Text)
-		;~ this.listActions.SelectedIndex := SelectedIndex - 1
 		this.listActions.DisableNotifications := false
 	}
 	btnMoveActionDown_Click()
 	{
 		SelectedIndex := this.listActions.SelectedIndex
+		if(SelectedIndex >= this.listActions.Items.MaxIndex())
+			return
+		Text := this.listActions.Items[SelectedIndex].Text
 		this.Event.Actions.swap(SelectedIndex, SelectedIndex + 1)
-		this.listActions.DisableNotifications := true
-		this.listActions.SelectedIndex := SelectedIndex + 1
+		this.listActions.DisableNotifications := true		
+		this.listActions.Items.Delete(SelectedIndex)
+		this.listActions.Items.Insert(SelectedIndex + 1, "Select", Text)
 		this.listActions.DisableNotifications := false
 	}
 	btnActionHelp_Click()
