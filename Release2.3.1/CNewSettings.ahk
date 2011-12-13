@@ -112,9 +112,19 @@ Class CSettingsWindow Extends CGUI
 	{
 		if(IsObject(this.treePages.PreviouslySelectedItem) && PreviousText := StringReplace(this.treePages.PreviouslySelectedItem.Text, " ", ""))
 			this["Hide" PreviousText]()
+		
 		;This property is stored specifically for this routine to speed things up! It helps at least 500ms to do this than to check for item parent and item text like this: if(Item.Parent.ID != 0 || Item.Text = "All Events")
 		if(Item.IsEvents)
+		{
+			;Clear event filter
+			editEventFilter := this.Pages.Events.Tabs[1].Controls.editEventFilter
+			editEventFilter.DisableNotifications := true
+			editEventFilter.Text := ""
+			editEventFilter.DisableNotifications := false
+			
+			;Fill the contents of the events list. The events list itself is shown by assigning the tab control as sub-control to each events page.
 			this.FillEventsList()
+		}
 		this.grpPage.Text := Item.Text
 		GuiControl, % this.GUINum ":MoveDraw", % this.treePages.hwnd
 		GuiControl, % this.GUINum ":MoveDraw", % this.grpPage.hwnd
@@ -293,7 +303,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.listEvents.DisableNotifications := true
 		ShowAdvancedEvents := Page.chkShowAdvancedEvents.Checked
 		while(item := this.treePages.Items[2][1])
-			this.treePages.Items.Remove(item)
+			this.treePages.Items.Delete(item)
 		for index, Category in this.Events.Categories
 		{
 			for index2, Event in this.Events
@@ -310,7 +320,6 @@ Finally, here are some settings that you're likely to change at the beginning:
 		this.FillEventsList()
 		if(this.treePages.SelectedItem.IsEvents)
 			this.ActiveControl := Page.listEvents
-		Sleep 10
 		this.treePages.DisableNotifications := false
 		Page.listEvents.DisableNotifications := false
 	}
@@ -337,10 +346,9 @@ Finally, here are some settings that you're likely to change at the beginning:
 			DisplayString := Event.Trigger.DisplayString()
 			Name := Event.Name
 			;Show events that match the entered filter or the selected category and the selected complexity level
-			if((!Filter || InStr(ID, Filter) || InStr(DisplayString, Filter) || InStr(Name, filter) || InStr(Event.Description, Filter)) && (filter || !SelectedCategory || SelectedCategory = Event.Category)
-			&& (ShowAdvancedEvents || !Event.EventComplexityLevel))
+			if(this.IsEventVisible(Event, Filter, DisplayString, SelectedCategory, ShowAdvancedEvents))
 			{
-				item := Items.Add((Event.Enabled ? " Check": " "), "", ID, DisplayString, Name)
+				item := Items.Add((Event.Enabled ? " Check": " "), "", ID, Event.Trigger.DisplayString(), Event.Name)
 				if(SelectedID && ID = SelectedID)
 					item.Modify("Select Focus Vis")
 			}
@@ -352,7 +360,11 @@ Finally, here are some settings that you're likely to change at the beginning:
 			Page.editEventDescription.Text := this.Events.GetItemWithValue("ID", Page.listEvents.SelectedItem[2]).Description
 		this.listEvents_SelectionChanged("")
 	}
-	
+	IsEventVisible(Event, Filter, TriggerDisplayString, SelectedCategory, ShowAdvancedEvents)
+	{
+		return (!Filter || InStr(Event.ID, Filter) || InStr(TriggerDisplayString, Filter) || InStr(Event.Name, filter) || InStr(Event.Description, Filter)) && (filter || !SelectedCategory || SelectedCategory = Event.Category)
+			&& (ShowAdvancedEvents || !Event.EventComplexityLevel)
+	}
 	chkShowAdvancedEvents_CheckedChanged()
 	{
 		this.FillEventsList()
@@ -481,14 +493,95 @@ Finally, here are some settings that you're likely to change at the beginning:
 		}
 		if(NewEvent)
 		{
-			Page.editEventFilter.Text := ""
 			this.Events[this.Events.FindKeyWithValue("ID", NewEvent.ID)] := NewEvent ;overwrite edited event
-			if(!this.Events.Categories.indexOf(NewEvent.Category))
-				this.Events.Categories.Insert(NewEvent.Category)
-			this.RecreateTreeView() ;Refresh Event display
+			;~ this.RecreateTreeView() ;Refresh Event display
+			this.UpdateEventsView(NewEvent)
 		}
 		else if(TemporaryEvent)
 			this.DeleteEvents()
+	}
+	UpdateEventsView(ChangedEvent)
+	{
+		Page := this.Pages.Events.Tabs[1].Controls
+		;think about how events that won't work in portable/non-admin should be treated
+		this.treePages.DisableNotifications := true
+		
+		DesiredCategory := SelectedCategory := this.GetSelectedCategory(false)
+		
+		;Check if a category is now empty
+		for index, Category in this.Events.Categories
+		{
+			if(!this.Events.FindKeyWithValue("Category", Category))
+			{
+				;Check if category was renamed
+				if(!this.Events.Categories.indexOf(ChangedEvent.Category))
+				{
+					;Rename the category in category list and in treeview
+					this.treePages.Items[2].FindItemWithText(Category).Text := ChangedEvent.Category
+					this.Events.Categories[this.Events.Categories.IndexOf(Category)] := ChangedEvent.Category
+					DesiredCategory := SelectedCategory := ChangedEvent.Category
+					break
+				}
+				;Remove the category from category list and from treeview
+				this.Events.Categories.Remove(index)
+				this.treePages.Items[2].Delete(this.treePages.Items[2].FindItemWithText(Category))
+				DesiredCategory := ChangedEvent.Category
+				break ;only one can change when an event changes
+			}
+		}
+		
+		;Check if a new category was created
+		if(!this.Events.Categories.indexOf(ChangedEvent.Category))
+		{
+			;Add new category to category list and to treeview
+			this.Events.Categories.Insert(ChangedEvent.Category)
+			
+			;Add the new category to the tree and set all required values to make it work
+			Item := this.treePages.Items[2].Add(ChangedEvent.Category, "Sort")
+			Item.Controls.Insert(this.treePages.Items[2].Controls.Events)
+			Item.IsEvents := true
+			DesiredCategory := ChangedEvent.Category
+		}
+		
+		this.treePages.DisableNotifications := false
+		;Check if category has been added, deleted or renamed
+		;if added, show this category
+		;if deleted, go back to all events, possibly keep the current search
+		;if renamed, simply change the text of the treeview item
+		
+		if(DesiredCategory != SelectedCategory)
+		{
+			this.treePages.SelectedItem := this.treePages.FindItemWithText(DesiredCategory)
+			return
+		}
+		
+		;Find the event in the listview
+		for index, item in Page.listEvents.Items
+			if(item[2] = ChangedEvent.ID)
+			{
+				ListIndex := index
+				break
+			}
+		
+		if(!ListIndex)
+			return
+		
+		;Check if the event needs to be hidden:
+		;This is the case when the event filter doesn't match it anymore (it should probably be removed then) and when it is marked as a complex event and displaying of complex events is disabled
+		if(!this.IsEventVisible(ChangedEvent, Page.editEventFilter.Text, ChangedEvent.Trigger.DisplayString(), SelectedCategory, Page.chkShowAdvancedEvents.Checked))
+		{
+			Page.listEvents.Items.Delete(ListIndex)
+			return
+		}
+		
+		;If the event is visible, update its trigger display string, its name, its description and its enabled state
+		Page.listEvents.DisableNotifications := true
+		ListItem := Page.listEvents.Items[ListIndex]
+		ListItem.Checked := ChangedEvent.Enabled
+		ListItem[3] := ChangedEvent.Trigger.DisplayString()
+		ListItem[4] := ChangedEvent.Name
+		Page.editEventDescription.Text := ChangedEvent.Description
+		Page.listEvents.DisableNotifications := false
 	}
 	DeleteEvents()
 	{

@@ -170,7 +170,7 @@ Class CEventEditor extends CGUI
 		this.Event.DisableAfterUse := this.chkDisableEventAfterUse.Checked
 		this.Event.DeleteAfterUse := this.chkDeleteEventAfterUse.Checked
 		this.Event.OneInstance := this.chkEventOneInstance.Checked
-		this.Event.ComplexEvent := this.chkComplexEvent.Checked
+		this.Event.EventComplexityLevel := this.chkComplexEvent.Checked
 		this.Result := this.Event
 		this.Close()
 	}
