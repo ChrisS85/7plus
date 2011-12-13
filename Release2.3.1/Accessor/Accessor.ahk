@@ -197,9 +197,7 @@ CreateAccessorWindow(Action)
 		; Nothing available?
 		if(AccessorGUINum=99)
 		{
-			MsgBox 262160
-				,HotkeyGUI Error
-				,Unable to create Accessor window. GUI windows 10 to 99 are already in use.
+			MsgBox 262160,Too many windows, Unable to create Accessor window. GUI windows 10 to 99 are already in use.
 			ErrorLevel=9999
 			return ""
 		}

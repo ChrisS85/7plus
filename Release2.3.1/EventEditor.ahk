@@ -91,7 +91,7 @@ Class CEventEditor extends CGUI
 		
 		;Disable the settings window that opened this dialog if it exists
 		SettingsWindow.Enabled := false
-		
+		this.Owner := SettingsWindow.hwnd
 		;Setup control states
 		
 		;Initialize trigger tab (categories and types and trigger gui)

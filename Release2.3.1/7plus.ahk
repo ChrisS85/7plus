@@ -47,9 +47,9 @@ ComObjError(0)
 #include %A_ScriptDir%\CSettings.ahk
 #include %A_ScriptDir%\Accessor\Accessor.ahk
 #include %A_ScriptDir%\Deployment.ahk
-#include %A_ScriptDir%\CNewEventSystem.ahk
+#include %A_ScriptDir%\EventSystem.ahk
 ;~ #include %A_ScriptDir%\EventSystem.ahk
-#include %A_ScriptDir%\EditEventGUI.ahk
+#include %A_ScriptDir%\EventEditor.ahk
 #include %A_ScriptDir%\Language.ahk
 ;~ #include %A_ScriptDir%\EditSubEventGUI.ahk
 #include %A_ScriptDir%\WindowFinder.ahk
@@ -75,7 +75,6 @@ ComObjError(0)
 #include %A_ScriptDir%\SlideWindows.ahk
 #include %A_ScriptDir%\JoyControl.ahk
 #include %A_ScriptDir%\ExplorerTabs.ahk
-#include %A_ScriptDir%\CustomHotkeys.ahk
 #include %A_ScriptDir%\Profiling.ahk
 #include *i %A_ScriptDir%\Tools\ObjTree.ahk
 
