@@ -9,30 +9,27 @@ Class CFTPUploadAction Extends CAction
 	static Silent := 0
 	static Clipboard := 1
 	static FTPProfile := 1
-	static FTPProfiles := CFTPUploadAction.ReadFTPProfiles()
+	Startup()
+	{
+		if(FTPProfiles := this.ReadFTPProfiles())
+			this.FTPProfiles := FTPProfiles
+		else
+			this.FTPProfiles := Array({Hostname : "Hostname.com", Password : "", Port : 21, URL : "http://somehost.com", User : "SomeUser"})
+	}
 	OnExit()
 	{
 		this.WriteFTPProfiles()
+		this.Remove("FTPProfiles")
 	}
 	ReadFTPProfiles()
 	{
 		FTPProfiles := Array()
 		FileRead, xml, % Settings.ConfigPath "\FTPProfiles.xml"
 		if(!xml)
-		{
-			xml =
-			( LTrim
-				<List>
-				<Hostname>Hostname.com</Hostname>
-				<Password></Password>
-				<Port>21</Port>
-				<URL>http://somehost.com</URL>
-				<User>SomeUser</User>
-				</List>
-			)
-		}
+			return
 		XMLObject := XML_Read(xml)
-		;Convert empty and single arrays to real array
+		
+		;Convert to Array
 		if(!XMLObject.List.MaxIndex())
 			XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()
 		Loop % XMLObject.List.MaxIndex()

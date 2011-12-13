@@ -10,16 +10,15 @@ Possible Problem: newly created subevents may not have local properties. This co
 Class CEventSystem extends CRichObject
 {	
 	;These arrays contain all types of the subevents indexed by their type names
-	static Triggers := Array()
-	static Conditions := Array()
-	static Actions := Array()
+	static Triggers := RichObject()
+	static Conditions := RichObject()
+	static Actions := RichObject()
 	
 	;Global placeholders can be shared between different events
 	static GlobalPlaceholders := RichObject()
 	
 	;EventSchedule (contains copies of the event objects in the Events list) is a list of events that are currently being processed.
 	static EventSchedule := Array()
-		
 	Startup()
 	{		
 		;Create CEvents instance
@@ -27,15 +26,13 @@ Class CEventSystem extends CRichObject
 		
 		;Temporary events are not visible in settings GUI and won't be saved. See ControlEvent -> Copy Event for usage example.
 		this.TemporaryEvents := new CEvents() ;object("base", object("base", Array(), "HighestID", -1, "Add", "Events_Add","RegisterEvent", "EventSystem_RegisterEvent"))
-		
 		;Call startup functions for all subevents
-		for index, Trigger in CEvents.Triggers
+		for index, Trigger in this.Triggers
 			Trigger.Startup()
-		for index, Condition in CEvents.Conditions
+		for index, Condition in this.Conditions
 			Condition.Startup()
-		for index, Action in CEvents.Actions
+		for index, Action in this.Actions
 			Action.Startup()
-		
 		;Load main events file. This will create event objects for all stored event configs in Events object.
 		this.Events.ReadMainEventsFile()
 		
@@ -67,7 +64,6 @@ Class CEventSystem extends CRichObject
 	}
 	OnExit()
 	{
-		this.Events.WriteMainEventsFile()
 		for index, Event in this.Events
 		{
 			Event.Trigger.OnExit()
@@ -80,6 +76,7 @@ Class CEventSystem extends CRichObject
 			for ActionIndex, Action in Event.Actions
 				Action.OnExit()
 		}
+		this.Events.WriteMainEventsFile()
 	}
 	
 	;This function is called when a trigger event is received. 
