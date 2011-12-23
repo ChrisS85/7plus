@@ -35,7 +35,7 @@ Class CMouseWindowResizeAction Extends CAction
 	} 
 	ResizeLoop(Event)
 	{
-		Key := ExtractKey(Event.Trigger.Type = "Hotkey" && Event.Trigger.Key ? Event.Trigger.Key : "LButton")
+		Key := ExtractKey(Event.Trigger.Is(CHotkeyTrigger) && Event.Trigger.Key ? Event.Trigger.Key : "LButton")
 		GetKeyState, KeyState, %Key%, P
 		if(KeyState = "U")  ; Button has been released, so Resize is complete.
 		{

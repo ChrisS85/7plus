@@ -996,19 +996,19 @@ return
 
 ExplorerReplaceDialogListView:
 Loop % ExplorerWindows.MaxIndex()
-	if(ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
+	if(ExplorerWindows[A_Index].HasKey("ReplaceDialog") && ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
 		ExplorerWindows[A_Index].ReplaceDialog.ListViewEvent()
 return
 ExplorerReplaceDialogSearch:
 Loop % ExplorerWindows.MaxIndex()
-	if(ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
+	if(ExplorerWindows[A_Index].HasKey("ReplaceDialog") && ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
 		ExplorerWindows[A_Index].ReplaceDialog.Search()
 return
 
 ExplorerReplaceDialogCancel:
 Loop % ExplorerWindows.MaxIndex()
 {
-	if(ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
+	if(ExplorerWindows[A_Index].HasKey("ReplaceDialog") && ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
 	{
 		if(ControlGetText("","ahk_id " ExplorerWindows[A_Index].ReplaceDialog.hCancel) = "Stop")
 			ExplorerWindows[A_Index].ReplaceDialog.Stop := true
@@ -1020,7 +1020,7 @@ return
 ExplorerReplaceDialogClose:
 ExplorerReplaceDialogEscape:
 Loop % ExplorerWindows.MaxIndex()
-	if(ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
+	if(ExplorerWindows[A_Index].HasKey("ReplaceDialog") && ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
 	{
 		ExplorerWindows[A_Index].ReplaceDialog.Stop := true
 		ExplorerWindows[A_Index].Remove("ReplaceDialog")
@@ -1028,7 +1028,7 @@ Loop % ExplorerWindows.MaxIndex()
 return
 ExplorerReplaceDialogReplace:
 Loop % ExplorerWindows.MaxIndex()
-	if(ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
+	if(ExplorerWindows[A_Index].HasKey("ReplaceDialog") && ExplorerWindows[A_Index].ReplaceDialog.GUINum = A_GUI)
 		ExplorerWindows[A_Index].ReplaceDialog.Replace()
 return
 ExplorerReplaceDialogRegEx:

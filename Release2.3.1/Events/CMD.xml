@@ -5,9 +5,8 @@
 <Action>
 <Command>cmd.exe /k cd /D c:\</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>CMD</Category>
 <Conditions>
@@ -22,11 +21,10 @@
 <Negate>0</Negate>
 <Operator>equals</Operator>
 <Type>If</Type>
-<With></With>
 </Condition><Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>1</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Open CMD in C:\ when no useful directory can be extracted from the current context.</Description>
@@ -46,9 +44,8 @@
 <Action>
 <Command>cmd.exe /k cd /D "${TitlePath}\"</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>CMD</Category>
 <Conditions>
@@ -63,11 +60,10 @@
 <Negate>1</Negate>
 <Operator>equals</Operator>
 <Type>If</Type>
-<With></With>
 </Condition><Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>1</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Open CMD with the path extracted from the title of the active window.</Description>
@@ -85,23 +81,15 @@
 </Event><Event>
 <Actions>
 <Action>
-<ForceClose></ForceClose>
-<Type>WindowClose</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Close a window</Type>
 <WindowMatchType>Active</WindowMatchType>
 </Action></Actions>
 <Category>CMD</Category>
 <Conditions>
 <Condition>
 <Negate>0</Negate>
-<Type>WindowActive</Type>
-<WindowFilter></WindowFilter>
+<Type>Window active</Type>
 <WindowFilterClass>ConsoleWindowClass</WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -124,24 +112,21 @@
 <Double>0</Double>
 <Relative>1</Relative>
 <RestorePosition>1</RestorePosition>
-<Type>MouseClick</Type>
+<Type>Mouse click</Type>
 <X>40</X>
 <Y>40</Y>
 </Action><Action>
 <KeyDelay>0</KeyDelay>
 <Keys>{Down 3}{Enter}</Keys>
-<Type>SendKeys</Type>
+<Type>Send keyboard input</Type>
 <WriteText>0</WriteText>
 </Action></Actions>
 <Category>CMD</Category>
 <Conditions>
 <Condition>
 <Negate>0</Negate>
-<Type>WindowActive</Type>
-<WindowFilter></WindowFilter>
+<Type>Window active</Type>
 <WindowFilterClass>ConsoleWindowClass</WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -162,9 +147,8 @@
 <Action>
 <Command>cmd.exe /k cd /D "%Desktop%"</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>CMD</Category>
 <Conditions>

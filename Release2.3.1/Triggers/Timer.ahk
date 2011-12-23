@@ -45,7 +45,7 @@ Class CTimerTrigger Extends CTrigger
 	}
 	PrepareReplacement(Original, Copy)
 	{
-		if(Copy.Trigger.Is("CTimerTrigger"))
+		if(Copy.Trigger.Is(CTimerTrigger))
 		{
 			Copy.Trigger.tmpIsPaused := Original.Trigger.tmpIsPaused
 			Copy.Trigger.tmpStart := Original.Trigger.tmpStart
@@ -205,10 +205,10 @@ return
 TimerEventFromGUINumber()
 {
 	for index, Event in EventSystem.Events
-		if(Event.Trigger.Is("CTimerTrigger") && Event.Trigger.tmpGUINum = A_GUI)
+		if(Event.Trigger.Is(CTimerTrigger) && Event.Trigger.tmpGUINum = A_GUI)
 			return Event
 	for index, TemporaryEvent in EventSystem.TemporaryEvents
-		if(TemporaryEvent.Trigger.Is("CTimerTrigger") && TemporaryEvent.Trigger.tmpGUINum = A_GUI)
+		if(TemporaryEvent.Trigger.Is(CTimerTrigger) && TemporaryEvent.Trigger.tmpGUINum = A_GUI)
 			return TemporaryEvent
 	return 0
 }
@@ -228,7 +228,7 @@ UpdateTimerProgress()
 	return
 	
 	UpdateTimerProgress_InnerLoop:
-	if(Event.Trigger.Type = "Timer") ;Update all timers
+	if(Event.Trigger.Is(CTimerTrigger)) ;Update all timers
 	{
 		timer := Event.Trigger
 		if(Event.Enabled && (!timer.tmpIsPaused || timer.tmpReset) && timer.ShowProgress && timer.tmpGUINum)

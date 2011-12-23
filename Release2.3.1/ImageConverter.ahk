@@ -130,7 +130,7 @@ Class CImageConverter extends CGUI
 		Critical, On
 		if(this.tmpQueuedUploadEvent && EventSystem.EventSchedule.IndexOf(this.tmpQueuedUploadEvent))
 		{
-			Action := new CDeleteAction()
+			Action := new CFileDeleteAction()
 			Action.SourceFile := this.ddlWhichFiles.Text = "All" ? Files : this.tmpQueuedUploadEvent.Actions[1].SourceFiles
 			Action.Silent := 1
 			this.tmpQueuedUploadEvent.Actions.Insert(Action)

@@ -7,7 +7,7 @@ Array(Params*){
 IsArray(obj)
 {
 	global ArrBase
-	return IsObject(obj) && obj.Is("CArray")
+	return IsObject(obj) && obj.Is(CArray)
 }
 Array_CompareFunc(a, b, c){ 
    return a > b ? 1 : a = b ? 0 : -1 

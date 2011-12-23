@@ -3,12 +3,7 @@
 <Event>
 <Actions>
 <Action>
-<ForceClose></ForceClose>
-<Type>WindowClose</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Close a window</Type>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action></Actions>
 <Category>Window Handling</Category>
@@ -16,11 +11,7 @@
 <Condition>
 <MouseOverType>Titlebar</MouseOverType>
 <Negate>0</Negate>
-<Type>MouseOver</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Mouse over</Type>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition><Condition>
 <Compare>${MC}</Compare>
@@ -48,7 +39,7 @@
 <FlashingWindows>1</FlashingWindows>
 <Notifications>1</Notifications>
 <ToggleWindows>1</ToggleWindows>
-<Type>FlashingWindows</Type>
+<Type>Flashing windows</Type>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
@@ -70,55 +61,39 @@
 <Actions>
 <Action>
 <Action>Toggle always on top</Action>
-<Type>WindowState</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Change window state</Type>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action><Action>
 <Action>Start timer</Action>
 <TimerID>311</TimerID>
-<Type>ControlTimer</Type>
+<Type>Control timer</Type>
 </Action><Action>
 <Action>Enable Event</Action>
-<Compare></Compare>
 <EventID>309</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action><Action>
 <Action>Enable Event</Action>
-<Compare></Compare>
 <EventID>310</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action><Action>
 <Action>Trigger Event</Action>
-<Compare></Compare>
 <EventID>309</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action><Action>
 <Action>Trigger Event</Action>
-<Compare></Compare>
 <EventID>310</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
 <Condition>
 <MouseOverType>Titlebar</MouseOverType>
 <Negate>0</Negate>
-<Type>MouseOver</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Mouse over</Type>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -139,28 +114,24 @@
 <Action>
 <KeyDelay>0</KeyDelay>
 <Keys>{Esc}</Keys>
-<Type>SendKeys</Type>
+<Type>Send keyboard input</Type>
 <WriteText>0</WriteText>
 </Action><Action>
 <Action>Disable Event</Action>
-<Compare></Compare>
 <EventID>311</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action><Action>
 <Action>Disable Event</Action>
-<Compare></Compare>
 <EventID>310</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
 <Condition>
 <Negate>0</Negate>
-<Type>IsContextMenuActive</Type>
+<Type>Context menu active</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
@@ -172,30 +143,26 @@
 <OfficialEvent>310</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Type>None</Type>
+<Type>Triggered by an action</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Action>Trigger Event</Action>
-<Compare></Compare>
 <EventID>309</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action><Action>
 <Action>Trigger Event</Action>
-<Compare></Compare>
 <EventID>310</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
-<Type>IsContextMenuActive</Type>
+<Type>Context menu active</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
@@ -207,31 +174,25 @@
 <OfficialEvent>311</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Type>None</Type>
+<Type>Triggered by an action</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Action>Disable Event</Action>
-<Compare></Compare>
 <EventID>309</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action><Action>
 <Action>Disable Event</Action>
-<Compare></Compare>
 <EventID>310</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action><Action>
 <Action>Disable Event</Action>
-<Compare></Compare>
 <EventID>311</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
@@ -248,7 +209,6 @@
 <Trigger>
 <Restart>0</Restart>
 <ShowProgress>0</ShowProgress>
-<Text></Text>
 <Time>2000</Time>
 <Type>Timer</Type>
 </Trigger>
@@ -256,11 +216,7 @@
 <Actions>
 <Action>
 <Action>Disable always on top</Action>
-<Type>WindowState</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Change window state</Type>
 <WindowMatchType>Active</WindowMatchType>
 </Action></Actions>
 <Category>Window Handling</Category>
@@ -277,22 +233,14 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <Event>Window maximized</Event>
-<Type>WindowStateChange</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Window state changed</Type>
 <WindowMatchType>Active</WindowMatchType>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <ForceClose>1</ForceClose>
-<Type>WindowClose</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Close a window</Type>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action></Actions>
 <Category>Window Handling</Category>
@@ -300,11 +248,7 @@
 <Condition>
 <MouseOverType>CloseButton</MouseOverType>
 <Negate>0</Negate>
-<Type>MouseOver</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Mouse over</Type>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -323,12 +267,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<ForceClose></ForceClose>
-<Type>WindowClose</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Close a window</Type>
 <WindowMatchType>Active</WindowMatchType>
 </Action></Actions>
 <Category>Window Handling</Category>
@@ -351,11 +290,7 @@
 <Actions>
 <Action>
 <Action>Minimize-&gt;Normal-&gt;Maximize</Action>
-<Type>WindowState</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Change window state</Type>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action></Actions>
 <Category>Window Handling</Category>
@@ -378,11 +313,7 @@
 <Actions>
 <Action>
 <Action>Maximize-&gt;Normal-&gt;Minimize</Action>
-<Type>WindowState</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Change window state</Type>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action></Actions>
 <Category>Window Handling</Category>
@@ -404,11 +335,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<Type>WindowSendToBottom</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Put window in background</Type>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action></Actions>
 <Category>Window Handling</Category>
@@ -430,13 +357,13 @@
 </Event><Event>
 <Actions>
 <Action>
-<Type>ShowAeroFlip</Type>
+<Type>Show Aero Flip</Type>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
-<Type>IsFullScreen</Type>
+<Type>Fullscreen window active</Type>
 <UseExcludeList>1</UseExcludeList>
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
@@ -452,18 +379,18 @@
 <Trigger>
 <Corner>1</Corner>
 <Time>100</Time>
-<Type>ScreenCorner</Type>
+<Type>Screen corner</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
-<Type>MouseWindowDrag</Type>
+<Type>Drag window with mouse</Type>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
 <Condition>
 <Negate>0</Negate>
-<Type>IsDragable</Type>
+<Type>Window is dragable</Type>
 </Condition><Condition>
 <Compare>${MC}</Compare>
 <Negate>1</Negate>
@@ -487,13 +414,13 @@
 </Event><Event>
 <Actions>
 <Action>
-<Type>MouseWindowDrag</Type>
+<Type>Drag window with mouse</Type>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
 <Condition>
 <Negate>0</Negate>
-<Type>IsDragable</Type>
+<Type>Window is dragable</Type>
 </Condition><Condition>
 <Compare>${MC}</Compare>
 <Negate>0</Negate>
@@ -517,13 +444,13 @@
 </Event><Event>
 <Actions>
 <Action>
-<Type>MouseWindowResize</Type>
+<Type>Resize window with mouse</Type>
 </Action></Actions>
 <Category>Window Handling</Category>
 <Conditions>
 <Condition>
 <Negate>0</Negate>
-<Type>IsDragable</Type>
+<Type>Window is dragable</Type>
 </Condition><Condition>
 <Compare>${MC}</Compare>
 <Negate>0</Negate>
@@ -542,6 +469,36 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!RButton</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Type>Resize window with mouse</Type>
+</Action></Actions>
+<Category>Window Handling</Category>
+<Conditions>
+<Condition>
+<Negate>0</Negate>
+<Type>Window is dragable</Type>
+</Condition><Condition>
+<Compare>${MC}</Compare>
+<Negate>1</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass|#32770)</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event resizes the window under the cursor while holding ALT + Right mouse button while still allowing ALT+Right clicks. Explorer and dialog windows are handled in another event.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1632</ID>
+<Name>Mouse Window Resize</Name>
+<OfficialEvent>32</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>~!RButton</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event></Events>

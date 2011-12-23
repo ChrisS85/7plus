@@ -682,7 +682,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>1</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>309</ID>
 <Name>Toggle always on top -&gt; Context menu active</Name>
@@ -713,7 +713,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>310</ID>
 <Name>Toggle always on top -&gt; No context menu active</Name>
@@ -746,7 +746,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>311</ID>
 <Name>Toggle always on top -&gt; context menu timeout</Name>
@@ -3934,7 +3934,6 @@
 <Cancel>1</Cancel>
 <DataType>Text</DataType>
 <Placeholder>Input</Placeholder>
-<Selection></Selection>
 <Text>Enter parameters. Paths might need`n to be enclosed in double quotes.</Text>
 <Title>Enter Parameters</Title>
 <Type>Ask for user input</Type>
@@ -3967,14 +3966,12 @@
 <FileTypes>exe,bat,cmd</FileTypes>
 <Name>Run with parameters...</Name>
 <SingleFileOnly>1</SingleFileOnly>
-<SubMenu></SubMenu>
 <Type>Context menu</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Files>${Context}</Files>
-<FTPTargetDir></FTPTargetDir>
 <Hoster>ImgUr</Hoster>
 <ReuseWindow>0</ReuseWindow>
 <TemporaryFiles>0</TemporaryFiles>
@@ -4001,7 +3998,6 @@
 <FileTypes>BMP,DIB,RLE,JPG,JPEG,JPE,JFIF,GIF,TIF,TIFF,PNG</FileTypes>
 <Name>Convert Images</Name>
 <SingleFileOnly>0</SingleFileOnly>
-<SubMenu></SubMenu>
 <Type>Context menu</Type>
 </Trigger>
 </Event><Event>
@@ -4031,7 +4027,6 @@
 <FileTypes>*</FileTypes>
 <Name>MD5 Checksum(s)</Name>
 <SingleFileOnly>0</SingleFileOnly>
-<SubMenu></SubMenu>
 <Type>Context menu</Type>
 </Trigger>
 </Event><Event>
@@ -4194,7 +4189,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event starts a dynamic timer when the "Start timer" menu entry from the 7plus tray menu is selected.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>1597</ID>
 <Name>Dynamic Timer: tray menu item</Name>
@@ -4210,6 +4205,7 @@
 <Action>
 <Cancel>1</Cancel>
 <DataType>Selection</DataType>
+<Placeholder>TimerType</Placeholder>
 <Selection>Message timer|Shutdown timer|Run program timer</Selection>
 <Text>What type of timer would you like to start?</Text>
 <Title>Dynamic timer</Title>
@@ -4218,6 +4214,7 @@
 </Action><Action>
 <Cancel>1</Cancel>
 <DataType>Time</DataType>
+<Placeholder>TimerTime</Placeholder>
 <Text>Enter time [HH:MM:SS]:</Text>
 <Title>Dynamic timer - Enter time</Title>
 <Type>Ask for user input</Type>
@@ -4290,6 +4287,7 @@
 <Action>
 <Cancel>1</Cancel>
 <DataType>Text</DataType>
+<Placeholder>TimerMessage</Placeholder>
 <Text>Enter message text:</Text>
 <Title>Message text</Title>
 <Type>Ask for user input</Type>
@@ -4318,7 +4316,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event asks for a message and starts the message timer.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>1602</ID>
 <Name>Dynamic Timer: Ask for message and start message timer</Name>
@@ -4332,6 +4330,7 @@
 <Action>
 <Cancel>1</Cancel>
 <DataType>File</DataType>
+<Placeholder>TimerProgram</Placeholder>
 <Text>Enter program to launch</Text>
 <Title>Select program</Title>
 <Type>Ask for user input</Type>
@@ -4625,7 +4624,7 @@
 <Action>Tab in Background</Action>
 <Type>Open folder in new window / tab</Type>
 </Action></Actions>
-<Category>Uncategorized</Category>
+<Category>Explorer</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
@@ -4654,7 +4653,7 @@
 <Action>
 <Type>Close taskbar button under mouse</Type>
 </Action></Actions>
-<Category>Uncategorized</Category>
+<Category>Taskbar</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
@@ -4683,7 +4682,7 @@
 <Action>
 <Type>Change desktop wallpaper</Type>
 </Action></Actions>
-<Category>Uncategorized</Category>
+<Category>Misc Hotkeys</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
@@ -4715,7 +4714,7 @@
 <Action>
 <Type>Close tab under mouse</Type>
 </Action></Actions>
-<Category>Uncategorized</Category>
+<Category>Explorer</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
@@ -4861,7 +4860,7 @@
 <Action>
 <Type>Merge Explorer windows</Type>
 </Action></Actions>
-<Category>Uncategorized</Category>
+<Category>Explorer</Category>
 <Conditions>
 <Condition>
 <Compare>${Class}</Compare>
@@ -4978,7 +4977,7 @@
 <Action>
 <Type>Resize window with mouse</Type>
 </Action></Actions>
-<Category>Uncategorized</Category>
+<Category>Window Handling</Category>
 <Conditions>
 <Condition>
 <Negate>0</Negate>
@@ -5173,6 +5172,7 @@
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1637</ID>
 <Name>Take screenshot: Use Image Converter</Name>
+<OfficialEvent>37</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>PrintScreen</Key>
@@ -5219,6 +5219,7 @@
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1638</ID>
 <Name>Take screenshot of custom area: Use Image Converter</Name>
+<OfficialEvent>38</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>#PrintScreen</Key>
@@ -5265,32 +5266,10 @@
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1639</ID>
 <Name>Take screenshot of window: Use Image Converter</Name>
+<OfficialEvent>39</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>!PrintScreen</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<KeyDelay>0</KeyDelay>
-<Keys>y</Keys>
-<Type>Send keyboard input</Type>
-<WriteText>0</WriteText>
-</Action></Actions>
-<Category>Uncategorized</Category>
-<Conditions>
-</Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description></Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>1640</ID>
-<Name>New event</Name>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>#A</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event></Events>

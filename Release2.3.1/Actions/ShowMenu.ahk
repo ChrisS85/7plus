@@ -33,7 +33,7 @@ Class CShowMenuAction Extends CAction
 			Menus := Array()
 			Loop % SettingsWindow.Events.MaxIndex()
 			{
-				if(SettingsWindow.Events[A_Index].Trigger.Type = "MenuItem" && Menus.indexOf(SettingsWindow.Events[A_Index].Trigger.Menu) = 0)
+				if(SettingsWindow.Events[A_Index].Trigger.Is(CMenuItemTrigger) && Menus.indexOf(SettingsWindow.Events[A_Index].Trigger.Menu) = 0)
 				{
 					Menus.Insert(SettingsWindow.Events[A_Index].Trigger.Menu)
 					MenuString .= (Menus.MaxIndex() = 1 ? "" : "|") SettingsWindow.Events[A_Index].Trigger.Menu
@@ -59,14 +59,13 @@ return
 
 BuildMenu(Name)
 {
-	global Events
 	Menu, Tray, UseErrorLevel
 	Menu, %Name%, DeleteAll
 	if(Name = "Tray")
 		Menu, Tray, Standard
 	for index, Event in EventSystem.Events
 	{
-		if(Event.Trigger.Type = "MenuItem" && Event.Trigger.Menu = Name)
+		if(Event.Trigger.Is(CMenuItemTrigger) && Event.Trigger.Menu = Name)
 		{
 			if(Event.Trigger.Submenu = "")
 			{

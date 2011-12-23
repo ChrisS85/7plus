@@ -1115,7 +1115,7 @@ GUI_EventsList_Update()
 			Checked := LV_GetNext(A_Index-1, "Checked") = A_Index ? 1 : 0
 			LV_GetText(id,A_Index,2)
 			Event := Settings_Events.GetItemWithValue("ID", id)
-			if((!IsPortable && A_IsAdmin) || Event.Trigger.Type != "ExplorerButton")
+			if((!IsPortable && A_IsAdmin) || !Event.Trigger.Is(CExplorerButtonTrigger))
 				Event.Enabled := Checked
 		}
 	}
@@ -1164,7 +1164,7 @@ GUI_RemoveEvent()
 	Loop % Events.MaxIndex()
 	{
 		Event := Settings_Events.GetItemWithValue("ID", Events[A_Index])
-		if((!IsPortable && A_IsAdmin) || Event.Trigger.Type != "ExplorerButton" && Event.Trigger.Type != "ContextMenu")
+		if((!IsPortable && A_IsAdmin) || !Event.Trigger.is(CExplorerButtonTrigger) && !Event.Trigger.Is(CContextMenuTrigger))
 		{
 			deleted += Settings_Events.Delete(Event, false) ;Settings_Events has special delete function
 			Loop % LV_GetCount()
@@ -1204,7 +1204,7 @@ GUI_EventsList_Edit(Add = 0)
 	i:=LV_GetNext("")
 	LV_GetText(id,i,2)
 	pos := Settings_Events.FindKeyWithValue("ID", id)
-	if((IsPortable || !A_IsAdmin) && Settings_Events[pos].Trigger.Type = "ExplorerButton")
+	if((IsPortable || !A_IsAdmin) && Settings_Events[pos].Trigger.Is(CExplorerButtonTrigger))
 	{
 		Msgbox ExplorerButton trigger events may not be modified in portable or non-admin mode, as this might cause inconsistencies with the registry.
 		return

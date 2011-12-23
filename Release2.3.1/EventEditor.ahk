@@ -42,8 +42,8 @@ Class CEventEditor extends CGUI
 	btnMoveConditionDown := this.Tab.Tabs[2].AddControl("Button", "btnMoveConditionDown", "x311 y206 w90", "Move Down")
 	txtCondition2 := this.Tab.Tabs[2].AddControl("Text", "txtCondition2", "x431 y36", "Here you can define the selected condition.")
 	chkNegateCondition := this.Tab.Tabs[2].AddControl("Checkbox", "chkNegateCondition", "x431 y56", "Negate Condition")
-	txtConditionCategory := this.Tab.Tabs[2].AddControl("Text", "txtConditionCategory", "x431 y86", "Category:")
-	txtConditionType := this.Tab.Tabs[2].AddControl("Text", "txtConditionType", "x431 y109", "Condition:")
+	txtConditionCategory := this.Tab.Tabs[2].AddControl("Text", "txtConditionCategory", "x431 y89", "Category:")
+	txtConditionType := this.Tab.Tabs[2].AddControl("Text", "txtConditionType", "x431 y119", "Condition:")
 	ddlConditionCategory := this.Tab.Tabs[2].AddControl("DropDownList", "ddlConditionCategory", "x501 y86 w300", "")
 	btnConditionHelp := this.Tab.Tabs[2].AddControl("Button", "btnConditionHelp", "x+10 y114", "Help")
 	ddlConditionType := this.Tab.Tabs[2].AddControl("DropDownList", "ddlConditionType", "x501 y116 w300", "")
@@ -60,7 +60,7 @@ Class CEventEditor extends CGUI
 	btnMoveActionDown := this.Tab.Tabs[3].AddControl("Button", "btnMoveActionDown", "x311 y206 w90", "Move Down")
 	txtAction2 := this.Tab.Tabs[3].AddControl("Text", "txtAction2", "x431 y36", "Here you can define what this action does.")
 	txtActionCategory := this.Tab.Tabs[3].AddControl("Text", "txtActionCategory", "x431 y60", "Category:")
-	txtActionType := this.Tab.Tabs[3].AddControl("Text", "txtActionType", "x431 y80", "Action:")
+	txtActionType := this.Tab.Tabs[3].AddControl("Text", "txtActionType", "x431 y90", "Action:")
 	ddlActionCategory := this.Tab.Tabs[3].AddControl("DropDownList", "ddlActionCategory", "x501 y56 w300", "")
 	btnActionHelp := this.Tab.Tabs[3].AddControl("Button", "btnActionHelp", "x+10 y85", "Help")
 	ddlActionType := this.Tab.Tabs[3].AddControl("DropDownList", "ddlActionType", "x501 y86 w300", "")
@@ -85,7 +85,11 @@ Class CEventEditor extends CGUI
 	__New(Event, TemporaryEvent)
 	{
 		if(!Event)
+		{
 			MsgBox Event Editor: Event not found!
+			this.Result := ""
+			this.Close()
+		}
 		this.Event := Event
 		this.TemporaryEvent := TemporaryEvent
 		
@@ -118,7 +122,17 @@ Class CEventEditor extends CGUI
 		
 		if(this.listConditions.Items.MaxIndex())
 			this.listConditions.SelectedIndex := 1
-		
+		else
+		{
+			this.ddlConditionCategory.Enabled := false
+			this.ddlConditionType.Enabled := false
+			this.chkNegateCondition.Enabled := false
+			this.chkNegateCondition.Checked := false
+			this.btnDeleteCondition.Enabled := false
+			this.btnCopyCondition.Enabled := false
+			this.btnMoveConditionDown.Enabled := false
+			this.btnMoveConditionUp.Enabled := false
+		}
 		this.btnPasteCondition.Enabled := EventSystem.IsObject(ConditionClipboard)
 		
 		;Initilialize actions tab (actions, categories, types and action gui)
@@ -135,7 +149,15 @@ Class CEventEditor extends CGUI
 		
 		if(this.listActions.Items.MaxIndex())
 			this.listActions.SelectedIndex := 1
-		
+		else
+		{
+			this.ddlActionCategory.Enabled := false
+			this.ddlActionType.Enabled := false
+			this.btnDeleteAction.Enabled := false
+			this.btnCopyAction.Enabled := false
+			this.btnMoveActionDown.Enabled := false
+			this.btnMoveActionUp.Enabled := false
+		}
 		this.btnPasteAction.Enabled := EventSystem.IsObject(ActionClipboard)
 		
 		;Initialize options tab
@@ -162,8 +184,10 @@ Class CEventEditor extends CGUI
 	btnOK_Click()
 	{
 		this.SubmitTrigger()
-		this.SubmitCondition()
-		this.SubmitAction()
+		if(this.HasKey("Condition"))
+			this.SubmitCondition()
+		if(this.HasKey("Action"))
+			this.SubmitAction()
 		this.Event.Name := this.editEventName.Text
 		this.Event.Description := this.editEventDescription.Text
 		this.Event.Category := this.comboEventCategory.Text ? this.comboEventCategory.Text : "Uncategorized"

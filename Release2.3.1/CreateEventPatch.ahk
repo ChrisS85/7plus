@@ -45,14 +45,14 @@ PatchXMLObject.PatchVersion := PatchVersion
 Loop % NewXMLObject.Events.Event.MaxIndex()
 {
 	NewEvent := NewXMLObject.Events.Event[A_Index]
-	if(!NewEvent.Conditions.Condition.Is("CArray")) ;Single condition
+	if(!NewEvent.Conditions.Condition.Is(CArray)) ;Single condition
 	{
 		XMLConditions := Array()
 		if(NewEvent.Conditions.HasKey("Condition"))
 			XMLConditions.Insert(NewEvent.Conditions.Condition)
 		NewEvent.Conditions.Condition := XMLConditions
 	}
-	if(!NewEvent.Actions.Action.Is("CArray")) ;Single action
+	if(!NewEvent.Actions.Action.Is(CArray)) ;Single action
 	{
 		XMLActions := Array()
 		if(NewEvent.Actions.HasKey("Action"))
@@ -64,14 +64,14 @@ Loop % OldXMLObject.Events.Event.MaxIndex()
 {
 	OldEvent := OldXMLObject.Events.Event[A_Index]
 	;Convert to array
-	if(!OldEvent.Conditions.Condition.Is("CArray")) ;Single condition
+	if(!OldEvent.Conditions.Condition.Is(CArray)) ;Single condition
 	{
 		XMLConditions := Array()
 		if(OldEvent.Conditions.HasKey("Condition"))
 			XMLConditions.Insert(OldEvent.Conditions.Condition)
 		OldEvent.Conditions.Condition := XMLConditions
 	}
-	if(!OldEvent.Actions.Action.Is("CArray")) ;Single Action
+	if(!OldEvent.Actions.Action.Is(CArray)) ;Single Action
 	{
 		XMLActions := Array()
 		if(OldEvent.Actions.HasKey("Action"))
@@ -85,12 +85,12 @@ Loop % OldXMLObject.Events.Event.MaxIndex()
 	{
 		PatchEvent := Object("OfficialEvent", OldEvent.OfficialEvent)
 		Updated := false
-		if(!objEqual(OldEvent.Conditions, NewEvent.Conditions))
+		if(!OldEvent.Conditions.Equals(NewEvent.Conditions))
 		{
 			PatchEvent.Conditions := NewEvent.Conditions
 			Updated := true
 		}
-		if(!objEqual(OldEvent.Actions, NewEvent.Actions))
+		if(!OldEvent.Actions.Equals(NewEvent.Actions))
 		{
 			PatchEvent.Actions := NewEvent.Actions
 			Updated := true
@@ -104,7 +104,7 @@ Loop % OldXMLObject.Events.Event.MaxIndex()
 				continue
 			if(key = "Trigger")
 			{
-				if(!objEqual(OldEvent.Trigger, NewEvent.Trigger))
+				if(!OldEvent.Trigger.Equals(NewEvent.Trigger))
 				{
 					PatchEvent.Trigger := NewEvent.Trigger
 					Updated := true

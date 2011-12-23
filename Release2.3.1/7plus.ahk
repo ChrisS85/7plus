@@ -69,7 +69,7 @@ ComObjError(0)
 #include %A_ScriptDir%\Hotstrings.ahk
 #include %A_ScriptDir%\xml.ahk
 #include %A_ScriptDir%\debugging.ahk
-#include %A_ScriptDir%\CNewSettings.ahk
+#include %A_ScriptDir%\CSettingsWindow.ahk
 #include %A_ScriptDir%\miscfunctions.ahk
 #include %A_ScriptDir%\Registry.ahk
 #include %A_ScriptDir%\SlideWindows.ahk

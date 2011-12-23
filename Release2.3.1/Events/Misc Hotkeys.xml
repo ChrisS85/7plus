@@ -4,13 +4,13 @@
 <Actions>
 <Action>
 <FlashingWindows>1</FlashingWindows>
-<Type>Accessor</Type>
+<Type>Show Accessor</Type>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
-<Type>IsFullScreen</Type>
+<Type>Fullscreen window active</Type>
 <UseExcludeList>1</UseExcludeList>
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
@@ -30,7 +30,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<Type>Clipmenu</Type>
+<Type>Clipboard Manager menu</Type>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
 <Conditions>
@@ -53,18 +53,15 @@
 <Action>
 <KeyDelay>0</KeyDelay>
 <Keys>^.</Keys>
-<Type>SendKeys</Type>
+<Type>Send keyboard input</Type>
 <WriteText>0</WriteText>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
 <Conditions>
 <Condition>
 <Negate>0</Negate>
-<Type>WindowActive</Type>
-<WindowFilter></WindowFilter>
+<Type>Window active</Type>
 <WindowFilterClass>Photo_Lightweight_Viewer</WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition><Condition>
 <Compare>${WinVer}</Compare>
@@ -91,18 +88,15 @@
 <Action>
 <KeyDelay>0</KeyDelay>
 <Keys>^,</Keys>
-<Type>SendKeys</Type>
+<Type>Send keyboard input</Type>
 <WriteText>0</WriteText>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
 <Conditions>
 <Condition>
 <Negate>0</Negate>
-<Type>WindowActive</Type>
-<WindowFilter></WindowFilter>
+<Type>Window active</Type>
 <WindowFilterClass>Photo_Lightweight_Viewer</WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition><Condition>
 <Compare>${WinVer}</Compare>
@@ -129,14 +123,14 @@
 <Action>
 <Action>Toggle mute/unmute</Action>
 <ShowVolume>1</ShowVolume>
-<Type>Volume</Type>
+<Type>Change sound volume</Type>
 <Volume>100</Volume>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
-<Type>IsFullScreen</Type>
+<Type>Fullscreen window active</Type>
 <UseExcludeList>1</UseExcludeList>
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
@@ -158,14 +152,14 @@
 <Action>
 <Action>Set volume</Action>
 <ShowVolume>1</ShowVolume>
-<Type>Volume</Type>
+<Type>Change sound volume</Type>
 <Volume>-2</Volume>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
-<Type>IsFullScreen</Type>
+<Type>Fullscreen window active</Type>
 <UseExcludeList>1</UseExcludeList>
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
@@ -187,14 +181,14 @@
 <Action>
 <Action>Set volume</Action>
 <ShowVolume>1</ShowVolume>
-<Type>Volume</Type>
+<Type>Change sound volume</Type>
 <Volume>+2</Volume>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
-<Type>IsFullScreen</Type>
+<Type>Fullscreen window active</Type>
 <UseExcludeList>1</UseExcludeList>
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
@@ -216,7 +210,7 @@
 <Action>
 <KeyDelay>0</KeyDelay>
 <Keys>^k</Keys>
-<Type>SendKeys</Type>
+<Type>Send keyboard input</Type>
 <WriteText>0</WriteText>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
@@ -252,7 +246,7 @@
 <Action>
 <KeyDelay>0</KeyDelay>
 <Keys>`r`n</Keys>
-<Type>SendKeys</Type>
+<Type>Send keyboard input</Type>
 <WriteText>1</WriteText>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
@@ -276,7 +270,7 @@
 <Action>
 <KeyDelay>0</KeyDelay>
 <Keys>^l</Keys>
-<Type>SendKeys</Type>
+<Type>Send keyboard input</Type>
 <WriteText>0</WriteText>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
@@ -310,8 +304,40 @@
 </Event><Event>
 <Actions>
 <Action>
+<Type>Change desktop wallpaper</Type>
+</Action></Actions>
+<Category>Misc Hotkeys</Category>
+<Conditions>
+<Condition>
+<Negate>1</Negate>
+<Type>Fullscreen window active</Type>
+<UseExcludeList>1</UseExcludeList>
+<UseIncludeList>1</UseIncludeList>
+</Condition><Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(WorkerW|Progman)</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Toggles the wallpaper using the list of wallpapers defined in Windows (7 or later). Same as the desktop context menu option.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1621</ID>
+<Name>Toggle Wallpaper (Mouse over desktop)</Name>
+<OfficialEvent>24</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>MButton</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
 <Method>Goo.gl</Method>
-<Type>ShortenURL</Type>
+<Type>Shorten a URL</Type>
 <URL>${Clip}</URL>
 <WriteToClipboard>1</WriteToClipboard>
 <WriteToPlaceholder>ShortURL</WriteToPlaceholder>
@@ -320,7 +346,7 @@
 <Conditions>
 <Condition>
 <Negate>1</Negate>
-<Type>IsFullScreen</Type>
+<Type>Fullscreen window active</Type>
 <UseExcludeList>1</UseExcludeList>
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
@@ -335,6 +361,147 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>#S</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Area>Screen</Area>
+<Quality>95</Quality>
+<TargetFile>Screenshot.png</TargetFile>
+<TargetFolder>%Temp%\7plus</TargetFolder>
+<Type>Take a screenshot</Type>
+</Action><Action>
+<Cancel>1</Cancel>
+<DataType>Text</DataType>
+<Placeholder>NewName</Placeholder>
+<Selection>Take screenshot|Ask user input|Move file %Temp%\7plus\Screenshot.png to %Temp%\7plus\${NewName}|Open Image Converter: %Temp%\7plus\${NewName}.png</Selection>
+<Text>Enter a filename for the screenshot (without extension)</Text>
+<Title>Enter filename</Title>
+<Type>Ask for user input</Type>
+<Validate>1</Validate>
+</Action><Action>
+<Overwrite>0</Overwrite>
+<Silent>0</Silent>
+<SourceFile>%Temp%\7plus\Screenshot.png</SourceFile>
+<TargetFile>${NewName}</TargetFile>
+<TargetPath>%Temp%\7plus</TargetPath>
+<Type>Move file</Type>
+</Action><Action>
+<Files>%Temp%\7plus\${NewName}.png</Files>
+<Hoster>ImgUr</Hoster>
+<ReuseWindow>1</ReuseWindow>
+<TemporaryFiles>1</TemporaryFiles>
+<Type>Show Image Converter</Type>
+</Action></Actions>
+<Category>Misc Hotkeys</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event takes a screenshot and shows it in image converter for further processing.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1637</ID>
+<Name>Take screenshot: Use Image Converter</Name>
+<OfficialEvent>37</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>PrintScreen</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Area>User selection</Area>
+<Quality>95</Quality>
+<TargetFile>Screenshot.png</TargetFile>
+<TargetFolder>%Temp%\7plus</TargetFolder>
+<Type>Take a screenshot</Type>
+</Action><Action>
+<Cancel>1</Cancel>
+<DataType>Text</DataType>
+<Placeholder>NewName</Placeholder>
+<Selection>Take screenshot|Ask user input|Move file %Temp%\7plus\Screenshot.png to %Temp%\7plus\${NewName}|Open Image Converter: %Temp%\7plus\${NewName}.png</Selection>
+<Text>Enter a filename for the screenshot (without extension)</Text>
+<Title>Enter filename</Title>
+<Type>Ask for user input</Type>
+<Validate>1</Validate>
+</Action><Action>
+<Overwrite>0</Overwrite>
+<Silent>0</Silent>
+<SourceFile>%Temp%\7plus\Screenshot.png</SourceFile>
+<TargetFile>${NewName}</TargetFile>
+<TargetPath>%Temp%\7plus</TargetPath>
+<Type>Move file</Type>
+</Action><Action>
+<Files>%Temp%\7plus\${NewName}.png</Files>
+<Hoster>ImgUr</Hoster>
+<ReuseWindow>1</ReuseWindow>
+<TemporaryFiles>1</TemporaryFiles>
+<Type>Show Image Converter</Type>
+</Action></Actions>
+<Category>Misc Hotkeys</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event takes a screenshot of an area that can be selected by the user and shows it in image converter for further processing.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1638</ID>
+<Name>Take screenshot of custom area: Use Image Converter</Name>
+<OfficialEvent>38</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>#PrintScreen</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Area>Window</Area>
+<Quality>95</Quality>
+<TargetFile>Screenshot.png</TargetFile>
+<TargetFolder>%Temp%\7plus</TargetFolder>
+<Type>Take a screenshot</Type>
+</Action><Action>
+<Cancel>1</Cancel>
+<DataType>Text</DataType>
+<Placeholder>NewName</Placeholder>
+<Selection>Take screenshot|Ask user input|Move file %Temp%\7plus\Screenshot.png to %Temp%\7plus\${NewName}|Open Image Converter: %Temp%\7plus\${NewName}.png</Selection>
+<Text>Enter a filename for the screenshot (without extension)</Text>
+<Title>Enter filename</Title>
+<Type>Ask for user input</Type>
+<Validate>1</Validate>
+</Action><Action>
+<Overwrite>0</Overwrite>
+<Silent>0</Silent>
+<SourceFile>%Temp%\7plus\Screenshot.png</SourceFile>
+<TargetFile>${NewName}</TargetFile>
+<TargetPath>%Temp%\7plus</TargetPath>
+<Type>Move file</Type>
+</Action><Action>
+<Files>%Temp%\7plus\${NewName}.png</Files>
+<Hoster>ImgUr</Hoster>
+<ReuseWindow>1</ReuseWindow>
+<TemporaryFiles>1</TemporaryFiles>
+<Type>Show Image Converter</Type>
+</Action></Actions>
+<Category>Misc Hotkeys</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event takes a screenshot of the active window and shows it in image converter for further processing.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1639</ID>
+<Name>Take screenshot of window: Use Image Converter</Name>
+<OfficialEvent>39</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!PrintScreen</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event></Events>

@@ -471,7 +471,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 			return
 		ID := Page.listEvents.SelectedItem[2]
 		OriginalEvent := this.Events.GetItemWithValue("ID", ID)
-		if((Settings.IsPortable || !A_IsAdmin) && OriginalEvent.Trigger.Type = "ExplorerButton")
+		if((Settings.IsPortable || !A_IsAdmin) && OriginalEvent.Trigger.Is(CExplorerButtonTrigger))
 		{
 			Msgbox ExplorerButton trigger events may not be modified in portable or non-admin mode, as this might cause inconsistencies with the registry.
 			return
@@ -484,7 +484,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 	{
 		;~ Suspend, Off
 		Page := this.Pages.Events.Tabs[1].Controls
-		if(NewEvent && (Settings.IsPortable || !A_IsAdmin) && NewEvent.Trigger.Type = "ExplorerButton") ;Explorer buttons may not be added in portable/non-admin mode
+		if(NewEvent && (Settings.IsPortable || !A_IsAdmin) && NewEvent.Trigger.Is(CExplorerButtonTrigger)) ;Explorer buttons may not be added in portable/non-admin mode
 		{
 			Msgbox ExplorerButton trigger events may not be modified in portable or non-admin mode, as this might cause inconsistencies with the registry.
 			if(TemporaryEvent)
@@ -593,7 +593,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		{
 			Index := SelectedEvents[SelectedEvents.MaxIndex() - A_Index + 1]
 			Event := this.Events.GetItemWithValue("ID", Page.listEvents.Items[Index][2])
-			if((!Settings.IsPortable && A_IsAdmin) || Event.Trigger.Type != "ExplorerButton" && Event.Trigger.Type != "ContextMenu")
+			if((!Settings.IsPortable && A_IsAdmin) || !Event.Trigger.Is(CExplorerButtonTrigger) && !Event.Trigger.Is(CContextMenuTrigger))
 			{
 				;Events object notifies its trigger about deletion
 				CategoryDeleted += this.Events.Delete(Event, false)
@@ -622,7 +622,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 			Event := this.Events.GetItemWithValue("ID", item[2])
 			Copy := Event.DeepCopy()
 			Copy.Remove("OfficialEvent") ;Make sure that pasted events don't patch existing events
-			if((!Settings.IsPortable && A_IsAdmin) || Event.Trigger.Type != "ExplorerButton")
+			if((!Settings.IsPortable && A_IsAdmin) || !Event.Trigger.Is(CExplorerButtonTrigger))
 				ClipboardEvents.Insert(copy)
 		}
 		ClipboardEvents.WriteEventsFile(A_Temp "/7plus/EventsClipboard.xml")	
@@ -673,22 +673,19 @@ Finally, here are some settings that you're likely to change at the beginning:
 		global MajorVersion, MinorVersion, BugFixVersion
 		Page := this.Pages.Events.Tabs[1].Controls	
 		this.Enabled := false
-		;Uncomment the following lines to export all events separated by category to Events\Category.xml instead	
-		;~ Loop % this.Events.Categories.MaxIndex()
-		;~ {
-			;~ Category := this.Events.Categories[A_Index]
-			;~ ExportEvents := Array()
-			;~ Loop % this.Events.MaxIndex()
-			;~ {
-				;~ if(this.Events[A_Index].Category = Category)
-					;~ ExportEvents.Insert(this.Events[A_Index])
-			;~ }
-			;~ if(ExportEvents.MaxIndex())
-				;~ WriteEventsFile(ExportEvents, A_ScriptDir "\Events\" Category ".xml")
-		;~ }
-		;~ WriteEventsFile(this.Events, A_ScriptDir "\Events\All Events.xml")
-		;~ run % """" A_ScriptDir "\CreateEventPatch.ahk""" " """ A_ScriptDir "\Events\Old Versions\" MajorVersion "." (MinorVersion-1) "." BugFixVersion "\All Events.xml"" """ A_ScriptDir "\Events\All Events.xml"" 0" ;Create event patch, assumes that last minor version was incremented by one since last release
-		;~ return
+		;Uncomment the following lines to export all events separated by category to Events\Category.xml instead
+		for index1, Category in this.Events.Categories
+		{
+			ExportEvents := new CEvents()
+			for index, event in this.Events
+				if(event.Category = Category)
+					ExportEvents.Insert(event)
+			if(ExportEvents.MaxIndex())
+				ExportEvents.WriteEventsFile(A_ScriptDir "\Events\" Category ".xml")
+		}
+		this.Events.WriteEventsFile(A_ScriptDir "\Events\All Events.xml")
+		run % """" A_ScriptDir "\CreateEventPatch.ahk""" " """ A_ScriptDir "\Events\Old Versions\" MajorVersion "." (MinorVersion-1) "." BugFixVersion "\All Events.xml"" """ A_ScriptDir "\Events\All Events.xml"" 0" ;Create event patch, assumes that last minor version was incremented by one since last release
+		return
 		
 		if(Page.listEvents.SelectedItems.MaxIndex())
 		{

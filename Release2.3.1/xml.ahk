@@ -26,7 +26,7 @@ XML_Save(xmlObject, path, xml = "", level = 0)
 	enum := xmlObject._newEnum()
 	while enum[k,v]
 	{
-		if(IsObject(v) && v.Is("CArray")) ;If current value is an array
+		if(IsObject(v) && v.Is(CArray)) ;If current value is an array
 		{
 			Loop % v.MaxIndex()
 			{
@@ -151,7 +151,7 @@ XML_Read(xml,node = 0)
 			value := StringReplace(value, "&r;","`r",1)
 			value := StringReplace(value, "&n;","`n",1)
 		}
-		if(node.HasKey(key) && !node[key].Is("CArray")) ;Key already exists and is not an array, make it one and append things
+		if(node.HasKey(key) && !node[key].Is(CArray)) ;Key already exists and is not an array, make it one and append things
 		{
 			if (A)
 				outputdebug turn %key% into array
@@ -160,7 +160,7 @@ XML_Read(xml,node = 0)
 			array.Insert(value)
 			node[key] := array
 		}
-		else if(node.HasKey(key) && node[key].Is("CArray")) ;Key already exists and is an array, just append the new key
+		else if(node.HasKey(key) && node[key].Is(CArray)) ;Key already exists and is an array, just append the new key
 		{
 			node[key].Insert(value)
 			if (A)

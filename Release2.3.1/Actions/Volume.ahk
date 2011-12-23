@@ -10,13 +10,13 @@ Class CVolumeAction Extends CAction
 	{
 		;Need to check for sign before and after expansion because AHK will swallow the + sign on numeric strings and turn it into a number.
 		Current := 0
-		if(InStr(this.Volume, "+") = 1 || InStr(this.Volume, "-") = 1)
-			Current := VA_GetMasterVolume()
-		Volume := Event.ExpandPlaceholders(this.Volume)		
-		if(InStr(Volume, "+") = 1 || InStr(Volume, "-") = 1)
-			Current := VA_GetMasterVolume()
 		if(Vista7)
 		{
+			if(InStr(this.Volume, "+") = 1 || InStr(this.Volume, "-") = 1)
+				Current := VA_GetMasterVolume()
+			Volume := Event.ExpandPlaceholders(this.Volume)		
+			if(InStr(Volume, "+") = 1 || InStr(Volume, "-") = 1)
+				Current := VA_GetMasterVolume()
 			if(this.Action = "Mute")
 				VA_SetMasterMute(1)
 			else if(this.Action = "Unmute")
@@ -46,6 +46,11 @@ Class CVolumeAction Extends CAction
 		}
 		else
 		{
+			if(InStr(this.Volume, "+") = 1 || InStr(this.Volume, "-") = 1)
+				SoundGet, Current
+			Volume := Event.ExpandPlaceholders(this.Volume)		
+			if(InStr(Volume, "+") = 1 || InStr(Volume, "-") = 1)
+				SoundGet, Current
 			if(this.Action = "Mute")
 				SoundSet, 1,, Mute
 			else if(this.Action = "Unmute")

@@ -8,8 +8,7 @@
 <Silent>0</Silent>
 <SourceFiles>${SelNNEM}</SourceFiles>
 <TargetFile>${Input}</TargetFile>
-<TargetFolder></TargetFolder>
-<Type>Upload</Type>
+<Type>Upload to FTP</Type>
 </Action></Actions>
 <Category>Explorer Buttons</Category>
 <Conditions>
@@ -28,14 +27,13 @@
 <ShowNoSelected>0</ShowNoSelected>
 <ShowSelected>1</ShowSelected>
 <Tooltip>Upload a file</Tooltip>
-<Type>ExplorerButton</Type>
+<Type>Explorer bar button</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
-<BaseFile></BaseFile>
 <Rename>1</Rename>
-<Type>NewFile</Type>
+<Type>Create new file</Type>
 </Action></Actions>
 <Category>Explorer Buttons</Category>
 <Conditions>
@@ -54,7 +52,7 @@
 <ShowNoSelected>1</ShowNoSelected>
 <ShowSelected>1</ShowSelected>
 <Tooltip>Creates a new text file</Tooltip>
-<Type>ExplorerButton</Type>
+<Type>Explorer bar button</Type>
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>

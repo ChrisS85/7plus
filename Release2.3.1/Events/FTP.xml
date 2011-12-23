@@ -7,14 +7,13 @@
 <Quality>95</Quality>
 <TargetFile>Screenshot.jpg</TargetFile>
 <TargetFolder>%Temp%</TargetFolder>
-<Type>Screenshot</Type>
+<Type>Take a screenshot</Type>
 </Action><Action>
 <Cancel>1</Cancel>
 <DataType>Text</DataType>
-<Placeholder>Input</Placeholder>
 <Text>Enter image filename:</Text>
 <Title>Enter filename</Title>
-<Type>Input</Type>
+<Type>Ask for user input</Type>
 <Validate>1</Validate>
 </Action><Action>
 <Clipboard>1</Clipboard>
@@ -22,15 +21,12 @@
 <Silent>0</Silent>
 <SourceFiles>%temp%\Screenshot.jpg</SourceFiles>
 <TargetFile>${Input}</TargetFile>
-<TargetFolder></TargetFolder>
-<Type>Upload</Type>
+<Type>Upload to FTP</Type>
 </Action><Action>
 <Overwrite>0</Overwrite>
 <Silent>1</Silent>
 <SourceFile>%temp%\Screenshot.jpg</SourceFile>
-<TargetFile></TargetFile>
-<TargetPath></TargetPath>
-<Type>Delete</Type>
+<Type>Delete file</Type>
 </Action></Actions>
 <Category>FTP</Category>
 <Conditions>
@@ -55,14 +51,13 @@
 <Quality>95</Quality>
 <TargetFile>Screenshot.jpg</TargetFile>
 <TargetFolder>%Temp%</TargetFolder>
-<Type>Screenshot</Type>
+<Type>Take a screenshot</Type>
 </Action><Action>
 <Cancel>1</Cancel>
 <DataType>Text</DataType>
-<Placeholder>Input</Placeholder>
 <Text>Enter image filename:</Text>
 <Title>Enter filename</Title>
-<Type>Input</Type>
+<Type>Ask for user input</Type>
 <Validate>1</Validate>
 </Action><Action>
 <Clipboard>1</Clipboard>
@@ -70,15 +65,12 @@
 <Silent>0</Silent>
 <SourceFiles>%temp%\Screenshot.jpg</SourceFiles>
 <TargetFile>${Input}</TargetFile>
-<TargetFolder></TargetFolder>
-<Type>Upload</Type>
+<Type>Upload to FTP</Type>
 </Action><Action>
 <Overwrite>0</Overwrite>
 <Silent>1</Silent>
 <SourceFile>%temp%\Screenshot.jpg</SourceFile>
-<TargetFile></TargetFile>
-<TargetPath></TargetPath>
-<Type>Delete</Type>
+<Type>Delete file</Type>
 </Action></Actions>
 <Category>FTP</Category>
 <Conditions>
@@ -103,9 +95,7 @@
 <FTPProfile>1</FTPProfile>
 <Silent>0</Silent>
 <SourceFiles>${SelNQ}</SourceFiles>
-<TargetFile></TargetFile>
-<TargetFolder></TargetFolder>
-<Type>Upload</Type>
+<Type>Upload to FTP</Type>
 </Action></Actions>
 <Category>FTP</Category>
 <Conditions>
@@ -117,7 +107,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Upload the file(s) selected in the currently active explorer window to the FTP server defined in FTP profile 1. Make sure to configure the FTP profile with your FTP login data.</Description>
@@ -139,19 +129,17 @@
 <FTPProfile>1</FTPProfile>
 <Silent>0</Silent>
 <SourceFiles>${SelNQ}</SourceFiles>
-<TargetFile></TargetFile>
-<TargetFolder></TargetFolder>
-<Type>Upload</Type>
+<Type>Upload to FTP</Type>
 </Action></Actions>
 <Category>FTP</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Upload the file(s) selected in the currently active file dialog window to the FTP server defined in FTP profile 1. Make sure to configure the FTP profile with your FTP login data.</Description>

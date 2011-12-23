@@ -3,11 +3,11 @@
 <Event>
 <Actions>
 <Action>
-<Command>taskmgr</Command>
+<Command>C:\Windows\System32\taskmgr.exe</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
+<WorkingDirectory>C:\Windows\System32</WorkingDirectory>
 </Action></Actions>
 <Category>Taskbar</Category>
 <Conditions>
@@ -22,14 +22,14 @@
 <OfficialEvent>898</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Type>DoubleClickTaskbar</Type>
+<Type>Double click on taskbar</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Action>Set volume</Action>
 <ShowVolume>1</ShowVolume>
-<Type>Volume</Type>
+<Type>Change sound volume</Type>
 <Volume>+5</Volume>
 </Action></Actions>
 <Category>Taskbar</Category>
@@ -37,11 +37,8 @@
 <Condition>
 <MouseOverType>Window</MouseOverType>
 <Negate>0</Negate>
-<Type>MouseOver</Type>
-<WindowFilter></WindowFilter>
+<Type>Mouse over</Type>
 <WindowFilterClass>Shell_TrayWnd</WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -62,7 +59,7 @@
 <Action>
 <Action>Set volume</Action>
 <ShowVolume>1</ShowVolume>
-<Type>Volume</Type>
+<Type>Change sound volume</Type>
 <Volume>-5</Volume>
 </Action></Actions>
 <Category>Taskbar</Category>
@@ -70,11 +67,8 @@
 <Condition>
 <MouseOverType>Window</MouseOverType>
 <Negate>0</Negate>
-<Type>MouseOver</Type>
-<WindowFilter></WindowFilter>
+<Type>Mouse over</Type>
 <WindowFilterClass>Shell_TrayWnd</WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -94,11 +88,9 @@
 <Actions>
 <Action>
 <Action>Trigger Event</Action>
-<Compare></Compare>
 <EventID>1599</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action></Actions>
 <Category>Taskbar</Category>
 <Conditions>
@@ -115,8 +107,7 @@
 <Trigger>
 <Menu>Tray</Menu>
 <Name>Start timer</Name>
-<Submenu></Submenu>
-<Type>MenuItem</Type>
+<Type>Menu item clicked</Type>
 </Trigger>
 </Event><Event>
 <Actions>
@@ -127,7 +118,7 @@
 <Selection>Message timer|Shutdown timer|Run program timer</Selection>
 <Text>What type of timer would you like to start?</Text>
 <Title>Dynamic timer</Title>
-<Type>Input</Type>
+<Type>Ask for user input</Type>
 <Validate>1</Validate>
 </Action><Action>
 <Cancel>1</Cancel>
@@ -135,28 +126,28 @@
 <Placeholder>TimerTime</Placeholder>
 <Text>Enter time [HH:MM:SS]:</Text>
 <Title>Dynamic timer - Enter time</Title>
-<Type>Input</Type>
+<Type>Ask for user input</Type>
 <Validate>1</Validate>
 </Action><Action>
 <Action>Trigger Event</Action>
 <Compare>${TimerType}</Compare>
 <EventID>1602</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
+<Type>Control event</Type>
 <With>Message Timer</With>
 </Action><Action>
 <Action>Trigger Event</Action>
 <Compare>${TimerType}</Compare>
 <EventID>1603</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
+<Type>Control event</Type>
 <With>Run program timer</With>
 </Action><Action>
 <Action>Trigger Event</Action>
 <Compare>${TimerType}</Compare>
 <EventID>1606</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
+<Type>Control event</Type>
 <With>Shutdown timer</With>
 </Action></Actions>
 <Category>Taskbar</Category>
@@ -172,13 +163,12 @@
 <OfficialEvent>6</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Type>None</Type>
+<Type>Triggered by an action</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Text>${TimerMessage}</Text>
-<Timeout></Timeout>
 <Title>Timer</Title>
 <Type>Message</Type>
 </Action></Actions>
@@ -209,27 +199,25 @@
 <Placeholder>TimerMessage</Placeholder>
 <Text>Enter message text:</Text>
 <Title>Message text</Title>
-<Type>Input</Type>
+<Type>Ask for user input</Type>
 <Validate>1</Validate>
 </Action><Action>
 <Action>Copy Event</Action>
-<Compare></Compare>
 <DeleteAfterUse>1</DeleteAfterUse>
 <EvaluateOnCopy>1</EvaluateOnCopy>
 <EventID>1600</EventID>
 <Operator>equals</Operator>
 <Placeholder>MessageTimer</Placeholder>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action><Action>
 <Action>Set time</Action>
 <Time>${TimerTime}</Time>
 <TimerID>${MessageTimer}</TimerID>
-<Type>ControlTimer</Type>
+<Type>Control timer</Type>
 </Action><Action>
 <Action>Start timer</Action>
 <TimerID>${MessageTimer}</TimerID>
-<Type>ControlTimer</Type>
+<Type>Control timer</Type>
 </Action></Actions>
 <Category>Taskbar</Category>
 <Conditions>
@@ -244,7 +232,7 @@
 <OfficialEvent>9</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Type>None</Type>
+<Type>Triggered by an action</Type>
 </Trigger>
 </Event><Event>
 <Actions>
@@ -254,27 +242,25 @@
 <Placeholder>TimerProgram</Placeholder>
 <Text>Enter program to launch</Text>
 <Title>Select program</Title>
-<Type>Input</Type>
+<Type>Ask for user input</Type>
 <Validate>1</Validate>
 </Action><Action>
 <Action>Copy Event</Action>
-<Compare></Compare>
 <DeleteAfterUse>1</DeleteAfterUse>
 <EvaluateOnCopy>1</EvaluateOnCopy>
 <EventID>1604</EventID>
 <Operator>equals</Operator>
 <Placeholder>RunTimer</Placeholder>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action><Action>
 <Action>Set time</Action>
 <Time>${TimerTime}</Time>
 <TimerID>${RunTimer}</TimerID>
-<Type>ControlTimer</Type>
+<Type>Control timer</Type>
 </Action><Action>
 <Action>Start timer</Action>
 <TimerID>${RunTimer}</TimerID>
-<Type>ControlTimer</Type>
+<Type>Control timer</Type>
 </Action></Actions>
 <Category>Taskbar</Category>
 <Conditions>
@@ -289,16 +275,15 @@
 <OfficialEvent>11</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Type>None</Type>
+<Type>Triggered by an action</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Command>${TimerProgram}</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>Taskbar</Category>
 <Conditions>
@@ -324,7 +309,7 @@
 <Action>
 <ForceClose>0</ForceClose>
 <ShutDownSelection>Shutdown</ShutDownSelection>
-<Type>Shutdown</Type>
+<Type>Shutdown computer</Type>
 </Action></Actions>
 <Category>Taskbar</Category>
 <Conditions>
@@ -349,23 +334,21 @@
 <Actions>
 <Action>
 <Action>Copy Event</Action>
-<Compare></Compare>
 <DeleteAfterUse>1</DeleteAfterUse>
 <EvaluateOnCopy>1</EvaluateOnCopy>
 <EventID>1605</EventID>
 <Operator>equals</Operator>
 <Placeholder>ShutdownTimer</Placeholder>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action><Action>
 <Action>Set time</Action>
 <Time>${TimerTime}</Time>
 <TimerID>${ShutdownTimer}</TimerID>
-<Type>ControlTimer</Type>
+<Type>Control timer</Type>
 </Action><Action>
 <Action>Start timer</Action>
 <TimerID>${ShutdownTimer}</TimerID>
-<Type>ControlTimer</Type>
+<Type>Control timer</Type>
 </Action></Actions>
 <Category>Taskbar</Category>
 <Conditions>
@@ -380,28 +363,22 @@
 <OfficialEvent>14</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Type>None</Type>
+<Type>Triggered by an action</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Action>Trigger Event</Action>
-<Compare></Compare>
 <EventID>1599</EventID>
 <Operator>equals</Operator>
-<Type>ControlEvent</Type>
-<With></With>
+<Type>Control event</Type>
 </Action></Actions>
 <Category>Taskbar</Category>
 <Conditions>
 <Condition>
 <MouseOverType>Clock</MouseOverType>
 <Negate>0</Negate>
-<Type>MouseOver</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Mouse over</Type>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -412,6 +389,35 @@
 <ID>1609</ID>
 <Name>Dynamic Timer: Middle mouse click over clock</Name>
 <OfficialEvent>17</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>MButton</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Type>Close taskbar button under mouse</Type>
+</Action></Actions>
+<Category>Taskbar</Category>
+<Conditions>
+<Condition>
+<Negate>1</Negate>
+<Type>Fullscreen window active</Type>
+<UseExcludeList>1</UseExcludeList>
+<UseIncludeList>1</UseIncludeList>
+</Condition><Condition>
+<Negate>0</Negate>
+<Type>Mouse over taskbar list</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Closes the window belonging to the taskbar button under the mouse.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1620</ID>
+<Name>Close window of task button under mouse</Name>
+<OfficialEvent>23</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>MButton</Key>

@@ -4,7 +4,7 @@
 <Actions>
 <Action>
 <Slot>0</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -16,7 +16,13 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>Edit1</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 0.</Description>
@@ -35,17 +41,17 @@
 <Actions>
 <Action>
 <Slot>0</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 0.</Description>
@@ -64,7 +70,7 @@
 <Actions>
 <Action>
 <Slot>1</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -76,7 +82,13 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>Edit1</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 1.</Description>
@@ -95,17 +107,17 @@
 <Actions>
 <Action>
 <Slot>1</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 1.</Description>
@@ -124,7 +136,7 @@
 <Actions>
 <Action>
 <Slot>2</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -136,7 +148,13 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>Edit1</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 2.</Description>
@@ -155,17 +173,17 @@
 <Actions>
 <Action>
 <Slot>2</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 3.</Description>
@@ -184,7 +202,7 @@
 <Actions>
 <Action>
 <Slot>3</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -196,7 +214,13 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>Edit1</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 3.</Description>
@@ -215,17 +239,17 @@
 <Actions>
 <Action>
 <Slot>3</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 4.</Description>
@@ -244,7 +268,7 @@
 <Actions>
 <Action>
 <Slot>4</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -256,7 +280,13 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>Edit1</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 4.</Description>
@@ -275,17 +305,17 @@
 <Actions>
 <Action>
 <Slot>4</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 5.</Description>
@@ -304,7 +334,7 @@
 <Actions>
 <Action>
 <Slot>5</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -316,7 +346,13 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>Edit1</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 5.</Description>
@@ -335,17 +371,17 @@
 <Actions>
 <Action>
 <Slot>5</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 6.</Description>
@@ -364,7 +400,7 @@
 <Actions>
 <Action>
 <Slot>6</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -376,7 +412,13 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>Edit1</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 6.</Description>
@@ -395,17 +437,17 @@
 <Actions>
 <Action>
 <Slot>6</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 7.</Description>
@@ -424,7 +466,7 @@
 <Actions>
 <Action>
 <Slot>7</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -436,7 +478,13 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>Edit1</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 7.</Description>
@@ -455,17 +503,17 @@
 <Actions>
 <Action>
 <Slot>7</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 8.</Description>
@@ -484,7 +532,7 @@
 <Actions>
 <Action>
 <Slot>8</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -496,7 +544,13 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>Edit1</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 8.</Description>
@@ -515,17 +569,17 @@
 <Actions>
 <Action>
 <Slot>8</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 9.</Description>
@@ -544,7 +598,7 @@
 <Actions>
 <Action>
 <Slot>9</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -556,7 +610,13 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>Edit1</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active explorer window to the FastFolder path saved in Slot 9.</Description>
@@ -575,17 +635,17 @@
 <Actions>
 <Action>
 <Slot>9</Slot>
-<Type>FastFoldersRecall</Type>
+<Type>Open Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 9.</Description>
@@ -603,9 +663,8 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>0</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -617,7 +676,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active explorer window in FastFolders Slot 0.</Description>
@@ -635,19 +694,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>0</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 0.</Description>
@@ -665,9 +723,8 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>1</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -679,7 +736,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active explorer window in FastFolders Slot 1.</Description>
@@ -697,19 +754,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>1</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 1.</Description>
@@ -727,9 +783,8 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>2</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -741,7 +796,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active explorer window in FastFolders Slot 2.</Description>
@@ -759,19 +814,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>2</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 2.</Description>
@@ -789,9 +843,8 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>3</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -803,7 +856,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active explorer window in FastFolders Slot 3.</Description>
@@ -821,19 +874,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>3</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 3.</Description>
@@ -851,9 +903,8 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>4</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -865,7 +916,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active explorer window in FastFolders Slot 4.</Description>
@@ -883,19 +934,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>4</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 4.</Description>
@@ -913,9 +963,8 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>5</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -927,7 +976,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active explorer window in FastFolders Slot 5.</Description>
@@ -945,19 +994,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>5</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 5.</Description>
@@ -975,9 +1023,8 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>6</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -989,7 +1036,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active explorer window in FastFolders Slot 6.</Description>
@@ -1007,19 +1054,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>6</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 6.</Description>
@@ -1037,9 +1083,8 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>7</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1051,7 +1096,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active explorer window in FastFolders Slot 7.</Description>
@@ -1069,19 +1114,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>7</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 7.</Description>
@@ -1099,9 +1143,8 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>8</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1113,7 +1156,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active explorer window in FastFolders Slot 8.</Description>
@@ -1131,19 +1174,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>8</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 8.</Description>
@@ -1161,9 +1203,8 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>9</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1175,7 +1216,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active explorer window in FastFolders Slot 9.</Description>
@@ -1193,19 +1234,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<Folder></Folder>
 <Slot>9</Slot>
-<Type>FastFoldersStore</Type>
+<Type>Save Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Save the path of the currently active file dialog window in FastFolders Slot 9.</Description>
@@ -1224,7 +1264,7 @@
 <Actions>
 <Action>
 <Slot>0</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1258,14 +1298,14 @@
 <Actions>
 <Action>
 <Slot>0</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -1290,7 +1330,7 @@
 <Actions>
 <Action>
 <Slot>1</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1324,14 +1364,14 @@
 <Actions>
 <Action>
 <Slot>1</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -1356,7 +1396,7 @@
 <Actions>
 <Action>
 <Slot>2</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1390,14 +1430,14 @@
 <Actions>
 <Action>
 <Slot>2</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -1422,7 +1462,7 @@
 <Actions>
 <Action>
 <Slot>3</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1456,14 +1496,14 @@
 <Actions>
 <Action>
 <Slot>3</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -1488,7 +1528,7 @@
 <Actions>
 <Action>
 <Slot>4</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1522,14 +1562,14 @@
 <Actions>
 <Action>
 <Slot>4</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -1554,7 +1594,7 @@
 <Actions>
 <Action>
 <Slot>5</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1588,14 +1628,14 @@
 <Actions>
 <Action>
 <Slot>5</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -1620,7 +1660,7 @@
 <Actions>
 <Action>
 <Slot>6</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1654,14 +1694,14 @@
 <Actions>
 <Action>
 <Slot>6</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -1686,7 +1726,7 @@
 <Actions>
 <Action>
 <Slot>7</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1720,14 +1760,14 @@
 <Actions>
 <Action>
 <Slot>7</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -1752,7 +1792,7 @@
 <Actions>
 <Action>
 <Slot>8</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1786,14 +1826,14 @@
 <Actions>
 <Action>
 <Slot>8</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>
@@ -1818,7 +1858,7 @@
 <Actions>
 <Action>
 <Slot>9</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
@@ -1852,14 +1892,14 @@
 <Actions>
 <Action>
 <Slot>9</Slot>
-<Type>FastFoldersClear</Type>
+<Type>Clear Fast Folder</Type>
 </Action></Actions>
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>1</Negate>

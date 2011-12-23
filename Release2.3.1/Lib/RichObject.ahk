@@ -4,10 +4,13 @@ RichObject()
 }
 Class CRichObject
 {
+	;Checks if an object is the instance of a class. Class can be either class name or class object.
 	Is(Class)
 	{
+		if(!Class)
+			throw Exception("Invalid Class", -1)
 		if(this.base.HasKey("__Class"))
-			return this.base.__Class = Class
+			return IsObject(Class) ? (this.base = Class) : (this.base.__Class = Class)
 		return 0
 	}
 	Extends(Class)
@@ -63,7 +66,7 @@ Class CRichObject
 		return "(" string ") " 
 	}
 	
-	Equal(y, reserved=0) 
+	Equals(y, reserved=0) 
 	{ 
 		if !reserved 
 			reserved := object("seen" . &this, 1)  ; to keep track of unique objects within top object 
@@ -83,7 +86,7 @@ Class CRichObject
 			if reserved["seen" . &value] 
 				continue  ; don't compare repeat objects (circular references) 
 
-			if !thisvalue.Equal(yvalue) 
+			if !thisvalue.Equals(yvalue) 
 				return 0 
 		} 
 		; finally, check that there are no excess key-value pairs in y: 

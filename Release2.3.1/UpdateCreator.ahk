@@ -166,6 +166,16 @@ FolderLoop(Platform, Version)
 			continue
 		if A_LoopFileFullPath contains tests\
 			continue
+		if A_LoopFileFullpath contains CreateEventPatch
+			continue
+		if A_LoopFileFullPath contains SubEventBackup
+			continue
+		if A_LoopFileFullPath contains NewSettings
+			continue
+		if A_LoopFileName contains Improvements.txt
+			continue
+		if A_LoopFileName contains PatchInfo.xml
+			continue
 		if(InStr(A_LoopFileFullPath, "ReleasePatch\") && !InStr(A_LoopFileName, 7plusVersion)) ;Skip release patches for wrong 7plus version
 			continue
 		if(A_LoopFileExt = "xml") ;Remove german folder/file names

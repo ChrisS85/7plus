@@ -5,16 +5,15 @@
 <Action>
 <Command>cmd.exe /k cd /D "${TitlePath}\"</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Open CMD in the current directory of the active file dialog window.</Description>
@@ -37,17 +36,17 @@
 <Content>${SelNM}</Content>
 <Cut>0</Cut>
 <InsertType>File</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>0</Negate>
@@ -76,17 +75,17 @@
 <Content>${SelNM}</Content>
 <Cut>1</Cut>
 <InsertType>File</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>0</Negate>
@@ -111,10 +110,7 @@
 <Actions>
 <Action>
 <Path>Upward</Path>
-<Type>SetDirectory</Type>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Set current directory</Type>
 <WindowMatchType>Active</WindowMatchType>
 </Action></Actions>
 <Category>File Dialog</Category>
@@ -122,10 +118,10 @@
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>0</Negate>
@@ -154,7 +150,7 @@
 <Content>${SelNNEM}</Content>
 <Cut>0</Cut>
 <InsertType>Text</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
@@ -167,7 +163,7 @@
 </Condition><Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Copy the names of the selected files to the clipboard.</Description>
@@ -190,7 +186,7 @@
 <Content>${SelNM}</Content>
 <Cut>0</Cut>
 <InsertType>Text</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
@@ -203,7 +199,7 @@
 </Condition><Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Copy the paths of the selected files to the clipboard.</Description>
@@ -226,7 +222,7 @@
 <Content>${SelNNEM}</Content>
 <Cut>0</Cut>
 <InsertType>Text</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
@@ -239,7 +235,7 @@
 </Condition><Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Append the names of the selected files to the clipboard.</Description>
@@ -262,7 +258,7 @@
 <Content>${SelNM}</Content>
 <Cut>0</Cut>
 <InsertType>Text</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
@@ -275,7 +271,7 @@
 </Condition><Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Append the paths of the selected files to the clipboard.</Description>
@@ -293,19 +289,18 @@
 </Event><Event>
 <Actions>
 <Action>
-<BaseFile></BaseFile>
 <Rename>1</Rename>
-<Type>NewFile</Type>
+<Type>Create new file</Type>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Create a new text file in the directory of the currently active file dialog.</Description>
@@ -324,17 +319,17 @@
 <Actions>
 <Action>
 <Rename>1</Rename>
-<Type>NewFolder</Type>
+<Type>Create new folder</Type>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Create a new folder in the directory of the currently active file dialog.</Description>
@@ -357,21 +352,19 @@
 <Filter>(.*\.jpg|.*\.bmp|.*\.png|.*\.gif)</Filter>
 <List>${SelNQ}</List>
 <Operator>that match regular expression</Operator>
-<Separator></Separator>
-<Type>FilterList</Type>
+<Type>Filter list</Type>
 </Action><Action>
 <Command>"%ProgramFiles%\Paint.NET\PaintDotNet.exe" ${SelNQ}</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Open selected image files in an image editor (Paint.NET by default).</Description>
@@ -395,20 +388,19 @@
 <List>${SelNQ}</List>
 <Operator>that match regular expression</Operator>
 <Separator>`n</Separator>
-<Type>FilterList</Type>
+<Type>Filter list</Type>
 </Action><Action>
 <Command>"%ProgramFiles%\Notepad++\notepad++.exe" ${SelNQ}</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>File Dialog</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
 <Negate>0</Negate>
-<Type>IsDialog</Type>
+<Type>Window is file dialog</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Open selected non-image files in a text editor (Notepad++ by default).</Description>

@@ -384,7 +384,7 @@ HotkeyShouldFire(key)
 	key := StringReplace(key,"~")
 	for index, Event in EventSystem.Events
 	{
-		if(Event.Trigger.Type != "Hotkey" || StringReplace(Event.Trigger.Key, "~") != key)
+		if(!Event.Trigger.Is(CHotkeyTrigger) || StringReplace(Event.Trigger.Key, "~") != key)
 			continue
 		
 		if(!(enable := Event.CheckConditions(false)))

@@ -59,7 +59,7 @@ MouseMovePolling()
 				ScreenCornerEvents := new CArray()
 				for index, Event in EventSystem.Events
 				{
-					if(Event.Trigger.Type = "ScreenCorner" && Event.Trigger.Corner = Corner)
+					if(Event.Trigger.Is(CScreenCornerTrigger) && Event.Trigger.Corner = Corner)
 						ScreenCornerEvents.Insert(Object("time", Event.Trigger.Time, "Id", Event.ID))
 				}
 				hoverstart := A_TickCount

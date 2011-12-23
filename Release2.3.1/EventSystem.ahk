@@ -329,7 +329,7 @@ Class CEvent extends CRichObject
 	TriggerThisEvent(Trigger="")
 	{
 		;Order of this if condition is important here, because Event.Trigger.Matches() can disable the event for timers
-		if(this.Enabled && (!IsObject(Trigger) || (this.Trigger.Type = Trigger.Type && this.Trigger.Matches(Trigger, this)) || (Trigger.Is("CTriggerTrigger") && this.ID = Trigger.TargetID)))
+		if(this.Enabled && (!IsObject(Trigger) || (this.Trigger.Type = Trigger.Type && this.Trigger.Matches(Trigger, this)) || (Trigger.Is(CTriggerTrigger) && this.ID = Trigger.TargetID)))
 		{
 			;Test if the event is already running and mustn't be run multiple times
 			if(!this.OneInstance || !EventSystem.EventSchedule.FindKeyWithValue("ID", this.ID))
@@ -577,7 +577,7 @@ Class CEvents extends CArray
 			;Read conditions
 			if(IsObject(XMLEvent.Conditions) && XMLEvent.Conditions.HasKey("Condition"))
 			{
-				if(!XMLEvent.Conditions.Condition.Is("CArray")) ;Single condition
+				if(!XMLEvent.Conditions.Condition.Is(CArray)) ;Single condition
 					XMLEvent.Conditions.Condition := new CArray(XMLEvent.Conditions.Condition)
 			
 				for index, XMLCondition in XMLEvent.Conditions.Condition
@@ -610,7 +610,7 @@ Class CEvents extends CArray
 			;Read actions
 			if(IsObject(XMLEvent.Actions) && XMLEvent.Actions.HasKey("Action"))
 			{
-				if(!XMLEvent.Actions.Action.Is("CArray")) ;Single Action
+				if(!XMLEvent.Actions.Action.Is(CArray)) ;Single Action
 					XMLEvent.Actions.Action := new CArray(XMLEvent.Actions.Action)
 				
 				for index, XMLAction in XMLEvent.Actions.Action
@@ -690,7 +690,7 @@ Class CEvents extends CArray
 		}
 		if(XMLObject.HasKey("Remove")) ;If Objects are to be removed
 		{
-			if(XMLObject.Remove.HasKey("OfficialEvent") && !XMLObject.Remove.OfficialEvent.Is("CArray")) ;Single condition
+			if(XMLObject.Remove.HasKey("OfficialEvent") && !XMLObject.Remove.OfficialEvent.Is(CArray)) ;Single condition
 				XMLObject.Remove.OfficialEvent := new CArray(XMLObject.Remove.OfficialEvent)
 			for index, OfficialEvent in XMLObject.Remove.OfficialEvent
 			{
@@ -765,17 +765,17 @@ Class CEvents extends CArray
 			
 			
 			;Uncomment the lines below to save events with an "official" tag that allows to identify them in update processes
-			; if(!Event.OfficialEvent) ;Find an unused Event ID to be used as Official Event ID
-			; {			
-				; Loop
-				; {
-					; if(this.FindKeyWithValue("OfficialEvent", A_Index))
-						; continue ;Alread in use
-					; xmlEvent.OfficialEvent := A_Index ;Not used
-					; Event.OfficialEvent := A_Index
-					; break
-				; }
-			; }
+			if(!Event.OfficialEvent) ;Find an unused Event ID to be used as Official Event ID
+			{			
+				Loop
+				{
+					if(this.FindKeyWithValue("OfficialEvent", A_Index))
+						continue ;Already in use
+					xmlEvent.OfficialEvent := A_Index ;Not used
+					Event.OfficialEvent := A_Index
+					break
+				}
+			}
 			
 			
 			xmlTrigger := Object()
@@ -854,7 +854,7 @@ RegisterCategory(Class, Category)
 	else if(Class.Extends("CAction"))
 		Categories := CAction.Categories
 		
-	if(!Categories[Category].Is("CArray"))
+	if(!Categories[Category].Is(CArray))
 		Categories[Category] := new CArray()
 	Categories[Category].Insert(Class)
 	return Category

@@ -63,7 +63,7 @@ MenuItemTriggered(menu, item, pos)
 	index := 1
 	Loop % EventSystem.Events.MaxIndex()
 	{
-		if(EventSystem.Events[A_Index].Trigger.Type = "MenuItem" && EventSystem.Events[A_Index].Trigger.Menu = menu)
+		if(EventSystem.Events[A_Index].Trigger.Is(CMenuItemTrigger) && EventSystem.Events[A_Index].Trigger.Menu = menu)
 		{
 			if(index = pos)
 			{

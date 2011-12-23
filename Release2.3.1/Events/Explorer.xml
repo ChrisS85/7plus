@@ -8,7 +8,7 @@
 <Content>${SelNM}</Content>
 <Cut>0</Cut>
 <InsertType>File</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -20,7 +20,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>0</Negate>
@@ -49,7 +49,7 @@
 <Content>${SelNM}</Content>
 <Cut>1</Cut>
 <InsertType>File</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -61,7 +61,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>0</Negate>
@@ -86,10 +86,7 @@
 <Actions>
 <Action>
 <Path>Upward</Path>
-<Type>SetDirectory</Type>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Set current directory</Type>
 <WindowMatchType>Active</WindowMatchType>
 </Action></Actions>
 <Category>Explorer</Category>
@@ -102,7 +99,7 @@
 <With>(CabinetWClass|ExploreWClass)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>0</Negate>
@@ -128,9 +125,8 @@
 <Action>
 <Command>cmd.exe /k cd /D "${P}\"</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -162,7 +158,7 @@
 <Content>${SelNNEM}</Content>
 <Cut>0</Cut>
 <InsertType>Text</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -194,7 +190,7 @@
 <Content>${SelNM}</Content>
 <Cut>0</Cut>
 <InsertType>Text</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -226,7 +222,7 @@
 <Content>${SelNNEM}</Content>
 <Cut>0</Cut>
 <InsertType>Text</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -258,7 +254,7 @@
 <Content>${SelNM}</Content>
 <Cut>0</Cut>
 <InsertType>Text</InsertType>
-<Type>Clipboard</Type>
+<Type>Write to clipboard</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -285,9 +281,8 @@
 </Event><Event>
 <Actions>
 <Action>
-<BaseFile></BaseFile>
 <Rename>1</Rename>
-<Type>NewFile</Type>
+<Type>Create new file</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -299,7 +294,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Create a new text file in the directory of the currently active explorer/desktop.</Description>
@@ -318,7 +313,7 @@
 <Actions>
 <Action>
 <Rename>1</Rename>
-<Type>NewFolder</Type>
+<Type>Create new folder</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -330,7 +325,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Create a new folder in the directory of the currently active explorer/desktop.</Description>
@@ -350,9 +345,8 @@
 <Action>
 <Command>"%WinDir%\explorer.exe" /n,/e,${P}</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -367,16 +361,13 @@
 <OfficialEvent>236</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Type>DoubleClickDesktop</Type>
+<Type>Double click on desktop</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Path>Upward</Path>
-<Type>SetDirectory</Type>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Set current directory</Type>
 <WindowMatchType>Active</WindowMatchType>
 </Action></Actions>
 <Category>Explorer</Category>
@@ -392,7 +383,7 @@
 <OfficialEvent>238</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Type>ExplorerDoubleClickSpace</Type>
+<Type>Double click on empty space</Type>
 </Trigger>
 </Event><Event>
 <Actions>
@@ -402,14 +393,12 @@
 <Filter>(.*\.jpg|.*\.bmp|.*\.png|.*\.gif)</Filter>
 <List>${SelNQ}</List>
 <Operator>that match regular expression</Operator>
-<Separator></Separator>
-<Type>FilterList</Type>
+<Type>Filter list</Type>
 </Action><Action>
 <Command>"%ProgramFiles%\Paint.NET\PaintDotNet.exe" ${SelNQ}</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -442,13 +431,12 @@
 <List>${SelNQ}</List>
 <Operator>that match regular expression</Operator>
 <Separator>`n</Separator>
-<Type>FilterList</Type>
+<Type>Filter list</Type>
 </Action><Action>
 <Command>"%ProgramFiles%\Notepad++\notepad++.exe" ${SelNQ}</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
-<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -477,20 +465,16 @@
 <Action>
 <Cancel>1</Cancel>
 <DataType>Text</DataType>
-<Placeholder>Input</Placeholder>
 <Text>Filter Text</Text>
 <Title>Select Files</Title>
-<Type>Input</Type>
+<Type>Ask for user input</Type>
 <Validate>1</Validate>
 </Action><Action>
 <Clear>1</Clear>
 <Deselect>0</Deselect>
 <Filter>${Input}</Filter>
-<Type>SelectFiles</Type>
+<Type>Select files</Type>
 <Wildcard>1</Wildcard>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Active</WindowMatchType>
 </Action></Actions>
 <Category>Explorer</Category>
@@ -518,20 +502,14 @@
 </Event><Event>
 <Actions>
 <Action>
-<Type>WindowActivate</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Activate a window</Type>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action><Action>
 <Button>Right</Button>
 <Double>0</Double>
 <Relative>1</Relative>
 <RestorePosition>1</RestorePosition>
-<Type>MouseClick</Type>
-<X></X>
-<Y></Y>
+<Type>Mouse click</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -543,11 +521,7 @@
 <With>DirectUIHWND3</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>WindowActive</Type>
-<WindowFilter></WindowFilter>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
+<Type>Window active</Type>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Condition><Condition>
 <Compare>${MC}</Compare>
@@ -572,7 +546,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<Type>RestoreSelection</Type>
+<Type>Restore file selection</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -584,7 +558,7 @@
 <With>(CabinetWClass|ExploreWClass)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition><Condition>
 <Compare>${Control}</Compare>
 <Negate>0</Negate>
@@ -609,7 +583,7 @@
 <Actions>
 <Action>
 <Action>Toggle show hidden files</Action>
-<Type>ViewMode</Type>
+<Type>Change explorer view mode</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -621,7 +595,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Toggles the "Show hidden files" explorer setting.</Description>
@@ -640,7 +614,7 @@
 <Actions>
 <Action>
 <Paths>${SelNM}</Paths>
-<Type>FlatView</Type>
+<Type>Show Explorer flat view</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -652,7 +626,7 @@
 <With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition><Condition>
 <Compare>${WinVer}</Compare>
 <Negate>1</Negate>
@@ -676,8 +650,67 @@
 </Event><Event>
 <Actions>
 <Action>
+<Action>Tab in Background</Action>
+<Type>Open folder in new window / tab</Type>
+</Action></Actions>
+<Category>Explorer</Category>
+<Conditions>
+<Condition>
+<Negate>1</Negate>
+<Type>Fullscreen window active</Type>
+<UseExcludeList>1</UseExcludeList>
+<UseIncludeList>1</UseIncludeList>
+</Condition><Condition>
+<Negate>0</Negate>
+<Type>Mouse over file list</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Opens the explorer folder under the mouse in a new window or tab.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1619</ID>
+<Name>Open folder in new window/tab</Name>
+<OfficialEvent>22</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>MButton</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Type>Close tab under mouse</Type>
+</Action></Actions>
+<Category>Explorer</Category>
+<Conditions>
+<Condition>
+<Negate>1</Negate>
+<Type>Fullscreen window active</Type>
+<UseExcludeList>1</UseExcludeList>
+<UseIncludeList>1</UseIncludeList>
+</Condition><Condition>
+<Negate>0</Negate>
+<Type>Mouse over tab button</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Closes the explorer tab under the mouse.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1622</ID>
+<Name>Close explorer tab under mouse</Name>
+<OfficialEvent>25</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>MButton</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
 <SelectedFiles>0</SelectedFiles>
-<Type>ExplorerReplaceDialog</Type>
+<Type>Explorer replace dialog</Type>
 <View>Filenames</View>
 </Action></Actions>
 <Category>Explorer</Category>
@@ -690,7 +723,7 @@
 <With>(CabinetWClass|ExploreWClass)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event shows the Explorer Rename/Replace dialog which is used to replace text in filenames and files.</Description>
@@ -708,7 +741,34 @@
 </Event><Event>
 <Actions>
 <Action>
-<Type>InvertSelection</Type>
+<Type>Merge Explorer windows</Type>
+</Action></Actions>
+<Category>Explorer</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate></Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event will merge all explorer windows into a single explorer window with tabs.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1628</ID>
+<Name>Merge all explorer windows</Name>
+<OfficialEvent>28</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^M</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Type>Invert file selection</Type>
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
@@ -736,7 +796,7 @@
 <Actions>
 <Action>
 <SelectedFiles>0</SelectedFiles>
-<Type>ExplorerReplaceDialog</Type>
+<Type>Explorer replace dialog</Type>
 <View>Files</View>
 </Action></Actions>
 <Category>Explorer</Category>
@@ -749,7 +809,7 @@
 <With>(CabinetWClass|ExploreWClass)</With>
 </Condition><Condition>
 <Negate>1</Negate>
-<Type>IsRenaming</Type>
+<Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event shows the explorer batch rename/replace dialog with "Replace in Files" preselected.</Description>

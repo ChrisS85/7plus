@@ -8,12 +8,12 @@
 <Placeholder>Input</Placeholder>
 <Text>Enter parameters. Paths might need`n to be enclosed in double quotes.</Text>
 <Title>Enter Parameters</Title>
-<Type>Input</Type>
+<Type>Ask for user input</Type>
 <Validate>1</Validate>
 </Action><Action>
 <Command>${Context} ${Input}</Command>
 <RunAsAdmin>0</RunAsAdmin>
-<Type>Run</Type>
+<Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
 <WorkingDirectory>${P}</WorkingDirectory>
 </Action></Actions>
@@ -38,14 +38,16 @@
 <FileTypes>exe,bat,cmd</FileTypes>
 <Name>Run with parameters...</Name>
 <SingleFileOnly>1</SingleFileOnly>
-<SubMenu></SubMenu>
-<Type>ContextMenu</Type>
+<Type>Context menu</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Files>${Context}</Files>
-<Type>ImageConverter</Type>
+<Hoster>ImgUr</Hoster>
+<ReuseWindow>0</ReuseWindow>
+<TemporaryFiles>0</TemporaryFiles>
+<Type>Show Image Converter</Type>
 </Action></Actions>
 <Category>Context Menu</Category>
 <Conditions>
@@ -68,14 +70,13 @@
 <FileTypes>BMP,DIB,RLE,JPG,JPEG,JPE,JFIF,GIF,TIF,TIFF,PNG</FileTypes>
 <Name>Convert Images</Name>
 <SingleFileOnly>0</SingleFileOnly>
-<SubMenu></SubMenu>
-<Type>ContextMenu</Type>
+<Type>Context menu</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Files>${Context}</Files>
-<Type>MD5</Type>
+<Type>Show Explorer checksum dialog</Type>
 </Action></Actions>
 <Category>Context Menu</Category>
 <Conditions>
@@ -98,8 +99,7 @@
 <FileTypes>*</FileTypes>
 <Name>MD5 Checksum(s)</Name>
 <SingleFileOnly>0</SingleFileOnly>
-<SubMenu></SubMenu>
-<Type>ContextMenu</Type>
+<Type>Context menu</Type>
 </Trigger>
 </Event><Event>
 <Actions>
@@ -108,9 +108,7 @@
 <FTPProfile>1</FTPProfile>
 <Silent>0</Silent>
 <SourceFiles>${Context}</SourceFiles>
-<TargetFile></TargetFile>
-<TargetFolder></TargetFolder>
-<Type>Upload</Type>
+<Type>Upload to FTP</Type>
 </Action></Actions>
 <Category>Context Menu</Category>
 <Conditions>
@@ -130,17 +128,15 @@
 <Desktop>0</Desktop>
 <Directory>0</Directory>
 <DirectoryBackground>0</DirectoryBackground>
-<FileTypes>*</FileTypes>
 <Name>Upload</Name>
 <SingleFileOnly>0</SingleFileOnly>
-<SubMenu></SubMenu>
-<Type>ContextMenu</Type>
+<Type>Context menu</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Action>Toggle show hidden files</Action>
-<Type>ViewMode</Type>
+<Type>Change explorer view mode</Type>
 </Action></Actions>
 <Category>Context Menu</Category>
 <Conditions>
@@ -160,17 +156,15 @@
 <Desktop>0</Desktop>
 <Directory>0</Directory>
 <DirectoryBackground>1</DirectoryBackground>
-<FileTypes></FileTypes>
 <Name>Toggle hidden files</Name>
 <SingleFileOnly>0</SingleFileOnly>
-<SubMenu></SubMenu>
-<Type>ContextMenu</Type>
+<Type>Context menu</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <Paths>${Context}</Paths>
-<Type>FlatView</Type>
+<Type>Show Explorer flat view</Type>
 </Action></Actions>
 <Category>Context Menu</Category>
 <Conditions>
@@ -190,17 +184,15 @@
 <Desktop>0</Desktop>
 <Directory>1</Directory>
 <DirectoryBackground>0</DirectoryBackground>
-<FileTypes></FileTypes>
 <Name>Flat View</Name>
 <SingleFileOnly>0</SingleFileOnly>
-<SubMenu></SubMenu>
-<Type>ContextMenu</Type>
+<Type>Context menu</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <SelectedFiles>1</SelectedFiles>
-<Type>ExplorerReplaceDialog</Type>
+<Type>Explorer replace dialog</Type>
 <View>Filenames</View>
 </Action></Actions>
 <Category>Context Menu</Category>
@@ -227,17 +219,15 @@
 <Desktop>0</Desktop>
 <Directory>1</Directory>
 <DirectoryBackground>0</DirectoryBackground>
-<FileTypes>*</FileTypes>
 <Name>Replace in filenames</Name>
 <SingleFileOnly>0</SingleFileOnly>
-<SubMenu></SubMenu>
-<Type>ContextMenu</Type>
+<Type>Context menu</Type>
 </Trigger>
 </Event><Event>
 <Actions>
 <Action>
 <SelectedFiles>1</SelectedFiles>
-<Type>ExplorerReplaceDialog</Type>
+<Type>Explorer replace dialog</Type>
 <View>Files</View>
 </Action></Actions>
 <Category>Context Menu</Category>
@@ -264,11 +254,9 @@
 <Desktop>0</Desktop>
 <Directory>1</Directory>
 <DirectoryBackground>0</DirectoryBackground>
-<FileTypes>*</FileTypes>
 <Name>Replace in file contents</Name>
 <SingleFileOnly>0</SingleFileOnly>
-<SubMenu></SubMenu>
-<Type>ContextMenu</Type>
+<Type>Context menu</Type>
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>

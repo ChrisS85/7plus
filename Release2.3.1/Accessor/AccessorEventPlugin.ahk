@@ -28,7 +28,7 @@ Accessor_EventPlugin_FillAccessorList(EventPlugin, Accessor, Filter, LastFilter,
 {
 	for index, Event in EventSystem.Events
 	{
-		if(Event.Trigger.Is("CAccessorTrigger") && Filter = Event.Trigger.Keyword)
+		if(Event.Trigger.Is(CAccessorTrigger) && Filter = Event.Trigger.Keyword)
 			Accessor.List.Insert(Object("Title", Event.Trigger.Title, "Path", Event.Trigger.Path, "Event", Event, "Type", "EventPlugin", "Icon", 1))
 	}
 }

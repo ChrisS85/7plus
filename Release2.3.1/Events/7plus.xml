@@ -3,13 +3,13 @@
 <Event>
 <Actions>
 <Action>
-<Type>ShowSettings</Type>
+<Type>Show settings</Type>
 </Action></Actions>
 <Category>7plus</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
-<Type>IsFullScreen</Type>
+<Type>Fullscreen window active</Type>
 <UseExcludeList>0</UseExcludeList>
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
@@ -29,7 +29,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<Type>Restart7plus</Type>
+<Type>Restart 7plus</Type>
 </Action></Actions>
 <Category>7plus</Category>
 <Conditions>
