@@ -86,7 +86,7 @@ ApplyFreshInstallSteps()
 ;C) If the user manually extracted a newer version
 ApplyUpdateFixes()
 {
-	global MajorVersion, MinorVersion, BugfixVersion, XMLMajorVersion, XMLMinorVersion, XMLBugfixVersion, Vista7, Events
+	global MajorVersion, MinorVersion, BugfixVersion, XMLMajorVersion, XMLMinorVersion, XMLBugfixVersion
 	;On fresh installation, the versions are identical since a new Events.xml is used and no events patch needs to be applied
 	;After autoupdate has finished, the XML version is lower and the events are patched
 	;After manually overwriting 7plus, the XML version is lower and the events are patched
@@ -138,7 +138,7 @@ ApplyUpdateFixes()
 			;Convert empty and single arrays to real array
 			if(!XMLObject.List.MaxIndex())
 				XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()		
-
+			
 			Loop % min(XMLObject.List.MaxIndex(), 10)
 				ClipboardList.Insert(Decrypt(XMLObject.List[A_Index])) ;Read encrypted clipboard history
 			XMLObject := Object("List",Array())

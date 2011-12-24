@@ -248,6 +248,7 @@ ReadProgramLauncherCache(ProgramLauncher)
 	{
 		ProgramLauncher.Paths.Insert(Object("Path","%StartMenu%","Extensions","lnk,exe"))
 		ProgramLauncher.Paths.Insert(Object("Path","%StartMenuCommon%","Extensions","lnk,exe"))
+		ProgramLauncher.Paths.Insert(Object("Path","%Desktop%","Extensions","lnk,exe"))
 		return
 	}
 	

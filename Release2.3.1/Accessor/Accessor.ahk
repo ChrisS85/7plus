@@ -259,6 +259,7 @@ FillAccessorList()
 	Gui, %guinum%: Default
 	Gui, ListView, AccessorListView	
 	GuiControlGet, BaseFilter, , AccessorEdit
+	
 	for Index, Keyword in Accessor.Keywords
 	{
 		OutputDebug % "filter: " BaseFilter ", key: " keyword.key ", command: " Keyword.Command
@@ -267,28 +268,38 @@ FillAccessorList()
 		{
 			Filter := StringReplace(BaseFilter, Keyword.Key, Keyword.Command)
 			;Code below treats the ${1}-${9} placeholders that may be used with URLs (mostly for Accessor keywords, e.g. to launch a search engine url with a specific query).
-			for index, Parameter in Parameters
-				Filter := StringReplace(Filter, "${" index "}", Parameter)
+			;~ for index, Parameter in Parameters
+				;~ Filter := StringReplace(Filter, "${" index "}", Parameter)
 			UsingKeyword := true
 			break
 		}
 	}
+	
 	Filter := Filter ? Filter : BaseFilter
 	
 	;Parse parameters. They are split by spaces. Quotes (" ") can be used to treat multiple words as one parameter. The first parameter is the Filter variable without the options.
 	Parameters := Array()
-	p0 := Parse(Filter, "q"")1 2 3 4 5 6 7 8 9 10", "", p1, p2, p3, p4, p5, p6, p7, p8, p9)
+	p0 := Parse(Filter, "q"")1 2 3 4 5 6 7 8 9 10", Filter, p1, p2, p3, p4, p5, p6, p7, p8, p9)
 	
-	Loop % p0 - 1
+	Loop % min(p0 - 1, 9)
 		Parameters.Insert(p%A_Index%)
-	OutputDebug % "1: " p1
+	
 	if(UsingKeyword)
 	{
 		;Code below treats the ${1}-${9} placeholders that may be used with keywords, e.g. to launch a search engine url with a specific query.
-		Loop % Parameters.MaxIndex()
+		for Index, Parameter in Parameters
 		{
-			if(InStr(Filter, "${" A_Index "}"))
-				Filter := StringReplace(Filter, "${" A_Index "}", Parameters.Remove(1))
+			;If this is the last placeholder used in the query, insert all parameters into it so queries with spaces become possible for the last placeholder
+			if(InStr(Filter, "${" Index "}") && !InStr(Filter, "${" (Index+1) "}"))
+			{
+				CollectedParameters := Parameter
+				Loop % Parameters.MaxIndex() - Index
+					CollectedParameters .= " " Parameters[A_Index + Index]
+				Filter := StringReplace(Filter, "${" Index "}", CollectedParameters)
+				break
+			}
+			else if(InStr(Filter, "${" Index "}"))
+				Filter := StringReplace(Filter, "${" Index "}", Parameters.Remove(1))
 			else
 				break
 		}

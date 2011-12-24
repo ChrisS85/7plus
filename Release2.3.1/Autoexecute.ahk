@@ -64,7 +64,7 @@ if((ApplicationState.IsPortable && !WriteAccess(Settings.ConfigPath "\Accessor.x
 	MsgBox No file access to settings files in 7plus directory. 7plus will not be able to store its settings. Please move 7plus to a folder with write permissions, run it as administrator, or grant write permissions to this directory.
 
 ;Fresh install, copy default events file into config directory
-if(!FileExist(Settings.ConfigPath "\Events.xml") && FileExist(A_ScriptDir "\Events\All Events.xml")) 
+if(!FileExist(Settings.ConfigPath)) 
 {
 	FileCopy, %A_ScriptDir%\Events\All Events.xml, % Settings.ConfigPath "\Events.xml"
 	ApplyFreshInstallSteps()
