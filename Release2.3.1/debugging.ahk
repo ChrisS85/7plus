@@ -91,6 +91,8 @@ Class CErrorCollector
 				Error.Key := A_LoopReadLine
 			else if(state = 4)
 				Error.Value := A_LoopReadLine
+			else if(state = 5)
+				Error.Type := A_LoopReadLine
 			else if(state = 0)
 			{
 				Error.LineText := A_LoopReadLine
@@ -102,7 +104,7 @@ Class CErrorCollector
 	{
 		FileDelete, % Settings.ConfigPath "\InvalidObjectAccess.log"
 		for index, Error in this.Errors
-			FileAppend, % Error.File "`n" Error.Line "`n" Error.Key "`n" Error.Value "`n" Error.LineText "`n", % Settings.ConfigPath "\InvalidObjectAccess.log"
+			FileAppend, % Error.File "`n" Error.Line "`n" Error.Key "`n" Error.Value "`n" Error.LineText "`n" Error.Type "`n", % Settings.ConfigPath "\InvalidObjectAccess.log"
 	}
 }
 ;Test for attempted key access on invalid objects
@@ -110,26 +112,26 @@ CollectErrors(nonobj, p1="", p2="", p3="", p4="")
 {
 	ex := Exception("", -1)
 	for index, Error in CErrorCollector.Errors
-		if(Error.File = ex.File && Error.Line = ex.Line && Error.Key = p1)
+		if(Error.File = ex.File && Error.Line = ex.Line && Error.Key = p1 && Error.Type = "Access Error")
 			return
-	CErrorCollector.Errors.Insert(Error := {File : ex.File, Line : ex.Line, Key : p1, Value : nonobj, LineText : ex.What})
-	FileAppend, % ex.File "`n" ex.Line "`n" p1 "`n" nonobj "`n" ex.What "`n", % Settings.ConfigPath "\InvalidObjectAccess.log"
+	CErrorCollector.Errors.Insert(Error := {File : ex.File, Line : ex.Line, Key : p1, Value : nonobj, LineText : ex.What, Type : "Access Error"})
+	FileAppend, % ex.File "`n" ex.Line "`n" p1 "`n" nonobj "`n" ex.What "`nAccess Error`n", % Settings.ConfigPath "\InvalidObjectAccess.log"
 	if(CErrorDisplay.HasKey("Instance"))
 	{
-		CErrorDisplay.Instance.lstErrors.Items.Add("", Error.File, Error.Line, Error.Key, Error.Value, Error.LineText)
+		CErrorDisplay.Instance.lstErrors.Items.Add("", Error.File, Error.Line, Error.Key, Error.Value, Error.LineText, Error.Type)
 		CErrorDisplay.Instance.lstErrors.ModifyCol()
 	}
 }
 Class CErrorDisplay extends CGUI
 {
-	lstErrors := this.AddControl("ListView", "lstErrors", "w1000 h500", "File|Line|Key|Value|LineText")
+	lstErrors := this.AddControl("ListView", "lstErrors", "w1000 h500", "File|Line|Key|Value|LineText|Type")
 	__New()
 	{
 		this.DestroyOnClose := true
 		this.lstErrors.IndependentSorting := true
 		this.CloseOnEscape := true
 		for index, Error in CErrorCollector.Errors
-			this.lstErrors.Items.Add("", Error.File, Error.Line, Error.Key, Error.Value, Error.LineText)
+			this.lstErrors.Items.Add("", Error.File, Error.Line, Error.Key, Error.Value, Error.LineText, Error.Type)
 		this.lstErrors.ModifyCol()
 		this.base.Instance := this
 		this.Show()
@@ -140,6 +142,8 @@ Class CErrorDisplay extends CGUI
 	}
 	lstErrors_DoubleClick(Row)
 	{
+		if(!FileExist(A_ProgramFiles "\AutoHotkey\SciTE_beta5\Scite.exe"))
+			return
 		run % """" A_ProgramFiles "\AutoHotkey\SciTE_beta5\Scite.exe"" """ Row[1] """"
 		Sleep 1000
 		Send ^g

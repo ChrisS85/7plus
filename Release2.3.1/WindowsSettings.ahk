@@ -3,6 +3,17 @@
 ;Getter functions: Return 1 when enabled, 0 when disabled, or -1 when not used on this OS.
 ;==========================================================
 
+/*
+Settings that require explorer restart:
+Remove user directories (new explorer window is enough)
+Remove explorer libraries (possibly logoff)
+cycle through windows
+Show all tray notification icons
+thumbnail hover time
+
+settings that require reboot:
+Disable UAC
+*/
 Class WindowsSettings
 {
 	GetShowAllNotifications()
@@ -118,7 +129,7 @@ Class WindowsSettings
 	SetShowAllNotifications(ShowAllNotifications)
 	{
 		RegWrite, REG_DWORD, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer, EnableAutoTray, % ShowAllNotifications = 1 ? 0 : 1
-		return 0
+		return 2
 	}	
 
 	SetRemoveUserDir(RemoveUserDir)
@@ -126,7 +137,7 @@ Class WindowsSettings
 		RegGivePermissions("hkcr\CLSID\{59031a47-3f72-44a7-89c5-5595fe6b30ee}\ShellFolder")
 		RegWrite, REG_DWORD, HKCR, CLSID\{59031a47-3f72-44a7-89c5-5595fe6b30ee}\ShellFolder, Attributes, % RemoveUserDir ? 0xf094012d : 0xf084012d
 		RegRevokePermissions("hkcr\CLSID\{59031a47-3f72-44a7-89c5-5595fe6b30ee}\ShellFolder")
-		return 0
+		return 2
 	}
 
 	SetRemoveWMP(RemoveWMP)
@@ -212,6 +223,7 @@ Class WindowsSettings
 				RegWrite, REG_SZ, HKCR,  Folder\ShellEx\ContextMenuHandlers\Library Location,, {3dad6c5d-2167-4cae-9914-f99e41c12cfa}
 			RegRevokePermissions("HKCR\CLSID\{031E4825-7B94-4dc3-B131-E946B44C8DD5}\ShellFolder")
 			RegRevokePermissions("HKCR\Folder\ShellEx\ContextMenuHandlers\Library Location")
+			return 1
 		}
 		return 0
 	}
@@ -231,6 +243,7 @@ Class WindowsSettings
 		if(Vista7 A_OSVersion != "WIN_VISTA")
 		{
 			RegWrite, REG_SZ, HKCU, Control Panel\Mouse, MouseHoverTime, % ThumbnailHoverTime
+			return 2
 		}
 		return 0
 	}

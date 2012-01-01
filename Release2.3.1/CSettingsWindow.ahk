@@ -1409,6 +1409,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 	InitWindowsSettings()
 	{
 		Page := this.Pages.WindowsSettings.Tabs[1].Controls
+		
+		;Loop through all checkbox controls on this page and get the window setting by calling the specific function from WindowsSettings.ahk.
 		for Name, Control in Page
 			if(Control.Type = "CheckBox")
 			{
@@ -1416,7 +1418,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 				if(Property = -1)
 					Control.Disable()
 				else
-					Control.Checked := Control.OrigChecked := Property
+					Control.Checked := Control.OrigChecked := Property ;Current value is cached in the control so it is only applied when it is changed.
 			}
 		Property := WindowsSettings.GetThumbnailHoverTime()
 		if(Property = -1)
@@ -1430,9 +1432,14 @@ Finally, here are some settings that you're likely to change at the beginning:
 		RequiredAction := 0
 		for Name, Control in Page
 			if(Control.Type = "CheckBox" && Control.Checked != Control.OrigChecked)
+			{
 				RequiredAction |= WindowsSettings["Set" SubStr(Name, 4)](Control.Checked)
+				Control.OrigChecked := Control.Checked
+			}
 		if(Page.editThumbnailHoverTime.Text != Page.editThumbnailHoverTime.OrigText)
 			RequiredAction |= WindowsSettings.SetThumbnailHoverTime(Page.editThumbnailHoverTime.Text)
+		if(RequiredAction > 0)
+			MsgBox, 4,,Some settings that you changed require that you restart Explorer, log off or reboot.
 	}
 	
 	;Misc

@@ -117,7 +117,7 @@ Class CEventSystem extends CRichObject
 				Success := Event.CheckConditions(true)
 				
 				;if the conditions were not fulfilled, remove this event and continue with the next one
-				if(Success = 0)
+				if(!Success)
 				{
 					this.EventSchedule.Remove(EventPos)
 					outputdebug % "Conditions of event " event.id " were not fulfilled."

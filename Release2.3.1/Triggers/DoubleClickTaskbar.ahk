@@ -11,3 +11,26 @@ Class CDoubleClickTaskbarTrigger Extends CTrigger
 		return "Double click on empty taskbar area"
 	}
 }
+
+;Can't add the double click condition here, because IsDoubleClick seems to fail when called in the #if condition
+;mouse click on the taskbar is simulated instead.
+#if IsMouseOverTaskList()
+LButton::DoubleClickTaskbar()
+#if
+
+DoubleClickTaskbar()
+{
+	if(IsDoubleClick() && IsMouseOverFreeTaskListSpace())
+	{
+		Trigger := new CDoubleClickTaskbarTrigger()
+		EventSystem.OnTrigger(Trigger)
+	}
+	else
+	{
+		Click Left Down
+		while(GetKeyState("LButton", "P"))
+			Sleep 10
+		Click Left Up
+	}
+	return
+}

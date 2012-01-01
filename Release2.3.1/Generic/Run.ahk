@@ -98,12 +98,23 @@ Run(Target, WorkingDir = "", Mode = "", NonElevated=1)
 	
 	;Run under explorer process as normal user
 	if(A_IsAdmin && NonElevated)
-	{
 		return RunAsUser(Target, WorkingDir, Mode)
-		;~ result := DllCall("Explorer.dll\ShellExecInExplorerProcess","Str",Target, "Str", Args, "Str", WorkingDir)
-		;~ if(result >= 0 )
-			;~ return result
+	
+	;Split command and argument
+	SplitCommandLine(Target, Args)
+	
+	;Show UAC prompt and run elevated
+	if(!A_IsAdmin && !NonElevated)
+	{		
+		If(RunAsAdmin(Target, args, WorkingDir)) ;UAC prompt confirmed
+			return 0
 	}
+	;Still here, error
+	Msgbox Error launching %Target%
+}
+
+SplitCommandLine(ByRef Target, ByRef Args)
+{
 	;Split command and argument
 	if(InStr(Target, """")=1 && InStr(Target, """",false,3)) ;command has quotes, split it
 	{
@@ -117,32 +128,17 @@ Run(Target, WorkingDir = "", Mode = "", NonElevated=1)
 	}
 	else
 		Args := "" ;Single Command
-	
-	;~ MsgBox target "%target%"`nargs "%args%"
-	;Show UAC prompt and run elevated
-	if(!A_IsAdmin && !NonElevated)
-	{		
-		If(RunAsAdmin(Target, args, WorkingDir)) ;UAC prompt confirmed
-			return 0
-	}
-	;Still here, error
-	Msgbox Error launching %Target%
-}
-
-InitRunHelper()
-{
-	global hwndRunHelper
-	Prev_DetectHiddenWindows := A_DetectHiddenWindows
-	DetectHiddenWindows, On
-	Run, %A_ScriptDir%\RunHelper.ahk,,, PID
-	WinWait, ahk_pid %PID%
-	hwndRunHelper := WinExist("ahk_pid " PID)
-	DllCall("ChangeWindowMessageFilter", "UInt", 0x4a, "UInt", 1)
-	DetectHiddenWindows %Prev_DetectHiddenWindows%
 }
 RunAsUser(Command, WorkingDir, Options)
 {
-	return DllCall("Explorer.dll\CreateProcessMediumIL", Str, Command, Str, WorkingDir, Str, Options, "UInt")
+	result := DllCall("Explorer.dll\CreateProcessMediumIL", Str, Command, Str, WorkingDir, Str, Options, "UInt")
+	if(A_LastError = 740) ;ERROR_ELEVATION_REQUIRED
+	{
+		Run, %Command% , %WorkingDir%, %Mode% UseErrorLevel, v
+		if(A_LastError)
+			Msgbox Error launching %Target%
+		Return, v
+	}
 }
 RunAsAdmin(target, args, WorkingDir)
 {

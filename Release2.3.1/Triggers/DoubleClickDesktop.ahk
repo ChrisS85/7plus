@@ -8,3 +8,20 @@ Class CDoubleClickDesktopTrigger Extends CTrigger
 		return true ;type is checked elsewhere
 	}
 }
+
+#MaxThreadsPerHotkey 2
+#if (Vista7 && IsWindowUnderCursor("WorkerW")) || (!Vista7 && IsWindowUnderCursor("ProgMan"))
+~LButton::DoubleClickDesktop()
+#if
+#MaxThreadsPerHotkey 1
+
+DoubleClickDesktop()
+{
+	CurrentDesktopFiles:=GetSelectedFiles()
+	if(IsDoubleClick() && CurrentDesktopFiles = "")
+	{
+		Trigger := new CDoubleClickDesktopTrigger()
+		EventSystem.OnTrigger(Trigger)
+	}
+	Return
+}

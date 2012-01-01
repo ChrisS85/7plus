@@ -376,8 +376,7 @@ DWORD _stdcall CreateProcessMediumIL(WCHAR* u16_CmdLine, WCHAR* u16_WorkingDir, 
 	
 	if (!f_CreateProcessWithTokenW(h_Token2, 0, 0, u16_CmdLine, 0, 0, (u16_WorkingDir && *u16_WorkingDir) ? u16_WorkingDir : 0, &k_StartupInfo, &k_ProcInfo))
 		goto _CleanUp;
- 
-	SetLastError(k_ProcInfo.dwProcessId);
+	SetLastError(0);
  
 	_CleanUp:
 	DWORD u32_Error = GetLastError();
@@ -385,8 +384,9 @@ DWORD _stdcall CreateProcessMediumIL(WCHAR* u16_CmdLine, WCHAR* u16_WorkingDir, 
 	if (h_Token2)  CloseHandle(h_Token2);
 	if (h_Process) CloseHandle(h_Process);
 	CloseHandle(k_ProcInfo.hThread);
-	CloseHandle(k_ProcInfo.hProcess); 
-	return u32_Error;
+	CloseHandle(k_ProcInfo.hProcess);
+	SetLastError(u32_Error);
+	return k_ProcInfo.dwProcessId;
 }
 
 int _stdcall SetPath(HWND hWnd, LPCWSTR Path)

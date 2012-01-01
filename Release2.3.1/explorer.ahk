@@ -40,15 +40,15 @@ IsMouseOverFileList()
 	if(A_OSVersion="WIN_7" && (winclass="CabinetWClass" || winclass="ExploreWClass")) ;Win7 Explorer
 	{		
 		ControlGetPos , cX, cY, Width, Height, DirectUIHWND3, A
-		if(IsInArea(MouseX,MouseY,cX,cY,Width,Height))
+		;Offsets are estimated values in my windows skin and don't need to be correct for everyone. They're used to prevent catching double clicks on the column headers.
+		if(IsInArea(MouseX,MouseY,cX,cY + 25,Width,Height - 25))
 			return true		
 	}	
 	else if((z:=IsDialog(window))=1) ;New dialogs
 	{
-		outputdebug new dialog
 		ControlGetPos , cX, cY, Width, Height, DirectUIHWND2, A
-		outputdebug x %MouseX% y %mousey% x%cx% y%cy% w%width% h%height%
-		if(IsInArea(MouseX,MouseY,cX,cY,Width,Height)) ;Checking for area because rename might be in process and mouse might be over edit control
+		;Offsets are estimated values in my windows skin and don't need to be correct for everyone. They're used to prevent catching double clicks on the column headers.
+		if(IsInArea(MouseX,MouseY,cX,cY + 25,Width,Height - 25)) ;Checking for area because rename might be in process and mouse might be over edit control
 			return true
 	}
 	else if(winclass="CabinetWClass" || winclass="ExploreWClass" || z=2) ;Old dialogs or Vista/XP
@@ -287,111 +287,7 @@ RunExplorer()
 	Return
 }
 
-#MaxThreadsPerHotkey 2
-#if (Vista7 && IsWindowUnderCursor("WorkerW")) || (!Vista7 && IsWindowUnderCursor("ProgMan"))
-~LButton::
-CurrentDesktopFiles:=GetSelectedFiles()
-; outputdebug current: "%CurrentDesktopFiles%" previous: %PreviousDesktopFiles%
-; outputdebug % "is doubleclick: """ IsDoubleClick() """ no files: """ (CurrentDesktopFiles = "") """"
-; outputdebug(A_TimeSincePriorHotkey " < " DllCall("GetDoubleClickTime") " && " A_ThisHotkey "=" A_PriorHotkey)
-if(IsDoubleClick() && CurrentDesktopFiles = "")
-{
-	Trigger := new CDoubleClickDesktopTrigger()
-	EventSystem.OnTrigger(Trigger)
-}
-Return
-#if
 
-#MaxThreadsPerHotkey 1
-;Double click upwards is buggy in filedialogs, so only explorer for now until someone comes up with non-intrusive getpath, getselectedfiles functionsunrel
-#if !IsDialog() && IsMouseOverFileList() && GetKeyState("RButton")!=1
-;LButton on empty space in explorer -> go upwards
-~LButton::		
-CoordMode,Mouse,Relative
-;wait until button is released again
-KeyWait, LButton
-;Time for a doubleclick in windows
-WaitTime:=DllCall("GetDoubleClickTime")/1000
-MouseGetPos, Click1X, Click1Y
-;This check is needed so that we don't send CTRL+C in a textfield control, which would disrupt the text entering process
-;Make sure only filelist is focussed
-if(!IsRenaming() && InFileList())
-{
-	path:=GetCurrentFolder()
-	files:=GetSelectedFiles()
-	;if more time than a double click time has passed, consider this a new series of double clicks
-	if(A_TickCount-time1>WaitTime*1000)
-	{
-		time1:=A_TickCount
-		path1:=path
-	}
-	else
-	{			
-		;if less time has passed, the previous double click was cancelled for some reason and we need to check its dir too to see directory changes
-		time1:=A_TickCount
-		if(path!=path1)
-		{
-			time1:=0
-			return
-		}					
-	}
-	;this check is required so that it's possible to count any double click and not every second. If at this place a file is selected, 
-	;it would swallow the second click otherwise and won't be able to count it in a double clickwait for anotherat this plac
-	if (files!="")
-		return
-	;wait for second click
-	KeyWait, LButton, D T%WaitTime% 
-	If(errorlevel=0)
-	{
-		MouseGetPos, Click2X, Click2Y
-		if(abs(Click1X-Click2X)**2+abs(Click1Y-Click2Y)**2>16) ;Max 4 pixels between clicks
-			return
-	
-		path1:=GetCurrentFolder()
-		if(path = path1) 
-		{	
-			if(InFileList()&&IsMouseOverFileList()) 
-			{			
-				;check if no files selected after second click either
-				files:=GetSelectedFiles()
-				if (!files)
-				{
-					Trigger := new CExplorerDoubleClickSpaceTrigger()
-					EventSystem.OnTrigger(Trigger)
-					/*
-					if (Vista7 && !strEndsWith(path1,".search-ms"))
-						Send !{Up}
-					else
-						Send {Backspace}
-					*/
-					time1:=0
-				}
-			}	
-		}
-	}
-	
-}	
-Return
-#if
-
-#if IsMouseOverTaskList() ;Can't add the conditions below here right now, because IsDoubleClick seems to fail when called in the #if condition
-LButton::
-outputdebug lbutton
-if(IsDoubleClick() && IsMouseOverFreeTaskListSpace())
-{
-	outputdebug doubleclicktaskbar
-	Trigger := new CDoubleClickTaskbarTrigger()
-	EventSystem.OnTrigger(Trigger)
-}
-else
-{
-	Click Left Down
-	while(GetKeyState("LButton", "P"))
-		Sleep 50
-	Click Left Up
-}
-return
-#if
 /*
 #if !IsFullScreen()
 ^MButton::
@@ -709,7 +605,9 @@ ExplorerSelectionChanged(ExplorerCOMObject)
 	outputdebug explorer selection change end
 	; Critical, Off
 }
-class InfoGUI
+
+;This class displays additional information in the status bar of explorer windows
+Class InfoGUI
 {
 	__New(hParent)
 	{
@@ -781,6 +679,7 @@ class InfoGUI
 }
 
 ;TODO: Figure out how to receive explorer close event and proper path change
+;This class represents an explorer window in 7plus and stores data about it.
 Class CExplorerWindow
 {	
     __New(hWnd, Path="")

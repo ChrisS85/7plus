@@ -7,7 +7,7 @@ IsContextMenuActive()
 	NumPut(GuiThreadInfoSize, GuiThreadInfo, 0) 
 	if not DllCall("GetGUIThreadInfo", uint, 0, "Ptr", &GuiThreadInfo) 
 	{ 
-	  MsgBox GetGUIThreadInfo() indicated a failure. 
+	  ;MsgBox GetGUIThreadInfo() indicated a failure. 
 	  return 
 	} 
 	; GuiThreadInfo contains a DWORD flags at byte 4 
