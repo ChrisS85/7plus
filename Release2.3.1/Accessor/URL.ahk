@@ -71,7 +71,6 @@ Accessor_URL_OnExit(URL)
 }
 Accessor_URL_FillAccessorList(URL, Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet, Parameters)
 {
-	OutputDebug Filter %filter%
 	if(!CouldBeURL(Filter))
 		return
 	

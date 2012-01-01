@@ -172,13 +172,10 @@ Accessor_OnExit(Accessor)
 	DestroyIcon(Accessor.GenericIcons.Folder)
 	DestroyIcon(Accessor.GenericIcons.URL)
 }
-;Non blocking window switcher box (can wait for closing in event system though)
+;Non blocking accessor window (can wait for closing in event system though)
 CreateAccessorWindow(Action)
 {
 	global AccessorListView, Accessor, AccessorPlugins, AccessorOKButton
-	WasCritical := A_IsCritical
-	Critical, Off
-	outputdebug Create Accessor window
 	if(AccessorGUINum := Accessor.GUINum)
 	{
 		gui %AccessorGUINum%:+LastFoundExist
@@ -225,11 +222,7 @@ CreateAccessorWindow(Action)
 	Accessor.History.Index := 1
 	Accessor.History[1] := ""
 	Loop % AccessorPlugins.MaxIndex()
-	{
-		outputdebug % "load accessor plugin " AccessorPlugins[A_index].type
-		AccessorPlugins[A_Index].OnAccessorOpen(Accessor)
-	}
-	outputdebug All accessor plugins loaded
+			AccessorPlugins[A_Index].OnAccessorOpen(Accessor)
 	;Check if a plugin set a custom filter
 	GuiControlGet, Filter, , AccessorEdit
 	if(!Filter)
@@ -238,9 +231,6 @@ CreateAccessorWindow(Action)
 	old := OnMessage(0x100)
 	Accessor.OldKeyDown := old
 	OnMessage(0x100, "Accessor_WM_KEYDOWN")
-	if(WasCritical)
-		Critical
-	outputdebug accessor window created
 	;return Gui number to indicate that the Accessor box is still open
 	return AccessorGUINum
 }
@@ -262,7 +252,6 @@ FillAccessorList()
 	
 	for Index, Keyword in Accessor.Keywords
 	{
-		OutputDebug % "filter: " BaseFilter ", key: " keyword.key ", command: " Keyword.Command
 		;if filter starts with keyword and ends directly after it or has a space after it
 		if(InStr(BaseFilter, Keyword.Key) = 1 && (strlen(BaseFilter) = strlen(Keyword.Key) || InStr(BaseFilter, " ") = strLen(Keyword.Key) + 1))
 		{
@@ -279,38 +268,41 @@ FillAccessorList()
 	
 	;Parse parameters. They are split by spaces. Quotes (" ") can be used to treat multiple words as one parameter. The first parameter is the Filter variable without the options.
 	Parameters := Array()
-	p0 := Parse(Filter, "q"")1 2 3 4 5 6 7 8 9 10", Filter, p1, p2, p3, p4, p5, p6, p7, p8, p9)
+	p0 := Parse(Filter, "q"")1 2 3 4 5 6 7 8 9 10", p1, p2, p3, p4, p5, p6, p7, p8, p9, p10)
 	
-	Loop % min(p0 - 1, 9)
-		Parameters.Insert(p%A_Index%)
+	Loop % min(p0, 10)
+		Parameters.Insert(A_Index - 1, p%A_Index%) ;Store parameters with offset of -1, so p1 will become p0 since it isn't a real parameter but rather the keyword
 	
 	if(UsingKeyword)
 	{
-		;Code below treats the ${1}-${9} placeholders that may be used with keywords, e.g. to launch a search engine url with a specific query.
+		if(InStr(Filter, "${1}"))
+			Filter := p1 ;If atleast one placeholder is used, all parameters will be inserted 
+		;Code below treats the ${1}-${10} placeholders that may be used with keywords, e.g. to launch a search engine url with a specific query.
 		for Index, Parameter in Parameters
 		{
+			if(Index = 0)
+				continue
 			;If this is the last placeholder used in the query, insert all parameters into it so queries with spaces become possible for the last placeholder
 			if(InStr(Filter, "${" Index "}") && !InStr(Filter, "${" (Index+1) "}"))
 			{
 				CollectedParameters := Parameter
 				Loop % Parameters.MaxIndex() - Index
 					CollectedParameters .= " " Parameters[A_Index + Index]
-				Filter := StringReplace(Filter, "${" Index "}", CollectedParameters)
+				Filter := StringReplace(Filter, "${" Index "}", CollectedParameters, "ALL")
+				UsingPlaceholder := true
 				break
 			}
 			else if(InStr(Filter, "${" Index "}"))
-				Filter := StringReplace(Filter, "${" Index "}", Parameters.Remove(1))
+			{
+				Filter := StringReplace(Filter, "${" Index "}", Parameter, "ALL")
+				UsingPlaceholder := true
+			}
 			else
 				break
 		}
+		if(UsingPlaceholder)
+			Parameters := Array() ;Clear parameters since they are now integrated in the query
 	}
-	OutputDebug Filter %filter%
-	; if(filter = "run ")
-	; {
-		; Send % "$" Accessor.LauncherHotkey
-		; AccessorClose()
-		; return
-	; }
 	Accessor.ListViewReady := false
 	GuiControl, -Redraw, AccessorListView
 	LV_Delete()

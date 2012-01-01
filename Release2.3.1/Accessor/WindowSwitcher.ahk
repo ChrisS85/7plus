@@ -29,17 +29,17 @@ Accessor_WindowSwitcher_IsInSinglePluginContext(WindowSwitcher, Filter, LastFilt
 }
 Accessor_WindowSwitcher_OnAccessorOpen(WindowSwitcher, Accessor)
 {
-	outputdebug getwindowinfo
 	WindowSwitcher.List := GetWindowInfo()
 	SetTimer, UpdateTimes, 1000	
 	WindowSwitcher.Priority := WindowSwitcher.Settings.BasePriority
 }
 Accessor_WindowSwitcher_OnAccessorClose(WindowSwitcher, Accessor)
 {
-	if(IsObject(WindowSwitcher.List))
-		for index, ListEntry in WindowSwitcher.List
-			if(ListEntry.Icon != Accessor.GenericIcons.Application)
-				DestroyIcon(ListEntry.Icon)
+	;This is apparently not desired for icons obtained by WM_GETICON or GetClassLong since they are shared? See http://msdn.microsoft.com/en-us/library/windows/desktop/ms648063(v=vs.85).aspx
+	;~ if(IsObject(WindowSwitcher.List))
+		;~ for index, ListEntry in WindowSwitcher.List
+			;~ if(ListEntry.Icon != Accessor.GenericIcons.Application)
+				;~ DestroyIcon(ListEntry.Icon)
 	SetTimer, UpdateTimes, Off
 }
 Accessor_WindowSwitcher_FillAccessorList(WindowSwitcher, Accessor, Filter, LastFilter, ByRef IconCount, KeywordSet)
@@ -53,12 +53,14 @@ Accessor_WindowSwitcher_FillAccessorList(WindowSwitcher, Accessor, Filter, LastF
 		ExeName := WindowSwitcher.Settings.IgnoreFileExtensions ? strTrimRight(window.ExeName,".exe") : window.ExeName
 		if(x := (Filter = "" || InStr(window.Title,Filter) || InStr(ExeName,strippedFilter)) || (WindowSwitcher.Settings.FuzzySearch && FuzzySearch(ExeName,strippedFilter) < 0.4))
 		{
-			ImageList_ReplaceIcon(Accessor.ImageListID, -1, window.Icon)
-			IconCount++
-			if(x)
-				Accessor.List.Insert(Object("Icon", IconCount, "Title", window.Title, "Path", window.Path, "ExeName", window.ExeName, "CPU", window.CPU, "OnTop", window.OnTop, "Type", "WindowSwitcher", "PID", window.PID, "hwnd", window.hwnd))			
+			if((IconIndex := ImageList_ReplaceIcon(Accessor.ImageListID, -1, window.Icon)) != -1)
+				IconCount++
 			else
-				FuzzyList.Insert(Object("Icon", IconCount, "Title", window.Title, "Path", window.Path, "ExeName", window.ExeName, "CPU", window.CPU, "OnTop", window.OnTop, "Type", "WindowSwitcher", "PID", window.PID, "hwnd", window.hwnd))			
+				IconIndex := 0
+			if(x)
+				Accessor.List.Insert(Object("Icon", IconIndex + 1, "Title", window.Title, "Path", window.Path, "ExeName", window.ExeName, "CPU", window.CPU, "OnTop", window.OnTop, "Type", "WindowSwitcher", "PID", window.PID, "hwnd", window.hwnd))			
+			else
+				FuzzyList.Insert(Object("Icon", IconIndex + 1, "Title", window.Title, "Path", window.Path, "ExeName", window.ExeName, "CPU", window.CPU, "OnTop", window.OnTop, "Type", "WindowSwitcher", "PID", window.PID, "hwnd", window.hwnd))			
 		}
 	}
 	Accessor.List.extend(FuzzyList)
@@ -137,7 +139,6 @@ WindowSwitcherCloseWindow()
 		return
 	LV_GetText(id,selected,2)
 	hwnd := Accessor.List[id].hwnd
-	outputdebug hwnd %hwnd%
 	PostMessage, 0x112, 0xF060,,, ahk_id %hwnd%
 	AccessorClose()
 }
@@ -195,7 +196,7 @@ GetWindowInfo()
 		and (((Parent) and ((Style_parent & WS_DISABLED) =0)) ; These 2 lines filter out windows that have a parent or owner window that is NOT disabled -
 		or ((Owner) and ((Style_Owner & WS_DISABLED) =0))))) ; NOTE - some windows result in blank value so must test for zero instead of using NOT operator!
 			continue
-		if(wid_Title = "Window Switcher")
+		if(wid_Title = "Accessor")
 			continue
 		if(WindowList.HasKey(wid))
 			Exe_Name := WindowList[wid].Executable
@@ -217,7 +218,7 @@ GetWindowInfo()
 			hIcon := ExtractIcon(hInstance, CPA_file_name, 1)
 		Else
 			hIcon := GetWindowIcon(wid, 1) ; (window id, whether to get large icons)
-			
+		
 		windows.Insert(Object("hwnd",wid,"Title", wid_Title, "Class", Win_Class, "Style", Style, "ExStyle", es, "ExeName", Exe_Name, "Path", FullPath, "OnTop", (es&0x8 > 0 ? "On top" : ""), "PID", PID, "Type", "Window", "Icon", hIcon))
 	}
 	return windows
@@ -253,7 +254,7 @@ GetWindowIcon(wid, LargeIcons) ; (window id, whether to get large icons)
 					{
 						h_icon := DllCall( "GetClassLong", "Ptr", wid, "int", -34 ) ; GCL_HICONSM is -34
 						If ( ! h_icon )
-						h_icon := DllCall( "LoadIcon", "Ptr", 0, "uint", 32512 ) ; IDI_APPLICATION is 32512
+							h_icon := DllCall( "LoadIcon", "Ptr", 0, "uint", 32512 ) ; IDI_APPLICATION is 32512
 					}
 				}
 			}
@@ -296,7 +297,7 @@ GetCPA_file_name( p_hw_target ) ; retrives Control Panel applet icon
       return, false
 }
 
-GetSystemTimes()    ; Total CPU Load
+GetSystemTimes()    ;Total CPU Load
 {
    Static oldIdleTime, oldKrnlTime, oldUserTime
    Static newIdleTime, newKrnlTime, newUserTime

@@ -23,6 +23,8 @@ ImageList_ReplaceIcon(himl, i, hicon)
 }
 
 /*
+
+Gets an icon associated with a file(type). The icon needs to be destroyed after usage.
 HICON WINAPI ExtractAssociatedIcon(
   __reserved  HINSTANCE hInst,
   __inout     LPTSTR lpIconPath,

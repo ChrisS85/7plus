@@ -254,8 +254,8 @@ GetListOfOpenNotepadPlusPlusTabs(WhichView = 1)
 		if(WhichView != 1)
 			TabName .= " [2]"
 		list.Insert(TabName)
+		RemoteBuf_Close(H) ;Close/free remote buffer
 	}
-	RemoteBuf_Close(H) ;Close/free remote buffer
 	return list
 }
 IsNotepadPlusPlusUnicode()
