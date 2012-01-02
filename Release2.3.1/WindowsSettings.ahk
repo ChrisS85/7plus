@@ -18,21 +18,18 @@ Class WindowsSettings
 {
 	GetShowAllNotifications()
 	{
-		return 0
 		RegRead, ShowAllTray, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer, EnableAutoTray
 		return ShowAllTray = 1 ? 0 : 1
 	}
 
 	GetRemoveUserDir()
 	{
-		return 0
 		RegRead, RemoveUserDir, HKCR, CLSID\{59031a47-3f72-44a7-89c5-5595fe6b30ee}\ShellFolder, Attributes
 		return RemoveUserDir = 0xf084012d ? 0 : 1
 	}
 
 	GetRemoveWMP()
 	{
-		return 0
 		if(A_OSVersion = "WIN_XP")
 			RegRead, RemoveWMP, HKCR, CLSID\{CE3FB1D1-02AE-4a5f-A6E9-D9F1B4073E6C}
 		else
@@ -42,35 +39,30 @@ Class WindowsSettings
 
 	GetRemoveOpenWith()
 	{
-		return 0
 		RegRead, RemoveOpenWith, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer, NoInternetOpenWIth
 		return RemoveOpenWith = 1 ? 1 : 0
 	}
 
 	GetRemoveCrashReporting()
 	{
-		return 0
 		RegRead, RemoveCrashReporting, HKLM, Software\Microsoft\Windows\Windows Error Reporting, DontShowUI
 		return RemoveCrashReporting = 1 ? 1 : 0
 	}
 
 	GetShowExtensions()
 	{
-		return 0
 		RegRead, ShowExtensions, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, HideFileExt 
 		return ShowExtensions = 1 ? 0 : 1
 	}
 
 	GetShowHiddenFiles()
 	{
-		return 0
 		RegRead, ShowHiddenFiles, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, Hidden 
 		return ShowHiddenFiles = 2 ? 0 : 1
 	}
 
 	GetShowSystemFiles()
 	{
-		return 0
 		RegRead, ShowSystemFiles, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, ShowSuperHidden 
 		return ShowSystemFiles
 	}
