@@ -471,7 +471,6 @@ Class CSlideWindows
 	}
 	ReleaseAll()
 	{
-		global CSlideWindows
 		this := new CSlideWindows()
 	}
 	;This is called when a window gets resized to see if it needs to be released

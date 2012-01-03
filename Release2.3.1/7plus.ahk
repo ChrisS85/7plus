@@ -1,4 +1,5 @@
 ;~ WatchDirectory("C:\test\|*.txt", "ReportChanges")
+;~ #Warn, LocalSameAsGlobal 
 Suspend, On
 #SingleInstance off
 #NoTrayIcon ;Added later

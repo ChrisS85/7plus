@@ -91,7 +91,8 @@ Class CSettingsWindow Extends CGUI
 		this.Events := ""
 	}
 	ApplySettings(Close=0)
-	{		
+	{
+		this.Enabled := false
 		PageNames := this.PageNames
 		Loop, Parse, PageNames, |
 		{
@@ -99,6 +100,7 @@ Class CSettingsWindow Extends CGUI
 			this["Apply" Name]()
 		}
 		Settings.Save()
+		this.Enabled := true
 		if(Close)
 			this.Close()
 	}

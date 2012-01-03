@@ -175,7 +175,7 @@ FixExplorerConfirmationDialogs()
 
 IsExplorerConfirmationDialog()
 {
-	global
+	global ExplorerConfirmationDialogTitle
 	if(WinActive("ahk_class #32770"))
 	{
 		WinGetTitle, title, A
@@ -219,14 +219,18 @@ RButton::
 #if Settings.Explorer.ImproveEnter && WinActive("ahk_group ExplorerGroup") && InFileList() && !IsRenaming() && !IsContextMenuActive()
 Enter::
 Return::
+	ExecuteFocusedFile()
+	return
+#if
+ExecuteFocusedFile()
+{
 	files:=GetSelectedFiles()
 	focussed:=GetFocussedFile()
 	if(!files&&focussed)
 		Send {Space}{Enter}
 	else
 		Send {Enter}
-	return
-#if
+}
 
 ;Function(s) to align explorer windows side by side and to launch explorer with last used directory
 #if (Settings.Explorer.RememberPath && Settings.Explorer.CurrentPath != "") || Settings.Explorer.AlignNewExplorer && WinActive("ahk_group ExplorerGroup")
@@ -287,42 +291,6 @@ RunExplorer()
 	Return
 }
 
-
-/*
-#if !IsFullScreen()
-^MButton::
-+MButton::
-MButton::
-key:=GetKeyState("CTRL") ? "^" : ""
-key.=GetKeyState("ALT") ? "!" : ""
-key.=GetKeyState("SHIFT") ? "+" : ""
-key.=(GetKeyState("RWIN") || GetKeyState("LWIN")) ? "#" : ""
-Handled:=TaskbuttonClose()
-if(!Handled)
-	Handled:=ToggleWallpaper()
-if(!Handled)
-	Handled:=OpenInNewFolder()
-if (!Handled && Handled:=IsMouseOverTabButton())
-	MouseCloseTab()
-	
-; This is not perfect, as hotkeys defined further down in the events list are not considered for catching keys. 
-; A better solution might be to evaluate all matching hotkeys conditions and check if any of it want to hide the key from the system
-if(!Handled && IsObject(Trigger := HotkeyShouldFire(A_ThisHotkey)))
-{
-	HotkeyTrigger(A_ThisHotkey)
-	Handled := !InStr(Trigger.Key, "~")
-}
-if(!Handled)
-{
-	Send %key%{MButton down}
-	KeyWait, MButton
-	Send {MButton up}
-}
-return 
-#if
-*/
-;Middle click on desktop -> Change wallpaper
-
 ;Scroll tree list with mouse wheel
 #if (Settings.Explorer.ScrollTreeUnderMouse && ((IsWindowUnderCursor("#32770") && IsDialog()) || IsWindowUnderCursor("CabinetWClass")||IsWindowUnderCursor("ExploreWClass")) && !IsRenaming())||(IsObject(Accessor) && Accessor.GUINum && WinActive(Accessor.WindowTitle))
 WheelUp::
@@ -344,7 +312,7 @@ Wheel()
 
 InitExplorerWindows()
 {
-	global ExplorerWindows, Vista7, shell32MUIpath
+	global ExplorerWindows, Shell32MUIpath
 	ExplorerWindows := Array()
 	RegisterExplorerWindows()
 	TabContainerList := Array()
@@ -433,29 +401,10 @@ RestoreExplorerSelection()
 ;Called when an explorer window is activated.
 ExplorerActivated(hwnd)
 {
-	global TabNum, TabWindow, SuppressTabEvents, ExplorerWindows
+	global ExplorerWindows
 	if(!ExplorerWindows.FindKeyWithValue("hwnd",hwnd))
 		ExplorerWindows.Insert(new CExplorerWindow(hwnd))
 	RegisterSelectionChangedEvents() ;Is this needed? only as backup probably
-	; if(SuppressTabEvents)
-		; return
-	; if(TabContainerList.active=hwnd) ;If active hwnd is set to this window already, activation shall be handled elsewhere
-		; return
-	; DecToHex(hwnd)
-	; if(TabContainer:=TabContainerList.ContainsHWND(hwnd))
-	; {
-		; TabContainerOld:=TabContainerList.ContainsHWND(TabContainerList.active)
-		; ; outputdebug set active
-		; OldTab:=TabContainer.active
-		; TabContainerList.active:=hwnd
-		; TabContainer.active:=hwnd
-		
-		; if(TabContainer!=TabContainerOld)
-			; UpdateTabs()
-		; UpdatePosition(TabNum, TabWindow)
-		
-		; ;SetTimer, UpdatePosition, 100
-	; }
 }
 
 ;This routine polls the existance of explorer windows since they disappear rather randomly.
@@ -489,22 +438,12 @@ CheckForClosedExplorerWindows()
 ;Called when an explorer window gets deactivated.
 ExplorerDeactivated(hwnd)
 {
-	global TabContainerList, TabNum, TabWindow,SuppressTabEvents
-	; hwnd:=WinExist("A")
-	; if(hwnd=TabWindow)
-		; return
-	; if(SuppressTabEvents)
-		; return
-	; TabContainerList.active:=0
-	; UpdatePosition(TabNum, TabWindow)
-	; ;SetTimer, UpdatePosition, Off
 }
 ;TODO: Continue here, implement delete method and check draw timer deactivation
 ;Called when an explorer window gets destroyed.
 ExplorerDestroyed(hwnd)
 {
-	global TabContainerList, ExplorerWindows
-	outputdebug explorer destroyed
+	global ExplorerWindows
 	TabContainer:=ExplorerWindows.GetItemWithValue("hwnd", hwnd+0).TabContainer
 	if(index := ExplorerWindows.FindKeyWithValue("hwnd", hwnd))
 		ExplorerWindows.Remove(index) ;This will destroy the info gui as well
@@ -537,7 +476,6 @@ ExplorerMoved(hwnd)
 ;Called when active explorer changes its path.
 ExplorerPathChanged(ExplorerWindow)
 {
-	global vista7
 	if(!IsObject(ExplorerWindow))
 		return
 	OldPath := ExplorerWindow.Path
@@ -684,7 +622,6 @@ Class CExplorerWindow
 {	
     __New(hWnd, Path="")
     {
-		global InfoGUI
 		this.hWnd := hWnd
 		this.Path := Path ? Path : GetCurrentFolder(hWnd)
 		this.DisplayName := GetCurrentFolder(hWnd, 1)

@@ -5,7 +5,7 @@ return
 
 MouseMovePolling()
 {
-	global Vista7,MouseX,MouseY,AeroFlipTime, Events, SlideWindows
+	global SlideWindows
 	static corner, hoverstart, ScreenCornerEvents ;Corner = 1234 (upper left, upper right, lower right, lower left), other values = not in corner
 	static lastx,lasty
 	;Get total size of all screens
@@ -28,7 +28,6 @@ MouseMovePolling()
 			{
 				if(ScreenCornerEvents[index].Time < A_TickCount - hoverstart)
 				{
-					outputdebug found event
 					Trigger := new CScreenCornerTrigger()
 					Trigger.Corner := Corner
 					EventSystem.Events.GetItemWithValue("ID", ScreenCornerEvents[index].ID).Trigger.TriggerThisEvent() ;Trigger the single event and remove it from the list so it only gets triggered once
@@ -124,7 +123,6 @@ ControlBackspaceFix()
 	char := Substr(text,col-1,1)
 	if(InStr(SpecialChars,char))
 		IsSpecial := true
-	outputdebug special %isspecial%
 	Loop
 	{
 		outputdebug loop %char%

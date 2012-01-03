@@ -95,7 +95,7 @@ IsMouseOverTaskbar()
 
 IsMouseOverFreeTaskListSpace()
 {
-	global result,IsRunning
+	static result,IsRunning
 	CoordMode, Mouse, Screen
 	SetWinDelay 0
 	SetKeyDelay 0
@@ -108,7 +108,7 @@ IsMouseOverFreeTaskListSpace()
 	if(A_OSVersion!="WIN_7")
 	{
 		x:=HitTest()
-		outputdebug x %x%
+		outputdebug HitTest: %x%
 		return x<0
 	}
 	IsRunning:=true
@@ -120,19 +120,16 @@ IsMouseOverFreeTaskListSpace()
 		if(WinExist("ahk_class #32768"))
 		{
 			result:=true
-			outputdebug break
 			break
 		}
 		else if(WinActive("ahk_id DV2ControlHost"))
 		{
 			result:=false
-			outputdebug break
 			break
 		}
 		x+=10
 		sleep 10
 	}
-	outputdebug return with %result% and send esc
 	while(WinExist("ahk_class #32768")||WinActive("ahk_class DV2ControlHost"))
 		Send {Esc}
 	IsRunning:=false
@@ -142,7 +139,7 @@ IsMouseOverFreeTaskListSpace()
 ;Middle click on taskbutton->close task
 TaskButtonClose()
 {
-	global
+	static prevx, prevy
 	if(IsMouseOverTaskList())
 	{
 		click right
