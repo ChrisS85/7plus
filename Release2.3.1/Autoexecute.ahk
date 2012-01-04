@@ -298,6 +298,7 @@ ProcessCommandLineParameters()
 			ExitApp
 		}
 	}
-	if(WinExist("ahk_id " hwnd))
+	DetectHiddenWindows, On
+	if(hwnd && WinGetClass("ahk_id " hwnd ) = "AutoHotkey")
 		ExitApp
 }
