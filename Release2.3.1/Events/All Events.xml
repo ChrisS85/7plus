@@ -682,7 +682,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>1</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>309</ID>
 <Name>Toggle always on top -&gt; Context menu active</Name>
@@ -713,7 +713,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>310</ID>
 <Name>Toggle always on top -&gt; No context menu active</Name>
@@ -746,7 +746,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>311</ID>
 <Name>Toggle always on top -&gt; context menu timeout</Name>
@@ -4098,12 +4098,7 @@
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
 <Conditions>
-<Condition>
-<Negate>1</Negate>
-<Type>Fullscreen window active</Type>
-<UseExcludeList>1</UseExcludeList>
-<UseIncludeList>1</UseIncludeList>
-</Condition></Conditions>
+</Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Shows the volume window when Mute button is pressed.</Description>
 <DisableAfterUse>0</DisableAfterUse>
@@ -4127,12 +4122,7 @@
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
 <Conditions>
-<Condition>
-<Negate>1</Negate>
-<Type>Fullscreen window active</Type>
-<UseExcludeList>1</UseExcludeList>
-<UseIncludeList>1</UseIncludeList>
-</Condition></Conditions>
+</Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Shows the volume window when volume down is pressed.</Description>
 <DisableAfterUse>0</DisableAfterUse>
@@ -4156,12 +4146,7 @@
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
 <Conditions>
-<Condition>
-<Negate>1</Negate>
-<Type>Fullscreen window active</Type>
-<UseExcludeList>1</UseExcludeList>
-<UseIncludeList>1</UseIncludeList>
-</Condition></Conditions>
+</Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Shows the volume window when volume up is pressed.</Description>
 <DisableAfterUse>0</DisableAfterUse>

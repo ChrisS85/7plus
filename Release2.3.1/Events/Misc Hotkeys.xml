@@ -128,12 +128,7 @@
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
 <Conditions>
-<Condition>
-<Negate>1</Negate>
-<Type>Fullscreen window active</Type>
-<UseExcludeList>1</UseExcludeList>
-<UseIncludeList>1</UseIncludeList>
-</Condition></Conditions>
+</Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Shows the volume window when Mute button is pressed.</Description>
 <DisableAfterUse>0</DisableAfterUse>
@@ -157,12 +152,7 @@
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
 <Conditions>
-<Condition>
-<Negate>1</Negate>
-<Type>Fullscreen window active</Type>
-<UseExcludeList>1</UseExcludeList>
-<UseIncludeList>1</UseIncludeList>
-</Condition></Conditions>
+</Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Shows the volume window when volume down is pressed.</Description>
 <DisableAfterUse>0</DisableAfterUse>
@@ -186,12 +176,7 @@
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
 <Conditions>
-<Condition>
-<Negate>1</Negate>
-<Type>Fullscreen window active</Type>
-<UseExcludeList>1</UseExcludeList>
-<UseIncludeList>1</UseIncludeList>
-</Condition></Conditions>
+</Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Shows the volume window when volume up is pressed.</Description>
 <DisableAfterUse>0</DisableAfterUse>
