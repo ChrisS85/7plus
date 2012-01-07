@@ -106,9 +106,6 @@ Accessor_URL_ListViewEvents(URL, AccessorListEntry)
 Accessor_URL_EditEvents(URL, AccessorListEntry, Filter, LastFilter)
 {
 }
-Accessor_URL_OnKeyDown(URL, wParam, lParam, Filter, selected, AccessorListEntry)
-{
-}
 Accessor_URL_SetupContextMenu(URL, AccessorListEntry)
 {
 	Menu, AccessorMenu, add, Open URL, AccessorOK

@@ -76,16 +76,6 @@ Accessor_WindowSwitcher_EditEvents(WindowSwitcher, AccessorListEntry, Filter, La
 {
 	return true
 }
-Accessor_WindowSwitcher_OnKeyDown(WindowSwitcher, wParam, lParam, Filter, selected, AccessorListEntry)
-{
-	global Accessor
-	if(wParam = 67 && GetKeyState("CTRL","P") && !Edit_TextIsSelected("","ahk_id " Accessor.HwndEdit))
-	{
-		AccessorCopyField("Path")
-		return true
-	}
-	return false
-}
 Accessor_WindowSwitcher_SetupContextMenu(WindowSwitcher, AccessorListEntry)
 {
 	Menu, AccessorMenu, add, Activate window,AccessorOK

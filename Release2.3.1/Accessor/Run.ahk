@@ -53,10 +53,6 @@ Accessor_Run_EditEvents(Run, AccessorListEntry, Filter, LastFilter)
 	return true
 }
 
-Accessor_Run_OnKeyDown(Run, wParam, lParam, Filter, selected, AccessorListEntry)
-{
-	return false
-}
 Accessor_Run_SetupContextMenu(Run, AccessorListEntry)
 {
 	Menu, AccessorMenu, add, Run as user, AccessorRun
@@ -64,12 +60,14 @@ Accessor_Run_SetupContextMenu(Run, AccessorListEntry)
 	Menu, AccessorMenu, Default, Run as user
 }
 
-#if (Accessor.GUINum)
+#if Accessor.GUINum
 ^Enter::
+^Return::
 AccessorRun(Accessor.List.GetItemWithValue("Type", "Run"))
 AccessorClose()
 return
-^+Enter::
++Enter::
++Return::
 AccessorRunAsAdmin(Accessor.List.GetItemWithValue("Type", "Run"))
 AccessorClose()
 return

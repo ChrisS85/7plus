@@ -53,17 +53,9 @@ Accessor_Google_EditEvents(Google, AccessorListEntry, Filter, LastFilter)
 	SetTimer, QueryGoogleResult, -500
 	return false
 }
-Accessor_Google_OnKeyDown(Google, wParam, lParam, Filter, selected, AccessorListEntry)
+Accessor_Google_OnCopy(Google, AccessorListEntry)
 {
-	global Accessor
-	if(wParam = 13)
-		SetTimer, QueryGoogleResult, -1
-	if(wParam = 67 && GetKeyState("CTRL","P") && !Edit_TextIsSelected("","ahk_id " Accessor.HwndEdit))
-	{
-		GoogleCopyURL()
-		return true
-	}
-	return 0
+	GoogleCopyURL()
 }
 QueryGoogleResult:
 QueryGoogleResult()
@@ -101,7 +93,7 @@ QueryGoogleResult()
 		pos2 := RegexMatch(GoogleQuery, "i)""visibleUrl"":""(.*?)""", visibleUrl, pos2+1)
 		pos3 := RegexMatch(GoogleQuery, "i)""titleNoFormatting"":""(.*?)""", titleNoFormatting, pos3+1)
 		titleNoFormatting1 := unhtml(Deref_Umlauts(titleNoFormatting1))
-		if(unescapedURL1 && visibleURL1 && titleNoFormatting1)
+		if(pos1 && pos2 && pos3 && unescapedURL1 && visibleURL1 && titleNoFormatting1)
 			GooglePlugin.List.Insert(Object("unescapedURL",unescapedURL1,"visibleUrl", visibleUrl1, "titleNoFormatting", titleNoFormatting1))
 		else
 			break

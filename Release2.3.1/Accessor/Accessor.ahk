@@ -59,7 +59,7 @@ Accessor_Init()
 	global AccessorPlugins, Accessor
 	AccessorPluginsList := "WindowSwitcher,FileSystem,EventPlugin,Google,Calc,ProgramLauncher,NotepadPlusPlus,SciTE4AutoHotkey,Notes,FastFolders,Uninstall,URL,Weather,Run" ;The order here partly determines the order in the window, so choose carefully
 	AccessorPlugins := Array()
-	Accessor := Object("Base", Object("OnExit", "Accessor_OnExit", "History", Array()))
+	Accessor := Object("Base", Object("OnExit", "Accessor_OnExit", "History", Array(), "EditQueue", Array()))
 	FileRead, xml, % Settings.ConfigPath "\Accessor.xml"
 	if(!xml)
 	{
@@ -113,12 +113,14 @@ Accessor_Init()
 		tmpobject.EditEvents := "Accessor_" A_LoopField "_EditEvents"
 		tmpobject.PerformAction := "Accessor_" A_LoopField "_PerformAction"
 		tmpobject.SetupContextMenu := "Accessor_" A_LoopField "_SetupContextMenu"
-		tmpobject.OnKeyDown := "Accessor_" A_LoopField "_OnKeyDown"
+		;tmpobject.OnKeyDown := "Accessor_" A_LoopField "_OnKeyDown"
+		tmpobject.OnCopy := "Accessor_" A_LoopField "_OnCopy"
 		tmpobject.OnExit := "Accessor_" A_LoopField "_OnExit"
 		tmpobject.ShowSettings := "Accessor_" A_LoopField "_ShowSettings"
 		tmpobject.SaveSettings := "Accessor_" A_LoopField "_SaveSettings"
 		tmpobject.GUISubmit := "Accessor_" A_LoopField "_GUISubmit"
 		tmpobject.Priority := 0
+		tmpobject.HandlesEnter := 0
 		tmpobject.OKName := "OK"
 		tmpobject.Settings := RichObject()
 		tmpobject.Settings.BasePriority := IsObject(XMLObject[A_LoopField]) ? XMLObject[A_LoopField].Settings.BasePriority : 0
@@ -139,8 +141,8 @@ Accessor_Init()
 		XMLObject.Keywords := Object()
 	if(!IsObject(XMLObject.Keywords.Keyword) || !XMLObject.Keywords.Keyword.MaxIndex())
 		XMLObject.Keywords.Keyword := IsObject(XMLObject.Keywords.Keyword) ? Array(XMLObject.Keywords.Keyword) : Array()
-	Loop % XMLObject.Keywords.Keyword.MaxIndex()
-		Accessor.Keywords.Insert(Object("Key", XMLObject.Keywords.Keyword[A_Index].Key, "Command", XMLObject.Keywords.Keyword[A_Index].Command))
+	for index, Keyword in XMLObject.Keywords.Keyword
+		Accessor.Keywords.Insert(Object("Key", Keyword.Key, "Command", Keyword.Command))
 	Accessor.GenericIcons := Object()
 	Accessor.GenericIcons.Application := ExtractIcon("shell32.dll", 3, 64)
 	Accessor.GenericIcons.File := ExtractIcon("shell32.dll", 1, 64)
@@ -157,14 +159,14 @@ Accessor_OnExit(Accessor)
 	
 	FileDelete, % Settings.ConfigPath "\Accessor.xml"
 	XMLObject := Object()
-	Loop % AccessorPlugins.MaxIndex()
+	for index, AccessorPlugin in AccessorPlugins
 	{
-		XMLObject[AccessorPlugins[A_Index].Type] := Object("Enabled", AccessorPlugins[A_Index].Enabled, "Keyword", AccessorPlugins[A_Index].Settings.Keyword, "Settings", AccessorPlugins[A_Index].Settings)
-		AccessorPlugins[A_Index].OnExit()
+		XMLObject[AccessorPlugin.Type] := Object("Enabled", AccessorPlugin.Enabled, "Keyword", AccessorPlugin.Settings.Keyword, "Settings", AccessorPlugin.Settings)
+		AccessorPlugin.OnExit()
 	}
 	XMLObject.Keywords := Object("Keyword",Array())
-	Loop % Accessor.Keywords.MaxIndex()
-		XMLObject.Keywords.Keyword.Insert(Object("Key", Accessor.Keywords[A_Index].Key, "Command", Accessor.Keywords[A_Index].Command))
+	for index, Keyword in Accessor.Keywords
+		XMLObject.Keywords.Keyword.Insert(Object("Key", Keyword.Key, "Command", Keyword.Command))
 	XML_Save(XMLObject, Settings.ConfigPath "\Accessor.xml")
 	
 	DestroyIcon(Accessor.GenericIcons.Application)
@@ -176,6 +178,7 @@ Accessor_OnExit(Accessor)
 CreateAccessorWindow(Action)
 {
 	global AccessorListView, Accessor, AccessorPlugins, AccessorOKButton
+	start := A_TickCount
 	if(AccessorGUINum := Accessor.GUINum)
 	{
 		gui %AccessorGUINum%:+LastFoundExist
@@ -207,7 +210,7 @@ CreateAccessorWindow(Action)
 	Gui, Destroy 
 	Gui, Add,Edit, w800 y10 -Multi gAccessorEdit vAccessorEdit hwndHWNDEdit
 	Gui, Add,ListView, w800 y+10 AltSubmit 0x8 -Multi R15 NoSortHdr gAccessorListView vAccessorListView hwndHWNDListView, #| |Title|Path| | |
-	Gui, Add,Button, Default y10 x+10 w75 gAccessorOK vAccessorOKButton, OK
+	Gui, Add,Button, y10 x+10 w75 gAccessorOK vAccessorOKButton, OK
 	Gui, Add,Button,y+8 w75 gAccessorCancel, Cancel
 	Gui, Add,StatusBar
 	Gui, -MinimizeBox -MaximizeBox +LabelAccessor +AlwaysOnTop -Caption +Border
@@ -221,19 +224,22 @@ CreateAccessorWindow(Action)
 	Accessor.LauncherHotkey := Action.LauncherHotkey
 	Accessor.History.Index := 1
 	Accessor.History[1] := ""
-	Loop % AccessorPlugins.MaxIndex()
-			AccessorPlugins[A_Index].OnAccessorOpen(Accessor)
+	for index, AccessorPlugin in AccessorPlugins
+		AccessorPlugin.OnAccessorOpen(Accessor)
 	;Check if a plugin set a custom filter
 	GuiControlGet, Filter, , AccessorEdit
 	if(!Filter)
 		FillAccessorList()
 	OnMessage(0x06,"WM_ACTIVATE")
 	old := OnMessage(0x100)
+	OnMessage(0x100, "")
 	Accessor.OldKeyDown := old
-	OnMessage(0x100, "Accessor_WM_KEYDOWN")
+	;OnMessage(0x100, "Accessor_WM_KEYDOWN")
 	;return Gui number to indicate that the Accessor box is still open
 	return AccessorGUINum
 }
+
+;This is the main function that populates the Accessor list.
 FillAccessorList()
 {
 	global AccessorPlugins,Accessor,AccessorListView,AccessorEdit
@@ -316,11 +322,11 @@ FillAccessorList()
 	ImageList_ReplaceIcon(Accessor.ImageListID, -1, Accessor.GenericIcons.File)
 	Accessor.List := Array()
 	;Find out if we are in a single plugin context, and add only those items
-	Loop % AccessorPlugins.MaxIndex()
+	for index, Plugin in AccessorPlugins
 	{
-		Plugin := AccessorPlugins[A_Index]
-		if(Plugin.Enabled && SingleContext := ((Plugin.Settings.Keyword && Filter && KeywordSet := InStr(Filter, Plugin.Settings.Keyword " ") = 1) || Plugin.IsInSinglePluginContext(Filter, LastFilter))) 
+		if(Plugin.Enabled && SingleContext := ((Plugin.Settings.Keyword && Filter && KeywordSet := InStr(Filter, Plugin.Settings.Keyword " ") = 1) || Plugin.IsInSinglePluginContext(Filter, LastFilter)))
 		{
+			Accessor.SingleContext := Plugin.Type
 			Filter := strTrim(Filter, Plugin.Settings.Keyword " ")
 			Plugin.FillAccessorList(Accessor, Filter, LastFilter, IconCount, KeywordSet, Parameters)
 			break
@@ -329,6 +335,7 @@ FillAccessorList()
 	;If we aren't, let all plugins add the items we want according to their priorities
 	if(!SingleContext)
 	{
+		Accessor.SingleContext := false
 		Pluginlist := ""
 		Loop % AccessorPlugins.MaxIndex()
 			Pluginlist .= (Pluginlist ? "," : "") A_Index
@@ -380,75 +387,94 @@ AccessorPrioritySort(First,Second)
 	return AccessorPlugins[First].Priority = AccessorPlugins[Second].Priority ? First > Second ? 1 : First < Second ? -1 : 0 : AccessorPlugins[First].Priority < AccessorPlugins[Second].Priority ? 1 : -1
 }
 AccessorEdit:
-AccessorEditEvents()
+Critical, 10000
+if(!(Accessor.EditQueue.MaxIndex > 1))
+{
+	Accessor.EditQueue.Insert("DoStuff")
+	SetTimer, AcccessorEditQueue, -1
+}
+Critical, Off
 return
+AcccessorEditQueue:
+while(Accessor.EditQueue.MaxIndex())
+{
+	SetTimer, AcccessorEditQueue, Off
+	AccessorEditEvents()
+	Accessor.EditQueue.Remove(1)
+	SetTimer, AcccessorEditQueue, -1
+}
 return
+
 AccessorListView:
+SetTimer, AccessorListViewEvents, -10
+return
+
+AccessorListViewEvents:
 AccessorListViewEvents()
 return
 
 AccessorEditEvents()
 {
 	global Accessor, AccessorPlugins, AccessorEdit
-	Critical ;Make critical so that it isn't called while it's still running
-	outputdebug edit events
+	;~ static Running = 0
+	;~ if(Running)
+	;~ {
+		;~ SetTimer, AccessorEditEvents, -10
+		;~ return
+	;~ }
+	;~ Running := true
+	;~ Critical ;Make critical so that it isn't called while it's still running
+	AccessorListEntry := AccessorGetSelectedListEntry()
 	GuiControlGet, Filter, , AccessorEdit
-	LV_GetText(id,A_EventInfo,2)
-	AccessorListEntry := Accessor.List[id]
+	
 	NeedsUpdate := 1
-	Loop % AccessorPlugins.MaxIndex() ;Check if single context plugin requests an update
+	for index, AccessorPlugin in AccessorPlugins ;Check if single context plugin requests an update
 	{
-		if(AccessorPlugins[A_Index].Enabled && ((AccessorPlugins[A_Index].Settings.Keyword && Filter && strStartsWith(Filter, AccessorPlugins[A_Index].Settings.Keyword)) || AccessorPlugins[A_Index].IsInSinglePluginContext(Filter, Accessor.LastFilter)))
+		if(AccessorPlugin.Enabled && SingleContext := ((AccessorPlugin.Settings.Keyword && Filter && strStartsWith(Filter, AccessorPlugin.Settings.Keyword)) || AccessorPlugin.IsInSinglePluginContext(Filter, Accessor.LastFilter)))
 		{
-			NeedsUpdate := AccessorPlugins[A_Index].EditEvents(AccessorListEntry, Filter, LastFilter)
+			Accessor.SingleContext := AccessorPlugin.Type
+			NeedsUpdate := AccessorPlugin.EditEvents(AccessorListEntry, Filter, LastFilter)
 			break
 		}
 	}
+	if(!SingleContext)
+		Accessor.SingleContext := false
 	if(!NeedsUpdate) ;Check if any plugin requests an update
-		Loop % AccessorPlugins.MaxIndex()
+		for index, AccessorPlugin in AccessorPlugins
 		{
-			if(AccessorPlugins[A_Index].Enabled && !AccessorPlugins[A_Index].KeywordOnly)
-				NeedsUpdate := AccessorPlugins[A_Index].EditEvents(AccessorListEntry, Filter, LastFilter)
+			if(AccessorPlugin.Enabled && !AccessorPlugin.KeywordOnly)
+				NeedsUpdate := AccessorPlugin.EditEvents(AccessorListEntry, Filter, LastFilter)
 			if(NeedsUpdate)
 				break
 		}
-	outputdebug % "cycle " Accessor.History.CycleHistory " filter " Filter
+	;~ outputdebug % "cycle " Accessor.History.CycleHistory " filter " Filter
 	if(!Accessor.History.CycleHistory)
 		Accessor.History[1] := Filter
 	else
 		Accessor.History.CycleHistory := 0
 	if(NeedsUpdate)
 		FillAccessorList()
-	Critical, Off
+	;~ Critical, Off
+	;~ Running := false
 }
 AccessorListViewEvents()
 {
-	global Accessor, AccessorPlugins, AccessorEdit, AccessorOKButton
-	GuiControlGet, Filter, , AccessorEdit
-	SplitPath, Filter, name, dir,,,drive
-	LV_GetText(id,A_EventInfo,2)
-	AccessorListEntry := Accessor.List[id]
-	if(IsObject(AccessorListEntry))
+	global AccessorPlugins, AccessorOKButton
+	if(IsObject(AccessorListEntry := AccessorGetSelectedListEntry()))
 	{
-		for Index, AccessorPlugin in AccessorPlugins
+		AccessorPlugin := AccessorPlugins.GetItemWithValue("Type", AccessorListEntry.Type)
+		if(AccessorPlugin.Enabled)
 		{
-			if(AccessorPlugin.Enabled && AccessorListEntry.Type = AccessorPlugin.Type)
-			{	
-				handled := AccessorPlugin.ListViewEvents(AccessorListEntry)
-				GUIControlGet, name, , AccessorOKButton
-				if(name != AccessorPlugin.OKName)
-					GuiControl,,AccessorOKButton, % AccessorPlugin.OKName
-				break
-			}
+			handled := AccessorPlugin.ListViewEvents(AccessorListEntry)
+			GUIControlGet, name, , AccessorOKButton
+			if(name != AccessorPlugin.OKName)
+				GuiControl,,AccessorOKButton, % AccessorPlugin.OKName
 		}
 	}
-	if(!handled)
+	if(!handled && A_GUIEvent = "DoubleClick")
 	{
-		if(A_GUIEvent = "DoubleClick")
-		{
-			AccessorOK()
-			AccessorClose()
-		}
+		AccessorOK()
+		AccessorClose()
 	}
 	return
 }
@@ -467,22 +493,14 @@ return
 AccessorOK()
 {
 	global Accessor, AccessorPlugins, AccessorEdit
-	GUINum := Accessor.GUINum
-	Gui, %GUINum%: Default
-	GUI, ListView, AccessorListView
-	selected := LV_GetNext()
-	LV_GetText(id,selected,2)
-	GuiControlGet, Filter, , AccessorEdit
-	Accessor.History.Insert(2, Filter)
-	while(Accessor.History.MaxIndex() > 10)
-		Accessor.History.Delete(11)
-	Loop % AccessorPlugins.MaxIndex()
+	if(IsObject(AccessorListEntry := AccessorGetSelectedListEntry()))
 	{
-		if(AccessorPlugins[A_Index].Type = Accessor.List[id].Type)
-		{
-			AccessorPlugins[A_Index].PerformAction(Accessor, Accessor.List[id])
-			break
-		}
+		GuiControlGet, Filter, , AccessorEdit
+		Accessor.History.Insert(2, Filter)
+		while(Accessor.History.MaxIndex() > 10)
+			Accessor.History.Delete(11)
+		if(AccessorPlugin := AccessorPlugins.GetItemWithValue("Type", AccessorListEntry.Type))
+			AccessorPlugin.PerformAction(Accessor, AccessorListEntry)
 	}
 }
 AccessorClose()
@@ -492,11 +510,10 @@ AccessorClose()
 	Critical
 	if(Accessor.GUINum)
 	{
-		GUINum := Accessor.GUINum
-		Gui, %GUINum%: Default
+		Gui, % Accessor.GUINum ": Default"
 		GUI, ListView, AccessorListView
-		Loop % AccessorPlugins.MaxIndex()
-			AccessorPlugins[A_Index].OnAccessorClose(Accessor)
+		for index, AccessorPlugin in AccessorPlugins
+			AccessorPlugin.OnAccessorClose(Accessor)
 		Accessor.LastFilter := ""
 		OnMessage(0x100, Accessor.OldKeyDown) ; Restore previous KeyDown handler
 		Accessor.GUINum := 0
@@ -512,10 +529,99 @@ WM_ACTIVATE(wParam,lParam)
 		AccessorClose()
 	return 0
 }
+#if Accessor.GUINum
+Tab::Down
+*Up::AccessorUp()
+*Down::AccessorDown()
+#if
+AccessorUp()
+{
+	global Accessor,AccessorEdit,AccessorListView
+	Gui, % Accessor.GUINum ": Default"
+	GUI, ListView, AccessorListView
+	if(GetKeyState("Control", "P"))
+	{
+		if(Accessor.History.MaxIndex() >= Accessor.History.Index + 1 && Accessor.History.Index < 10)
+		{
+			Accessor.History.Index := Accessor.History.Index + 1
+			Accessor.History.CycleHistory := 1
+			GuiControl,, AccessorEdit, % Accessor.History[Accessor.History.Index]
+			SendMessage, 0xC1, -1, , Edit1, A ; EM_LINEINDEX (Gets index number of line)
+			CaretTo := ErrorLevel
+			SendMessage, 0xB1, 0, CaretTo, Edit1, A ;EM_SETSEL
+		}
+	}
+	else if(LV_GetCount() > 0)
+	{
+		selected := LV_GetNext()
+		selected := Mod(selected - 1 + LV_GetCount() - 1, LV_GetCount()) + 1
+		LV_Modify(selected,"Select Vis")
+	}
+}
+AccessorDown()
+{
+	global Accessor,AccessorEdit,AccessorListView
+	Gui, % Accessor.GUINum ": Default"
+	GUI, ListView, AccessorListView
+	if(GetKeyState("Control", "P"))
+	{
+		if(Accessor.History.Index > 1)
+		{
+			Accessor.History.Index := Accessor.History.Index - 1
+			Accessor.History.CycleHistory := 1
+			GuiControl,, AccessorEdit, % Accessor.History[Accessor.History.Index]
+			SendMessage, 0xC1, -1, , Edit1, A ; EM_LINEINDEX (Gets index number of line)
+			CaretTo := ErrorLevel
+			SendMessage, 0xB1, 0, CaretTo, Edit1, A ;EM_SETSEL
+		}
+	}
+	else if(LV_GetCount() > 0)
+	{
+		selected := LV_GetNext()
+		selected := Mod(selected,LV_GetCount()) + 1
+		LV_Modify(selected,"Select Vis")
+	}
+}
+#if Accessor.GUINum && IsControlActive("Edit1")
+PgUp::
+PostMessage, 0x100, 0x21, 0,SysListView321,A
+return
+PgDn::
+PostMessage, 0x100, 0x22, 0,SysListView321,A
+return
+AppsKey::
+PostMessage, 0x100, 0x5D, 0,SysListView321,A
+return
+#if
+
+#if Accessor.GUINum && (!Accessor.SingleContext || !AccessorPlugins.GetItemWithValue("Type", Accessor.SingleContext).HandlesEnter)
+Enter::
+Return::
+AccessorOK()
+return
+#if
+
+#if Accessor.GUINum && !Edit_TextIsSelected("","ahk_id " Accessor.HwndEdit)
+^c::
+AccessorCopy()
+return
+#if
+AccessorCopy()
+{
+	global AccessorPlugins
+	if(AccessorListEntry := AccessorGetSelectedListEntry())
+	{
+		AccessorPlugin := AccessorPlugins.GetItemWithValue("Type", AccessorListEntry.Type)
+		if(IsFunc(AccessorPlugin.OnCopy))
+			AccessorPlugin.OnCopy(AccessorListEntry)
+		else
+			AccessorCopyField("Path", AccessorListEntry)
+	}
+}
+;TODO: Rewrite to use hotkeys?
 Accessor_WM_KEYDOWN(wParam,lParam)
 {
 	global Accessor,AccessorPlugins,AccessorEdit,AccessorListView
-	outputdebug accessor keydown
 	GUINum := Accessor.GUINum
 	Gui, %GUINum%: Default
 	GUI, ListView, AccessorListView
@@ -557,46 +663,12 @@ Accessor_WM_KEYDOWN(wParam,lParam)
 	}
 	if(wParam = 38) ;Up arrow
 	{
-		if(GetKeyState("Control", "P"))
-		{
-			if(Accessor.History.MaxIndex() >= Accessor.History.Index + 1 && Accessor.History.Index < 10)
-			{
-				Accessor.History.Index := Accessor.History.Index + 1
-				Accessor.History.CycleHistory := 1
-				GuiControl,, AccessorEdit, % Accessor.History[Accessor.History.Index]
-				SendMessage, 0xC1, -1, , Edit1, A ; EM_LINEINDEX (Gets index number of line)
-				CaretTo := ErrorLevel
-				SendMessage, 0xB1, 0, CaretTo, Edit1, A ;EM_SETSEL
-			}
-		}
-		else
-		{
-			selected := LV_GetNext()
-			selected := Mod(selected - 1 + LV_GetCount() - 1, LV_GetCount()) + 1
-			LV_Modify(selected,"Select Vis")
-		}
+		
 		return 1
 	}
 	else if(wParam = 40) ;Down arrow
 	{
-		if(GetKeyState("Control", "P"))
-		{
-			if(Accessor.History.Index > 1)
-			{
-				Accessor.History.Index := Accessor.History.Index - 1
-				Accessor.History.CycleHistory := 1
-				GuiControl,, AccessorEdit, % Accessor.History[Accessor.History.Index]
-				SendMessage, 0xC1, -1, , Edit1, A ; EM_LINEINDEX (Gets index number of line)
-				CaretTo := ErrorLevel
-				SendMessage, 0xB1, 0, CaretTo, Edit1, A ;EM_SETSEL
-			}
-		}
-		else
-		{
-			selected := LV_GetNext()
-			selected := Mod(selected,LV_GetCount()) + 1
-			LV_Modify(selected,"Select Vis")
-		}
+		
 		return 1
 	}
 	; return 0
@@ -607,7 +679,7 @@ AccessorContextMenu()
 return
 AccessorContextMenu()
 {
-	global Accessor, AccessorPlugins
+	global AccessorPlugins
 	if(A_GuiControl = "AccessorListView")
 	{
 		selected := A_EventInfo
@@ -616,17 +688,14 @@ AccessorContextMenu()
 		
 		Menu, AccessorMenu, add, 1,AccessorOK
 		Menu, AccessorMenu, DeleteAll
-		LV_GetText(id,selected,2)
-		AccessorListEntry := Accessor.List[id]
-		Loop % AccessorPlugins.MaxIndex()
+		if(AccessorListEntry := AccessorGetSelectedListEntry())
 		{
-			if(AccessorListEntry.Type = AccessorPlugins[A_Index].Type)
+			if(AccessorPlugin := AccessorPlugins.GetItemWithValue("Type", AccessorListEntry.Type))
 			{
 				AccessorPlugins[A_Index].SetupContextMenu(AccessorListEntry)
-				break
-			}				
+				Menu, AccessorMenu, Show
+			}
 		}
-		Menu, AccessorMenu, Show
 	}
 }
 

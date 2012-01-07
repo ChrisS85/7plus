@@ -3,8 +3,6 @@
 ClearStoredFolder(Slot)
 {
 	global
-	WasCritical := A_IsCritical
-	Critical
 	local pos, name
 	Slot+=1
 	FastFolders[Slot].Path := ""
@@ -19,8 +17,6 @@ ClearStoredFolder(Slot)
 				AddButton("",FastFolders[A_Index].Path,,pos ":" FastFolders[A_Index].Title)
 		}
 	}
-	if(!WasCritical)
-		Critical, Off
 }
 
 UpdateStoredFolder(Slot, Folder="")
@@ -53,8 +49,6 @@ AddAllButtons(FolderBand,PlacesBar)
 {
 	global
 	local pos, value
-	WasCritical := A_IsCritical
-	Critical
 	loop 10
 	{
 		pos:=A_Index-1
@@ -69,8 +63,6 @@ AddAllButtons(FolderBand,PlacesBar)
 			}				
 		}
 	}
-	if(!WasCritical)
-		Critical, Off
 }
 
 ;Callback function for determining if a specific registry key was created by 7plus

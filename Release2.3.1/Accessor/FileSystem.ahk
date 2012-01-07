@@ -2,6 +2,7 @@ Accessor_FileSystem_Init(ByRef FileSystem, PluginSettings)
 {
 	FileSystem.KeywordOnly := false
 	FileSystem.MinChars := 2
+	FileSystem.HandlesEnter := true
 	FileSystem.DefaultKeyword := ""
 	FileSystem.Description := "Browse the file system by typing a path. `nUse Tab for switching through matching entries and enter to enter a folder.`nApplications launched through this method are directly added to Program Launcher cache."
 	FileSystem.Settings.UseIcons := PluginSettings.HasKey("UseIcons") ? PluginSettings.UseIcons : 0
@@ -84,82 +85,98 @@ Accessor_FileSystem_PerformAction(FileSystem, Accessor, AccessorListEntry)
 Accessor_FileSystem_OnExit(FileSystem)
 {
 }
+#if (Accessor.GUINum && Accessor.SingleContext = "FileSystem")
+Tab::
+Accessor_FileSystem_OnTab()
+return
+#if
+#if FileSystem_IsFolderSelected()
+Enter::
+Return::
+Accessor_FileSystem_OnEnter()
+return
+#if
+FileSystem_IsFolderSelected()
+{
+	global Accessor
+	return Accessor.GUINum && Accessor.SingleContext = "FileSystem" && IsObject(AccessorListEntry := AccessorGetSelectedListEntry()) && InStr(FileExist(AccessorListEntry.Path),"D")
+}
+Accessor_FileSystem_OnTab()
+{
+	global AccessorEdit, Accessor, AccessorListView, AccessorPlugins
+	FileSystem := AccessorPlugins.GetItemWithValue("Type", "FileSystem")
+	Gui, % Accessor.GUINum ": Default"
+	Gui, ListView, AccessorListView	
+	GuiControlGet, Filter, , AccessorEdit
+	Filter := ExpandPathPlaceholders(Filter)
+	SplitPath, Filter, name, dir,,,drive
+	LV_GetText(first,1,4)
+	if(LV_GetCount() = 1 && InStr(FileExist(first),"D")) ;Go into folder if there is only one entry
+	{
+		LV_GetText(newname,1,3)
+		FileSystemSetFolder(newname)
+		return
+	}
+	if(selected && !FileSystem.AutocompletionString)
+		return
+	else
+	{
+		if(name)
+		{
+			if(!Accessor.AutocompletionString)
+				Accessor.AutocompletionString := name
+			AutocompletionString := Accessor.AutocompletionString
+			Loop %dir%\*%AutocompletionString%*,1,0
+			{
+				if(A_Index = 1)
+					first := A_LoopFileName
+				if(A_LoopFileName = name)
+				{
+					usenext := true
+					continue
+				}
+				if(usenext || (A_Index = 1 && name = AutocompletionString))
+				{
+					newname := A_LoopFileName
+					break
+				}
+			}				
+			Accessor.SuppressListViewUpdate := 1
+		}
+		else 
+			return 0
+	}
+	if(!newname)
+		newname := first
+	GuiControl, ,AccessorEdit,%dir%\%newname%
+	
+	hwndEdit := Accessor.hwndEdit
+	SendMessage, 0xC1, -1,,, AHK_ID %hwndEdit%  ; EM_LINEINDEX (Gets index number of line)
+	CaretTo := ErrorLevel
+	outputdebug caretto %carretto%
+	SendMessage, 0xB1, CaretTo, CaretTo,, AHK_ID %hwndEdit% ;EM_SETSEL
+	Loop % LV_GetCount()
+	{
+		LV_GetText(text,A_Index,3)
+		if(text = newname)
+		{
+			LV_Modify(A_Index,"Select Vis")
+			break
+		}
+	}
+	return 1
+}
+Accessor_FileSystem_OnEnter()
+{
+	AccessorListEntry := AccessorGetSelectedListEntry()
+	FileSystemSetFolder(AccessorListEntry.Title)
+}
 Accessor_FileSystem_OnKeyDown(FileSystem, wParam, lParam, Filter, selected, AccessorListEntry)
 {
 	global AccessorEdit, Accessor
 	if(wParam = 9)
 	{
-		Filter := ExpandPathPlaceholders(Filter)
-		SplitPath, Filter, name, dir,,,drive
-		LV_GetText(first,1,4)
-		outputdebug bla %first%
-		if(LV_GetCount() = 1 && InStr(FileExist(first),"D"))
-		{
-			LV_GetText(newname,1,3)
-			FileSystemSetFolder(newname)
-			return 1
-		}
-		if(selected && !FileSystem.AutocompletionString)
-		{
-			; if(InStr(FileExist(AccessorListEntry.Path),"D"))
-			; {
-				; LV_GetText(newname,selected,3)
-				; FileSystemSetFolder(newname)
-				; return 1
-			; }
-			; else
-				return 0
-		}
-		else
-		{
-			if(name)
-			{
-				if(!Accessor.AutocompletionString)
-					Accessor.AutocompletionString := name
-				AutocompletionString := Accessor.AutocompletionString
-				outputdebug dir %dir% autocomplete %AutocompletionString% name %name%
-				Loop %dir%\*%AutocompletionString%*,1,0
-				{
-					outputdebug loop %A_LoopFileName%
-					if(A_Index = 1)
-						first := A_LoopFileName
-					if(A_LoopFileName = name)
-					{
-						outputdebug use next
-						usenext := true
-						continue
-					}
-					if(usenext || (A_Index = 1 && name = AutocompletionString))
-					{
-						outputdebug use %A_LoopfileName%
-						newname := A_LoopFileName
-						break
-					}
-				}				
-				Accessor.SuppressListViewUpdate := 1
-			}
-			else 
-				return 0
-		}
-		if(!newname)
-			newname := first
-		GuiControl, ,AccessorEdit,%dir%\%newname%
 		
-		hwndEdit := Accessor.hwndEdit
-		SendMessage, 0xC1, -1,,, AHK_ID %hwndEdit%  ; EM_LINEINDEX (Gets index number of line)
-		CaretTo := ErrorLevel
-		outputdebug caretto %carretto%
-		SendMessage, 0xB1, CaretTo, CaretTo,, AHK_ID %hwndEdit% ;EM_SETSEL
-		Loop % LV_GetCount()
-		{
-			LV_GetText(text,A_Index,3)
-			if(text = newname)
-			{
-				LV_Modify(A_Index,"Select Vis")
-				break
-			}
-		}
-		return 1
 	}
 	else
 		WindowSwitcher.AutocompletionString := ""
@@ -168,11 +185,7 @@ Accessor_FileSystem_OnKeyDown(FileSystem, wParam, lParam, Filter, selected, Acce
 		FileSystemSetFolder(AccessorListEntry.Title)
 		return 1
 	}
-	if(wParam = 67 && GetKeyState("CTRL","P") && !Edit_TextIsSelected("","ahk_id " Accessor.HwndEdit))
-	{
-		AccessorCopyField("Path")
-		return true
-	}
+	
 	return 0
 }
 Accessor_FileSystem_SetupContextMenu(FileSystem, AccessorListEntry)

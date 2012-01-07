@@ -97,20 +97,12 @@ Accessor_Calc_ListViewEvents(Calc, AccessorListEntry)
 }
 Accessor_Calc_EditEvents(Calc, AccessorListEntry, Filter, LastFilter)
 {
-	SetTimer, QueryCalcResult, -500
+	SetTimer, QueryCalcResult, -100
 	return false
 }
-Accessor_Calc_OnKeyDown(Calc, wParam, lParam, Filter, selected, AccessorListEntry)
+Accessor_Calc_OnCopy(Calc, AccessorListEntry)
 {
-	global Accessor
-	if(wParam = 13)
-		SetTimer, QueryCalcResult, -1
-	if(wParam = 67 && GetKeyState("CTRL","P") && !Edit_TextIsSelected("","ahk_id " Accessor.HwndEdit))
-	{
-		AccessorCopyField("Title")
-		return true
-	}
-	return 0
+	AccessorCopyField("Title", AccessorListEntry)
 }
 QueryCalcResult:
 QueryCalcResult()

@@ -163,4 +163,9 @@ Class CErrorDisplay extends CGUI
 #i::
 x := new CErrorDisplay()
 return
+
+;Generic debug breakpoint for dynamic breaking
+F2::
+DynamicBreakpoint()
+return
 #if

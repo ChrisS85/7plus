@@ -68,20 +68,13 @@ Accessor_Weather_ListViewEvents(Weather, AccessorListEntry)
 }
 Accessor_Weather_EditEvents(Weather, AccessorListEntry, Filter, LastFilter)
 {
-	SetTimer, QueryWeatherResult, -500
+	outputdebug edit events
+	SetTimer, QueryWeatherResult, -100
 	return false
 }
-Accessor_Weather_OnKeyDown(Weather, wParam, lParam, Filter, selected, AccessorListEntry)
+Accessor_Weather_OnCopy(Weather, AccessorListEntry)
 {
-	global Accessor
-	if(wParam = 67 && GetKeyState("CTRL","P") && !Edit_TextIsSelected("","ahk_id " Accessor.HwndEdit))
-	{
-		AccessorCopyField("Title")
-		return 1
-	}
-	if(wParam = 13)
-		SetTimer, QueryWeatherResult, -1
-	return 0
+	AccessorCopyField("Title", AccessorListEntry)
 }
 QueryWeatherResult:
 QueryWeatherResult()
@@ -90,10 +83,9 @@ QueryWeatherResult()
 {
 	global AccessorPlugins, AccessorEdit, Accessor
 	WeatherPlugin := AccessorPlugins.GetItemWithValue("Type", "Weather")
-	GUINum := Accessor.GUINum
-	if(!GUINum)
+	if(!Accessor.GUINum)
 		return
-	Gui, %GUINum%: Default
+	Gui, % Accessor.GUINum ": Default"
 	GuiControlGet, Filter, , AccessorEdit
 	if(!strStartsWith(Filter, WeatherPlugin.Settings.Keyword " "))
 		return
@@ -131,7 +123,7 @@ QueryWeatherResult()
 		pos4 := RegexMatch(WeatherQuery, "i)<day_of_week data=""(.*?)""/>",day_of_week,pos4+1)
 		pos5 := RegexMatch(WeatherQuery, "i)<icon data=""(.*?)""/>",icon,pos5+1)
 		
-		if(condition1 && low1 && high1 &&day_of_week1 && icon1)
+		if(pos1 && pos2 && pos3 && pos4 && pos5 && condition1 && low1 && high1 &&day_of_week1 && icon1)
 		{
 			name := SubStr(icon1, InStr(icon1, "/", 0, 0) + 1)
 			if(!FileExist(A_Temp "\7plus\" name))

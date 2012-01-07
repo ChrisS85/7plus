@@ -169,16 +169,6 @@ Accessor_NotepadPlusPlus_EditEvents(NotepadPlusPlus, AccessorListEntry, Filter, 
 {
 	return false
 }
-Accessor_NotepadPlusPlus_OnKeyDown(NotepadPlusPlus, wParam, lParam, Filter, selected, AccessorListEntry)
-{
-	global Accessor
-	if(wParam = 67 && GetKeyState("CTRL","P") && !Edit_TextIsSelected("","ahk_id " Accessor.HwndEdit))
-	{
-		AccessorCopyField("Path")
-		return true
-	}
-	return 0
-}
 Accessor_NotepadPlusPlus_SetupContextMenu(NotepadPlusPlus, AccessorListEntry)
 {
 	Menu, AccessorMenu, add, Open Tab,AccessorOK

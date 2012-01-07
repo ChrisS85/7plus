@@ -198,15 +198,6 @@ Accessor_ProgramLauncher_EditEvents(ProgramLauncher, AccessorListEntry, Filter, 
 {
 	return true
 }
-Accessor_ProgramLauncher_OnKeyDown(ProgramLauncher, wParam, lParam, Filter, selected, AccessorListEntry)
-{
-	global Accessor
-	if(wParam = 67 && GetKeyState("CTRL","P") && !Edit_TextIsSelected("","ahk_id " Accessor.HwndEdit))
-	{
-		AccessorCopyField("Path")
-		return true
-	}
-}
 Accessor_ProgramLauncher_SetupContextMenu(ProgramLauncher, AccessorListEntry)
 {
 	Menu, AccessorMenu, add, Run program,AccessorRun

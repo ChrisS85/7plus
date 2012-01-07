@@ -4,7 +4,7 @@ Accessor_Notes_Init(ByRef Notes, PluginSettings)
 	Notes.DefaultKeyword := "Note"
 	Notes.KeywordOnly := true
 	Notes.MinChars := 0
-	Notes.OKName := "Show Note"
+	Notes.OKName := "Copy Note"
 	Notes.List := Array()
 	Notes.Icon := ExtractIcon("shell32.dll", 115, 64)
 	Notes.Description := "This plugin allows to take notes and view them later."
@@ -75,7 +75,7 @@ Accessor_Notes_FillAccessorList(Notes, Accessor, Filter, LastFilter, ByRef IconC
 Accessor_Notes_PerformAction(Notes, Accessor, AccessorListEntry)
 {
 	global AccessorEdit
-	if(AccessorListEntry.Path)
+	if(AccessorListEntry.Path) ;Add note
 	{
 		GUINum := Accessor.GUINum
 		if(!GUINum)
@@ -87,8 +87,8 @@ Accessor_Notes_PerformAction(Notes, Accessor, AccessorListEntry)
 		Notes.List.Insert(Object("Text", Filter))
 		outputdebug % "count " Notes.List.MaxIndex()
 	}
-	else
-		MsgBox % AccessorListEntry.Title
+	else ;Copy selected note text
+		NoteCopy()
 	return
 }
 Accessor_Notes_ListViewEvents(Notes, AccessorListEntry)
@@ -101,20 +101,15 @@ Accessor_Notes_ListViewEvents(Notes, AccessorListEntry)
 Accessor_Notes_EditEvents(Notes, AccessorListEntry, Filter, LastFilter)
 {
 }
-Accessor_Notes_OnKeyDown(Notes, wParam, lParam, Filter, selected, AccessorListEntry)
+Accessor_Notes_OnCopy(Notes, AccessorListEntry)
 {
-	global Accessor
-	if(wParam = 67 && GetKeyState("CTRL","P") && !Edit_TextIsSelected("","ahk_id " Accessor.HwndEdit))
-	{
-		NoteCopy()
-		return true
-	}
-	if(wParam = 46)
-	{
-		Handled := NoteDelete()
-		return Handled
-	}
+	NoteCopy()
 }
+
+#if (Accessor.GUINum && SomeOtherCondition)
+Delete::
+	Handled := NoteDelete()
+#if
 Accessor_Notes_SetupContextMenu(Notes, AccessorListEntry)
 {
 	Menu, AccessorMenu, add, Show Note,AccessorOK
@@ -128,34 +123,24 @@ NoteCopy()
 return
 NoteCopy()
 {
-	global Accessor, AccessorListView
-	GUINum := Accessor.GUINum
-	Gui, %GUINum%: Default
-	Gui, ListView, AccessorListView
-	selected := LV_GetNext()
-	if(!selected)
+	if(!AccessorListEntry := AccessorGetSelectedListEntry())
 		return
-	LV_GetText(id,selected,2)
-	if(!Accessor.List[id].Path)
-		Clipboard := Accessor.List[id].Title
+	;Check if it's not the add note entry
+	if(!AccessorListEntry.Path)
+		Clipboard := AccessorListEntry.Title
 }
 NoteDelete:
 NoteDelete()
 return
 NoteDelete()
 {
-	global Accessor, AccessorListView, AccessorPlugins
-	GUINum := Accessor.GUINum
-	Gui, %GUINum%: Default
-	Gui, ListView, AccessorListView
-	selected := LV_GetNext()
-	if(!selected)
+	global AccessorPlugins
+	if(!AccessorListEntry := AccessorGetSelectedListEntry())
 		return
-	LV_GetText(id,selected,2)
 	Notes := AccessorPlugins.GetItemWithValue("Type", "Notes")
-	if(!Accessor.List[id].Path)
+	if(!AccessorListEntry.Path)
 	{
-		Notes.List.Delete(Accessor.List[id].ID)
+		Notes.List.Delete(AccessorListEntry.ID)
 		FillAccessorList()
 		return true
 	}

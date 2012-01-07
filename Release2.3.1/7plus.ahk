@@ -83,3 +83,7 @@ ComObjError(0)
 ;~ {
   ;~ MsgBox change  
 ;~ }
+DynamicBreakpoint()
+{
+	msgbox debug
+}

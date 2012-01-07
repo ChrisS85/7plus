@@ -37,12 +37,14 @@ Accessor_FastFolders_FillAccessorList(FastFoldersPlugin, Accessor, Filter, LastF
 {	
 	global FastFolders
 	FuzzyList := Array()
-	Loop 10
-		if(FastFolders[A_Index].Path)
-			if(InStr(FastFolders[A_Index].Title,Filter) || InStr(FastFolders[A_Index].Path,Filter))
-				Accessor.List.Insert(Object("Title",FastFolders[A_Index].Title,"Path",FastFolders[A_Index].Path,"Type","FastFolders", "Icon", 2)) ;Use generic folder icon
-			else if(FastFoldersPlugin.Settings.FuzzySearch && FuzzySearch(FastFolders[A_Index].Title,Filter) < 0.4)
-				FuzzyList.List.Insert(Object("Title",FastFolders[A_Index].Title,"Path",FastFolders[A_Index].Path,"Type","FastFolders", "Icon", 2)) ;Use generic folder icon
+	for index, FastFolder in FastFolders
+		if(FastFolder.Path)
+		{
+			if(InStr(FastFolder.Title,Filter) || InStr(FastFolder.Path,Filter))
+				Accessor.List.Insert(Object("Title",FastFolder.Title,"Path",FastFolder.Path,"Type","FastFolders", "Icon", 2)) ;Use generic folder icon
+			else if(FastFoldersPlugin.Settings.FuzzySearch && FuzzySearch(FastFolder.Title,Filter) < 0.4)
+				FuzzyList.List.Insert(Object("Title",FastFolder.Title,"Path",FastFolder.Path,"Type","FastFolders", "Icon", 2)) ;Use generic folder icon
+		}
 	Accessor.List.extend(FuzzyList)
 }
 Accessor_FastFolders_PerformAction(FastFolders, Accessor, AccessorListEntry)
@@ -58,16 +60,6 @@ Accessor_FastFolders_ListViewEvents(FastFolders, AccessorListEntry)
 Accessor_FastFolders_EditEvents(FastFolders, AccessorListEntry, Filter, LastFilter)
 {
 	return true
-}
-Accessor_FastFolders_OnKeyDown(FastFolders, wParam, lParam, Filter, selected, AccessorListEntry)
-{
-	global Accessor
-	if(wParam = 67 && GetKeyState("CTRL","P") && !Edit_TextIsSelected("","ahk_id " Accessor.HwndEdit))
-	{
-		AccessorCopyField("Path")
-		return true
-	}
-	return false
 }
 Accessor_FastFolders_SetupContextMenu(FastFolders, AccessorListEntry)
 {

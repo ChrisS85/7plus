@@ -162,16 +162,6 @@ Accessor_SciTE4AutoHotkey_EditEvents(SciTE4AutoHotkey, AccessorListEntry, Filter
 {
 	return false
 }
-Accessor_SciTE4AutoHotkey_OnKeyDown(SciTE4AutoHotkey, wParam, lParam, Filter, selected, AccessorListEntry)
-{
-	global Accessor
-	if(wParam = 67 && GetKeyState("CTRL","P") && !Edit_TextIsSelected("","ahk_id " Accessor.HwndEdit))
-	{
-		AccessorCopyField("Path")
-		return true
-	}
-	return 0
-}
 Accessor_SciTE4AutoHotkey_SetupContextMenu(SciTE4AutoHotkey, AccessorListEntry)
 {
 	Menu, AccessorMenu, add, Open Tab,AccessorOK
