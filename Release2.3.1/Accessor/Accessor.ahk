@@ -387,21 +387,15 @@ AccessorPrioritySort(First,Second)
 	return AccessorPlugins[First].Priority = AccessorPlugins[Second].Priority ? First > Second ? 1 : First < Second ? -1 : 0 : AccessorPlugins[First].Priority < AccessorPlugins[Second].Priority ? 1 : -1
 }
 AccessorEdit:
-Critical, 10000
-if(!(Accessor.EditQueue.MaxIndex > 1))
-{
-	Accessor.EditQueue.Insert("DoStuff")
-	SetTimer, AcccessorEditQueue, -1
-}
-Critical, Off
+; Critical, 1000 ;Doesn't seem to have any effect, tried various combinations
+Accessor.NeedsUpdate := true
+SetTimer, AcccessorEditQueue, -1
 return
 AcccessorEditQueue:
-while(Accessor.EditQueue.MaxIndex())
+if(Accessor.NeedsUpdate)
 {
-	SetTimer, AcccessorEditQueue, Off
+	Accessor.NeedsUpdate := false
 	AccessorEditEvents()
-	Accessor.EditQueue.Remove(1)
-	SetTimer, AcccessorEditQueue, -1
 }
 return
 
@@ -702,6 +696,8 @@ AccessorContextMenu()
 AccessorGetSelectedListEntry()
 {
 	global Accessor, AccessorListView
+	if(!Accessor.GUINum)
+		return
 	Gui, % Accessor.GUINum ": Default"
 	Gui, ListView, AccessorListView
 	selected := LV_GetNext()

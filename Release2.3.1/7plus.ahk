@@ -43,6 +43,7 @@ ComObjError(0)
 #include <DllCalls>
 #include <Notify>
 #include <_Struct>
+#include <ControlHotkey>
 
 #include %A_ScriptDir%\CApplicationState.ahk
 #include %A_ScriptDir%\CSettings.ahk
