@@ -501,6 +501,114 @@
 <Key>~!RButton</Key>
 <Type>Hotkey</Type>
 </Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Direction>1</Direction>
+<Type>Move Slide Window out of screen</Type>
+</Action></Actions>
+<Category>Window Handling</Category>
+<Conditions>
+<Condition>
+<Negate>1</Negate>
+<Type>Fullscreen window active</Type>
+<UseExcludeList>1</UseExcludeList>
+<UseIncludeList>1</UseIncludeList>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event slides a window out of the left side of the screen.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1640</ID>
+<Name>Slide Window left</Name>
+<OfficialEvent>40</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>+#Left</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Direction>3</Direction>
+<Type>Move Slide Window out of screen</Type>
+</Action></Actions>
+<Category>Window Handling</Category>
+<Conditions>
+<Condition>
+<Negate>1</Negate>
+<Type>Fullscreen window active</Type>
+<UseExcludeList>1</UseExcludeList>
+<UseIncludeList>1</UseIncludeList>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event slides a window out of the right side of the screen.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1641</ID>
+<Name>Slide Window right</Name>
+<OfficialEvent>41</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>+#Right</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Direction>2</Direction>
+<Type>Move Slide Window out of screen</Type>
+</Action></Actions>
+<Category>Window Handling</Category>
+<Conditions>
+<Condition>
+<Negate>1</Negate>
+<Type>Fullscreen window active</Type>
+<UseExcludeList>1</UseExcludeList>
+<UseIncludeList>1</UseIncludeList>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event slides a window out of the top side of the screen.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1642</ID>
+<Name>Slide Window up</Name>
+<OfficialEvent>42</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>+#Up</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Direction>4</Direction>
+<Type>Move Slide Window out of screen</Type>
+</Action></Actions>
+<Category>Window Handling</Category>
+<Conditions>
+<Condition>
+<Negate>1</Negate>
+<Type>Fullscreen window active</Type>
+<UseExcludeList>1</UseExcludeList>
+<UseIncludeList>1</UseIncludeList>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event slides a window out of the bottom side of the screen.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1643</ID>
+<Name>Slide window down</Name>
+<OfficialEvent>43</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>+#Down</Key>
+<Type>Hotkey</Type>
+</Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
 <MinorVersion>4</MinorVersion>
