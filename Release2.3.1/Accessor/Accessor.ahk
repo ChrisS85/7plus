@@ -686,7 +686,7 @@ AccessorContextMenu()
 		{
 			if(AccessorPlugin := AccessorPlugins.GetItemWithValue("Type", AccessorListEntry.Type))
 			{
-				AccessorPlugins[A_Index].SetupContextMenu(AccessorListEntry)
+				AccessorPlugin.SetupContextMenu(AccessorListEntry)
 				Menu, AccessorMenu, Show
 			}
 		}
