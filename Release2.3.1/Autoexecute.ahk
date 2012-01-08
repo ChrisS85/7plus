@@ -34,7 +34,6 @@ ProcessCommandLineParameters() ;Possible exit point
 ;This mechanism is used by the ShellExtension and by the updater.
 FileCreateDir %A_Temp%\7plus
 
-
 Settings.SetupConfigurationPath()
 Settings.Load()
 
@@ -66,6 +65,7 @@ if((ApplicationState.IsPortable && !WriteAccess(Settings.ConfigPath "\Accessor.x
 ;Fresh install, copy default events file into config directory
 if(!FileExist(Settings.ConfigPath)) 
 {
+	FileCreateDir % Settings.ConfigPath
 	FileCopy, %A_ScriptDir%\Events\All Events.xml, % Settings.ConfigPath "\Events.xml"
 	ApplyFreshInstallSteps()
 }
