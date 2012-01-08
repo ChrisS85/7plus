@@ -401,6 +401,7 @@ Class CEventEditor extends CGUI
 			this.Event.Conditions.Remove(this.listConditions.SelectedIndex)
 			this.Remove("Condition")
 			this.listConditions.Items.Delete(this.listConditions.SelectedIndex)
+			this.listConditions.SelectedIndex := max(min(selected, this.listConditions.Items.MaxIndex()), 1)
 		}
 	}
 	
@@ -537,9 +538,11 @@ Class CEventEditor extends CGUI
 	{
 		if(this.listActions.SelectedIndices.MaxIndex() = 1)
 		{
+			this.SubmitAction()
 			this.Event.Actions.Remove(this.listActions.SelectedIndex)
 			this.Remove("Action")
-			this.listActions.Items.Delete(this.listActions.SelectedIndex)
+			this.listActions.Items.Delete(selected := this.listActions.SelectedIndex)
+			this.listActions.SelectedIndex := max(min(selected, this.listActions.Items.MaxIndex()), 1)
 		}
 	}
 	
