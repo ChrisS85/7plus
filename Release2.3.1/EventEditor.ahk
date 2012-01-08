@@ -282,7 +282,7 @@ Class CEventEditor extends CGUI
 	listConditions_SelectionChanged(Item)
 	{
 		;A new item was selected
-		if(Item && this.listConditions.SelectedIndices.MaxIndex() = 1 && this.listConditions.SelectedIndex != this.listConditions.PreviouslySelectedIndex && this.listConditions.SelectedItem = item)
+		if(this.listConditions.SelectedIndices.MaxIndex() = 1 && this.listConditions.SelectedIndex != this.listConditions.PreviouslySelectedIndex)
 		{
 			if(this.Condition)
 				this.SubmitCondition()
@@ -366,7 +366,8 @@ Class CEventEditor extends CGUI
 		Gui, Tab, 2
 		this.Condition.GuiShow(this.ConditionGUI)
 		Gui, Tab		
-		;~ this.listConditions.Items[this.Event.Conditions.IndexOf(this.Condition)].Text := (this.Condition.Negate ? "NOT " : "" ) this.Condition.DisplayString()
+		;Needed for changing the type of a condition
+		this.listConditions.Items[this.Event.Conditions.IndexOf(this.Condition)].Text := (this.Condition.Negate ? "NOT " : "" ) this.Condition.DisplayString()
 	}
 	chkNegateCondition_CheckedChanged()
 	{
@@ -381,7 +382,7 @@ Class CEventEditor extends CGUI
 		this.Event.Conditions.Insert(Condition := new CWindowActiveCondition())
 		this.listConditions.Items.Add("", (Condition.Negate ? "NOT " : "" ) Condition.DisplayString())
 		this.UseCondition := true
-		this.listConditions.SelectedIndex := this.listConditions.MaxIndex()
+		this.listConditions.SelectedIndex := this.listConditions.Items.MaxIndex()
 	}
 	btnDeleteCondition_Click()
 	{
@@ -438,7 +439,7 @@ Class CEventEditor extends CGUI
 	listActions_SelectionChanged(Item)
 	{
 		;A new item was selected
-		if(Item && this.listActions.SelectedIndices.MaxIndex() = 1 && this.listActions.SelectedIndex != this.listActions.PreviouslySelectedIndex && this.listActions.SelectedItem = item)
+		if(this.listActions.SelectedIndices.MaxIndex() = 1 && this.listActions.SelectedIndex != this.listActions.PreviouslySelectedIndex)
 		{
 			if(this.Action)
 				this.SubmitAction()
@@ -515,14 +516,15 @@ Class CEventEditor extends CGUI
 		Gui, Tab, 3
 		this.Action.GuiShow(this.ActionGUI)
 		Gui, Tab
-		;~ this.listActions.Items[this.Event.Actions.IndexOf(this.Action)].Text := this.Action.DisplayString()
+		;Needed for changing the type of an action
+		this.listActions.Items[this.Event.Actions.IndexOf(this.Action)].Text := this.Action.DisplayString()
 	}
 	btnAddAction_Click()
 	{
 		this.Event.Actions.Insert(Action := new CRunAction())
 		this.listActions.Items.Add("", Action.DisplayString())
 		this.UseAction := true
-		this.listActions.SelectedIndex := this.listActions.MaxIndex()
+		this.listActions.SelectedIndex := this.listActions.Items.MaxIndex()
 	}
 	btnDeleteAction_Click()
 	{

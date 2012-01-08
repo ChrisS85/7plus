@@ -43,8 +43,9 @@ Class CSetDirectoryAction Extends CAction
 			ShowPlaceholderMenu(sGUI, "Path")
 	}
 	
-	GuiSubmit(Action, GUI)
+	GuiSubmit(GUI)
 	{
+		outputdebug submit directory
 		this.WindowFilterGUISubmit(GUI)
 		Base.GUISubmit(GUI)
 	}

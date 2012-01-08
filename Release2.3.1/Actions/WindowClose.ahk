@@ -29,7 +29,7 @@ Class CWindowCloseAction Extends CAction
 		this.AddControl(GUI, "Checkbox", "ForceClose", "Force-close applications", "", "")
 	}
 	
-	GUISubmit(Action, GUI)
+	GUISubmit(GUI)
 	{
 		this.WindowFilterGUISubmit(GUI)
 		Base.GuiSubmit(GUI)

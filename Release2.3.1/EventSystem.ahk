@@ -941,6 +941,7 @@ Class CSubEvent extends CRichObject
 	;Can be implemented by the specific inheriting subevent
 	GuiSubmit(GUI)
 	{
+		outputdebug submit
 		this.SubmitControls(GUI)
 	}
 }
