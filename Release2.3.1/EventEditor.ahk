@@ -293,24 +293,14 @@ Class CEventEditor extends CGUI
 			;Mark that the Condition stored under this.Condition should be used instead of creating a new one of the type set in the type dropdownlist.
 			this.UseCondition := true
 			if(this.Condition.Category != this.ddlConditionCategory.Text) ;The category of the new Condition is different from the old one
-			{
-				outputdebug different category
 				this.ddlConditionCategory.Text := this.Condition.Category
-			}
 			else if(this.Condition.Type != this.ddlConditionType.Text) ;The type of the new Condition is different from the old one
-			{
-				outputdebug different type
 				this.ddlConditionType.Text := this.Condition.Type
-			}
 			else ;The Condition is of the same type
-			{
-				outputdebug same type
 				this.ddlConditionType_SelectionChanged(this.ddlConditionType.SelectedItem)
-			}
 		}		
 		else if(!this.listConditions.SelectedIndices.MaxIndex()) ;Item deselected
 		{
-			outputdebug item deselected
 			this.ddlConditionCategory.Enabled := false
 			this.ddlConditionType.Enabled := false
 			this.chkNegateCondition.Enabled := false
@@ -320,7 +310,6 @@ Class CEventEditor extends CGUI
 	}
 	ddlConditionCategory_SelectionChanged(Item)
 	{
-		outputdebug category changed
 		this.ddlConditionType.DisableNotifications := true
 		this.ddlConditionType.Items.Clear()
 		IndexToSelect := 1
@@ -338,12 +327,13 @@ Class CEventEditor extends CGUI
 	{
 		if(!IsObject(Item)) ;Make sure not to do anything when type DropDownList is cleared
 			return
-		outputdebug type changed
 		;Instantiate new condition if this value is set
 		if(!this.UseCondition)
 		{
+			this.SubmitCondition()
 			ConditionTemplate := EventSystem.Conditions[Item.Text]
 			this.Event.Conditions[this.listConditions.SelectedIndex] := this.Condition := new ConditionTemplate()
+			this.Condition.Negate := this.chkNegateCondition.Checked
 		}
 		this.UseCondition := false
 		
@@ -353,8 +343,8 @@ Class CEventEditor extends CGUI
 	}
 	SubmitCondition()
 	{
-		if(!this.Condition)
-			return
+		;~ if(!this.Condition)
+			;~ return
 		Gui, % this.GUINum ": Default"
 		Gui, Tab, 2
 		this.Condition.GuiSubmit(this.ConditionGUI)
