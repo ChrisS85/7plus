@@ -505,7 +505,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 	UpdateEventsView(ChangedEvent)
 	{
 		Page := this.Pages.Events.Tabs[1].Controls
-		;think about how events that won't work in portable/non-admin should be treated
+		;TODO: think about how events that won't work in portable/non-admin should be treated
 		this.treePages.DisableNotifications := true
 		
 		DesiredCategory := SelectedCategory := this.GetSelectedCategory(false)
@@ -554,6 +554,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		if(DesiredCategory != SelectedCategory)
 		{
 			this.treePages.SelectedItem := this.treePages.FindItemWithText(DesiredCategory)
+			this.FillEventsList()
 			return
 		}
 		
@@ -624,6 +625,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 			Event := this.Events.GetItemWithValue("ID", item[2])
 			Copy := Event.DeepCopy()
 			Copy.Remove("OfficialEvent") ;Make sure that pasted events don't patch existing events
+			msgbox % Exploreobj(Copy)
 			if((!Settings.IsPortable && A_IsAdmin) || !Event.Trigger.Is(CExplorerButtonTrigger))
 				ClipboardEvents.Insert(copy)
 		}
@@ -681,7 +683,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 			ExportEvents := new CEvents()
 			for index, event in this.Events
 				if(event.Category = Category)
-					ExportEvents.Insert(event)
+					ExportEvents.Insert(Copy)
 			if(ExportEvents.MaxIndex())
 				ExportEvents.WriteEventsFile(A_ScriptDir "\Events\" Category ".xml")
 		}

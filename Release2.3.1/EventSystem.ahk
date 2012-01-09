@@ -765,7 +765,7 @@ Class CEvents extends CArray
 			
 			
 			;Uncomment the lines below to save events with an "official" tag that allows to identify them in update processes
-			if(!Event.OfficialEvent) ;Find an unused Event ID to be used as Official Event ID
+			if(!Event.OfficialEvent && !InStr(Path, A_Temp)) ;Find an unused Event ID to be used as Official Event ID
 			{			
 				Loop
 				{
