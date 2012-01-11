@@ -31,7 +31,6 @@ Shell_GoForward(hWnd=0)
 
 Shell_GoUpward()
 {
-	global Vista7
 	path := GetCurrentFolder()
 	if (Vista7 && !strEndsWith(path,".search-ms"))
 		Send !{Up}
@@ -292,7 +291,7 @@ IsDialog(window=0,ListViewSelected = False)
 ;Returns selected files separated by `n
 GetSelectedFiles(FullName=1, hwnd=0)
 {
-	global MuteClipboardList,Vista7
+	global MuteClipboardList
 	If (WinActive("ahk_group ExplorerGroup") || (WinExist("ahk_id " hwnd) && InStr("CabinetWClass,ExploreWClass", WinGetClass("ahk_id " hwnd))))
 	{
 		if(!hwnd)
@@ -574,9 +573,9 @@ ShellFolder(hWnd=0,returntype=0)
 					StringReplace, sSelect, sSelect, `n\, `n\\, 1
 					if(InStr(sSelect, "\") = 1)
 						sSelect := "\" sSelect
+					;Remove last `n
+					StringTrimRight, sSelect, sSelect, 1
 				}
-				;Remove last `n
-				StringTrimRight, sSelect, sSelect, 1
 				if (returntype=1)
 					Return   sFolder
 				else if (returntype=2)
@@ -594,7 +593,7 @@ ShellFolder(hWnd=0,returntype=0)
 
 IsWinrarExtractionDialog()
 {
-	global WinRarTitle
+	static WinRarTitle
 	If (WinActive("ahk_class #32770"))
 	{		
 		if(WinRarTitle="")

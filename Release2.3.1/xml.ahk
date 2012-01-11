@@ -77,25 +77,15 @@ XML_Read(xml,node = 0)
 		node := Object()
 	xml := strTrim(xml,"`r`n")
 	xml := strTrim(xml,"`n")
-	if(A)
-	outputdebug xml:`n%xml%
 	if(!strstartswith(xml,"<"))
-	{
-		if(A)
-			outputdebug % "string starts with " substr(xml,1,1)
 		return ""
-	}
 	start := 1
 	while(start != 0) ;loop until no more keys, all keys from this level read
 	{
 		len := InStr(xml,">", 0, start + 1) - start - 1
 		key := SubStr(xml,start + 1,InStr(xml,">", 0, start + 1) - start - 1)
-		if (A)
-			outputdebug read key %key%
 		if(strEndsWith(key,"/"))
 		{
-			if (A)
-				outputdebug single key without value
 			start += strlen(key) + 3
 			continue
 		}
@@ -125,27 +115,19 @@ XML_Read(xml,node = 0)
 		value := SubStr(xml,start,end - start - 2 - strlen(key) - 1)
 		value := strTrimLeft(value,"`r`n")
 		value := strTrimLeft(value,"`n")
-		if (A)
-			outputdebug value: `n%value%end
 		if(value = "")
 		{
-			if (A)
-				outputdebug empty value
 			start := InStr(xml, "<",0,end)
 			continue
 		}
 		
 		if(InStr(value, "<"))
 		{
-			if (A)
-				outputdebug xml value %key%
 			subnode := Object()
 			value := XML_Read(value, subnode)
 		}
 		else
 		{
-			if (A)
-				outputdebug normal value %key%
 			value := StringReplace(value, "&gt;",">",1)
 			value := StringReplace(value, "&lt;","<",1)
 			value := StringReplace(value, "&r;","`r",1)
@@ -153,29 +135,17 @@ XML_Read(xml,node = 0)
 		}
 		if(node.HasKey(key) && !node[key].Is(CArray)) ;Key already exists and is not an array, make it one and append things
 		{
-			if (A)
-				outputdebug turn %key% into array
 			array := Array()
 			array.Insert(node[key])
 			array.Insert(value)
 			node[key] := array
 		}
 		else if(node.HasKey(key) && node[key].Is(CArray)) ;Key already exists and is an array, just append the new key
-		{
 			node[key].Insert(value)
-			if (A)
-				outputdebug % "append " key " to array, new len " node[key].MaxIndex()
-		}
 		else
-		{
-			if (A)
-				outputdebug set key %key%
 			node[key] := value
-		}	
 		start := InStr(xml, "<",0,end)
 	}
-	if (A)
-		outputdebug % "key " key " len " node.MaxIndex()
 	return node
 }
 

@@ -176,7 +176,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page := this.Pages.Introduction.Tabs[1].Controls
 		Page.chkAutoUpdate.Checked := Settings.General.AutoUpdate
 		Page.chkHideTrayIcon.Checked := Settings.Misc.HideTrayIcon
-		if(!IsPortable)
+		if(!Settings.IsPortable)
 			Page.chkAutoRun.Checked := IsAutoRunEnabled()
 		Page.ddlRunAsAdmin.Text := Settings.Misc.RunAsAdmin
 		Page.ddlLanguage.Items.Clear()
@@ -199,7 +199,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 			Menu, Tray, Icon		
 		Settings.Misc.HideTrayIcon := Page.chkHideTrayIcon.Checked
 		
-		if(!IsPortable &&  IsAutoRunEnabled() != Page.chkAutoRun.Checked)
+		if(!Settings.IsPortable &&  IsAutoRunEnabled() != Page.chkAutoRun.Checked)
 		{
 			if(Page.chkAutoRun.Checked)
 				EnableAutorun()
@@ -706,6 +706,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 				if(!strEndsWith(File, ".xml"))
 					File .= ".xml"
 				ExportEvents := new CEvents()
+				FTP := false ;Set to true if any event contains FTP actions
 				for index, Item in Page.listEvents.SelectedItems
 				{
 						Event := this.Events.GetItemWithValue("ID", Item[2])

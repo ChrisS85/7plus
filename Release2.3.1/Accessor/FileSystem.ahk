@@ -37,7 +37,7 @@ Accessor_FileSystem_ListViewEvents(FileSystem, AccessorListEntry)
 {
 	IsDirectory := InStr(FileExist(AccessorListEntry.Path),"D")
 	if(A_GUIEvent = "DoubleClick" && IsDirectory) ;Go into directories
-		Accessor_WM_KEYDOWN(9,0)
+		Accessor_FileSystem_OnEnter()
 	if(IsDirectory)
 		FileSystem.OKName := "Open Folder"
 	else

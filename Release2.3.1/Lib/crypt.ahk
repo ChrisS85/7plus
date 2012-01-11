@@ -82,6 +82,7 @@ Decrypt(text)
 	k5 := 0x12345678                 ; starting counter value 
 	i = 9                         ; pad-index, force restart 
 	p = 0                         ; counter to be encrypted 
+	decrypted := ""
 	Loop Parse, text, `n, `r 
 	{ 
 	  L =                        ; processed line 

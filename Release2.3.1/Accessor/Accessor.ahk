@@ -612,61 +612,6 @@ AccessorCopy()
 			AccessorCopyField("Path", AccessorListEntry)
 	}
 }
-;TODO: Rewrite to use hotkeys?
-Accessor_WM_KEYDOWN(wParam,lParam)
-{
-	global Accessor,AccessorPlugins,AccessorEdit,AccessorListView
-	GUINum := Accessor.GUINum
-	Gui, %GUINum%: Default
-	GUI, ListView, AccessorListView
-	
-	GuiControlGet, Filter, , AccessorEdit
-	if(count := LV_GetCount() > 0)
-	{
-		selected := LV_GetNext()
-		LV_GetText(id, selected, 2)
-		LV_GetText(path,selected,4)
-		AccessorListEntry := Accessor.List[id]
-	}
-	
-	for Index, AccessorPlugin in AccessorPlugins
-		if(AccessorPlugin.Enabled && SingleContext := ((AccessorPlugin.Settings.Keyword && Filter && strStartsWith(Filter, AccessorPlugin.Settings.Keyword)) || AccessorPlugin.IsInSinglePluginContext(Filter, Accessor.LastFilter)))
-			if(AccessorPlugin.OnKeyDown(wParam, lParam, Filter, selected, AccessorListEntry))
-				return 1
-	
-	if(!SingleContext && IsObject(AccessorListEntry))
-		for Index, AccessorPlugin in AccessorPlugins
-			if(AccessorPlugin.Enabled && AccessorPlugin.Type = AccessorListEntry.Type && !AccessorPlugin.KeywordOnly)
-			{
-				if(AccessorPlugin.OnKeyDown(wParam, lParam, Filter, selected, AccessorListEntry))
-					return 1
-				break
-			}
-	
-	if(wParam = 9) ;Tab
-	{
-		if(count = 0)
-			return 1
-		Accessor_WM_KEYDOWN(40,0) ;Send down key
-		return 1
-	}
-	if((wParam = 33 || wParam = 34) && ControlGetFocus("A") = "Edit1") ;PageUp/Down
-	{
-		PostMessage, 0x100, %wParam%, %lParam%,SysListView321,A
-		return 1
-	}
-	if(wParam = 38) ;Up arrow
-	{
-		
-		return 1
-	}
-	else if(wParam = 40) ;Down arrow
-	{
-		
-		return 1
-	}
-	; return 0
-}
 
 AccessorContextMenu:
 AccessorContextMenu()
@@ -767,7 +712,6 @@ AccessorRunAsAdmin(AccessorListEntry = "")
 }
 AccessorRunWithArgs(AccessorListEntry = "")
 {
-	global TemporaryEvents
 	if(!IsObject(AccessorListEntry))
 		AccessorListEntry := AccessorGetSelectedListEntry()
 	if(AccessorListEntry.Path)
@@ -815,7 +759,7 @@ AccessorOpenCMD(AccessorListEntry = "")
 GUI_EditAccessorPlugin(TemporaryPlugin,GoToLabel="")
 {
 	static sTemporaryPlugin, sOriginalPlugin, result, PluginGUI, GuiNum
-	global AccessorPlugins, CSettingsWindow
+	global AccessorPlugins
 	if(GoToLabel = "")
 	{
 		;Don't show more than once

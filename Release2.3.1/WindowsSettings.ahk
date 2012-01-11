@@ -69,7 +69,6 @@ Class WindowsSettings
 
 	GetDisableUAC()
 	{
-		global Vista7
 		if(Vista7)
 		{
 			RegRead, DisableUAC, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System, EnableLUA 
@@ -194,7 +193,6 @@ Class WindowsSettings
 
 	SetDisableUAC(DisableUAC)
 	{
-		global Vista7
 		if(Vista7)
 		{
 			RegWrite, REG_DWORD, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System, EnableLUA, % DisableUAC = 1 ? 0 : 1

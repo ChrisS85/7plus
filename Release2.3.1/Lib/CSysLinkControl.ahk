@@ -172,7 +172,6 @@ Class CSysLinkControl extends CControl {
    ; DESTRUCTOR      __Delete()
    ; ===================================================================================================================
    __Delete() {
-      Global Notification
       Static NM_FIRST  := 0
       Static NM_CLICK  := (NM_FIRST-2)
       Static NM_RETURN := (NM_FIRST-4)

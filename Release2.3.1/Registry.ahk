@@ -13,7 +13,6 @@ RegRevokePermissions(key)
 }
 PrepareFolderBand()
 {
-	global Vista7
 	if(Vista7)
 	{
 		;Give us all rights
@@ -23,7 +22,6 @@ PrepareFolderBand()
 }
 BackupAndRemoveFolderBandButtons()
 {
-	global Vista7
 	if(Vista7)
 	{
 		;Give us all rights
@@ -46,7 +44,6 @@ BackupPlacesBar()
 
 RestoreFolderBand()
 {
-	global Vista7
 	if(!Vista7)
 		return
 	RemoveAllExplorerButtons()	
@@ -54,7 +51,6 @@ RestoreFolderBand()
 }
 RestoreFolderBandButtons()
 {
-	global Vista7
 	if(Vista7)
 	{
 		RegRename("HKLM","SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\Windows.Burn7pBackup","SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\Windows.Burn")

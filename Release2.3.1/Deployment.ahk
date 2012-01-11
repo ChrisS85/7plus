@@ -86,7 +86,7 @@ ApplyFreshInstallSteps()
 ;C) If the user manually extracted a newer version
 ApplyUpdateFixes()
 {
-	global MajorVersion, MinorVersion, BugfixVersion, XMLMajorVersion, XMLMinorVersion, XMLBugfixVersion
+	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, XMLMajorVersion, XMLMinorVersion, XMLBugfixVersion, ClipboardList
 	;On fresh installation, the versions are identical since a new Events.xml is used and no events patch needs to be applied
 	;After autoupdate has finished, the XML version is lower and the events are patched
 	;After manually overwriting 7plus, the XML version is lower and the events are patched
@@ -150,10 +150,11 @@ ApplyUpdateFixes()
 }
 AutoUpdate_CheckPatches()
 {
-	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, Events
+	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion
 	;Disable keyboard hook to increase responsiveness
 	FileCreateDir, % Settings.ConfigPath "\Patches"
-	FileDelete, % Settings.ConfigPath "\PatchInfo.xml"
+	FileDelete, % Settings.ConfigPath "\PatchInfo.xml"	
+	random, rand
 	if(IsConnected("http://7plus.googlecode.com/files/PatchInfo.xml?x=" rand))
 	{
 		URLDownloadToFile, http://7plus.googlecode.com/files/PatchInfo.xml?x=%rand%, % Settings.ConfigPath "\PatchInfo.xml"
@@ -164,12 +165,12 @@ AutoUpdate_CheckPatches()
 		}
 	}
 	Update := Object("Message", "") ;Object storing update message
+	patch := false
 	Loop ;Iteratively apply all available patches
 	{
 		version := MajorVersion "." MinorVersion "." BugfixVersion "." (PatchVersion + 1)
 		if(IsObject(XMLObject) && !FileExist(Settings.ConfigPath "\Patches\" version ".xml") && XMLObject.HasKey(version)) ;If a new patch is available online, download it to patches directory
 		{
-			random, rand
 			PatchURL := XMLObject[version]
 			if(IsConnected(PatchURL "?x=" rand))
 				URLDownloadToFile, %PatchURL%?x=%rand%, % Settings.ConfigPath "\Patches\" version ".xml"
@@ -191,8 +192,8 @@ AutoUpdate_CheckPatches()
 
 AddUninstallInformation()
 {
-	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, IsPortable
-	if(IsPortable)
+	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion
+	if(Settings.IsPortable)
 		return
 	RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7plus, DisplayName, 7plus V.%MajorVersion%.%MinorVersion%.%BugfixVersion%.%PatchVersion%
 	RegWrite, REG_DWORD, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7plus, NoModify, 1

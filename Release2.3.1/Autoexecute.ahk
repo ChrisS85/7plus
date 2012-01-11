@@ -39,20 +39,9 @@ Settings.Load()
 
 ;If program is run without admin privileges, try to run it again as admin, and exit this instance when the user confirms it
 if(!A_IsAdmin && Settings.Misc.RunAsAdmin = "Always/Ask")
-{
-	Loop %0%
-		params .= " " (InStr(%A_Index%, " ") ? """" %A_Index% """" : %A_Index%)
-	If(A_IsCompiled)
-		uacrep := DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, A_ScriptFullPath, str, "/r" params, str, A_WorkingDir, int, 1)
-	else
-		uacrep := DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, A_AhkPath, str, "/r """ A_ScriptFullPath """" params, str, A_WorkingDir, int, 1)
-	If(uacrep = 42) ;UAC Prompt confirmed, application may run as admin
-		ExitApp
-	else
-		MsgBox 7plus is running in non-admin mode. Some features will not be working.
-}
-;Start debugger
+	Run7plusAsAdmin()
 
+;Start debugger
 if(Settings.General.DebugEnabled)
 	DebuggingStart()
 outputdebug 7plus Starting...
@@ -201,6 +190,22 @@ SetTimer, EventScheduler, 100
 ; EventScheduler()
 Return
 
+Run7plusAsAdmin()
+{
+	global
+	local params, uacrep
+	Loop %0%
+		params .= " " (InStr(%A_Index%, " ") ? """" %A_Index% """" : %A_Index%)
+	If(A_IsCompiled)
+		uacrep := DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, A_ScriptFullPath, str, "/r" params, str, A_WorkingDir, int, 1)
+	else
+		uacrep := DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, A_AhkPath, str, "/r """ A_ScriptFullPath """" params, str, A_WorkingDir, int, 1)
+	If(uacrep = 42) ;UAC Prompt confirmed, application may run as admin
+		ExitApp
+	else
+		MsgBox 7plus is running in non-admin mode. Some features will not be working.
+}
+
 ExitSub:
 OnExit()
 ExitApp
@@ -246,7 +251,7 @@ ShowWizard()
 
 WriteClipboard()
 {
-	global ClipboardList, Events
+	global ClipboardList
 	FileDelete, % Settings.ConfigPath "\Clipboard.xml"
 	for index, Event in EventSystem.Events ;Check if clipboard history is actually used and don't store the history when it isn't
 	{
@@ -263,13 +268,13 @@ WriteClipboard()
 ProcessCommandLineParameters()
 {
 	global
-	local Count, x, y
+	local Count, x, y, hwnd, Parameter
 	FileRead, hwnd, %A_Temp%\7plus\hwnd.txt ;if existing, hwnd.txt contains the window handle of another running instance
 	Loop %0%
 	{
 		SplitPath, 1,x,y
 		;TODO: Change this format to "-id Number" for compatibility with Explorer Button trigger? (See EventSystem_Startup())
-		if(strStartsWith(%A_Index%,"-id")) ;Generic event trigger, send to running instance
+		if(InStr(%A_Index%, "-id") = 1) ;Generic event trigger, send to running instance
 		{
 			if(WinExist("ahk_id " hwnd))
 			{
@@ -278,7 +283,7 @@ ProcessCommandLineParameters()
 				ExitApp
 			}
 		}
-		else if(strStartsWith(%A_Index%,"-ContextID")) ;Trigger from legacy context menu mechanism (used for My Computer menu), send to running instance
+		else if(InStr(%A_Index%,"-ContextID") = 1) ;Trigger from legacy context menu mechanism (used for My Computer menu), send to running instance
 		{
 			if(WinExist("ahk_id " hwnd))
 			{

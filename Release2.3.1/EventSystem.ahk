@@ -1,10 +1,5 @@
 /*
 Note: CEventSystem, CTrigger, CCondition and CAction need to be defined before any real subevent class.
-TODO: Create a replacement routine in event loading for legacy names. Current remappings:
-
-TODO: Possibly implement CPlaceholderContainer
-TODO: Check if the Success property is relevant for copying events with ControlEvent action
-TODO: Think about how shared event components such as WindowFilter or FileOperation are best implemented
 Possible Problem: newly created subevents may not have local properties. This could be a problem if HasKey is used somewhere.
 */
 Class CEventSystem extends CRichObject
@@ -103,7 +98,6 @@ Class CEventSystem extends CRichObject
 	;An event may stay on the EventSchedule stack as long as it needs to when the current CAction.Execute() returns -1.
 	EventScheduler()
 	{
-		global Profiler
 		Critical, Off
 		;First, check the conditions of all events in the queue to make sure an event can't influence the result of a condition check of another event.
 		EventPos := 1
@@ -455,7 +449,7 @@ Class CEvents extends CArray
 
 	ReadEventsFile(Path, OverwriteCategory="", Update="")
 	{
-		global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, XMLMajorVersion, XMLMinorVersion, XMLBugfixVersion, Debug
+		global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, XMLMajorVersion, XMLMinorVersion, XMLBugfixVersion
 		FileRead, xml, %path%
 		XMLObject := XML_Read(xml)
 		XMLMajorVersion := XMLObject.MajorVersion

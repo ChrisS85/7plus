@@ -2,8 +2,7 @@
 #include *i %A_ScriptDir%\MiscFunctions.ahk
 ClearStoredFolder(Slot)
 {
-	global
-	local pos, name
+	global FastFolders
 	Slot+=1
 	FastFolders[Slot].Path := ""
 	FastFolders[Slot].Title := ""
@@ -28,7 +27,7 @@ UpdateStoredFolder(Slot, Folder="")
 	else
 		FastFolders[Slot].Path:=GetCurrentFolder()
 	title:=FastFolders[Slot].Path	
-	if(strStartsWith(title,"::") && WinActive("ahk_group ExplorerGroup"))
+	if(InStr(title,"::") = 1 && WinActive("ahk_group ExplorerGroup"))
 		WinGetTitle,title,A
 	
 	SplitPath, title , split
@@ -47,8 +46,7 @@ RefreshFastFolders()
 
 AddAllButtons(FolderBand,PlacesBar)
 {
-	global
-	local pos, value
+	global FastFolders
 	loop 10
 	{
 		pos:=A_Index-1
@@ -76,7 +74,7 @@ IsFastFolderButton(Command,Title,Tooltip)
 
 FastFolderMenu()
 {
-	global
+	global FastFolders
 	Menu, FastFolders, add, 1,FastFolderMenuHandler1
 	Menu, FastFolders, DeleteAll
 	if ((IsWindowUnderCursor("ExploreWClass")||IsWindowUnderCursor("CabinetWClass")||IsWindowUnderCursor("WorkerW")||IsWindowUnderCursor("Progman")) && !IsRenaming())
@@ -89,7 +87,7 @@ FastFolderMenu()
 			if(FastFolders[A_Index].Path)
 			{
 				x:=FastFolders[A_Index].Title
-				if(x && (!strStartsWith(x,"ftp://")||!y))
+				if(x && (!InStr(x,"ftp://") = 1||!y))
 				{
 					x := "&" i ": " x
 					Menu, FastFolders, add, %x%, FastFolderMenuHandler%i%
@@ -136,8 +134,8 @@ return
 
 FastFolderMenuClicked(index)
 {
-	global
-	local y:=FastFolders[index].Path
+	global FastFolders
+	y:=FastFolders[index].Path
 	x:=GetSelectedFiles()
 	StringReplace, x, x, `n , |, A
 	if(x && (GetKeyState("CTRL") || GetKeyState("Shift")))

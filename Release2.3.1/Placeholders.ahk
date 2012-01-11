@@ -6,6 +6,7 @@ ExpandPlaceholders(SubEvent, Text)
 		return Text
 	
 	;Iteratively expand all placeholders
+	OriginalText := ""
 	while(OriginalText != Text && !IsObject(Text))
 	{
 		OriginalText := Text
@@ -84,7 +85,6 @@ ExpandPathPlaceholders(text)
 ;Expands a single placeholder. Placeholder argument contains only the name, without ${}
 ExpandPlaceholder(Placeholder)
 {
-	global Vista7
 	if(Placeholder = "Clip")
 		return ReadClipboardText()
 	else if(Placeholder = "A")

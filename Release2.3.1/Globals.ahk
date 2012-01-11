@@ -12,7 +12,6 @@ global XMLMinorVersion := ""
 global XMLBugfixVersion := ""
 global NotifyIcons := new CNotifyIcons()
 ;~ global BugfixVersion := ""
-;~ global Events := {}
 global BlinkingWindows := Array()
 IsVista7()
 {

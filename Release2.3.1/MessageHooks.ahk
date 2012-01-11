@@ -1,6 +1,6 @@
 ; see http://msdn.microsoft.com/en-us/library/dd318066(VS.85).aspxs
 HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEventTime ){ 
-	global ResizeWindow, Profiler, SlideWindows, WindowList
+	global ResizeWindow, SlideWindows, WindowList
 	ListLines, Off
 	hwnd += 0
 	;On dialog popup, check if its an explorer confirmation dialog
@@ -88,7 +88,7 @@ ShellMessage( wParam, lParam, Msg)
 	WasCritical := A_IsCritical
 	Critical
 	ListLines, Off
-	global BlinkingWindows, WindowList, Accessor, RecentCreateCloseEvents, Profiler, ToolWindows, ExplorerWindows, LastWindow, LastWindowClass, SlideWindows, CurrentWindow, PreviousWindow
+	global BlinkingWindows, WindowList, Accessor, RecentCreateCloseEvents, ToolWindows, ExplorerWindows, LastWindow, LastWindowClass, SlideWindows, CurrentWindow, PreviousWindow
 	Trigger := new COnMessageTrigger()
 	Trigger.Message := wParam
 	Trigger.lParam := lParam
@@ -130,13 +130,16 @@ ShellMessage( wParam, lParam, Msg)
 				GoSub WaitForClose
 			else ;Code below is also executed in WaitForClose for separate Explorer handling (why can't explorer send close messages properly like a normal window??)
 			{
-				Loop % ToolWindows.MaxIndex()
+				if(IsObject(ToolWindows))
 				{
-					if(ToolWindows[A_Index].hParent = lParam && ToolWindows[A_Index].AutoClose)
+					Loop % ToolWindows.MaxIndex()
 					{
-						WinClose % "ahk_id " ToolWindows[A_Index].hGui
-						ToolWindows.Remove(A_Index)
-						break
+						if(ToolWindows[A_Index].hParent = lParam && ToolWindows[A_Index].AutoClose)
+						{
+							WinClose % "ahk_id " ToolWindows[A_Index].hGui
+							ToolWindows.Remove(A_Index)
+							break
+						}
 					}
 				}
 				SlideWindows.WindowClosed(lParam)
@@ -186,12 +189,15 @@ ShellMessage( wParam, lParam, Msg)
 			;Paste text/image as file file creation
 			CreateFileFromClipboard()
 		}
-		if(InStr("CabinetWClass,ExploreWClass", LastWindowClass) && LastWindowClass && !ExplorerWindows.TabContainerList.TabCreationInProgress && !ExplorerWindows.TabContainerList.TabActivationInProgress)
+		if(LastWindowClass && InStr("CabinetWClass,ExploreWClass", LastWindowClass) && !ExplorerWindows.TabContainerList.TabCreationInProgress && !ExplorerWindows.TabContainerList.TabActivationInProgress)
 			ExplorerDeactivated(LastWindow)
+		
 		LastWindow := lParam
 		LastWindowClass := WinGetClass("ahk_id " lParam)
+		
 		if(InStr("CabinetWClass,ExploreWClass", LastWindowClass) && LastWindowClass && !ExplorerWindows.TabContainerList.TabCreationInProgress && !ExplorerWindows.TabContainerList.TabActivationInProgress)
 			ExplorerActivated(LastWindow)
+		
 		if(IsObject(SlideWindows))
 			SlideWindows.WindowActivated()
 	}

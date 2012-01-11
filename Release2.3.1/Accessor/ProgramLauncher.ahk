@@ -256,7 +256,7 @@ ReadProgramLauncherCache(ProgramLauncher)
 		XMLObjectListEntry := XMLObject.List[A_Index]
 		command := XMLObjectListEntry.Command
 		SplitPath, command, ExeName
-		ProgramLauncher.List.Insert(Object("ExeName", ExeName, "Name", name, "Command", command, "BasePath", XMLObjectListEntry.BasePath))
+		ProgramLauncher.List.Insert(Object("ExeName", ExeName, "Name", XMLObjectListEntry.Name, "Command", command, "BasePath", XMLObjectListEntry.BasePath))
 	}
 	
 	Loop % XMLObject.Paths.MaxIndex() ;Read scan directories

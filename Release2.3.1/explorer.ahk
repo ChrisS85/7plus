@@ -188,7 +188,6 @@ IsExplorerConfirmationDialog()
 
 AcquireExplorerConfirmationDialogStrings()
 {
-	global
 	ExplorerConfirmationDialogTitle := Array(TranslateMUI(Shell32MUIPath,16705), TranslateMUI(Shell32MUIPath,16877), TranslateMUI(Shell32MUIPath,16875), TranslateMUI(Shell32MUIPath,16875), TranslateMUI(Shell32MUIPath,16706), TranslateMUI(Shell32MUIPath,16864))
 	ExplorerConfirmationDialogButton:=Array(strStripRight(TranslateMUI(Shell32MUIPath,16928),"%"), strStripRight(TranslateMUI(Shell32MUIPath,17039),"%"), TranslateMUI(Shell32MUIPath,16663))
 }
@@ -312,7 +311,7 @@ Wheel()
 
 InitExplorerWindows()
 {
-	global ExplorerWindows, Shell32MUIpath
+	global ExplorerWindows
 	ExplorerWindows := Array()
 	RegisterExplorerWindows()
 	TabContainerList := Array()
@@ -413,6 +412,7 @@ CheckForClosedExplorerWindows()
 return
 CheckForClosedExplorerWindows()
 {
+	global ExplorerWindows, ToolWindows
 	DetectHiddenWindows, On
 	for index, ExplorerWindow in ExplorerWindows
 	{

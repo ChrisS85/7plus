@@ -1,5 +1,5 @@
 ;~ WatchDirectory("C:\test\|*.txt", "ReportChanges")
-;~ #Warn, LocalSameAsGlobal 
+;~ #Warn, UseUnsetGlobal
 Suspend, On
 #SingleInstance off
 #NoTrayIcon ;Added later
@@ -78,7 +78,6 @@ ComObjError(0)
 #include %A_ScriptDir%\SlideWindows.ahk
 #include %A_ScriptDir%\JoyControl.ahk
 #include %A_ScriptDir%\ExplorerTabs.ahk
-#include %A_ScriptDir%\Profiling.ahk
 #include *i %A_ScriptDir%\Tools\ObjTree.ahk
 
 ;~ ReportChanges(a,b)

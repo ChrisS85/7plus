@@ -300,7 +300,7 @@ Class CTabContainer
 		Sleep 10 ;To allow any message hooks to be executed
 		ExplorerWindows.TabContainerList.TabActivationInProgress := false
 	}
-	;TODO: Continue here
+	
 	/*
 	 * Cycles through tabs in order indicated by dir
 	*/
@@ -688,7 +688,7 @@ Class CTabContainer
 CreateTab(hwnd, path=-1,Activate=-1)
 {
 	; global TabContainerList, TabContainerBase, SuppressTabEvents, TabNum, TabWindow,TabControl
-	global ExplorerWindows, CTabContainer
+	global ExplorerWindows
 	if(!hwnd)
 	{
 		Msgbox CreateTab(): No active tab!

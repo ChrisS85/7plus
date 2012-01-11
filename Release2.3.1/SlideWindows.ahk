@@ -4,7 +4,6 @@
 ;TODO on Return:
 ;FileOpen Dialog messes up on XP when sliding out
 ;Issue with window position on Clearlooks skin (offset of 3, i.e. y=3 is recognized as 0)
-;Shift in key dialog showing in two lines
 ;
 Class CSlideWindow
 {
