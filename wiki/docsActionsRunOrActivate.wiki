@@ -1,0 +1,2 @@
+= Run a program or activate it =
+This action activates a program if it is already running or starts it. This is useful if you want a hotkey to access a program and don't care if it's running or not. The options are the same as for [docsActionsRun].
