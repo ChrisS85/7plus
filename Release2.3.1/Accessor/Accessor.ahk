@@ -695,7 +695,7 @@ AccessorRun(AccessorListEntry = "")
 	if(AccessorListEntry.Path)
 	{
 		ProgramLauncherAddToCache(AccessorListEntry)
-		Run(AccessorListEntry.Path)
+		Run(Quote(AccessorListEntry.Path) (AccessorListEntry.args ? " " AccessorListEntry.args : ""))
 		AccessorClose()
 	}
 }

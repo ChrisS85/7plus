@@ -1,8 +1,5 @@
 Accessor_ProgramLauncher_Init(ByRef ProgramLauncher, PluginSettings)
 {
-	ReadProgramLauncherCache(ProgramLauncher)
-	RefreshProgramLauncherCache(ProgramLauncher)
-	SetTimer, UpdateLauncherPrograms, 60000
 	ProgramLauncher.Settings.Keyword := "run"
 	ProgramLauncher.DefaultKeyword := "run"
 	ProgramLauncher.KeywordOnly := false
@@ -10,9 +7,13 @@ Accessor_ProgramLauncher_Init(ByRef ProgramLauncher, PluginSettings)
 	ProgramLauncher.OKName := "Run"	
 	ProgramLauncher.Settings.FuzzySearch := PluginSettings.HasKey("FuzzySearch") ? PluginSettings.FuzzySearch : 0
 	ProgramLauncher.Settings.IgnoreExtensions := PluginSettings.HasKey("IgnoreExtensions") ? PluginSettings.IgnoreExtensions : 1
-	ProgramLauncher.Settings.Exclude := PluginSettings.HasKey("Exclude") ? PluginSettings.Exclude : 1
+	ProgramLauncher.Settings.Exclude := PluginSettings.HasKey("Exclude") ? PluginSettings.Exclude : "setup,install"
 	ProgramLauncher.Description := "Run programs/files by typing a part of their name. All programs/files from the folders in the list `nbelow can be used. 7plus also looks for running programs and automatically adds them `nto the index, so you don't have to add large directories like Program Files or WinDir usually."
 	ProgramLauncher.HasSettings := True
+	
+	ReadProgramLauncherCache(ProgramLauncher)
+	RefreshProgramLauncherCache(ProgramLauncher)
+	SetTimer, UpdateLauncherPrograms, 60000
 }
 Accessor_ProgramLauncher_ShowSettings(ProgramLauncher, PluginSettings, PluginGUI, GoToLabel = "")
 {
@@ -159,11 +160,18 @@ Accessor_ProgramLauncher_FillAccessorList(ProgramLauncher, Accessor, Filter, Las
 	Loop % ProgramLauncher.List.MaxIndex()
 	{
 		ListEntry := ProgramLauncher.List[index]
-		x := 0
+		if(!ListEntry.Command)
+			continue
+		MatchPos := 0
+		
+		;Match by name of the executable
 		strippedExeName := ProgramLauncher.Settings.IgnoreFileExtensions ? RegexReplace(ListEntry.ExeName, "\.\w+") : ListEntry.ExeName 
-		if(ListEntry.Command
-		   && (strippedExeName && ((x := InStr(strippedExeName,StrippedFilter)) || (ProgramLauncher.Settings.FuzzySearch && strlen(StrippedFilter) < 5 && FuzzySearch(strippedExeName,StrippedFilter) < 0.4)))
-		   || (ListEntry.Name && ((x := InStr(ListEntry.Name,StrippedFilter)) || (ProgramLauncher.Settings.FuzzySearch && strlen(StrippedFilter) < 5 && FuzzySearch(ListEntry.Name,StrippedFilter) < 0.4))))
+		ExeMatch := strippedExeName && ((MatchPos := InStr(strippedExeName,StrippedFilter)) || (ProgramLauncher.Settings.FuzzySearch && strlen(StrippedFilter) < 5 && FuzzySearch(strippedExeName,StrippedFilter) < 0.4))
+		
+		;Match by name of the link
+		NameMatch := ListEntry.Name && ((MatchPos := InStr(ListEntry.Name,StrippedFilter)) || (ProgramLauncher.Settings.FuzzySearch && strlen(StrippedFilter) < 5 && FuzzySearch(ListEntry.Name,StrippedFilter) < 0.4))
+		
+		if(ExeMatch || NameMatch)
 		{
 			if(!FileExist(ListEntry.Command))
 			{
@@ -175,12 +183,13 @@ Accessor_ProgramLauncher_FillAccessorList(ProgramLauncher, Accessor, Filter, Las
 				ListEntry.hIcon := ExtractAssociatedIcon(0, ListEntry.Command, iIndex)
 			ImageList_ReplaceIcon(Accessor.ImageListID, -1, ListEntry.hIcon)
 			Name := ListEntry.Name ? ListEntry.Name : ListEntry.ExeName
-			if(x = 1)
-				Accessor.List.Insert(Object("Title", Name, "Path", ListEntry.Command, "Type", "ProgramLauncher", "Icon", IconCount))
-			else if(x)
-				InStrList.Insert(Object("Title", Name, "Path", ListEntry.Command, "Type", "ProgramLauncher", "Icon", IconCount))
+			;Put entries which start with the match at first
+			if(MatchPos = 1)
+				Accessor.List.Insert(Object("Title", Name, "Path", ListEntry.Command, "args", ListEntry.args, "Type", "ProgramLauncher", "Icon", IconCount))
+			else if(MatchPos)
+				InStrList.Insert(Object("Title", Name, "Path", ListEntry.Command, "args", ListEntry.args, "Type", "ProgramLauncher", "Icon", IconCount))
 			else
-				FuzzyList.Insert(Object("Title", Name, "Path", ListEntry.Command, "Type", "ProgramLauncher", "Icon", IconCount))
+				FuzzyList.Insert(Object("Title", Name, "Path", ListEntry.Command, "args", ListEntry.args, "Type", "ProgramLauncher", "Icon", IconCount))
 		}		
 		index++
 	}
@@ -256,7 +265,7 @@ ReadProgramLauncherCache(ProgramLauncher)
 		XMLObjectListEntry := XMLObject.List[A_Index]
 		command := XMLObjectListEntry.Command
 		SplitPath, command, ExeName
-		ProgramLauncher.List.Insert(Object("ExeName", ExeName, "Name", XMLObjectListEntry.Name, "Command", command, "BasePath", XMLObjectListEntry.BasePath))
+		ProgramLauncher.List.Insert(Object("ExeName", ExeName, "Name", XMLObjectListEntry.Name, "Command", command, "args", XMLObjectListEntry.args, "BasePath", XMLObjectListEntry.BasePath))
 	}
 	
 	Loop % XMLObject.Paths.MaxIndex() ;Read scan directories
@@ -270,7 +279,7 @@ WriteProgramLauncherCache(ProgramLauncher)
 	FileDelete, % Settings.ConfigPath "\ProgramCache.xml"
 	XMLObject := Object("List", Array(), "Paths", Array())
 	for index, ListEntry in ProgramLauncher.List
-		XMLObject.List.Insert(Object("Command", ListEntry.Command, "Name", ListEntry.Name, "BasePath", ListEntry.BasePath))
+		XMLObject.List.Insert(Object("Command", ListEntry.Command, "Name", ListEntry.Name, "args", ListEntry.args, "BasePath", ListEntry.BasePath))
 	for index, ListEntry in ProgramLauncher.Paths
 		XMLObject.Paths.Insert(Object("Path", ListEntry.Path, "Extensions", ListEntry.Extensions))
 	
@@ -310,33 +319,33 @@ RefreshProgramLauncherCache(ProgramLauncher, Path ="")
 				command := A_LoopFileFullPath
 				name := A_LoopFileName
 				SplitPath, name,,,, name ;lnk name
-				; outputdebug command %command% name %name%
 				if(strEndsWith(command,".lnk"))
 				{
 					FileGetShortcut, %Command% , ResolvedCommand, , args
 					if(!InStr(ResolvedCommand, A_WinDir "\Installer")) ; Fix for MSI Installer shortcuts which don't resolve to the proper executable
 					{
-						command := ResolvedCommand 
-						; outputdebug command %command% args %args%
+						command := ResolvedCommand
 						SplitPath, command,,,ext
 						if ext not in %extList%
 							continue
 							
 						if(!args)
 							SplitPath, command,ExeName ;Executable name
-						command .= args
 					}
 				}
 				;Exclude undesired programs (uninstall, setup,...)
 				if command not contains %exclude%
-				{					
-					;Check for existing duplicates
-					if(ProgramLauncher.List.FindKeyWithValue("Command",command) = 0)
+				{
+					if name not contains %exclude%
 					{
-						if(ExeName)
-							ProgramLauncher.List.Insert(Object("Name",name, "ExeName", ExeName, "Command", command, "BasePath", Path))
-						else
-							ProgramLauncher.List.Insert(Object("Name",name, "Command", command, "BasePath", Path))
+						;Check for existing duplicates
+						if(ProgramLauncher.List.FindKeyWithValue("Command",command) = 0)
+						{
+							if(ExeName)
+								ProgramLauncher.List.Insert(Object("Name",name, "ExeName", ExeName, "Command", command, "args", args, "BasePath", Path))
+							else
+								ProgramLauncher.List.Insert(Object("Name",name, "Command", command, "args", args, "BasePath", Path))
+						}
 					}
 				}
 			}
