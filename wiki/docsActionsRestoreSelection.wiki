@@ -1,0 +1,2 @@
+= Restore file selection =
+This action restores the file selection to the previously selected files in explorer. Use this to Undo an erroneous file selection. By default this is assigned to CTRL+Shift+Z.
