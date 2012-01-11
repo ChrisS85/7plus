@@ -4,7 +4,7 @@ Variables which could possibly cause naming conflicts with local variables aren'
 */
 
 global Vista7 := IsVista7()
-global shell32MUIpath := ""
+;~ global shell32MUIpath := "" ;Defined in Autoexecute.ahk
 global XMLMajorVersion := ""
 ;~ global MajorVersion := ""
 global XMLMinorVersion := ""

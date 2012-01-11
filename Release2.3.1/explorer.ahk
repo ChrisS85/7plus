@@ -156,40 +156,28 @@ SetFocusToFileView()
 
 FixExplorerConfirmationDialogs()
 {
-	global ExplorerConfirmationDialogTitle, ExplorerConfirmationDialogButton
-	;Check if titles were acquired and if this is a proper dialog
-	if(ExplorerConfirmationDialogTitle.MaxIndex() > 0 && z:=IsExplorerConfirmationDialog())
+	;Check if a confirmation dialog is active, if it is -> check the checkbox!
+	hwnd := WinActive("ahk_class #32770")
+	hParent := GetParent(GetParent(hwnd))
+	if(hwnd && hParent && (InStr("ExploreWClass,CabinetWClass", WinGetClass("ahk_id " hParent)) || IsDialog(hParent)))
 	{
-		if(z=2 || z=6)
-			Control, Check , , Button4, A
-		else if (z=5)
-			Control, Check , , Button5, A
-		else
+		WinGet ctrlList, ControlList, A
+		; Find the checkbox!
+		Loop Parse, ctrlList, `n 
 		{
-			;just check both, lazyness and low number seem to warrant it :D
-			Control, Check , , % ExplorerConfirmationDialogButton[1], A
-			Control, Check , , % ExplorerConfirmationDialogButton[2], A
+			ControlGet hwnd, Hwnd, , %A_LoopField%, A 
+			if(InStr(WinGetClass("ahk_id " hwnd), "Button") = 1)
+			{
+				WinGet, style, style, ahk_id %hwnd%
+				for i, s in [0x2,0x3,0x5,0x6]
+					if(style & s)
+					{
+						Control, Check , ,, ahk_id %hwnd%
+						return
+					}
+			}
 		}
 	}
-}
-
-IsExplorerConfirmationDialog()
-{
-	global ExplorerConfirmationDialogTitle
-	if(WinActive("ahk_class #32770"))
-	{
-		WinGetTitle, title, A
-		loop % ExplorerConfirmationDialogTitle.MaxIndex()
-			if(strStartsWith(title, ExplorerConfirmationDialogTitle[A_INDEX]))
-				return A_Index
-	}
-	return 0
-}
-
-AcquireExplorerConfirmationDialogStrings()
-{
-	ExplorerConfirmationDialogTitle := Array(TranslateMUI(Shell32MUIPath,16705), TranslateMUI(Shell32MUIPath,16877), TranslateMUI(Shell32MUIPath,16875), TranslateMUI(Shell32MUIPath,16875), TranslateMUI(Shell32MUIPath,16706), TranslateMUI(Shell32MUIPath,16864))
-	ExplorerConfirmationDialogButton:=Array(strStripRight(TranslateMUI(Shell32MUIPath,16928),"%"), strStripRight(TranslateMUI(Shell32MUIPath,17039),"%"), TranslateMUI(Shell32MUIPath,16663))
 }
 
 ;Mouse "gestures" (hold left/right and click right/left)

@@ -72,10 +72,7 @@ Menu, tray, add, Settings, SettingsHandler
 menu, tray, Default, Settings
 
 ;This needs to be executed before EventSystem_Startup() because NewFile/Folder action relies on it
-if(shell32MUIpath := LocateShell32MUI())
-	if(Vista7)
-		AcquireExplorerConfirmationDialogStrings()
-	
+global shell32MUIpath := LocateShell32MUI()
 ;Keep a list of windows and their required info stored. This allows to identify windows which were closed recently.
 if(!WindowList)
 	WindowList := Object()
