@@ -38,6 +38,7 @@ ComObjError(0)
 #include <Parse>
 #include <RemoteBuf>
 #include <Taskbutton>
+#include <Thumbnail>
 #include <unhtml>
 #include <VA>
 #include <Win>

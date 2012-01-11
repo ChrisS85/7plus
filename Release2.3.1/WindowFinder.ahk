@@ -1,21 +1,18 @@
 GUI_WindowFinder(PreviousGUINum, GoToLabel="")
 {
-	static WindowList, sPreviousGUINum, GUINum, WindowFinderView, WindowPicture, hwndWindowPicture, result
+	static WindowList, sPreviousGUINum, WindowFinderView, WindowPicture, hwndWindowPicture, result, thumbnail,WindowFinder_hWnd
 	if(GoToLabel = "")
 	{
 		sPreviousGUINum := PreviousGUINum
 		
 		Gui, %PreviousGUINum%:+Disabled
-		GUINum := GetFreeGuiNum(6)
-		Gui, %GUINum%:Default
+		Gui, EventEditor:Default
 		Gui, +LabelWindowFinder +Owner%PreviousGUINum% +ToolWindow
 		width := 1000
 		height := 400
 		Gui, Add, ListView, vWindowFinderView gWindowFinderListView r19 w500 AltSubmit -Multi, #|Title|Class|Executable
 		ImageList := IL_Create(10,5,0)
 		LV_SetImageList(ImageList)
-		PictureWidth := 500
-		PictureHeight := 350
 		WindowList := Array()
 		DetectHiddenWindows, Off
 		WinGet, hwnds, list,,, Program Manager
@@ -25,29 +22,13 @@ GUI_WindowFinder(PreviousGUINum, GoToLabel="")
 			WinGetClass, class, ahk_id %hwnd%
 			WinGetTitle, title, ahk_id %hwnd%
 			WinGet, exe, ProcessName, ahk_id %hwnd%
-			if((!title && exe != "Explorer.exe") || Class = "WorkerW" ||title = "Event Editor" || title = "7plus Settings" || InStr(class, "Tooltip") || InStr(class, "SysShadow")) ;Filter some windows
+			if((!title && exe != "Explorer.exe") ||title = "Event Editor" || title = "7plus Settings" || InStr(class, "Tooltip") || InStr(class, "SysShadow")) ;Filter some windows
 				continue
-			pBitmap := Gdip_BitmapFromHWND(hwnd)
-			w := Gdip_GetImageWidth(pBitmap)
-			h := Gdip_GetImageHeight(pBitmap)
-			if(w < PictureWidth && h < PictureHeight)
-				s := 1
-			else if(w/PictureWidth > h/PictureHeight)
-				s := PictureWidth/w
-			else
-				s := PictureHeight/h
-			pThumbnail := Gdip_CreateBitmap(PictureWidth,PictureHeight)
-			pGraphics := Gdip_GraphicsFromImage(pThumbnail)			
-			Gdip_SetInterpolationMode(pGraphics, 7)
-			Gdip_DrawImage(pGraphics, pBitmap, 0, 0, w*s, h*s)
-			Gdip_DeleteGraphics(pGraphics)
-			Gdip_DisposeImage(pBitmap)
 			WindowListEntry := RichObject()
 			WindowListEntry.class := class
 			WindowListEntry.title := title
 			WindowListEntry.Executable := exe
 			WindowListEntry.hwnd := hwnd
-			WindowListEntry.Bitmap := pThumbnail
 			WindowListEntry.hIcon := GetWindowIcon(hwnd,0)
 			WindowListEntry.IconNumber := ImageList_ReplaceIcon(ImageList, -1, WindowListEntry.hIcon)
 			WindowList.Insert(WindowListEntry)
@@ -59,11 +40,10 @@ GUI_WindowFinder(PreviousGUINum, GoToLabel="")
 		LV_ModifyCol(2, 200)
 		LV_ModifyCol(3, 150)
 		LV_ModifyCol(4, "AutoHdr")
-		Gui, Add, Picture, vWindowPicture hwndhwndWindowPicture x+0 w%PictureWidth% h%PictureHeight% +0xE +0x40 ;+0xE is needed for setting the picture to a hbitmap
-		x := Width - 184
+		x := Width - 176
 		y := Height - 34
 		Gui, Add, Button, gWindowFinderOK x%x% y%y% w70 h23, &OK
-		x := Width - 104
+		x := Width - 96
 		Gui, Add, Button, gWindowFinderCancel x%x% y%y% w80 h23, &Cancel
 		
 		Gui, Show, w%width% h%height%, Window Finder
@@ -90,11 +70,22 @@ GUI_WindowFinder(PreviousGUINum, GoToLabel="")
 		if(A_GuiEvent="I" && InStr(ErrorLevel, "S", true))
 		{
 			LV_GetText(pos,LV_GetNext(),1)
-			hBitmap := Gdip_CreateHBITMAPFromBitmap(WindowList[pos].Bitmap)
-			SetImage(hwndWindowPicture, hBitmap)
-			DeleteObject(hBitmap)
-			GuiControl, MoveDraw, Button1
-			GuiControl, MoveDraw, Button2
+			if(IsObject(thumbnail))
+				thumbnail.Destroy()
+			thumbnail := new CThumbnail(WindowFinder_hWnd, WindowList[pos].hwnd)
+			PictureWidth := 470
+			PictureHeight := 350
+			w := thumbnail.GetSourceWidth()
+			h := thumbnail.GetSourceheight()
+			if(w < PictureWidth && h < PictureHeight)
+				s := 1
+			else if(w/PictureWidth > h/PictureHeight)
+				s := PictureWidth/w
+			else
+				s := PictureHeight/h
+			thumbnail.SetDestinationRegion(513, 7, w*s, h*s)
+			thumbnail.Show()
+			return
 		}
 		else if(A_GuiEvent="DoubleClick")
 			GUI_WindowFinder("","WindowFinderOK")
@@ -104,18 +95,19 @@ GUI_WindowFinder(PreviousGUINum, GoToLabel="")
 	{
 		LV_GetText(pos,LV_GetNext(""),1)
 		result := WindowList[pos].DeepCopy()
+		thumbnail.Destroy()
 		Gui, %sPreviousGUINum%:-Disabled
 		Gui, Destroy
-		WindowFinder_ClearImages(WindowList)
+		
 		return
 	}
 	else if(GoToLabel = "WindowFinderClose")
 	{
 		result := ""
+		thumbnail.Destroy()
 		Gui, %sPreviousGUINum%:-Disabled
 		Gui, Destroy
-		Gui, %sPreviousGUINum%:Default		
-		WindowFinder_ClearImages(WindowList)
+		Gui, %sPreviousGUINum%:Default
 		return
 	}
 }
@@ -132,10 +124,3 @@ return
 WindowFinderListView:
 GUI_WindowFinder("","WindowFinderListView")
 return
-
-WindowFinder_ClearImages(WindowList)
-{
-	enum := WindowList._newEnum()
-	while enum[hwnd,WindowListEntry]
-		Gdip_DisposeImage(WindowListEntry.Bitmap)
-}
