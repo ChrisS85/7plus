@@ -1,0 +1,2 @@
+= Show Accessor =
+This action will show the Accessor window. It has an option that makes it activate a flashing window if there is any instead. This allows you to combine these actions into a single hotkey.
