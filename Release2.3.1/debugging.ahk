@@ -77,6 +77,7 @@ Class CErrorCollector
 	static Errors := Array()
 	__New()
 	{
+		return
 		if(!IsObject(Settings) || !Settings.HasKey("ConfigPath"))
 			return
 		"".base.__Get := "".base.__Set := "".base.__Call := Func("CollectErrors")
@@ -102,6 +103,7 @@ Class CErrorCollector
 	}
 	OnExit()
 	{
+		return
 		FileDelete, % Settings.ConfigPath "\InvalidObjectAccess.log"
 		for index, Error in this.Errors
 			FileAppend, % Error.File "`n" Error.Line "`n" Error.Key "`n" Error.Value "`n" Error.LineText "`n" Error.Type "`n", % Settings.ConfigPath "\InvalidObjectAccess.log"
@@ -110,6 +112,7 @@ Class CErrorCollector
 ;Test for attempted key access on invalid objects
 CollectErrors(nonobj, p1="", p2="", p3="", p4="")
 {
+	return
 	ex := Exception("", -1)
 	for index, Error in CErrorCollector.Errors
 		if(Error.File = ex.File && Error.Line = ex.Line && Error.Key = p1 && Error.Type = "Access Error")

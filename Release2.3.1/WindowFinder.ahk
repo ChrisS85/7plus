@@ -14,28 +14,29 @@ GUI_WindowFinder(PreviousGUINum, GoToLabel="")
 		Gui, Add, ListView, vWindowFinderView gWindowFinderListView r19 w500 AltSubmit -Multi, #|Title|Class|Executable
 		ImageList := IL_Create(10,5,0)
 		LV_SetImageList(ImageList)
+		PictureWidth := 500
+		PictureHeight := 350
 		WindowList := Array()
 		DetectHiddenWindows, Off
 		WinGet, hwnds, list,,, Program Manager
 		Loop, %hwnds%
 		{
-			OutputDebug hwnd %hwnd%
 			hwnd := hwnds%A_Index%
 			WinGetClass, class, ahk_id %hwnd%
-			if(Class = "WorkerW")
-				debug := true
 			WinGetTitle, title, ahk_id %hwnd%
 			WinGet, exe, ProcessName, ahk_id %hwnd%
-			if((!title && exe != "Explorer.exe") || Class = "WorkerW" ||title = "Edit Event" || title = "7plus Settings" || InStr(class, "Tooltip") || InStr(class, "SysShadow")) ;Filter some windows
+			if((!title && exe != "Explorer.exe") || Class = "WorkerW" ||title = "Event Editor" || title = "7plus Settings" || InStr(class, "Tooltip") || InStr(class, "SysShadow")) ;Filter some windows
 				continue
 			pBitmap := Gdip_BitmapFromHWND(hwnd)
 			w := Gdip_GetImageWidth(pBitmap)
 			h := Gdip_GetImageHeight(pBitmap)
-			ratio := w/h
-			sw := min(500 / w, 1)
-			sh := min(350 / h, 1)
-			s := min(sw, sh)
-			pThumbnail := Gdip_CreateBitmap(500,350)
+			if(w < PictureWidth && h < PictureHeight)
+				s := 1
+			else if(w/PictureWidth > h/PictureHeight)
+				s := PictureWidth/w
+			else
+				s := PictureHeight/h
+			pThumbnail := Gdip_CreateBitmap(PictureWidth,PictureHeight)
 			pGraphics := Gdip_GraphicsFromImage(pThumbnail)			
 			Gdip_SetInterpolationMode(pGraphics, 7)
 			Gdip_DrawImage(pGraphics, pBitmap, 0, 0, w*s, h*s)
@@ -52,13 +53,13 @@ GUI_WindowFinder(PreviousGUINum, GoToLabel="")
 			WindowList.Insert(WindowListEntry)
 		}
 		;Fill listview
-		for i, WindowListEntry in WindowList
+		for index, WindowListEntry in WindowList
 			LV_Add((A_Index = 1 ? "Select " : "") "Icon" WindowListEntry.IconNumber +1 , A_Index, WindowListEntry.Title, WindowListEntry.Class, WindowListEntry.Executable)
 		; LV_ModifyCol(1, 0)
 		LV_ModifyCol(2, 200)
 		LV_ModifyCol(3, 150)
 		LV_ModifyCol(4, "AutoHdr")
-		Gui, Add, Picture, vWindowPicture hwndhwndWindowPicture x+0 w400 h400 +0xE +0x40 ;+0xE is needed for setting the picture to a hbitmap
+		Gui, Add, Picture, vWindowPicture hwndhwndWindowPicture x+0 w%PictureWidth% h%PictureHeight% +0xE +0x40 ;+0xE is needed for setting the picture to a hbitmap
 		x := Width - 184
 		y := Height - 34
 		Gui, Add, Button, gWindowFinderOK x%x% y%y% w70 h23, &OK
@@ -80,20 +81,20 @@ GUI_WindowFinder(PreviousGUINum, GoToLabel="")
 		Loop % WindowList.MaxIndex()
 		{
 			DestroyIcon(WindowList[A_Index].hIcon)
-			Gdip_DisposeImage(WindowList[A_Index].Bitmap)
+			; Gdip_DisposeImage(WindowList[A_Index].Bitmap)
 		}
 		return result
 	}
 	else if(GoToLabel = "WindowFinderListView")
 	{
 		if(A_GuiEvent="I" && InStr(ErrorLevel, "S", true))
-		{			
+		{
 			LV_GetText(pos,LV_GetNext(),1)
 			hBitmap := Gdip_CreateHBITMAPFromBitmap(WindowList[pos].Bitmap)
-			SetImage(hwndWindowPicture, hBihtmap)
+			SetImage(hwndWindowPicture, hBitmap)
 			DeleteObject(hBitmap)
-			;~ GuiControl, MoveDraw, Button1
-			;~ GuiControl, MoveDraw, Button2
+			GuiControl, MoveDraw, Button1
+			GuiControl, MoveDraw, Button2
 		}
 		else if(A_GuiEvent="DoubleClick")
 			GUI_WindowFinder("","WindowFinderOK")
