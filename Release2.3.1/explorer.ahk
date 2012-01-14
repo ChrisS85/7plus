@@ -205,7 +205,7 @@ RButton::
 ;Enter:Execute focussed file
 #if Settings.Explorer.ImproveEnter && WinActive("ahk_group ExplorerGroup") && InFileList() && !IsRenaming() && !IsContextMenuActive()
 Enter::
-Return::
+NumpadEnter::
 	ExecuteFocusedFile()
 	return
 #if

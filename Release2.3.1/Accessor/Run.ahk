@@ -62,12 +62,12 @@ Accessor_Run_SetupContextMenu(Run, AccessorListEntry)
 
 #if Accessor.GUINum
 ^Enter::
-^Return::
+^NumpadEnter::
 AccessorRun(Accessor.List.GetItemWithValue("Type", "Run"))
 AccessorClose()
 return
 +Enter::
-+Return::
++NumpadEnter::
 AccessorRunAsAdmin(Accessor.List.GetItemWithValue("Type", "Run"))
 AccessorClose()
 return

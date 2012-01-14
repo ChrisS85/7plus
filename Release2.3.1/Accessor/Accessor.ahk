@@ -590,7 +590,7 @@ return
 
 #if Accessor.GUINum && (!Accessor.SingleContext || !AccessorPlugins.GetItemWithValue("Type", Accessor.SingleContext).HandlesEnter)
 Enter::
-Return::
+NumpadEnter::
 AccessorOK()
 return
 #if

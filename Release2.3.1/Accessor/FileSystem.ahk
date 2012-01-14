@@ -92,7 +92,7 @@ return
 #if
 #if (Accessor.GUINum && Accessor.SingleContext = "FileSystem")
 Enter::
-Return::
+NumpadEnter::
 Accessor_FileSystem_OnEnter()
 return
 #if
