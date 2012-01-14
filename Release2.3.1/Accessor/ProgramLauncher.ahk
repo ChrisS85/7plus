@@ -163,7 +163,6 @@ Accessor_ProgramLauncher_FillAccessorList(ProgramLauncher, Accessor, Filter, Las
 		if(!ListEntry.Command)
 			continue
 		MatchPos := 0
-		
 		;Match by name of the executable
 		strippedExeName := ProgramLauncher.Settings.IgnoreFileExtensions ? RegexReplace(ListEntry.ExeName, "\.\w+") : ListEntry.ExeName 
 		ExeMatch := strippedExeName && ((MatchPos := InStr(strippedExeName,StrippedFilter)) || (ProgramLauncher.Settings.FuzzySearch && strlen(StrippedFilter) < 5 && FuzzySearch(strippedExeName,StrippedFilter) < 0.4))
@@ -249,6 +248,7 @@ ReadProgramLauncherCache(ProgramLauncher)
 		ProgramLauncher.Paths.Insert(Object("Path","%StartMenu%","Extensions","lnk,exe"))
 		ProgramLauncher.Paths.Insert(Object("Path","%StartMenuCommon%","Extensions","lnk,exe"))
 		ProgramLauncher.Paths.Insert(Object("Path","%Desktop%","Extensions","lnk,exe"))
+		ProgramLauncher.Paths.Insert(Object("Path","%AppData%\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar","Extensions","lnk,exe"))
 		return
 	}
 	
@@ -316,23 +316,26 @@ RefreshProgramLauncherCache(ProgramLauncher, Path ="")
 			if A_LoopFileExt in %extList%
 			{
 				exclude := ProgramLauncher.Settings.Exclude
-				command := A_LoopFileFullPath
+				command := A_LoopFileLongPath
 				name := A_LoopFileName
-				SplitPath, name,,,, name ;lnk name
-				if(strEndsWith(command,".lnk"))
+				SplitPath, name,,,ext, name
+				if(ext = "lnk")
 				{
 					FileGetShortcut, %Command% , ResolvedCommand, , args
 					if(!InStr(ResolvedCommand, A_WinDir "\Installer")) ; Fix for MSI Installer shortcuts which don't resolve to the proper executable
 					{
 						command := ResolvedCommand
+						
 						SplitPath, command,,,ext
 						if ext not in %extList%
 							continue
-							
 						if(!args)
 							SplitPath, command,ExeName ;Executable name
 					}
 				}
+				if(!command)
+					continue
+				
 				;Exclude undesired programs (uninstall, setup,...)
 				if command not contains %exclude%
 				{

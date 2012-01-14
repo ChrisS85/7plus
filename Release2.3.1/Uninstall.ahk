@@ -1,33 +1,50 @@
 ; #include %A_ScriptDir%\lib\com.ahk
-; COM_Error(0)
-MsgBox, 4,, Do you really want to uninstall 7plus? This will delete the folder where 7plus is installed, possibly %A_AppData%\7plus and undo all changes to the registry
+ComObjError(0) ;Set for removing autorun (it will show an error if autorun is off)
+#NoTrayIcon
+global Vista7 := IsVista7()
+MsgBox, 4,, Do you really want to uninstall 7plus? This will delete the folder where 7plus is installed, possibly %A_AppData%\7plus and undo all changes to the registry.
 IfMsgBox Yes
 {
 	if(FileExist(A_ScriptDir "\7plus.exe") || FileExist(A_ScriptDir "\7plus.ahk"))
 	{
-		DetectHiddenWindows, On	
+		DetectHiddenWindows, On
 		FileRead, hwnd, %A_Temp%\7plus\hwnd.txt
 		if(WinExist("ahk_id " hwnd))
 		{
 			WinGet, pid, pid, ahk_id %hwnd%
-			Process, Close, %pid%
+			Loop 10
+			{
+				Process, Close, %pid%
+				Sleep 100
+				if(!WinExist("ahk_pid " pid))
+					break
+				else if(A_Index = 10)
+				{
+					Msgbox Error closing 7plus!
+					ExitApp
+				}
+			}
 		}
 		FileRemoveDir, %A_Temp%\7plus, 1
-		FileRemoveDir, %A_AppData%\7plus, 1		
+		if(FileExist(A_Temp "\7plus"))
+		{
+			ScheduleDeletion(A_Temp "\7plus")
+			FilesLeft := true
+		}
+		FileRemoveDir, %A_AppData%\7plus, 1	
+		if(FileExist(A_AppData "\7plus"))
+		{
+			ScheduleDeletion(A_AppData "\7plus")
+			FilesLeft := true
+		}
 		run, regsvr32.exe /u /s "%A_ScriptDir%\ShellExtension.dll"
-		RegDelete, HKCU, Software\Microsoft\Windows\CurrentVersion\Run , 7plus
-		RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick, 0
+		DisableAutorun()
 		RegDelete, HKCU, Software\7plus
 		RestoreFolderBandButtons()
 		RestorePlacesBar()
 		RestoreFolderBand()
 		RemoveAllExplorerButtons()
-		if(A_IsCompiled)
-			RegDelete, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_ScriptDir%\7plus.exe
-		else
-			RegDelete, HKEY_CURRENT_USER, Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers, %A_ScriptDir%\7plus.ahk
 		RemoveUninstallInformation()
-		Msgbox 7plus was uninstalled successfully. Please report any possible errors or problems that caused you to uninstall it.
 		
 		;Close explorer windows that may have a handle on the current directory
 		WinGet, id, list,,, Program Manager
@@ -42,13 +59,62 @@ IfMsgBox Yes
 					WinClose ahk_id %this_id%
 			}
 		}
-		FileAppend, :Repeat`r`nrmdir /S /Q "%A_ScriptDir%"`r`nif exist "%A_ScriptDir%" goto Repeat`r`n, DeleteDir.bat
-		Run, %A_ScriptDir%/DeleteDir.bat,,hide
+		Loop % A_ScriptDir "\*.*", 1, 1
+		{
+			if(InStr(FileExist(A_LoopFileLongPath), "D"))
+				FileRemoveDir, %A_loopFileLongPath%, 1
+			else
+				FileDelete, %A_LoopFileLongPath%
+		}
+		if(FileExist(A_ScriptDir))
+		{
+			ScheduleDeletion(A_ScriptDir)
+			FilesLeft := true
+		}
+		if(FilesLeft)
+			Msgbox 7plus was successfully uninstalled. However, some files could not be deleted. These will be deleted automatically after the next reboot. Please report any possible errors or problems that caused you to uninstall it.
+		else
+			Msgbox 7plus was successfully uninstalled. Please report any possible errors or problems that caused you to uninstall it.
 	}
 	else
-		Msgbox 7plus not found
+		Msgbox 7plus not found!
 }
+ExitApp
 
+ScheduleDeletion(FileOrFolder)
+{
+	static MOVEFILE_DELAY_UNTIL_REBOOT := 4
+	if(!FileExist(FileOrFolder))
+		return
+	
+	;MoveFileEx requires that the directories which are scheduled for deletion are empty, so the files in them need to be deleted first.
+	;For this we do a recursed call of this function that first schedules all files and folders at the deepest level.
+	Loop %FileOrFolder%\*.*, 1, 1
+	{
+		if(InStr(FileExist(A_LoopFileLongPath), "D"))
+			ScheduleDeletion(A_LoopFileLongPath)
+		else
+			DllCall("MoveFileEx", "STR", A_LoopFileLongPath, "PTR", 0, "UINT", MOVEFILE_DELAY_UNTIL_REBOOT)
+	}
+	DllCall("MoveFileEx", "STR", FileOrFolder, "PTR", 0, "UINT", MOVEFILE_DELAY_UNTIL_REBOOT)
+}
+DisableAutorun()
+{
+	RegDelete, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus
+	if(Vista7)
+	{
+		objService := ComObjCreate("Schedule.Service") 
+		objService.Connect()
+		objFolder := objService.GetFolder("\")
+		objFolder.DeleteTask("7plus Autorun", 0)
+	}
+}
+IsVista7()
+{
+	;Get windows version
+	RegRead, WinVersion, HKLM, SOFTWARE\Microsoft\Windows NT\CurrentVersion, CurrentVersion
+	return WinVersion >= 6
+}
 ShellFolder(hWnd=0,returntype=0) 
 { 
 	if(hWnd||(hWnd:=WinActive("ahk_class CabinetWClass"))||(hWnd:=WinActive("ahk_class ExploreWClass")))
@@ -100,14 +166,13 @@ ShellFolder(hWnd=0,returntype=0)
 		}
 	}
 }
+
 RestoreFolderBand()
 {
 	if(!Vista7)
 		return
-	RemoveAllExplorerButtons()
-	;remove some rights
-	runwait subinacl /subkeyreg HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes /revoke=S-1-5-32-545,,Hide
-	runwait subinacl /subkeyreg HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes /grant=S-1-5-32-545=R,,Hide
+	RemoveAllExplorerButtons()	
+	RegRevokePermissions("hklm\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes")
 }
 RestoreFolderBandButtons()
 {
@@ -120,16 +185,16 @@ RestoreFolderBandButtons()
 		RegRename("HKLM","SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\Windows.Share7pBackup","SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\Windows.Share")
 		RegRename("HKLM","SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\Windows.SlideShow7pBackup","SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\Windows.SlideShow")
 		;remove some rights
-		runwait subinacl /subkeyreg HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore /revoke=S-1-5-32-545,,Hide
-		runwait subinacl /subkeyreg HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore /grant=S-1-5-32-545=R,,Hide
+		RegRevokePermissions("hklm\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell")
 	}
 }
+
 RestorePlacesBar()
 {
-		RegRead, place, HKCU, Software\Microsoft\Windows\CurrentVersion\Policies\comdlg32\Placesbar7pBackup ,Place0
-		RegDelete, HKCU, Software\Microsoft\Windows\CurrentVersion\Policies\comdlg32\Placesbar
-		if(place)
-			RegRename("HKCU","Software\Microsoft\Windows\CurrentVersion\Policies\comdlg32\Placesbar7pBackup"," Software\Microsoft\Windows\CurrentVersion\Policies\comdlg32\PlacesBar")
+	RegRead, place, HKCU, Software\Microsoft\Windows\CurrentVersion\Policies\comdlg32\Placesbar7pBackup ,Place0
+	RegDelete, HKCU, Software\Microsoft\Windows\CurrentVersion\Policies\comdlg32\Placesbar
+	if(place)
+		RegRename("HKCU","Software\Microsoft\Windows\CurrentVersion\Policies\comdlg32\Placesbar7pBackup"," Software\Microsoft\Windows\CurrentVersion\Policies\comdlg32\PlacesBar")
 }
 
 ;---------------------------------------------------------------------------------------------------------------
@@ -178,6 +243,10 @@ RegRename(root,key,target)
 	return 0
 }
 
+RegRevokePermissions(key)
+{
+	RunWait % A_ScriptDir "\SetACL.exe -on """ key """ -ot Reg -actn ace -ace ""n:S-1-5-32-545;p:full;s:y;i:so,sc;m:revoke;w:dacl""","","Hide"
+}
 ;Removes all buttons created with this script. Function can be the name of a function with these arguments: func(command,title,tooltip) and it can be used to tell the script if an entry may be deleted
 RemoveAllExplorerButtons(function="")
 {
