@@ -90,17 +90,12 @@ Tab::
 Accessor_FileSystem_OnTab()
 return
 #if
-#if FileSystem_IsFolderSelected()
+#if (Accessor.GUINum && Accessor.SingleContext = "FileSystem")
 Enter::
 Return::
 Accessor_FileSystem_OnEnter()
 return
 #if
-FileSystem_IsFolderSelected()
-{
-	global Accessor
-	return Accessor.GUINum && Accessor.SingleContext = "FileSystem" && IsObject(AccessorListEntry := AccessorGetSelectedListEntry()) && InStr(FileExist(AccessorListEntry.Path),"D")
-}
 Accessor_FileSystem_OnTab()
 {
 	global AccessorEdit, Accessor, AccessorListView, AccessorPlugins
@@ -169,7 +164,12 @@ Accessor_FileSystem_OnTab()
 Accessor_FileSystem_OnEnter()
 {
 	AccessorListEntry := AccessorGetSelectedListEntry()
-	FileSystemSetFolder(AccessorListEntry.Title)
+	if(!IsObject(AccessorListEntry))
+		return
+	if(InStr(FileExist(AccessorListEntry.Path),"D"))
+		FileSystemSetFolder(AccessorListEntry.Title)
+	else
+		AccessorOK()
 }
 Accessor_FileSystem_OnKeyDown(FileSystem, wParam, lParam, Filter, selected, AccessorListEntry)
 {
