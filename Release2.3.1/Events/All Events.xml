@@ -607,7 +607,9 @@
 <Actions>
 <Action>
 <Action>Toggle always on top</Action>
+<ShowState>1</ShowState>
 <Type>Change window state</Type>
+<Value>100</Value>
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action><Action>
 <Action>Start timer</Action>
@@ -640,7 +642,6 @@
 <MouseOverType>Titlebar</MouseOverType>
 <Negate>0</Negate>
 <Type>Mouse over</Type>
-<WindowMatchType>Specific Window</WindowMatchType>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Right click on the titlebar of a window to toggle its "Always on top" property. This is useful for keeping a window visible so that you can easily copy data from and to it.</Description>
@@ -682,7 +683,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>1</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>309</ID>
 <Name>Toggle always on top -&gt; Context menu active</Name>
@@ -713,7 +714,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>310</ID>
 <Name>Toggle always on top -&gt; No context menu active</Name>
@@ -746,7 +747,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>311</ID>
 <Name>Toggle always on top -&gt; context menu timeout</Name>
@@ -5363,6 +5364,34 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>+#Down</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Action>Toggle always on top</Action>
+<ShowState>1</ShowState>
+<Type>Change window state</Type>
+<Value>100</Value>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
+<WindowMatchType>Active</WindowMatchType>
+</Action></Actions>
+<Category>Window Handling</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This action toggles the always on top property of the active window.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1644</ID>
+<Name>Toggle always on top of active window</Name>
+<OfficialEvent>44</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>#A</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event></Events>

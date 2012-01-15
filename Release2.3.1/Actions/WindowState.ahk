@@ -5,7 +5,7 @@ Class CWindowStateAction Extends CAction
 	static _ImplementsWindowFilter := ImplementWindowFilterInterface(CWindowStateAction)
 	static Action := "Maximize"
 	static Value := 100
-	
+	static ShowState := 0
 	Execute(Event)
 	{
 		hwnd := this.WindowFilterGet()
@@ -40,30 +40,57 @@ Class CWindowStateAction Extends CAction
 			WinRestore, ahk_id %hwnd%
 		else if(this.Action = "Minimize->Normal->Maximize" && state = 0)
 			WinMaximize("ahk_id " hwnd)
-		else if(this.Action = "Set always on top")
-			WinSet, AlwaysOnTop, On, ahk_id %hwnd%
-		else if(this.Action = "Disable always on top")
-			WinSet, AlwaysOnTop, Off, ahk_id %hwnd%
-		else if(this.Action = "Toggle always on top")
-			WinSet, AlwaysOnTop, Toggle, ahk_id %hwnd%
-		else if(this.Action = "Set Transparency")
+		else
 		{
-			newValue := Event.ExpandPlaceholders(this.Value)
-			if(InStr(newValue,"+") = 1||InStr(newValue,"-") = 1||InStr(newValue,"*") = 1||InStr(newValue,"/") = 1)
+			if(this.Action = "Set always on top")
+				WinSet, AlwaysOnTop, On, ahk_id %hwnd%
+			else if(this.Action = "Disable always on top")
+				WinSet, AlwaysOnTop, Off, ahk_id %hwnd%
+			else if(this.Action = "Toggle always on top")
+				WinSet, AlwaysOnTop, Toggle, ahk_id %hwnd%
+			else 
 			{
-				operator := SubStr(newValue,1,1)
-				newValue := SubStr(newValue,2)
-				WinGet, oldValue, Transparent, ahk_id %hwnd%
-				if(operator = "+")
-					newValue += oldValue
-				else if(operator = "-")
-					newValue := oldValue - newValue
-				else if(operator = "*")
-					newValue := oldValue * newValue
-				else if(operator = "/")
-					newValue := oldValue / newValue
+				if(this.Action = "Set Transparency")
+				{
+					newValue := Event.ExpandPlaceholders(this.Value)
+					if(InStr(newValue,"+") = 1||InStr(newValue,"-") = 1||InStr(newValue,"*") = 1||InStr(newValue,"/") = 1)
+					{
+						operator := SubStr(newValue,1,1)
+						newValue := SubStr(newValue,2)
+						WinGet, oldValue, Transparent, ahk_id %hwnd%
+						if(operator = "+")
+							newValue += oldValue
+						else if(operator = "-")
+							newValue := oldValue - newValue
+						else if(operator = "*")
+							newValue := oldValue * newValue
+						else if(operator = "/")
+							newValue := oldValue / newValue
+					}
+					WinSet, Transparent, %newValue%, ahk_id %hwnd%
+				}
+				if(this.ShowState)
+					Notify("Window state", "Transparency: " newValue , 2, "GC=555555 TC=White MC=White",NotifyIcons.Info)
+				return 1
 			}
-			WinSet, Transparent, %newValue%, ahk_id %hwnd%
+			if(this.ShowState)
+			{
+				WinGet, es, ExStyle, ahk_id %hwnd%
+				Notify("Window state", "Always on top: " (es & 0x8 > 0 ? "On" : "Off") , 2, "GC=555555 TC=White MC=White",NotifyIcons.Info)
+			}
+			return 1
+		}
+		if(this.ShowState)
+		{
+			WinGet, state, minmax, ahk_id %hwnd%
+			if(state = -1)
+				String := "Window minimied"
+			else if(state = 0)
+				String := "Window restored"
+			else if(state = 1)
+				String := "Window maximized"
+			
+			Notify("Window state", String , 2, "GC=555555 TC=White MC=White",NotifyIcons.Info)
 		}
 		return 1
 	}
@@ -82,6 +109,7 @@ Class CWindowStateAction Extends CAction
 			this.AddControl(GUI, "DropDownList", "Action", "Maximize|Minimize|Restore|Toggle Max/Normal|Toggle Min/Normal|Toggle Min/Max|Toggle Min/Previous state|Maximize->Normal->Minimize|Minimize->Normal->Maximize|Set always on top|Disable always on top|Toggle always on top|Set Transparency", "", "Action:")
 			this.AddControl(GUI, "Text", "tmpHint", "The value below is only used for transparency. Prepend +,-,* and / for relative changes.")
 			this.AddControl(GUI, "Edit", "Value", "", "", "Value:", "Placeholders", "WindowState_Placeholders")
+			this.AddControl(GUI, "Checkbox", "ShowState", "", "", "Show State:")
 			this.WindowFilterGuiShow(GUI)
 		}
 		else if(GoToLabel = "WindowState_Placeholders")
