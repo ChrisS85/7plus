@@ -48,25 +48,6 @@ SaveHotstrings()
 		XMLObject.List.Insert(Object("keyword", Hotstrings[A_Index].key, "value", Hotstrings[A_Index].value))
 	XML_Save(XMLObject, Settings.ConfigPath "\Hotstrings.xml")
 }
-AddHotstring(key,value)
-{
-	global Hotstrings
-	Hotstrings.Insert(Object("key", key, "value", value))
-	hotstrings(key, value)
-}
-RemoveHotstring(key)
-{
-	global Hotstrings
-	Loop % Hotstrings.MaxIndex()
-	{
-		if(Hotstrings[A_Index].key = key)
-		{
-			Hotstrings.delete(A_Index)
-			hotstrings(key,"")
-			return
-		}
-	}
-}
 hotstrings(k, a = "")
 {
 	static z, m = "*~$", s, t, w = 2000

@@ -933,14 +933,14 @@ Finally, here are some settings that you're likely to change at the beginning:
 		;~ Page.AddControl("SysLink", "linkAutoCheckApplyToAllFiles", "x197 y147 w13 h13", "?")
 		Page.AddControl("CheckBox", "chkAdvancedStatusBarInfo", "x216 y123 w370 h17", "Show free space and size of selected files in status bar like in XP (7 only)")
 		;~ Page.AddControl("SysLink", "linkAdvancedStatusBarInfo", "x197 y124 w13 h13", "?")
-		Page.AddControl("CheckBox", "chkScrollTreeUnderMouse", "x216 y100 w247 h17", "Scroll explorer scrollbars with mouse over them")
+		Page.AddControl("CheckBox", "chkScrollTreeUnderMouse", "x216 y100 w247 h17", "Scroll explorer scrollbars with mouse over them when they are not focused")
 		;~ Page.AddControl("SysLink", "linkScrollTreeUnderMouse", "x197 y101 w13 h13", "?")
 		Page.Controls.chkScrollTreeUnderMouse.ToolTip := "This makes it possible to scroll the file tree or the file list when another part of the explorer window is focused."
 		Page.AddControl("CheckBox", "chkImproveEnter", "x216 y77 w411 h17", "Files which are only focussed but not selected can be executed by pressing enter")
 		;~ Page.AddControl("SysLink", "linkImproveEnter", "x197 y78 w13 h13", "?")
 		Page.AddControl("CheckBox", "chkAutoSelectFirstFile", "x216 y54 w347 h17", "Explorer automatically selects the first file when you enter a directory")
 		;~ Page.AddControl("SysLink", "linkAutoSelectFirstFile", "x197 y55 w13 h13", "?")
-		Page.AddControl("CheckBox", "chkMouseGestures", "x216 y31 w454 h17", "Hold right mouse button and click left: Go back, hold left mouse and click right:")
+		Page.AddControl("CheckBox", "chkMouseGestures", "x216 y31 w454 h17", "Hold right mouse button and click left: Go back, hold left mouse and click right: Go Forward")
 		;~ Page.AddControl("SysLink", "linkMouseGestures", "x197 y32 w13 h13", "?")
 		Page.AddControl("CheckBox", "chkRememberPath", "x216 y169 w237 h17", "Win+E: Open explorer in last active directory")
 		Page.AddControl("CheckBox", "chkAlignNewExplorer", "x216 y192 w408 h17", "Win+E + explorer window active: Open new explorer and align them left and right")
@@ -1252,38 +1252,47 @@ Finally, here are some settings that you're likely to change at the beginning:
 	{
 		global HotStrings
 		Page := this.Pages.HotStrings.Tabs[1].Controls
-		HotStringsCopy := HotStrings.DeepCopy()
 		Page.listHotStrings.Items.Clear()
 		Page.listHotStrings.ModifyCol(1, 150)
 		Page.listHotStrings.ModifyCol(2, "AutoHdr")
-		Loop % HotStringsCopy.MaxIndex()
-			Page.listHotStrings.Items.Add(A_Index = 1 ? "Select" : "", HotStringsCopy[A_Index].Key, HotStringsCopy[A_Index].Value)
-		this.HotStrings := HotStringsCopy
+		for index, HotString in HotStrings
+			Page.listHotStrings.Items.Add(A_Index = 1 ? "Select" : "", HotString.Key, HotString.Value)
 		this.listHotStrings_SelectionChanged("")
 	}
 	ApplyHotStrings()
 	{
 		global HotStrings
 		Page := this.Pages.HotStrings.Tabs[1].Controls
-		;Find duplicates
+		
+		;Unregister the old hotstrings
+		for index, HotString in HotStrings
+			hotstrings(HotString.Key, "")
+		
+		;Find duplicates and register new hotstrings
+		localHotStrings := []
+		for index, HotString in Page.listHotStrings.Items
+			localHotStrings.Insert({key : HotString[1], value : HotString[2]})
+		
 		pos := 1
-		len := this.HotStrings.MaxIndex()
-		Loop % len
+		Loop % localHotStrings.MaxIndex()
 		{
-			HotString := this.HotStrings[A_Index]
-			Loop % this.HotStrings.MaxIndex()
+			HotString1 := localHotStrings[pos]
+			for index2, HotString2 in localHotStrings
 			{
-				if(pos != A_Index && this.HotStrings[A_Index].Key = HotString.Key)
+				if(pos != index2 && HotString2.Key = HotString1.Key)
 				{
-					this.HotStrings.Remove(pos)
-					HotString := ""
+					localHotStrings.Remove(pos)
+					HotString1 := ""
 					break
 				}
 			}
-			if(IsObject(HotString))
+			if(IsObject(HotString1))
+			{
 				pos++
+				hotstrings(HotString1.Key, HotString1.Value)
+			}
 		}
-		HotStrings := this.HotStrings
+		HotStrings := localHotStrings
 	}
 	btnAddHotString_Click()
 	{
@@ -1292,7 +1301,6 @@ Finally, here are some settings that you're likely to change at the beginning:
 	AddHotString()
 	{
 		Page := this.Pages.HotStrings.Tabs[1].Controls
-		this.HotStrings.Insert(Object("Key", "HotString", "Value", "Output"))
 		Item := Page.listHotStrings.Items.Add("Select", "HotString", "Output")
 		Page.listHotStrings.SelectedItem := Item
 		this.ActiveControl := Page.listAccessorKeywords
@@ -1307,7 +1315,6 @@ Finally, here are some settings that you're likely to change at the beginning:
 		if(Page.listHotStrings.SelectedItems.MaxIndex() != 1)
 			return
 		SelectedIndex := Page.listHotStrings.SelectedIndex
-		this.HotStrings.Remove(SelectedIndex)
 		Page.listHotStrings.Items.Delete(SelectedIndex)		
 		if(SelectedIndex > Page.listHotStrings.Items.MaxIndex())
 			SelectedIndex := Page.listHotStrings.Items.MaxIndex()
@@ -1331,7 +1338,6 @@ Finally, here are some settings that you're likely to change at the beginning:
 			return
 		
 		Page.listHotStrings.SelectedItem[1] := Page.editHotStringInput.Text
-		this.HotStrings[Page.listHotStrings.SelectedIndex].key := Page.editHotStringInput.Text
 	}
 	editHotStringOutput_TextChanged()
 	{		
@@ -1340,7 +1346,6 @@ Finally, here are some settings that you're likely to change at the beginning:
 			return
 		
 		Page.listHotStrings.SelectedItem[2] := Page.editHotStringOutput.Text
-		this.HotStrings[Page.listHotStrings.SelectedIndex].Value := Page.editHotStringOutput.Text
 	}
 	btnHotStringRegExHelp_Click()
 	{
