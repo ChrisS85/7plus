@@ -46,6 +46,7 @@ ComObjError(0)
 #include <Notify>
 #include <_Struct>
 #include <ControlHotkey>
+#include <WaitForEvent>
 
 #include %A_ScriptDir%\CApplicationState.ahk
 #include %A_ScriptDir%\CSettings.ahk

@@ -52,7 +52,7 @@ Class CSlideWindow
 		DllCall("SystemParametersInfo", "UINT", 0x0049,"UINT", 8,"STR", struct,"UINT", 0x0003) ;SPI_SETANIMATION            0x0049 SPIF_SENDWININICHANGE 0x0002
 		this.GetChildWindows(0)
 		SetWinDelay 0
-		this.SlideState:=2
+		this.SlideState := 2
 		Loop % this.ChildWindows.MaxIndex() + 1 ;Set all windows to always on top
 		{
 			hwnd := A_Index = 1 ? this.hwnd : this.ChildWindows[A_Index - 1].hwnd
@@ -205,20 +205,20 @@ Class CSlideWindow
 			this.SlideOutLen := this.Position.w
 		}
 		this.Move()
-		Loop this.ChildWindows.MaxIndex() + 1 ;hide/minimize all child windows and main window
+		if(!Length := this.ChildWindows.MaxIndex())
+			Length := 0
+		Loop % Length + 1 ;hide/minimize all child windows and main window
 		{
 			hwnd := A_Index = 1 ? this.hwnd : this.ChildWindows[A_Index - 1].hwnd
-			
 			if(Settings.Windows.SlideWindows.HideSlideWindows)
 				WinHide, ahk_id %hwnd%
 			else
-			{
-				;~ WinMinimize ahk_id %hwnd%
 				PostMessage, 0x112, 0xF020,,, ahk_id %hwnd% ;Winminimize, but apparently more reliable
-				;~ DllCall("ShowWindow","Ptr", hwnd, "UINT", 6) ;#define SW_MINIMIZE         6 SW_FORCEMINIMIZE    11
-			}
 		}
+		;~ WaitForEvent("SlideWindowResize", 1000)
+		outputdebug post minimize
 		this.SlideState:=0
+		outputdebug slidestate set to 0
 		;Possibly activate Minimize animation again
 		if(Animate=1)
 		{
@@ -237,10 +237,11 @@ Class CSlideWindow
 			diffY:=this.toY-this.Position.y
 			StepX:=Round(absmin(dirmax(diffX*2/10,10),diffX))
 			StepY:=Round(absmin(dirmax(diffY*2/10,10),diffY))
-			if(StepX != 0 || StepY != 0)
+			if(StepX != 0 || StepY != 0) ;Move the main window
 			{
 				this.Position.x += StepX
 				this.Position.y += StepY
+				outputdebug % "move to " this.Position.x "/" this.Position.y
 				WinMove, % "ahk_id " this.hwnd,, % this.Position.x, % this.Position.y
 				Moved := true
 			}
@@ -281,9 +282,17 @@ Class CSlideWindow
 		global SlideWindows
 		if(!this.hwnd) ;Make sure the slide window was actually successfully created
 			return
+		DetectHiddenWindows, On
+		
+		;Make sure that no window is accidently released outside of the screen.
+		GetVirtualScreenCoordinates(VirtualLeft, VirtualTop, VirtualWidth, VirtualHeight)
+		if(Soft && IsObject(WindowList[hwnd]) && RectsSeparate(VirtualLeft, VirtualTop, VirtualWidth, VirtualHeight, WindowList[hwnd].x, WindowList[hwnd].y, WindowList[hwnd].w, WindowList[hwnd].h))
+			Soft := 0
+		
 		this.SlideState := 4
 		if(!Soft)
 		{
+			WinShow, % "ahk_id " this.hwnd
 			this.Position := WinGetPos("ahk_id " this.hwnd)
 			this.ToX := this.OriginalPosition.x
 			this.ToY := this.OriginalPosition.y
@@ -292,7 +301,11 @@ Class CSlideWindow
 				this.ChildWindows[A_Index].Position := WinGetPos("ahk_id " this.ChildWindows[A_Index].hwnd)
 				this.ChildWindows[A_Index].ToX := this.ChildWindows[A_Index].OriginalPosition.x
 				this.ChildWindows[A_Index].ToY := this.ChildWindows[A_Index].OriginalPosition.y
+				if(this.ChildWindows[A_Index].WasVisible)
+					WinShow, % "ahk_id " this.ChildWindows[A_Index].hwnd
 			}
+			outputdebug % "target: " this.tox "/" this.toy
+			WinActivate, % "ahk_id " this.Active
 			this.Move()
 		}
 		WinSet, AlwaysOnTop, % this.WasOnTop ? "On" : "Off", % "ahk_id " this.hwnd
@@ -394,6 +407,42 @@ Class CSlideWindows
 			XML_Save(Object("Window", this.ClosedWindowsOutsideScreen), Settings.ConfigPath "\ClosedWindowsOutsideScreen.xml")
 		else
 			FileDelete, % Settings.ConfigPath "\ClosedWindowsOutsideScreen.xml"
+		this.ReleaseAll()
+	}
+	
+	;Called when the property is changed so existing slide windows can be updated.
+	On_HideSlideWindows_Changed()
+	{
+		return ;TODO: This doesn't work unfortunately.
+		for index, SlideWindow in this
+		{
+			if(SlideWindow.SlideState = 0)
+			{
+				if(Settings.Windows.SlideWindows.HideSlideWindows)
+					WinHide, % "ahk_id " SlideWindow.hwnd
+				else
+					PostMessage, 0x112, 0xF020,,, % "ahk_id " SlideWindow.hwnd
+			}
+		}
+	}
+	
+	;Called when the property is changed so existing slide windows can be updated.
+	On_LimitToOnePerSide_Changed()
+	{
+		dir := []
+		pos := 1
+		if(Settings.Windows.SlideWindows.LimitToOnePerSide)
+			Loop % this.MaxIndex()
+			{
+				SlideWindow := this[pos]
+				if(dir[SlideWindow.dir])
+					SlideWindow.Release()
+				else
+				{
+					dir[SlideWindow.dir] := 1
+					pos++
+				}
+			}
 	}
 	CanAddSlideWindow(hwnd, Direction)
 	{
@@ -415,7 +464,7 @@ Class CSlideWindows
 		{
 			Loop % this.MaxIndex() ;Check all slide windows
 			{
-				SlideWindow:=this[A_INDEX]
+				SlideWindow := this[A_INDEX]
 				if(SlideWindow.Direction=dir)
 				{
 					BorderY:=(Height-2*Settings.Windows.SlideWindows.BorderSize>0) ? Settings.Windows.SlideWindows.BorderSize : 0
@@ -470,7 +519,10 @@ Class CSlideWindows
 	}
 	ReleaseAll()
 	{
-		this := new CSlideWindows()
+		Loop % this.MaxIndex()
+		{
+			this[1].Release(0)
+		}
 	}
 	;This is called when a window gets resized to see if it needs to be released
 	CheckResizeReleaseCondition(hwnd)
@@ -479,19 +531,28 @@ Class CSlideWindows
 		SlideWindow := this.GetItemWithValue("hwnd", hwnd)
 		if(!SlideWindow)
 			return
-		if(SlideWindow.SlideState = 0 || SlideWindow.SlideState = 1)
+		if(SlideWindow.SlideState = 1)
+		{
+			WinGetPos, ,,w,h, % "ahk_id " slidewindow.hwnd
+			outputdebug % "release due to resize, state: " SlideWindow.SlideState ", w: " w ", h: " h
 			SlideWindow.Release(SlideWindow.SlideState = 1)
+		}
+		RaiseEvent("SlideWindowResize")
 	}
 	;This is called when a window gets closed to see if a slide window needs to be released
 	WindowClosed(hwnd)
 	{
 		global WindowList
 		index := 1
+		DetectHiddenWindows, On
 		Loop % this.MaxIndex()
 		{
 			SlideWindow:=this[index]
 			if(!WinExist("ahk_id " SlideWindow.hwnd))
+			{
+				outputdebug release due to close
 				SlideWindow.Release()
+			}
 			else
 				index++
 		}
@@ -531,15 +592,18 @@ Class CSlideWindows
 		if(CurrentSlideWindow)
 		{
 			WinGet, minstate , minmax, % "ahk_id " CurrentSlideWindow.hwnd
-			if(minstate=-1) ;Release slide window that was minimized
+			if(minstate=-1 && CurrentSlideWindow.SlideState = 1) ;Release slide window that was minimized (but is not currently sliding)
+			{
+				outputdebug % "release due to minimize, state: " CurrentSlideWindow.SlideState
 				CurrentSlideWindow.Release(1)
+			}
 			else if(!CurrentSlideWindow.AutoSlideOut)
 				CurrentSlideWindow.SlideOut()
 		}
 		if(SlideWindow && SlideWindow.SlideState = 0)
 		{
 			WinGet, minstate , minmax, % "ahk_id " SlideWindow.hwnd
-			if(minstate!=-1) ;Make sure the window is not minimized anymore
+			if(minstate != -1) ;Make sure the window is not minimized anymore
 			{
 				SlideWindow.AutoSlideOut := false ;Slide windows that were activated directly will only slide out when they're deactivated
 				SlideWindow.SlideIn()
@@ -632,47 +696,3 @@ GetParentWindows(hwnd)
 	}
 	return Parents
 }
-
-;~ #t::
-;~ msgbox % exploreobj(slidewindows)
-;~ return
-;~ #t::
-;~ msgbox % WinGetClass("ahk_id " CurrentWindow) " Previous: " WinGetClass("ahk_id " PreviousWindow)
-;~ return
-;~ #p::
-;~ outputdebug % exploreobj(slidewindows)
-;~ return
-;~ #^c::
-;~ MouseGetPos,,,win
-;~ win+=0
-;~ WinGet, Windows, List
-;~ ChildWindows := Array()
-;~ Loop % Windows ;Iterate over all windows, find out which ones are child windows of hwnd and add them to the list
-;~ {
-	;~ hParent := Windows%A_Index%
-	;~ if(hParent = win)
-		;~ continue
-	;~ while(hParent && hParent != win)
-		;~ hParent := DllCall("GetParent", "PTR", hParent)
-	;~ if(hParent = win)
-		;~ ChildWindows.Insert(WinGetClass("ahk_id " Windows%A_Index%))
-;~ }
-;~ msgbox % exploreobj(childwindows)
-;~ return
-;~ #^p::msgbox % WinGetClass("ahk_id " DllCall("GetParent", "PTR", WinExist("A")))
-;~ #w::
-;~ MouseGetPos,,,win
-;~ tooltip % win+0
-;~ return
-;~ #^t:: 
-;~ WinGetTitle, title, % "ahk_id " WinExist("A")
-;~ msgbox % title
-;~ return
-;~ #^w::
-;~ DetectHiddenWindows, on
-;~ WinGet, Windows, List
-;~ list := array()
-;~ Loop % Windows
-	;~ list.Insert(object("hwnd", Windows%A_Index%, "class", WinGetClass("ahk_id " Windows%A_Index%), "title", WinGetTitle("ahk_id " Windows%A_Index%)))
-;~ msgbox % Exploreobj(list)
-;~ return

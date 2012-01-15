@@ -1362,10 +1362,10 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("CheckBox", "chkHideSlideWindows", "x235 y57 w272 h17", "Hide Slide Windows in taskbar and from ALT + TAB")
 		Page.AddControl("CheckBox", "chkLimitToOnePerSide", "x235 y80 w239 h17", "Allow only one Slide Window per screen side")
 		Page.AddControl("CheckBox", "chkBorderActivationRequiresMouseUp", "x235 y103 w387 h17", "Require left mouse button to be up to activate slide window at screen border")
-		Page.Controls.chkBorderActivationRequiresMouseUp.ToolTip := "This feature is used to prevent accidently activating a slide window while dragging with the mouse. It's still possible to drag something to the slide window by holding the modifier key which is set below."
+		Page.Controls.chkBorderActivationRequiresMouseUp.ToolTip := "This feature is used to prevent accidently activating a slide window while dragging with the mouse.`n It's still possible to drag something to the slide window by holding the modifier key which is set below."
 		Page.AddControl("Text", "txtModifierKey", "x235 y129 w139 h13", "Slide Windows modifier key:")
 		Page.AddControl("DropDownList", "ddlModifierKey", "x421 y126 w111", "Control|Alt|Shift|Win")
-		Page.Controls.ddlModifierKey.ToolTip := "If this key is pressed, the mouse may be moved out of the currently active slide window without sliding it out. This is useful if the slide window has child windows that don't overlap with the main window. If the option above is enabled, it may also be used to drag something into a hidden slide window by moving the mouse to the screen border and holding this key."
+		Page.Controls.ddlModifierKey.ToolTip := "If this key is pressed, the mouse may be moved out of the currently active slide window without sliding it out.`n This is useful if the slide window has child windows that don't overlap with the main window.`n If the option above is enabled, it may also be used to drag something into a hidden slide window by moving the mouse to the screen border and holding this key."
 		Page.AddControl("CheckBox", "chkAutoCloseWindowsUpdate", "x218 y196 w321 h17", "Automatically close Windows Update reboot notification dialog")
 		Page.Controls.chkAutoCloseWindowsUpdate.ToolTip :=  "If you enable this setting you will not be able to open this dialog anymore. You can simply reboot windows though..."
 		Page.AddControl("CheckBox", "chkShowResizeTooltip", "x218 y173 w225 h17", "Show window size as tooltip while resizing")
@@ -1384,14 +1384,27 @@ Finally, here are some settings that you're likely to change at the beginning:
 	}
 	ApplyWindows()
 	{
+		global SlideWindows
 		Page := this.Pages.Windows.Tabs[1].Controls
 		
+		;Slide Windows need to be notified about changes of its settings
+		oldState := Settings.Windows.SlideWindows.HideSlideWindows
 		Settings.Windows.SlideWindows.HideSlideWindows := Page.chkHideSlideWindows.Checked
+		if(Settings.Windows.SlideWindows.HideSlideWindows != oldState)
+			SlideWindows.On_HideSlideWindows_Changed()
+		
+		oldState := Settings.Windows.SlideWindows.LimitToOnePerSide
 		Settings.Windows.SlideWindows.LimitToOnePerSide := Page.chkLimitToOnePerSide.Checked
-		Settings.Windows.SlideWindows.chkBorderActivationRequiresMouseUp := Page.chkBorderActivationRequiresMouseUp.Checked
+		if(Settings.Windows.SlideWindows.LimitToOnePerSide != oldState)
+			SlideWindows.On_LimitToOnePerSide_Changed()
+		
+		Settings.Windows.SlideWindows.BorderActivationRequiresMouseUp := Page.chkBorderActivationRequiresMouseUp.Checked
 		Settings.Windows.SlideWindows.ModifierKey := Page.ddlModifierKey.Text
 		
 		Settings.Windows.AutoCloseWindowsUpdate := Page.chkAutoCloseWindowsUpdate.Checked
+		if(Settings.Windows.AutoCloseWindowsUpdate)
+			AutoCloseWindowsUpdate(WinExist("Windows Update ahk_class #32770"))
+		
 		Settings.Windows.ShowResizeToolTip := Page.chkShowResizeTooltip.Checked
 	}
 	
