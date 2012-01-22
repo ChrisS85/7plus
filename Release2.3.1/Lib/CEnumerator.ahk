@@ -12,15 +12,11 @@ Class CEnumerator
 	__New(Object)
 	{
 		this.Object := Object
-		this.FirstRun := true
 	}
 	Next(byref key, byref value)
 	{
-		if(!key || this.FirstRun)
-		{
+		if(!key)
 			key := 1
-			this.FirstRun := false
-		}
 		else
 			key++
 		if(key <= this.Object.MaxIndex())

@@ -26,10 +26,8 @@ Class CTabControl Extends CControl
 		this._.Insert("ImageListManager", new this.CImageListManager(this.GUINum, this.hwnd))
 		this._.Tabs := new this.CTabs(this.GUINum, this.hwnd)
 		
-		;Parse Initial tabs
-		Content := this.Content
-		Loop, Parse, Content, |
-			this._.Tabs._.Insert(new this.CTabs.CTab(A_LoopField, A_Index, this.GUINum, this.hwnd))
+		;Add Tabs
+		this.Tabs.Add(this.Content)
 	}
 	/*
 	Property: Tabs
@@ -202,26 +200,37 @@ Class CTabControl Extends CControl
 		Adds a tab.
 		
 		Parameters:
-			Text - The text of the new tab.
+			Text - The text of the new tab. If this parameter contains a pipe character (|), multiple tabs will be created and the return value is an array of CTab objects.
 			
 		Returns:
-			An object of type <CTabControl.CTabs.CTab>.
+			An object of type <CTabControl.CTabs.CTab>. If multiple tabs are created, an array of CTab objects is returned.
 		*/
 		Add(Text)
 		{
+			Static TCM_GETITEMCOUNT := 0x1304
+			Static TCM_INSERTITEMA  := 0x1307
+			Static TCM_INSERTITEMW  := 0x133E
+			Static TCM_INSERTITEM := A_IsUnicode ? TCM_INSERTITEMW : TCM_INSERTITEMA
+			Static TCITEMSize := (5 * 4) + (2 * A_PtrSize) + (A_PtrSize - 4)
+			Static TCIF_TEXT := 0x0001
+			Static TEXTPos := (3 * 4) + (A_PtrSize - 4)
 			Tabs := []
 			Loop, Parse, Text, |
 			{
 				TabNumber := this._.MaxIndex() ? this._.MaxIndex() + 1 : 1
-				Tab := new this.CTab(A_loopField, TabNumber, this.GUINum, this.hwnd)
+				Tab := new this.CTab(A_LoopField, TabNumber, this.GUINum, this.hwnd)
 				this._.Insert(Tab)
 				Tabs.Insert(Tab)
-				Control := CGUI.GUIList[this.GUINum][this.hwnd]
-				GuiControl, % this.GUINum ":", % Control.ClassNN, %A_loopField%
+				Control := CGUI.GUIList[this.GUINum].Controls[this.hwnd]
+				;~ GuiControl, % this.GUINum ":", % Control.hwnd, %A_loopField% ;Doesn't work in current AHK_L
+				VarSetCapacity(TCITEM, TCITEMSize, 0)
+				NumPut(TCIF_TEXT, TCITEM, 0, "UInt")
+				txt := A_LoopField
+				NumPut(&txt, TCITEM, TEXTPos, "Ptr")
+				SendMessage, TCM_INSERTITEM, Control.Tabs.MaxIndex(), &TCITEM,, % "ahk_id " Control.HWND
 			}
 			return Tabs.MaxIndex() > 1 ? Tabs : Tabs[1]
 		}
-		
 		;Removing tabs is unsupported for now because the controls will not be removed
 		;~ Remove(TabNumber)
 		;~ {
@@ -241,6 +250,8 @@ Class CTabControl Extends CControl
 				this._.GUINum := GUINum
 				this._.hwnd := hwnd
 				this._.Controls := {}
+				if (CGUI.GUIList[GUINum].Controls.HasKey(hwnd))
+					GuiControl, %GUINum%:, % CGUI.GUIList[GUINum].Controls[hwnd].ClassNN, %Text%
 			}
 			
 			/*

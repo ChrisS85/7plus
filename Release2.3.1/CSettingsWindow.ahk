@@ -930,27 +930,27 @@ Finally, here are some settings that you're likely to change at the beginning:
 	{
 		Page := this.Pages.Explorer.Tabs[1]
 		Page.AddControl("CheckBox", "chkAutoCheckApplyToAllFiles", "x216 y146 w477 h17", "Automatically check ""Apply to all further operations"" checkboxes in file operations")
-		;~ Page.AddControl("SysLink", "linkAutoCheckApplyToAllFiles", "x197 y147 w13 h13", "?")
+		;~ Page.AddControl("Link", "linkAutoCheckApplyToAllFiles", "x197 y147 w13 h13", "?")
 		Page.AddControl("CheckBox", "chkAdvancedStatusBarInfo", "x216 y123 w370 h17", "Show free space and size of selected files in status bar like in XP (7 only)")
-		;~ Page.AddControl("SysLink", "linkAdvancedStatusBarInfo", "x197 y124 w13 h13", "?")
+		;~ Page.AddControl("Link", "linkAdvancedStatusBarInfo", "x197 y124 w13 h13", "?")
 		Page.AddControl("CheckBox", "chkScrollTreeUnderMouse", "x216 y100 w247 h17", "Scroll explorer scrollbars with mouse over them when they are not focused")
-		;~ Page.AddControl("SysLink", "linkScrollTreeUnderMouse", "x197 y101 w13 h13", "?")
+		;~ Page.AddControl("Link", "linkScrollTreeUnderMouse", "x197 y101 w13 h13", "?")
 		Page.Controls.chkScrollTreeUnderMouse.ToolTip := "This makes it possible to scroll the file tree or the file list when another part of the explorer window is focused."
 		Page.AddControl("CheckBox", "chkImproveEnter", "x216 y77 w411 h17", "Files which are only focussed but not selected can be executed by pressing enter")
-		;~ Page.AddControl("SysLink", "linkImproveEnter", "x197 y78 w13 h13", "?")
+		;~ Page.AddControl("Link", "linkImproveEnter", "x197 y78 w13 h13", "?")
 		Page.AddControl("CheckBox", "chkAutoSelectFirstFile", "x216 y54 w347 h17", "Explorer automatically selects the first file when you enter a directory")
-		;~ Page.AddControl("SysLink", "linkAutoSelectFirstFile", "x197 y55 w13 h13", "?")
+		;~ Page.AddControl("Link", "linkAutoSelectFirstFile", "x197 y55 w13 h13", "?")
 		Page.AddControl("CheckBox", "chkMouseGestures", "x216 y31 w454 h17", "Hold right mouse button and click left: Go back, hold left mouse and click right: Go Forward")
-		;~ Page.AddControl("SysLink", "linkMouseGestures", "x197 y32 w13 h13", "?")
+		;~ Page.AddControl("Link", "linkMouseGestures", "x197 y32 w13 h13", "?")
 		Page.AddControl("CheckBox", "chkRememberPath", "x216 y169 w237 h17", "Win+E: Open explorer in last active directory")
 		Page.AddControl("CheckBox", "chkAlignNewExplorer", "x216 y192 w408 h17", "Win+E + explorer window active: Open new explorer and align them left and right")
 		
 		
 		Page.AddControl("Text", "txtPasteAsFile", "x213 y238 w396 h13", "Text and images from clipboard can be pasted as file in explorer with these settings")
 		chkPasteImageAsFileName := Page.AddControl("CheckBox", "chkPasteImageAsFileName", "x216 y286 w116 h17", "Paste image as file")
-		;~ Page.AddControl("SysLink", "linkPasteImageAsFileName", "x197 y287 w13 h13", "?")
+		;~ Page.AddControl("Link", "linkPasteImageAsFileName", "x197 y287 w13 h13", "?")
 		chkPasteTextAsFileName := Page.AddControl("CheckBox", "chkPasteTextAsFileName", "x216 y260 w105 h17", "Paste text as file")
-		;~ Page.AddControl("SysLink", "linkPasteTextAsFileName", "x197 y261 w13 h13", "?")
+		;~ Page.AddControl("Link", "linkPasteTextAsFileName", "x197 y261 w13 h13", "?")
 		Page.AddControl("Text", "txtPasteImageAsFileName", "x448 y287 w52 h13", "Filename:")
 		Page.AddControl("Text", "txtPasteTextAsFileName", "x448 y261 w52 h13", "Filename:")
 		Page.Controls.editPasteImageAsFileName := chkPasteImageAsFileName.AddControl("Edit", "editPasteImageAsFileName", "x506 y284 w150 h20", "", 1)
@@ -1003,7 +1003,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("Text", "txtTabDescription", "x216 y32 w469 h39", "7plus makes it possible to use tabs in explorer. New tabs are opened with the middle mouse button`n,and with CTRL+T, Tabs are cycled by clicking the Tabs or pressing CTRL+(SHIFT)+TAB,`nand closed by middle clicking a tab and with CTRL+W")
 		Page.Controls.chkTabWindowClose := chkUseTabs.AddControl("CheckBox", "chkTabWindowClose", "x229 y173 w202 h17", "Close all tabs when window is closed", 1)
 		Page.Controls.chkActivateTab := chkUseTabs.AddControl("CheckBox", "chkActivateTab", "x229 y150 w159 h17", "Activate tab on tab creation", 1)
-		;~ Page.AddControl("SysLink", "linkUseTabs", "x19 y75 w13 h13", "?")
+		;~ Page.AddControl("Link", "linkUseTabs", "x19 y75 w13 h13", "?")
 	}
 	InitExplorerTabs()
 	{
@@ -1040,12 +1040,12 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page := this.Pages.FastFolders.Tabs[1]
 		Page.AddControl("Text", "txtFastFoldersDescription", "x213 y32 w482 h26", "In explorer and file dialogs you can store a path in one of ten slots by pressing CTRL`nand a numpad number key (default settings), and restore it by pressing the numpad number key again")
 		Page.AddControl("CheckBox", "chkShowInFolderBand", "x216 y63 w329 h17", "Integrate Fast Folders into explorer folder band bar (Vista/7 only)")
-		;~ Page.AddControl("SysLink", "linkShowInFolderBand", "x19 y64 w13 h13", "?")
+		;~ Page.AddControl("Link", "linkShowInFolderBand", "x19 y64 w13 h13", "?")
 		Page.AddControl("CheckBox", "chkCleanFolderBand", "x216 y86 w271 h17", "Remove windows folder band buttons (Vista/7 only)")
-		;~ Page.AddControl("SysLink", "linkCleanFolderBand", "x197 y87 w13 h13", "?")
+		;~ Page.AddControl("Link", "linkCleanFolderBand", "x197 y87 w13 h13", "?")
 		Page.Controls.chkCleanFolderBand.ToolTip := "If you use the folder band as a favorites bar like in browsers, it is recommended that you get rid of the buttons predefined by windows whereever possible (such as Slideshow, Add to Library,...)"
 		Page.AddControl("CheckBox", "chkShowInPlacesBar", "x216 y109 w360 h17", "Integrate Fast Folders into open/save dialog places bar (First 5 Entries)")
-		;~ Page.AddControl("SysLink", "linkShowInPlacesBar", "x197 y110 w13 h13", "?")
+		;~ Page.AddControl("Link", "linkShowInPlacesBar", "x197 y110 w13 h13", "?")
 		Page.AddControl("Button", "btnRemoveCustomButtons", "x216 y132 w179 h23", "Remove custom Explorer buttons")
 		Page.Controls.btnRemoveCustomButtons.ToolTip := "By doing this all custom buttons in the explorer folder band bar will be removed. This is useful if an error occurred and some buttons get duplicated. Once you press OK or Apply in this dialog, the buttons created with an ExplorerButton trigger will reappear. To make the FastFolder buttons reappear, save a directory to a FastFolder slot by pressing CTRL+Numpad[0-9] (Default keys)"
 	}
@@ -1369,7 +1369,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("CheckBox", "chkAutoCloseWindowsUpdate", "x218 y196 w321 h17", "Automatically close Windows Update reboot notification dialog")
 		Page.Controls.chkAutoCloseWindowsUpdate.ToolTip :=  "If you enable this setting you will not be able to open this dialog anymore. You can simply reboot windows though..."
 		Page.AddControl("CheckBox", "chkShowResizeTooltip", "x218 y173 w225 h17", "Show window size as tooltip while resizing")
-		;~ Page.AddControl("SysLink", "linkUseSlideWindows", "x200 y35 w13 h13", "?")
+		;~ Page.AddControl("Link", "linkUseSlideWindows", "x200 y35 w13 h13", "?")
 	}
 	InitWindows()
 	{
@@ -1470,10 +1470,10 @@ Finally, here are some settings that you're likely to change at the beginning:
 	CreateMisc()
 	{
 		Page := this.Pages.Misc.Tabs[1]
-		;~ Page.AddControl("SysLink", "linkFixEditControlWordDelete", "x197 y58 w13 h13", "?")
+		;~ Page.AddControl("Link", "linkFixEditControlWordDelete", "x197 y58 w13 h13", "?")
 		Page.AddControl("CheckBox", "chkFixEditControlWordDelete", "x216 y57 w333 h17", "Make CTRL+Backspace and CTRL+Delete work in all textboxes")
 		Page.Controls.chkFixEditControlWordDelete.ToolTip := "Many text boxes in windows have the problem that it's not possible to use CTRL+Backspace to delete a word. Instead, it will write a square character. Enabling this will fix it."
-		;~ Page.AddControl("SysLink", "linkGamepadRemoteControl", "x19 y35 w13 h13", "?")
+		;~ Page.AddControl("Link", "linkGamepadRemoteControl", "x19 y35 w13 h13", "?")
 		Page.AddControl("CheckBox", "chkGamepadRemoteControl", "x216 y34 w489 h17", "Use joystick/gamepad as remote control when not in fullscreen (optimized for XBOX")
 		
 		Page.AddControl("Text", "txtImageQuality", "x213 y92 w134 h13", "Image compression quality:")
@@ -1529,22 +1529,22 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page := this.Pages.About.Tabs[1]
 		txt7plusVersion := Page.AddControl("Text", "txt7plusVersion", "x197 y31 w300 h40", "7plus Version " VersionString(1))
 		txt7plusVersion.Font.Size := 20
-		Page.AddControl("Picture", "img7plus", "x506 y31 w128 h128", A_ScriptDir "\128.png")
+		Page.AddControl("Picture", "img7plus", "x556 y31 w128 h128", A_ScriptDir "\128.png")
 		Page.AddControl("Picture", "imgDonate", "x200 y182", A_ScriptDir "\Donate.png")
-		;~ Page.AddControl("SysLink", "linkLicense", "x392 y264 w158 h13", "<A HREF=""http://www.gnu.org/licenses/gpl.html"">GNU General Public License v3</A>")
-		;~ Page.AddControl("SysLink", "linkAHK", "x197 y229 w110 h13", "<A HREF=""www.autohotkey.com"">www.autohotkey.com</A>")
-		;~ Page.AddControl("SysLink", "linkTwitter", "x392 y133 w38 h13", "<A HREF=""http://www.twitter.com/7_plus"">7_plus</A>")
-		;~ Page.AddControl("SysLink", "linkEmail", "x392 y117 w103 h13", "<A HREF=""mailto://fragman@gmail.com"">fragman@gmail.com</A>")
-		;~ Page.AddControl("SysLink", "linkBugs", "x392 y85 w212 h13", "<A HREF=""http://code.google.com/p/7plus/issues/list"">http://code.google.com/p/7plus/issues/list</A>")
-		;~ Page.AddControl("SysLink", "linkHomepage", "x392 y69 w166 h13", "<A HREF=""http://code.google.com/p/7plus/"">http://code.google.com/p/7plus/</A>")
-		;~ Page.AddControl("SysLink", "linkAutoupdater", "x221 y213 w306 h13", "The Autoudater uses <A HREF=""http://www.7-zip.org"">7-Zip</A>, which is licensed under the <A HREF=""http://www.gnu.org/licenses/lgpl.html"">LGPL</A>")
-		Page.AddControl("Text", "txtCredits", "x197 y297 w392 h39", "Credits for lots of code samples and help go out to:`nSean, HotKeyIt, majkinetor, polyethene, Lexikos, tic, fincs, TheGood, PhiLho, Temp01, Laszlo, jballi, Shrinker,`nM@x and the other guys and gals on #ahk and the forums.")
+		Page.AddControl("Link", "linkLicense", "x342 y264 w158 h13", "<A HREF=""http://www.gnu.org/licenses/gpl.html"">GNU General Public License v3</A>")
+		Page.AddControl("Link", "linkAHK", "x197 y229 w110 h13", "<A HREF=""www.autohotkey.com"">www.autohotkey.com</A>")
+		Page.AddControl("Link", "linkTwitter", "x342 y133 w38 h13", "<A HREF=""http://www.twitter.com/7_plus"">7_plus</A>")
+		Page.AddControl("Link", "linkEmail", "x342 y117 w103 h13", "<A HREF=""mailto://fragman@gmail.com"">fragman@gmail.com</A>")
+		Page.AddControl("Link", "linkBugs", "x342 y85 w212 h13", "<A HREF=""http://code.google.com/p/7plus/issues/list"">http://code.google.com/p/7plus/issues/list</A>")
+		Page.AddControl("Link", "linkHomepage", "x342 y69 w166 h13", "<A HREF=""http://code.google.com/p/7plus/"">http://code.google.com/p/7plus/</A>")
+		Page.AddControl("Link", "linkAutoupdater", "x197 y293 w306 h13", "The Autoudater uses <A HREF=""http://www.7-zip.org"">7-Zip</A>, which is licensed under the <A HREF=""http://www.gnu.org/licenses/lgpl.html"">LGPL</A>")
+		Page.AddControl("Text", "txtCredits", "x197 y327 w392 h39", "Credits for lots of code samples and help go out to:`nSean, HotKeyIt, majkinetor, polyethene, Lexikos, tic, fincs, TheGood, PhiLho, Temp01, Laszlo, jballi, Shrinker,`nM@x and the other guys and gals on #ahk and the forums.")
 		Page.AddControl("Text", "txtLicense", "x197 y264 w80 h13", "Licensed under")
 		Page.AddControl("Text", "txtLanguage", "x197 y213 w146 h13", "Proudly written in AutoHotkey")
 		Page.AddControl("Text", "txtDonate", "x197 y166 w282 h13", "To support the development of this project, please donate:")
 		Page.AddControl("Text", "txtTwitter", "x197 y133 w39 h13", "Twitter")
 		Page.AddControl("Text", "txtEmail", "x197 y117 w36 h13", "E-Mail")
-		Page.AddControl("Text", "txtAuthor2", "x392 y101 w84 h13", "Christian Sander")
+		Page.AddControl("Text", "txtAuthor2", "x342 y101 w84 h13", "Christian Sander")
 		Page.AddControl("Text", "txtAuthor", "x197 y101 w38 h13", "Author")
 		Page.AddControl("Text", "txtBugs", "x197 y85 w65 h13", "Report bugs")
 		Page.AddControl("Text", "txtHomepage", "x197 y69 w70 h13", "Project page:")
