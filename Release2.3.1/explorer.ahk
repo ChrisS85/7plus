@@ -176,7 +176,6 @@ FixExplorerConfirmationDialogs()
 				for i, s in [0x2,0x4]
 					if(style & s && style & 0x10000000) ;WS_VISIBLE
 					{
-						msgbox style %s% hwnd %hwnd% title %title% style %style% x %x% y %y% w %w% h %h%
 						Control, Check , ,, ahk_id %hwnd%
 						return
 					}
