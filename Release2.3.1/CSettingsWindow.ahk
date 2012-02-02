@@ -1522,7 +1522,6 @@ Finally, here are some settings that you're likely to change at the beginning:
 			return 95
 	}
 	*/
-	
 	; About	
 	CreateAbout()
 	{

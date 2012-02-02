@@ -165,13 +165,18 @@ FixExplorerConfirmationDialogs()
 		; Find the checkbox!
 		Loop Parse, ctrlList, `n 
 		{
-			ControlGet hwnd, Hwnd, , %A_LoopField%, A 
+			ControlGet hwnd, Hwnd, , %A_LoopField%, A
 			if(InStr(WinGetClass("ahk_id " hwnd), "Button") = 1)
 			{
 				WinGet, style, style, ahk_id %hwnd%
-				for i, s in [0x2,0x3,0x5,0x6]
-					if(style & s)
+				WinGetTitle, title, ahk_id %hwnd%
+				WinGetPos, , , w, h, ahk_id %hwnd%
+				if(!title || w = 0 || h = 0)
+					continue
+				for i, s in [0x2,0x4]
+					if(style & s && style & 0x10000000) ;WS_VISIBLE
 					{
+						msgbox style %s% hwnd %hwnd% title %title% style %style% x %x% y %y% w %w% h %h%
 						Control, Check , ,, ahk_id %hwnd%
 						return
 					}
