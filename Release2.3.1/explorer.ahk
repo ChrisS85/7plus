@@ -145,7 +145,7 @@ SetFocusToFileView()
 		if(A_OSVersion="WIN_7")
 			ControlFocus DirectUIHWND2, A
 		else
-			ControlFocus SysListView321, A		
+			ControlFocus SysListView321, A
 	}
 	else if(x=2) ;Old Dialogs
 	{

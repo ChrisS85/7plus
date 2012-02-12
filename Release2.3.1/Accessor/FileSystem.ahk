@@ -169,7 +169,10 @@ Accessor_FileSystem_OnEnter()
 	if(InStr(FileExist(AccessorListEntry.Path),"D"))
 		FileSystemSetFolder(AccessorListEntry.Title)
 	else
+	{
 		AccessorOK()
+		AccessorClose()
+	}
 }
 Accessor_FileSystem_OnKeyDown(FileSystem, wParam, lParam, Filter, selected, AccessorListEntry)
 {

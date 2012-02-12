@@ -3,32 +3,6 @@
 <Event>
 <Actions>
 <Action>
-<Type>Show settings</Type>
-</Action></Actions>
-<Category>7plus</Category>
-<Conditions>
-<Condition>
-<Negate>1</Negate>
-<Type>Fullscreen window active</Type>
-<UseExcludeList>0</UseExcludeList>
-<UseIncludeList>1</UseIncludeList>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Shows the 7plus settings window.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>0</ID>
-<Name>Show settings window</Name>
-<OfficialEvent>1</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>#H</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
 <Type>Restart 7plus</Type>
 </Action></Actions>
 <Category>7plus</Category>
@@ -45,47 +19,6 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>#Q</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Append>1</Append>
-<Clear>0</Clear>
-<Content>${SelNM}</Content>
-<Cut>0</Cut>
-<InsertType>File</InsertType>
-<Type>Write to clipboard</Type>
-</Action></Actions>
-<Category>Explorer</Category>
-<Conditions>
-<Condition>
-<Compare>${Class}</Compare>
-<Negate>0</Negate>
-<Operator>matches regular expression</Operator>
-<Type>If</Type>
-<With>(CabinetWClass|ExploreWClass|WorkerW|Progman)</With>
-</Condition><Condition>
-<Negate>1</Negate>
-<Type>Explorer is renaming</Type>
-</Condition><Condition>
-<Compare>${Control}</Compare>
-<Negate>0</Negate>
-<Operator>matches regular expression</Operator>
-<Type>If</Type>
-<With>(DirectUIHWND3|SysListView321)</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Append selected files to clipboard, instead of replacing current files on clipboard. This event will copy ALL the files on the clipboard.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>2</ID>
-<Name>Append file(s) to clipboard</Name>
-<OfficialEvent>3</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>+C</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event><Event>
@@ -5364,34 +5297,6 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>+#Down</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Action>Toggle always on top</Action>
-<ShowState>1</ShowState>
-<Type>Change window state</Type>
-<Value>100</Value>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
-<WindowMatchType>Active</WindowMatchType>
-</Action></Actions>
-<Category>Window Handling</Category>
-<Conditions>
-</Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>This action toggles the always on top property of the active window.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>1644</ID>
-<Name>Toggle always on top of active window</Name>
-<OfficialEvent>44</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>#A</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event></Events>

@@ -129,6 +129,14 @@ SplitCommandLine(ByRef Target, ByRef Args)
 	else
 		Args := "" ;Single Command
 }
+
+GetWorkingDir(Command)
+{
+	WorkingDir := ""
+	if(Exists := FileExist(Command) && !InStr(Exists, "D"))
+		SplitPath, Command,, WorkingDir
+	return WorkingDir
+}
 RunAsUser(Command, WorkingDir, Options)
 {
 	result := DllCall("Explorer.dll\CreateProcessMediumIL", Str, Command, Str, WorkingDir, Str, Options, "UInt")

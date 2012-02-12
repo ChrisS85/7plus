@@ -592,6 +592,7 @@ return
 Enter::
 NumpadEnter::
 AccessorOK()
+AccessorClose()
 return
 #if
 
@@ -694,8 +695,9 @@ AccessorRun(AccessorListEntry = "")
 		AccessorListEntry := AccessorGetSelectedListEntry()
 	if(AccessorListEntry.Path)
 	{
+		WorkingDir := GetWorkingDir(AccessorListEntry.Path)
 		ProgramLauncherAddToCache(AccessorListEntry)
-		Run(Quote(AccessorListEntry.Path) (AccessorListEntry.args ? " " AccessorListEntry.args : ""))
+		Run(Quote(AccessorListEntry.Path) (AccessorListEntry.args ? " " AccessorListEntry.args : ""), WorkingDir)
 		AccessorClose()
 	}
 }
@@ -706,7 +708,8 @@ AccessorRunAsAdmin(AccessorListEntry = "")
 	if(AccessorListEntry.Path)
 	{
 		ProgramLauncherAddToCache(AccessorListEntry)
-		Run(AccessorListEntry.Path, "", "", 0)
+		WorkingDir := GetWorkingDir(AccessorListEntry.Path)
+		Run(AccessorListEntry.Path, WorkingDir, "", 0)
 		AccessorClose()
 	}
 }
@@ -725,6 +728,7 @@ AccessorRunWithArgs(AccessorListEntry = "")
 		Event.Actions[1].Title := "Enter program arguments"
 		Event.Actions.Insert(new CRunAction())
 		Event.Actions[2].Command := """" AccessorListEntry.Path """ ${Input}"
+		Event.Actions[2].WorkingDirectory := GetWorkingDir(AccessorListEntry.Path)
 		EventSystem.TemporaryEvents.RegisterEvent(Event)
 		Event.TriggerThisEvent()
 		AccessorClose()
@@ -752,7 +756,7 @@ AccessorOpenCMD(AccessorListEntry = "")
 		path := AccessorListEntry.Path
 		if(!InStr(FileExist(path),"D"))
 			SplitPath, path,, path
-		Run("cmd.exe /k cd /D """ path """")
+		Run("cmd.exe /k cd /D """ path """", GetWorkingDir(AccessorListEntry.Path))
 		AccessorClose()
 	}
 }
