@@ -1,0 +1,19 @@
+= 7plus Version 2.4.0 released! =
+
+Long in the making but worth the wait. After about 10 months the next version of 7plus is finally ready. Many parts of it were rewritten once again to allow for more flexibility and less limitations. Many of these things will be noticeable in tiny details, such as these:
+  * Events now execute while the event editor window is open
+  * Slide windows now work much better and also support child windows
+  * Explorer status bar: Enhanced information is now displayed separately for every window, not just the active one.
+  * Improvements centered around Accessor, too many to name here
+  * Simplified hotkey configuration
+
+Apart from this work under the surface there are also once more many new features such as these:
+  * Explorer replace dialog for filenames and file contents with many functions
+  * Improved screen capturing with editor dialog, screen area capturing and image hoster support (imgur.com) as well as the known FTP support
+  * A settings page that contains generic windows settings that remove annoyances from windows that would usually require registry modifications or other advanced methods.
+  * URL shortener (WIN+S)
+  * Automatically close windows update dialog to get rid of this annoying notification (disabled by default)
+
+There are also many other smaller features and bugfixes which can't be listed here. For details, check out the [http://code.google.com/p/7plus/wiki/Changelog2dot4dot0 changelog].
+
+For manually downloading 7plus, check out the [http://code.google.com/p/7plus/downloads/list Downloads] section. Autoupdates should download when you start 7plus. Please report any bugs, submit comments, etc. You know the procedure!
