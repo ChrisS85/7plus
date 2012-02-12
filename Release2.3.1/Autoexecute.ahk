@@ -66,10 +66,7 @@ pToken := Gdip_Startup()
 ;Exit Routine
 OnExit, ExitSub
 
-;Menu entries need to be shown before events are loaded
-Menu, tray, add  ; Creates a separator line.
-Menu, tray, add, Settings, SettingsHandler
-menu, tray, Default, Settings
+
 
 ;This needs to be executed before EventSystem_Startup() because NewFile/Folder action relies on it
 global shell32MUIpath := LocateShell32MUI()
@@ -81,6 +78,9 @@ if(!WindowList)
 outputdebug starting event system
 global EventSystem := new CEventSystem()
 EventSystem.Startup()
+
+;Make sure tray menu is built (even if there are no triggers that add items to it, because there are some special entries)
+BuildMenu("Tray")
 
 ;Update checker
 if(Settings.General.AutoUpdate)
@@ -229,7 +229,7 @@ OnExit(Reload=0)
 	if(Reload)
 	{
 		ShouldReload := 1
-		run % (A_IsCompiled ? A_ScriptFullPath : A_AhkPath) " /r """ A_ScriptFullPath """" (ApplicationState.IsPortable ? " -Portable" : ""), %A_WorkingDir%
+		run % (A_IsCompiled ? A_ScriptFullPath : A_AhkPath) " /r" (A_IsCompiled ? "" : " """ A_ScriptFullPath """") (ApplicationState.IsPortable ? " -Portable" : ""), %A_WorkingDir%
 	}
 	FileRemoveDir, %A_Temp%\7plus, 1
 }

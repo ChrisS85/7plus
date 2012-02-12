@@ -1,6 +1,7 @@
 ; Array Lib - temp01 - http://www.autohotkey.com/forum/viewtopic.php?t=49736 
 ; Modified by Fragman
 ; Array is 1-based!!!
+#include <CEnumerator>
 Array(Params*){ 
 	return new CArray(Params*)
 }

@@ -929,27 +929,27 @@ Finally, here are some settings that you're likely to change at the beginning:
 	CreateExplorer()
 	{
 		Page := this.Pages.Explorer.Tabs[1]
-		Page.AddControl("CheckBox", "chkAutoCheckApplyToAllFiles", "x216 y146 w477 h17", "Automatically check ""Apply to all further operations"" checkboxes in file operations")
+		Page.AddControl("CheckBox", "chkAutoCheckApplyToAllFiles", "x216 y146 h17", "Automatically check ""Apply to all further operations"" checkboxes in file operations")
 		;~ Page.AddControl("Link", "linkAutoCheckApplyToAllFiles", "x197 y147 w13 h13", "?")
-		Page.AddControl("CheckBox", "chkAdvancedStatusBarInfo", "x216 y123 w370 h17", "Show free space and size of selected files in status bar like in XP (7 only)")
+		Page.AddControl("CheckBox", "chkAdvancedStatusBarInfo", "x216 y123 h17", "Show free space and size of selected files in status bar like in XP (7 only)")
 		;~ Page.AddControl("Link", "linkAdvancedStatusBarInfo", "x197 y124 w13 h13", "?")
-		Page.AddControl("CheckBox", "chkScrollTreeUnderMouse", "x216 y100 w247 h17", "Scroll explorer scrollbars with mouse over them when they are not focused")
+		Page.AddControl("CheckBox", "chkScrollTreeUnderMouse", "x216 y100 h17", "Scroll explorer scrollbars with mouse over them when they are not focused")
 		;~ Page.AddControl("Link", "linkScrollTreeUnderMouse", "x197 y101 w13 h13", "?")
 		Page.Controls.chkScrollTreeUnderMouse.ToolTip := "This makes it possible to scroll the file tree or the file list when another part of the explorer window is focused."
-		Page.AddControl("CheckBox", "chkImproveEnter", "x216 y77 w411 h17", "Files which are only focussed but not selected can be executed by pressing enter")
+		Page.AddControl("CheckBox", "chkImproveEnter", "x216 y77 h17", "Files which are only focussed but not selected can be executed by pressing enter")
 		;~ Page.AddControl("Link", "linkImproveEnter", "x197 y78 w13 h13", "?")
-		Page.AddControl("CheckBox", "chkAutoSelectFirstFile", "x216 y54 w347 h17", "Explorer automatically selects the first file when you enter a directory")
+		Page.AddControl("CheckBox", "chkAutoSelectFirstFile", "x216 y54 h17", "Explorer automatically selects the first file when you enter a directory")
 		;~ Page.AddControl("Link", "linkAutoSelectFirstFile", "x197 y55 w13 h13", "?")
-		Page.AddControl("CheckBox", "chkMouseGestures", "x216 y31 w454 h17", "Hold right mouse button and click left: Go back, hold left mouse and click right: Go Forward")
+		Page.AddControl("CheckBox", "chkMouseGestures", "x216 y31 h17", "Hold right mouse button and click left: Go back, hold left mouse and click right: Go Forward")
 		;~ Page.AddControl("Link", "linkMouseGestures", "x197 y32 w13 h13", "?")
-		Page.AddControl("CheckBox", "chkRememberPath", "x216 y169 w237 h17", "Win+E: Open explorer in last active directory")
-		Page.AddControl("CheckBox", "chkAlignNewExplorer", "x216 y192 w408 h17", "Win+E + explorer window active: Open new explorer and align them left and right")
+		Page.AddControl("CheckBox", "chkRememberPath", "x216 y169 h17", "Win+E: Open explorer in last active directory")
+		Page.AddControl("CheckBox", "chkAlignNewExplorer", "x216 y192 h17", "Win+E + explorer window active: Open new explorer and align them left and right")
 		
 		
-		Page.AddControl("Text", "txtPasteAsFile", "x213 y238 w396 h13", "Text and images from clipboard can be pasted as file in explorer with these settings")
-		chkPasteImageAsFileName := Page.AddControl("CheckBox", "chkPasteImageAsFileName", "x216 y286 w116 h17", "Paste image as file")
+		Page.AddControl("Text", "txtPasteAsFile", "x213 y238 h13", "Text and images from clipboard can be pasted as file in explorer with these settings")
+		chkPasteImageAsFileName := Page.AddControl("CheckBox", "chkPasteImageAsFileName", "x216 y286 h17", "Paste image as file")
 		;~ Page.AddControl("Link", "linkPasteImageAsFileName", "x197 y287 w13 h13", "?")
-		chkPasteTextAsFileName := Page.AddControl("CheckBox", "chkPasteTextAsFileName", "x216 y260 w105 h17", "Paste text as file")
+		chkPasteTextAsFileName := Page.AddControl("CheckBox", "chkPasteTextAsFileName", "x216 y260 h17", "Paste text as file")
 		;~ Page.AddControl("Link", "linkPasteTextAsFileName", "x197 y261 w13 h13", "?")
 		Page.AddControl("Text", "txtPasteImageAsFileName", "x448 y287 w52 h13", "Filename:")
 		Page.AddControl("Text", "txtPasteTextAsFileName", "x448 y261 w52 h13", "Filename:")
@@ -992,7 +992,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 	CreateExplorerTabs()
 	{
 		Page := this.Pages.ExplorerTabs.Tabs[1]
-		chkUseTabs := Page.AddControl("CheckBox", "chkUseTabs", "x216 y74 w126 h17", "Use Tabs in Explorer")
+		chkUseTabs := Page.AddControl("CheckBox", "chkUseTabs", "x216 y74 h17", "Use Tabs in Explorer")
 		Page.AddControl("Text", "txtOnTabClose", "x232 y199 w70 h13", "On tab close:")
 		Page.AddControl("Text", "txtTabStartupPath", "x232 y127 w190 h13", "Tab startup path (empty for current dir):")
 		Page.Controls.editTabStartupPath := chkUseTabs.AddControl("Edit", "editTabStartupPath", "x484 y124 w159 h20", "", 1)
@@ -1001,8 +1001,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.Controls.ddlOnTabClose := chkUseTabs.AddControl("DropDownList", "ddlOnTabClose", "x484 y196 w159", "Next to current tab|At the end", 1)
 		Page.Controls.ddlNewTabPosition := chkUseTabs.AddControl("DropDownList", "ddlNewTabPosition", "x484 y97 w159", "Activate left tab|Activate right tab", 1)
 		Page.AddControl("Text", "txtTabDescription", "x216 y32 w469 h39", "7plus makes it possible to use tabs in explorer. New tabs are opened with the middle mouse button`n,and with CTRL+T, Tabs are cycled by clicking the Tabs or pressing CTRL+(SHIFT)+TAB,`nand closed by middle clicking a tab and with CTRL+W")
-		Page.Controls.chkTabWindowClose := chkUseTabs.AddControl("CheckBox", "chkTabWindowClose", "x229 y173 w202 h17", "Close all tabs when window is closed", 1)
-		Page.Controls.chkActivateTab := chkUseTabs.AddControl("CheckBox", "chkActivateTab", "x229 y150 w159 h17", "Activate tab on tab creation", 1)
+		Page.Controls.chkTabWindowClose := chkUseTabs.AddControl("CheckBox", "chkTabWindowClose", "x229 y173 h17", "Close all tabs when window is closed", 1)
+		Page.Controls.chkActivateTab := chkUseTabs.AddControl("CheckBox", "chkActivateTab", "x229 y150 h17", "Activate tab on tab creation", 1)
 		;~ Page.AddControl("Link", "linkUseTabs", "x19 y75 w13 h13", "?")
 	}
 	InitExplorerTabs()
@@ -1039,12 +1039,12 @@ Finally, here are some settings that you're likely to change at the beginning:
 	{
 		Page := this.Pages.FastFolders.Tabs[1]
 		Page.AddControl("Text", "txtFastFoldersDescription", "x213 y32 w482 h26", "In explorer and file dialogs you can store a path in one of ten slots by pressing CTRL`nand a numpad number key (default settings), and restore it by pressing the numpad number key again")
-		Page.AddControl("CheckBox", "chkShowInFolderBand", "x216 y63 w329 h17", "Integrate Fast Folders into explorer folder band bar (Vista/7 only)")
+		Page.AddControl("CheckBox", "chkShowInFolderBand", "x216 y63 h17", "Integrate Fast Folders into explorer folder band bar (Vista/7 only)")
 		;~ Page.AddControl("Link", "linkShowInFolderBand", "x19 y64 w13 h13", "?")
-		Page.AddControl("CheckBox", "chkCleanFolderBand", "x216 y86 w271 h17", "Remove windows folder band buttons (Vista/7 only)")
+		Page.AddControl("CheckBox", "chkCleanFolderBand", "x216 y86 h17", "Remove windows folder band buttons (Vista/7 only)")
 		;~ Page.AddControl("Link", "linkCleanFolderBand", "x197 y87 w13 h13", "?")
 		Page.Controls.chkCleanFolderBand.ToolTip := "If you use the folder band as a favorites bar like in browsers, it is recommended that you get rid of the buttons predefined by windows whereever possible (such as Slideshow, Add to Library,...)"
-		Page.AddControl("CheckBox", "chkShowInPlacesBar", "x216 y109 w360 h17", "Integrate Fast Folders into open/save dialog places bar (First 5 Entries)")
+		Page.AddControl("CheckBox", "chkShowInPlacesBar", "x216 y109 h17", "Integrate Fast Folders into open/save dialog places bar (First 5 Entries)")
 		;~ Page.AddControl("Link", "linkShowInPlacesBar", "x197 y110 w13 h13", "?")
 		Page.AddControl("Button", "btnRemoveCustomButtons", "x216 y132 w179 h23", "Remove custom Explorer buttons")
 		Page.Controls.btnRemoveCustomButtons.ToolTip := "By doing this all custom buttons in the explorer folder band bar will be removed. This is useful if an error occurred and some buttons get duplicated. Once you press OK or Apply in this dialog, the buttons created with an ExplorerButton trigger will reappear. To make the FastFolder buttons reappear, save a directory to a FastFolder slot by pressing CTRL+Numpad[0-9] (Default keys)"

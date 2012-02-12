@@ -61,7 +61,7 @@ PostUpdate()
 	;If there is an Updater.exe in 7plus temp directory, it is likely that an update was performed.
 	if(FileExist(A_TEMP "\7plus\Updater.exe"))
 	{
-		;Check if the version from the Update.exe in temp directory matches the version of the current instance. If yes, an update has been performed.
+		;Check if the version from downloaded version.ini in temp directory matches the version of the current instance. If yes, an update has been performed.
 		IniRead, tmpMajorVersion, %A_TEMP%\7plus\Version.ini,Version,MajorVersion
 		IniRead, tmpMinorVersion, %A_TEMP%\7plus\Version.ini,Version,MinorVersion
 		IniRead, tmpBugfixVersion, %A_TEMP%\7plus\Version.ini,Version,BugfixVersion

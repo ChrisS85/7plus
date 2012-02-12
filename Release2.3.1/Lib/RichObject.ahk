@@ -116,8 +116,6 @@ Class CRichObject
 	}
 	GetItemWithValue(subitem, val)
 	{
-		if(subitem = "ID")
-			OutputDebug break
 		for k, v in this
 		  If (IsObject(v) && v[subitem] = val )
 			 Return, v

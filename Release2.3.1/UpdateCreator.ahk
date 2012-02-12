@@ -100,7 +100,7 @@ FolderLoop(Platform, Version)
 			continue
 		if(InStr(A_LoopFileName, "Update") && !InStr(A_LoopFileName, "AutoUpdate"))
 			continue
-		if A_LoopFileName contains .ini
+		if(A_LoopFileExt = "ini")
 			continue
 		if A_LoopFileName contains Kopie
 			continue
@@ -128,6 +128,10 @@ FolderLoop(Platform, Version)
 			continue
 		if(A_LoopFileExt = "zip")
 			continue
+		if(A_LoopFileExt = "svg")
+			continue
+		if(A_LoopFileExt = "log")
+			continue
 		; if(Version = "Binary" && A_LoopFileName = "128.png")
 			; continue
 		; if(Version = "Binary" && A_LoopFileName = "Donate.png")
@@ -147,6 +151,8 @@ FolderLoop(Platform, Version)
 		if A_LoopFileFullPath contains Winspector
 			continue
 		if A_LoopFileFullPath contains Tools
+			continue
+		if A_LoopFileFullPath contains Old Versions
 			continue
 		if A_LoopFileFullPath contains To be implemented\
 			continue
@@ -205,7 +211,7 @@ WriteUpdater()
 	FileAppend, Progress zh0 fs18`, Updating, please wait.`n,														%A_scriptdir%\Updater.ahk
 	FileAppend, FileInstall`, %A_scriptdir%\Update.zip`, Update.zip`,1`n,											%A_scriptdir%\Updater.ahk	;%A_scriptdir% mustn't be dynamic for FileInstall -> no quotes
 	FileAppend, FileInstall`, %A_scriptdir%\7za.exe`, 7za.exe`,1`n,													%A_scriptdir%\Updater.ahk	;%A_scriptdir% mustn't be dynamic for FileInstall -> no quotes
-	FileAppend, run regsvr32 /s "`%A_ScriptDir`%\ShellExtension.dll"`n,											%A_scriptdir%\Updater.ahk	;Unregister context menu shell extension. It will get reregistered in PostUpdate()
+	FileAppend, run regsvr32 /s "`%ScriptDir`%\ShellExtension.dll"`n,											%A_scriptdir%\Updater.ahk	;Unregister context menu shell extension. It will get reregistered in PostUpdate()
 	FileAppend, runwait 7za.exe x Update.zip -y -o`%A_Temp`%\7plus\Update`, `%A_Temp`%\7plus`, hide`n,				%A_scriptdir%\Updater.ahk	
 	FileAppend, FileMoveDir`, `%A_Temp`%\7plus\Update\Patches`, `%ConfigPath`%\Patches`, 2`n, 						%A_scriptdir%\Updater.ahk	
     ; First move all the files (but not the folders):

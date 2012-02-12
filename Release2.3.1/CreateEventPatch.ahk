@@ -1,6 +1,9 @@
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 SetWorkingDir %a_scriptdir%
-if(1 = "")
+loop 3
+	arg%A_Index% := %A_Index%
+
+if(!arg1)
 {
 	FileSelectFile, OldFile , 1, %A_ScriptDir%, Select old file, *.xml
 	if(Errorlevel)
@@ -8,7 +11,7 @@ if(1 = "")
 }
 else
 	OldFile = %1%
-if(2 = "")
+if(!arg2)
 {
 	FileSelectFile, NewFile , 1, %A_ScriptDir%, Select new file, *.xml
 	if(Errorlevel)
@@ -31,7 +34,7 @@ Loop, Read, 7plus.ahk
 	else if(InStr(A_LoopReadLine, "BugfixVersion := "))
 		PatchXMLObject.BugfixVersion := SubStr(A_LoopReadLine, InStr(A_LoopReadLine, " := ") + 4)
 }
-if(3="")
+if(!arg3)
 {
 	InputBox, PatchVersion, Patch version, Enter patch version (0 for release)
 	if(Errorlevel)

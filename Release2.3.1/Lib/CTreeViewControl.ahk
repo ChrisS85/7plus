@@ -179,6 +179,7 @@ Class CTreeViewControl Extends CControl
 	{
 		if(CGUI.GUIList[this.GUINum].IsDestroyed)
 			return
+		outputdebug % Event.GUIEvent
 		;Handle visibility of controls associated with tree nodees
 		if(Event.GUIEvent = "S")
 			this.ProcessSubControlState(this.PreviouslySelectedItem, SelectedItem := this.Items.ItemByID(Event.EventInfo))

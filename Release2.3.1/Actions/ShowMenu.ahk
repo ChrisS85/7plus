@@ -84,6 +84,19 @@ BuildMenu(Name)
 	}
 	if(Name = "Tray")
 	{
+		Loop %A_ScriptDir%\Tools\*.ahk, 0, 0
+		{
+			Menu, Tray_Debug_Tools, add, %A_LoopFileName%, Tray_Debug_Tools_Handler
+			Added := true
+		}
+		Loop %A_ScriptDir%\Tools\*.exe, 0, 0
+		{
+			Menu, Tray_Debug_Tools, add, %A_LoopFileName%, Tray_Debug_Tools_Handler
+			Added := true
+		}
+		if(Added)
+			Menu, tray, add, Tools, :Tray_Debug_Tools
+		
 		Menu, tray, add  ; Creates a separator line.
 		Menu, tray, add, Settings, SettingsHandler  ; Creates a new menu item.
 		menu, tray, Default, Settings
@@ -91,3 +104,7 @@ BuildMenu(Name)
 	Menu, Tray, UseErrorLevel, Off
 	return entries
 }
+
+Tray_Debug_Tools_Handler:
+run % A_ScriptDir "\Tools\" A_ThisMenuItem
+return

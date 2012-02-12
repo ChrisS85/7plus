@@ -4233,7 +4233,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event asks for the type of timer that shall be started and its time and then starts the appropriate event that configures and starts the matching timer.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>1599</ID>
 <Name>Dynamic timer: Main</Name>
@@ -4345,7 +4345,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event asks for the program to be launched and starts the Run program timer</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>1603</ID>
 <Name>Dynamic Timer: Ask for program and start Run program timer</Name>
