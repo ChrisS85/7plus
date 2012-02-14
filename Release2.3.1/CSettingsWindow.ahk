@@ -677,21 +677,30 @@ Finally, here are some settings that you're likely to change at the beginning:
 		global MajorVersion, MinorVersion, BugFixVersion
 		Page := this.Pages.Events.Tabs[1].Controls	
 		this.Enabled := false
-		;Uncomment the following lines to export all events separated by category to Events\Category.xml instead
-		for index1, Category in this.Events.Categories
+		;If debug is enabled, events are exported all events separated by category to Events\Category.xml instead
+		ExportAll := false
+		if(Settings.General.DebugEnabled)
 		{
-			ExportEvents := new CEvents()
-			for index, event in this.Events
-				if(event.Category = Category)
-					ExportEvents.Insert(Copy)
-			if(ExportEvents.MaxIndex())
-				ExportEvents.WriteEventsFile(A_ScriptDir "\Events\" Category ".xml")
+			MsgBox, 0x4, Export Events, Export all events?
+			IfMsgBox Yes
+				ExportAll := true
 		}
-		this.Events.WriteEventsFile(A_ScriptDir "\Events\All Events.xml")
-		run % """" A_ScriptDir "\CreateEventPatch.ahk""" " """ A_ScriptDir "\Events\Old Versions\" MajorVersion "." (MinorVersion-1) "." BugFixVersion "\All Events.xml"" """ A_ScriptDir "\Events\All Events.xml"" 0" ;Create event patch, assumes that last minor version was incremented by one since last release
-		this.Enabled := true
-		return
-		
+		if(ExportAll)
+		{
+			for index1, Category in this.Events.Categories
+			{
+				ExportEvents := new CEvents()
+				for index, event in this.Events
+					if(event.Category = Category)
+						ExportEvents.Insert(Copy)
+				if(ExportEvents.MaxIndex())
+					ExportEvents.WriteEventsFile(A_ScriptDir "\Events\" Category ".xml")
+			}
+			this.Events.WriteEventsFile(A_ScriptDir "\Events\All Events.xml")
+			run % """" A_ScriptDir "\CreateEventPatch.ahk""" " """ A_ScriptDir "\Events\Old Versions\" MajorVersion "." (MinorVersion-1) "." BugFixVersion "\All Events.xml"" """ A_ScriptDir "\Events\All Events.xml"" 0" ;Create event patch, assumes that last minor version was incremented by one since last release
+			this.Enabled := true
+			return
+		}
 		if(Page.listEvents.SelectedItems.MaxIndex())
 		{
 			FileDialog := new CFileDialog("Save")

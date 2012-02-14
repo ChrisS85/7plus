@@ -64,7 +64,7 @@ Class CEventEditor extends CGUI
 	ddlActionCategory := this.Tab.Tabs[3].AddControl("DropDownList", "ddlActionCategory", "x501 y56 w300", "")
 	btnActionHelp := this.Tab.Tabs[3].AddControl("Button", "btnActionHelp", "x+10 y85", "Help")
 	ddlActionType := this.Tab.Tabs[3].AddControl("DropDownList", "ddlActionType", "x501 y86 w300", "")
-	grpActionOptions := this.Tab.Tabs[3].AddControl("GroupBox", "grpActionOptions", "x431 y116 w446 h364", "Options")
+	grpActionOptions := this.Tab.Tabs[3].AddControl("GroupBox", "grpActionOptions", "x431 y116 w446 h394", "Options")
 	
 	;Option controls
 	txtEventName := this.Tab.Tabs[4].AddControl("Text", "txtEventName", "x31 y48", "Event Name:")

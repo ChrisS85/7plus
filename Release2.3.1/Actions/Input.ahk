@@ -10,6 +10,8 @@ Class CInputAction Extends CAction
 	static Selection := "Default Selection"
 	static Text := ""
 	static Title := ""
+	static Width := 200
+	static Rows := 10
 	
 	Execute(Event)
 	{
@@ -50,12 +52,14 @@ Class CInputAction Extends CAction
 		{
 			sGUI := GUI
 			sPreviousSelection := ""
-			this.AddControl(GUI, "Text", "Desc", "This action shows a dialog asking for user input. The result is stored in a placeholder that may be used in further actions.")
+			this.AddControl(GUI, "Text", "Desc", "This action shows a dialog asking for user input. The result is stored in a placeholder.")
 			this.AddControl(GUI, "Edit", "Text", "", "", "Text:", "Placeholders", "Action_Input_Placeholders_Text")
 			this.AddControl(GUI, "Edit", "Title", "", "", "Window Title:", "Placeholders", "Action_Input_Placeholders_Title")
 			this.AddControl(GUI, "Edit", "Placeholder", "", "", "Placeholder:","","","","","The name of the placeholder in which the result is stored. This is just the name without the enclosing ${ }.")
 			this.AddControl(GUI, "Checkbox", "Cancel", "Show Cancel/Close Button")
 			this.AddControl(GUI, "Checkbox", "Validate", "Validate input (file, path and text only)")
+			this.AddControl(GUI, "Edit", "Width", "", "", "Textbox width:")
+			this.AddControl(GUI, "Edit", "Rows", "", "", "Textbox rows:")
 			this.AddControl(GUI, "DropDownList", "DataType", "File|Number|Path|Selection|Text|Time", "Action_Input_DataType", "Data type:")
 			this.GuiShow(GUI, "DataType_SelectionChange")
 		}
@@ -74,7 +78,7 @@ Class CInputAction Extends CAction
 				
 				if(DataType = "Selection")
 				{
-					Gui, Add, ListBox, % "-ReadOnly -Multi AltSubmit hwndListBox w300 h100 x" sGUI.x " y" sGUI.y, % this.Selection
+					Gui, Add, ListBox, % "-ReadOnly -Multi AltSubmit hwndListBox w300 h95 x" sGUI.x " y" sGUI.y, % this.Selection
 					Gui, Add, Button, % "hwndAdd gAction_Input_Add w60 x+10 y" sGUI.y, Add
 					Gui, Add, Button, % "hwndRemove gAction_Input_Remove w60 y+10", Remove
 					sGUI.ListBox := ListBox
@@ -145,7 +149,7 @@ Class CInputAction Extends CAction
 		
 		if(this.DataType = "Text" || this.DataType = "Path" || this.DataType = "File")
 		{
-			Gui,%GuiNum%:Add, Edit, x+10 yp-4 w200 hwndEdit gAction_Input_Edit
+			Gui,%GuiNum%:Add, Edit, % "x+10 yp-4 w" this.Width " hwndEdit gAction_Input_Edit" (this.Rows > 1 ? " R" this.Rows " Multi" : "")
 			this.tmpEdit := Edit
 			if(this.DataType = "Path" || this.DataType = "File")
 			{
@@ -178,19 +182,16 @@ Class CInputAction Extends CAction
 				this["tmpRadio" A_Index] := Radio
 			}
 		}
-		Gui, %GuiNum%:Add, Text, x+-80 hwndTest, test
-		ControlGetPos, PosX, PosY,,,,ahk_id %Test%
-		WinKill, ahk_id %Test%
-		if(PosX < 160)
-			PosX := 160
-		if(!this.Cancel)
-			Gui, %GuiNum%:Add, Button, % "Default x" PosX " y" PosY " w80 gInputBox_OK " (this.Validate && (this.DataType = "Text" || this.DataType = "Path" || this.DataType = "File") ? "Disabled" : ""), OK
-		if(this.Cancel)
-		{
-			PosX -= 90
-			Gui, %GuiNum%:Add, Button, % "Default x" PosX " y" PosY " w80 gInputBox_OK " (this.Validate && (this.DataType = "Text" || this.DataType = "Path" || this.DataType = "File") ? "Disabled" : ""), OK
+		;~ Gui, %GuiNum%:Add, Text, x+-80 y+10 hwndTest, test
+		;~ ControlGetPos, PosX, PosY,,,,ahk_id %Test%
+		;~ WinKill, ahk_id %Test%
+		PosX := this.Cancel ? -170 : -80
+		Gui, %GuiNum%:Add, Button, % "Default x+" PosX " y+10 w80 hwndhOK gInputBox_OK " (this.Validate && (this.DataType = "Text" || this.DataType = "Path" || this.DataType = "File") ? "Disabled" : ""), OK
+		GuiControlGet, Pos, %GuiNum%:Position, hOK
+		if(PosX <160)
+			GuiControl, %GuiNum%:Move, hOK, x160
+		if(this.Cancel)	
 			Gui, %GuiNum%:Add, Button, x+10 w80 gInputBox_Cancel, Cancel
-		}
 		Gui,%GuiNum%:-MinimizeBox -MaximizeBox +LabelInputbox
 		Gui,%GuiNum%:Show,,%Title%
 		;return Gui number to indicate that the Input box is still open

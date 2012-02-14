@@ -683,7 +683,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>1</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>309</ID>
 <Name>Toggle always on top -&gt; Context menu active</Name>
@@ -747,7 +747,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>311</ID>
 <Name>Toggle always on top -&gt; context menu timeout</Name>
@@ -5389,6 +5389,49 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>#A</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Cancel>1</Cancel>
+<DataType>Text</DataType>
+<Placeholder>Script</Placeholder>
+<Rows>20</Rows>
+<Selection></Selection>
+<Text>Enter script here</Text>
+<Title>Enter Script</Title>
+<Type>Ask for user input</Type>
+<Validate>1</Validate>
+<Width>500</Width>
+</Action><Action>
+<Append>0</Append>
+<Content>${script}</Content>
+<ImageExtension>png</ImageExtension>
+<Quality>95</Quality>
+<Target>%Temp%\7plus\script.ahk</Target>
+<Type>Write to file</Type>
+</Action><Action>
+<Command>%Temp%\7plus\script.ahk</Command>
+<RunAsAdmin>1</RunAsAdmin>
+<Type>Run a program</Type>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory>%Temp%\7plus</WorkingDirectory>
+</Action></Actions>
+<Category>Misc Hotkeys</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event allows to paste an AutoHotkey script in a dialog  and runs it afterwards. This event requires that you have installed an AutoHotkey interpreter and assigned it to the .ahk file extension. The script file is deleted when 7plus exits. This event can be used as a template for other scripting languages.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1645</ID>
+<Name>Run temporary AHK script</Name>
+<OfficialEvent>45</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>#T</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event></Events>

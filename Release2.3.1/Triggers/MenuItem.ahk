@@ -59,7 +59,7 @@ return
 MenuItemTriggered(menu, item, pos)
 {
 	if(menu = "Tray")
-		pos -= 10
+		pos -= A_IsCompiled ? 3 : 10
 	index := 1
 	Loop % EventSystem.Events.MaxIndex()
 	{
