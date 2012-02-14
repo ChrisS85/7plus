@@ -692,7 +692,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 				ExportEvents := new CEvents()
 				for index, event in this.Events
 					if(event.Category = Category)
-						ExportEvents.Insert(Copy)
+						ExportEvents.Insert(event.DeepCopy())
 				if(ExportEvents.MaxIndex())
 					ExportEvents.WriteEventsFile(A_ScriptDir "\Events\" Category ".xml")
 			}
