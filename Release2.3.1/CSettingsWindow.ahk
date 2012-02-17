@@ -1115,6 +1115,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("DropDownList", "ddlFTPProfile", "x216 y50 w297", "")
 		Page.AddControl("Button", "btnAddFTPProfile", "x519 y48 w79 h23", "Add profile")
 		Page.AddControl("Button", "btnDeleteFTPProfile", "x604 y48 w79 h23", "Delete profile")
+		Page.AddControl("Button", "btnTestFTPProfile", "x689 y48 w79 h23", "Test profile")
 		Page.AddControl("Text", "txtFTPHostname", "x213 y93 w58 h13", "Hostname:")
 		Page.AddControl("Edit", "editFTPHostname", "x434 y90 w249 h20", "")
 		Page.AddControl("Text", "txtFTPPort", "x213 y119 w29 h13", "Port:")
@@ -1188,6 +1189,28 @@ Finally, here are some settings that you're likely to change at the beginning:
 		if(!this.FTPProfiles.MaxIndex())
 			Page.ddlFTPProfile.Enabled := false
 		Notify("Info", "Make sure to update any FTP event profile assignments that pointed to the deleted profile!", 2, "GC=555555 TC=White MC=White", NotifyIcons.Info)
+	}
+	btnTestFTPProfile_Click()
+	{
+		this.TestFTPProfile()
+	}
+	TestFTPProfile()
+	{
+		Page := this.Pages.FTPProfiles.Tabs[1].Controls
+		if(!this.FTPProfiles.MaxIndex())
+			return
+		Page.editFTPURL.Text
+		FTP := FTP_Init()
+		FTP.Port := Page.editFTPPort.Text
+		FTP.Hostname := Page.editFTPHostname.Text
+		if(!FTP.Open(FTP.Hostname, Page.editFTPUser.Text, Page.editFTPPassword.Text))
+		{
+			MsgBox % "Could not connect to " FTP.HostName "!"
+			return 0
+		}
+		FTP.Close()
+		MsgBox % "Connection to " FTP.Hostname " successfully established!"
+		return 1
 	}
 	ddlFTPProfile_SelectionChanged()
 	{
