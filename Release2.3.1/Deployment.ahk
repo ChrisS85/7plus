@@ -197,7 +197,7 @@ AutoUpdate_CheckPatches()
 AddUninstallInformation()
 {
 	global MajorVersion, MinorVersion, BugfixVersion, PatchVersion
-	if(Settings.IsPortable)
+	if(ApplicationState.IsPortable)
 		return
 	RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7plus, DisplayName, 7plus V.%MajorVersion%.%MinorVersion%.%BugfixVersion%.%PatchVersion%
 	RegWrite, REG_DWORD, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7plus, NoModify, 1
@@ -207,7 +207,7 @@ AddUninstallInformation()
 
 RemoveUninstallInformation()
 {
-	if(IsPortable)
+	if(ApplicationState.IsPortable)
 		return
 	RegDelete, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\7plus
 }

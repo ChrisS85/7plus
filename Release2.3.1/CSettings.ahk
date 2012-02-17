@@ -139,7 +139,7 @@ Class CSettings
 	SetupConfigurationPath()
 	{
 		;Try to use config file from script dir in portable mode or when it wasn't neccessary to copy it to appdata yet
-		if(this.IsPortable)
+		if(ApplicationState.IsPortable)
 			this.ConfigPath := A_ScriptDir 
 		Else
 		{

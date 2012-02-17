@@ -495,12 +495,13 @@
 <Cancel>1</Cancel>
 <DataType>Text</DataType>
 <Placeholder>Script</Placeholder>
-<Rows>20</Rows>
+<Rows>10</Rows>
+<Selection></Selection>
 <Text>Enter script here</Text>
 <Title>Enter Script</Title>
 <Type>Ask for user input</Type>
 <Validate>1</Validate>
-<Width>500</Width>
+<Width>200</Width>
 </Action><Action>
 <Append>0</Append>
 <Content>${script}</Content>
@@ -528,7 +529,7 @@
 <OfficialEvent>45</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Key>#NumLock</Key>
+<Key>#T</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event></Events>

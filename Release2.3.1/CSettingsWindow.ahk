@@ -176,7 +176,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page := this.Pages.Introduction.Tabs[1].Controls
 		Page.chkAutoUpdate.Checked := Settings.General.AutoUpdate
 		Page.chkHideTrayIcon.Checked := Settings.Misc.HideTrayIcon
-		if(!Settings.IsPortable)
+		if(!ApplicationState.IsPortable)
 			Page.chkAutoRun.Checked := IsAutoRunEnabled()
 		Page.ddlRunAsAdmin.Text := Settings.Misc.RunAsAdmin
 		Page.ddlLanguage.Items.Clear()
@@ -199,7 +199,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 			Menu, Tray, Icon		
 		Settings.Misc.HideTrayIcon := Page.chkHideTrayIcon.Checked
 		
-		if(!Settings.IsPortable &&  IsAutoRunEnabled() != Page.chkAutoRun.Checked)
+		if(!ApplicationState.IsPortable &&  IsAutoRunEnabled() != Page.chkAutoRun.Checked)
 		{
 			if(Page.chkAutoRun.Checked)
 				EnableAutorun()
@@ -473,7 +473,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 			return
 		ID := Page.listEvents.SelectedItem[2]
 		OriginalEvent := this.Events.GetItemWithValue("ID", ID)
-		if((Settings.IsPortable || !A_IsAdmin) && OriginalEvent.Trigger.Is(CExplorerButtonTrigger))
+		if((ApplicationState.IsPortable || !A_IsAdmin) && OriginalEvent.Trigger.Is(CExplorerButtonTrigger))
 		{
 			Msgbox ExplorerButton trigger events may not be modified in portable or non-admin mode, as this might cause inconsistencies with the registry.
 			return
@@ -486,7 +486,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 	{
 		;~ Suspend, Off
 		Page := this.Pages.Events.Tabs[1].Controls
-		if(NewEvent && (Settings.IsPortable || !A_IsAdmin) && NewEvent.Trigger.Is(CExplorerButtonTrigger)) ;Explorer buttons may not be added in portable/non-admin mode
+		if(NewEvent && (ApplicationState.IsPortable || !A_IsAdmin) && NewEvent.Trigger.Is(CExplorerButtonTrigger)) ;Explorer buttons may not be added in portable/non-admin mode
 		{
 			Msgbox ExplorerButton trigger events may not be modified in portable or non-admin mode, as this might cause inconsistencies with the registry.
 			if(TemporaryEvent)
@@ -596,7 +596,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		{
 			Index := SelectedEvents[SelectedEvents.MaxIndex() - A_Index + 1]
 			Event := this.Events.GetItemWithValue("ID", Page.listEvents.Items[Index][2])
-			if((!Settings.IsPortable && A_IsAdmin) || !Event.Trigger.Is(CExplorerButtonTrigger) && !Event.Trigger.Is(CContextMenuTrigger))
+			if((!ApplicationState.IsPortable && A_IsAdmin) || !Event.Trigger.Is(CExplorerButtonTrigger) && !Event.Trigger.Is(CContextMenuTrigger))
 			{
 				;Events object notifies its trigger about deletion
 				CategoryDeleted += this.Events.Delete(Event, false)
@@ -626,7 +626,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 			Copy := Event.DeepCopy()
 			Copy.Remove("OfficialEvent") ;Make sure that pasted events don't patch existing events
 			msgbox % Exploreobj(Copy)
-			if((!Settings.IsPortable && A_IsAdmin) || !Event.Trigger.Is(CExplorerButtonTrigger))
+			if((!ApplicationState.IsPortable && A_IsAdmin) || !Event.Trigger.Is(CExplorerButtonTrigger))
 				ClipboardEvents.Insert(copy)
 		}
 		ClipboardEvents.WriteEventsFile(A_Temp "/7plus/EventsClipboard.xml")	
@@ -1070,7 +1070,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page := this.Pages.FastFolders.Tabs[1].Controls
 		
 		;Folder band settings are only usable when running non-portable as admin
-		if(!Settings.IsPortable || !A_IsAdmin)
+		if(!ApplicationState.IsPortable || !A_IsAdmin)
 		{
 			if(Page.chkShowInFolderBand.Checked != Settings.Explorer.FastFolders.ShowInFolderBand)
 			{
@@ -1535,7 +1535,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 	CreateAbout()
 	{
 		Page := this.Pages.About.Tabs[1]
-		txt7plusVersion := Page.AddControl("Text", "txt7plusVersion", "x197 y31 w300 h40", "7plus Version " VersionString(1))
+		txt7plusVersion := Page.AddControl("Text", "txt7plusVersion", "x197 w400 y31 h40", "7plus Version " VersionString(1) (ApplicationState.IsPortable ? " Portable" : ""))
 		txt7plusVersion.Font.Size := 20
 		Page.AddControl("Picture", "img7plus", "x556 y31 w128 h128", A_ScriptDir "\128.png")
 		Page.AddControl("Picture", "imgDonate", "x200 y182", A_ScriptDir "\Donate.png")

@@ -16,26 +16,30 @@ if(!A_IsUnicode)
 	ExitApp ;Too many incompatibilities here
 }
 
+;initialize settings, application state and Languages classes
+global ApplicationState := new CApplicationState()
+
+;Depending on the command line parameters supplied, this instance might send event triggers to another instance which is already running.
+;In addition, IsPortable is possibly set here
+ProcessCommandLineParameters() ;Possible exit point
+
+
 ;NOTE: If 7plus would be translated, this will not get trasnlated because languages and settings are loaded later on. It might be beneficial to use
 ;	   lazy language loading or something similar.
 if(A_PtrSize = 4 && DllCall("IsWow64Process"))
 	Msgbox 32bit version of 7plus is running on an x64 operating system.`nSome features are not going to work. Please use an x64 version of 7plus!
 
-;initialize settings, application state and Languages classes
-global ApplicationState := new CApplicationState()
 global Settings := new CSettings()
+
+Settings.SetupConfigurationPath()
+Settings.Load()
 Languages := new CLanguages()
-;Depending on the command line parameters supplied, this instance might send event triggers to another instance which is already running.
-;In addition, IsPortable is possibly set here
-ProcessCommandLineParameters() ;Possible exit point
 
 ;Create temp directory in which temporary files will be stored.
 ;hwnd.txt is stored in temp dir for finding the main 7plus window to allow sending messages to it. 
 ;This mechanism is used by the ShellExtension and by the updater.
 FileCreateDir %A_Temp%\7plus
 
-Settings.SetupConfigurationPath()
-Settings.Load()
 
 ;If program is run without admin privileges, try to run it again as admin, and exit this instance when the user confirms it
 if(!A_IsAdmin && Settings.Misc.RunAsAdmin = "Always/Ask")
@@ -204,15 +208,22 @@ Run7plusAsAdmin()
 }
 
 ExitSub:
-OnExit()
+if(A_ExitReason = "Reload")
+{
+	SetTimer, ReloadSub, -0
+	return
+}
+OnExit(0)
 ExitApp
 
-OnExit(Reload=0)
+ReloadSub:
+OnExit(1)
+OnExit
+ExitApp
+
+OnExit(reload=0)
 {
 	global
-	static ShouldReload
-	if(ShouldReload) ;If set, code below has already been executed by a previous call to this function
-		return
 	outputdebug OnExit()
 	if(ApplicationState.ProgramStartupFinished)
 	{
@@ -226,25 +237,21 @@ OnExit(Reload=0)
 		if(Settings.General.DebugEnabled)
 			DebuggingEnd()
 	}
-	if(Reload)
+	
+	
+	if(reload)
 	{
-		ShouldReload := 1
 		run % (A_IsCompiled ? A_ScriptFullPath : A_AhkPath) " /r" (A_IsCompiled ? "" : " """ A_ScriptFullPath """") (ApplicationState.IsPortable ? " -Portable" : ""), %A_WorkingDir%
 	}
 	FileRemoveDir, %A_Temp%\7plus, 1
 }
 ;Some first run intro
 wizardry:
-ShowWizard()
+MsgBox, 4,,Welcome to 7plus!`nBefore we begin, would you like to see a list of features?	
+IfMsgBox Yes
+	run http://code.google.com/p/7plus/wiki/Features,,UseErrorlevel
+Notify("Open Settings?", "At the beginning you should take some minutes and check out the settings.`nDouble click on the tray icon or click here to open the settings window.", "10", "GC=555555 TC=White MC=White AC=SettingsHandler", NotifyIcons.Question)
 return
-
-ShowWizard()
-{
-	MsgBox, 4,,Welcome to 7plus!`nBefore we begin, would you like to see a list of features?	
-	IfMsgBox Yes
-		run http://code.google.com/p/7plus/wiki/Features,,UseErrorlevel
-	Notify("Open Settings?", "At the beginning you should take some minutes and check out the settings.`nDouble click on the tray icon or click here to open the settings window.", "10", "GC=555555 TC=White MC=White AC=SettingsHandler", NotifyIcons.Question)
-}
 
 WriteClipboard()
 {

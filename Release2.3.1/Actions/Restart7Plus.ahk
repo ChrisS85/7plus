@@ -4,7 +4,7 @@ Class CRestart7plusAction Extends CAction
 	static Category := RegisterCategory(CRestart7plusAction, "7plus")
 	Execute(Event)
 	{
-		OnExit(1)
+		GoSub ReloadSub
 		return 1
 	} 
 	DisplayString()

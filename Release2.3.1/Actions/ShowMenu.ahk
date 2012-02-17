@@ -62,7 +62,24 @@ BuildMenu(Name)
 	Menu, Tray, UseErrorLevel
 	Menu, %Name%, DeleteAll
 	if(Name = "Tray")
-		Menu, Tray, Standard
+	{
+		Menu, tray, NoStandard
+		if(!A_IsCompiled)
+		{
+			Menu, tray, add, Open, Tray_Open
+			Menu, tray, add, Help, Tray_Help
+			Menu, tray, add
+			Menu, tray, add, Window Spy, Tray_Spy
+		}
+		Menu, tray, add, Reload This Script, Tray_Reload
+		if(!A_IsCompiled)
+			Menu, tray, add
+		Menu, tray, add, Suspend Hotkeys, Tray_Suspend
+		
+		if(!A_IsCompiled)
+			Menu, tray, add, Pause Script, Tray_Pause
+		Menu, tray, add, Exit, Tray_Exit
+	}
 	for index, Event in EventSystem.Events
 	{
 		if(Event.Trigger.Is(CMenuItemTrigger) && Event.Trigger.Menu = Name)
@@ -107,4 +124,41 @@ BuildMenu(Name)
 
 Tray_Debug_Tools_Handler:
 run % A_ScriptDir "\Tools\" A_ThisMenuItem
+return
+
+Tray_Open:
+ListLines
+return
+
+Tray_Help:
+Run %A_AhkPath%\..\AutoHotkey.chm
+Return
+
+Tray_Pause:
+if(A_IsPaused)
+	Menu, Tray, UnCheck, Pause Script
+else
+	Menu, Tray, Check, Pause Script
+Pause Toggle
+return
+
+Tray_Reload:
+   GoSub ReloadSub
+Return
+
+Tray_Suspend:
+Suspend, Toggle
+if(A_IsSuspended)
+	Menu, Tray, Check, Suspend Hotkeys
+else
+	Menu, Tray, Uncheck, Suspend Hotkeys
+return
+
+Tray_Spy:   ;   Run Edit With SciTE 
+   Run %A_AHKPath%\..\AU3_Spy.exe
+Return 
+
+
+Tray_Exit: ; exit script label 
+   GoSub ExitSub
 return

@@ -936,8 +936,15 @@ CouldBeURL(string)
 {
 	return RegexMatch(strTrim(string, " "), "(?:(?:ht|f)tps?://|www\.)?.+\..+") > 0
 }
-WriteAccess( F ) { 
-  Return ((h:=DllCall("_lopen", AStr, F, Int, 1, "Ptr")) > 0 ? 1 : 0) (DllCall("_lclose","Ptr",h)+NULL) 
+WriteAccess( F ) {
+	if(FileExist(F))
+		Return ((h:=DllCall("_lopen", AStr, F, Int, 1, "Ptr")) > 0 ? 1 : 0) (DllCall("_lclose","Ptr",h)+NULL) 
+	else
+	{
+		F := FindFreeFilename(F)
+		FileAppend, x, %F$%
+		return !ErrorLevel
+	}
 }
 FileMD5( sFile="", cSz=4 ) { ; www.autohotkey.com/forum/viewtopic.php?p=275910#275910 
  cSz  := (cSz<0||cSz>8) ? 2**22 : 2**(18+cSz), VarSetCapacity( Buffer,cSz,0 ) 

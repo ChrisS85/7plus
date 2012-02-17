@@ -115,7 +115,7 @@ return
 
 RegisterShellExtension(Silent=1)
 {
-	if(!Settings.IsPortable)
+	if(!ApplicationState.IsPortable)
 	{
 		if(Vista7)
 			uacrep := DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, "regsvr32", str, "/s """ A_ScriptDir "\ShellExtension.dll""", str, A_ScriptDir, int, 1)
@@ -134,7 +134,7 @@ RegisterShellExtension(Silent=1)
 }
 UnregisterShellExtension(Silent=1)
 {
-	if(!Settings.IsPortable)
+	if(!ApplicationState.IsPortable)
 	{
 		if(Vista7)
 			uacrep := DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, "regsvr32", str, "/s /u """ A_ScriptDir "\ShellExtension.dll""", str, A_ScriptDir, int, 1)
