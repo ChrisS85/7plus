@@ -1,4 +1,4 @@
-= 7plus Version 2.4.0 Changelog =
+= 7plus Version 2.4.1 Changelog =
 
 New Functions:
  * Added key mappings for scientific calculators. Characters such as brackets can now be written with Numpad keys when NumLock is off.
