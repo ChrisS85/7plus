@@ -404,11 +404,9 @@ Class CEvents extends CArray
 		;Actually remove the event from the list
 		this.Remove(index)
 		
-		;Decrease HighestID to prevent ID changes when "reimporting" all events from the gui
-		this.HighestID := -1
-		
 		;Adjust HighestID to the highest ID that is present
-		for index, Event2 in this
+		this.HighestID := -1
+		for i, Event2 in this
 			if(Event2.ID > this.HighestID)
 				this.HighestID := Event2.ID
 		
@@ -651,15 +649,14 @@ Class CEvents extends CArray
 		;Loop over all new events
 		pos := count + 1
 		count := this.MaxIndex()
-		Loop
+		outputdebug % "highest: " highestID ", lowest: " lowestID
+		while(pos <= count)
 		{
-			if(pos > count)
-				break
 			Event := this[pos]
 			;Make sure Event ID is higher than all previous IDs, but conserve relative differences between IDs
 			offset := (highestID - lowestID) + 1
 			Event.ID := Event.ID + offset
-			
+			outputdebug % "new id " Event.ID
 			;Find highest ID
 			if(Event.ID > this.HighestID)
 				this.HighestID := Event.ID
