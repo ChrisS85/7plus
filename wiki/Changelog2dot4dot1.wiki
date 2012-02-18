@@ -5,12 +5,15 @@ New Functions:
  * Added a function that allows running temporary AutoHotkey scripts (WIN + T). It requires that an AutoHotkey interpreter is installed and the .ahk extension is assigned to it.
  * Added a button on the FTP profiles page to test the connection.
  * Added a SendMail action for sending mails using SMTP.
+
 Bugfixes:
  * Fixed a bug that occured on x64 and caused problems in ListViews (Settings window, Image Converter)
  * Fixed a bug that prevented portable mode (command line: -portable) from working.
  * Fixed a bug that prevented pasting an event properly after another event was deleted.
  * Fixed invalid event files (the main event file was not affected).
  * Fixed file selection buttons in event configurations.
+ * Fixed an issue when the settings window was opened directly after start.
+ * Fixed some focusing issues on various ListView controls.
 
 Changes:
  * None
