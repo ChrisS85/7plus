@@ -13,6 +13,7 @@ Class CSendMailAction Extends CAction
 	static TLS      := True ; False
 	static Username := "...@gmail.com"
 	static Password := ""
+	static Timeout := 10
 	
 	Execute(Event)
 	{
@@ -36,7 +37,7 @@ Class CSendMailAction Extends CAction
 		pfld :=   pcfg.Fields
 
 		pfld.Item("http://schemas.microsoft.com/cdo/configuration/sendusing") := Send
-		pfld.Item("http://schemas.microsoft.com/cdo/configuration/smtpconnectiontimeout") := 60
+		pfld.Item("http://schemas.microsoft.com/cdo/configuration/smtpconnectiontimeout") := this.Timeout
 		pfld.Item("http://schemas.microsoft.com/cdo/configuration/smtpserver") := Server
 		pfld.Item("http://schemas.microsoft.com/cdo/configuration/smtpserverport") := Port
 		pfld.Item("http://schemas.microsoft.com/cdo/configuration/smtpusessl") := TLS
@@ -79,11 +80,12 @@ Class CSendMailAction Extends CAction
 			this.AddControl(GUI, "Checkbox", "TLS", "TLS")
 			this.AddControl(GUI, "Edit", "Username", "", "", "Username:", "Placeholders", "Action_SendMail_Placeholders_Username")
 			this.AddControl(GUI, "Edit", "Password", "", "", "Password:", "Placeholders", "Action_SendMail_Placeholders_Password")
+			this.AddControl(GUI, "Edit", "Timeout", "", "", "Timeout:")
 		}
 		else if(GoToLabel = "Browse")
 			this.SelectFile(sGUI, "Attach")
 		else if(InStr(GoToLabel, "Action_SendMail_Placeholders_") = 1)
-			ShowPlaceholderMenu(sGUI, SubStr(GoToLabel, 29))
+			ShowPlaceholderMenu(sGUI, SubStr(GoToLabel, 30))
 	}
 	GuiSubmit(GUI)
 	{

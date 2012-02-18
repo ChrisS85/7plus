@@ -223,7 +223,7 @@ SubmitControls(ValueObj, GUI)
 }
 
 ;Shows a browse dialog and shows the result in the GUI control associated with "name". This function is used in combination with AddControl()
-Browse(GUI, name, Title="Select Folder",Options=0, Quote=0)
+Browse(Subevent, GUI, name, Title="Select Folder",Options=0, Quote=0)
 {
 	Gui +OwnDialogs
 	path:=COMObjCreate("Shell.Application").BrowseForFolder(0, Title, Options).Self.Path
@@ -243,7 +243,7 @@ Browse(GUI, name, Title="Select Folder",Options=0, Quote=0)
 	}
 }
 ;Shows a file selection dialog and shows the result in the GUI control associated with "name". This function is used in combination with AddControl()
-SelectFile(GUI, name, Title = "Select File", Filter = "", Quote=0, options = 3)
+SelectFile(SubEvent, GUI, name, Title = "Select File", Filter = "", Quote=0, options = 3)
 {
 	Gui +OwnDialogs
 	FileSelectFile, path , %options%, , %Title%, %Filter%
