@@ -714,7 +714,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>310</ID>
 <Name>Toggle always on top -&gt; No context menu active</Name>
@@ -747,7 +747,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>311</ID>
 <Name>Toggle always on top -&gt; context menu timeout</Name>
@@ -5129,12 +5129,11 @@
 <Cancel>1</Cancel>
 <DataType>Text</DataType>
 <Placeholder>NewName</Placeholder>
-<Rows>1</Rows>
+<Selection>Take screenshot|Ask user input|Move file %Temp%\7plus\Screenshot.png to %Temp%\7plus\${NewName}|Open Image Converter: %Temp%\7plus\${NewName}.png</Selection>
 <Text>Enter a filename for the screenshot (without extension)</Text>
 <Title>Enter filename</Title>
 <Type>Ask for user input</Type>
 <Validate>1</Validate>
-<Width>200</Width>
 </Action><Action>
 <Overwrite>0</Overwrite>
 <Silent>0</Silent>
@@ -5177,12 +5176,11 @@
 <Cancel>1</Cancel>
 <DataType>Text</DataType>
 <Placeholder>NewName</Placeholder>
-<Rows>1</Rows>
+<Selection>Take screenshot|Ask user input|Move file %Temp%\7plus\Screenshot.png to %Temp%\7plus\${NewName}|Open Image Converter: %Temp%\7plus\${NewName}.png</Selection>
 <Text>Enter a filename for the screenshot (without extension)</Text>
 <Title>Enter filename</Title>
 <Type>Ask for user input</Type>
 <Validate>1</Validate>
-<Width>200</Width>
 </Action><Action>
 <Overwrite>0</Overwrite>
 <Silent>0</Silent>
@@ -5225,12 +5223,11 @@
 <Cancel>1</Cancel>
 <DataType>Text</DataType>
 <Placeholder>NewName</Placeholder>
-<Rows>1</Rows>
+<Selection>Take screenshot|Ask user input|Move file %Temp%\7plus\Screenshot.png to %Temp%\7plus\${NewName}|Open Image Converter: %Temp%\7plus\${NewName}.png</Selection>
 <Text>Enter a filename for the screenshot (without extension)</Text>
 <Title>Enter filename</Title>
 <Type>Ask for user input</Type>
 <Validate>1</Validate>
-<Width>200</Width>
 </Action><Action>
 <Overwrite>0</Overwrite>
 <Silent>0</Silent>
@@ -5392,168 +5389,6 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>#A</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Cancel>1</Cancel>
-<DataType>Text</DataType>
-<Placeholder>Script</Placeholder>
-<Rows>30</Rows>
-<Text>Enter script here</Text>
-<Title>Enter Script</Title>
-<Type>Ask for user input</Type>
-<Validate>1</Validate>
-<Width>600</Width>
-</Action><Action>
-<Append>0</Append>
-<Content>${script}</Content>
-<ImageExtension>png</ImageExtension>
-<Quality>95</Quality>
-<Target>%Temp%\7plus\script.ahk</Target>
-<Type>Write to file</Type>
-</Action><Action>
-<Command>%Temp%\7plus\script.ahk</Command>
-<RunAsAdmin>1</RunAsAdmin>
-<Type>Run a program</Type>
-<WaitForFinish>0</WaitForFinish>
-<WorkingDirectory>%Temp%\7plus</WorkingDirectory>
-</Action></Actions>
-<Category>Misc Hotkeys</Category>
-<Conditions>
-</Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event allows to paste an AutoHotkey script in a dialog  and runs it afterwards. This event requires that you have installed an AutoHotkey interpreter and assigned it to the .ahk file extension. The script file is deleted when 7plus exits. This event can be used as a template for other scripting languages.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>1645</ID>
-<Name>Run temporary AHK script</Name>
-<OfficialEvent>45</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>#T</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<KeyDelay>0</KeyDelay>
-<Keys>(</Keys>
-<Type>Send keyboard input</Type>
-<WriteText>0</WriteText>
-</Action></Actions>
-<Category>Numpad Enhancements</Category>
-<Conditions>
-</Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event sends an opening bracket character when NumpadEnd is pressed (Numpad1 with NumLock OFF). This remapping is used to enter equations into scientific calculators using only the numpad.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>1646</ID>
-<Name>NumpadEnd -&gt; '('</Name>
-<OfficialEvent>46</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>NumpadEnd</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<KeyDelay>0</KeyDelay>
-<Keys>)</Keys>
-<Type>Send keyboard input</Type>
-<WriteText>0</WriteText>
-</Action></Actions>
-<Category>Numpad Enhancements</Category>
-<Conditions>
-</Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event sends a closing bracket character when NumpadPgDn is pressed (Numpad3 with NumLock OFF). This remapping is used to enter equations into scientific calculators using only the numpad.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>1647</ID>
-<Name>NumpadPgDn -&gt; ')'</Name>
-<OfficialEvent>47</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>NumpadPgDn</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<KeyDelay>0</KeyDelay>
-<Keys>{^ 2}{Backspace}</Keys>
-<Type>Send keyboard input</Type>
-<WriteText>0</WriteText>
-</Action></Actions>
-<Category>Numpad Enhancements</Category>
-<Conditions>
-</Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event sends a '^' character when NumpadHome is pressed (Numpad7 with NumLock OFF). This remapping is used to enter equations into scientific calculators using only the numpad.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>1648</ID>
-<Name>NumpadHome -&gt; '^'</Name>
-<OfficialEvent>48</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>NumpadHome</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<KeyDelay>0</KeyDelay>
-<Keys>sqrt(</Keys>
-<Type>Send keyboard input</Type>
-<WriteText>0</WriteText>
-</Action></Actions>
-<Category>Numpad Enhancements</Category>
-<Conditions>
-</Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event sends a sqrt( string when NumpadPgUp is pressed Numpad9 with NumLock OFF). This remapping is used to enter equations into scientific calculators using only the numpad.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>1649</ID>
-<Name>NumpadPgUp -&gt; "sqrt("</Name>
-<OfficialEvent>49</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>NumpadPgUp</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<KeyDelay>0</KeyDelay>
-<Keys>=</Keys>
-<Type>Send keyboard input</Type>
-<WriteText>0</WriteText>
-</Action></Actions>
-<Category>Numpad Enhancements</Category>
-<Conditions>
-</Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event sends a '=' character when NumpadIns is pressed (Numpad0 with NumLock OFF). This remapping is used to enter equations into scientific calculators using only the numpad.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>1650</ID>
-<Name>NumpadIns -&gt; '='</Name>
-<OfficialEvent>50</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>NumpadIns</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event></Events>

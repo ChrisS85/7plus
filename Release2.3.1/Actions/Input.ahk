@@ -11,7 +11,7 @@ Class CInputAction Extends CAction
 	static Text := ""
 	static Title := ""
 	static Width := 200
-	static Rows := 10
+	static Rows := 1
 	
 	Execute(Event)
 	{
@@ -185,15 +185,15 @@ Class CInputAction Extends CAction
 		;~ Gui, %GuiNum%:Add, Text, x+-80 y+10 hwndTest, test
 		;~ ControlGetPos, PosX, PosY,,,,ahk_id %Test%
 		;~ WinKill, ahk_id %Test%
-		PosX := this.Cancel ? -170 : -80
-		Gui, %GuiNum%:Add, Button, % "Default x+" PosX " y+10 w80 hwndhOK gInputBox_OK " (this.Validate && (this.DataType = "Text" || this.DataType = "Path" || this.DataType = "File") ? "Disabled" : ""), OK
-		GuiControlGet, Pos, %GuiNum%:Position, hOK
-		if(PosX <160)
-			GuiControl, %GuiNum%:Move, hOK, x160
+		
+		Gui, %GuiNum%:Show, Autosize Hide
+		Gui, %GuiNum%:+LastFound
+		x := max(GetClientRect(WinExist()).w - (this.Cancel ? 180 : 90), 10)
+		Gui, %GuiNum%:Add, Button, % "Default x" x " y+10 w80 hwndhOK gInputBox_OK " (this.Validate && (this.DataType = "Text" || this.DataType = "Path" || this.DataType = "File") ? "Disabled" : ""), OK
 		if(this.Cancel)	
 			Gui, %GuiNum%:Add, Button, x+10 w80 gInputBox_Cancel, Cancel
 		Gui,%GuiNum%:-MinimizeBox -MaximizeBox +LabelInputbox
-		Gui,%GuiNum%:Show,,%Title%
+		Gui,%GuiNum%:Show,Autosize,%Title%
 		;return Gui number to indicate that the Input box is still open
 		if(WasCritical)
 			Critical

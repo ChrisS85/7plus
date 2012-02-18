@@ -360,11 +360,12 @@
 <Cancel>1</Cancel>
 <DataType>Text</DataType>
 <Placeholder>NewName</Placeholder>
-<Selection>Take screenshot|Ask user input|Move file %Temp%\7plus\Screenshot.png to %Temp%\7plus\${NewName}|Open Image Converter: %Temp%\7plus\${NewName}.png</Selection>
+<Rows>1</Rows>
 <Text>Enter a filename for the screenshot (without extension)</Text>
 <Title>Enter filename</Title>
 <Type>Ask for user input</Type>
 <Validate>1</Validate>
+<Width>200</Width>
 </Action><Action>
 <Overwrite>0</Overwrite>
 <Silent>0</Silent>
@@ -407,11 +408,12 @@
 <Cancel>1</Cancel>
 <DataType>Text</DataType>
 <Placeholder>NewName</Placeholder>
-<Selection>Take screenshot|Ask user input|Move file %Temp%\7plus\Screenshot.png to %Temp%\7plus\${NewName}|Open Image Converter: %Temp%\7plus\${NewName}.png</Selection>
+<Rows>1</Rows>
 <Text>Enter a filename for the screenshot (without extension)</Text>
 <Title>Enter filename</Title>
 <Type>Ask for user input</Type>
 <Validate>1</Validate>
+<Width>200</Width>
 </Action><Action>
 <Overwrite>0</Overwrite>
 <Silent>0</Silent>
@@ -454,11 +456,12 @@
 <Cancel>1</Cancel>
 <DataType>Text</DataType>
 <Placeholder>NewName</Placeholder>
-<Selection>Take screenshot|Ask user input|Move file %Temp%\7plus\Screenshot.png to %Temp%\7plus\${NewName}|Open Image Converter: %Temp%\7plus\${NewName}.png</Selection>
+<Rows>1</Rows>
 <Text>Enter a filename for the screenshot (without extension)</Text>
 <Title>Enter filename</Title>
 <Type>Ask for user input</Type>
 <Validate>1</Validate>
+<Width>200</Width>
 </Action><Action>
 <Overwrite>0</Overwrite>
 <Silent>0</Silent>
@@ -495,13 +498,12 @@
 <Cancel>1</Cancel>
 <DataType>Text</DataType>
 <Placeholder>Script</Placeholder>
-<Rows>10</Rows>
-<Selection></Selection>
+<Rows>30</Rows>
 <Text>Enter script here</Text>
 <Title>Enter Script</Title>
 <Type>Ask for user input</Type>
 <Validate>1</Validate>
-<Width>200</Width>
+<Width>600</Width>
 </Action><Action>
 <Append>0</Append>
 <Content>${script}</Content>

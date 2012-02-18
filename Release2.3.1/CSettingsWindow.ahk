@@ -697,7 +697,12 @@ Finally, here are some settings that you're likely to change at the beginning:
 					ExportEvents.WriteEventsFile(A_ScriptDir "\Events\" Category ".xml")
 			}
 			this.Events.WriteEventsFile(A_ScriptDir "\Events\All Events.xml")
-			run % """" A_ScriptDir "\CreateEventPatch.ahk""" " """ A_ScriptDir "\Events\Old Versions\" MajorVersion "." (MinorVersion-1) "." BugFixVersion "\All Events.xml"" """ A_ScriptDir "\Events\All Events.xml"" 0" ;Create event patch, assumes that last minor version was incremented by one since last release
+			fd := new CFileDialog("Open")
+			fd.Filter := "*.xml"
+			fd.InitialDirectory := A_ScriptDir "\Events"
+			if(!fd.Show())
+				return
+			run % """" A_ScriptDir "\CreateEventPatch.ahk"" """ fd.Filename  """ """ A_ScriptDir "\Events\All Events.xml"" 0" ;Create event patch, assumes that last minor version was incremented by one since last release
 			this.Enabled := true
 			return
 		}

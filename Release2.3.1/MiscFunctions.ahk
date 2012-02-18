@@ -344,9 +344,9 @@ min(x,y)
 	return x>y ? y : x
 }
 
-max(x,y)
+max(x, y)
 {
-	return x<y ? y : x
+	return x < y ? y : x
 }
 DecToHex( ByRef var ) 
 { 
@@ -1385,4 +1385,10 @@ ConvertFilterStringToRegex(FilterString)
 		StringReplace,FilterString,FilterString,% SubStr(A_LoopField,1,1),% SubStr(A_LoopField,2),A
 	StringReplace,FilterString,FilterString,%A_Space%,\s,A
 	return "i)" FilterString
+}
+GetClientRect(hwnd)
+{
+	VarSetCapacity(rc, 16)
+	result := DllCall("GetClientRect", "PTR", hwnd, "PTR", &rc, "UINT")
+	return {x : NumGet(rc, 0, "int"), y : NumGet(rc, 4, "int"), w : NumGet(rc, 8, "int"), h : NumGet(rc, 12, "int")}
 }
