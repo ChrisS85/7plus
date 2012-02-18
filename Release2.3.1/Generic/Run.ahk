@@ -57,7 +57,7 @@ Run_GuiShow(SubEvent, GUI, GoToLabel = "")
 		SubEvent.AddControl(GUI, "Edit", "Command", "", "", "Command:","Browse", "Action_Run_Browse", "Placeholders", "Action_Run_Placeholders")
 		SubEvent.AddControl(GUI, "Edit", "WorkingDirectory", "", "", "Working Dir:","Browse", "Action_Run_Browse_WD", "Placeholders", "Action_Run_Placeholders_WD")
 		SubEvent.AddControl(GUI, "Checkbox", "WaitForFinish", "Wait for finish", "", "")
-		SubEvent.AddControl(GUI, "Checkbox", "RunAsAdmin", "Run as admin", "", "")
+		SubEvent.AddControl(GUI, "DropDownList", "RunAsAdmin", "-1: Current permissions|0: Standard User|1: Elevated", "", "Run as admin")
 	}
 	else if(GoToLabel = "Browse")
 		SubEvent.SelectFile(SubEvent.tmpRunGUI, "Command", "Select File", "", 1)
@@ -85,10 +85,10 @@ Action_Run_Placeholders_WD:
 GetCurrentSubEvent().RunGuiShow("", "Placeholders_WD")
 return
 
-Run(Target, WorkingDir = "", Mode = "", NonElevated=1) 
+Run(Target, WorkingDir = "", Mode = "", NonElevated=-1) 
 {
 	;run as current user
-	if(!Vista7 || (!A_IsAdmin && NonElevated) || (A_IsAdmin && !NonElevated))
+	if(!Vista7 || NonElevated = -1 || (!A_IsAdmin && NonElevated) || (A_IsAdmin && !NonElevated))
 	{
 		Run, %Target% , %WorkingDir%, %Mode% UseErrorLevel, v
 		if(A_LastError)

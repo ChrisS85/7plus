@@ -747,7 +747,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>311</ID>
 <Name>Toggle always on top -&gt; context menu timeout</Name>
@@ -2873,101 +2873,13 @@
 </Event><Event>
 <Actions>
 <Action>
-<Area>Window</Area>
-<Quality>95</Quality>
-<TargetFile>Screenshot.jpg</TargetFile>
-<TargetFolder>%Temp%</TargetFolder>
-<Type>Take a screenshot</Type>
-</Action><Action>
-<Cancel>1</Cancel>
-<DataType>Text</DataType>
-<Text>Enter image filename:</Text>
-<Title>Enter filename</Title>
-<Type>Ask for user input</Type>
-<Validate>1</Validate>
-</Action><Action>
-<Clipboard>1</Clipboard>
-<FTPProfile>1</FTPProfile>
-<Silent>0</Silent>
-<SourceFiles>%temp%\Screenshot.jpg</SourceFiles>
-<TargetFile>${Input}</TargetFile>
-<Type>Upload to FTP</Type>
-</Action><Action>
-<Overwrite>0</Overwrite>
-<Silent>1</Silent>
-<SourceFile>%temp%\Screenshot.jpg</SourceFile>
-<Type>Delete file</Type>
-</Action></Actions>
-<Category>FTP</Category>
-<Conditions>
-</Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Take a screenshot of the currently active window and upload it to the FTP server defined in FTP profile 1. Make sure to configure the FTP profile with your FTP login data.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>379</ID>
-<Name>Upload screenshot of active window</Name>
-<OfficialEvent>380</OfficialEvent>
-<OneInstance>1</OneInstance>
-<Trigger>
-<Key>#Insert</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Area>Screen</Area>
-<Quality>95</Quality>
-<TargetFile>Screenshot.jpg</TargetFile>
-<TargetFolder>%Temp%</TargetFolder>
-<Type>Take a screenshot</Type>
-</Action><Action>
-<Cancel>1</Cancel>
-<DataType>Text</DataType>
-<Text>Enter image filename:</Text>
-<Title>Enter filename</Title>
-<Type>Ask for user input</Type>
-<Validate>1</Validate>
-</Action><Action>
-<Clipboard>1</Clipboard>
-<FTPProfile>1</FTPProfile>
-<Silent>0</Silent>
-<SourceFiles>%temp%\Screenshot.jpg</SourceFiles>
-<TargetFile>${Input}</TargetFile>
-<Type>Upload to FTP</Type>
-</Action><Action>
-<Overwrite>0</Overwrite>
-<Silent>1</Silent>
-<SourceFile>%temp%\Screenshot.jpg</SourceFile>
-<Type>Delete file</Type>
-</Action></Actions>
-<Category>FTP</Category>
-<Conditions>
-</Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Take a screenshot of the desktop and upload it to the FTP server defined in FTP profile 1. Make sure to configure the FTP profile with your FTP login data.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>380</ID>
-<Name>Upload screenshot</Name>
-<OfficialEvent>381</OfficialEvent>
-<OneInstance>1</OneInstance>
-<Trigger>
-<Key>!Insert</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
 <Clipboard>1</Clipboard>
 <FTPProfile>1</FTPProfile>
 <Silent>0</Silent>
 <SourceFiles>${SelNQ}</SourceFiles>
 <Type>Upload to FTP</Type>
 </Action></Actions>
-<Category>FTP</Category>
+<Category>Internet</Category>
 <Conditions>
 <Condition>
 <Compare>${Class}</Compare>
@@ -2980,7 +2892,7 @@
 <Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Upload the file(s) selected in the currently active explorer window to the FTP server defined in FTP profile 1. Make sure to configure the FTP profile with your FTP login data.</Description>
+<Description>Uploads the file(s) selected in the currently active explorer window to the FTP server defined in FTP profile 1. Make sure to configure the FTP profile with your FTP login data.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -3001,7 +2913,7 @@
 <SourceFiles>${SelNQ}</SourceFiles>
 <Type>Upload to FTP</Type>
 </Action></Actions>
-<Category>FTP</Category>
+<Category>Internet</Category>
 <Conditions>
 <Condition>
 <ListViewOnly>1</ListViewOnly>
@@ -3012,7 +2924,7 @@
 <Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Upload the file(s) selected in the currently active file dialog window to the FTP server defined in FTP profile 1. Make sure to configure the FTP profile with your FTP login data.</Description>
+<Description>Uploads the file(s) selected in the currently active file dialog window to the FTP server defined in FTP profile 1. Make sure to configure the FTP profile with your FTP login data.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -4358,7 +4270,7 @@
 <Actions>
 <Action>
 <Command>${TimerProgram}</Command>
-<RunAsAdmin>0</RunAsAdmin>
+<RunAsAdmin>-1</RunAsAdmin>
 <Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
 </Action></Actions>
@@ -4820,7 +4732,7 @@
 <WriteToClipboard>1</WriteToClipboard>
 <WriteToPlaceholder>ShortURL</WriteToPlaceholder>
 </Action></Actions>
-<Category>Misc Hotkeys</Category>
+<Category>Internet</Category>
 <Conditions>
 <Condition>
 <Negate>1</Negate>
@@ -5554,6 +5466,30 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>NumpadIns</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Command>http://www.google.com/search?q=${SelText}</Command>
+<RunAsAdmin>-1</RunAsAdmin>
+<Type>Run a program</Type>
+<WaitForFinish>0</WaitForFinish>
+</Action></Actions>
+<Category>Internet</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event runs a google search for the selected text.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1652</ID>
+<Name>Search selected text with Google</Name>
+<OfficialEvent>52</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>#G</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event></Events>

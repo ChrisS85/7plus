@@ -321,36 +321,6 @@
 </Event><Event>
 <Actions>
 <Action>
-<Method>Goo.gl</Method>
-<Type>Shorten a URL</Type>
-<URL>${Clip}</URL>
-<WriteToClipboard>1</WriteToClipboard>
-<WriteToPlaceholder>ShortURL</WriteToPlaceholder>
-</Action></Actions>
-<Category>Misc Hotkeys</Category>
-<Conditions>
-<Condition>
-<Negate>1</Negate>
-<Type>Fullscreen window active</Type>
-<UseExcludeList>1</UseExcludeList>
-<UseIncludeList>1</UseIncludeList>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event will shorten an URL in the clipboard by using the goo.gl service. The URL in clipboard will be replaced with the shortened version.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>1627</ID>
-<Name>URL shortener</Name>
-<OfficialEvent>27</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>#S</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
 <Area>Screen</Area>
 <Quality>95</Quality>
 <TargetFile>Screenshot.png</TargetFile>

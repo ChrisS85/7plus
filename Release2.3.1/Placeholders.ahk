@@ -148,9 +148,11 @@ ExpandPlaceholder(Placeholder)
 		return Settings.Explorer.CurrentPath
 	else if(Placeholder = "T")
 		return Settings.Explorer.PreviousPath
+	else if(Placeholder = "SelText")
+		return GetSelectedText()
 	else if(strStartsWith(Placeholder, "Sel") && (WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog()))
 	{
-		files:=GetSelectedFiles()
+		files := GetSelectedFiles()
 		RegExMatch(Placeholder,"Sel\d+",number)
 		array := Array()
 		if(number)
@@ -278,6 +280,7 @@ ShowPlaceholderMenu(SubEventGUI, name, ClickedMenu="")
 		Menu, Placeholders_System, add, ${lParam} - lParam value if this condition/action was triggered by OnMessage trigger, PlaceholderHandler
 		Menu, Placeholders_System, add, ${Context} - List of selected files(with paths) from Contextmenu trigger`, separated by newlines, PlaceholderHandler
 		Menu, Placeholders_System, add, ${WinVer} - Windows version(WIN_7`, WIN_VISTA`, WIN_XP`, WIN_2003`,...), PlaceholderHandler
+		Menu, Placeholders_System, add, ${SelText} - Selected Text, PlaceholderHandler
 		
 		Menu, Placeholders_Windows, add, ${A} - Active window handle, PlaceholderHandler
 		Menu, Placeholders_Windows, add, ${Class} - Active window class, PlaceholderHandler

@@ -281,7 +281,7 @@
 <Actions>
 <Action>
 <Command>${TimerProgram}</Command>
-<RunAsAdmin>0</RunAsAdmin>
+<RunAsAdmin>-1</RunAsAdmin>
 <Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
 </Action></Actions>

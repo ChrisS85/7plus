@@ -1392,3 +1392,16 @@ GetClientRect(hwnd)
 	result := DllCall("GetClientRect", "PTR", hwnd, "PTR", &rc, "UINT")
 	return {x : NumGet(rc, 0, "int"), y : NumGet(rc, 4, "int"), w : NumGet(rc, 8, "int"), h : NumGet(rc, 12, "int")}
 }
+GetSelectedText()
+{
+	MuteClipboardList := true
+	clipboardbackup := clipboardall
+	clipboard := ""
+	ClipWait, 0.05, 1
+	Send ^c
+	ClipWait, 0.05, 1
+	result := clipboard
+	clipboard := clipboardbackup
+	MuteClipboardList:=false
+	return result
+}

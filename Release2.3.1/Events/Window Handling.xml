@@ -201,7 +201,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>311</ID>
 <Name>Toggle always on top -&gt; context menu timeout</Name>
