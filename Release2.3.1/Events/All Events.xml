@@ -5122,7 +5122,7 @@
 <OfficialEvent>38</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Key>#PrintScreen</Key>
+<Key>!PrintScreen</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event><Event>
@@ -5170,7 +5170,7 @@
 <OfficialEvent>39</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
-<Key>!PrintScreen</Key>
+<Key>#PrintScreen</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event><Event>
