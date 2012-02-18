@@ -7,7 +7,7 @@ New Functions:
  * Added a SendMail action for sending mails using SMTP.
  * WIN + G: Run a Google search for the selected text.
  * Added ${SelText} placeholder for the currently selected text.
- * Run action can now use the same level of elevation as 7plus. This can be useful to execute more special commands, for example verbs like ´*Edit.
+ * Run action can now use the same level of elevation as 7plus. This can be useful to execute more special commands, for example verbs like {{{*}}}Edit.
 
 Bugfixes:
  * Fixed a bug that occured on x64 and caused problems in ListViews (Settings window, Image Converter)
