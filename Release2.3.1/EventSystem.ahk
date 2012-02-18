@@ -649,14 +649,12 @@ Class CEvents extends CArray
 		;Loop over all new events
 		pos := count + 1
 		count := this.MaxIndex()
-		outputdebug % "highest: " highestID ", lowest: " lowestID
 		while(pos <= count)
 		{
 			Event := this[pos]
 			;Make sure Event ID is higher than all previous IDs, but conserve relative differences between IDs
 			offset := (highestID - lowestID) + 1
 			Event.ID := Event.ID + offset
-			outputdebug % "new id " Event.ID
 			;Find highest ID
 			if(Event.ID > this.HighestID)
 				this.HighestID := Event.ID
@@ -932,7 +930,6 @@ Class CSubEvent extends CRichObject
 	;Can be implemented by the specific inheriting subevent
 	GuiSubmit(GUI)
 	{
-		outputdebug submit
 		this.SubmitControls(GUI)
 	}
 }
@@ -1243,6 +1240,7 @@ Class CExampleAction extends CAction
 #include %A_ScriptDir%\Actions\Screenshot.ahk
 #include %A_ScriptDir%\Actions\SelectFiles.ahk
 #include %A_ScriptDir%\Actions\SendKeys.ahk
+#include %A_ScriptDir%\Actions\SendMail.ahk
 #include %A_ScriptDir%\Actions\SendMessage.ahk
 #include %A_ScriptDir%\Actions\SetDirectory.ahk
 #include %A_ScriptDir%\Actions\SetWindowTitle.ahk

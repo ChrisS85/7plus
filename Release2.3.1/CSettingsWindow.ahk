@@ -625,7 +625,6 @@ Finally, here are some settings that you're likely to change at the beginning:
 			Event := this.Events.GetItemWithValue("ID", item[2])
 			Copy := Event.DeepCopy()
 			Copy.Remove("OfficialEvent") ;Make sure that pasted events don't patch existing events
-			msgbox % Exploreobj(Copy)
 			if((!ApplicationState.IsPortable && A_IsAdmin) || !Event.Trigger.Is(CExplorerButtonTrigger))
 				ClipboardEvents.Insert(copy)
 		}
@@ -1569,7 +1568,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("Link", "linkBugs", "x342 y85 w212 h13", "<A HREF=""http://code.google.com/p/7plus/issues/list"">http://code.google.com/p/7plus/issues/list</A>")
 		Page.AddControl("Link", "linkHomepage", "x342 y69 w166 h13", "<A HREF=""http://code.google.com/p/7plus/"">http://code.google.com/p/7plus/</A>")
 		Page.AddControl("Link", "linkAutoupdater", "x197 y293 w306 h13", "The Autoudater uses <A HREF=""http://www.7-zip.org"">7-Zip</A>, which is licensed under the <A HREF=""http://www.gnu.org/licenses/lgpl.html"">LGPL</A>")
-		Page.AddControl("Text", "txtCredits", "x197 y327 w392 h39", "Credits for lots of code samples and help go out to:`nSean, HotKeyIt, majkinetor, polyethene, Lexikos, tic, fincs, TheGood, PhiLho, Temp01, Laszlo, jballi, Shrinker,`nM@x and the other guys and gals on #ahk and the forums.")
+		Page.AddControl("Text", "txtCredits", "x197 y327 w392 h39", "This program would not have been possible without the many scripts, libraries and help from:`nSean, HotKeyIt, majkinetor, polyethene, Lexikos, tic, fincs, TheGood, PhiLho, Temp01, Laszlo, jballi, Shrinker,`nM@x and the other guys and gals on #ahk and the forums.")
 		Page.AddControl("Text", "txtLicense", "x197 y264 w80 h13", "Licensed under")
 		Page.AddControl("Text", "txtLanguage", "x197 y213 w146 h13", "Proudly written in AutoHotkey")
 		Page.AddControl("Text", "txtDonate", "x197 y166 w282 h13", "To support the development of this project, please donate:")

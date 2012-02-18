@@ -167,3 +167,17 @@ Class CErrorDisplay extends CGUI
 x := new CErrorDisplay()
 return
 #if
+
+FormatMessageFromSystem(ErrorCode)
+{
+   VarSetCapacity(Buffer, 2000)
+   DllCall("FormatMessage"
+      , "UInt", 0x1000      ; FORMAT_MESSAGE_FROM_SYSTEM
+      , "PTR", 0
+      , "UInt", ErrorCode
+      , "UInt", 0x800 ;LANG_SYSTEM_DEFAULT (LANG_USER_DEFAULT=0x400)
+      , "Str", Buffer
+      , "UInt", 500
+      , "PTR", 0)
+   Return Buffer
+}
