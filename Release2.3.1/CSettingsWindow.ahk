@@ -8,8 +8,8 @@ return
 ShowSettings(Page = "Events")
 {
 	;Settings window is created in AutoExecute to save some time when this function is called the first time.
-	while(!IsObject(SettingsWindow))
-		Sleep 10
+	if(!IsObject(SettingsWindow))
+		SetTimer, SettingsHandler, -20
 	SettingsWindow.Show(Page)
 }
 Class CSettingsWindow Extends CGUI
