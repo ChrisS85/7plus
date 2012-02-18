@@ -5,6 +5,9 @@ New Functions:
  * Added a function that allows running temporary AutoHotkey scripts (WIN + T). It requires that an AutoHotkey interpreter is installed and the .ahk extension is assigned to it.
  * Added a button on the FTP profiles page to test the connection.
  * Added a SendMail action for sending mails using SMTP.
+ * WIN + G: Run a Google search for the selected text.
+ * Added ${SelText} placeholder for the currently selected text.
+ * Run action can now use the same level of elevation as 7plus. This can be useful to execute more special commands, for example verbs like *Edit.
 
 Bugfixes:
  * Fixed a bug that occured on x64 and caused problems in ListViews (Settings window, Image Converter)
@@ -16,6 +19,6 @@ Bugfixes:
  * Fixed some focusing issues on various ListView controls.
 
 Changes:
- * None
+ * Removed some screenshot related events and reordered some events.
 
 If you like this program and want to support its development, please consider donating!
