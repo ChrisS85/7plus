@@ -252,6 +252,7 @@ Class CImageConverter extends CGUI
 			this.LoadImage()
 			SplitPath(this.ListView.SelectedItem[2], "", "", "", FileName)
 			this.editName.Text := FileName
+			this.ActiveControl := this.ListView
 		}
 	}
 	editName_TextChanged()

@@ -411,6 +411,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 			Page.editEventDescription.Text := ""
 			Page.btnEditEvent.Enabled := false
 		}
+		this.ActiveControl := Page.listEvents
 	}
 	listEvents_DoubleClick(Row)
 	{
@@ -810,6 +811,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		}
 		else
 			Page.btnAccessorSettings.Enabled := false
+		this.ActiveControl := Page.listAccessorPlugins
 	}
 	listAccessorPlugins_CheckedChanged(Row)
 	{
@@ -912,6 +914,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.EditAccessorKeyword.Enabled := SingleSelection
 		Page.EditAccessorCommand.Enabled := SingleSelection
 		Page.btnDeleteAccessorKeyword.Enabled := SingleSelection
+		this.ActiveControl := Page.listAccessorKeywords
 	}
 	EditAccessorKeyword_TextChanged()
 	{
@@ -1361,6 +1364,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.editHotStringInput.Enabled := SingleSelection
 		Page.editHotStringOutput.Enabled := SingleSelection
 		Page.btnDeleteHotString.Enabled := SingleSelection
+		this.ActiveControl := Page.listHotStrings
 	}
 	EditHotStringInput_TextChanged()
 	{
