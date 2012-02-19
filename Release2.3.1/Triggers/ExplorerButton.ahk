@@ -15,7 +15,7 @@ Class CExplorerButtonTrigger Extends CTrigger
 	
 	Disable(Event)
 	{
-		if(Event.Disabled && A_IsAdmin && Vista7 && !ApplicationState.IsPortable)
+		if(!Event.Enabled && A_IsAdmin && Vista7 && !ApplicationState.IsPortable)
 			RemoveButton("IsExplorerButton", Event)
 	}
 	
@@ -25,10 +25,13 @@ Class CExplorerButtonTrigger Extends CTrigger
 			RemoveButton("IsExplorerButton", Event)
 	}
 	
+	;Called when settings are applied. This function checks for changes in the button and possibly recreates it.
 	PrepareReplacement(Event1, Event2)
 	{
-		if(this.Name = Event2.Trigger.Name && this.Tooltip = Event2.Trigger.Tooltip && this.ShowSelected = Event2.Trigger.ShowSelected && this.ShowNoSelected = Event2.Trigger.ShowNoSelected) ; Check if something changed
+		if(this.Name = Event2.Trigger.Name && this.Tooltip = Event2.Trigger.Tooltip && this.ShowSelected = Event2.Trigger.ShowSelected && this.ShowNoSelected = Event2.Trigger.ShowNoSelected)
 			return
+		
+		;something changed, so lets remove the button. It is later recreated in CExplorerButtonTrigger.Enable()
 		if(!ApplicationState.IsPortable && Vista7 && A_IsAdmin)
 			RemoveButton("IsExplorerButton", Event1)
 	}
@@ -67,6 +70,7 @@ IsExplorerButton(value, key, Event)
 		return false
 	RegRead, command, HKLM, %key%
 	RegexMatch(command,""" -id:(\d+)$", command)
+	outputdebug % "IsExplorerButton(" Event.Name ") ? " (command1 && command1 = Event.ID)
 	if(command1 && command1 = Event.ID)
 		return true
 	return false

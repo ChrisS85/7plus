@@ -425,7 +425,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 	listEvents_CheckedChanged(Row)
 	{
 		if(IsObject(Row))
-			this.Events[Row._.RowNumber].Enabled := Row.Checked
+			this.Events.GetItemWithValue("ID", Row[2]).Enabled := Row.Checked
 	}
 	btnAddEvent_Click()
 	{
@@ -1094,10 +1094,10 @@ Finally, here are some settings that you're likely to change at the beginning:
 		;Folder band settings are only usable when running non-portable as admin
 		if(!ApplicationState.IsPortable || !A_IsAdmin)
 		{
-			if(Page.chkShowInFolderBand.Checked != Settings.Explorer.FastFolders.ShowInFolderBand)
+			if(Page.chkShowInFolderBand.Checked != Settings.Explorer.FastFolders.ShowInFolderBand || this.RequireFastFolderRecreation)
 			{
-				if(!Settings.Explorer.FastFolders.ShowInFolderBand) ;Was off, enable
-					PrepareFolderBand()
+				if(!Settings.Explorer.FastFolders.ShowInFolderBand || this.RequireFastFolderRecreation) ;Was off, enable
+					SetTimer, PrepareFolderBand, -1000 ;Call as timer so that applying settings appears faster (but it isn't!)
 				else
 					RestoreFolderBand()
 			}
@@ -1125,6 +1125,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 	btnRemoveCustomButtons_Click()
 	{
 		RemoveAllExplorerButtons()
+		this.RequireFastFolderRecreation := true
 		MsgBox If you have defined any custom explorer buttons (or use FastFolder buttons) and you press OK or Apply now, they will reappear!
 	}
 	
@@ -1689,3 +1690,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 		return this.treePages.SelectedItem.Parent = this.treePages.Items[2] ? this.treePages.SelectedItem.Text : (DefaultToUncategorized ? "Uncategorized" : "")
 	}
 }
+
+;Called as timer by ApplyFastFolders to show quicker settings apply (even though it isn't in reality!)
+PrepareFolderBand:
+PrepareFolderBand()
+return

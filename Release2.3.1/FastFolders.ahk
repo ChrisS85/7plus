@@ -225,100 +225,61 @@ RemoveButton(Command, param="")
 {
 	if(!IsFunc(Command) && InStr(Command,"\",0,strlen(Command)))
 		StringTrimRight, Command, Command,1
+	BaseKey := "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes"
+	ButtonFound := false
 	;go into view folders (clsid)
-	Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes, 2, 0
+	Loop, HKLM, %BaseKey%, 2, 0
 	{			
-		regkey:=A_LoopRegName
-		found:=-1
-		maxnumber:=-1
-		;loop through selected item number folders (loop goes backwards)
-		Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected, 2, 0
+		clsid := A_LoopRegName
+		;code below needs to be executed for two folders each, [selected item / no selected item]
+		Keys := {TasksItemsSelected : "", TasksNoItemsSelected : ""}
+		for Key, v in Keys
 		{
-			numberfolder:=A_LoopRegName
-			if(numberfolder>maxnumber)
+			;Local variable inside this loop for telling found state of the selected/no selected folders
+			maxnumber := -1
+			;Loop through all buttons of this view (reg loop goes backwards apparently)
+			Loop, HKLM, %BaseKey%\%clsid%\TasksItemsSelected, 2, 0
 			{
-				maxnumber:=numberfolder
-			}
-			RegRead, ahk, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%, AHK
-			if(ahk)
-			{
-				;go into clsid folder
-				Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%, 2, 0
+				ButtonNumber := A_LoopRegName
+				maxnumber := max(ButtonNumber, maxnumber)
+				
+				;Keys created by 7plus have an "AHK" key added to them to make sure that only Keys related to 7plus are modified
+				RegRead, ahk, HKLM, %BaseKey%\%clsid%\TasksItemsSelected\%ButtonNumber%, AHK
+				if(ahk)
 				{
-					RegRead, value, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%\%A_LoopRegName%, InfoTip
-					outputdebug value %value%
-					if((!IsFunc(Command) && value = Command) || (IsFunc(Command) && %Command%(value, "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\" regkey "\TasksItemsSelected\" numberfolder "\" A_LoopRegName "\shell\InvokeTask\command", param)))
-					{					
-						RegDelete, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%
-						found:=numberfolder
-						break
+					;go into clsid folder
+					Loop, HKLM, %BaseKey%\%clsid%\TasksItemsSelected\%ButtonNumber%, 2, 0
+					{
+						RegRead, value, HKLM, %BaseKey%\%clsid%\TasksItemsSelected\%ButtonNumber%\%A_LoopRegName%, InfoTip
+						outputdebug value %value%
+						;Check if the current key is the correct one (possibly with a caller-defined function)
+						if((!IsFunc(Command) && value = Command) || (IsFunc(Command) && %Command%(value, BaseKey "\" clsid "\TasksItemsSelected\" ButtonNumber "\" A_LoopRegName "\shell\InvokeTask\command", param)))
+						{
+							;If the key is correct, it may be deleted
+							RegDelete, HKLM, %BaseKey%\%clsid%\TasksItemsSelected\%ButtonNumber%
+							ButtonFound := true
+							;after item has been deleted, we need to move the higher ones down by one
+							if(maxnumber > ButtonNumber)
+							{
+								i := ButtonNumber + 1
+								while i <= maxnumber
+								{
+									j := i - 1
+									Runwait, reg copy HKLM\%BaseKey%\%clsid%\TasksItemsSelected\%i% HKLM\%BaseKey%\%clsid%\TasksItemsSelected\%j% /s /f, , Hide
+									regdelete, HKLM, %BaseKey%\%clsid%\TasksItemsSelected\%i%
+									i++
+								}
+							}
+							break 2
+						}
 					}
 				}
-				if(found>-1)
-					break
 			}
-		}
-		;after item has been deleted, we need to move the higher ones down by one
-		if(found>-1&&maxnumber>found)
-		{
-			i:=found+1
-			while i<=maxnumber
-			{
-				j:=i-1
-				Runwait, reg copy HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%i% HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%j% /s /f, , Hide
-				regdelete, HKLM,SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%i%
-				i++
-			}		
-		}
-		if(found=-1) {
-			outputdebug Button not found!
-			break
-		}			
-		found:=-1
-		maxnumber:=-1
-		;loop through no item selected number folders (loop goes backwards)
-		Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected, 2, 0
-		{
-			numberfolder:=A_LoopRegName
-			if(numberfolder>maxnumber)
-			{
-				maxnumber:=numberfolder
-			}
-			RegRead, ahk, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%numberfolder%, AHK
-			if(ahk)
-			{
-				;go into clsid folder
-				Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%numberfolder%, 2, 0
-				{
-					RegRead, value, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%numberfolder%\%A_LoopRegName%, InfoTip
-					if((!IsFunc(Command) && value = Command) || (IsFunc(Command) && %Command%(value, "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\" regkey "\TasksNoItemsSelected\" numberfolder "\" A_LoopRegName "\shell\InvokeTask\command", param)))
-					{											
-						RegDelete, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%numberfolder%						
-						found:=numberfolder
-						break
-					}
-				}
-				if(found>-1)
-					break
-			}
-		}
-		;after item has been deleted, we need to move the higher ones down by one
-		if(found>-1&&maxnumber>found)
-		{
-			i:=found+1
-			while i<=maxnumber
-			{
-				j:=i-1
-				Runwait, reg copy HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%i% HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%j% /s /f, , Hide
-				regdelete, HKLM,SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%i%
-				i++
-			}		
-		}
-		if(found=-1) {
-			outputdebug Button not found!
-			break
 		}
 	}
+	if(!ButtonFound)
+		outputdebug % "Explorer button not found: " (param.Extends("CEvent") ? param.Name : Command)
+	return ButtonFound
 }
 
 ;Adds a button. You may specify a command (and possibly an argument) or a path, and a name which should be used.
