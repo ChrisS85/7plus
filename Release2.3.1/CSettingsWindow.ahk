@@ -18,7 +18,7 @@ Class CSettingsWindow Extends CGUI
 	btnApply := this.AddControl("Button", "btnApply", "x757 y431 w73 h23", "Apply")
 	btnCancel := this.AddControl("Button", "btnCancel", "x678 y431 w73 h23", "Cancel")
 	btnOK := this.AddControl("Button", "btnOK", "x599 y431 w73 h23", "OK")
-	txtVideoHint := this.AddControl("Text", "txtVideoHint", "x16 y436 w175 h13", "Click on ? to see video tutorial help!")
+	;~ txtVideoHint := this.AddControl("Text", "txtVideoHint", "x16 y436 w175 h13", "Click on ? to see video tutorial help!")
 	grpPage := this.AddControl("GroupBox", "grpPage", "x176 y12 w654 h413", "Events")
 	PageNames := "Introduction|Events|Accessor Keywords|Accessor Plugins|Explorer|Explorer Tabs|Fast Folders|FTP Profiles|HotStrings|Windows|Windows Settings|Misc|About"
 	__New()
@@ -222,19 +222,24 @@ Finally, here are some settings that you're likely to change at the beginning:
 	{
 		Page := this.Pages.Events.Tabs[1]
 		Page.AddControl("CheckBox", "chkShowAdvancedEvents", "x197 y65 w141 h17", "Show advanced events")
-		Page.AddControl("Button", "btnEventHelp", "x743 y336 w75 h23", "Help")
-		Page.AddControl("Button", "btnExportEvents", "x743 y307 w75 h23", "Export")
-		Page.AddControl("Button", "btnImportEvents", "x743 y278 w75 h23", "Import")
-		Page.AddControl("Button", "btnPasteEvent", "x743 y204 w75 h23", "Paste Event")
-		Page.AddControl("Button", "btnCopyEvent", "x743 y175 w75 h23", "Copy Event")
-		Page.AddControl("Button", "btnEditEvent", "x743 y146 w75 h23", "Edit Event")
-		Page.AddControl("Button", "btnDeleteEvents", "x743 y117 w75 h23", "Delete Events")
-		Page.AddControl("Button", "btnAddEvent", "x743 y88 w75 h23", "Add Event")
+		
+		Page.AddControl("Button", "btnAddEvent", "x743 y88 w80 h23", "Add Event")
+		Page.AddControl("Button", "btnEditEvent", "x743 y116 w80 h23", "Edit Event")
+		Page.AddControl("Button", "btnDeleteEvents", "x743 y144 w80 h23", "Delete Events")
+		Page.AddControl("Button", "btnEnableEvents", "x743 y172 w80 h23", "Enable Events")
+		Page.AddControl("Button", "btnDisableEvents", "x743 y200 w80 h23", "Disable Events")
+		Page.AddControl("Button", "btnCopyEvent", "x743 y228 w80 h23", "Copy Events")
+		Page.AddControl("Button", "btnPasteEvent", "x743 y256 w80 h23", "Paste Events")
+		
+		Page.AddControl("Button", "btnImportEvents", "x743 y284 w80 h23", "Import")
+		Page.AddControl("Button", "btnExportEvents", "x743 y312 w80 h23", "Export")
+		Page.AddControl("Button", "btnEventHelp", "x743 y340 w80 h23", "Help")
+		
 		Page.AddControl("Edit", "editEventDescription", "x197 y365 w536 h50 ReadOnly", "")
 		Page.AddControl("Edit", "editEventFilter", "x589 y62 w144 h20", "")
 		Page.AddControl("Text", "txtEventSearch", "x508 y65 w75 h13", "Event Search:")
 		;ListView uses indices that are independent of the listview sorting so it can access the array with the data more easily
-		Page.AddControl("ListView", "listEvents", "x197 y88 w536 h271 Grid Checked -LV0x10 Count300", "Enabled|ID|Trigger|Name")
+		Page.AddControl("ListView", "listEvents", "x197 y88 w536 h275 Grid Checked -LV0x10 Count300", "Enabled|ID|Trigger|Name")
 		Page.Controls.listEvents.IndependentSorting := true
 		Page.AddControl("Text", "txtEventDescription", "x194 y28 w606 h26", "You can add events here that are triggered under certain conditions. When triggered, the event can launch a series of actions.`n This is a very powerful tool to add all kinds of features, and many features from 7plus are now implemented with this system.")
 		Page.Controls.editEventDescription.Multi := 1
@@ -433,6 +438,16 @@ Finally, here are some settings that you're likely to change at the beginning:
 	btnDeleteEvents_Click()
 	{
 		this.DeleteEvents()
+	}
+	btnEnableEvents_Click()
+	{
+		for key, item in this.Pages.Events.Tabs[1].Controls.listEvents.SelectedItems
+			item.Checked := true
+	}
+	btnDisableEvents_Click()
+	{
+		for key, item in this.Pages.Events.Tabs[1].Controls.listEvents.SelectedItems
+			item.Checked := false
 	}
 	btnCopyEvent_Click()
 	{
