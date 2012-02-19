@@ -26,6 +26,6 @@ Class CNotifyIcons
 	Success := Vista7 ? 145 : 136
 	Internet := 136
 	Sound := Vista7 ? 169 : 110
-	SoundMute := 220
+	SoundMute := Vista7 ? 220 : 169
 	Question := 24
 }
