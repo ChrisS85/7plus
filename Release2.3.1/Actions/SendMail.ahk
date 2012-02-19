@@ -17,7 +17,7 @@ Class CSendMailAction Extends CAction
 	
 	Execute(Event)
 	{
-		Content := 
+		Critical
 		From     := Event.ExpandPlaceholders(this.From)
 		To       := Event.ExpandPlaceholders(this.To)
 		Subject  := Event.ExpandPlaceholders(this.Subject)
@@ -55,6 +55,7 @@ Class CSendMailAction Extends CAction
 		pmsg.Send()
 		if(A_LastError)
 			Msgbox % "Send mail error: " FormatMessageFromSystem(A_LastError)
+		Critical, Off
 		return 1
 	} 
 
