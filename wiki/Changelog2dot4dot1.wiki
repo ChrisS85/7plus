@@ -18,6 +18,7 @@ Bugfixes:
  * Fixed file selection buttons in event configurations.
  * Fixed an issue when the settings window was opened directly after start.
  * Fixed some focusing issues on various ListView controls.
+ * Fixed sound mute icon in XP.
 
 Changes:
  * Removed some screenshot related events and reordered some events.
