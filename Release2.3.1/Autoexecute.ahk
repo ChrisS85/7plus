@@ -272,40 +272,47 @@ WriteClipboard()
 ProcessCommandLineParameters()
 {
 	global
-	local Count, x, y, hwnd, Parameter
+	local Count, hwnd, i, Parameter, Parameters
 	FileRead, hwnd, %A_Temp%\7plus\hwnd.txt ;if existing, hwnd.txt contains the window handle of another running instance
+	Parameters := []
 	Loop %0%
+		Parameters[A_Index] := %A_Index%
+	
+	;if a path is supplied as first parameter, set explorer directory to this path and exit
+	if(InStr(FileExist(Parameters[1]), "D"))
 	{
-		SplitPath, 1,x,y
+		SetDirectory(Parameters[1])
+		ExitApp
+	}
+	for i, Parameter in Parameters
+	{
 		;TODO: Change this format to "-id Number" for compatibility with Explorer Button trigger? (See EventSystem_Startup())
-		if(InStr(%A_Index%, "-id") = 1) ;Generic event trigger, send to running instance
+		;Generic event trigger, send to running instance
+		if(InStr(Parameter, "-id") = 1)
 		{
 			if(WinExist("ahk_id " hwnd))
 			{
-				Parameter := SubStr(%A_Index%, 5) ;-ID:Value
+				Parameter := SubStr(Parameter, 5) ;-ID:Value
 				SendMessage, 55555, %Parameter%, 0, ,ahk_id %hwnd%
 				ExitApp
 			}
 		}
-		else if(InStr(%A_Index%,"-ContextID") = 1) ;Trigger from legacy context menu mechanism (used for My Computer menu), send to running instance
+		;Trigger from legacy context menu mechanism (used for My Computer menu), send to running instance
+		else if(InStr(Parameter,"-ContextID") = 1)
 		{
 			if(WinExist("ahk_id " hwnd))
 			{
-				Parameter := SubStr(%A_Index%, 12) ; -ContextID:Value
+				Parameter := SubStr(Parameter, 12) ; -ContextID:Value
 				SendMessage, 55555, %Parameter%, 1, ,ahk_id %hwnd%
 				ExitApp
 			}
 		}
-		else if(%A_Index% = "-Portable") ;Portable mode
+		;Portable mode
+		else if(Parameter = "-Portable" || Parameter = "/Portable") 
 			ApplicationState.IsPortable := true
-		else if(%A_Index% = "-iu") ;Image upload
+		;Image upload
+		else if(Parameter = "-iu")
 			ImageUploadThread(A_Index, hwnd)
-		else if(y) ;Path supplied as parameter, set explorer directory to this path
-		{
-			x = %1%
-			SetDirectory(x)
-			ExitApp
-		}
 	}
 	DetectHiddenWindows, On
 	if(hwnd && WinGetClass("ahk_id " hwnd ) = "AutoHotkey")
