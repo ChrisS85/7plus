@@ -213,7 +213,7 @@ Class CReplaceDialog
 		this.hCancel := hCancel
 		Gui, % this.GUINum ":-Resize -MaximizeBox -MinimizeBox +ToolWindow +LastFound +LabelExplorerReplaceDialog"
 		
-		Gui, % this.GUINum ":Show", AutoSize, Rename / Replace
+		Gui, % this.GUINum ":Show", AutoSize, % (Action.View = "Files" ? "Replace in files" : "Replace filenames")
 		this.hWnd := WinExist()
 		if(Action.View = "Files")
 		{
@@ -341,7 +341,7 @@ Class CReplaceDialog
 		}
 		if(this.SearchResults.MaxIndex() > 0)
 			Control, Enable,,, % "ahk_id " this.hReplaceButton
-		WinSetTitle, % "ahk_id " this.hWnd,,Rename / Replace
+		WinSetTitle, % "ahk_id " this.hWnd,, % (this.Files ? "Replace in files" : "Replace filenames")
 		ControlSetText,, Cancel, % "ahk_id " this.hCancel
 	}
 	
@@ -771,7 +771,7 @@ Class CReplaceDialog
 		ClassNN := HWNDToClassNN(hwnd)
 		GuiControlGet, value, ,%ClassNN%
 		
-		if(Label="ExplorerReplaceDIalogFiles")
+		if(Label="ExplorerReplaceDialogFiles")
 		{
 			SetControlDelay, 0
 			Control, Disable,,, % "ahk_id " this.hIncludeDirectories
@@ -780,6 +780,7 @@ Class CReplaceDialog
 				Control, Hide,,,  ahk_id %value%
 			for key, value in this.QuicknDirtyFiles
 				Control, Show,,, ahk_id %value%
+			WinSetTitle, % "ahk_id " this.hwnd,, Replace in files
 			LV_ModifyCol(1,100, "File")
 			LV_ModifyCol(2,38, "Line")
 			LV_ModifyCol(3,265, "Text")
@@ -803,6 +804,7 @@ Class CReplaceDialog
 			enum := this.QuicknDirtyFilenames._newEnum()
 			while enum[key,value]
 				Control, Show,,,  ahk_id %value%
+			WinSetTitle, % "ahk_id " this.hwnd,, Replace filenames
 			if(LV_GetCount("Col") = 4)
 			{
 				LV_Delete()
@@ -959,7 +961,7 @@ Class CReplaceDialog
 			this.Remove("BasePath")
 			this.Remove("Stop")
 			LV_Delete()
-			WinSetTitle, % "ahk_id " this.hWnd,,Rename / Replace
+			WinSetTitle, % "ahk_id " this.hWnd,, % (this.Files ? "Replace in files" : "Replace filenames")
 			ControlSetText,, Cancel, % "ahk_id " this.hCancel
 			Control, Disable,,, % "ahk_id " this.hReplaceButton
 		}
