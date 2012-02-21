@@ -19,6 +19,10 @@ Bugfixes:
  * Fixed an issue when the settings window was opened directly after start.
  * Fixed some focusing issues on various ListView controls.
  * Fixed sound mute icon in XP.
+ * Fixed CTRL+W tab closing.
+ * Fixed wrong contents of Explorer Tabs settings dropdown controls.
+ * Fixed SendMessage action.
+ * Fixed Notes Accessor plugin delete hotkey.
 
 Changes:
  * Removed some screenshot related events and reordered some events.
