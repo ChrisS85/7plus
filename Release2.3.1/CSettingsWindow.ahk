@@ -1149,7 +1149,10 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("Edit", "editFTPPassword", "x434 y168 w249 h20 Password", "")
 		Page.AddControl("Text", "txtFTPURL", "x213 y195 w32 h13", "URL:")
 		Page.AddControl("Edit", "editFTPURL", "x434 y192 w249 h20", "")
-		Page.AddControl("Text", "txtFTPDescription2", "x213 y227 w454 h26", "Target folder and filename are set separately for each event that uses the FTP upload function on the Events page.")
+		Page.AddControl("Text", "txtFTPNumberOfSubDirs", "x213 y219 h13", "Number of subdirectories:")
+		subdirs := Page.AddControl("Edit", "editFTPNumberOfSubDirs", "x434 y216 w29 h20", "")
+		subdirs.ToolTip := "Some webservers display a deeper file structure on FTP compared to the HTTP URL.`nEnter the number of additional directories here to adjust the copied URL"
+		Page.AddControl("Text", "txtFTPDescription2", "x213 y251 w454 h26", "Target folder and filename are set separately for each event that uses the FTP upload function on the Events page.")
 	}
 	InitFTPProfiles()
 	{
@@ -1183,6 +1186,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 			CurrentProfile.User := Page.editFTPUser.Text
 			CurrentProfile.Password := Encrypt(Page.editFTPPassword.Text)
 			CurrentProfile.URL := strTrimRight(Page.editFTPURL.Text, "/")
+			CurrentProfile.NumberOfFTPSubDirs := Page.editFTPNumberOfSubDirs.Text
 		}
 	}
 	btnAddFTPProfile_Click()
@@ -1192,7 +1196,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 	AddFTPProfile()
 	{
 		Page := this.Pages.FTPProfiles.Tabs[1].Controls
-		this.FTPProfiles.Insert(Object("Hostname", "Hostname.com", "Port", 21, "User", "SomeUser", "Password", "", "URL", "http://somehost.com"))
+		this.FTPProfiles.Insert(Object("Hostname", "Hostname.com", "Port", 21, "User", "SomeUser", "Password", "", "URL", "http://somehost.com", "NumberOfFTPSubDirs", 0))
 		len := this.FTPProfiles.MaxIndex()
 		Page.ddlFTPProfile.Items.Add(len ": " this.FTPProfiles[len].Hostname)
 		Page.ddlFTPProfile.SelectedIndex := len
@@ -1247,11 +1251,13 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.editFTPUser.Text := FTPProfile ? FTPProfile.User : ""
 		Page.editFTPPassword.Text := FTPProfile ? Decrypt(FTPProfile.Password) : ""
 		Page.editFTPURL.Text := FTPProfile ? FTPProfile.URL : ""
+		Page.editFTPNumberOfSubDirs.Text := FTPProfile ? FTPProfile.NumberOfFTPSubDirs : ""
 		Page.editFTPHostname.Enabled := IsObject(FTPProfile)
 		Page.editFTPPort.Enabled := IsObject(FTPProfile)
 		Page.editFTPUser.Enabled := IsObject(FTPProfile)
 		Page.editFTPPassword.Enabled := IsObject(FTPProfile)
 		Page.editFTPURL.Enabled := IsObject(FTPProfile)
+		Page.editFTPNumberOfSubDirs.Enabled := IsObject(FTPProfile)
 	}
 	editFTPHostname_TextChanged()
 	{

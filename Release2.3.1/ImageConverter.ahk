@@ -8,7 +8,7 @@ Class CImageConverter extends CGUI
 	__New(Action)
 	{
 		Base.__New()
-		this.Title := "Image Converter"
+		this.Title := "Image Converter & Uploader"
 		this.Files := Array()
 		this.TemporaryFiles := Action.TemporaryFiles
 		this.ReuseWindow := Action.ReuseWindow

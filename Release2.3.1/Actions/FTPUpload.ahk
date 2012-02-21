@@ -35,7 +35,7 @@ Class CFTPUploadAction Extends CAction
 		Loop % XMLObject.List.MaxIndex()
 		{
 			ListEntry := XMLObject.List[A_Index]
-			FTPProfiles.Insert(Object("Hostname", ListEntry.Hostname, "Port", ListEntry.Port, "User", ListEntry.User, "Password", ListEntry.Password, "URL", ListEntry.URL))
+			FTPProfiles.Insert(Object("Hostname", ListEntry.Hostname, "Port", ListEntry.Port, "User", ListEntry.User, "Password", ListEntry.Password, "URL", ListEntry.URL, "NumberOfFTPSubDirs", ListEntry.NumberOfFTPSubDirs))
 		}
 		return FTPProfiles
 	}
@@ -50,7 +50,7 @@ Class CFTPUploadAction Extends CAction
 		Loop % this.FTPProfiles.MaxIndex()
 		{
 			ListEntry := this.FTPProfiles[A_Index]
-			XMLObject.List.Insert(Object("Hostname", ListEntry.Hostname, "Port", ListEntry.Port, "User", ListEntry.User, "Password", ListEntry.Password, "URL", ListEntry.URL))
+			XMLObject.List.Insert(Object("Hostname", ListEntry.Hostname, "Port", ListEntry.Port, "User", ListEntry.User, "Password", ListEntry.Password, "URL", ListEntry.URL, "NumberOfFTPSubDirs", ListEntry.NumberOfFTPSubDirs))
 		}
 		XML_Save(XMLObject, ConfigPath "\FTPProfiles.xml")
 	}
@@ -85,7 +85,7 @@ Class CFTPUploadAction Extends CAction
 		}
 		if(files.MaxIndex() > 0)
 		{
-			this.GetFTPVariables(this.FTPProfile, Hostname, Port, User, Password, URL)
+			this.GetFTPVariables(this.FTPProfile, Hostname, Port, User, Password, URL, NumberOfFTPSubDirs)
 			if(!Hostname || Hostname = "Hostname.com")
 			{
 				Notify("FTP profile not set", "The FTP profile was not created yet or is invalid. Click here to enter a valid FTP login.", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",NotifyIcons.Error)
@@ -134,6 +134,20 @@ Class CFTPUploadAction Extends CAction
 				}
 				if(result != 0)
 				{
+					;The url is sometimes mapped differently on FTP vs. Web.
+					;FTP might have more directories while the webserver only mirrors a part of the directory structure.
+					;The code below allows skipping some directories
+					URLTargetFolder := TargetFolder
+					Loop % NumberOfFTPSubDirs
+					{
+						if(pos := InStr(URLTargetFolder, "/"))
+							URLTargetFolder := SubStr(URLTargetFolder, pos + 1)
+						else
+						{
+							URLTargetFolder := ""
+							break
+						}
+					}
 					success := 0
 					FTP.NumFiles := files.MaxIndex()
 					Loop % files.MaxIndex()
@@ -145,7 +159,7 @@ Class CFTPUploadAction Extends CAction
 						if(result=0 && !this.Silent)
 							Notify("Couldn't upload file", "Couldn't upload "  targets[A_Index] " properly. Make sure you have write rights and the path exists", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",NotifyIcons.Error)
 						else if(result != 0 && URL && this.Clipboard)
-							cliptext .= (A_Index = 1 ? "" : "`r`n") URL "/" TargetFolder (TargetFolder ? "/" : "") StringReplace(targets[A_Index], " ", "%20", 1)
+							cliptext .= (A_Index = 1 ? "" : "`r`n") URL "/" URLTargetFolder (URLTargetFolder ? "/" : "") StringReplace(targets[A_Index], " ", "%20", 1)
 					}
 					FTP.Close()
 					if(URL && this.Clipboard && cliptext)
@@ -194,13 +208,14 @@ Class CFTPUploadAction Extends CAction
 			ShowPlaceholderMenu(sGUI, "TargetFile")
 	}
 	
-	GetFTPVariables(id, ByRef Hostname, ByRef Port, ByRef User, ByRef Password, ByRef URL)
+	GetFTPVariables(id, ByRef Hostname, ByRef Port, ByRef User, ByRef Password, ByRef URL, ByRef NumberOfFTPSubDirs)
 	{
 		Hostname := this.FTPProfiles[id].Hostname
 		Port := this.FTPProfiles[id].Port
 		User := this.FTPProfiles[id].User
 		Password := this.FTPProfiles[id].Password
 		URL := this.FTPProfiles[id].URL
+		NumberOfFTPSubDirs := this.FTPProfiles[id].NumberOfFTPSubDirs
 	}
 }
 Action_FTPUpload_Progress()
