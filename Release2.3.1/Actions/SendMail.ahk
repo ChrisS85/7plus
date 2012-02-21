@@ -17,45 +17,24 @@ Class CSendMailAction Extends CAction
 	
 	Execute(Event)
 	{
-		Critical
-		From     := Event.ExpandPlaceholders(this.From)
-		To       := Event.ExpandPlaceholders(this.To)
-		Subject  := Event.ExpandPlaceholders(this.Subject)
-		Body     := Event.ExpandPlaceholders(this.Body)
-		Attach   := Event.ExpandPlaceholders(this.Attach) ; can add multiple attachments, the delimiter is |
+		WorkerThread := new CWorkerThread("SendMail_WorkerThread", 0, 1, 1)
+		WorkerThread.OnFinish.Handler := "SendMail_OnFinish"
+		Parameters := {}
+		Parameters.From     := Event.ExpandPlaceholders(this.From)
+		Parameters.To       := Event.ExpandPlaceholders(this.To)
+		Parameters.Subject  := Event.ExpandPlaceholders(this.Subject)
+		Parameters.Body     := Event.ExpandPlaceholders(this.Body)
+		Parameters.Attach   := Event.ExpandPlaceholders(this.Attach) ; can add multiple attachments, the delimiter is |
 
-		Server   := Event.ExpandPlaceholders(this.Server) ; specify your SMTP server
-		Port     := Event.ExpandPlaceholders(this.Port) ; 25
-		TLS      := Event.ExpandPlaceholders(this.TLS) ; False
-		Send     := 2   ; cdoSendUsingPort
-		Auth     := 1   ; cdoBasic
-		Username := Event.ExpandPlaceholders(this.Username)
-		Password := Event.ExpandPlaceholders(Decrypt(this.Password))
-
-		pmsg :=   ComObjCreate("CDO.Message")
-		pcfg :=   pmsg.Configuration
-		pfld :=   pcfg.Fields
-
-		pfld.Item("http://schemas.microsoft.com/cdo/configuration/sendusing") := Send
-		pfld.Item("http://schemas.microsoft.com/cdo/configuration/smtpconnectiontimeout") := this.Timeout
-		pfld.Item("http://schemas.microsoft.com/cdo/configuration/smtpserver") := Server
-		pfld.Item("http://schemas.microsoft.com/cdo/configuration/smtpserverport") := Port
-		pfld.Item("http://schemas.microsoft.com/cdo/configuration/smtpusessl") := TLS
-		pfld.Item("http://schemas.microsoft.com/cdo/configuration/smtpauthenticate") := Auth
-		pfld.Item("http://schemas.microsoft.com/cdo/configuration/sendusername") := Username
-		pfld.Item("http://schemas.microsoft.com/cdo/configuration/sendpassword") := Password
-		pfld.Update()
-		
-		pmsg.From := From
-		pmsg.To := To
-		pmsg.Subject := Subject
-		pmsg.TextBody := Body
-		Loop, Parse, Attach, |, %A_Space%%A_Tab%
-			pmsg.AddAttachment(A_LoopField)
-		pmsg.Send()
-		if(A_LastError)
-			Msgbox % "Send mail error: " FormatMessageFromSystem(A_LastError)
-		Critical, Off
+		Parameters.Server   := Event.ExpandPlaceholders(this.Server) ; specify your SMTP server
+		Parameters.Port     := Event.ExpandPlaceholders(this.Port) ; 25
+		Parameters.TLS      := Event.ExpandPlaceholders(this.TLS) ; False
+		Parameters.Send     := 2   ; cdoSendUsingPort
+		Parameters.Auth     := 1   ; cdoBasic
+		Parameters.Username := Event.ExpandPlaceholders(this.Username)
+		Parameters.Password := Encrypt(Event.ExpandPlaceholders(Decrypt(this.Password)))
+		Parameters.Timeout 	:= this.Timeout
+		WorkerThread.Start(Parameters)
 		return 1
 	} 
 
@@ -109,3 +88,40 @@ Action_SendMail_Placeholders_Username:
 Action_SendMail_Placeholders_Password:
 GetCurrentSubEvent().GuiShow("", A_ThisLabel)
 return
+
+;Called in a separate instance to improve reliability
+SendMail_WorkerThread(WorkerThread, Parameters)
+{
+	Critical ;Needed for reliability apparently, even in separate thread
+	pmsg :=   ComObjCreate("CDO.Message")
+	pcfg :=   pmsg.Configuration
+	pfld :=   pcfg.Fields
+	
+	pfld.Item("http://schemas.microsoft.com/cdo/configuration/sendusing") := Parameters.Send
+	pfld.Item("http://schemas.microsoft.com/cdo/configuration/smtpconnectiontimeout") := Parameters.Timeout
+	pfld.Item("http://schemas.microsoft.com/cdo/configuration/smtpserver") := Parameters.Server
+	pfld.Item("http://schemas.microsoft.com/cdo/configuration/smtpserverport") := Parameters.Port
+	pfld.Item("http://schemas.microsoft.com/cdo/configuration/smtpusessl") := Parameters.TLS
+	pfld.Item("http://schemas.microsoft.com/cdo/configuration/smtpauthenticate") := Parameters.Auth
+	pfld.Item("http://schemas.microsoft.com/cdo/configuration/sendusername") := Parameters.Username
+	pfld.Item("http://schemas.microsoft.com/cdo/configuration/sendpassword") := Decrypt(Parameters.Password)
+	pfld.Update()
+	
+	pmsg.From := Parameters.From
+	pmsg.To := Parameters.To
+	pmsg.Subject := Parameters.Subject
+	pmsg.TextBody := Parameters.Body
+	Attach := Parameters.Attach
+	Loop, Parse, Attach, |, %A_Space%%A_Tab%
+		pmsg.AddAttachment(A_LoopField)
+	pmsg.Send()
+	Critical, Off
+	return A_LastError
+}
+SendMail_OnFinish(WorkerThread, Result)
+{
+	if(Result)
+		Msgbox % "Send mail error: " FormatMessageFromSystem(Result)
+	else
+		Msgbox % "Mail successfully sent!"
+}
