@@ -122,6 +122,4 @@ SendMail_OnFinish(WorkerThread, Result)
 {
 	if(Result)
 		Msgbox % "Send mail error: " FormatMessageFromSystem(Result)
-	else
-		Msgbox % "Mail successfully sent!"
 }
