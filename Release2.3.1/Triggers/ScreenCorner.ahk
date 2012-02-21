@@ -6,7 +6,7 @@ Class CScreenCornerTrigger Extends CTrigger
 	static Time := 1000
 	Matches(Filter)
 	{
-		return Trigger.Corner = Filter.Corner ;type is checked elsewhere
+		return this.Corner = Filter.Corner ;type is checked elsewhere
 	}
 	DisplayString()
 	{

@@ -30,7 +30,7 @@ MouseMovePolling()
 				{
 					Trigger := new CScreenCornerTrigger()
 					Trigger.Corner := Corner
-					EventSystem.Events.GetItemWithValue("ID", ScreenCornerEvents[index].ID).Trigger.TriggerThisEvent() ;Trigger the single event and remove it from the list so it only gets triggered once
+					EventSystem.Events.GetItemWithValue("ID", ScreenCornerEvents[index].ID).TriggerThisEvent(Trigger) ;Trigger the single event and remove it from the list so it only gets triggered once
 					ScreenCornerEvents.Remove(index)
 				}
 				else
