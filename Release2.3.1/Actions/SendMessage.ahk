@@ -24,29 +24,10 @@ Class CSendMessageAction Extends CAction
 			TargetControl := ""
 		}
 		if(this.MessageMode = "Post")
-		{
-			if((!wParam || IsNumeric(wParam) ) && (!lParam || IsNumeric(lParam)))
-				PostMessage, %Message%, %wParam%, %lParam%, %TargetControl%, ahk_id %hwnd%
-			else if(!lParam || IsNumeric(lParam))
-				PostMessage, %Message%, "" wParam "", %lParam%, %TargetControl%, ahk_id %hwnd%
-			else if(!wParam || IsNumeric(wParam))
-				PostMessage, %Message%, %wParam%, "" lParam "", %TargetControl%, ahk_id %hwnd%
-			else
-				PostMessage, %Message%, "" wParam "", "" lParam "", %TargetControl%, ahk_id %hwnd%
-		}
+			PostMessage, Message, wParam, lParam, %TargetControl%, ahk_id %hwnd%
 		else
 		{
-			if((!wParam || IsNumeric(wParam) ) && (!lParam || IsNumeric(lParam)))
-				SendMessage, %Message%, %wParam%, %lParam%, %TargetControl%, ahk_id %hwnd%
-			else if(!lParam || IsNumeric(lParam))
-				SendMessage, %Message%, "" wParam "", %lParam%, %TargetControl%, ahk_id %hwnd%
-			else if(!wParam || IsNumeric(wParam))
-			{
-				SendMessage, %Message%, %wParam%, "" lParam "", %TargetControl%, ahk_id %hwnd%
-				outputdebug send2 %lParam%
-			}
-			else
-				SendMessage, %Message%, "" wParam "", "" lParam "", %TargetControl%, ahk_id %hwnd%
+			SendMessage, Message, wParam, lParam, %TargetControl%, ahk_id %hwnd%
 			Event.Placeholders.MessageResult := ErrorLevel
 		}
 		return 1

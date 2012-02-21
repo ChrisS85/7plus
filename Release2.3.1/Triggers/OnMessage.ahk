@@ -6,15 +6,20 @@ Class COnMessageTrigger Extends CTrigger
 	Enable()
 	{
 		OnMessage(this.Message,"ShellMessage")
+		DllCall("ChangeWindowMessageFilter", "UInt", this.Message, "UInt", 1) 
 	}
 	Disable()
 	{
 		;OnMessage(this.Message) ;Doing this is problematic because message might be needed internally
+		if(this.Message != 55555) ;Internal message that needs the message filter for explorer context menus
+			DllCall("ChangeWindowMessageFilter", "UInt", this.Message, "UInt", 2)
 	}
 	;When OnMessage is deleted, it needs to be removed from OnMessagearrays
 	Delete()
 	{
 		;OnMessage(this.Message) ;Doing this is problematic because message might be needed internally
+		if(this.Message != 55555) ;Internal message that needs the message filter for explorer context menus
+			DllCall("ChangeWindowMessageFilter", "UInt", this.Message, "UInt", 2)
 	}
 
 	Matches(Filter, Event)

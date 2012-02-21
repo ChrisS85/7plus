@@ -273,6 +273,7 @@ ProcessCommandLineParameters()
 {
 	global
 	local Count, hwnd, i, Parameter, Parameters
+	InitWorkerThread() ;This processes all cases where 7plus acts as a worker thread for another 7plus instance
 	FileRead, hwnd, %A_Temp%\7plus\hwnd.txt ;if existing, hwnd.txt contains the window handle of another running instance
 	Parameters := []
 	Loop %0%
@@ -310,9 +311,6 @@ ProcessCommandLineParameters()
 		;Portable mode
 		else if(Parameter = "-Portable" || Parameter = "/Portable") 
 			ApplicationState.IsPortable := true
-		;Image upload
-		else if(Parameter = "-iu")
-			ImageUploadThread(A_Index, hwnd)
 	}
 	DetectHiddenWindows, On
 	if(hwnd && WinGetClass("ahk_id " hwnd ) = "AutoHotkey")

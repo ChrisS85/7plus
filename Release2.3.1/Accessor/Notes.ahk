@@ -107,8 +107,9 @@ Accessor_Notes_OnCopy(Notes, AccessorListEntry)
 }
 
 #if (Accessor.GUINum)
-
-	NoteDelete()
+Delete::
+NoteDelete()
+return
 #if
 Accessor_Notes_SetupContextMenu(Notes, AccessorListEntry)
 {

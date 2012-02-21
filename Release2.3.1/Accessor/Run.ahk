@@ -60,7 +60,7 @@ Accessor_Run_SetupContextMenu(Run, AccessorListEntry)
 	Menu, AccessorMenu, Default, Run as user
 }
 
-#if Accessor.GUINum
+#if (Accessor.GUINum)
 ^Enter::
 ^NumpadEnter::
 AccessorRun(Accessor.List.GetItemWithValue("Type", "Run"))
