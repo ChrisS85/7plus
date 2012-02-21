@@ -12,16 +12,21 @@ MButton::MouseCloseTab()
 #if
 CloseActiveTab()
 {
-	global ExplorerWindows	
+	global ExplorerWindows
+	outputdebug close active tab
 	TabContainer := ExplorerWindows.GetItemWithValue("hwnd", WinExist("A")+0).TabContainer
 	tab := TabContainer.tabs.GetItemWithValue("hwnd", WinExist("A")+0)
-	outputdebug % "active tab " tab.path WinExist("A")+0
-	TabContainer.CloseTab(tab)
+	if(tab)
+	{
+		outputdebug tab found
+		outputdebug % "active tab " tab.path WinExist("A")+0
+		TabContainer.CloseTab(tab)
+	}
 }
 IsTabbedWindow(hwnd)
 {
 	global ExplorerWindows
-	if(IsObject(ExplorerWindow) && IsObject(ExplorerWindow := ExplorerWindows.GetItemWithValue("hwnd", hwnd+0)) && IsObject(ExplorerWIndow.TabContainer))
+	if(IsObject(ExplorerWindows) && IsObject(ExplorerWindow := ExplorerWindows.GetItemWithValue("hwnd", hwnd+0)) && IsObject(ExplorerWindow.TabContainer))
 		return hwnd+0
 	return false
 }
@@ -611,7 +616,7 @@ Class CTabContainer
 	CloseTab(Tab)
 	{
 		; global TabContainerList,TabNum, NoTabUpdate
-		global ExplorerWindows,
+		global ExplorerWindows
 		; DetectHiddenWindows, On	
 		; NoTabUpdate:=true
 		; Folder:=GetCurrentFolder(hwnd)
