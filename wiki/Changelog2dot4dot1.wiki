@@ -9,6 +9,7 @@ New Functions:
  * Added ${SelText} placeholder for the currently selected text.
  * Run action can now use the same level of elevation as 7plus. This can be useful to execute more special commands, for example verbs like {{{*}}}Edit.
  * Added "Enable/Disable Events" buttons on events settings page.
+ * Added a setting to FTP profiles to account for different file system mounting points in HTTP/FTP servers (->omit directories from target folder in URL)
 
 Bugfixes:
  * Fixed a bug that occured on x64 and caused problems in ListViews (Settings window, Image Converter)
