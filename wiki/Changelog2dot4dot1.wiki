@@ -23,6 +23,7 @@ Bugfixes:
  * Fixed wrong contents of Explorer Tabs settings dropdown controls.
  * Fixed SendMessage action.
  * Fixed Notes Accessor plugin delete hotkey.
+ * Fixed Screen corner trigger.
 
 Changes:
  * Removed some screenshot related events and reordered some events.
