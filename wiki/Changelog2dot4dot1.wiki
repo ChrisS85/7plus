@@ -25,7 +25,7 @@ Bugfixes:
  * Fixed SendMessage action.
  * Fixed Notes Accessor plugin delete hotkey.
  * Fixed Screen corner trigger.
-
+ * Fixed FlatView action.
 Changes:
  * Removed some screenshot related events and reordered some events.
 
