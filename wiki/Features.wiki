@@ -34,6 +34,7 @@ As 7plus is highly configurable, it is possible to create your own features as w
   * Close programs by middle clicking the title bar [http://www.youtube.com/watch?v=JJ-kqjRY910 (Video)]
   * Kill programs by pressing ALT+F5 or right clicking the close button [http://www.youtube.com/watch?v=JJ-kqjRY910 (Video)]
   * Adjust audio volume with mouse wheel up/down over taskbar
+  * Take screenshots (screen, windows and regions) and upload them to an image hoster or to FTP, save them to disk or copy to clipboard.
 
 ==== Windows 7/Vista specific ====
   * Activate Aero Flip 3D by moving the mouse to the top left corner of the screen 
