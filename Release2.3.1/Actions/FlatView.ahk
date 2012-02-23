@@ -10,7 +10,7 @@ Class CFlatViewAction Extends CAction
 		return 1
 	} 
 
-	DisplayString(Action)
+	DisplayString()
 	{
 		return "Show flat view of these files: " this.Paths
 	}
@@ -66,9 +66,15 @@ FlatView(files)
 	Loop % files.MaxIndex()
 	{ 
 		if(InStr(FileExist(files[A_Index]), "D"))
+		{
 			searchString:=searchString "<include path=""" files[A_Index] """/>"
+			DirectoriesFound := true
+		}
 	}
-	searchString.="</scope></query></persistedQuery>"
-	Fileappend,%searchString%, %Path%
-	SetDirectory(Path)
+	if(DirectoriesFound)
+	{
+		searchString.="</scope></query></persistedQuery>"
+		Fileappend,%searchString%, %Path%
+		SetDirectory(Path)
+	}
 }
