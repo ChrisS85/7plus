@@ -975,17 +975,17 @@ Finally, here are some settings that you're likely to change at the beginning:
 		;~ Page.AddControl("Link", "linkMouseGestures", "x197 y32 w13 h13", "?")
 		Page.AddControl("CheckBox", "chkRememberPath", "x216 y169 h17", "Win+E: Open explorer in last active directory")
 		Page.AddControl("CheckBox", "chkAlignNewExplorer", "x216 y192 h17", "Win+E + explorer window active: Open new explorer and align them left and right")
+		Page.AddControl("CheckBox", "chkEnhancedRenaming", "x216 y215 h17", "F2 while renaming: Toggle between filename, extension and full name")
 		
-		
-		Page.AddControl("Text", "txtPasteAsFile", "x213 y238 h13", "Text and images from clipboard can be pasted as file in explorer with these settings")
-		chkPasteImageAsFileName := Page.AddControl("CheckBox", "chkPasteImageAsFileName", "x216 y286 h17", "Paste image as file")
+		Page.AddControl("Text", "txtPasteAsFile", "x213 y268 h13", "Text and images from clipboard can be pasted as file in explorer with these settings")
+		chkPasteImageAsFileName := Page.AddControl("CheckBox", "chkPasteImageAsFileName", "x216 y316 h17", "Paste image as file")
 		;~ Page.AddControl("Link", "linkPasteImageAsFileName", "x197 y287 w13 h13", "?")
-		chkPasteTextAsFileName := Page.AddControl("CheckBox", "chkPasteTextAsFileName", "x216 y260 h17", "Paste text as file")
+		chkPasteTextAsFileName := Page.AddControl("CheckBox", "chkPasteTextAsFileName", "x216 y290 h17", "Paste text as file")
 		;~ Page.AddControl("Link", "linkPasteTextAsFileName", "x197 y261 w13 h13", "?")
-		Page.AddControl("Text", "txtPasteImageAsFileName", "x448 y287 w52 h13", "Filename:")
-		Page.AddControl("Text", "txtPasteTextAsFileName", "x448 y261 w52 h13", "Filename:")
-		Page.Controls.editPasteImageAsFileName := chkPasteImageAsFileName.AddControl("Edit", "editPasteImageAsFileName", "x506 y284 w150 h20", "", 1)
-		Page.Controls.editPasteTextAsFileName := chkPasteTextAsFileName.AddControl("Edit", "editPasteTextAsFileName", "x506 y258 w150 h20", "", 1)
+		Page.AddControl("Text", "txtPasteImageAsFileName", "x448 y217 w52 h13", "Filename:")
+		Page.AddControl("Text", "txtPasteTextAsFileName", "x448 y291 w52 h13", "Filename:")
+		Page.Controls.editPasteImageAsFileName := chkPasteImageAsFileName.AddControl("Edit", "editPasteImageAsFileName", "x506 y314 w150 h20", "", 1)
+		Page.Controls.editPasteTextAsFileName := chkPasteTextAsFileName.AddControl("Edit", "editPasteTextAsFileName", "x506 y288 w150 h20", "", 1)
 	}
 	InitExplorer()
 	{
@@ -998,6 +998,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.chkMouseGestures.Checked := Settings.Explorer.MouseGestures
 		Page.chkRememberPath.Checked := Settings.Explorer.RememberPath
 		Page.chkAlignNewExplorer.Checked := Settings.Explorer.AlignNewExplorer
+		Page.chkEnhancedRenaming.Checked := Settings.Explorer.EnhancedRenaming
 		Page.chkPasteImageAsFileName.Checked := Settings.Explorer.PasteImageAsFileName != ""
 		Page.chkPasteTextAsFileName.Checked := Settings.Explorer.PasteTextAsFileName != ""
 		Page.editPasteImageAsFileName.Text := Settings.Explorer.PasteImageAsFileName
@@ -1014,6 +1015,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Settings.Explorer.MouseGestures := Page.chkMouseGestures.Checked
 		Settings.Explorer.RememberPath := Page.chkRememberPath.Checked
 		Settings.Explorer.AlignNewExplorer := Page.chkAlignNewExplorer.Checked
+		Settings.Explorer.EnhancedRenaming := Page.chkEnhancedRenaming.Checked
 		
 		Settings.Explorer.PasteImageAsFileName := Page.editPasteImageAsFileName.Text
 		Settings.Explorer.PasteTextAsFileName := Page.editPasteTextAsFileName.Text

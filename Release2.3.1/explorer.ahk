@@ -81,7 +81,7 @@ IsRenaming()
 		focussed:=XPGetFocussed()
 	if(WinActive("ahk_group ExplorerGroup")) ;Explorer
 	{
-		if(strStartsWith(focussed,"Edit"))
+		if(InStr(focussed,"Edit") = 1)
 		{
 			if(A_OSVersion="WIN_7")
 				ControlGetPos , X, Y, Width, Height, DirectUIHWND3, A
@@ -89,17 +89,17 @@ IsRenaming()
 				ControlGetPos , X, Y, Width, Height, SysListView321, A
 			ControlGetPos , X1, Y1, Width1, Height1, %focussed%, A
 			if(IsInArea(X1,Y1, X, Y, Width, Height)&&IsInArea(X1+Width1,Y1, X, Y, Width, Height)&&IsInArea(X1,Y1+Height1, X, Y, Width, Height)&&IsInArea(X1+Width1,Y1+Height1, X, Y, Width, Height))
-				return true
+				return focussed
 		}
 	}
 	else if (WinActive("ahk_group DesktopGroup")) ;Desktop
 	{
 		if(focussed="Edit1")
-			return true
+			return focussed
 	}
 	else if((x:=IsDialog())) ;FileDialogs
 	{		
-		if(strStartsWith(focussed,"Edit1"))
+		if(InStr(focussed,"Edit1") = 1)
 		{
 			;figure out if the the edit control is inside the DirectUIHWND2 or SysListView321
 			if(x=1 && A_OSVersion="WIN_7") ;New Dialogs
@@ -108,7 +108,7 @@ IsRenaming()
 				ControlGetPos , X, Y, Width, Height, SysListView321, A
 			ControlGetPos , X1, Y1, Width1, Height1, %focussed%, A
 			if(IsInArea(X1,Y1, X, Y, Width, Height)&&IsInArea(X1+Width1,Y1, X, Y, Width, Height)&&IsInArea(X1,Y1+Height1, X, Y, Width, Height)&&IsInArea(X1+Width1,Y1+Height1, X, Y, Width, Height))
-				return true
+				return focussed
 		}
 	}
 	return false
@@ -184,6 +184,30 @@ FixExplorerConfirmationDialogs()
 	}
 }
 
+;Enhanced renaming
+#if Settings.Explorer.EnhancedRenaming && IsRenaming()
+F2::EnhancedRenaming()
+#if
+EnhancedRenaming()
+{
+	static EM_GETSEL:=0x00B0,EM_SETSEL:=0x00B1
+	EditControl := IsRenaming()
+	SendMessage, EM_GETSEL,,, %EditControl%, A
+	start := ErrorLevel & 0xFFFF
+	end := (ErrorLevel & 0xFFFF0000) >> 16
+	ControlGetText, Text, %EditControl%, A
+	SelectedText := SubStr(Text, start + 1, end - start)
+	pos := InStr(Text, ".", 0, 0)
+	outputdebug pos: %pos% selected text: %Selectedtext% text: %Text%
+	outputdebug % SubStr(Text, 1, pos - 1)
+	outputdebug % SubStr(Text, pos + 1)
+	if(Text = SelectedText)
+		SendMessage, EM_SETSEL, 0, pos - 1, %EditControl%, A
+	else if(SelectedText = SubStr(Text, 1, pos - 1))
+		SendMessage, EM_SETSEL, pos, StrLen(Text), %EditControl%, A
+	else if(SelectedText = SubStr(Text, pos + 1))
+		SendMessage, EM_SETSEL, 0, StrLen(Text), %EditControl%, A
+}
 ;Mouse "gestures" (hold left/right and click right/left)
 #if Settings.Explorer.MouseGestures && GetKeyState("RButton") && (WinActive("ahk_group ExplorerGroup")||IsDialog()) && IsMouseOverFileList()
 LButton::

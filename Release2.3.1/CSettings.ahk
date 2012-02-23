@@ -51,13 +51,14 @@ Class CSettings
 		Tabs := new this.CTabs()
 		
 		static AutoSelectFirstFile 		 	:= 1
-		static ImproveEnter 				:=	1 
+		static ImproveEnter 				:= 1 
 		static AdvancedStatusBarInfo 	 	:= 1
 		static MouseGestures 			 	:= 1
-		static AutoCheckApplyToAllFiles 	:=	1 
-		static ScrollTreeUnderMouse 		:=	1 
-		static RememberPath 				:=	1 
-		static AlignNewExplorer 			:=	1 
+		static AutoCheckApplyToAllFiles 	:= 1 
+		static ScrollTreeUnderMouse 		:= 1 
+		static RememberPath 				:= 1 
+		static AlignNewExplorer 			:= 1
+		static EnhancedRenaming				:= 1
 		static PasteImageAsFileName     	:= "clip.png"
 		static PasteTextAsFileName       	:= "clip.txt"	
 		static PreviousPath         		:= "C:\"
