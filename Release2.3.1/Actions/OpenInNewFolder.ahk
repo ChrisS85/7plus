@@ -24,7 +24,7 @@ Class COpenInNewFolderAction Extends CAction
 ;Opens the folder under the mouse in a new window or tab
 OpenInNewFolder(Action)
 {
- 	if(!WinActive("ahk_group ExplorerGroup")||!IsMouseOverFileList())
+ 	if(!(hwnd := WinActive("ahk_group ExplorerGroup"))||!IsMouseOverFileList())
  		return false
 	selected:=GetSelectedFiles(0)
 	Send {LButton}
@@ -36,9 +36,9 @@ OpenInNewFolder(Action)
 	if(!dir)
 		return false
 	if(Action.Action = "Tab" && Settings.Explorer.Tabs.UseTabs)
-		CreateTab(0,undermouse, 1)
+		CreateTab(hwnd,undermouse, 1)
 	else if(Action.Action = "Tab in background" && Settings.Explorer.Tabs.UseTabs)
-		CreateTab(0,undermouse, 0)
+		CreateTab(hwnd,undermouse, 0)
 	else
 		Run(A_WinDir "\explorer.exe /n,/e," undermouse)
 	return true
