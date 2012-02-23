@@ -24,6 +24,9 @@ Class CSettingsWindow Extends CGUI
 	__New()
 	{
 		this.treePages.RegisterEvent("ItemSelected", "PageSelected")
+		this.treePages.Style := "+0x10"
+		this.treePages.Style := "+0x20"
+		this.treePages.Style := "+0x1000"
 		this.Pages := {}
 		PageNames := this.PageNames
 		Loop, Parse, PageNames, |
