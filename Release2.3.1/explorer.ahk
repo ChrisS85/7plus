@@ -197,10 +197,8 @@ EnhancedRenaming()
 	end := (ErrorLevel & 0xFFFF0000) >> 16
 	ControlGetText, Text, %EditControl%, A
 	SelectedText := SubStr(Text, start + 1, end - start)
-	pos := InStr(Text, ".", 0, 0)
-	outputdebug pos: %pos% selected text: %Selectedtext% text: %Text%
-	outputdebug % SubStr(Text, 1, pos - 1)
-	outputdebug % SubStr(Text, pos + 1)
+	if(!pos := InStr(Text, ".", 0, 0))
+		return
 	if(Text = SelectedText)
 		SendMessage, EM_SETSEL, 0, pos - 1, %EditControl%, A
 	else if(SelectedText = SubStr(Text, 1, pos - 1))
