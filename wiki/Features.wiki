@@ -18,13 +18,15 @@ As 7plus is highly configurable, it is possible to create your own features as w
   * Automatically select first file when you enter a directory [http://www.youtube.com/watch?v=Bih7HEtpk0A (Video)]
   * Hold down right mouse button and click left to go back [http://www.youtube.com/watch?v=RZOdgDl2ujU (Video)]
   * CTRL+S: Select files by entering a file filter such as ".jpg"
+  * CTRL + H: Advanced Renaming and Replacing in files
   * Create new context menu entries
+
 ==== Windows 7/Vista specific ====
   * Show favorite folders in the explorer folder band bar like Web Browser favorite bars [http://www.youtube.com/watch?v=dTIGxue6WCY (Video)]
   * Make Backspace go upwards again [http://www.youtube.com/watch?v=RZOdgDl2ujU (Video)]
   * Show free space and selected file size in status bar [http://www.youtube.com/watch?v=-fnOBf3Ggoc (Video)]
   * Automatically check "Apply to all further operations" checkboxes in file operation dialog boxes [http://www.youtube.com/watch?v=flBnx2NETlc (Video)]
- 
+
 == Window Handling, Taskbar ==
   * Set windows to be "Always on top" by right clicking the title bar [http://www.youtube.com/watch?v=JJ-kqjRY910 (Video)]
   * Close windows by middle clicking task buttons [http://www.youtube.com/watch?v=v__ZiHFt7NE (Video)]
