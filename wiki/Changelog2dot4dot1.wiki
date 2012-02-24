@@ -11,6 +11,8 @@ New Functions:
  * Added "Enable/Disable Events" buttons on events settings page.
  * Added a setting to FTP profiles to account for different file system mounting points in HTTP/FTP servers (->omit directories from target folder in URL)
  * F2 while renaming: Toggle between filename, extension and full name (thanks JSLover for reference implementation and Muramura Suru for suggesting it for 7plus!)
+ * Added "Export shortcut" button to create shortcut files that trigger events in 7plus.
+
 Bugfixes:
  * Fixed a bug that occured on x64 and caused problems in ListViews (Settings window, Image Converter)
  * Fixed a bug that prevented portable mode (command line: -portable) from working.
