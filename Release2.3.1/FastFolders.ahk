@@ -251,7 +251,6 @@ RemoveButton(Command, param="")
 					Loop, HKLM, %BaseKey%\%clsid%\TasksItemsSelected\%ButtonNumber%, 2, 0
 					{
 						RegRead, value, HKLM, %BaseKey%\%clsid%\TasksItemsSelected\%ButtonNumber%\%A_LoopRegName%, InfoTip
-						outputdebug value %value%
 						;Check if the current key is the correct one (possibly with a caller-defined function)
 						if((!IsFunc(Command) && value = Command) || (IsFunc(Command) && %Command%(value, BaseKey "\" clsid "\TasksItemsSelected\" ButtonNumber "\" A_LoopRegName "\shell\InvokeTask\command", param)))
 						{
@@ -323,7 +322,6 @@ AddButton(Command,path,Args="",Name="", Tooltip="",AddTo = "Both")
 		Command := """" (A_IsCompiled ? A_ScriptPath : A_AhkPath """ """ A_ScriptFullPath) """ -id:" args
 		description := Tooltip
 	}
-	outputdebug add name %name%
 	SomeCLSID:="{" . uuid(false) . "}"
 	;go into view folders (clsid)
 	Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes, 2, 0
@@ -370,7 +368,6 @@ FindButton(function, param)
 {
 	if(!IsFunc(function))
 		return false
-	OutputDebug FindButton
 	;go into view folders (clsid)
 	Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes, 2, 0
 	{
@@ -388,14 +385,10 @@ FindButton(function, param)
 				{
 					RegRead, value, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%\%A_LoopRegName%\shell\InvokeTask\command
 					if(%function%(value, "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\" regkey "\TasksItemsSelected\" numberfolder "\" A_LoopRegName "\shell\InvokeTask\command", param))
-					{
-						OutputDebug found
 						return true
-					}
 				}
 			}
 		}
 	}
-	OutputDebug not found
 	return false
 }
