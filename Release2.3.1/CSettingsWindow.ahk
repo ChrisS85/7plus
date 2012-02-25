@@ -226,17 +226,18 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page := this.Pages.Events.Tabs[1]
 		Page.AddControl("CheckBox", "chkShowAdvancedEvents", "x197 y65 w141 h17", "Show advanced events")
 		
-		Page.AddControl("Button", "btnAddEvent", "x743 y88 w80 h23", "Add Event")
-		Page.AddControl("Button", "btnEditEvent", "x743 y116 w80 h23", "Edit Event")
-		Page.AddControl("Button", "btnDeleteEvents", "x743 y144 w80 h23", "Delete Events")
-		Page.AddControl("Button", "btnEnableEvents", "x743 y172 w80 h23", "Enable Events")
-		Page.AddControl("Button", "btnDisableEvents", "x743 y200 w80 h23", "Disable Events")
-		Page.AddControl("Button", "btnCopyEvent", "x743 y228 w80 h23", "Copy Events")
-		Page.AddControl("Button", "btnPasteEvent", "x743 y256 w80 h23", "Paste Events")
+		Page.AddControl("Button", "btnEventHelp", "x743 y60 w80 h23", "&Help")
+		Page.AddControl("Button", "btnAddEvent", "x743 y88 w80 h23", "&Add Event")
+		Page.AddControl("Button", "btnEditEvent", "x743 y116 w80 h23", "&Edit Event")
+		Page.AddControl("Button", "btnDeleteEvents", "x743 y144 w80 h23", "&Delete Events")
+		Page.AddControl("Button", "btnEnableEvents", "x743 y172 w80 h23", "E&nable Events")
+		Page.AddControl("Button", "btnDisableEvents", "x743 y200 w80 h23", "D&isable Events")
+		Page.AddControl("Button", "btnCopyEvent", "x743 y228 w80 h23", "&Copy Events")
+		Page.AddControl("Button", "btnPasteEvent", "x743 y256 w80 h23", "&Paste Events")
 		
-		Page.AddControl("Button", "btnImportEvents", "x743 y284 w80 h23", "Import")
-		Page.AddControl("Button", "btnExportEvents", "x743 y312 w80 h23", "Export")
-		Page.AddControl("Button", "btnEventHelp", "x743 y340 w80 h23", "Help")
+		Page.AddControl("Button", "btnImportEvents", "x743 y284 w80 h23", "&Import")
+		Page.AddControl("Button", "btnExportEvents", "x743 y312 w80 h23", "E&xport")
+		Page.AddControl("Button", "btnCreateShortcut", "x743 y340 w80 h23", "Create &Shortcut")
 		
 		Page.AddControl("Edit", "editEventDescription", "x197 y365 w536 h50 ReadOnly", "")
 		Page.AddControl("Edit", "editEventFilter", "x589 y62 w144 h20", "")
@@ -471,6 +472,19 @@ Finally, here are some settings that you're likely to change at the beginning:
 	btnEventHelp_Click()
 	{
 		OpenWikiPage("EventsOverview")
+	}
+	btnCreateShortcut_Click()
+	{
+		Page := this.Pages.Events.Tabs[1].Controls
+		if(Page.listEvents.SelectedItems.MaxIndex() != 1)
+			return
+		Event := this.Events.GetItemWithValue("ID", Page.listEvents.SelectedItem[2])
+		if(!Event)
+			return
+		fd := new CFileDialog("Save")
+		fd.Filter := "Link files (*.lnk)"
+		if(fd.Show())
+			FileCreateShortcut, % (A_IsCompiled ? A_ScriptFullPath : A_AhkPath), % (strEndsWith(fd.Filename, ".lnk") ? fd.Filename : fd.Filename ".lnk"), %A_ScriptDir%, % (A_IsCompiled ? "": """" A_ScriptFullPath """ ") "-id:" Event.ID, % "7plus: Trigger """ Event.Name """", %A_ScriptDir%\7+-128.ico
 	}
 	
 	AddEvent()

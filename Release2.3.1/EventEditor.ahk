@@ -20,7 +20,6 @@ Class CEventEditor extends CGUI
 	;~ static Instance := new CEventEditor("")
 	btnOK := this.AddControl("Button", "btnOK", "x729 y557 w70 h23", "&OK")
 	btnCancel := this.AddControl("Button", "btnCancel", "x809 y557 w80 h23", "&Cancel")
-	btnCreateShortcut := this.AddControl("Button", "btnCreateShortcut", "x17 y557 w80 h23", "Create &Shortcut")
 	Tab := this.AddControl("Tab", "Tab", "x17 y8 w872 h512", "Trigger|Conditions|Actions|Options")
 	
 	;Trigger controls
@@ -207,13 +206,6 @@ Class CEventEditor extends CGUI
 	{
 		this.Result := ""
 		this.Close()
-	}
-	btnCreateShortcut_Click()
-	{
-		fd := new CFileDialog("Save")
-		fd.Filter := "Link files (*.lnk)"
-		if(fd.Show())
-			FileCreateShortcut, % (A_IsCompiled ? A_ScriptFullPath : A_AhkPath), % (strEndsWith(fd.Filename, ".lnk") ? fd.Filename : fd.Filename ".lnk"), %A_ScriptDir%, % (A_IsCompiled ? "": """" A_ScriptFullPath """ ") "-id:" this.Event.ID, % "7plus: Trigger """ this.Event.Name """", %A_ScriptDir%\7+-128.ico
 	}
 	PreClose()
 	{
