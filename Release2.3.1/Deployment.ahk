@@ -124,7 +124,7 @@ ApplyUpdateFixes()
 			EnableAutorun()
 		}				
 	}
-	if(MajorVersion "." MinorVersion "." BugfixVersion = "2.4.0")
+	else if(MajorVersion "." MinorVersion "." BugfixVersion = "2.4.0")
 	{
 		;Remove some old files that were renamed
 		FileDelete, %A_ScriptDir%\Events\ExplorerButtons.xml

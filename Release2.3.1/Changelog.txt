@@ -1,47 +1,36 @@
-= 7plus Version 2.4.0 Changelog =
+= 7plus Version 2.5.0 Changelog =
 
 New Functions:
- * Added search and replace dialog for file names and file contents
- * Added directory context menu item for flat view
- * Added URL shortener (WIN+S with URL in clipboard)
- * Added ImgUr.com image upload action. Anonymous image uploading is now possible. ImgUr limits it to 50 uploads/hour/API key, so please let me know if you notice that 7plus runs out of upload quota.
- * In addition to the previous entry, default windows PrintScreen functionality was overwritten to show a reworked version of the ImageConverter window. It is now possible to take screenshots of screen/window/user area and choose whether to save the screenshot, copy it to clipboard or upload it to FTP/ImgUr.
- * Added a settings page with generic windows settings (No bloat, only important ones!)
- * New Accessor plugin: Run. It executes the entered text directly, like Start menu->Run does. Useful when the command is not recognized by the Program Launcher plugin.
- * New Accessor plugin and new Trigger for defining custom Accessor commands that will trigger events.
- * New trigger: DirectoryChangeTrigger. It triggers if a specified directory or a file is modified and can be used for backup/synchronization purposes.
- * Added ALT+Right drag window resize
- * Added "Automatically close Windows Update reboot notification dialog"
- * Added screen corner triggers and made AeroFlip3D an event rather than a setting
- * Added a new hotkey event (CTRL+M) to merge all explorer windows into a single one with tabs
- * Added a "Show complex events" button and categorized events by complexity. By default 7plus will now show only about half of the available events. The others can still be enabled though.
- * Added the ability to create new files of any type by selecting a base file in the New File action that is copied to the target destination
- * Added KeyDelay setting for SendKeys action
- * Added ShowEvents option (available only through manual editing of Settings.ini in [General] category) to show execution order of events
- * Added DoubleClick option to MosueClick action
- * Added ClipPaste action to paste a specific entry from the clipboard manager list without showing the menu (Useful when active window must not be changed, i.e. explorer renaming)
- * Added Win+A hotkey to toggle always on top
+ * Added key mappings for scientific calculators. Characters such as brackets can now be written with Numpad keys when NumLock is off.
+ * Added a function that allows running temporary AutoHotkey scripts (WIN + T). It requires that an AutoHotkey interpreter is installed and the .ahk extension is assigned to it.
+ * Added a button on the FTP profiles page to test the connection.
+ * Added a SendMail action for sending mails using SMTP.
+ * WIN + G: Run a Google search for the selected text.
+ * Added ${SelText} placeholder for the currently selected text.
+ * Run action can now use the same level of elevation as 7plus. This can be useful to execute more special commands, for example verbs like *Edit.
+ * Added "Enable/Disable Events" buttons on events settings page.
+ * Added a setting to FTP profiles to account for different file system mounting points in HTTP/FTP servers (->omit directories from target folder in URL)
+ * F2 while renaming: Toggle between filename, extension and full name (thanks JSLover for reference implementation and Muramura Suru for suggesting it for 7plus!)
+ * Added "Export shortcut" button to create shortcut files that trigger events in 7plus.
 
 Bugfixes:
- * Fixed missing \ when copying paths of network shares
- * Fixed not being able to navigate to network drives
- * Reimplemented middle mouse button features in event system to avoid some problems with this button. As a result of this, a few additional conditions were added.
- * Fixed Alt window drag not being able to drag a window to the outer left side of the screen
- * Fixed some access right modifications for registry keys required for explorer buttons. If they didn't show up before they should do so now. It may be necessary to disable/enable the FastFolder setting to make them show up.
- * Fixed colon character in Accessor.
- * Improved Program launcher Accessor plugin program caching. It now refreshes the program list whenever the OK button of the plugin settings window is pressed.
- * Fixed reload action for binary version
- * Fixed an issue in uninstaller that prevented deletion of 7plus directory
+ * Fixed a bug that occured on x64 and caused problems in ListViews (Settings window, Image Converter)
+ * Fixed a bug that prevented portable mode (command line: -portable) from working.
+ * Fixed a bug that prevented pasting an event properly after another event was deleted.
+ * Fixed invalid event files (the main event file was not affected).
+ * Fixed file selection buttons in event configurations.
+ * Fixed an issue when the settings window was opened directly after start.
+ * Fixed some focusing issues on various ListView controls.
+ * Fixed sound mute icon in XP.
+ * Fixed CTRL+W tab closing.
+ * Fixed wrong contents of Explorer Tabs settings dropdown controls.
+ * Fixed SendMessage action.
+ * Fixed Notes Accessor plugin delete hotkey.
+ * Fixed Screen corner trigger.
+ * Fixed FlatView action.
+ * Fixed Accessor double clicking.
 
 Changes:
- * Complete rewrite of the event system and about half of all the trigger/conditions/actions code. This will make 7plus much easier to maintain and a few (unnoticed) bugs could also be fixed along the way.
- * Huge code rewrite for some key portions related to explorer. As a result, status bar enhancements and explorer tabs are now visible on all explorer windows at once.
- * Complete rewrite of Slide Windows feature. It should be much better now, with more options, multi-monitor support, support for child windows and no windows getting lost anymore.
- * Redesign of the "Edit Event" and "Edit Subevent" window. There is now only one window in which everything can be edited. Events won't be disabled anymore while these windows are open.
- * Moved hotkey editing into the trigger configuration GUI so it can be edited in the same window. Also it will now show the previously selected hotkey.
- * Some code cleanup and improvements for Accessor. Sort order of results is also slightly improved.
- * Clipboard history is now stored in encrypted form. In addition, if there is no enabled event that makes use of the clipboard history it will not be stored at all for privacy reasons.
- * Made some more static features of 7plus dynamic by integrating them into the event system.
- * French documentation language available thanks to lecuyerf! User interface translation will probably follow in the next version, possibly also with German language. If you want to help with translation, feel free to join this project!
+ * Removed some screenshot related events and reordered some events.
 
 If you like this program and want to support its development, please consider donating!
