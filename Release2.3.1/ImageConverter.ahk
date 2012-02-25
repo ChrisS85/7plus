@@ -100,9 +100,9 @@ Class CImageConverter extends CGUI
 				}
 			}
 		}
-		this.btnUpload := this.AddControl("Button", "btnUpload", "x+5 y481 w69", "Upload")
-		this.btnCopyToClipboard := this.AddControl("Button", "btnCopyToClipboard", "x+10 y481 w95", "Copy to Clipboard")
-		this.btnConvertAndSave := this.AddControl("Button", "btnConvertAndSave", "x+10 y481 w124", "Convert && Save && Close")
+		this.btnUpload := this.AddControl("Button", "btnUpload", "x+5 y481 w69", "&Upload")
+		this.btnCopyToClipboard := this.AddControl("Button", "btnCopyToClipboard", "x+10 y481 w95", "&Copy to Clipboard")
+		this.btnConvertAndSave := this.AddControl("Button", "btnConvertAndSave", "x+10 y481 w124", "Convert && &Save && Close")
 		this.btnCancel := this.AddControl("Button", "btnCancel", "x+5 y481 w60", "Cancel")
 		this.OnMessage(WM_COMMAND:=0x111, "MessageHandler") ;Might not be working right now
 		LV_Modify(1,"Select")

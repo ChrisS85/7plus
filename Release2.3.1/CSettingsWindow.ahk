@@ -773,8 +773,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 	{
 		Page := this.Pages.AccessorPlugins.Tabs[1]
 		Page.AddControl("Text", "txtAccessorText", "x197 y373 w431 h39", "Accessor is a versatile tool that is used to perform many commands through the keyboard, `nlike launching programs, switching windows, open URLs, browsing the filesystem,...`nPress the assigned hotkey (Default: ALT+Space) and start typing!")
-		Page.AddControl("Button", "btnAccessorHelp", "x730 y60 w90 h23", "Help")
-		Page.AddControl("Button", "btnAccessorSettings", "x730 y31 w90 h23", "Plugin Settings")
+		Page.AddControl("Button", "btnAccessorHelp", "x730 y60 w90 h23", "&Help")
+		Page.AddControl("Button", "btnAccessorSettings", "x730 y31 w90 h23", "Plugin &Settings")
 		Page.AddControl("ListView", "listAccessorPlugins", "x197 y31 w525 h332 Checked", "Enabled|Plugin Name")
 		Page.Controls.listAccessorPlugins.IndependentSorting := true
 	}
@@ -872,8 +872,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("Edit", "editAccessorCommand", "x260 y395 w462 h20", "")
 		Page.Controls.editAccessorCommand.ToolTip := "You can use parameters here which are inserted into the command at specific places. This is currently only supported by the URL plugin. Example: Keyword: ""google"" Command: ""www.google.com/search?q=${1}"" Entered Text: ""google 7plus"" result: ""www.google.com/search?q=7plus"""
 		
-		Page.AddControl("Button", "btnDeleteAccessorKeyword", "x730 y60 w90 h23", "Delete Keyword")
-		Page.AddControl("Button", "btnAddAccessorKeyword", "x730 y31 w90 h23", "Add Keyword")
+		Page.AddControl("Button", "btnDeleteAccessorKeyword", "x730 y60 w90 h23", "&Delete Keyword")
+		Page.AddControl("Button", "btnAddAccessorKeyword", "x730 y31 w90 h23", "&Add Keyword")
 		Page.AddControl("ListView", "listAccessorKeywords", "x197 y31 w525 h332", "Keyword|Command")
 		Page.Controls.listAccessorKeywords.IndependentSorting := true
 	}
@@ -1096,7 +1096,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.Controls.chkCleanFolderBand.ToolTip := "If you use the folder band as a favorites bar like in browsers, it is recommended that you get rid of the buttons predefined by windows whereever possible (such as Slideshow, Add to Library,...)"
 		Page.AddControl("CheckBox", "chkShowInPlacesBar", "x216 y109 h17", "Integrate Fast Folders into open/save dialog places bar (First 5 Entries)")
 		;~ Page.AddControl("Link", "linkShowInPlacesBar", "x197 y110 w13 h13", "?")
-		Page.AddControl("Button", "btnRemoveCustomButtons", "x216 y132 w179 h23", "Remove custom Explorer buttons")
+		Page.AddControl("Button", "btnRemoveCustomButtons", "x216 y132 w179 h23", "&Remove custom Explorer buttons")
 		Page.Controls.btnRemoveCustomButtons.ToolTip := "By doing this all custom buttons in the explorer folder band bar will be removed. This is useful if an error occurred and some buttons get duplicated. Once you press OK or Apply in this dialog, the buttons created with an ExplorerButton trigger will reappear. To make the FastFolder buttons reappear, save a directory to a FastFolder slot by pressing CTRL+Numpad[0-9] (Default keys)"
 	}
 	InitFastFolders()
@@ -1155,9 +1155,9 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page := this.Pages.FTPProfiles.Tabs[1]
 		Page.AddControl("Text", "txtFTPDescription", "x213 y32 w307 h13", "You can define FTP profiles for use with the upload action here.")
 		Page.AddControl("DropDownList", "ddlFTPProfile", "x216 y50 w297", "")
-		Page.AddControl("Button", "btnAddFTPProfile", "x519 y48 w79 h23", "Add profile")
-		Page.AddControl("Button", "btnDeleteFTPProfile", "x604 y48 w79 h23", "Delete profile")
-		Page.AddControl("Button", "btnTestFTPProfile", "x689 y48 w79 h23", "Test profile")
+		Page.AddControl("Button", "btnAddFTPProfile", "x519 y48 w79 h23", "&Add profile")
+		Page.AddControl("Button", "btnDeleteFTPProfile", "x604 y48 w79 h23", "&Delete profile")
+		Page.AddControl("Button", "btnTestFTPProfile", "x689 y48 w79 h23", "&Test profile")
 		Page.AddControl("Text", "txtFTPHostname", "x213 y93 w58 h13", "Hostname:")
 		Page.AddControl("Edit", "editFTPHostname", "x434 y90 w249 h20", "")
 		Page.AddControl("Text", "txtFTPPort", "x213 y119 w29 h13", "Port:")
@@ -1320,13 +1320,13 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("Text", "txtHotStringDescription", "x197 y376", "HotStrings are used to expand abbreviations and acronyms, such as ""btw"" -> ""by the way"". They support regular`nexpressions in PCRE format. If you want a HotString to trigger only when typed as a seperate word, prepend \b`nand append \s.  For case-insensitive HotStrings, put i) at the start. You can also use keys like {Enter}.")
 		Page.AddControl("ListView", "listHotStrings", "x197 y31 w525 h282", "HotString|Output")
 		Page.Controls.listHotStrings.IndependentSorting := true
-		Page.AddControl("Button", "btnAddHotString", "x730 y31 w90 h23", "Add HotString")
-		Page.AddControl("Button", "btnDeleteHotString", "x730 y60 w90 h23", "Delete HotString")
+		Page.AddControl("Button", "btnAddHotString", "x730 y31 w90 h23", "&Add HotString")
+		Page.AddControl("Button", "btnDeleteHotString", "x730 y60 w90 h23", "&Delete HotString")
 		Page.AddControl("Text", "txtHotStringInput", "x197 y322 w50 h13", "HotString:")
 		Page.AddControl("Edit", "editHotStringInput", "x260 y319 w462 h20", "")
 		Page.AddControl("Text", "txtHotStringOutput", "x197 y348 w42 h13", "Output:")
 		Page.AddControl("Edit", "editHotStringOutput", "x260 y345 w462 h20", "")
-		Page.AddControl("Button", "btnHotStringRegExHelp", "x730 y89 w90 h23", "RegEx Help")
+		Page.AddControl("Button", "btnHotStringRegExHelp", "x730 y89 w90 h23", "&RegEx Help")
 	}
 	InitHotStrings()
 	{

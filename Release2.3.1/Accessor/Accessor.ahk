@@ -787,7 +787,7 @@ GUI_EditAccessorPlugin(TemporaryPlugin,GoToLabel="")
 		;Gui, 4:Add, Button, ,OK
 		x := PluginGUI.x
 		y := Height - 34
-		Gui, Add, Button, gEditAccessorPluginHelp x%x% y%y% w70 h23, Help
+		Gui, Add, Button, gEditAccessorPluginHelp x%x% y%y% w70 h23, &Help
 		x := Width - 174
 		Gui, Add, Button, gEditAccessorPluginOK x%x% y%y% w70 h23, &OK
 		x := Width - 94

@@ -132,9 +132,9 @@ Class CReplaceDialog
 		Gui, % this.GUINum ":Add",DropDownList, x+37 y+-16 w100 hwndhConvertLineSeparatorList Hidden Disabled, Windows (\r\n)||Unix (\n)
 		
 		
-		Gui, % this.GUINum ":Add",Button, x10 y440 w75 h23 gExplorerReplaceDialogRegEx, RegEx Help
-		Gui, % this.GUINum ":Add",Button, x445 y440 w75 h23 gExplorerReplaceDialogSearch Default, Search
-		Gui, % this.GUINum ":Add",Button, x526 y440 w75 h23 Disabled gExplorerReplaceDialogReplace hwndhReplaceButton, Replace
+		Gui, % this.GUINum ":Add",Button, x10 y440 w75 h23 gExplorerReplaceDialogRegEx, RegEx &Help
+		Gui, % this.GUINum ":Add",Button, x445 y440 w75 h23 gExplorerReplaceDialogSearch Default, &Search
+		Gui, % this.GUINum ":Add",Button, x526 y440 w75 h23 Disabled gExplorerReplaceDialogReplace hwndhReplaceButton, &Replace
 		Gui, % this.GUINum ":Add",Button, x607 y440 w75 h23 hwndhCancel gExplorerReplaceDialogCancel, Cancel
 		this.hFiles := hFiles
 		this.hFilenames := hFilenames
