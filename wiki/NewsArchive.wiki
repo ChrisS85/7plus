@@ -1,4 +1,5 @@
 ====February 2012====
+  * 2012-02-25: [News20120225 7plus V.2.5.0 released!]
   * 2012-02-12: [News20120212 7plus V.2.4.0 released!]
 ====April 2011====
   * 2011-04-13: [News20110413 7plus V.2.3.0 released!]
