@@ -1,0 +1,2 @@
+= Send mail action =
+This action can send emails using SMTP. The options are more or less self-explaining. Multiple attachments can be send by separating them with "|". Make sure that the SMTP server details are correct, possibly by testing the settings with an email program.
