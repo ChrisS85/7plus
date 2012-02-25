@@ -400,12 +400,13 @@ if(Accessor.NeedsUpdate)
 return
 
 AccessorListView:
-SetTimer, AccessorListViewEvents, -10
+AccessorListViewEvents()
+;~ SetTimer, AccessorListViewEvents, -10
 return
 
-AccessorListViewEvents:
-AccessorListViewEvents()
-return
+;~ AccessorListViewEvents:
+;~ AccessorListViewEvents()
+;~ return
 
 AccessorEditEvents()
 {
