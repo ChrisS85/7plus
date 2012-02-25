@@ -151,6 +151,10 @@ ApplyUpdateFixes()
 			XML_Save(XMLObject, Settings.ConfigPath "\Clipboard.xml")
 		}
 	}
+	else if(MajorVersion "." MinorVersion "." BugfixVersion = "2.5.0")
+	{
+		FileDelete, %A_ScriptDir%\Events\FTP.xml
+	}
 }
 AutoUpdate_CheckPatches()
 {

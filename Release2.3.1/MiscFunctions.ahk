@@ -974,7 +974,7 @@ ExploreObj(Obj, NewRow="`n", Equal="  =  ", Indent="`t", Depth=12, CurIndent="")
 }
 
 GetFullPathName(SPath)
-{ 
+{
 	VarSetCapacity(lPath,A_IsUnicode ? 520 : 260,0), DllCall("GetLongPathName", Str,SPath, Str,lPath, UInt,260 ) 
 	Return lPath 
 }
