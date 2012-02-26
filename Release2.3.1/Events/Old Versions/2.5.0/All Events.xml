@@ -2939,8 +2939,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<Menu>ClipboardMenu</Menu>
-<Type>Show menu</Type>
+<Type>Clipboard Manager menu</Type>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
 <Conditions>
@@ -5495,4 +5494,4 @@
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
-<MinorVersion>6</MinorVersion>
+<MinorVersion>5</MinorVersion>

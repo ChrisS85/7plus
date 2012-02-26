@@ -59,6 +59,7 @@ return
 
 BuildMenu(Name)
 {
+	global ClipboardList
 	Menu, Tray, UseErrorLevel
 	Menu, %Name%, DeleteAll
 	if(Name = "Tray")
@@ -79,6 +80,22 @@ BuildMenu(Name)
 		if(!A_IsCompiled)
 			Menu, tray, add, Pause Script, Tray_Pause
 		Menu, tray, add, Exit, Tray_Exit
+	}
+	else if(Name = "ClipboardMenu")
+	{
+		loop % ClipboardList.MaxIndex()
+		{		
+			i:=A_Index ;ClipboardList.MaxIndex()-A_Index+1
+			
+			x:=ClipboardList[i]
+			StringReplace,x,x,`r,,All
+			StringReplace,x,x,`n,[NEWLINE],All
+			y:="`t"
+			StringReplace,x,x,%y%,[TAB],All ;Weird syntax bug requires `t to be stored in a variable here
+			x:="&" (A_Index-1) ": " Substr(x,1,100)
+			if(x)
+				Menu, ClipboardMenu, add, %x%, ClipboardHandler%i%
+		}
 	}
 	for index, Event in EventSystem.Events
 	{

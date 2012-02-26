@@ -5,17 +5,18 @@
 	
 	Execute(Event)
 	{
-		if(!this.tmpShowing)
-		{
-			this.tmpShowing := true
-			ClipboardManagerMenu()
-		}
-		else if(!IsContextMenuActive()) ;Menu closed
-		{
-			this.tmpShowing := false
-			return 1
-		}
-		return -1 ;Waiting for menu to close
+		MsgBox This action is no longer supported! Please use the "Show Menu" action with the ClipboardMenu!
+		;~ if(!this.tmpShowing)
+		;~ {
+			;~ this.tmpShowing := true
+			;~ ClipboardManagerMenu()
+		;~ }
+		;~ else if(!IsContextMenuActive()) ;Menu closed
+		;~ {
+			;~ this.tmpShowing := false
+			;~ return 1
+		;~ }
+		;~ return -1 ;Waiting for menu to close
 	} 
 
 	DisplayString()

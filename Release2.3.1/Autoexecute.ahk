@@ -127,21 +127,7 @@ SlideWindows := new CSlideWindows()
 
 SetTimer, MouseMovePolling, 50
 
-;Clipboard manager list (is some sort of fixed size stack which removes oldest entry on add/insert/push)
-ClipboardList := Array()
-ClipboardList.push := "Stack_Push"
-ClipboardList := Object("Base", ClipboardList)
-if(FileExist(Settings.ConfigPath "\Clipboard.xml"))
-{
-	FileRead, xml, % Settings.ConfigPath "\Clipboard.xml"
-	XMLObject := XML_Read(xml)
-	;Convert empty and single arrays to real array
-	if(!XMLObject.List.MaxIndex())
-		XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()		
-
-	Loop % min(XMLObject.List.MaxIndex(), 10)
-		ClipboardList.Insert(Decrypt(XMLObject.List[A_Index])) ;Read encrypted clipboard history
-}
+ClipboardList := new CClipboardList()
 
 InitExplorerWindows()
 
@@ -227,11 +213,11 @@ OnExit(reload=0)
 	outputdebug OnExit()
 	if(ApplicationState.ProgramStartupFinished)
 	{
+		ClipboardList.Save()
 		EventSystem.OnExit()
 		Gdip_Shutdown(pToken)
 		SlideWindows.OnExit()
 		Settings.Save()
-		WriteClipboard()
 		CloseAllInactiveTabs()
 		SaveHotstrings()
 		if(Settings.General.DebugEnabled)
@@ -253,22 +239,6 @@ IfMsgBox Yes
 Notify("Open Settings?", "At the beginning you should take some minutes and check out the settings.`nDouble click on the tray icon or click here to open the settings window.", "10", "GC=555555 TC=White MC=White AC=SettingsHandler", NotifyIcons.Question)
 return
 
-WriteClipboard()
-{
-	global ClipboardList
-	FileDelete, % Settings.ConfigPath "\Clipboard.xml"
-	for index, Event in EventSystem.Events ;Check if clipboard history is actually used and don't store the history when it isn't
-	{
-		if((Event.GetItemWithValue("Type", "Clipmenu") || Event.GetItemWithValue("Type", "ClipPaste"))&& Event.Enabled)
-		{
-			XMLObject := Object("List",Array())
-			Loop % min(ClipboardList.MaxIndex(), 10)
-				XMLObject.List.Insert(Encrypt(ClipboardList[A_Index])) ;Store encrypted
-			XML_Save(XMLObject, Settings.ConfigPath "\Clipboard.xml")
-			break
-		}
-	}
-}
 ProcessCommandLineParameters()
 {
 	global

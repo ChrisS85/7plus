@@ -20,7 +20,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 DetectHiddenWindows, On ;We don't want to miss any usually
 ;SetFormat, Integer, D
 MajorVersion := 2
-MinorVersion := 5
+MinorVersion := 6
 BugfixVersion := 0
 ComObjError(0)
 #include %A_ScriptDir%\Globals.ahk ;Some global variable definitions
