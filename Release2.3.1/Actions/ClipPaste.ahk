@@ -26,6 +26,64 @@ Class CClipPasteAction Extends CAction
 	}
 }
 
+Class CClipboardList extends CArray
+{
+	Persistent := Array()
+	__new()
+	{
+		this.Load()
+	}
+	;Stack Push function for clipboard manager stack
+	Push(item)
+	{
+		itemPosition := this.IndexOf(item)
+		if(!itemPosition)
+		{
+			this.Insert(1, item)
+			if(this.MaxIndex()=11)
+				this.Remove()
+		}
+		else
+			this.Move(itemPosition, 1)
+	}
+	Load()
+	{
+		if(FileExist(Settings.ConfigPath "\Clipboard.xml"))
+		{
+			FileRead, xml, % Settings.ConfigPath "\Clipboard.xml"
+			XMLObject := XML_Read(xml)
+			;Convert empty and single arrays to real array
+			if(!XMLObject.List.MaxIndex())
+				XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()	
+			if(!XMLObject.Persistent.MaxIndex())
+				XMLObject.Persistent := IsObject(XMLObject.Persistent) ? Array(XMLObject.Persistent) : Array()		
+
+			Loop % min(XMLObject.List.MaxIndex(), 10)
+				this.Insert(Decrypt(XMLObject.List[A_Index])) ;Read encrypted clipboard history
+			Loop % XMLObject.Persistent.MaxIndex()
+				this.Persistent.Insert(XMLObject.Persistent[A_Index])
+		}
+	}
+	Save()
+	{
+		FileDelete, % Settings.ConfigPath "\Clipboard.xml"
+		for index, Event in EventSystem.Events ;Check if clipboard history is actually used and don't store the history when it isn't
+		{
+			Action := Event.Actions.GetItemWithValue("Type", "Show menu")
+			if((Action.Menu = "ClipboardMenu" || Event.Actions.GetItemWithValue("Type", "ClipPaste")) && Event.Enabled)
+			{
+				XMLObject := Object("List", Array(), "Persistent", Array())
+				Loop % min(this.MaxIndex(), 10)
+					XMLObject.List.Insert(Encrypt(this[A_Index])) ;Store encrypted
+				Loop % this.Persistent.MaxIndex()
+					XMLObject.Persistent.Insert({Name : this.Persistent[A_Index].Name, Text : this.Persistent[A_Index].Text})
+				XML_Save(XMLObject, Settings.ConfigPath "\Clipboard.xml")
+				return
+			}
+		}
+	}
+}
+
 ;Need separate handlers because menu index doesn't have to match array index
 ClipboardHandler1:
 ClipboardMenuClicked(1)
@@ -60,87 +118,47 @@ return
 
 ClipboardMenuClicked(index)
 {
-	global ClipboardList,MuteClipboardList
+	global ClipboardList
 	if(ClipboardList[index])
-	{
-		ClipboardBackup := ClipboardAll
-		MuteClipboardList := true
-		Clipboard := ClipboardList[index]
-		Clipwait,1,1
-		if(!Errorlevel)
-		{
-			Sleep 100 ;Some extra sleep to increase reliability
-			if(WinActive("ahk_class ConsoleWindowClass"))
-			{
-				CoordMode, Mouse, Screen
-				MouseGetPos, mx,my
-				CoordMode, Mouse, Relative
-				Click Right 40, 40
-				CoordMode, Mouse, Screen
-				MouseMove, %mx%, %my%
-				Send {Down 3}{Enter}
-			}
-			else	
-				Send ^v
-			Sleep 20
-		}
-		else
-			Notify("Error pasting text", "Error pasting text", "5", "GC=555555 TC=White MC=White",NotifyIcons.Error)
-		Clipboard:=ClipboardBackup
-		Clipwait,1,1
-		MuteClipboardList := false
-	}
-	Menu, ClipboardMenu, add, 1,ClipboardHandler1
-	Menu, ClipboardMenu, DeleteAll
+		PasteText(ClipboardList[index])
 }
 
-Class CClipboardList extends CArray
-{
-	__new()
-	{
-		this.Load()
-	}
-	;Stack Push function for clipboard manager stack
-	Push(item)
-	{
-		itemPosition := this.IndexOf(item)
-		if(!itemPosition)
-		{
-			this.Insert(1, item)
-			if(this.MaxIndex()=11)
-				this.Remove()
-		}
-		else
-			this.Move(itemPosition, 1)
-	}
-	Load()
-	{
-		if(FileExist(Settings.ConfigPath "\Clipboard.xml"))
-		{
-			FileRead, xml, % Settings.ConfigPath "\Clipboard.xml"
-			XMLObject := XML_Read(xml)
-			;Convert empty and single arrays to real array
-			if(!XMLObject.List.MaxIndex())
-				XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()		
+PersistentClipboardHandler:
+PersistentClipboard()
+return
 
-			Loop % min(XMLObject.List.MaxIndex(), 10)
-				this.Insert(Decrypt(XMLObject.List[A_Index])) ;Read encrypted clipboard history
-		}
-	}
-	Save()
+PersistentClipboard()
+{
+	global ClipboardList
+	PasteText(ClipboardList.Persistent[A_ThisMenuItemPos].Text)
+}
+PasteText(Text)
+{
+	global MuteClipboardList
+	ClipboardBackup := ClipboardAll
+	MuteClipboardList := true
+	Clipboard := Text
+	Clipwait,1,1
+	if(!Errorlevel)
 	{
-		FileDelete, % Settings.ConfigPath "\Clipboard.xml"
-		for index, Event in EventSystem.Events ;Check if clipboard history is actually used and don't store the history when it isn't
+		Sleep 100 ;Some extra sleep to increase reliability
+		if(WinActive("ahk_class ConsoleWindowClass"))
 		{
-			Action := Event.Actions.GetItemWithValue("Type", "Show menu")
-			if((Action.Menu = "ClipboardMenu" || Event.Actions.GetItemWithValue("Type", "ClipPaste")) && Event.Enabled)
-			{
-				XMLObject := Object("List",Array())
-				Loop % min(this.MaxIndex(), 10)
-					XMLObject.List.Insert(Encrypt(this[A_Index])) ;Store encrypted
-				XML_Save(XMLObject, Settings.ConfigPath "\Clipboard.xml")
-				return
-			}
+			CoordMode, Mouse, Screen
+			MouseGetPos, mx,my
+			CoordMode, Mouse, Relative
+			Click Right 40, 40
+			CoordMode, Mouse, Screen
+			MouseMove, %mx%, %my%
+			Send {Down 3}{Enter}
 		}
+		else	
+			Send ^v
+		Sleep 20
 	}
+	else
+		Notify("Error pasting text", "Error pasting text", "5", "GC=555555 TC=White MC=White",NotifyIcons.Error)
+	Clipboard:=ClipboardBackup
+	Clipwait,1,1
+	MuteClipboardList := false
 }

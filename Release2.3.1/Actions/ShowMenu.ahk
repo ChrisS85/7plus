@@ -82,8 +82,15 @@ BuildMenu(Name)
 		Menu, tray, add, Exit, Tray_Exit
 	}
 	else if(Name = "ClipboardMenu")
-	{
-		loop % ClipboardList.MaxIndex()
+	{	
+		if(ClipboardList.Persistent.MaxIndex())
+		{
+			Menu, PersistentClipboard, DeleteAll
+			for index, Entry in ClipboardList.Persistent
+				Menu, PersistentClipboard, add, % Entry.Name, PersistentClipboardHandler
+			Menu, ClipboardMenu, add, Clips, :PersistentClipboard
+		}
+		Loop % ClipboardList.MaxIndex()
 		{		
 			i:=A_Index ;ClipboardList.MaxIndex()-A_Index+1
 			

@@ -13,14 +13,14 @@ ShowSettings(Page = "Events")
 	SettingsWindow.Show(Page)
 }
 Class CSettingsWindow Extends CGUI
-{	
+{
 	treePages := this.AddControl("TreeView", "treePages", "x19 y12 w140 h413", "")
 	btnApply := this.AddControl("Button", "btnApply", "x757 y431 w73 h23", "Apply")
 	btnCancel := this.AddControl("Button", "btnCancel", "x678 y431 w73 h23", "Cancel")
 	btnOK := this.AddControl("Button", "btnOK", "x599 y431 w73 h23", "OK")
 	;~ txtVideoHint := this.AddControl("Text", "txtVideoHint", "x16 y436 w175 h13", "Click on ? to see video tutorial help!")
 	grpPage := this.AddControl("GroupBox", "grpPage", "x176 y12 w654 h413", "Events")
-	PageNames := "Introduction|Events|Accessor Keywords|Accessor Plugins|Explorer|Explorer Tabs|Fast Folders|FTP Profiles|HotStrings|Windows|Windows Settings|Misc|About"
+	PageNames := "Introduction|Events|Accessor Keywords|Accessor Plugins|Clipboard|Explorer|Explorer Tabs|Fast Folders|FTP Profiles|HotStrings|Windows|Windows Settings|Misc|About"
 	__New()
 	{
 		this.treePages.RegisterEvent("ItemSelected", "PageSelected")
@@ -972,6 +972,115 @@ Finally, here are some settings that you're likely to change at the beginning:
 		this.AccessorKeywords[Page.listAccessorKeywords.SelectedIndex].Command := Page.EditAccessorCommand.Text
 	}
 	
+	;Clipboard
+	CreateClipboard()
+	{
+		Page := this.Pages.Clipboard.Tabs[1]
+		Page.AddControl("Text", "txtClipboardName", "x197 y272 w51 h13", "Name:")
+		Page.AddControl("Edit", "editClipboardName", "x260 y269 w462 h20", "")
+		Page.Controls.editClipboardName.ToolTip := "The name of the clip"
+		Page.AddControl("Text", "txtClipboardText", "x197 y298 w57 h13", "Text:")
+		Page.AddControl("Edit", "editClipboardText", "x260 y295 w462 r8 Multi", "")
+		Page.Controls.editClipboardText.ToolTip := "The text of the clip. You can use parameters like this: ""Hello %Name%""`nWhen the clip is inserted, a dialog will show up and ask for a value."
+		
+		Page.AddControl("Button", "btnDeleteClip", "x730 y60 w90 h23", "&Delete Clip")
+		Page.AddControl("Button", "btnAddClip", "x730 y31 w90 h23", "&Add Clip")
+		Page.AddControl("ListView", "listClipboard", "x197 y31 w525 h232", "Name|Text")
+		Page.Controls.listClipboard.IndependentSorting := true
+	}
+	InitClipboard()
+	{
+		global ClipboardList
+		Page := this.Pages.Clipboard.Tabs[1].Controls
+		this.ClipboardList := ClipboardList.Persistent.DeepCopy()
+		Page.listClipboard.Items.Clear()
+		Page.listClipboard.ModifyCol(1, 100)
+		Page.listClipboard.ModifyCol(2, "AutoHdr")
+		Loop % this.ClipboardList.MaxIndex()
+			Page.listClipboard.Items.Add(A_Index = 1 ? "Select" : "", this.ClipboardList[A_Index].Name, this.ClipboardList[A_Index].Text)
+		this.listClipboard_SelectionChanged("")
+	}
+	ApplyClipboard()
+	{
+		global ClipboardList
+		Page := this.Pages.Clipboard.Tabs[1].Controls
+		;Find duplicates
+		pos := 1
+		len := this.ClipboardList.MaxIndex()
+		Loop % len
+		{
+			Clip := this.ClipboardList[A_Index]
+			Loop % this.ClipboardList.MaxIndex()
+			{
+				if(pos != A_Index && this.ClipboardList[A_Index].Name = ClipboardList.Persistent.Name)
+				{
+					this.ClipboardList.Remove(pos)
+					Clip := ""
+					break
+				}
+			}
+			if(IsObject(Clip))
+				pos++
+		}
+		ClipboardList.Persistent := this.ClipboardList.DeepCopy()
+	}
+	btnAddClip_Click()
+	{
+		this.AddClip()
+	}
+	AddClip()
+	{
+		Page := this.Pages.Clipboard.Tabs[1].Controls
+		this.ClipboardList.Insert(Object("Name", "Name", "Text", "Text"))
+		Item := Page.listClipboard.Items.Add("Select", "Name", "Text")
+		Page.listClipboard.SelectedItem := Item
+		this.ActiveControl := Page.listClipboard
+	}
+	btnDeleteClip_Click()
+	{
+		this.DeleteClip()
+	}
+	DeleteClip()
+	{
+		Page := this.Pages.Clipboard.Tabs[1].Controls
+		if(Page.listClipboard.SelectedItems.MaxIndex() != 1)
+			return
+		SelectedIndex := Page.listClipboard.SelectedIndex
+		this.ClipboardList.Remove(SelectedIndex)
+		Page.listClipboard.Items.Delete(SelectedIndex)
+		if(SelectedIndex > Page.listClipboard.Items.MaxIndex())
+			SelectedIndex := Page.listClipboard.Items.MaxIndex()
+		Page.listClipboard.SelectedIndex := SelectedIndex
+		this.ActiveControl := Page.listClipboard
+	}
+	listClipboard_SelectionChanged(Row)
+	{
+		Page := this.Pages.Clipboard.Tabs[1].Controls
+		SingleSelection := Page.listClipboard.SelectedItems.MaxIndex() = 1
+		Page.editClipboardName.Text := SingleSelection ? this.ClipboardList[Page.listClipboard.SelectedIndex].Name : ""
+		Page.editClipboardText.Text := SingleSelection ? this.ClipboardList[Page.listClipboard.SelectedIndex].Text : ""
+		Page.editClipboardName.Enabled := SingleSelection
+		Page.editClipboardText.Enabled := SingleSelection
+		Page.btnDeleteClip.Enabled := SingleSelection
+		this.ActiveControl := Page.listClipboard
+	}
+	editClipboardName_TextChanged()
+	{
+		Page := this.Pages.Clipboard.Tabs[1].Controls
+		if(Page.listClipboard.SelectedItems.MaxIndex() != 1)
+			return
+		Page.listClipboard.SelectedItem[1] := Page.editClipboardName.Text
+		this.ClipboardList[Page.listClipboard.SelectedIndex].Name := Page.editClipboardName.Text
+	}
+	editClipboardText_TextChanged()
+	{		
+		Page := this.Pages.Clipboard.Tabs[1].Controls
+		if(Page.listClipboard.SelectedItems.MaxIndex() != 1)
+			return
+		
+		Page.listClipboard.SelectedItem[2] := Page.editClipboardText.Text
+		this.ClipboardList[Page.listClipboard.SelectedIndex].Text := Page.editClipboardText.Text
+	}
 	
 	;Explorer
 	CreateExplorer()

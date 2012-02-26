@@ -351,7 +351,7 @@ Class CSlideWindow
 		Loop % Windows ;Iterate over all windows, find out which ones are child windows of hwnd and add them to the list
 		{
 			hParent := Windows%A_Index%
-			if(hParent = this.hwnd) ;Skip the window itselfm
+			if(hParent = this.hwnd) ;Skip the window itself
 				continue
 			while(hParent && hParent != this.hwnd)
 				hParent := DllCall("GetParent", "PTR", hParent)
