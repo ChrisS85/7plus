@@ -61,7 +61,12 @@ Class CClipboardList extends CArray
 			Loop % min(XMLObject.List.MaxIndex(), 10)
 				this.Insert(Decrypt(XMLObject.List[A_Index])) ;Read encrypted clipboard history
 			Loop % XMLObject.Persistent.MaxIndex()
-				this.Persistent.Insert(XMLObject.Persistent[A_Index])
+			{
+				Clip := RichObject()
+				Clip.Name := XMLObject.Persistent[A_Index].Name
+				Clip.Text := XMLObject.Persistent[A_Index].Text
+				this.Persistent.Insert(Clip)
+			}
 		}
 	}
 	Save()
@@ -130,11 +135,50 @@ return
 PersistentClipboard()
 {
 	global ClipboardList
-	PasteText(ClipboardList.Persistent[A_ThisMenuItemPos].Text)
+	text := ClipboardList.Persistent[A_ThisMenuItemPos].Text
+	if(InStr(text, "%") && InStr(text, "%", false, 1, 2) && SubStr(text, InStr(text, "%") + 1, InStr(text, "%", false, 1, 2) - InStr(text, "%") - 1))
+		ClipVariableWindow := new CClipVariableWindow(ClipboardList.Persistent[A_ThisMenuItemPos].DeepCopy())
+	else
+		PasteText(text)
+}
+Class CClipVariableWindow extends CGUI
+{
+	editText := this.AddControl("Edit", "editText", "x10 y10 w300", "")
+	btnOK := this.AddControl("Button", "btnOK", "x180 y+10 Default w50", "&OK")
+	btnCancel := this.AddControl("Button", "btnCancel", "x+10 w70", "&Cancel")
+	__new(Clip)
+	{
+		static EM_SETSEL := 0x00B1
+		this.Clip := Clip
+		this.Variable := SubStr(Clip.Text, InStr(Clip.Text, "%") + 1, InStr(Clip.Text, "%", false, 1, 2) - InStr(Clip.Text, "%") - 1)
+		this.ActiveControl := this.editText
+		this.Show()
+		this.editText.Text := "Text for """ this.Variable """"
+		SendMessage, EM_SETSEL, 0, -1, , % "ahk_id " this.editText.hwnd
+		this.DestroyOnClose := true
+		this.CloseOnEscape := true
+	}
+	btnCancel_Click()
+	{
+		this.Close()
+	}
+	btnOK_Click()
+	{
+		text := this.Clip.Text
+		StringReplace, text, text, % "%" this.Variable "%", % this.editText.Text
+		this.Clip.Text := text
+		this.Hide()
+		this.Close()
+		if(InStr(this.Clip.Text, "%") && InStr(this.Clip.Text, "%", false, 1, 2) && SubStr(this.Clip.Text, InStr(this.Clip.Text, "%") + 1, InStr(this.Clip.Text, "%", false, 1, 2) - InStr(this.Clip.Text, "%") - 1))
+			ClipVariableWindow := new CClipVariableWindow(this.Clip)
+		else
+			PasteText(text)
+	}
 }
 PasteText(Text)
 {
 	global MuteClipboardList
+	outputdebug % WinGetClass("A")
 	ClipboardBackup := ClipboardAll
 	MuteClipboardList := true
 	Clipboard := Text
