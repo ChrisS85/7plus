@@ -173,8 +173,7 @@ global SettingsWindow := new CSettingsWindow()
 
 outputdebug 7plus startup procedure finished, entering event loop.
 ;Event loop
-SetTimer, EventScheduler, 100
-; EventScheduler()
+SetTimer, EventScheduler, 10
 Return
 
 Run7plusAsAdmin()
