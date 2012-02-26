@@ -403,22 +403,28 @@ Finally, here are some settings that you're likely to change at the beginning:
 			Page.btnDeleteEvents.Enabled := false
 			Page.btnCopyEvent.Enabled := false
 			Page.btnExportEvents.Enabled := false
+			Page.btnEnableEvents.Enabled := false
+			Page.btnDisableEvents.Enabled := false
 		}
 		else if(Items >= 1)
 		{
 			Page.btnDeleteEvents.Enabled := true
 			Page.btnCopyEvent.Enabled := true
 			Page.btnExportEvents.Enabled := true
+			Page.btnEnableEvents.Enabled := true
+			Page.btnDisableEvents.Enabled := true
 		}
 		if(items = 1)
 		{
 			Page.editEventDescription.Text := this.Events.GetItemWithValue("ID", Page.listEvents.SelectedItem[2]).Description
 			Page.btnEditEvent.Enabled := true
+			Page.btnCreateShortcut.Enabled := true
 		}
 		else
 		{
 			Page.editEventDescription.Text := ""
 			Page.btnEditEvent.Enabled := false
+			Page.btnCreateShortcut.Enabled := false
 		}
 		this.ActiveControl := Page.listEvents
 	}
@@ -976,16 +982,17 @@ Finally, here are some settings that you're likely to change at the beginning:
 	CreateClipboard()
 	{
 		Page := this.Pages.Clipboard.Tabs[1]
-		Page.AddControl("Text", "txtClipboardName", "x197 y272 w51 h13", "Name:")
-		Page.AddControl("Edit", "editClipboardName", "x260 y269 w462 h20", "")
+		Page.AddControl("Text", "txtClipboardDescription", "x197 y31", "You can define custom clips here that can be inserted through the clipboard manager menu (Default: WIN + V).`n These clips support %Parameters%.")
+		Page.AddControl("Text", "txtClipboardName", "x197 y302 w51 h13", "Name:")
+		Page.AddControl("Edit", "editClipboardName", "x260 y299 w462 h20", "")
 		Page.Controls.editClipboardName.ToolTip := "The name of the clip"
-		Page.AddControl("Text", "txtClipboardText", "x197 y298 w57 h13", "Text:")
-		Page.AddControl("Edit", "editClipboardText", "x260 y295 w462 r8 Multi", "")
+		Page.AddControl("Text", "txtClipboardText", "x197 y328 w57 h13", "Text:")
+		Page.AddControl("Edit", "editClipboardText", "x260 y325 w462 r6 Multi", "")
 		Page.Controls.editClipboardText.ToolTip := "The text of the clip. You can use parameters like this: ""Hello %Name%""`nWhen the clip is inserted, a dialog will show up and ask for a value."
 		
-		Page.AddControl("Button", "btnDeleteClip", "x730 y60 w90 h23", "&Delete Clip")
-		Page.AddControl("Button", "btnAddClip", "x730 y31 w90 h23", "&Add Clip")
-		Page.AddControl("ListView", "listClipboard", "x197 y31 w525 h232", "Name|Text")
+		Page.AddControl("Button", "btnDeleteClip", "x730 y90 w90 h23", "&Delete Clip")
+		Page.AddControl("Button", "btnAddClip", "x730 y61 w90 h23", "&Add Clip")
+		Page.AddControl("ListView", "listClipboard", "x197 y61 w525 h232", "Name|Text")
 		Page.Controls.listClipboard.IndependentSorting := true
 	}
 	InitClipboard()
