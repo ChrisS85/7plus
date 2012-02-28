@@ -59,7 +59,7 @@ return
 
 BuildMenu(Name)
 {
-	global ClipboardList
+	global ClipboardList, ExplorerHistory
 	Menu, Tray, UseErrorLevel
 	Menu, %Name%, DeleteAll
 	if(Name = "Tray")
@@ -89,6 +89,17 @@ BuildMenu(Name)
 			for index, Entry in ClipboardList.Persistent
 				Menu, PersistentClipboard, add, % Entry.Name, PersistentClipboardHandler
 			Menu, ClipboardMenu, add, Clips, :PersistentClipboard
+		}
+		if(ExplorerHistory.MaxIndex())
+		{
+			Menu, ExplorerHistory, DeleteAll
+			for index, Entry in ExplorerHistory.History
+				Menu, ExplorerHistory, add, % Entry.Path, ExplorerHistoryHandler
+			Menu, ClipboardMenu, add, Path History, :ExplorerHistory
+			Menu, ExplorerFrequent, DeleteAll
+			for index, Entry in ExplorerHistory.FrequentPaths
+				Menu, ExplorerFrequent, add, % Entry.Path, ExplorerHistoryHandler
+			Menu, ClipboardMenu, add, Frequent Paths, :ExplorerFrequent
 		}
 		Loop % ClipboardList.MaxIndex()
 		{		

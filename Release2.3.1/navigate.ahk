@@ -37,16 +37,20 @@ Shell_GoUpward()
 	else
 		Send {Backspace}
 }
+
 ShellNavigate(Path, hWnd=0)
 {
-	if(hWnd||(hWnd:=WinExist("ahk_class CabinetWClass"))||(hWnd:=WinExist("ahk_class ExploreWClass")))
+	if(hWnd && InStr("ExploreWClass,CabinetWClass", WinGetClass("ahk_id " hwnd)))
 		DllCall(A_ScriptDir "\Explorer.dll\SetPath", "Ptr", hwnd, "Str", Path, "Cdecl")
+	else if(hwnd)
+		SetDirectory(Path, hwnd)
 }
 
-RefreshExplorer() 
+RefreshExplorer(hwnd = 0) 
 { 
-	hwnd:=WinExist("A")
-	If (WinActive("ahk_group ExplorerGroup"))
+	if(!hwnd)
+		hwnd := WinExist("A")
+	if(InStr("ExploreWClass,CabinetWClass", WinGetClass("ahk_id " hwnd)))
 	{
 		for Item in ComObjCreate("Shell.Application").Windows
 		{
@@ -57,8 +61,8 @@ RefreshExplorer()
 			}
 		}
 	}
-	else if(IsDialog())
-		Send {F5}
+	else if(IsDialog(hwnd))
+		ControlSend,, {F5}, ahk_id %hwnd%
 }
 	
 /*
@@ -175,14 +179,17 @@ ShellFileOperation_InterpretReturn(c)
    
    return dict[c] ? dict[c] : "Error code not recognized"
 }
-SetDirectory(sPath)
+SetDirectory(sPath, hwnd = 0)
 {
 	if(!sPath)
 		return
+	outputdebug SetDirectory to %sPath%, %hwnd%
 	sPath:=ExpandEnvVars(sPath)
 	if(strEndsWith(sPath,":"))
 		sPath .="\"
-	If (WinActive("ahk_group ExplorerGroup"))
+	if(hwnd)
+		class := WinGetClass("ahk_id " hwnd)
+	if((hwnd && InStr("CabinetWClass,ExploreWClass", class)) || WinActive("ahk_group ExplorerGroup"))
 	{
 		;Validity checking is turned off, it is probably better to let explorer handle this
 		;Folders || Namespace || FTP || Saved search || network computers
@@ -194,12 +201,12 @@ SetDirectory(sPath)
 		; else
 			; MsgBox The path %sPath% cannot be opened!
 	}
-	else if(WinActive("ahk_group DesktopGroup"))
+	else if((hwnd && InStr("WorkerW,Progman", class)) || WinActive("ahk_group DesktopGroup"))
 		Run(A_WinDir "\explorer.exe /n,/e," sPath)
-	else if (IsWinRarExtractionDialog())
-		SetWinRarDirectory(sPath)
-	else if (IsDialog())
-		SetDialogDirectory(sPath)
+	else if (IsWinRarExtractionDialog(hwnd))
+		SetWinRarDirectory(sPath, hwnd)
+	else if (IsDialog(hwnd))
+		SetDialogDirectory(sPath, hwnd)
 	else
 	{
 		class:=WinGetClass("A")
@@ -207,25 +214,28 @@ SetDirectory(sPath)
 	}
 }
 
-SetWinRarDirectory(Path)
+SetWinRarDirectory(Path, hwnd = 0)
 {
-	ControlSetText , Edit1, %Path%, A 
-	ControlClick, Button1, A
+	if(!hwnd)
+		hwnd := WinExist("A")
+	ControlSetText , Edit1, %Path%, ahk_id %hwnd%
+	ControlClick, Button1, ahk_id %hwnd%
 }
 
-SetDialogDirectory(Path)
+SetDialogDirectory(Path, hwnd = 0)
 {
-	ControlGetFocus, focussed, A
-	ControlGetText, w_Edit1Text, Edit1, A
-	ControlClick, Edit1, A
-	ControlSetText, Edit1, %Path%, A
-	hwnd:=WinExist("A")
-	ControlSend, Edit1, {Enter}, A
+	if(!hwnd)
+		hwnd := WinExist("A")
+	ControlGetFocus, focussed, ahk_id %hwnd%
+	ControlGetText, w_Edit1Text, Edit1, ahk_id %hwnd%
+	ControlClick, Edit1, ahk_id %hwnd%
+	ControlSetText, Edit1, %Path%, ahk_id %hwnd%
+	ControlSend, Edit1, {Enter}, ahk_id %hwnd%
 	Sleep, 100	; It needs extra time on some dialogs or in some cases.
-	while(hwnd!=WinExist("A")) ;If there is an error dialog, wait until user closes it before continueing
+	while(hwnd != WinExist("A") && A_Index < 100) ;If there is an error dialog, wait until user closes it before continueing
 		Sleep, 100
-	ControlSetText, Edit1, %w_Edit1Text%, A
-	ControlFocus %focussed%,A
+	ControlSetText, Edit1, %w_Edit1Text%, ahk_id %hwnd%
+	ControlFocus, %focussed%, ahk_id %hwnd%
 }
 
 IsDialog(window=0,ListViewSelected = False)
@@ -285,6 +295,7 @@ IsDialog(window=0,ListViewSelected = False)
 			}
 		}
 	}
+	outputdebug IsDialog ? %result%
 	return result
 }
 
@@ -591,11 +602,11 @@ ShellFolder(hWnd=0,returntype=0)
 	}
 }
 
-IsWinrarExtractionDialog()
+IsWinrarExtractionDialog(hwnd = 0)
 {
 	static WinRarTitle
-	If (WinActive("ahk_class #32770"))
-	{		
+	if((!hwnd && hwnd := WinActive("ahk_class #32770")) || (hwnd && WinGetClass("ahk_id " hwnd)))
+	{
 		if(WinRarTitle="")
 		{
 			RegRead, path, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\WinRAR.exe ,Path
@@ -613,7 +624,7 @@ IsWinrarExtractionDialog()
 					WinRarTitle:="WinRar not found"
 			}
 		}		
-		WinGetTitle, wintitle,A
+		WinGetTitle, wintitle,ahk_id %hwnd%
 		if(WinRarTitle=wintitle)
 			return true
 	}

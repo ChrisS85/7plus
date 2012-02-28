@@ -27,6 +27,7 @@ ComObjError(0)
 #include %A_ScriptDir%\Autoexecute.ahk ;include first to avoid issues with autoexecute ending too soon because of labels
 #include <RichObject>
 #include <Array>
+#include <CQueue>
 #include <Delegate>
 #include <CGUI>
 #include <binreadwrite>

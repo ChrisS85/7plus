@@ -54,6 +54,17 @@ Class CArray extends CRichObject
 		Else
 		  Return 0
 	}
+	IndexOfEqual(val, startpos = 0, key = "")
+	{
+		if(IsObject(val))
+			Loop % this.MaxIndex()
+				if(A_Index >= startpos && ((key && this[A_Index][key] = val[key]) || this[A_Index].Equals(val)))
+					return A_Index
+		else
+			Loop % this.MaxIndex()
+				if(A_Index >= startpos && this[A_Index] = val)
+					return A_Index
+	}
 	ToString(Separator = "`n")
 	{
 		string := ""
@@ -151,12 +162,12 @@ Class CArray extends CRichObject
 
 	Move(i,j)
 	{
-		if(this.MaxIndex()<i||this.MaxIndex()<j)
+		if(i > this.MaxIndex() || j > this.MaxIndex())
 			return 0
-		if(i=j)
+		if(i = j)
 			return 1
-		x:=this[i]
-		this.Delete(i)
+		x := this[i]
+		this.Remove(i)
 		; I believe the following if is wrong, possibly revert if there are any array problems with the move function
 		; if(i<j)
 			this.Insert(j,x)

@@ -43,13 +43,13 @@ Accessor_FastFolders_FillAccessorList(FastFoldersPlugin, Accessor, Filter, LastF
 			if(InStr(FastFolder.Title,Filter) || InStr(FastFolder.Path,Filter))
 				Accessor.List.Insert(Object("Title",FastFolder.Title,"Path",FastFolder.Path,"Type","FastFolders", "Icon", 2)) ;Use generic folder icon
 			else if(FastFoldersPlugin.Settings.FuzzySearch && FuzzySearch(FastFolder.Title,Filter) < 0.4)
-				FuzzyList.List.Insert(Object("Title",FastFolder.Title,"Path",FastFolder.Path,"Type","FastFolders", "Icon", 2)) ;Use generic folder icon
+				FuzzyList.Insert(Object("Title",FastFolder.Title,"Path",FastFolder.Path,"Type","FastFolders", "Icon", 2)) ;Use generic folder icon
 		}
 	Accessor.List.extend(FuzzyList)
 }
 Accessor_FastFolders_PerformAction(FastFolders, Accessor, AccessorListEntry)
 {
-	if(WinGetClass("ahk_id " Accessor.PreviousWindow) = "CabinetWClass" || WinGetClass("ahk_id " Accessor.PreviousWindow) = "ExploreWClass")
+	if(InStr("ExploreWClass,CabinetWClass", WinGetClass("ahk_id " Accessor.PreviousWindow)) || IsDialog(Accessor.PreviousWindow))
 		ShellNavigate(AccessorListEntry.Path,Accessor.PreviousWindow)
 	else
 		Run(A_WinDir "\explorer.exe /n,/e," AccessorListEntry.Path)

@@ -325,8 +325,9 @@ Wheel()
 
 InitExplorerWindows()
 {
-	global ExplorerWindows
+	global ExplorerWindows, ExplorerHistory
 	ExplorerWindows := Array()
+	ExplorerHistory := new CExplorerHistory()
 	RegisterExplorerWindows()
 	TabContainerList := Array()
 	if(Vista7)
@@ -347,6 +348,99 @@ InitExplorerWindows()
 		ExplorerWindows.InfoGUI_FreeText:=SubStr(ExplorerWindows.InfoGUI_FreeText,InStr(ExplorerWindows.InfoGUI_FreeText," ",0,0)+1)
 	}
 }
+
+;Explorer history publically only displays the first 100 entries. The rest is used for collecting frequent entries
+Class CExplorerHistory extends CQueue
+{
+	MaxSize := 200
+	Unique := false
+	__new()
+	{
+		this.Load()
+	}
+	Load()
+	{
+		if(FileExist(Settings.ConfigPath "\ExplorerHistory.xml"))
+		{
+			FileRead, xml, % Settings.ConfigPath "\ExplorerHistory.xml"
+			XMLObject := XML_Read(xml)
+			;Convert empty and single arrays to real array
+			if(!XMLObject.List.MaxIndex())
+				XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()
+			
+			Loop % min(XMLObject.List.MaxIndex(), this.MaxSize)
+			{
+				XMLEntry := XMLObject.List[A_Index]
+				entry := RichObject()
+				for key, value in XMLEntry
+					entry[key] := value
+				this[A_Index] := entry
+			}
+		}
+	}
+	Save()
+	{
+		FileDelete, % Settings.ConfigPath "\ExplorerHistory.xml"
+		
+		XMLObject := Object("List", Array())
+		Loop % min(this.MaxIndex(), this.MaxSize)
+		{
+			entry := this[A_Index]
+			XMLEntry := {}
+			for key, value in entry
+				XMLEntry[key] := value
+			XMLObject.List[A_Index] := XMLEntry
+		}
+		XML_Save(XMLObject, Settings.ConfigPath "\ExplorerHistory.xml")
+		return
+	}
+	__get(key)
+	{
+		if(key = "History")
+		{
+			History := Array()
+			Loop % min(this.MaxIndex(), this.MaxSize / 2)
+				History[A_Index] := {Path : this[A_Index].Path, Name : this[A_Index].Name}
+			return History
+		}
+		else if(key = "FrequentPaths")
+		{
+			FrequentIndices := ""
+			Loop % min(this.MaxIndex(), this.MaxSize)
+				FrequentIndices .= (A_Index = 1 ? "" : ",") A_Index
+			Sort, FrequentIndices, F ExplorerPathFrequencySort D`,
+			FrequentPaths := Array()
+			Loop, Parse, FrequentIndices, `,
+				FrequentPaths[A_Index] := {Path : this[A_LoopField].Path, Name : this[A_LoopField].Name}
+			return FrequentPaths
+		}
+	}
+	;Puts an item in the queue
+	Push(item)
+	{
+		outputdebug push
+		itemPosition := this.IndexOfEqual(item, 0, "Path")
+		if(!itemPosition)
+		{
+			this.Insert(1, item)
+			if(this.MaxIndex() = this.MaxSize + 1)
+				this.Remove()
+		}
+		else
+			this.Move(itemPosition, 1)
+		return this[1]
+	}
+}
+ExplorerPathFrequencySort(index1, index2)
+{
+	global ExplorerHistory
+	return ExplorerHistory[index2].Usage - ExplorerHistory[index1].Usage
+}
+;Called by clipboard manager menu
+ExplorerHistoryHandler:
+PasteText(A_ThisMenuItem)
+return
+
 ;Find all explorer windows, register them in ExplorerWindows array and set up events and info gui
 RegisterExplorerWindows()
 {
@@ -490,6 +584,7 @@ ExplorerMoved(hwnd)
 ;Called when active explorer changes its path.
 ExplorerPathChanged(ExplorerWindow)
 {
+	global ExplorerHistory
 	if(!IsObject(ExplorerWindow))
 		return
 	OldPath := ExplorerWindow.Path
@@ -498,6 +593,15 @@ ExplorerPathChanged(ExplorerWindow)
 	if(OldPath = Path)
 		return
 	ExplorerWindow.DisplayName := GetCurrentFolder(ExplorerWindow.hwnd, 1)
+	
+	outputdebug change from %oldpath% to %path%
+	Entry := RichObject()
+	Entry.Path := Path
+	Entry.Usage := 0
+	Entry.Name := ExplorerWindow.DisplayName
+	Entry := ExplorerHistory.Push(Entry) ;This can return a different entry that already exists in the list!
+	Entry.Usage++
+	
 	if(Settings.Explorer.Tabs.UseTabs && IsObject(ExplorerWindow.TabContainer))
 		ExplorerWindow.TabContainer.UpdateTabs()
 	;focus first file

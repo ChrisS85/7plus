@@ -213,6 +213,7 @@ OnExit(reload=0)
 	if(ApplicationState.ProgramStartupFinished)
 	{
 		ClipboardList.Save()
+		ExplorerHistory.Save()
 		EventSystem.OnExit()
 		Gdip_Shutdown(pToken)
 		SlideWindows.OnExit()
@@ -222,7 +223,6 @@ OnExit(reload=0)
 		if(Settings.General.DebugEnabled)
 			DebuggingEnd()
 	}
-	
 	
 	if(reload)
 	{

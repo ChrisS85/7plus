@@ -42,6 +42,7 @@ Class CAccessorPlugin
 }
 #include %A_ScriptDir%\Accessor\AccessorEventPlugin.ahk
 #include %A_ScriptDir%\Accessor\Calc.ahk
+#include %A_ScriptDir%\Accessor\ExplorerHistory.ahk
 #include %A_ScriptDir%\Accessor\FastFolders.ahk
 #include %A_ScriptDir%\Accessor\FileSystem.ahk
 #include %A_ScriptDir%\Accessor\Google.ahk
@@ -57,7 +58,7 @@ Class CAccessorPlugin
 Accessor_Init()
 {
 	global AccessorPlugins, Accessor
-	AccessorPluginsList := "WindowSwitcher,FileSystem,EventPlugin,Google,Calc,ProgramLauncher,NotepadPlusPlus,SciTE4AutoHotkey,Notes,FastFolders,Uninstall,URL,Weather,Run" ;The order here partly determines the order in the window, so choose carefully
+	AccessorPluginsList := "WindowSwitcher,FileSystem,EventPlugin,Google,Calc,ProgramLauncher,ExplorerHistory,NotepadPlusPlus,SciTE4AutoHotkey,Notes,FastFolders,Uninstall,URL,Weather,Run" ;The order here partly determines the order in the window, so choose carefully
 	AccessorPlugins := Array()
 	Accessor := Object("Base", Object("OnExit", "Accessor_OnExit", "History", Array(), "EditQueue", Array()))
 	FileRead, xml, % Settings.ConfigPath "\Accessor.xml"

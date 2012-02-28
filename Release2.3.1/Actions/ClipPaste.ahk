@@ -26,25 +26,13 @@ Class CClipPasteAction Extends CAction
 	}
 }
 
-Class CClipboardList extends CArray
+Class CClipboardList extends CQueue
 {
 	Persistent := Array()
+	MaxSize := 10
 	__new()
 	{
 		this.Load()
-	}
-	;Stack Push function for clipboard manager stack
-	Push(item)
-	{
-		itemPosition := this.IndexOf(item)
-		if(!itemPosition)
-		{
-			this.Insert(1, item)
-			if(this.MaxIndex()=11)
-				this.Remove()
-		}
-		else
-			this.Move(itemPosition, 1)
 	}
 	Load()
 	{
