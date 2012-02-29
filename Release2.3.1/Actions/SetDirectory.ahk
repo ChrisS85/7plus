@@ -12,13 +12,13 @@ Class CSetDirectoryAction Extends CAction
 		path := Event.ExpandPlaceholders(this.Path)
 		StringReplace, path, path, ",,All
 		if(Path = "Back")
-			Shell_GoBack(hwnd)
+			Navigation.GoBack(hwnd)
 		else if(Path = "Forward")
-			Shell_GoForward(hwnd)
+			Navigation.GoForward(hwnd)
 		else if(Path = "Upward")
-			Shell_GoUpward()
+			Navigation.GoUpward()
 		else
-			ShellNavigate(Path,hwnd)
+			Navigation.SetPath(Path,hwnd)
 		return 1
 	}
 

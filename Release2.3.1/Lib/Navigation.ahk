@@ -1,38 +1,8 @@
 Class Navigation
 {
-	NavigationSources := Array()
-	GetPath(hwnd = 0)
-	{
-		if(!hwnd)
-			hwnd := WinExist("A")
-		if(NavigationSource := this.FindNavigationSource(hwnd, "GetPath"))
-			return NavigationSource.GetPath(hwnd)
-		return ""
-	}
-	SetPath(Path, hwnd = 0)
-	{
-		if(!hwnd)
-			hwnd := WinExist("A")
-		if(NavigationSource := this.FindNavigationSource(hwnd, "SetPath"))
-			return NavigationSource.SetPath(Path, hwnd)
-		return 0
-	}
-	GetSelectedFiles(hwnd = 0)
-	{
-		if(!hwnd)
-			hwnd := WinExist("A")
-		if(NavigationSource := this.FindNavigationSource(hwnd, "GetSelectedFiles"))
-			return NavigationSource.GetSelectedFiles(hwnd)
-		return ""
-	}
-	SelectFiles(Files, hwnd = 0)
-	{
-		if(!hwnd)
-			hwnd := WinExist("A")
-		if(NavigationSource := this.FindNavigationSource(hwnd, "SelectFiles"))
-			return NavigationSource.SelectFiles(Files, hwnd)
-		return 0
-	}
+	static NavigationSources := Array()
+	
+	;Finds the class that can handle the window and function if available
 	FindNavigationSource(hwnd, func)
 	{
 		WinGetClass, class, ahk_id %hwnd%
@@ -41,15 +11,83 @@ Class Navigation
 				return NavigationSource
 		return 0
 	}
+	
+	;Called by classes acting as navigation source to register with this class
 	RegisterNavigationSource(Class, Type)
 	{
 		this.NavigationSources.Insert(Class)
 		return Type
 	}
+	;Default call operation for functions in this class.
+	;Gets a window handle of active window if not provided,
+	;finds the navigation source and calls the function on it.
+	Call(Name, DefaultReturnValue, Params*)
+	{
+		hwnd := Params.Remove()
+		if(!hwnd)
+			hwnd := WinExist("A")
+		
+		if(NavigationSource := this.FindNavigationSource(hwnd, Name))
+		{
+			Params.Insert(hwnd)
+			return NavigationSource[Name](Params*)
+		}
+		return DefaultReturnValue
+	}
+	GetPath(hwnd = 0)
+	{
+		return this.Call("GetPath", "", hwnd)
+	}
+	;Gets the name of the current path in a nice form for displaying
+	GetDisplayName(hwnd = 0)
+	{
+		return this.Call("GetDisplayName", "", hwnd)
+	}
+	SetPath(Path, hwnd = 0)
+	{
+		return this.Call("SetPath", 0, Path, hwnd)
+	}
+	GetSelectedFilepaths(hwnd = 0)
+	{
+		return this.Call("GetSelectedFilepaths", Array(), hwnd)
+	}
+	GetSelectedFilenames(hwnd = 0)
+	{
+		return this.Call("GetSelectedFilenames", Array(), hwnd)
+	}
+	;Selects the files in Files in the view
+	SelectFiles(Files, hwnd = 0)
+	{
+		return this.Call("SelectFiles", 0, Files, hwnd)
+	}
+	GetFocusedFilename(hwnd = 0)
+	{
+		return this.Call("GetFocusedFilename", "", hwnd)
+	}
+	GetFocusedFilePath(hwnd = 0)
+	{
+		return this.Call("GetFocusedFilePath", "", hwnd)
+	}
+	Refresh(hwnd = 0)
+	{
+		return this.Call("Refresh", 0, hwnd)
+	}
+	GoBack(hwnd = 0)
+	{
+		return this.Call("GoBack", 0, hwnd)
+	}
+	GoForward(hwnd = 0)
+	{
+		return this.Call("GoForward", 0, hwnd)
+	}
+	GoUpward(hwnd = 0)
+	{
+		return this.Call("GoUpward", 0, hwnd)
+	}
 }
 Class CWinRarNavigationSource
 {
-	Type := Navigation.RegisterNavigationSource(CWinRarNavigationSource, "WinRar")
+	static Type := Navigation.RegisterNavigationSource(CWinRarNavigationSource, "WinRar")
 	Processes(hwnd, class)
 	{
 		static WinRarTitle
@@ -86,7 +124,7 @@ Class CWinRarNavigationSource
 }
 Class CConsoleNavigationSource
 {
-	Type := Navigation.RegisterNavigationSource(CConsoleNavigationSource, "Console")
+	static Type := Navigation.RegisterNavigationSource(CConsoleNavigationSource, "Console")
 	Processes(hwnd, class)
 	{
 		return (class = "ConsoleWindowClass")
@@ -220,7 +258,7 @@ Class CConsoleNavigationSource
 }
 Class CDesktopNavigationSource
 {
-	Type := Navigation.RegisterNavigationSource(CDesktopNavigationSource, "Desktop")
+	static Type := Navigation.RegisterNavigationSource(CDesktopNavigationSource, "Desktop")
 	Processes(hwnd, class)
 	{
 		return (class = "Progman" || class = "WorkerW")
@@ -250,7 +288,7 @@ Class CDesktopNavigationSource
 }
 Class COldFileDialogNavigationSource
 {
-	Type := Navigation.RegisterNavigationSource(COldFileDialogNavigationSource, "Old file dialog")
+	static Type := Navigation.RegisterNavigationSource(COldFileDialogNavigationSource, "Old file dialog")
 	Processes(hwnd, class)
 	{
 		if(class="#32770")
@@ -337,7 +375,7 @@ Class COldFileDialogNavigationSource
 }
 Class CNewFileDialogNavigationSource
 {
-	Type := Navigation.RegisterNavigationSource(CNewFileDialogNavigationSource, "New file dialog")
+	static Type := Navigation.RegisterNavigationSource(CNewFileDialogNavigationSource, "New file dialog")
 	Processes(hwnd, class)
 	{
 		if(class="#32770")
@@ -443,7 +481,7 @@ Class CNewFileDialogNavigationSource
 }
 Class CExplorerNavigationSource
 {
-	Type := Navigation.RegisterNavigationSource(CExplorerNavigationSource, "Explorer")
+	static Type := Navigation.RegisterNavigationSource(CExplorerNavigationSource, "Explorer")
 	Processes(hwnd, class)
 	{
 		return (class = "ExploreWClass" || class = "CabinetWClass")
@@ -595,10 +633,16 @@ Class CExplorerNavigationSource
 	GoUpward(hwnd)
 	{
 		path := this.GetPath(hwnd)
+		ControlGetFocus, Focused, ahk_id %hwnd%
+		if(Vista7)
+			ControlFocus, DirectUIHWND3, ahk_id %hwnd%
+		else
+			ControlFocus, SysListView321, ahk_id %hwnd%
 		if(Vista7 && !strEndsWith(path,".search-ms"))
 			Send !{Up}
 		else
 			Send {Backspace}
+		ControlFocus, %Focused%, ahk_id %hwnd%
 	}
 	Refresh(hwnd)
 	{
