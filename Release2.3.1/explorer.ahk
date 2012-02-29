@@ -441,6 +441,32 @@ ExplorerHistoryHandler:
 PasteText(A_ThisMenuItem)
 return
 
+#if IsDialog()
+~Enter::
+~NumpadEnter::
+~LButton::
+SetTimer, CheckFileDialogFolder, -200
+return
+#if
+
+CheckFileDialogFolder:
+CheckFileDialogFolder()
+return
+CheckFileDialogFolder()
+{
+	global ExplorerHistory
+	if(IsDialog())
+		if((Path := GetCurrentFolder()) != ExplorerHistory[1].Path)
+		{
+			entry := RichObject()
+			entry.Path := Path
+			SplitPath, Path, Name
+			entry.Name := Name
+			entry.Usage := 1
+			entry := ExplorerHistory.Push(entry)
+			entry.Usage++
+		}
+}
 ;Find all explorer windows, register them in ExplorerWindows array and set up events and info gui
 RegisterExplorerWindows()
 {

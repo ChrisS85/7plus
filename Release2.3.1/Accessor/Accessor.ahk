@@ -598,7 +598,7 @@ AccessorClose()
 return
 #if
 
-#if Accessor.GUINum && !Edit_TextIsSelected("","ahk_id " Accessor.HwndEdit)
+#if Accessor.GUINum && !Edit_TextIsSelected("", "ahk_id " Accessor.HwndEdit)
 ^c::
 AccessorCopy()
 return
