@@ -207,6 +207,10 @@ SetDirectory(sPath, hwnd = 0)
 		SetWinRarDirectory(sPath, hwnd)
 	else if (IsDialog(hwnd))
 		SetDialogDirectory(sPath, hwnd)
+	else if(class = "ConsoleWindowClass" || (!hwnd && WinActive("ConsoleWindowClass")))
+	{
+		SetConsoleDirectory(sPath, hwnd)
+	}
 	else
 	{
 		class:=WinGetClass("A")
@@ -214,6 +218,40 @@ SetDirectory(sPath, hwnd = 0)
 	}
 }
 
+SetConsoleDirectory(Path, hwnd = 0)
+{
+	global MuteClipboardList
+	if(!hwnd)
+		hwnd := WinExist("A")
+	Active := WinActive("ahk_id " hwnd)
+	if(Active)
+	{
+		MuteClipboardList := true
+		Clip := ClipboardAll
+		CoordMode, Mouse, Relative
+		Click, Right 40 40
+		CoordMode, Mouse, Screen
+		ControlSend,, {Down 4}{Enter 2}, ahk_id %hwnd%
+		ClipWait, 2
+		if(!ErrorLevel)
+		{
+			CMDText := Clipboard
+			CurrentLine := SubStr(CMDText, InStr(CMDText, "`r`n", false, 0) + 2)
+			CurrentCommand := SubStr(CurrentLine, InStr(CurrentLine, ">") + 1)
+			SendInput, % "{Backspace " StrLen(CurrentCommand) "}"
+		}
+		Clipboard := Clip
+		ClipWait, 2
+		MuteClipboardList := false
+		SendInput cd /d "%Path%"{Enter}
+	}
+	else
+	{
+		SetKeyDelay, 10, 10
+		ControlSend, , {Enter}cd /d "%Path%"{Enter}, ahk_id %hwnd%
+		SetKeyDelay, -1, -1
+	}
+}
 SetWinRarDirectory(Path, hwnd = 0)
 {
 	if(!hwnd)

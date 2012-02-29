@@ -60,10 +60,12 @@ Accessor_ExplorerHistory_FillAccessorList(ExplorerHistoryPlugin, Accessor, Filte
 }
 Accessor_ExplorerHistory_PerformAction(ExplorerHistory, Accessor, AccessorListEntry)
 {
-	if(InStr("CabinetWClass,ExploreWClass", WinGetClass("ahk_id " Accessor.PreviousWindow)) || IsDialog(Accessor.PreviousWindow))
-		ShellNavigate(AccessorListEntry.Path, Accessor.PreviousWindow)
-	else
-		Run(A_WinDir "\explorer.exe /n,/e," AccessorListEntry.Path)
+	PreviousWindow := Accessor.PreviousWindow
+	AccessorClose()
+	;~ if(InStr("CabinetWClass,ExploreWClass", WinGetClass("ahk_id " Accessor.PreviousWindow)) || IsDialog(Accessor.PreviousWindow))
+		ShellNavigate(AccessorListEntry.Path, PreviousWindow)
+	;~ else
+		;~ Run(A_WinDir "\explorer.exe /n,/e," AccessorListEntry.Path)
 }
 Accessor_ExplorerHistory_ListViewEvents(ExplorerHistory, AccessorListEntry)
 {
