@@ -36,6 +36,7 @@ ComObjError(0)
 #include <Edit>
 #include <Functions>
 #include <gdip>
+#include <Navigation>
 #include <Parse>
 #include <RemoteBuf>
 #include <Taskbutton>
