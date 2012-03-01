@@ -1,3 +1,7 @@
+#n::
+Navigation.SetPath("C:")
+msgbox % Navigation.GetPath()
+return
 Class Navigation
 {
 	static NavigationSources := Array()
@@ -121,6 +125,11 @@ Class CWinRarNavigationSource
 		ControlSetText , Edit1, %Path%, ahk_id %hwnd%
 		ControlClick, Button1, ahk_id %hwnd%
 	}
+	GetPath(hwnd)
+	{
+		ControlGetText, Path, Edit1, ahk_id %hwnd%
+		return Path
+	}
 }
 Class CConsoleNavigationSource
 {
@@ -133,18 +142,29 @@ Class CConsoleNavigationSource
 	{
 		WinGet, pid, PID, ahk_id %hwnd%
 		CMDText := this.GetConsoleText(pid)
-		CurrentLine := SubStr(CMDText, InStr(CMDText, "`r`n", false, 0) + 2)
-		return SubStr(CurrentLine, 1, InStr(CurrentLine, ">") - 1)
+		;~ clipboard := cmdtext
+		RegExMatch(CMDText, "ms`a)(?:(^[A-Z]:\\[^\>]*)\>|.)*", out)
+		return out1
+		pos := 0
+		while(pos := RegExMatch(CMDText, "`am)^[A-Z]:\\.*?(?=>)", Match, pos + 1))
+			result := Match
+		return result
 	}
-	SetPath(hwnd)
+	SetPath(Path, hwnd)
 	{
 		WinGet, pid, PID, ahk_id %hwnd%
 		CMDText := this.GetConsoleText(pid)
-		CurrentLine := SubStr(CMDText, InStr(CMDText, "`r`n", false, 0) + 2)
-		CurrentCommand := SubStr(CurrentLine, InStr(CurrentLine, ">") + 1)
+		pos := 0
+		while(pos := RegExMatch(CMDText, "`amP)^[A-Z]:\\.*?(?=>)", Match, pos + 1))
+		{
+			pos1 := pos
+			length := Match
+		}
+		CurrentCommand := SubStr(CMDText, pos1 + length + 1)
 		ControlSend, , % "{Backspace " StrLen(CurrentCommand) "}", ahk_id %hwnd%
-		this.ConsoleSend("cd /d """ Path """")
+		this.ConsoleSend("cd /d """ Path """", pid)
 		ControlSend, , {Enter}, ahk_id %hwnd%
+		CurrentCommand := RegExReplace(CurrentCommand, "\s*$", "")
 		this.ConsoleSend(CurrentCommand, pid)
 	}
 	;By Lexikos
@@ -169,9 +189,9 @@ Class CConsoleNavigationSource
 		ConWinWidth := ConWinRight-ConWinLeft+1
 		ConWinHeight := ConWinBottom-ConWinTop+1
 		; Allocate memory to read into.
-		VarSetCapacity(text, ConWinWidth*ConWinHeight, 0)
+		VarSetCapacity(text, ConWinWidth*ConWinHeight*(A_IsUnicode ? 2 : 1), 0)
 		; Read text.
-		if(!DllCall("ReadConsoleOutputCharacter", "PTR", hConOut, "str", text, "uint", ConWinWidth*ConWinHeight, "uint", 0, "PTR*", numCharsRead))
+		if(!DllCall("ReadConsoleOutputCharacter", "PTR", hConOut, "str", text, "uint", ConWinWidth*ConWinHeight, "uint", 0, "PTR*", numCharsRead, "uint"))
 		{
 			OutputDebug ReadConsoleOutputCharacter failed - error %A_LastError%.
 			this.FreeConsole(hConOut)
@@ -201,10 +221,9 @@ Class CConsoleNavigationSource
 		NumPut(1, ir, 8, "UShort")      ; ir.KeyEvent.wRepeatCount := 1
 		; wVirtualKeyCode, wVirtualScanCode and dwControlKeyState are not needed,
 		; so are left at the default value of zero.
-		
 		Loop, Parse, text ; for each character in text
 		{
-			NumPut(Asc(A_LoopField), ir, 14, "UShort")
+			StrPut(A_LoopField, &ir+14, 1, "UTF-16")
 			
 			NumPut(true, ir, 4, "Int")  ; ir.KeyEvent.bKeyDown := true
 			gosub ConsoleSendWrite
@@ -216,7 +235,7 @@ Class CConsoleNavigationSource
 		return true
 		
 		ConsoleSendWrite:
-			if ! DllCall("WriteConsoleInput", "PTR", hconin, "PTR", &ir, "uint", 1, "PTR*", 0)
+			if !DllCall("WriteConsoleInput", "PTR", hconin, "PTR", &ir, "uint", 1, "PTR*", 0)
 			{
 				gosub ConsoleSendCleanup
 				return false, ErrorLevel:="WriteConsoleInput"
@@ -232,7 +251,7 @@ Class CConsoleNavigationSource
 	}
 	AttachConsole(pid)
 	{
-		this.FreeConsole()
+		;~ this.FreeConsole()
 		; AttachConsole accepts a process ID.
 		if(!DllCall("AttachConsole","uint",pid))
 		{
@@ -251,7 +270,7 @@ Class CConsoleNavigationSource
 	} 
 	FreeConsole(hCon=0)
 	{
-		DllCall("FreeConsole", "UInt")
+		DllCall("FreeConsole", "uint")
 		if(hCon)
 			DllCall("CloseHandle", "uint", hCon)
 	}
@@ -289,23 +308,23 @@ Class CDesktopNavigationSource
 Class COldFileDialogNavigationSource
 {
 	static Type := Navigation.RegisterNavigationSource(COldFileDialogNavigationSource, "Old file dialog")
-	Processes(hwnd, class)
+	Processes(hWindow, class)
 	{
 		if(class="#32770")
 		{
-			ControlGet, hwnd, Hwnd , , ToolbarWindow321, ahk_id %hwnd%
+			ControlGet, hwnd, Hwnd , , ToolbarWindow321, ahk_id %hWindow%
 			if(hwnd)
 			{
-				ControlGet, hwnd, Hwnd , , SysListView321, ahk_id %hwnd%
+				ControlGet, hwnd, Hwnd , , SysListView321, ahk_id %hWindow%
 				if(hwnd)
 				{
-					ControlGet, hwnd, Hwnd , , ComboBox3, ahk_id %hwnd%
+					ControlGet, hwnd, Hwnd , , ComboBox3, ahk_id %hWindow%
 					if(hwnd)
 					{
-						ControlGet, hwnd, Hwnd , , Button3, ahk_id %hwnd%
+						ControlGet, hwnd, Hwnd , , Button3, ahk_id %hWindow%
 						if(hwnd)
 						{
-							ControlGet, hwnd, Hwnd , , SysHeader321 , ahk_id %hwnd%
+							ControlGet, hwnd, Hwnd , , SysHeader321 , ahk_id %hWindow%
 							if(hwnd)
 								return true
 						}
@@ -324,7 +343,7 @@ Class COldFileDialogNavigationSource
 	}
 	SetPath(Path, hwnd)
 	{
-		return CNewFileDialog.SetPath(Path, hwnd)
+		return CNewFileDialogNavigationSource.SetPath(Path, hwnd)
 	}
 	Refresh(hwnd)
 	{
@@ -376,27 +395,27 @@ Class COldFileDialogNavigationSource
 Class CNewFileDialogNavigationSource
 {
 	static Type := Navigation.RegisterNavigationSource(CNewFileDialogNavigationSource, "New file dialog")
-	Processes(hwnd, class)
+	Processes(hWindow, class)
 	{
 		if(class="#32770")
 		{
 			;Check for new FileOpen dialog
-			ControlGet, hwnd, Hwnd , , DirectUIHWND3, ahk_id %hwnd%
+			ControlGet, hwnd, Hwnd , , DirectUIHWND3, ahk_id %hWindow%
 			if(hwnd)
 			{
-				ControlGet, hwnd, Hwnd , , SysTreeView321, ahk_id %hwnd%
+				ControlGet, hwnd, Hwnd , , SysTreeView321, ahk_id %hWindow%
 				if(hwnd)
 				{
-					ControlGet, hwnd, Hwnd , , Edit1, ahk_id %hwnd%
+					ControlGet, hwnd, Hwnd , , Edit1, ahk_id %hWindow%
 					if(hwnd)
 					{
-						ControlGet, hwnd, Hwnd , , Button2, ahk_id %hwnd%
+						ControlGet, hwnd, Hwnd , , Button2, ahk_id %hWindow%
 						if(hwnd)
 						{
-							ControlGet, hwnd, Hwnd , , ComboBox2, ahk_id %hwnd%
+							ControlGet, hwnd, Hwnd , , ComboBox2, ahk_id %hWindow%
 							if(hwnd)
 							{
-								ControlGet, hwnd, Hwnd , , ToolBarWindow323, ahk_id %hwnd%
+								ControlGet, hwnd, Hwnd , , ToolBarWindow323, ahk_id %hWindow%
 								if(hwnd)
 									return true
 							}
@@ -414,6 +433,7 @@ Class CNewFileDialogNavigationSource
 	}
 	SetPath(Path, hwnd)
 	{
+		outputdebug set path %path%
 		;Set path by entering it in the filename box (restore current text afterwards)
 		ControlGetFocus, focussed, ahk_id %hwnd%
 		ControlGetText, Edit1Text, Edit1, ahk_id %hwnd%
