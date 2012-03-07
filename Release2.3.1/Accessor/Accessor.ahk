@@ -315,7 +315,7 @@ FillAccessorList()
 	LV_Delete()
 	if(Accessor.ImageListID)
 		IL_Destroy(Accessor.ImageListID)
-	Accessor.ImageListID := IL_Create(20,5,1) ; Create an ImageList so that the ListView can display some icons
+	Accessor.ImageListID := IL_Create(20,5,0) ; Create an ImageList so that the ListView can display some icons
 	IconCount := 4
 	ImageList_ReplaceIcon(Accessor.ImageListID, -1, Accessor.GenericIcons.Application)
 	ImageList_ReplaceIcon(Accessor.ImageListID, -1, Accessor.GenericIcons.Folder)

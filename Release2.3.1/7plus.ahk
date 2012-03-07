@@ -53,7 +53,7 @@ ComObjError(0)
 
 #include %A_ScriptDir%\CApplicationState.ahk
 #include %A_ScriptDir%\CSettings.ahk
-#include %A_ScriptDir%\Accessor\Accessor.ahk
+#include %A_ScriptDir%\Accessor\Accessor2.ahk
 #include %A_ScriptDir%\Deployment.ahk
 #include %A_ScriptDir%\EventSystem.ahk
 ;~ #include %A_ScriptDir%\EventSystem.ahk

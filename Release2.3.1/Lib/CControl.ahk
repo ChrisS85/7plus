@@ -501,6 +501,14 @@ Class CControl ;Never created directly
 			this._.hwnd := hwnd
 			this._.IconList := {}
 		}
+		Clear()
+		{
+			if(this._.IconList.SmallIL_ID)
+				IL_Destroy(this._.IconList.SmallIL_ID)
+			if(this._.IconList.LargeIL_ID)
+				IL_Destroy(this._.IconList.LargeIL_ID)
+			this._.IconList := {}
+		}
 		SetIcon(ID, PathOrhBitmap, IconNumber)
 		{
 			GUI := CGUI.GUIList[this._.GUINum]

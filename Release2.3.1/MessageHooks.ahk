@@ -177,8 +177,8 @@ ShellMessage( wParam, lParam, Msg)
 			BlinkingWindows.Delete(x)
 		; DecToHex(lParam)
 		class:=WinGetClass("ahk_id " lParam)
-		if(IsObject(Accessor) && Accessor.GUINum && WinGetTitle("A") != Accessor.WindowTitle)
-			AccessorClose()
+		if(IsObject(CAccessor.Instance.GUI) && WinGetTitle("A") != CAccessor.Instance.GUI.Title)
+			CAccessor.Instance.Close()
 		;If we change from another program to explorer/desktop/dialog
 		if((IsExplorer := WinActive("ahk_group ExplorerGroup"))||WinActive("ahk_group DesktopGroup")||IsDialog())
 		{

@@ -272,6 +272,8 @@ Class CListViewControl Extends CControl
 			}
 			else if(Name = "Items")
 				Value := 0
+			else if(Name = "Redraw")
+				GuiControl, % this.GUINum ":" (Value = true ? "+" : "-") "Redraw" , this.hwnd
 			else
 				Handled := false
 			if(!DetectHidden)
@@ -659,7 +661,7 @@ Class CListViewControl Extends CControl
 			Sets the icon of a ListView row
 			
 			Parameters:
-				Filename - The filename of the file containing the icon.
+				Filename - The filename of the file containing the icon or a hBitmap.
 				IconNumberOrTransparencyColor - The icon number or the transparency color if the used file has no transparency support.
 			*/
 			SetIcon(Filename, IconNumberOrTransparencyColor = 1)

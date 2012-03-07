@@ -102,7 +102,7 @@ if(CompareVersion(XMLMajorVersion, MajorVersion, XMLMinorVersion, MinorVersion, 
 if(Settings.GamepadRemoteControl)
 	JoystickStart()
 
-Accessor_Init()
+CAccessor.Instance := new CAccessor()
 
 ;Hwnd.txt is written to allow other processes to find the main window of 7plus
 FileDelete, %A_Temp%\7plus\hwnd.txt
@@ -215,6 +215,7 @@ OnExit(reload=0)
 		ClipboardList.Save()
 		ExplorerHistory.Save()
 		EventSystem.OnExit()
+		CAccessor.Instance.OnExit()
 		Gdip_Shutdown(pToken)
 		SlideWindows.OnExit()
 		Settings.Save()
