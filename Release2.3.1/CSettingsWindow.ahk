@@ -781,41 +781,34 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("Text", "txtAccessorText", "x197 y373 w431 h39", "Accessor is a versatile tool that is used to perform many commands through the keyboard, `nlike launching programs, switching windows, open URLs, browsing the filesystem,...`nPress the assigned hotkey (Default: ALT+Space) and start typing!")
 		Page.AddControl("Button", "btnAccessorHelp", "x730 y60 w90 h23", "&Help")
 		Page.AddControl("Button", "btnAccessorSettings", "x730 y31 w90 h23", "Plugin &Settings")
-		Page.AddControl("ListView", "listAccessorPlugins", "x197 y31 w525 h332 Checked", "Enabled|Plugin Name")
+		Page.AddControl("ListView", "listAccessorPlugins", "x197 y31 w525 h332 Checked", "Plugin Name")
 		Page.Controls.listAccessorPlugins.IndependentSorting := true
 	}
 	InitAccessorPlugins()
 	{
-		global AccessorPlugins
 		Page := this.Pages.AccessorPlugins.Tabs[1].Controls
 		this.AccessorPlugins := Array() ;We don't copy the whole AccessorPlugins structure here to save some memory (program launcher might take some for example)
 		Page.listAccessorPlugins.Items.Clear()
-		Loop % AccessorPlugins.MaxIndex()
+		for index, Plugin in CAccessor.Plugins
 		{
-			AccessorPlugin := AccessorPlugins[A_Index]
 			PluginCopy := RichObject()
-			PluginCopy.Enabled := AccessorPlugin.Enabled
-			; PluginCopy.Keyword := AccessorPlugins[A_Index].Keyword
-			PluginCopy.Type := AccessorPlugin.Type
-			PluginCopy.Settings := AccessorPlugin.Settings.DeepCopy()
-			PluginCopy.HasSettings := AccessorPlugin.HasSettings
-			;~ PluginCopy.Description := AccessorPlugin.Description
+			PluginCopy.Type := Plugin.Type
+			PluginCopy.Settings := Plugin.Settings.DeepCopy()
 			this.AccessorPlugins.Insert(PluginCopy)
-			Page.listAccessorPlugins.Items.Add(PluginCopy.Enabled ? "Check" : "", "", PluginCopy.Type)
-		}	
-		Page.listAccessorPlugins.ModifyCol(1, 60)
-		Page.listAccessorPlugins.ModifyCol(2, "AutoHdr")
+			Page.listAccessorPlugins.Items.Add((PluginCopy.Settings.Enabled ? "Check" : ""), PluginCopy.Type)
+		}
+		Page.listAccessorPlugins.ModifyCol(1, "AutoHdr")
 	}
 	ApplyAccessorPlugins()
 	{
-		global AccessorPlugins	
 		Page := this.Pages.AccessorPlugins.Tabs[1].Controls
-		Loop % AccessorPlugins.MaxIndex()
+		for index, Plugin in CAccessor.Plugins
 		{
-			AccessorPlugin := AccessorPlugins[A_Index]
-			SettingsPlugin := this.AccessorPlugins[A_Index]
-			AccessorPlugin.Enabled := SettingsPlugin.Enabled
-			AccessorPlugin.Settings := SettingsPlugin.Settings.DeepCopy()
+			SettingsPlugin := this.AccessorPlugins.GetItemWithValue("Type", Plugin.Type)
+			outputdebug % IsObject(settingsplugin.settings)
+			SettingsPlugin.Settings.Enabled := Page.listAccessorPlugins.Items[this.AccessorPlugins.FindKeyWithValue("Type", Plugin.Type)].Checked
+			Plugin.Settings := SettingsPlugin.Settings.DeepCopy()
+			OutputDebug % settingsplugin.settings.enabled "," Page.listAccessorPlugins.Items[this.AccessorPlugins.FindKeyWithValue("Type", Plugin.Type)].Checked
 		}
 	}
 	btnAccessorHelp_Click()
@@ -828,38 +821,23 @@ Finally, here are some settings that you're likely to change at the beginning:
 	}
 	ShowAccessorSettings()
 	{
-		global AccessorPlugins
 		Page := this.Pages.AccessorPlugins.Tabs[1].Controls
 		if(Page.listAccessorPlugins.SelectedItems.MaxIndex() != 1)
 			return
 		
-		AccessorPlugin := this.AccessorPlugins[Page.listAccessorPlugins.SelectedIndex]
-		if(!AccessorPlugin.HasSettings)
-			return
-		PluginSettings:=GUI_EditAccessorPlugin(AccessorPlugin)
-		
-		if(PluginSettings)
-			this.AccessorPlugins[Page.listAccessorPlugins.SelectedIndex] := PluginSettings
+		Plugin := this.AccessorPlugins[Page.listAccessorPlugins.SelectedIndex]
+		AccessorPluginSettingsWindow := new CAccessorPluginSettingsWindow(Plugin, CAccessor.Plugins.GetItemWithValue("Type", Plugin.Type))
+		AccessorPluginSettingsWindow.Show()
 	}
-	listAccessorPlugins_SelectionChanged(Row)
+	OnAccessorPluginSettingsWindowClosed(ModifiedPlugin)
 	{
-		global AccessorPlugins
-		Page := this.Pages.AccessorPlugins.Tabs[1].Controls
-		if(Page.listAccessorPlugins.SelectedItems.MaxIndex() = 1)
-		{
-			if(AccessorPlugins[Page.listAccessorPlugins.SelectedIndex].HasSettings)
-				Page.btnAccessorSettings.Enabled := true
-			else
-				Page.btnAccessorSettings.Enabled := false
-		}
-		else
-			Page.btnAccessorSettings.Enabled := false
-		this.ActiveControl := Page.listAccessorPlugins
+		if(ModifiedPlugin)
+			this.AccessorPlugins[this.AccessorPlugins.FindKeyWithValue("Type", ModifiedPlugin.Type)] := ModifiedPlugin
 	}
 	listAccessorPlugins_CheckedChanged(Row)
 	{
 		if(IsObject(Row))
-			this.AccessorPlugins[Row._.RowNumber].Enabled := Row.Checked
+			this.AccessorPlugins[Row._.RowNumber].Settings.Enabled := Row.Checked
 	}
 	listAccessorPlugins_DoubleClick(Row)
 	{

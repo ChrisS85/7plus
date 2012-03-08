@@ -8,7 +8,7 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 	{
 		y += 4
 		Gui, Add, Text, x%x% y%y% hwndDesc_%name%, %description%
-		GUI["Desc_" name] := Desc_%name%
+		GUI["Desc_" name] := hwnd := Desc_%name%
 		x += 70
 		y -= 4
 	}
@@ -26,7 +26,7 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 		Gui, Add, Text, x%x% y%y% w%w% hwndText_%name%, %text%
 		if(GUI.HasKey("Text_" name))
 			Msgbox Subevent GUI control already exists: %name%
-		GUI["Text_" name] := Text_%name%
+		GUI["Text_" name] := hwnd := Text_%name%
 		if(description = "")
 			w -= 100
 		ControlGetPos,,,,h,,% "ahk_id " Text_%name%
@@ -47,7 +47,7 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 		y += 30		
 		if(GUI.HasKey("Check_" name))
 			Msgbox Subevent GUI control already exists: %name%
-		GUI["Check_" name] := Check_%name%
+		GUI["Check_" name] := hwnd := Check_%name%
 		if(Tooltip)
 			AddToolTIp(Check_%name%, Tooltip)
 	}
@@ -62,7 +62,7 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 		y += 30
 		if(GUI.HasKey("Edit_" name))
 			Msgbox Subevent GUI control already exists: %name%
-		GUI["Edit_" name] := Edit_%name%
+		GUI["Edit_" name] := hwnd := Edit_%name%
 		if(Tooltip)
 			AddToolTIp(Edit_%name%, Tooltip)
 	}
@@ -72,7 +72,7 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 		y += 30
 		if(GUI.HasKey("Button_" name))
 			Msgbox Subevent GUI control already exists: %name%
-		GUI["Button_" name] := Button_%name%
+		GUI["Button_" name] := hwnd := Button_%name%
 		if(Tooltip)
 			AddToolTIp(Button_%name%, Tooltip)
 	}
@@ -108,7 +108,7 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 			Gui, Add, DropDownList, %options%, %text1%
 			if(GUI.HasKey("DropDown_" name))
 				Msgbox Subevent GUI control already exists: %name%
-			GUI["DropDown_" name] := DropDown_%name%
+			GUI["DropDown_" name] := hwnd := DropDown_%name%
 			if(Tooltip)
 				AddToolTIp(DropDown_%name%, Tooltip)
 		}
@@ -120,7 +120,7 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 			Gui, Add, ComboBox, %options%, %text1%
 			if(GUI.HasKey("ComboBox_" name))
 				Msgbox Subevent GUI control already exists: %name%
-			GUI["ComboBox_" name] := ComboBox_%name%
+			GUI["ComboBox_" name] := hwnd := ComboBox_%name%
 			if(!InStr(text1, "||"))
 				ControlSetText, , % ValueObj[name], % "ahk_id " ComboBox_%name%
 			if(Tooltip)
@@ -136,7 +136,7 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 		y += 30		
 		if(GUI.HasKey("Time_" name))
 			Msgbox Subevent GUI control already exists: %name%
-		GUI["Time_" name] := Time_%name%
+		GUI["Time_" name] := hwnd := Time_%name%
 		if(Tooltip)
 			AddToolTIp(Time_%name%, Tooltip)
 	}
@@ -161,6 +161,7 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 		}
 	}
 	GUI.y := y
+	return hwnd
 }
 
 ;Stores the values of the controls in GUI in their associated field in ValueObj. This function is used in combination with AddControl().
