@@ -6,24 +6,27 @@ This control extends <CControl>. All basic properties and functions are implemen
 */
 Class CTreeViewControl Extends CControl
 {
+	EditingStart := new EventHandler()
+	DoubleClick := new EventHandler()
+	EditingEnd := new EventHandler()
+	ItemSelected := new EventHandler()
+	Click := new EventHandler()
+	RightClick := new EventHandler()
+	ItemExpanded := new EventHandler()
+	ItemCollapsed := new EventHandler()
+	FocusReceived := new EventHandler()
+	FocusLost := new EventHandler()
+	KeyPress := new EventHandler()
+
 	__New(Name, ByRef Options, Text, GUINum)
 	{
-		Events := ["_Click", "_RightClick", "_EditingStart", "_FocusReceived", "_FocusLost", "_KeyPress", "_ItemExpanded", "_ItemCollapsed"]
-		if(!InStr(Options, "AltSubmit")) ;Automagically add AltSubmit when necessary
-		{
-			for index, function in Events
-			{
-				if(IsFunc(CGUI.GUIList[GUINum][Name Function]))
-				{
-					Options .= " AltSubmit"
-					break
-				}
-			}
-		}
+		if(!InStr(Options, "AltSubmit")) ;Automagically add AltSubmit
+			Options .= " AltSubmit"
+			
 		base.__New(Name, Options, Text, GUINum)
 		this._.Insert("ControlStyles", {Checked : 0x100, ReadOnly : -0x8, FullRowSelect : 0x1000, Buttons : 0x1, Lines : 0x2, HScroll : -0x8000, AlwaysShowSelection : 0x20, SingleExpand : 0x400, HotTrack : 0x200})
 		this._.Insert("Events", ["DoubleClick", "EditingEnd", "ItemSelected", "Click", "RightClick", "EditingStart", "KeyPress", "ItemExpanded", "ItemCollapsed", "FocusReceived", "FocusLost"])
-		this._.Insert("Messages", {0x004E : "Notify"}) ;This control uses WM_NOTIFY with NM_SETFOCUS and NM_KILLFOCUS
+		; this._.Insert("Messages", {0x004E : "Notify"}) ;This control uses WM_NOTIFY with NM_SETFOCUS and NM_KILLFOCUS
 		this.Type := "TreeView"
 	}
 	
@@ -141,12 +144,18 @@ Class CTreeViewControl Extends CControl
 	}
 	/*
 	Event: Introduction
-	To handle control events you need to create a function with this naming scheme in your window class: ControlName_EventName(params)
+	There are currently 3 methods to handle control events:
+	
+	1)	Use an event handler. Simply use control.EventName.Handler := "HandlingFunction"
+		Instead of "HandlingFunction" it is also possible to pass a function reference or a Delegate: control.EventName.Handler := new Delegate(Object, "HandlingFunction")
+		If this method is used, the first parameter will contain the control object that sent this event.
+		
+	2)	Create a function with this naming scheme in your window class: ControlName_EventName(params)
+	
+	3)	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
+		This method is deprecated since event handlers are more flexible.
+		
 	The parameters depend on the event and there may not be params at all in some cases.
-	Additionally it is required to create a label with this naming scheme: GUIName_ControlName
-	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent().
-	For better readability labels may be chained since they all execute the same code.
-	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
 	
 	Event: Click(Item)
 	Invoked when the user clicked on the control.
@@ -179,7 +188,6 @@ Class CTreeViewControl Extends CControl
 	{
 		if(CGUI.GUIList[this.GUINum].IsDestroyed)
 			return
-		outputdebug % Event.GUIEvent
 		;Handle visibility of controls associated with tree nodees
 		if(Event.GUIEvent = "S")
 			this.ProcessSubControlState(this.PreviouslySelectedItem, SelectedItem := this.Items.ItemByID(Event.EventInfo))
@@ -188,7 +196,7 @@ Class CTreeViewControl Extends CControl
 		else if(EventName := {DoubleClick : "DoubleClick", e : "EditingEnd", S : "ItemSelected", Normal : "Click", RightClick : "RightClick", "+" : "ItemExpanded", "-" : "ItemCollapsed"}[Event.GUIEvent])
 			this.CallEvent(EventName, this.Items.ItemByID(Event.EventInfo))
 		else if(EventName = "K")
-			this.CallEvent(EventName, Event.EventInfo)
+			this.CallEvent("KeyPress", Event.EventInfo)
 		else if(Event.GUIEvent == "F")
 			this.CallEvent("FocusReceived")
 		else if(Event.GUIEvent == "f")

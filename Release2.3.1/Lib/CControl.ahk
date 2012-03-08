@@ -1,9 +1,14 @@
+#include <EventHandler>
+#include <Delegate>
 /*
 Class: CControl
 Basic control class from which all controls extend.
 */
 Class CControl ;Never created directly
 {
+	OnValidate := new EventHandler()
+	ContextMenu := new EventHandler()
+	
 	__New(Name, Options, Text, GUINum) ;Basic constructor for all controls. The control is created in CGUI.AddControl()
 	{
 		this.Insert("Name", Name)
@@ -79,17 +84,23 @@ Class CControl ;Never created directly
 	
 	
 	/*
-	Validates the text value of this control by calling a <Control.Validate> event function which needs to return the validated (or same) value.
+	Validates the text value of this control by calling a <Control.OnValidate> event function which needs to return the validated (or same) value.
 	This value is then used as text for the control if it differs.
 	*/
 	Validate()
 	{
-		output := this.CallEvent("Validate", this.Text)
+		output := this.CallEvent("OnValidate", this.Text)
 		if(output.Handled && output.Result != this.Text)
 			this.Text := output.result
 	}
 	/*
 	Function: RegisterEvent
+	
+	Attention! This function is deprecated!	It is suggest to use event handlers instead.
+	Simply use the following with one of the options in the brackets:
+	control.EventName.Handler := ["HandlingFunction",Func("HandlingFunction"),new Delegate(object,"Member function").
+	The function that handles the event will receive an additional first parameter which contains the control that sent the event.
+	
 	Assigns (or unassigns) a function to a specific event of this control so that the function will be called when the event occurs.
 	This is normally not necessary because functions in the GUI class with the name ControlName_EventName()
 	will be called automatically without needing to be registered. However this can be useful if you want to handle
@@ -120,6 +131,7 @@ Class CControl ;Never created directly
 	{
 		if(CGUI.GUIList[this.GUINum].IsDestroyed)
 			return
+		this[Name].(this, Params*)
 		if(this._.RegisteredEvents.HasKey(Name))
 		{
 			if(IsFunc(this[this._.RegisteredEvents[Name]]))
@@ -463,25 +475,23 @@ Class CControl ;Never created directly
 	
 	/*
 	Event: Introduction
-	To handle control events you need to create a function with this naming scheme in your window class: ControlName_EventName(params)
+	There are currently 3 methods to handle control events:
+	
+	1)	Use an event handler. Simply use control.EventName.Handler := "HandlingFunction"
+		Instead of "HandlingFunction" it is also possible to pass a function reference or a Delegate: control.EventName.Handler := new Delegate(Object, "HandlingFunction")
+		If this method is used, the first parameter will contain the control object that sent this event.
+		
+	2)	Create a function with this naming scheme in your window class: ControlName_EventName(params)
+	
+	3)	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
+		This method is deprecated since event handlers are more flexible.
+		
 	The parameters depend on the event and there may not be params at all in some cases.
-	Additionally it is required to create a label with this naming scheme: GUIName_ControlName
-	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent().
-	For better readability labels may be chained since they all execute the same code.
-	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
-	
-	Event: FocusEnter
-	Invoked when the control receives keyboard focus. This event does not require that the control has a matching g-label since it is implemented through window messages.
-	This event is not supported for all input-capable controls unfortunately.
-	
-	Event: FocusLeave
-	Invoked when the control loses keyboard focus. This event does not require that the control has a matching g-label since it is implemented through window messages.
-	This event is not supported for all input-capable controls unfortunately.
 	
 	Event: ContextMenu
 	Invoked when the user right clicks on the control or presses the AppsKey while this control has focus. If this event is not handled a static context menu can be shown by setting the Menu variable of this control to an instance of <CMenu>.
 	
-	Event: Validate
+	Event: OnValidate
 	Invoked when the control is asked to validate its (textual) contents. This event is only valid for controls containing text, which are only Edit and ComboBox controls as of now.
 	
 	Parameters:
@@ -499,14 +509,6 @@ Class CControl ;Never created directly
 			this.Insert("_", {})
 			this._.GUINum := GUINum
 			this._.hwnd := hwnd
-			this._.IconList := {}
-		}
-		Clear()
-		{
-			if(this._.IconList.SmallIL_ID)
-				IL_Destroy(this._.IconList.SmallIL_ID)
-			if(this._.IconList.LargeIL_ID)
-				IL_Destroy(this._.IconList.LargeIL_ID)
 			this._.IconList := {}
 		}
 		SetIcon(ID, PathOrhBitmap, IconNumber)

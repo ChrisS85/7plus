@@ -6,13 +6,18 @@ This control extends <CControl>. All basic properties and functions are implemen
 */
 Class CTabControl Extends CControl
 {
+	Click := new EventHandler()
+	DoubleClick := new EventHandler()
+	RightClick := new EventHandler()
+	DoubleRightClick := new EventHandler()
+	
 	__New(Name, Options, Text, GUINum)
 	{
 		base.__New(Name, Options, Text, GUINum)
 		this.Type := "Tab2" ;Use Tab2 initially but revert back to Tab in PostCreate to mask the real AHK type of the control.
 		this._.Insert("ControlStyles", {Bottom : 0x2, HotTrack : 0x40, Buttons : 0x100, MultiLine : 0x200})
 		this._.Insert("Events", ["Click", "DoubleClick", "RightClick", "DoubleRightClick"])
-		this._.Insert("Messages", {0x004E : "Notify"})
+		; this._.Insert("Messages", {0x004E : "Notify"})
 		CGUI.GUIList[this.GUINum].TabCount := CGUI.GUIList[this.GUINum].TabCount ? CGUI.GUIList[this.GUINum].TabCount + 1 : 1 ;Increase count of tabs in this GUI, required for GUI, Tab command
 		this._.Insert("TabIndex", CGUI.GUIList[this.GUINum].TabCount)
 	}
@@ -104,15 +109,18 @@ Class CTabControl Extends CControl
 	}
 	/*
 	Event: Introduction
-	To handle control events you need to create a function with this naming scheme in your window class: ControlName_EventName(params)
-	The parameters depend on the event and there may not be params at all in some cases.
-	Additionally it is required to create a label with this naming scheme: GUIName_ControlName
-	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent().
-	For better readability labels may be chained since they all execute the same code.
-	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
+	There are currently 3 methods to handle control events:
 	
-	Event: Attention
-	The tab control does not support the FocusEnter and FocusLeave events.
+	1)	Use an event handler. Simply use control.EventName.Handler := "HandlingFunction"
+		Instead of "HandlingFunction" it is also possible to pass a function reference or a Delegate: control.EventName.Handler := new Delegate(Object, "HandlingFunction")
+		If this method is used, the first parameter will contain the control object that sent this event.
+		
+	2)	Create a function with this naming scheme in your window class: ControlName_EventName(params)
+	
+	3)	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
+		This method is deprecated since event handlers are more flexible.
+		
+	The parameters depend on the event and there may not be params at all in some cases.
 	
 	Event: Click(TabItem)
 	Invoked when the user clicked on the control.

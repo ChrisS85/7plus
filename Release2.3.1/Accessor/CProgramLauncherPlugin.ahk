@@ -50,8 +50,102 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 	
 	ShowSettings(Settings, GUI, PluginGUI)
 	{
+		this.SettingsWindow := {Settings: Settings, GUI: GUI, PluginGUI: PluginGUI}
+		this.SettingsWindow.Paths := this.Paths.DeepCopy()
+		AddControl(Settings, PluginGUI, "Checkbox", "FuzzySearch", "Use fuzzy search (slower)", "", "")
+		AddControl(Settings, PluginGUI, "Checkbox", "IgnoreExtensions", "Ignore file extensions", "", "")
+		AddControl(Settings, PluginGUI, "Edit", "Exclude", "", "", "Exclude:")
+		x := PGUI.x
+		GUI.ListBox := GUI.AddControl("ListBox", "ListBox", "-Hdr -Multi -ReadOnly x" PluginGUI.x " y+10 w330 R8", "")
+		for index, Path in this.SettingsWindow.Paths
+			GUI.ListBox.Items.Add(Path.Path)
+		GUI.ListBox.SelectionChanged.Handler := new Delegate(this, "Settings_PathSelectionChanged")
 		
+		GUI.btnAddPath := GUI.AddControl("Button", "btnAddPath", "x+10 w80", "&Add Path")
+		GUI.btnAddPath.Click.Handler := new Delegate(this, "Settings_AddPath")
+		
+		GUI.btnBrowse := GUI.AddControl("Button", "btnBrowse", "y+10 w80", "&Browse")
+		GUI.btnBrowse.Click.Handler := new Delegate(this, "Settings_Browse")
+		
+		GUI.btnDeletePath := GUI.AddControl("Button", "btnDeletePath", "y+10 w80", "&Delete Path")
+		GUI.btnDeletePath.Click.Handler := new Delegate(this, "Settings_DeletePath")
+		
+		GUI.btnRefreshCache := GUI.AddControl("Button", "btnRefreshCache", "y+10 w80", "&Refresh Cache")
+		GUI.btnRefreshCache.Click.Handler := new Delegate(this, "Settings_RefreshCache")
+		
+		GUI.txtExtensions := GUI.AddControl("Text", "txtExtensions", "x" PluginGUI.x " y+35", "File extensions:")
+		GUI.editExtensions := GUI.AddControl("Edit", "editExtensions", "x+10 y+-17 w248", "")
+		GUI.editExtensions.TextChanged.Handler := new Delegate(this, "Settings_ExtensionChanged")
+		GUI.txtSeparator := GUI.AddControl("Text", "txtSeparator", "x+10 y+-17", "Separator: Comma")
 	}
+	SaveSettings(Settings, GUI, PluginGUI)
+	{
+		this.Paths := Array()
+		for index, Item in this.SettingsWindow.GUI.ListBox.Items
+		{
+			if(InStr(FileExist(ExpandPathPlaceholders(Item.Text)), "D"))
+				this.Paths.Insert(Object("Path", Item.Text,"Extensions",this.SettingsWindow.Paths[index].Extensions))
+			else
+				MsgBox % "Ignoring " Item.Text " because it is invalid."
+		}
+		this.RefreshCache()
+	}
+	Settings_PathSelectionChanged(Sender, Row)
+	{
+		if(this.SettingsWindow.GUI.ListBox.SelectedItem)
+		{
+			this.SettingsWindow.GUI.btnDeletePath.Enabled := 1
+			this.SettingsWindow.GUI.btnBrowse.Enabled := 1
+			outputdebug % "set text to " this.SettingsWindow.Paths[this.SettingsWindow.GUI.ListBox.SelectedIndex].Extensions " of " this.SettingsWindow.GUI.ListBox.SelectedIndex
+			this.SettingsWindow.GUI.editExtensions.Text := this.SettingsWindow.Paths[this.SettingsWindow.GUI.ListBox.SelectedIndex].Extensions
+		}
+		else
+		{
+			this.SettingsWindow.GUI.btnDeletePath.Enabled := 0
+			this.SettingsWindow.GUI.btnBrowse.Enabled := 0
+		}
+	}
+	Settings_ExtensionChanged(Sender)
+	{
+		if(this.SettingsWindow.GUI.ListBox.SelectedItem)
+			this.SettingsWindow.Paths[this.SettingsWindow.GUI.ListBox.SelectedIndex].Extensions := this.SettingsWindow.GUI.editExtensions.Text
+	}
+	Settings_AddPath(Sender)
+	{
+		fd := new CFolderDialog()
+		fd.Title := "Add indexing path"
+		if(fd.Show())
+		{
+			this.SettingsWindow.Paths.Insert({Path: fd.Folder, Extensions: "exe"})
+			this.SettingsWindow.GUI.ListBox.Items.Add(fd.Folder)
+		}
+	}
+	Settings_Browse(Sender)
+	{
+		if(this.SettingsWindow.GUI.ListBox.SelectedIndices.MaxIndex() = 1)
+		{
+			fd := new CFolderDialog()
+			fd.Title := "Set indexing path"
+			if(fd.Show())
+			{
+				this.SettingsWindow.Paths[this.SettingsWindow.GUI.ListBox.SelectedIndex].Path := fd.Folder
+				this.SettingsWindow.GUI.ListBox.SelectedItem.Text := fd.Folder
+			}
+		}
+	}
+	Settings_DeletePath(Sender)
+	{
+		if(this.SettingsWindow.GUI.ListBox.SelectedIndices.MaxIndex() = 1)
+		{
+			this.SettingsWindow.Paths.Remove(this.SettingsWindow.GUI.ListBox.SelectedIndex)
+			this.SettingsWindow.GUI.ListBox.Items.Delete(this.SettingsWindow.GUI.ListBox.SelectedIndex)
+		}
+	}
+	Settings_RefreshCache(Sender)
+	{
+		this.RefreshCache()
+	}
+	
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
 		return false
@@ -129,16 +223,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		Results.Extend(InStrList)
 		Results.Extend(FuzzyList)
 		return Results
-	}
-	;~ OnKeyDown()
-	;~ {
-	;~ }
-	SetupContextMenu(Accessor, ListEntry)
-	{
-	}
-	
-	
-	
+	}	
 	
 	;Functions specific to this plugin:
 	

@@ -689,7 +689,7 @@ Class CAccessorPluginSettingsWindow extends CGUI
 {
 	PluginGUI := object("x",38,"y",80)
 	Width := 500
-	Height := 460
+	Height := 560
 	btnHelp := this.AddControl("Button", "btnHelp", "x" this.PluginGUI.x " y" (this.Height - 34) " w70 h23", "&Help")
 	btnOK := this.AddControl("Button", "btnOK", "x" (this.Width - 174) " y" (this.Height - 34) " w70 h23 Default", "&OK")
 	btnCancel := this.AddControl("Button", "btnCancel", "x" (this.Width - 94) " y" (this.Height - 34) " w70 h23", "&Cancel")
@@ -703,8 +703,6 @@ Class CAccessorPluginSettingsWindow extends CGUI
 		this.Owner := SettingsWindow.hwnd
 		this.ToolWindow := true
 		this.OwnDialogs := true
-		this.Width := 500
-		this.Height := 460
 		if(!Plugin)
 			this.Close()
 		else

@@ -6,25 +6,37 @@ This control extends <CControl>. All basic properties and functions are implemen
 */
 Class CListViewControl Extends CControl
 {
+	EditingStart := new EventHandler()
+	DoubleClick := new EventHandler()
+	DoubleRightClick := new EventHandler()
+	EditingEnd := new EventHandler()
+	Click := new EventHandler()
+	RightClick := new EventHandler()
+	ItemActivate := new EventHandler()
+	KeyPress := new EventHandler()
+	ColumnClick := new EventHandler()
+	FocusReceived := new EventHandler()
+	ScrollingStart := new EventHandler()
+	MouseLeave := new EventHandler()
+	FocusLost := new EventHandler()
+	Marquee := new EventHandler()
+	ScrollingEnd := new EventHandler()
+	ItemChecked := new EventHandler()
+	ItemUnChecked := new EventHandler()
+	SelectionChanged := new EventHandler()
+	CheckedChanged := new EventHandler()
+	FocusedChanged := new EventHandler()
+	
 	__New(Name, ByRef Options, Text, GUINum)
 	{
-		Events := ["Click", "RightClick", "ItemActivated", "MouseLeave", "EditingStart", "FocusReceived", "FocusLost", "ItemSelected", "ItemDeselected", "ItemFocused", "ItemDefocused", "ItemChecked", " ItemUnChecked", "SelectionChanged", "CheckedChanged", "FocusedChanged", "KeyPress", "Marquee", "ScrollingStart", "ScrollingEnd"]
-		if(!InStr(Options, "AltSubmit")) ;Automagically add AltSubmit when necessary
-		{
-			for index, function in Events
-			{
-				if(IsFunc(CGUI.GUIList[GUINum][Name "_" function]))
-				{
-					Options .= " AltSubmit"
-					break
-				}
-			}
-		}
+		if(!InStr(Options, "AltSubmit")) ;Automagically add AltSubmit
+			Options .= " AltSubmit"
+			
 		base.__New(Name, Options, Text, GUINum)
 		this._.Insert("ControlStyles", {ReadOnly : -0x200, Header : -0x4000, NoSortHdr : 0x8000, AlwaysShowSelection : 0x8, Multi : -0x4, Sort : 0x10, SortDescending : 0x20})
 		this._.Insert("ControlExStyles", {Checked : 0x4, FullRowSelect : 0x20, Grid : 0x1, AllowHeaderReordering : 0x10, HotTrack : 0x8})
 		this._.Insert("Events", ["DoubleClick", "DoubleRightClick", "ColumnClick", "EditingEnd", "Click", "RightClick", "ItemActivate", "EditingStart", "KeyPress", "FocusReceived", "FocusLost", "Marquee", "ScrollingStart", "ScrollingEnd", "ItemSelected", "ItemDeselected", "ItemFocused", "ItemDefocused", "ItemChecked", "ItemUnChecked", "SelectionChanged", "CheckedChanged", "FocusedChanged"])
-		this._.Insert("Messages", {0x004E : "Notify"}) ;This control uses WM_NOTIFY with NM_SETFOCUS and NM_KILLFOCUS
+		;~ this._.Insert("Messages", {0x004E : "Notify"}) ;This control uses WM_NOTIFY with NM_SETFOCUS and NM_KILLFOCUS
 		this.IndependentSorting := false ;Set to skip redundant __Get calls
 		this.Type := "ListView"
 	}
@@ -169,6 +181,8 @@ Class CListViewControl Extends CControl
 				if(Name = "FocusedItem")
 					Value := this._.Items[Value] ;new this.CItems.CRow(Value, this.GUINum, this.Name)
 			}
+			else if(Name = "PreviouslySelectedItem")
+				Value := this._.PreviouslySelectedItem
 			Loop % Params.MaxIndex()
 				if(IsObject(Value)) ;Fix unlucky multi parameter __GET
 					Value := Value[Params[A_Index]]
@@ -837,12 +851,18 @@ Class CListViewControl Extends CControl
 	
 	/*
 	Event: Introduction
-	To handle control events you need to create a function with this naming scheme in your window class: ControlName_EventName(params)
+	There are currently 3 methods to handle control events:
+	
+	1)	Use an event handler. Simply use control.EventName.Handler := "HandlingFunction"
+		Instead of "HandlingFunction" it is also possible to pass a function reference or a Delegate: control.EventName.Handler := new Delegate(Object, "HandlingFunction")
+		If this method is used, the first parameter will contain the control object that sent this event.
+		
+	2)	Create a function with this naming scheme in your window class: ControlName_EventName(params)
+	
+	3)	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
+		This method is deprecated since event handlers are more flexible.
+		
 	The parameters depend on the event and there may not be params at all in some cases.
-	Additionally it is required to create a label with this naming scheme: GUIName_ControlName
-	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent().
-	For better readability labels may be chained since they all execute the same code.
-	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
 	
 	Event: Click(RowItem)
 	Invoked when the user clicked on the control.

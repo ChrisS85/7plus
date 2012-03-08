@@ -6,6 +6,8 @@ This control extends <CControl>. All basic properties and functions are implemen
 */
 Class CSliderControl Extends CControl
 {
+	SliderMoved := new EventHandler()
+	
 	__New(Name, Options, Text, GUINum)
 	{
 		Base.__New(Name, Options, Text, GUINum)
@@ -15,7 +17,7 @@ Class CSliderControl Extends CControl
 		this._.Insert("Min", 0)
 		this._.Insert("Max", 100)
 		this._.Insert("Invert", InStr(Options, "Invert"))
-		this._.Insert("Messages", {0x004E : "Notify"}) ;This control uses WM_NOTIFY with NM_SETFOCUS and NM_KILLFOCUS
+		; this._.Insert("Messages", {0x004E : "Notify"}) ;This control uses WM_NOTIFY with NM_SETFOCUS and NM_KILLFOCUS
 		this._.Insert("Events", ["SliderMoved"])
 	}
 	
@@ -111,12 +113,14 @@ Class CSliderControl Extends CControl
 	
 	/*
 	Event: Introduction
-	To handle control events you need to create a function with this naming scheme in your window class: ControlName_EventName(params)
+	There are currently 3 methods to handle control events:
+	1)	Use an event handler. Simply use control.EventName.Handler := "HandlingFunction"
+		Instead of "HandlingFunction" it is also possible to pass a function reference or a Delegate: control.EventName.Handler := new Delegate(Object, "HandlingFunction")
+		If this method is used, the first parameter will contain the control object that sent this event.
+	2)	Create a function with this naming scheme in your window class: ControlName_EventName(params)
+	3)	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
+		This method is deprecated since event handlers are more flexible.
 	The parameters depend on the event and there may not be params at all in some cases.
-	Additionally it is required to create a label with this naming scheme: GUIName_ControlName
-	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent().
-	For better readability labels may be chained since they all execute the same code.
-	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
 	
 	Event: SliderMoved()
 	Invoked when the user clicked on the control. This control does not implement all the advanced Slider events yet. Should be easy to implement though if there is any demand.
