@@ -176,9 +176,9 @@ WindowFilter_GuiShow(WindowFilter, WindowFilterGUI,GoToLabel="")
 		{
 			if(WindowFilter.tmpPreviousSelection = "Specific Window") ;Destroy specific controls and store values
 			{
-				Desc_WindowFilterClass := WindowFilter.tmpWindowFilterGUI.Desc_WindowFilterClass
-				Edit_WindowFilterClass := WindowFilter.tmpWindowFilterGUI.Edit_WindowFilterClass
-				Button1_WindowFilterClass := WindowFilter.tmpWindowFilterGUI.Button1_WindowFilterClass
+				Desc_WindowFilterClass := WindowFilter.tmpWindowFilterGUI.Remove("Desc_WindowFilterClass")
+				Edit_WindowFilterClass := WindowFilter.tmpWindowFilterGUI.Remove("Edit_WindowFilterClass")
+				Button1_WindowFilterClass := WindowFilter.tmpWindowFilterGUI.Remove("Button1_WindowFilterClass")
 								
 				ControlGetText, WindowFilterClass, , ahk_id %Edit_WindowFilterClass%
 				WindowFilter.WindowFilterClass := WindowFilterClass
@@ -187,9 +187,9 @@ WindowFilter_GuiShow(WindowFilter, WindowFilterGUI,GoToLabel="")
 				WinKill, ahk_id %Edit_WindowFilterClass%
 				WinKill, ahk_id %Button1_WindowFilterClass%
 				
-				Desc_WindowFilterExecutable := WindowFilter.tmpWindowFilterGUI.Desc_WindowFilterExecutable
-				Edit_WindowFilterExecutable := WindowFilter.tmpWindowFilterGUI.Edit_WindowFilterExecutable
-				Button1_WindowFilterExecutable := WindowFilter.tmpWindowFilterGUI.Button1_WindowFilterExecutable
+				Desc_WindowFilterExecutable := WindowFilter.tmpWindowFilterGUI.Remove("Desc_WindowFilterExecutable")
+				Edit_WindowFilterExecutable := WindowFilter.tmpWindowFilterGUI.Remove("Edit_WindowFilterExecutable")
+				Button1_WindowFilterExecutable := WindowFilter.tmpWindowFilterGUI.Remove("Button1_WindowFilterExecutable")
 								
 				ControlGetText, WindowFilterExecutable, , ahk_id %Edit_WindowFilterExecutable%
 				WindowFilter.WindowFilterExecutable := WindowFilterExecutable
@@ -198,9 +198,9 @@ WindowFilter_GuiShow(WindowFilter, WindowFilterGUI,GoToLabel="")
 				WinKill, ahk_id %Edit_WindowFilterExecutable%
 				WinKill, ahk_id %Button1_WindowFilterExecutable%
 				
-				Desc_WindowFilterTitle := WindowFilter.tmpWindowFilterGUI.Desc_WindowFilterTitle
-				Edit_WindowFilterTitle := WindowFilter.tmpWindowFilterGUI.Edit_WindowFilterTitle
-				Button1_WindowFilterTitle := WindowFilter.tmpWindowFilterGUI.Button1_WindowFilterTitle
+				Desc_WindowFilterTitle := WindowFilter.tmpWindowFilterGUI.Remove("Desc_WindowFilterTitle")
+				Edit_WindowFilterTitle := WindowFilter.tmpWindowFilterGUI.Remove("Edit_WindowFilterTitle")
+				Button1_WindowFilterTitle := WindowFilter.tmpWindowFilterGUI.Remove("Button1_WindowFilterTitle")
 								
 				ControlGetText, WindowFilterTitle, , ahk_id %Edit_WindowFilterTitle%
 				WindowFilter.WindowFilterTitle := WindowFilterTitle

@@ -151,7 +151,7 @@ ThemedWindows:=DllCall("uxtheme.dll\IsThemeActive") ; On non-themed environments
 	else
 		Menu, tray, Icon, %A_ScriptDir%\7+-w.ico,,1
 ; }
-
+Menu, tray, Tip, % "7plus " VersionString(1)
 ;Show tray icon when loading is complete
 if(!Settings.Misc.HidetrayIcon)
 	menu, tray, Icon
