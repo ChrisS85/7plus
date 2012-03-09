@@ -1,7 +1,7 @@
-Class CMouseOverTabButton Extends CCondition
+Class CMouseOverTabButtonCondition Extends CCondition
 {
-	static Type := RegisterType(CMouseOverTabButton, "Mouse over tab button")
-	static Category := RegisterType(CMouseOverTabButton, "Mouse")
+	static Type := RegisterType(CMouseOverTabButtonCondition, "Mouse over tab button")
+	static Category := RegisterCategory(CMouseOverTabButtonCondition, "Mouse")
 	
 	Evaluate()
 	{

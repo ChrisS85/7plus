@@ -347,7 +347,6 @@ Class CEventEditor extends CGUI
 		Gui, % this.GUINum ": Default"
 		Gui, Tab, 2
 		this.Condition.GuiSubmit(this.ConditionGUI)
-		;~ msgbox % this.listConditions.Items[this.Event.Conditions.IndexOf(this.Condition)].Index
 		this.listConditions.Items[this.Event.Conditions.IndexOf(this.Condition)].Text := (this.Condition.Negate ? "NOT " : "" ) this.Condition.DisplayString()
 		Gui, Tab
 		this.Remove("Condition")

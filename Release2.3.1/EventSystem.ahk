@@ -842,7 +842,7 @@ RegisterCategory(Class, Category)
 		Categories := CCondition.Categories
 	else if(Class.Extends("CAction"))
 		Categories := CAction.Categories
-		
+	
 	if(!Categories[Category].Is(CArray))
 		Categories[Category] := new CArray()
 	Categories[Category].Insert(Class)
