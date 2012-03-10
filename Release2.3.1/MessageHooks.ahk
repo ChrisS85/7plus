@@ -94,7 +94,7 @@ ShellMessage( wParam, lParam, Msg)
 	Trigger.lParam := lParam
 	Trigger.Msg := Msg
 	EventSystem.OnTrigger(Trigger)
-	If	(wParam=1||wParam=2) ;Window Created/Closed
+	if(wParam=1||wParam=2) ;Window Created/Closed
 	{
 		lParam += 0
 		;Keep a list of recently received create/close messages, because they can be sent multiple times and we only want one.
@@ -120,7 +120,9 @@ ShellMessage( wParam, lParam, Msg)
 				{
 					WinGetClass, class, ahk_id %hwnd%
 					WinGet, exe, ProcessName, ahk_id %hwnd%
-					WindowList[hwnd] := Object("class", class, "title", title, "Executable", exe)
+					WinGet, Path, ProcessPath, ahk_id %hwnd%
+					outputdebug add %path% to list
+					WindowList[hwnd] := Object("class", class, "title", title, "Executable", exe, "Path", Path)
 				}
 			}
 		}

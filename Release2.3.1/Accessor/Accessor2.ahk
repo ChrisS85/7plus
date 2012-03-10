@@ -250,19 +250,10 @@ Class CAccessor
 		Filter := this.Filter
 		Parameters := this.ExpandFilter(Filter, LastFilter)
 		
-		;~ this.ListViewReady := false
 		this.GUI.ListView.Redraw := false
 		
 		this.GUI.ListView.Items.Clear()
 		this.GUI.ListView.ImageListManager.Clear()
-		
-		;~ this.ImageListID := IL_Create(20,5,this.Settings.LargeIcons = 1) ; Create an ImageList so that the ListView can display some icons
-		;~ IconCount := 4
-		;~ ImageList_ReplaceIcon(this.ImageListID, -1, this.GenericIcons.Application)
-		;~ ImageList_ReplaceIcon(this.ImageListID, -1, this.GenericIcons.Folder)
-		;~ ImageList_ReplaceIcon(this.ImageListID, -1, this.GenericIcons.URL)
-		;~ ImageList_ReplaceIcon(this.ImageListID, -1, this.GenericIcons.File)
-		
 		this.List := Array()
 		
 		;Find out if we are in a single plugin context, and add only those items
@@ -291,23 +282,20 @@ Class CAccessor
 				Plugin := this.Plugins[A_LoopField]
 				if(Plugin.Settings.Enabled && !Plugin.Settings.KeywordOnly && StrLen(Filter) >= Plugin.Settings.MinChars)
 				{
-					Result := Plugin.RefreshList(Accessor, Filter, LastFilter, False, Parameters)
+					Result := Plugin.RefreshList(this, Filter, LastFilter, False, Parameters)
 					if(Result)
 						this.List.Extend(Result)
 				}
 			}
 		}
 		;Now that items are added, add them to the listview
-		;~ LV_SetImageList(Accessor.ImageListID, 1) ; Attach the ImageLists to the ListView so that it can later display the icons
 		for index, ListEntry in this.List
 		{
 			Plugin := this.Plugins.GetItemWithValue("Type", ListEntry.Type)
 			Plugin.GetDisplayStrings(ListEntry, Title := ListEntry.Title, Path := ListEntry.Path, Detail1 := ListEntry.Detail1, Detail2 := ListEntry.Detail2)
 			item := this.GUI.ListView.Items.Add("", Title, Path, Detail1, Detail2)
 			item.Icon := ListEntry.Icon
-			;~ LV_Add("Icon" AccessorListEntry.Icon, "", A_Index, Title, Path, Detail1, Detail2)
 		}
-		;~ this.ListViewReady := true
 		this.LastFilter := Filter
 		this.LastParameters := Parameters
 		selected := LV_GetNext()
@@ -346,10 +334,10 @@ Class CAccessor
 		XML_Save(XMLObject, Settings.ConfigPath "\Accessor.xml")
 		
 		;Clean up
-		DestroyIcon(Accessor.GenericIcons.Application)
-		DestroyIcon(Accessor.GenericIcons.File)
-		DestroyIcon(Accessor.GenericIcons.Folder)
-		DestroyIcon(Accessor.GenericIcons.URL)
+		DestroyIcon(this.GenericIcons.Application)
+		DestroyIcon(this.GenericIcons.File)
+		DestroyIcon(this.GenericIcons.Folder)
+		DestroyIcon(this.GenericIcons.URL)
 	}
 	OnSelectionChanged()
 	{
@@ -402,9 +390,9 @@ Class CAccessor
 	
 	;This function is called to perform an action on a selected list entry.
 	;Plugins may handle each function on their own, otherwise they will be handled directly by Accessor if available.
-	PerformAction(Action = "")
+	PerformAction(Action = "", ListEntry = "")
 	{
-		if(IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]))
+		if(IsObject(ListEntry) || IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]))
 		{
 			if(Action && !IsObject(Action))
 				Action := ListEntry.Actions.DefaultAction.Name = Action ? ListEntry.Actions.DefaultAction : ListEntry.Actions.GetItemWithValue("Name", Action)
@@ -667,31 +655,6 @@ CAccessor.Instance.PerformAction(CAccessor.CActions.Copy)
 return
 #if
 
-;~ AccessorContextMenu:
-;~ AccessorContextMenu()
-;~ return
-;~ AccessorContextMenu()
-;~ {
-	;~ global AccessorPlugins
-	;~ if(A_GuiControl = "AccessorListView")
-	;~ {
-		;~ selected := A_EventInfo
-		;~ if(!selected)
-			;~ return
-		
-		;~ Menu, AccessorMenu, add, 1,AccessorOK
-		;~ Menu, AccessorMenu, DeleteAll
-		;~ if(AccessorListEntry := AccessorGetSelectedListEntry())
-		;~ {
-			;~ if(AccessorPlugin := AccessorPlugins.GetItemWithValue("Type", AccessorListEntry.Type))
-			;~ {
-				;~ AccessorPlugin.SetupContextMenu(AccessorListEntry)
-				;~ Menu, AccessorMenu, Show
-			;~ }
-		;~ }
-	;~ }
-;~ }
-
 Class CAccessorPluginSettingsWindow extends CGUI
 {
 	PluginGUI := object("x",38,"y",80)
@@ -831,7 +794,7 @@ Class CAccessorPlugin
 		;It needs to have a DefaultAction member which is not included in the array itself.
 		Actions := Array()
 		Type := "Unset"
-		Icon := CAccessor.GenericIcons.Application
+		Icon := CAccessor.Instance.GenericIcons.Application
 		Title := ""
 		Path := ""
 		Detail1 := ""
@@ -904,4 +867,4 @@ Class CAccessorPlugin
 ;~ #include %A_ScriptDir%\Accessor\Uninstall.ahk
 ;~ #include %A_ScriptDir%\Accessor\URL.ahk
 ;~ #include %A_ScriptDir%\Accessor\Weather.ahk
-;~ #include %A_ScriptDir%\Accessor\Run.ahk
+#include %A_ScriptDir%\Accessor\CRunPlugin.ahk
