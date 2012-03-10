@@ -134,10 +134,17 @@ Class CAccessor
 		this.OldKeyDown := OnMessage(0x100)
 		OnMessage(0x100, "")
 	}
+	
+	;Sets the filter and tries to wait (for max. 5 seconds) until results are there
 	SetFilter(Text)
 	{
 		this.Filter := Text
-		GUI.SetFilter(Text)
+		this.SuppressListViewUpdate := true
+		this.GUI.SetFilter(Text)
+		while(this.SuppressListViewUpdate && A_Index < 500)
+			Sleep 10
+		if(!this.SuppressListViewUpdate)
+			this.RefreshList()
 	}
 	OnFilterChanged(Filter)
 	{
@@ -332,7 +339,7 @@ Class CAccessor
 		for index, Plugin in this.Plugins
 		{
 			XMLObject[Plugin.Type] := Plugin.Settings.DeepCopy()
-			Plugin.OnExit()
+			Plugin.OnExit(this)
 		}
 		XMLObject.Keywords := Object("Keyword", this.Keywords)
 		
@@ -709,16 +716,17 @@ Class CAccessorPluginSettingsWindow extends CGUI
 			this.Plugin := Plugin
 		Gui, % this.GUINum ":Default"
 		this.txtDescription := this.AddControl("Text", "txtDescription", "x40 y18", OriginalPlugin.Description)
-		hwnd := AddControl(Plugin.Settings, this.PluginGUI, "Edit", "Keyword", "", "", "Keyword:")
+		hwnd := AddControl(Plugin.Settings, this.PluginGUI, "Edit", "Keyword", "", "", "Keyword:", "", "", "", "", "You can enter the keyword in Accessor at the beginning of a query to only show results from this plugin.")
 		if(!Plugin.Settings.HasKey("Keyword"))
 			GuiControl, % this.GUINum ":Disable", %hwnd%
 		
-		AddControl(Plugin.Settings, this.PluginGUI, "Edit", "BasePriority", "", "", "Base Priority:")
+		AddControl(Plugin.Settings, this.PluginGUI, "Edit", "BasePriority", "", "", "Base Priority:", "", "", "", "", "The priority of a plugin determines the order of its results in the Accessor window.`n Some plugins dynamically adjust their priority based on the current context.")
 		
-		hwnd := AddControl(Plugin.Settings, this.PluginGUI, "Checkbox", "KeywordOnly", "Keyword Only")
+		hwnd := AddControl(Plugin.Settings, this.PluginGUI, "Checkbox", "KeywordOnly", "Keyword Only", "", "", "", "", "", "", "If checked, this plugin will only show results when its keyword was entered.")
 		if(!Plugin.Settings.HasKey("KeywordOnly"))
 			GuiControl, % this.GUINum ":Disable", %hwnd%
-		
+		if(Plugin.Settings.HasKey("FuzzySearch"))
+			AddControl(Settings, PluginGUI, "Checkbox", "FuzzySearch", "Use fuzzy search (slower)", "", "", "", "", "", "", "Fuzzy search allows this plugin to find programs that don't match exactly.`nThis is good if you mistype a program but it will noticably drain on the Accessor performance.")
 		this.OriginalPlugin := OriginalPlugin
 		OriginalPlugin.ShowSettings(Plugin.Settings, this, this.PluginGUI)
 	}
@@ -891,7 +899,7 @@ Class CAccessorPlugin
 ;~ #include %A_ScriptDir%\Accessor\Notes.ahk
 ;~ #include %A_ScriptDir%\Accessor\ProgramLauncher.ahk
 #include %A_ScriptDir%\Accessor\CProgramLauncherPlugin.ahk
-;~ #include %A_ScriptDir%\Accessor\SciTE4AutoHotkey.ahk
+#include %A_ScriptDir%\Accessor\CSciTE4AutoHotkeyPlugin.ahk
 ;~ #include %A_ScriptDir%\Accessor\WindowSwitcher.ahk
 ;~ #include %A_ScriptDir%\Accessor\Uninstall.ahk
 ;~ #include %A_ScriptDir%\Accessor\URL.ahk

@@ -5,9 +5,6 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 	
 	Description := "Run programs/files by typing a part of their name. All programs/files from the folders in the list `nbelow can be used. 7plus also looks for running programs and automatically adds them `nto the index, so you don't have to add large directories like Program Files or WinDir usually."
 	
-	;Since the actions of this plugin are constant we can store them here
-	Actions := Array()
-	
 	;List of cached programs
 	List := Array()
 	
@@ -22,6 +19,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		IgnoreExtensions := true
 		Exclude := "setup,install,uninst,remove"
 		MinChars := 2
+		RefreshOnStartup := true
 	}
 	Class CResult extends CAccessorPlugin.CResult
 	{
@@ -44,7 +42,8 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 	Init()
 	{
 		this.ReadCache()
-		this.RefreshCache()
+		if(this.Settings.RefreshOnStartup)
+			this.RefreshCache()
 		SetTimer, UpdateLauncherPrograms, 60000
 	}
 	
@@ -52,11 +51,11 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 	{
 		this.SettingsWindow := {Settings: Settings, GUI: GUI, PluginGUI: PluginGUI}
 		this.SettingsWindow.Paths := this.Paths.DeepCopy()
-		AddControl(Settings, PluginGUI, "Checkbox", "FuzzySearch", "Use fuzzy search (slower)", "", "")
-		AddControl(Settings, PluginGUI, "Checkbox", "IgnoreExtensions", "Ignore file extensions", "", "")
-		AddControl(Settings, PluginGUI, "Edit", "Exclude", "", "", "Exclude:")
+		AddControl(Settings, PluginGUI, "Checkbox", "RefreshOnStartup", "Refresh cache on startup", "", "", "", "", "", "", "Disable this if 7plus starts too slow because you're scanning large directories.")
+		AddControl(Settings, PluginGUI, "Checkbox", "IgnoreExtensions", "Ignore file extensions", "", "", "", "", "", "", "If checked, file extensions will be excluded from the query.")
+		AddControl(Settings, PluginGUI, "Edit", "Exclude", "", "", "Exclude:", "", "", "", "", "Files which contain one of these strings will not be listed as results.")
 		x := PGUI.x
-		GUI.ListBox := GUI.AddControl("ListBox", "ListBox", "-Hdr -Multi -ReadOnly x" PluginGUI.x " y+10 w330 R8", "")
+		GUI.ListBox := GUI.AddControl("ListBox", "ListBox", "-Hdr -Multi -ReadOnly x" PluginGUI.x " y+10 w330 R9", "")
 		for index, Path in this.SettingsWindow.Paths
 			GUI.ListBox.Items.Add(Path.Path)
 		GUI.ListBox.SelectionChanged.Handler := new Delegate(this, "Settings_PathSelectionChanged")
@@ -96,7 +95,6 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		{
 			this.SettingsWindow.GUI.btnDeletePath.Enabled := 1
 			this.SettingsWindow.GUI.btnBrowse.Enabled := 1
-			outputdebug % "set text to " this.SettingsWindow.Paths[this.SettingsWindow.GUI.ListBox.SelectedIndex].Extensions " of " this.SettingsWindow.GUI.ListBox.SelectedIndex
 			this.SettingsWindow.GUI.editExtensions.Text := this.SettingsWindow.Paths[this.SettingsWindow.GUI.ListBox.SelectedIndex].Extensions
 		}
 		else
@@ -171,7 +169,6 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		Results := Array()
 		FuzzyList := Array()
 		InStrList := Array()
-		outputdebug plugin RefreshList()
 		
 		;Possibly remove file extension from filter
 		strippedFilter := this.Settings.IgnoreFileExtensions ? RegexReplace(Filter, "\.\w+") : Filter
@@ -182,7 +179,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			ListEntry := this.List[index]
 			if(!ListEntry.Command || !FileExist(ListEntry.Command))
 			{
-				this.List.Remove(A_Index)
+				this.List.Remove(index)
 				continue
 			}
 			MatchPos := 0
@@ -204,12 +201,10 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 				
 				;Create result
 				result := new this.CResult()
-				;~ outputdebug % "Result: " ExploreObj(result.base)
 				result.Title := Name
 				result.Path := ListEntry.Command
 				result.args := ListEntry.args
 				result.icon := ListEntry.hIcon
-				;~ outputdebug % "bal" Exploreobj(result.Actions)
 				;Put entries which start with the match at first
 				if(MatchPos = 1)
 					Results.Insert(result)
@@ -350,7 +345,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 						if name not contains %exclude%
 						{
 							;Check for existing duplicates
-							if(this.List.FindKeyWithValue("Command",command) = 0)
+							if(!this.List.FindKeyWithValue("Command",command))
 							{
 								if(ExeName)
 									this.List.Insert(Object("Name",name, "ExeName", ExeName, "Command", command, "args", args, "BasePath", Path))
@@ -365,161 +360,32 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 	}
 }
 
-;~ Accessor_ProgramLauncher_ShowSettings(ProgramLauncher, PluginSettings, PluginGUI, GoToLabel = "")
-;~ {
-	;~ global ProgramLauncherListView, ProgramLauncherAddPath, ProgramLauncherEditPath, ProgramLauncherDeletePath
-	;~ static PLauncher,PSettings,PGUI, hEdit
-	;~ if(GoToLabel = "")
-	;~ {
-		;~ PLauncher := ProgramLauncher
-		;~ PSettings := PluginSettings
-		;~ PGUI := PluginGUI
-		;~ hEdit := 0
-		;~ PSettings.tmpPaths := PLauncher.Paths.DeepCopy()
-		;~ AddControl(PSettings, PGUI, "Edit", "Keyword", "", "", "Keyword:")
-		;~ AddControl(PSettings, PGUI, "Edit", "BasePriority", "", "", "Base Priority:")
-		;~ AddControl(PSettings, PGUI, "Checkbox", "FuzzySearch", "Use fuzzy search (slower)", "", "")
-		;~ AddControl(PSettings, PGUI, "Checkbox", "IgnoreExtensions", "Ignore file extensions", "", "")
-		;~ AddControl(PSettings, PGUI, "Edit", "Exclude", "", "", "Exclude:")
-		;~ x := PGUI.x
-		;~ GUI, Add, ListView, vProgramLauncherListView gProgramLauncherListView AltSubmit -Hdr -Multi -ReadOnly x%x% y+10 w330 R8, Path
-		;~ Loop % PSettings.tmpPaths.MaxIndex()
-			;~ LV_Add(A_Index = 1 ? "Select" : "", PSettings.tmpPaths[A_Index].Path)
-		;~ GUI, Add, Button, x+10 gProgramLauncherAddPath w80, Add Path
-		;~ GUI, Add, Button, y+10 gProgramLauncherEditPath vProgramLauncherEditPath w80, Browse
-		;~ GUI, Add, Button, y+10 gProgramLauncherDeletePath vProgramLauncherDeletePath w80, Delete Path
-		;~ GUI, Add, Button, y+10 gProgramLauncherRefreshCache w80, Refresh Cache
-		;~ Gui, Add, Text, x%x% y+35, File extensions:
-		;~ Gui, Add, Edit, hwndhEdit x+10 y+-17 w248
-		;~ Gui, Add, Text, x+10 y+-17, Seperator: Comma
-	;~ }
-	;~ else if(GoToLabel = "ListView")
-	;~ {
-		;~ ListEvent := Errorlevel
-		;~ Gui, ListView, ProgramLauncherListView
-		;~ if(A_GuiEvent="I" && InStr(ListEvent, "S", true))
-		;~ {	
-			;~ GuiControl, enable, ProgramLauncherDeletePath
-			;~ GuiControl, enable, ProgramLauncherEditPath
-			;~ extensions := PSettings.tmpPaths[A_EventInfo].Extensions
-			;~ ControlSetText,,%extensions%, ahk_id %hEdit%
-		;~ }
-		;~ else if(A_GuiEvent="I" && InStr(ListEvent, "s", true))
-		;~ {
-			;~ ControlGetText, extensions,, ahk_id %hEdit%
-			;~ PSettings.tmpPaths[A_EventInfo].Extensions := extensions
-			;~ GuiControl, disable, ProgramLauncherEditPath
-			;~ GuiControl, disable, ProgramLauncherDeletePath
-		;~ }
-	;~ }
-	;~ else if(GoToLabel = "AddPath")
-	;~ {
-		;~ Gui +OwnDialogs
-		;~ path:=COMObjCreate("Shell.Application").BrowseForFolder(0, "Add indexing path", 0).Self.Path
-		;~ if(path!="")
-		;~ {
-			;~ PSettings.tmpPaths.Insert(Object("Path", path, "Extensions", "exe"))
-			;~ LV_Add("Select", path)
-		;~ }
-	;~ }
-	;~ else if(GoToLabel = "EditPath")
-	;~ {
-		;~ selected := LV_GetNext()
-		;~ if(selected)
-		;~ {
-			;~ Gui +OwnDialogs
-			;~ FileSelectFolder, path,,,Add indexing path
-			;~ ; path:=COMObjCreate("Shell.Application").BrowseForFolder(0, "Add indexing path", 0x50).Self.Path
-			;~ if(path!="")
-			;~ {
-				;~ PSettings.tmpPaths[selected].Path := path
-				;~ LV_Modify(selected, "Select Col1", path)
-			;~ }
-		;~ }
-	;~ }
-	;~ else if(GoToLabel = "DeletePath")
-	;~ {
-		;~ selected := LV_GetNext()
-		;~ if(selected)
-		;~ {
-			;~ PSettings.tmpPaths.Delete(selected)
-			;~ LV_Delete(selected)
-		;~ }
-	;~ }
-	;~ else if(GoToLabel = "SaveSettings")
-	;~ {		
-		;~ Gui, ListView, ProgramLauncherListView
-		;~ selected := LV_GetNext()
-		;~ ControlGetText, extensions,, ahk_id %hEdit%
-		;~ PSettings.tmpPaths[selected].Extensions := extensions
-		;~ PLauncher.Paths := Array()
-		;~ Loop % LV_GetCount()
-		;~ {
-			;~ LV_GetText(Path, A_Index, 1)
-			;~ if(InStr(FileExist(ExpandPathPlaceholders(Path)), "D"))
-				;~ PLauncher.Paths.Insert(Object("Path", Path,"Extensions",PSettings.tmpPaths[A_Index].Extensions))
-			;~ else
-				;~ MsgBox Ignoring %Path% because it is invalid.
-		;~ }
-		;~ RefreshProgramLauncherCache(PLauncher)
-	;~ }
-	;~ else if(GoToLabel = "RefreshCache")
-		;~ RefreshProgramLauncherCache(PLauncher)
-;~ }
-;~ ProgramLauncherListView:
-;~ Accessor_ProgramLauncher_ShowSettings("","","","ListView")
-;~ return
-;~ ProgramLauncherAddPath:
-;~ Accessor_ProgramLauncher_ShowSettings("","","","AddPath")
-;~ return
-;~ ProgramLauncherEditPath:
-;~ Accessor_ProgramLauncher_ShowSettings("","","","EditPath")
-;~ return
-;~ ProgramLauncherDeletePath:
-;~ Accessor_ProgramLauncher_ShowSettings("","","","DeletePath")
-;~ return
-;~ ProgramLauncherRefreshCache:
-;~ Accessor_ProgramLauncher_ShowSettings("","","","RefreshCache")
-;~ return
-;~ Accessor_ProgramLauncher_SaveSettings(ProgramLauncher, PluginSettings, PluginGUI)
-;~ {
-	;~ Accessor_ProgramLauncher_ShowSettings("","","","SaveSettings")
-;~ }
-
-
-
 UpdateLauncherPrograms:
-;~ UpdateLauncherPrograms()
+UpdateLauncherPrograms()
 return
 ;This function is periodically called and adds running programs to the ProgramLauncher cache
-;~ UpdateLauncherPrograms()
-;~ {
-	;~ global Accessor
-	;~ if(!IsObject(Accessor) || !IsObject(Accessor.List) || Accessor.GUINum)
-		;~ return
-	;~ for i, Window in Accessor.List
-	;~ {
-		;~ if(Window.Type = "WindowSwitcher")
-		;~ {
-			;~ WindowFullPath := GetModuleFileNameEx(Window.PID)
-			;~ if(WindowFullPath) ;Fails sometimes for some reason
-			;~ {
-				;~ found := false
-				;~ for index, ListEntry in ProgramLauncher.List
-				;~ {
-					;~ if(ListEntry.Command = WindowFullPath)
-					;~ {
-						;~ found := true
-						;~ break
-					;~ }
-				;~ }
-				;~ if(!found)
-				;~ {
-					;~ path := Window.Path
-					;~ SplitPath, path, name
-					;~ ProgramLauncher.List.Insert(Object("Name", name,"Command", WindowFullPath))
-				;~ }
-			;~ }
-		;~ }
-	;~ }
-;~ }
+UpdateLauncherPrograms()
+{
+	global WindowList
+	if(!IsObject(CAccessor.Instance) || !IsObject(WindowList))
+		return
+	outputdebug update launcher programs
+	for i, Window in WindowList
+	{
+		if(Window.Path) ;Fails sometimes for some reason
+		{
+			if(!CProgramLauncherPlugin.Instance.List.FindKeyWithValue("Command", Window.Path))
+			{
+				outputdebug % "didn't find " window.path
+				path := Window.Path
+				SplitPath, path, name
+				exclude := CProgramLauncherPlugin.Instance.Settings.Exclude
+				if path not contains %exclude%
+				{
+					outputdebug add %name%
+					CProgramLauncherPlugin.Instance.List.Insert(Object("Name", name,"Command", Window.Path))
+				}
+			}
+		}
+	}
+}
