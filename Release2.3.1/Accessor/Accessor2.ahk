@@ -274,8 +274,8 @@ Class CAccessor
 		{
 			this.SingleContext := false
 			Pluginlist := ""
-			for index, Plugin in this.Plugins
-				Pluginlist .= (Pluginlist ? "," : "") index
+			for index2, Plugin in this.Plugins
+				Pluginlist .= (Pluginlist ? "," : "") index2
 			Sort, Pluginlist, F AccessorPrioritySort D`,
 			Loop, Parse, Pluginlist, `,
 			{
@@ -289,7 +289,7 @@ Class CAccessor
 			}
 		}
 		;Now that items are added, add them to the listview
-		for index, ListEntry in this.List
+		for index3, ListEntry in this.List
 		{
 			Plugin := this.Plugins.GetItemWithValue("Type", ListEntry.Type)
 			Plugin.GetDisplayStrings(ListEntry, Title := ListEntry.Title, Path := ListEntry.Path, Detail1 := ListEntry.Detail1, Detail2 := ListEntry.Detail2)
@@ -301,7 +301,6 @@ Class CAccessor
 		selected := LV_GetNext()
 		if(this.GUI.ListView.SelectedItems.MaxIndex() != 1)
 			this.GUI.ListView.SelectedIndex := 1
-		
 		this.GUI.ListView.Redraw := true
 	}
 	
@@ -362,6 +361,7 @@ Class CAccessor
 			Plugin.OnClose(this)
 		this.LastFilter := ""
 		this.GUI := ""
+		this.List := ""
 		OnMessage(0x100, this.OldKeyDown) ; Restore previous KeyDown handler
 	}
 	
@@ -392,8 +392,10 @@ Class CAccessor
 	;Plugins may handle each function on their own, otherwise they will be handled directly by Accessor if available.
 	PerformAction(Action = "", ListEntry = "")
 	{
+		outputdebug % exploreobj(this.list)
 		if(IsObject(ListEntry) || IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]))
 		{
+			outputdebug % "perform action on " this.GUI.ListView.SelectedIndex ": " ListEntry.Path
 			if(Action && !IsObject(Action))
 				Action := ListEntry.Actions.DefaultAction.Name = Action ? ListEntry.Actions.DefaultAction : ListEntry.Actions.GetItemWithValue("Name", Action)
 			if(!Action && ListEntry.Actions.DefaultAction)
@@ -852,9 +854,9 @@ Class CAccessorPlugin
 	}
 }
 
-;~ #include %A_ScriptDir%\Accessor\AccessorEventPlugin.ahk
+#include %A_ScriptDir%\Accessor\CEventPlugin.ahk
 ;~ #include %A_ScriptDir%\Accessor\Calc.ahk
-;~ #include %A_ScriptDir%\Accessor\ExplorerHistory.ahk
+#include %A_ScriptDir%\Accessor\CExplorerHistoryPlugin.ahk
 ;~ #include %A_ScriptDir%\Accessor\FastFolders.ahk
 ;~ #include %A_ScriptDir%\Accessor\FileSystem.ahk
 ;~ #include %A_ScriptDir%\Accessor\Google.ahk

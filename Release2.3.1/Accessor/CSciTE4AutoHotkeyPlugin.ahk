@@ -1,7 +1,7 @@
 Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 {
 	;Register this plugin with the Accessor main object
-	static Type := CAccessor.RegisterPlugin("SciTE4AutoHotkey tab switcher", CSciTE4AutoHotkeyPlugin)
+	static Type := CAccessor.RegisterPlugin("SciTE4AutoHotkey Tab Switcher", CSciTE4AutoHotkeyPlugin)
 	
 	Description := "Activate a specific SciTE4AutoHotkey tab by typing a part of its name. This plugin restores the text `nwhich was previously entered when the current tab was last active. `nThis way you can quicly switch between the most used tabs."
 		
@@ -29,7 +29,7 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 				this.Insert(CAccessorPlugin.CActions.ExplorerContextMenu)
 			}
 		}
-		Type := "SciTE4AutoHotkey tab switcher"
+		Type := "SciTE4AutoHotkey Tab Switcher"
 		Detail1 := "S4AHK Tab"
 		Actions := new this.CActions()
 	}
