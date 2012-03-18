@@ -24,10 +24,12 @@ Class CAccessor
 	;An action that can be performed on an Accessor result
 	Class CAction
 	{
-		__new(Name, Function)
+		;Name: Appears in context menus and on the OK button. Function: Called to carry out the action. Condition: Called to check if this action is valid in the current context. Supports Delegates
+		__new(Name, Function, Condition = "")
 		{
 			this.Name := Name
 			this.Function := Function
+			this.Condition := Condition
 		}
 	}
 	__new()
@@ -345,6 +347,10 @@ Class CAccessor
 		{
 			if(this.GUI.btnOK.Text != ListEntry.Actions.DefaultAction.Name)
 				this.GUI.btnOK.Text := ListEntry.Actions.DefaultAction.Name
+			if(!ListEntry.Actions.DefaultAction.Condition || ListEntry.Actions.DefaultAction.Condition.(ListEntry))
+				this.GUI.btnOK.Enabled := true
+			else
+				this.GUI.btnOK.Enabled := false
 		}
 	}
 	OnDoubleClick()
@@ -428,12 +434,20 @@ Class CAccessor
 		{
 			Menu, AccessorContextMenu, Add, test, AccessorContextMenu
 			Menu, AccessorContextMenu, DeleteAll
-			Menu, AccessorContextMenu, Add, % ListEntry.Actions.DefaultAction.Name, AccessorContextMenu
-			Menu, AccessorContextMenu, Default, % ListEntry.Actions.DefaultAction.Name
-			outputdebug % isobject(ListEntry.Actions)
-			for key, action in ListEntry.Actions				
-				Menu, AccessorContextMenu, Add, % action.Name, AccessorContextMenu
-			Menu, AccessorContextMenu, Show
+			if(!ListEntry.Actions.DefaultAction.Condition || ListEntry.Actions.DefaultAction.Condition.(ListEntry))
+			{
+				entries := true
+				Menu, AccessorContextMenu, Add, % ListEntry.Actions.DefaultAction.Name, AccessorContextMenu
+				Menu, AccessorContextMenu, Default, % ListEntry.Actions.DefaultAction.Name
+			}
+			for key, action in ListEntry.Actions
+				if(!action.Condition || action.Condition.(ListEntry))
+				{
+					entries := true
+					Menu, AccessorContextMenu, Add, % action.Name, AccessorContextMenu
+				}
+			if(entries)
+				Menu, AccessorContextMenu, Show
 		}
 	}
 	Run(ListEntry, Plugin)
@@ -692,7 +706,7 @@ Class CAccessorPluginSettingsWindow extends CGUI
 		if(!Plugin.Settings.HasKey("KeywordOnly"))
 			GuiControl, % this.GUINum ":Disable", %hwnd%
 		if(Plugin.Settings.HasKey("FuzzySearch"))
-			AddControl(Settings, PluginGUI, "Checkbox", "FuzzySearch", "Use fuzzy search (slower)", "", "", "", "", "", "", "Fuzzy search allows this plugin to find programs that don't match exactly.`nThis is good if you mistype a program but it will noticably drain on the Accessor performance.")
+			AddControl(Plugin.Settings, this.PluginGUI, "Checkbox", "FuzzySearch", "Use fuzzy search (slower)", "", "", "", "", "", "", "Fuzzy search allows this plugin to find programs that don't match exactly.`nThis is good if you mistype a program but it will noticably drain on the Accessor performance.")
 		this.OriginalPlugin := OriginalPlugin
 		OriginalPlugin.ShowSettings(Plugin.Settings, this, this.PluginGUI)
 	}
@@ -867,7 +881,7 @@ Class CAccessorPlugin
 #include %A_ScriptDir%\Accessor\CProgramLauncherPlugin.ahk
 #include %A_ScriptDir%\Accessor\CSciTE4AutoHotkeyPlugin.ahk
 ;~ #include %A_ScriptDir%\Accessor\WindowSwitcher.ahk
-;~ #include %A_ScriptDir%\Accessor\Uninstall.ahk
-;~ #include %A_ScriptDir%\Accessor\URL.ahk
+#include %A_ScriptDir%\Accessor\CUninstallPlugin.ahk
+#include %A_ScriptDir%\Accessor\CURLPlugin.ahk
 ;~ #include %A_ScriptDir%\Accessor\Weather.ahk
 #include %A_ScriptDir%\Accessor\CRunPlugin.ahk
