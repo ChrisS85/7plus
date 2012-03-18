@@ -19,7 +19,7 @@ Class CNewFileAction Extends CAction
 		
 		;This is done manually, by creating a text file desired name, which is then focussed
 		SetFocusToFileView()
-		path := GetCurrentFolder()
+		path := Navigation.GetPath()
 		name := Event.ExpandPlaceholders(this.Filename)
 		Testpath := FindFreeFileName(path "\" name)
 		BaseFile := Event.ExpandPlaceholders(this.BaseFile)
@@ -32,11 +32,11 @@ Class CNewFileAction Extends CAction
 			Notify("Could not create new file!", "Could not create a new file here. Make sure you have the correct permissions!", "5", "GC=555555 TC=White MC=White",NotifyIcons.Error)
 			return 0
 		}
-		RefreshExplorer()
+		Navigation.Refresh()
 		Sleep 50
 		if(WinActive("ahk_group DesktopGroup")) ;Desktop needs more time for refresh and selecting an item is handled by typing its name
 			Sleep 1000
-		SelectFiles(Testpath)
+		Navigation.SelectFiles(Testpath)
 		if(this.Rename)
 		{
 			Sleep 50

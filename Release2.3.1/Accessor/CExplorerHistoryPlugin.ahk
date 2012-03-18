@@ -70,6 +70,6 @@ Class CExplorerHistoryPlugin extends CAccessorPlugin
 	}
 	OpenFolder(Accessor, ListEntry)
 	{
-		ShellNavigate(ListEntry.Path, Accessor.PreviousWindow)
+		Navigation.SetPath(ListEntry.Path, Accessor.PreviousWindow)
 	}
 }

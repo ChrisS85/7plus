@@ -185,7 +185,7 @@ ShellMessage( wParam, lParam, Msg)
 		if((IsExplorer := WinActive("ahk_group ExplorerGroup"))||WinActive("ahk_group DesktopGroup")||IsDialog())
 		{
 			if(!WinActive("ahk_group DesktopGroup")) ;By doing this, recall explorer path works also when double clicking desktop to launch explorer
-				Settings.Explorer.CurrentPath := GetCurrentFolder()
+				Settings.Explorer.CurrentPath := Navigation.GetPath()
 			;Paste text/image as file file creation
 			CreateFileFromClipboard()
 			if((IsExplorer && ExplorerWindows.GetItemWithValue("hwnd", IsExplorer).Path != Settings.Explorer.CurrentPath) || !IsExplorer)
@@ -193,7 +193,7 @@ ShellMessage( wParam, lParam, Msg)
 				Entry := RichObject()
 				Name := Entry.Path := Settings.Explorer.CurrentPath
 				SplitPath, Name, Name
-				Entry.Name := IsExplorer ? GetCurrentFolder(lParam, 1) : Name
+				Entry.Name := IsExplorer ? Navigation.GetDisplayName(lParam) : Name
 				Entry.Usage := 0
 				Entry := ExplorerHistory.Push(Entry) ;This can return a different entry that already exists in the list!
 				Entry.Usage++
@@ -219,7 +219,7 @@ ShellMessage( wParam, lParam, Msg)
 		if(InStr("CabinetWClass,ExploreWClass", WinGetClass("ahk_id " lParam)))
 		{
 			ExplorerPathChanged(ExplorerWindows.GetItemWithValue("hwnd", lParam))
-			; newpath:=GetCurrentFolder()
+			; newpath := Navigation.GetPath()
 			; if(newpath && newpath != Settings.Explorer.CurrentPath)
 			; {
 				; outputdebug Explorer path changed from %ExplorerPath% to %newpath%

@@ -866,7 +866,7 @@ TriggerFromOtherInstance(wParam, lParam)
 			FileRead, files, % "*t " A_Temp "\7plus\files.txt"
 		FileDelete, % A_Temp "\7plus\files.txt"
 		;if it failed (because static context menu is used), try to get it from explorer window
-		EventSystem.GlobalPlaceholders.Context := files ? files : GetSelectedFiles()
+		EventSystem.GlobalPlaceholders.Context := files ? files : Navigation.GetSelectedFilepaths()
 		
 		Trigger := new CTriggerTrigger()
 		Trigger.TargetID := wParam

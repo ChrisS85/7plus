@@ -143,20 +143,41 @@ Class CAccessor
 		this.Filter := Text
 		this.SuppressListViewUpdate := true
 		this.GUI.SetFilter(Text)
-		while(this.SuppressListViewUpdate && A_Index < 500)
-			Sleep 10
-		if(!this.SuppressListViewUpdate)
-			this.RefreshList()
+		SetTimerF(this.WaitTimer := new Delegate(this, "WaitForRefresh"), -100)
+		;~ while(this.SuppressListViewUpdate && A_Index < 500)
+			;~ Sleep 10
+		;~ if(!this.SuppressListViewUpdate)
+			;~ this.OnFilterChanged(Text)
+	}
+	WaitForRefresh()
+	{
+		static count := 0
+		if(this.SuppressListViewUpdate && count < 50)
+		{
+			count++
+			SetTimerF(this.WaitTimer, -100)
+		}
+		else
+		{
+			count := 0
+			this.Remove(this.WaitTimer)
+			this.OnFilterChanged(this.Filter)
+		}
 	}
 	OnFilterChanged(Filter)
 	{
 		this.Filter := Filter
+		if(this.SuppressListViewUpdate)
+		{
+			this.SuppressListViewUpdate := false
+			return
+		}
 		ListEntry := this.List[this.GUI.ListView.SelectedIndex]
 		
 		NeedsUpdate := 1
 		for index, Plugin in this.Plugins ;Check if single context plugin requests an update
 		{
-			if(Plugin.Enabled && SingleContext := ((Plugin.Settings.Keyword && Filter && InStr(Filter, Plugin.Settings.Keyword) = 1) || Plugin.IsInSinglePluginContext(Filter, this.LastFilter)))
+			if(Plugin.Settings.Enabled && SingleContext := ((Plugin.Settings.Keyword && Filter && InStr(Filter, Plugin.Settings.Keyword) = 1) || Plugin.IsInSinglePluginContext(Filter, this.LastFilter)))
 			{
 				this.SingleContext := Plugin.Type
 				NeedsUpdate := Plugin.OnFilterChanged(ListEntry, Filter, LastFilter)
@@ -167,7 +188,7 @@ Class CAccessor
 			this.SingleContext := false
 		if(!NeedsUpdate) ;Check if any plugin requests an update
 			for index, Plugin in this.Plugins
-				if(Plugin.Enabled && !Plugin.Settings.KeywordOnly)
+				if(Plugin.Settings.Enabled && !Plugin.Settings.KeywordOnly)
 				{
 					NeedsUpdate := Plugin.OnFilterChanged(ListEntry, Filter, LastFilter)
 					break
@@ -240,12 +261,6 @@ Class CAccessor
 	;This is the main function that populates the Accessor list.
 	RefreshList()
 	{
-		if(this.SuppressListViewUpdate)
-		{
-			this.SuppressListViewUpdate := false
-			return
-		}
-		
 		if(!this.GUI)
 			return
 		LastFilter := this.LastFilter
@@ -399,10 +414,8 @@ Class CAccessor
 	;Plugins may handle each function on their own, otherwise they will be handled directly by Accessor if available.
 	PerformAction(Action = "", ListEntry = "")
 	{
-		outputdebug % exploreobj(this.list)
 		if(IsObject(ListEntry) || IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]))
 		{
-			outputdebug % "perform action on " this.GUI.ListView.SelectedIndex ": " ListEntry.Path
 			if(Action && !IsObject(Action))
 				Action := ListEntry.Actions.DefaultAction.Name = Action ? ListEntry.Actions.DefaultAction : ListEntry.Actions.GetItemWithValue("Name", Action)
 			if(!Action && ListEntry.Actions.DefaultAction)
@@ -450,12 +463,19 @@ Class CAccessor
 				Menu, AccessorContextMenu, Show
 		}
 	}
+	;Runs the selected entry as command and possibly caches it in program launcher plugin
 	Run(ListEntry, Plugin)
 	{
 		if(ListEntry.Path)
 		{
 			WorkingDir := GetWorkingDir(ListEntry.Path)
-			CProgramLauncherPlugin.AddToCache(ListEntry)
+			
+			;Cache if executable file is being run
+			Path := ListEntry.Path
+			SplitPath, Path,,,ext
+			if(FileExist(ListEntry.Path) && InStr("exe,cmd,bat,ahk", ext))
+				CProgramLauncherPlugin.AddToCache(ListEntry)
+			
 			Run(Quote(ListEntry.Path) (ListEntry.args ? " " ListEntry.args : ""), WorkingDir)
 		}
 	}
@@ -557,6 +577,7 @@ Class CAccessorGUI extends CGUI
 	SetFilter(Text)
 	{
 		this.EditControl.Text := Text
+		Edit_Select(strLen(Text), -1, "", "ahk_id " this.EditControl.hwnd)
 	}
 	EditControl_TextChanged()
 	{
@@ -873,11 +894,10 @@ Class CAccessorPlugin
 ;~ #include %A_ScriptDir%\Accessor\Calc.ahk
 #include %A_ScriptDir%\Accessor\CExplorerHistoryPlugin.ahk
 ;~ #include %A_ScriptDir%\Accessor\FastFolders.ahk
-;~ #include %A_ScriptDir%\Accessor\FileSystem.ahk
+#include %A_ScriptDir%\Accessor\CFileSystemPlugin.ahk
 ;~ #include %A_ScriptDir%\Accessor\Google.ahk
 ;~ #include %A_ScriptDir%\Accessor\Notepad++.ahk
 ;~ #include %A_ScriptDir%\Accessor\Notes.ahk
-;~ #include %A_ScriptDir%\Accessor\ProgramLauncher.ahk
 #include %A_ScriptDir%\Accessor\CProgramLauncherPlugin.ahk
 #include %A_ScriptDir%\Accessor\CSciTE4AutoHotkeyPlugin.ahk
 ;~ #include %A_ScriptDir%\Accessor\WindowSwitcher.ahk

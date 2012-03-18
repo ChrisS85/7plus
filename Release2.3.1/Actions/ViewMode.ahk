@@ -12,17 +12,14 @@ Class CViewModeAction Extends CAction
 				RegWrite, REG_DWORD, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, Hidden, 1 
 			else  
 				RegWrite, REG_DWORD, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, Hidden, 2 
-			RefreshExplorerView()
 		}
 		else if(this.Action = "Show hidden files")
 		{
 			RegWrite, REG_DWORD, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, Hidden, 1
-			RefreshExplorerView()
 		}
 		else if(this.Action = "Hide hidden files")
 		{
 			RegWrite, REG_DWORD, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, Hidden, 2
-			RefreshExplorerView()
 		}
 		if(this.Action = "Toggle show file extensions")
 		{
@@ -31,18 +28,16 @@ Class CViewModeAction Extends CAction
 				RegWrite, REG_DWORD, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, HideFileExt, 0
 			else  
 				RegWrite, REG_DWORD, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, HideFileExt, 1
-			RefreshExplorerView()
 		}
 		else if(this.Action = "Show file extensions")
 		{
 			RegWrite, REG_DWORD, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, HideFileExt, 0
-			RefreshExplorerView()
 		}
 		else if(this.Action = "Hide file extensions")
 		{
 			RegWrite, REG_DWORD, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, HideFileExt, 1
-			RefreshExplorerView()
 		}
+		Navigation.Refresh()
 		return 1
 	}
 	DisplayString()
@@ -55,10 +50,4 @@ Class CViewModeAction Extends CAction
 		this.AddControl(GUI, "Text", "Desc", "This action can modify various explorer settings.")
 		this.AddControl(GUI, "DropDownList", "Action", "Toggle show hidden files|Show hidden files|Hide hidden files|Toggle show file extensions|Show file extensions|Hide file extensions", "", "Action:")
 	}
-}
-
-RefreshExplorerView()
-{
-	if (IsDialog() || WinActive("ahk_group ExplorerGroup"))
-		Send, {F5}
 }

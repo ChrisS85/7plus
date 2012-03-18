@@ -5,7 +5,7 @@ Class CInvertSelectionAction Extends CAction
 	
 	Execute(Event)
 	{
-		InvertSelection(WinExist("A"))
+		Navigation.InvertSelection(WinExist("A"))
 		return 1
 	} 
 

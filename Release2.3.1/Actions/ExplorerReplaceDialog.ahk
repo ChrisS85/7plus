@@ -352,7 +352,7 @@ Class CReplaceDialog
 		if(this.Stop)
 			return 0
 		if(this.InSelectedFiles && Root = this.DirectoryTree) ;Base directory, skip files which are not in selection
-			Selection := ToArray(GetSelectedFiles(1, this.Parent))
+			Selection := Navigation.GetSelectedFilepaths(this.Parent)
 		items := 0
 		Loop % AppendPaths(AppendPaths(Root.Path, Root.Name), "*"), 1, 0
 		{
@@ -633,7 +633,7 @@ Class CReplaceDialog
 	FileContentSearch()
 	{
 		if(this.InSelectedFiles) ;skip files which are not in selection
-			Selection := ToArray(GetSelectedFiles(1, this.Parent))
+			Selection := Navigation.GetSelectedFilepaths(this.Parent)
 		items := 0
 		Loop % AppendPaths(this.BasePath, "*"), 0, % this.IncludeSubdirectories
 		{

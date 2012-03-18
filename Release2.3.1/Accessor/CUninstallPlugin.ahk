@@ -49,10 +49,6 @@ Class CUninstallPlugin extends CAccessorPlugin
 			if(ListEntry.Icon != Accessor.GenericIcons.Application)			
 				DestroyIcon(ListEntry.Icon)
 	}
-	GetDisplayStrings(Uninstall, AccessorListEntry, ByRef Title, ByRef Path, ByRef Detail1, ByRef Detail2)
-	{
-		Path := AccessorListEntry.UninstallString
-	}
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		;Lazy loading

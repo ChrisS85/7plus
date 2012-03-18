@@ -152,20 +152,18 @@ ExpandPlaceholder(Placeholder)
 		return GetSelectedText()
 	else if(strStartsWith(Placeholder, "Sel") && (WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog()))
 	{
-		files := GetSelectedFiles()
+		files := Navigation.GetSelectedFilepaths()
 		RegExMatch(Placeholder,"Sel\d+",number)
 		array := Array()
 		if(number)
 		{
 			number := SubStr(number, 4)
-			StringSplit, files, files, `n
-			if(files0 >= number)
-				array.Insert(files%number%)
+			if(number > 0 && files.MaxIndex() <= number)
+				files := Array(files[number])
+			else
+				files := Array()
 		}
-		else if(strStartsWith(Placeholder, "SelN"))
-			Loop, Parse, files, `n, %A_Space%
-				array.Insert(A_LoopField)
-		if(array.MaxIndex() = 0)
+		if(files.MaxIndex() = 0)
 			return ""
 		Placeholder := SubStr(Placeholder, 4+max(strLen(number), 1))
 		quote := InStr(Placeholder, "Q")
@@ -175,9 +173,8 @@ ExpandPlaceholder(Placeholder)
 		FilePath := InStr(Placeholder, "D")
 		NewLine := InStr(Placeholder, "M")
 		output := ""
-		Loop % array.MaxIndex()
+		for index, file in files
 		{
-			file := array[A_Index]
 			SplitPath, file, name, path, ext, namenoext
 			if(Filename)
 				file := name

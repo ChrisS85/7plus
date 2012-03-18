@@ -252,7 +252,7 @@ ProcessCommandLineParameters()
 	;if a path is supplied as first parameter, set explorer directory to this path and exit
 	if(InStr(FileExist(Parameters[1]), "D"))
 	{
-		SetDirectory(Parameters[1])
+		Navigation.SetPath(Parameters[1])
 		ExitApp
 	}
 	for i, Parameter in Parameters

@@ -210,7 +210,7 @@ EnhancedRenaming()
 #if Settings.Explorer.MouseGestures && GetKeyState("RButton") && (WinActive("ahk_group ExplorerGroup")||IsDialog()) && IsMouseOverFileList()
 LButton::
 	SuppressRButtonUp:=true
-	Shell_GoBack()
+	Navigation.GoBack()
 	return
 #if
 
@@ -223,7 +223,7 @@ LButton::
 
 #if Settings.Explorer.MouseGestures && GetKeyState("LButton","P") && (WinActive("ahk_group ExplorerGroup")||IsDialog()) && IsMouseOverFileList()
 RButton::
-	Shell_GoForward()
+	Navigation.GoForward()
 	SuppressRButtonUp:=true
 	Return
 #if
@@ -237,9 +237,9 @@ NumpadEnter::
 #if
 ExecuteFocusedFile()
 {
-	files:=GetSelectedFiles()
-	focussed:=GetFocussedFile()
-	if(!files&&focussed)
+	files := Navigation.GetSelectedFilePaths()
+	focused := Navigation.GetFocussedFilename()
+	if(!files && focused)
 		Send {Space}{Enter}
 	else
 		Send {Enter}
@@ -456,7 +456,7 @@ CheckFileDialogFolder()
 {
 	global ExplorerHistory
 	if(IsDialog())
-		if((Path := GetCurrentFolder()) != ExplorerHistory[1].Path)
+		if((Path := Navigation.GetPath()) != ExplorerHistory[1].Path)
 		{
 			entry := RichObject()
 			entry.Path := Path
@@ -519,7 +519,7 @@ RestoreExplorerSelection()
 			;Why is it fired 2 times instead of one time for each file? -> Probably because of timing
 			ExplorerWindow.Selection.IgnoreNextEvent := 2 
 			outputdebug % "Explorer window " hwnd " expecting " ExplorerWindow.Selection.IgnoreNextEvent " selection events."
-			SelectFiles(Selection,1,0,1,1,hwnd)
+			Navigation.SelectFiles(Selection, hwnd)
 			ExplorerWindow.Selection.History.Delete(ExplorerWindow.Selection.History.MaxIndex())
 		}
 		else
@@ -618,7 +618,7 @@ ExplorerPathChanged(ExplorerWindow)
 	Path := ExplorerWindow.Path
 	if(OldPath = Path)
 		return
-	ExplorerWindow.DisplayName := GetCurrentFolder(ExplorerWindow.hwnd, 1)
+	ExplorerWindow.DisplayName := Navigation.GetDisplayName(ExplorerWindow.hwnd)
 	
 	outputdebug change from %oldpath% to %path%
 	Entry := RichObject()
@@ -634,8 +634,8 @@ ExplorerPathChanged(ExplorerWindow)
 	if(Settings.Explorer.AutoSelectFirstFile)
 	{
 		SplitPath, Path, name, dir,,,drive
-		x:=GetSelectedFiles()
-		if(!x && dir && (!vista7||SubStr(Path, 1 ,40)!="::{26EE0668-A00A-44D7-9371-BEB064C98683}"))
+		x := Navigation.GetSelectedFilepaths()
+		if(!x.MaxIndex() && dir && (!vista7||SubStr(Path, 1 ,40)!="::{26EE0668-A00A-44D7-9371-BEB064C98683}"))
 		{
 			if(A_OSVersion="WIN_7")
 			{
@@ -660,7 +660,6 @@ ExplorerSelectionChanged(ExplorerCOMObject)
 	global ExplorerWindows
 	; Critical ;This apparently makes it stop working and blocks the explorer window somehow
 	Critical, Off
-	outputdebug explorer selection changed
 	Loop % ExplorerWindows.MaxIndex()
 	{
 		if(ExplorerWindows[A_Index].Selection.COMObject = ExplorerCOMObject)
@@ -671,15 +670,12 @@ ExplorerSelectionChanged(ExplorerCOMObject)
 	}
 	if(!index)
 		return
-	outputdebug com object found
 	if(ExplorerWindows[index].Selection.IgnoreNextEvent > 0)
 	{
 		ExplorerWindows[index].Selection.IgnoreNextEvent := ExplorerWindows[index].Selection.IgnoreNextEvent - 1
-		outputdebug % "expecting " ExplorerWindows[index].Selection.IgnoreNextEvent " more events."
 		return
 	}
-	outputdebug nothing to ignore
-	ExplorerWindows[index].Selection.History.Insert(ToArray(GetSelectedFiles(0, ExplorerWindows[index].hwnd)))
+	ExplorerWindows[index].Selection.History.Insert(Navigation.GetSelectedFilenames(ExplorerWindows[index].hwnd))
 	if(ExplorerWindows[index].Selection.History.MaxIndex() > 10)
 		ExplorerWindows[index].Selection.History.Delete(1)
 	if(A_OSVersion = "WIN_7")
@@ -766,8 +762,8 @@ Class CExplorerWindow
     __New(hWnd, Path="")
     {
 		this.hWnd := hWnd
-		this.Path := Path ? Path : GetCurrentFolder(hWnd)
-		this.DisplayName := GetCurrentFolder(hWnd, 1)
+		this.Path := Path ? Path : Navigation.GetPath(hWnd)
+		this.DisplayName := Navigation.GetDisplayName(hWnd)
 		if(A_OSVersion = "WIN_7")
 			this.InfoGUI := new InfoGUI(hWnd)
 		this.Selection := Object()
@@ -787,7 +783,7 @@ Class CExplorerWindow
 					return 0
 				ComObjConnect(doc, "Explorer")
 				this.Selection.COMObject := doc
-				this.Selection.History := Array(this.GetSelectedFiles(0))
+				this.Selection.History := Array(Navigation.GetSelectedFilenames(this.hwnd))
 			}
 			else ;explorer window is already registered, lets see if its view changed
 			{
@@ -801,14 +797,10 @@ Class CExplorerWindow
 				{
 					ComObjConnect(doc, "Explorer")
 					this.Selection.COMObject := doc
-					this.Selection.History := Array(this.GetSelectedFiles(0)) ;Recreate array to remove selection history from previous folder
+					this.Selection.History := Array(Navigation.GetSelectedFilenames(this.hwnd)) ;Recreate array to remove selection history from previous folder
 					this.Path := Path
 				}
 			}
 		}
-	}
-	GetSelectedFiles(FullName)
-	{
-		return ToArray(GetSelectedFiles(FullName, this.hWnd))
 	}
 }

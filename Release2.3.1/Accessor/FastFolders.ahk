@@ -50,7 +50,7 @@ Accessor_FastFolders_FillAccessorList(FastFoldersPlugin, Accessor, Filter, LastF
 Accessor_FastFolders_PerformAction(FastFolders, Accessor, AccessorListEntry)
 {
 	if(InStr("ExploreWClass,CabinetWClass", WinGetClass("ahk_id " Accessor.PreviousWindow)) || IsDialog(Accessor.PreviousWindow))
-		ShellNavigate(AccessorListEntry.Path,Accessor.PreviousWindow)
+		Navigation.SetPath(AccessorListEntry.Path,Accessor.PreviousWindow)
 	else
 		Run(A_WinDir "\explorer.exe /n,/e," AccessorListEntry.Path)
 }

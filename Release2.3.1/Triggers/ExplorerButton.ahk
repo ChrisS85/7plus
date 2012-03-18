@@ -70,7 +70,6 @@ IsExplorerButton(value, key, Event)
 		return false
 	RegRead, command, HKLM, %key%
 	RegexMatch(command,""" -id:(\d+)$", command)
-	outputdebug % "IsExplorerButton(" Event.Name ") ? " (command1 && command1 = Event.ID)
 	if(command1 && command1 = Event.ID)
 		return true
 	return false

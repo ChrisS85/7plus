@@ -25,7 +25,7 @@ UpdateStoredFolder(Slot, Folder="")
 	if(Folder)
 		FastFolders[Slot].Path := Folder
 	else
-		FastFolders[Slot].Path:=GetCurrentFolder()
+		FastFolders[Slot].Path := Navigation.GetPath()
 	title:=FastFolders[Slot].Path	
 	if(InStr(title,"::") = 1 && WinActive("ahk_group ExplorerGroup"))
 		WinGetTitle,title,A
@@ -79,22 +79,22 @@ FastFolderMenu()
 	Menu, FastFolders, DeleteAll
 	if ((IsWindowUnderCursor("ExploreWClass")||IsWindowUnderCursor("CabinetWClass")||IsWindowUnderCursor("WorkerW")||IsWindowUnderCursor("Progman")) && !IsRenaming())
 	{
-		win:=WinExist("A")
-		y:=GetSelectedFiles()
+		win := WinExist("A")
+		y := Navigation.GetSelectedFilepaths()
 		loop 10
 		{
-			i:=A_INDEX-1
+			i := A_INDEX - 1
 			if(FastFolders[A_Index].Path)
 			{
-				x:=FastFolders[A_Index].Title
-				if(x && (!InStr(x,"ftp://") = 1||!y))
+				x := FastFolders[A_Index].Title
+				if(x && (!InStr(x,"ftp://") = 1||!y.MaxIndex()))
 				{
 					x := "&" i ": " x
 					Menu, FastFolders, add, %x%, FastFolderMenuHandler%i%
 				}
 			} 
 		}
-		hwnd:=WinExist("A")
+		hwnd := WinExist("A")
 		Menu, FastFolders, Show
 		return true
 	}	
@@ -135,9 +135,8 @@ return
 FastFolderMenuClicked(index)
 {
 	global FastFolders
-	y:=FastFolders[index].Path
-	x:=GetSelectedFiles()
-	StringReplace, x, x, `n , |, A
+	y := FastFolders[index].Path
+	x := Navigation.GetSelectedFilepaths().ToString("|")
 	if(x && (GetKeyState("CTRL") || GetKeyState("Shift")))
 	{	
 		if(GetKeyState("CTRL"))
@@ -148,7 +147,7 @@ FastFolderMenuClicked(index)
 	else
 	{
 		Sleep 100
-		SetDirectory(y)
+		Navigation.SetPath(y)
 	}
 	Menu, FastFolders, DeleteAll
 }

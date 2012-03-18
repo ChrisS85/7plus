@@ -75,6 +75,6 @@ FlatView(files)
 	{
 		searchString.="</scope></query></persistedQuery>"
 		Fileappend,%searchString%, %Path%
-		SetDirectory(Path)
+		Navigation.SetPath(Path)
 	}
 }

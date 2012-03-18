@@ -25,7 +25,7 @@ Class CNewFolderAction Extends CAction
 		
 		;This is done manually, by creating a folder desired name, which is then focussed
 		SetFocusToFileView()
-		path := GetCurrentFolder()
+		path := Navigation.GetPath()
 		if(strEndsWith(path, "\"))
 			path := SubStr(path, 1, StrLen(path) - 1)
 		name := Event.ExpandPlaceholders(this.Foldername)
@@ -48,11 +48,11 @@ Class CNewFolderAction Extends CAction
 			Notify("Could not create new folder!", "Could not create a new folder here. Make sure you have the correct permissions!", "5", "GC=555555 TC=White MC=White",NotifyIcons.Error)
 			return 0
 		}
-		RefreshExplorer()
+		Navigation.Refresh()
 		Sleep 50
 		if(WinActive("ahk_group DesktopGroup")) ;Desktop needs more time for refresh and selecting an item is handled by typing its name
 			Sleep 1000
-		SelectFiles(TestPath)
+		Navigation.SelectFiles(TestPath)
 		if(this.Rename)
 		{
 			Sleep 50

@@ -17,8 +17,8 @@ Class CDoubleClickDesktopTrigger Extends CTrigger
 
 DoubleClickDesktop()
 {
-	CurrentDesktopFiles:=GetSelectedFiles()
-	if(IsDoubleClick() && CurrentDesktopFiles = "")
+	CurrentDesktopFiles := Navigation.GetSelectedFilepaths()
+	if(IsDoubleClick() && !CurrentDesktopFiles.MaxIndex())
 	{
 		Trigger := new CDoubleClickDesktopTrigger()
 		EventSystem.OnTrigger(Trigger)

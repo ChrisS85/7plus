@@ -39,43 +39,43 @@ TestDoubleClickSpace()
 	;Make sure only filelist is focussed
 	if(!IsRenaming() && InFileList())
 	{
-		path:=GetCurrentFolder()
-		files:=GetSelectedFiles()
+		path := Navigation.GetPath()
+		files := Navigation.GetSelectedFilepaths()
 		;if more time than a double click time has passed, consider this a new series of double clicks
-		if(A_TickCount-time1>WaitTime*1000)
+		if(A_TickCount - time1 > WaitTime * 1000)
 		{
-			time1:=A_TickCount
-			path1:=path
+			time1 := A_TickCount
+			path1 := path
 		}
 		else
 		{			
 			;if less time has passed, the previous double click was cancelled for some reason and we need to check its dir too to see directory changes
-			time1:=A_TickCount
-			if(path!=path1)
+			time1 := A_TickCount
+			if(path != path1)
 			{
-				time1:=0
+				time1 := 0
 				return
 			}					
 		}
 		;this check is required so that it's possible to count any double click and not every second. If at this place a file is selected, 
 		;it would swallow the second click otherwise and won't be able to count it in a double clickwait for anotherat this plac
-		if (files!="")
+		if (files.MaxIndex())
 			return
 		;wait for second click
 		KeyWait, LButton, D T%WaitTime% 
-		If(errorlevel=0)
+		If(errorlevel = 0)
 		{
 			MouseGetPos, Click2X, Click2Y
 			if(abs(Click1X-Click2X)**2+abs(Click1Y-Click2Y)**2>16) ;Max 4 pixels between clicks
 				return
 		
-			path1:=GetCurrentFolder()
+			path1 := Navigation.GetPath()
 			if(path = path1) 
 			{	
 				if(InFileList()&&IsMouseOverFileList()) 
 				{			
 					;check if no files selected after second click either
-					if (!GetSelectedFiles())
+					if (!Navigation.GetSelectedFilepaths().MaxIndex())
 					{
 						Trigger := new CExplorerDoubleClickSpaceTrigger()
 						EventSystem.OnTrigger(Trigger)

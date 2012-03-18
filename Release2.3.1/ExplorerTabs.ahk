@@ -215,7 +215,7 @@ Class CTabContainer
 	{
 		global ExplorerWindows
 		if(!ExplorerWindow.DisplayName)
-			ExplorerWindow.DisplayName := GetCurrentFolder(ExplorerWindow.hwnd, 1)
+			ExplorerWindow.DisplayName := Navigation.GetDisplayName(ExplorerWindow.hwnd)
 		tab := Object("hwnd",ExplorerWindow.hwnd, "DisplayName", ExplorerWindow.DisplayName)
 		tab.y := ExplorerWindows.TabContainerList.InActiveHeightDifference
 		tab.height := ExplorerWindows.TabContainerList.height - ExplorerWindows.TabContainerList.InActiveHeightDifference
@@ -619,7 +619,7 @@ Class CTabContainer
 		global ExplorerWindows
 		; DetectHiddenWindows, On	
 		; NoTabUpdate:=true
-		; Folder:=GetCurrentFolder(hwnd)
+		; Folder:=Navigation.GetPath(hwnd)
 		; outputdebug close %hwnd% %folder%
 		; TabContainerList.print()
 		; if(!TabContainer)
@@ -879,7 +879,7 @@ CreateTab(hwnd, path=-1,Activate=-1)
 	; outputdebug h: %h%
 	; Loop % TabContainer.tabs.MaxIndex()
 	; {
-		; path:=GetCurrentFolder(TabContainer.tabs[A_Index].hwnd)
+		; path:=Navigation.GetPath(TabContainer.tabs[A_Index].hwnd)
 		; hwnd:=TabContainer.tabs[A_Index].hwnd
 		; outputdebug %A_Tab%%A_Index% %hwnd%: %path%
 	; }
