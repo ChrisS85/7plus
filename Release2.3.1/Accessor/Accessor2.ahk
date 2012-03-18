@@ -312,7 +312,8 @@ Class CAccessor
 	}
 	Close()
 	{
-		this.GUI.Close()
+		;Needs to be delayed because it is called from within a message handler which is critical.
+		SetTimerF(new Delegate(this.GUI, "Close"), -10)
 	}
 	OnExit()
 	{

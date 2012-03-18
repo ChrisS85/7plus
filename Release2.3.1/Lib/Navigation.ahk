@@ -1,7 +1,3 @@
-#n::
-Navigation.SetPath("C:")
-msgbox % Navigation.GetPath()
-return
 Class Navigation
 {
 	static NavigationSources := Array()
@@ -653,16 +649,10 @@ Class CExplorerNavigationSource
 	GoUpward(hwnd)
 	{
 		path := this.GetPath(hwnd)
-		ControlGetFocus, Focused, ahk_id %hwnd%
-		if(Vista7)
-			ControlFocus, DirectUIHWND3, ahk_id %hwnd%
-		else
-			ControlFocus, SysListView321, ahk_id %hwnd%
 		if(Vista7 && !strEndsWith(path,".search-ms"))
 			Send !{Up}
 		else
 			Send {Backspace}
-		ControlFocus, %Focused%, ahk_id %hwnd%
 	}
 	Refresh(hwnd)
 	{

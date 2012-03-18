@@ -16,7 +16,7 @@ Class CSetDirectoryAction Extends CAction
 		else if(Path = "Forward")
 			Navigation.GoForward(hwnd)
 		else if(Path = "Upward")
-			Navigation.GoUpward()
+			Navigation.GoUpward(hwnd)
 		else
 			Navigation.SetPath(Path,hwnd)
 		return 1
