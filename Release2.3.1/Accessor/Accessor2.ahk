@@ -219,34 +219,31 @@ Class CAccessor
 		;Parse parameters. They are split by spaces. Quotes (" ") can be used to treat multiple words as one parameter. The first parameter is the Filter variable without the options.
 		Parameters := Array()
 		p0 := Parse(Filter, "q"")1 2 3 4 5 6 7 8 9 10", p1, p2, p3, p4, p5, p6, p7, p8, p9, p10)
-		
 		Loop % min(p0, 10)
 			Parameters.Insert(A_Index - 1, p%A_Index%) ;Store parameters with offset of -1, so p1 will become p0 since it isn't a real parameter but rather the keyword
 		
 		if(UsingKeyword)
 		{
 			if(InStr(Filter, "${1}"))
-				Filter := p1 ;If atleast one placeholder is used, all parameters will be inserted 
-			
+				Filter := p1 ;If atleast one placeholder is used, all parameters will be inserted
 			;Code below treats the ${1}-${10} placeholders that may be used with keywords, e.g. to launch a search engine url with a specific query.
-			for Index, Parameter in Parameters
+			for Index2, Parameter in Parameters
 			{
-				if(Index = 0)
+				if(Index2 = 0)
 					continue
-				
 				;If this is the last placeholder used in the query, insert all parameters into it so queries with spaces become possible for the last placeholder
-				if(InStr(Filter, "${" Index "}") && !InStr(Filter, "${" (Index+1) "}"))
+				if(InStr(Filter, "${" Index2 "}") && !InStr(Filter, "${" (Index2 + 1) "}"))
 				{
 					CollectedParameters := Parameter
-					Loop % Parameters.MaxIndex() - Index
-						CollectedParameters .= " " Parameters[A_Index + Index]
-					Filter := StringReplace(Filter, "${" Index "}", CollectedParameters, "ALL")
+					Loop % Parameters.MaxIndex() - Index2
+						CollectedParameters .= " " Parameters[A_Index + Index2]
+					Filter := StringReplace(Filter, "${" Index2 "}", CollectedParameters, "ALL")
 					UsingPlaceholder := true
 					break
 				}
-				else if(InStr(Filter, "${" Index "}"))
+				else if(InStr(Filter, "${" Index2 "}"))
 				{
-					Filter := StringReplace(Filter, "${" Index "}", Parameter, "ALL")
+					Filter := StringReplace(Filter, "${" Index2 "}", Parameter, "ALL")
 					UsingPlaceholder := true
 				}
 				else
@@ -266,7 +263,6 @@ Class CAccessor
 		LastFilter := this.LastFilter
 		Filter := this.Filter
 		Parameters := this.ExpandFilter(Filter, LastFilter)
-		
 		this.GUI.ListView.Redraw := false
 		
 		this.GUI.ListView.Items.Clear()

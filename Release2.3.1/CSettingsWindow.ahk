@@ -863,9 +863,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 	}
 	InitAccessorKeywords()
 	{
-		global Accessor
 		Page := this.Pages.AccessorKeywords.Tabs[1].Controls
-		this.AccessorKeywords := Accessor.Keywords.DeepCopy()
+		this.AccessorKeywords := CAccessor.Instance.Keywords.DeepCopy()
 		Page.listAccessorKeywords.Items.Clear()
 		Page.listAccessorKeywords.ModifyCol(1, 100)
 		Page.listAccessorKeywords.ModifyCol(2, "AutoHdr")
@@ -875,7 +874,6 @@ Finally, here are some settings that you're likely to change at the beginning:
 	}
 	ApplyAccessorKeywords()
 	{
-		global Accessor
 		Page := this.Pages.AccessorKeywords.Tabs[1].Controls
 		;Find duplicates
 		pos := 1
@@ -895,7 +893,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 			if(IsObject(AccessorKeyword))
 				pos++
 		}
-		Accessor.Keywords := this.AccessorKeywords.DeepCopy()
+		CAccessor.Instance.Keywords := this.AccessorKeywords.DeepCopy()
 	}
 	btnAddAccessorKeyword_Click()
 	{
