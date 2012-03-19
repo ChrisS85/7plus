@@ -549,8 +549,11 @@ Class CAccessorGUI extends CGUI
 {
 	EditControl := this.AddControl("Edit", "EditControl", "w800 y10 -Multi", "")
 	ListView := this.AddControl("ListView", "ListView", "w800 y+10 AltSubmit 0x8 -Multi R15 NoSortHdr", "Title|Path| | |")
-	btnOK := this.AddControl("Button", "btnOK", "y10 x+10 w75", "&OK")
+	btnOK := this.AddControl("Button", "btnOK", "y10 x+10 w75 section Default", "&OK")
 	btnCancel := this.AddControl("Button", "btnCancel", "y+8 w75", "&Cancel")
+	txtConfig := this.AddControl("Text", "txtConfig", "xs+0 y" this.Height - 71, "Config:")
+	btnConfigKeywords := this.AddControl("Button", "btnConfigKeywords", "xs+0 y" this.Height - 56 " w75", "&Keywords")
+	btnConfigPlugins := this.AddControl("Button", "btnConfigPlugins", "xs+0 y" this.Height - 28 " w75", "&Plugins")
 	__new()
 	{
 		this.MinimizeBox := false
@@ -615,7 +618,16 @@ Class CAccessorGUI extends CGUI
 	{
 		CAccessor.Instance.PerformAction()
 	}
-	
+	btnConfigPlugins_Click()
+	{
+		this.Close()
+		SettingsWindow.Show("Accessor Plugins")
+	}
+	btnConfigKeywords_Click()
+	{
+		this.Close()
+		SettingsWindow.Show("Accessor Keywords")
+	}
 	OnUp()
 	{
 		if(GetKeyState("Control", "P"))

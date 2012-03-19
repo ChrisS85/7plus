@@ -19,7 +19,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 	{
 		Class CFileActions extends CArray
 		{
-			DefaultAction := new CAccessor.CAction("Open document", "Run")
+			DefaultAction := new CAccessor.CAction("Open file", "Run")
 			__new()
 			{
 				this.Insert(CAccessorPlugin.CActions.OpenExplorer)
@@ -43,7 +43,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		}
 		Class CFolderActions extends CArray
 		{
-			DefaultAction := new CAccessor.CAction("Enter Directory", "EnterDirectory")
+			DefaultAction := new CAccessor.CAction("Enter folder", "EnterDirectory")
 			__new()
 			{
 				this.Insert(CAccessorPlugin.CActions.OpenExplorer)
@@ -104,7 +104,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 			Loop %dir%\*%name%*, 1, 0
 			{
 				IsFolder := InStr(FileExist(A_LoopFileFullPath), "D")
-				IsExecutable := InStr("exe,cmd,bat,ahk", A_LoopFileExt)
+				IsExecutable := A_LoopFileExt && InStr("exe,cmd,bat,ahk", A_LoopFileExt)
 				
 				Result := new this.CResult(IsFolder ? "Folder" : (IsExecutable ? "Executable" : "File"))
 				Result.Title := A_LoopFileName
