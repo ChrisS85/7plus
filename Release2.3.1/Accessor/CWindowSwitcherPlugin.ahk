@@ -1,0 +1,139 @@
+Class CWindowSwitcherPlugin extends CAccessorPlugin
+{
+	;Register this plugin with the Accessor main object
+	static Type := CAccessor.RegisterPlugin("Window switcher", CWindowSwitcherPlugin)
+	
+	Description := "Activate windows by typing a part of their title or their executable filename. `nThis also shows CPU usage, shows/sets Always on Top state and `nallows to close and kill processes."
+	
+	;List of windows that are open when accessor is opened.
+	List := Array()
+	
+	Class CSettings extends CAccessorPlugin.CSettings
+	{
+		Keyword := "switch"
+		KeywordOnly := false
+		MinChars := 0
+		IgnoreFileExtensions := true
+		FuzzySearch := false
+	}
+	Class CResult extends CAccessorPlugin.CResult
+	{
+		Class CActions extends CArray
+		{
+			DefaultAction := new CAccessor.CAction("Activate", "ActivateWindow")
+			__new()
+			{
+				this.Insert(new CAccessor.CAction("End process", "EndProcess"))
+				this.Insert(new CAccessor.CAction("Close window", "CloseWindow"))
+				this.Insert(CAccessorPlugin.CActions.OpenExplorer)
+				this.Insert(CAccessorPlugin.CActions.OpenCMD)
+				this.Insert(CAccessorPlugin.CActions.Copy)
+				this.Insert(CAccessorPlugin.CActions.ExplorerContextMenu)
+				this.Insert(new CAccessor.CAction("Toggle Always On Top", "ToggleOnTop"))
+			}
+		}
+		Type := "Window switcher"
+		Actions := new this.CActions()
+	}
+	IsInSinglePluginContext(Filter, LastFilter)
+	{
+		return false
+	}
+	OnOpen(Accessor)
+	{
+		this.List := GetWindowInfo()
+		SetTimerF(new Delegate(this, "UpdateTimes"), -2000)
+	}
+	OnClose(Accessor)
+	{
+		;This is apparently not desired for icons obtained by WM_GETICON or GetClassLong since they are shared? See http://msdn.microsoft.com/en-us/library/windows/desktop/ms648063(v=vs.85).aspx
+		;~ if(IsObject(this.List))
+			;~ for index, ListEntry in this.List
+				;~ if(ListEntry.Icon != Accessor.GenericIcons.Application)
+					;~ DestroyIcon(ListEntry.Icon)
+	}
+	GetDisplayStrings(ListEntry, ByRef Title, ByRef Path, ByRef Detail1, ByRef Detail2)
+	{
+		Path := ListEntry.ExeName
+		Detail1 := "CPU: " ListEntry.CPU "%"
+		Detail2 := ListEntry.OnTop
+	}
+	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
+	{
+		Results := Array()
+		FuzzyList := Array()
+		for index, window in this.List
+		{
+			x := 0
+			ExeName := this.Settings.IgnoreFileExtensions ? strTrimRight(window.ExeName,".exe") : window.ExeName
+			if(x := (Filter = "" || InStr(window.Title,Filter)) || (this.Settings.FuzzySearch && FuzzySearch(ExeName, Filter) < 0.4))
+			{
+				Result := new this.CResult()
+				Result.Title := window.Title
+				Result.Path := window.Path
+				Result.ExeName := window.ExeName
+				Result.CPU := window.CPU
+				Result.OnTop := window.OnTop
+				Result.PID := window.PID
+				Result.hwnd := window.hwnd
+				Result.Icon := window.Icon ? window.Icon : Accessor.GenericIcons.Application
+				
+				if(x)
+					Results.Insert(Result)
+				else
+					FuzzyList.Insert(Result)
+			}
+		}
+		Results.extend(FuzzyList)
+		return Results
+	}
+	ShowSettings(PluginSettings, Accessor, PluginGUI)
+	{
+		AddControl(PluginSettings, PluginGUI, "Checkbox", "IgnoreFileExtensions", "Ignore .exe extension in program paths", "", "")	
+	}
+	ActivateWindow(Accessor, ListEntry)
+	{
+		WinActivate % "ahk_id " ListEntry.hwnd
+	}
+	EndProcess(Accessor, ListEntry)
+	{
+		WinKill % "ahk_id " ListEntry.hwnd
+	}
+	CloseWindow(Accessor, ListEntry)
+	{
+		PostMessage, 0x112, 0xF060,,, % "ahk_id " ListEntry.hwnd
+	}
+	ToggleOnTop(Accessor, ListEntry)
+	{
+		WinSet, AlwaysOnTop, Toggle, % "ahk_id " ListEntry.hwnd
+		ListEntry.OnTop := ListEntry.OnTop ? "" : "OnTop"
+		Accessor.GUI.ListView.Items[Accessor.List.IndexOf(ListEntry)][4] := ListEntry.OnTop
+		return true
+	}
+	UpdateTimes()
+	{
+		Accessor := CAccessor.Instance
+		if(!Accessor.GUI)
+			return
+		for index, item in Accessor.GUI.ListView.Items
+		{
+			ListEntry := Accessor.List[index]
+			if(ListEntry.Type = this.Type)
+			{
+				ListEntry.oldKrnlTime := ListEntry.newKrnlTime
+				ListEntry.oldUserTime := ListEntry.newUserTime
+
+				hProc := DllCall("OpenProcess", "Uint", 0x400, "int", 0, "Uint", ListEntry.PID, "Ptr")
+				DllCall("GetProcessTimes", "Ptr", hProc, "int64P", CreationTime, "int64P", ExitTime, "int64P", newKrnlTime, "int64P", newUserTime, "UInt")
+				DllCall("CloseHandle", "Ptr", hProc)
+				ListEntry.newKrnlTime := newKrnlTime
+				ListEntry.newUserTime := newUserTime
+				ListEntry.CPU := Round(min(max((ListEntry.newKrnlTime - ListEntry.oldKrnlTime + ListEntry.newUserTime - ListEntry.oldUserTime)/20000000 * 100,0),100), 2)   ; 1sec: 10^7
+				this.List[this.List.FindKeyWithValue("hwnd", ListEntry.hwnd)].CPU := ListEntry.CPU
+				; ListEntry.CPU := GetProcessTimes(ListEntry.PID)
+				item[3] := "CPU: " ListEntry.CPU "%"
+			}
+		}
+		SetTimerF(new Delegate(this, "UpdateTimes"), -2000)
+	}
+}

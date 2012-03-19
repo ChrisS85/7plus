@@ -551,7 +551,6 @@ Class CAccessorGUI extends CGUI
 	ListView := this.AddControl("ListView", "ListView", "w800 y+10 AltSubmit 0x8 -Multi R15 NoSortHdr", "Title|Path| | |")
 	btnOK := this.AddControl("Button", "btnOK", "y10 x+10 w75", "&OK")
 	btnCancel := this.AddControl("Button", "btnCancel", "y+8 w75", "&Cancel")
-	StatusBar := this.AddControl("Statusbar", "StatusBar", "", "")
 	__new()
 	{
 		this.MinimizeBox := false
@@ -569,7 +568,7 @@ Class CAccessorGUI extends CGUI
 		;~ this.GUI.ListView.(2, 0) ; hidden column for row number    
 		this.ListView.ModifyCol(1, 300) ;Col_3_w) ; resize title column
 		this.ListView.ModifyCol(2, 330) ; resize path column
-		this.ListView.ModifyCol(3, 55)
+		this.ListView.ModifyCol(3, 70)
 		this.ListView.ModifyCol(4, "AutoHdr") ; OnTop
 		
 		this.OnGUIMessage(0x06,"WM_ACTIVATE")
@@ -900,7 +899,7 @@ Class CAccessorPlugin
 ;~ #include %A_ScriptDir%\Accessor\Notes.ahk
 #include %A_ScriptDir%\Accessor\CProgramLauncherPlugin.ahk
 #include %A_ScriptDir%\Accessor\CSciTE4AutoHotkeyPlugin.ahk
-;~ #include %A_ScriptDir%\Accessor\WindowSwitcher.ahk
+#include %A_ScriptDir%\Accessor\CWindowSwitcherPlugin.ahk
 #include %A_ScriptDir%\Accessor\CUninstallPlugin.ahk
 #include %A_ScriptDir%\Accessor\CURLPlugin.ahk
 ;~ #include %A_ScriptDir%\Accessor\Weather.ahk

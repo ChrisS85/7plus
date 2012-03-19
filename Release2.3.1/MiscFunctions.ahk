@@ -1440,7 +1440,7 @@ GetWindowInfo()
 		and (((Parent) and ((Style_parent & WS_DISABLED) =0)) ; These 2 lines filter out windows that have a parent or owner window that is NOT disabled -
 		or ((Owner) and ((Style_Owner & WS_DISABLED) =0))))) ; NOTE - some windows result in blank value so must test for zero instead of using NOT operator!
 			continue
-		if(wid_Title = "Accessor")
+		if(wid_Title = CAccessor.Instance.GUI.Title)
 			continue
 		if(WindowList.HasKey(wid))
 			Exe_Name := WindowList[wid].Executable
