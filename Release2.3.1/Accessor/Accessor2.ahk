@@ -21,6 +21,23 @@ Class CAccessor
 	;The list of visible entries
 	List := Array()
 	
+	Class CSettings
+	{
+		LargeIcons := false
+		CloseWhenDeactivated := true
+		__new(XML)
+		{
+			for key, value in this
+				if(!IsFunc(value) && key != "Base" && XML.HasKey(key))
+					this[key] := XML[key]
+		}
+		Save(ByRef XML)
+		{
+			for key, value in this
+				if(!IsFunc(value) && key != "Base")
+					XML[key] := value
+		}
+	}
 	;An action that can be performed on an Accessor result
 	Class CAction
 	{
@@ -76,6 +93,9 @@ Class CAccessor
 			)
 		}
 		XMLObject := XML_Read(xml)
+		
+		;Create and load settings
+		this.Settings := new this.CSettings(XMLObject)
 		
 		;Init plugins
 		for index, Plugin in this.Plugins
@@ -339,11 +359,12 @@ Class CAccessor
 		XMLObject := {}
 		for index, Plugin in this.Plugins
 		{
-			XMLObject[Plugin.Type] := Plugin.Settings.DeepCopy()
+			XMLObject[Plugin.Type] := PluginSettings := {}
+			Plugin.Settings.Save(PluginSettings)
 			Plugin.OnExit(this)
 		}
 		XMLObject.Keywords := Object("Keyword", this.Keywords)
-		
+		this.Settings.Save(XMLObject)
 		XML_Save(XMLObject, Settings.ConfigPath "\Accessor.xml")
 		
 		;Clean up
@@ -561,6 +582,7 @@ Class CAccessorGUI extends CGUI
 		this.CloseOnEscape := true
 		this.DestroyOnClose := true
 		
+		this.ListView.LargeIcons := CAccessor.Instance.Settings.LargeIcons
 		this.ListView.IndependentSorting := true
 		this.ListView.ModifyCol()
 		;~ this.GUI.ListView.ModifyCol(1, "Auto") ; icon column
@@ -569,7 +591,6 @@ Class CAccessorGUI extends CGUI
 		this.ListView.ModifyCol(2, 330) ; resize path column
 		this.ListView.ModifyCol(3, 70)
 		this.ListView.ModifyCol(4, "AutoHdr") ; OnTop
-		
 		this.OnGUIMessage(0x06,"WM_ACTIVATE")
 	}
 	SetFilter(Text)
@@ -805,7 +826,12 @@ Class CAccessorPlugin
 				if(!IsFunc(value) && key != "Base" && XML.HasKey(key))
 					this[key] := XML[key]
 		}
-		
+		Save(ByRef XML)
+		{
+			for key, value in this
+				if(!IsFunc(value) && key != "Base")
+					XML[key] := value
+		}
 		;Code below demonstrates read-only properties. They are still saved to disk but the values from disk aren't used.
 		;The property itself must not be declared in this class. Common read-only properties will be disabled in settings dialog.
 		;~ __get(Name)
