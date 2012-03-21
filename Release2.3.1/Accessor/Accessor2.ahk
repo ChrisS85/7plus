@@ -25,6 +25,7 @@ Class CAccessor
 	{
 		LargeIcons := false
 		CloseWhenDeactivated := true
+		TitleBar := false
 		__new(XML)
 		{
 			for key, value in this
@@ -491,7 +492,7 @@ Class CAccessor
 			Path := ListEntry.Path
 			SplitPath, Path,,,ext
 			if(FileExist(ListEntry.Path) && InStr("exe,cmd,bat,ahk", ext))
-				CProgramLauncherPlugin.AddToCache(ListEntry)
+				CProgramLauncherPlugin.Instance.AddToCache(ListEntry)
 			
 			Run(Quote(ListEntry.Path) (ListEntry.args ? " " ListEntry.args : ""), WorkingDir)
 		}
@@ -576,7 +577,8 @@ Class CAccessorGUI extends CGUI
 		this.MinimizeBox := false
 		this.MaximizeBox := false
 		this.AlwaysOnTop := true
-		this.Caption := false
+		if(!CAccessor.Instance.Settings.TitleBar)
+			this.Caption := false
 		this.Border := true
 		this.Title := "7Plus Accessor"
 		this.CloseOnEscape := true

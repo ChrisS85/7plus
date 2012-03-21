@@ -96,7 +96,6 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		Results := Array()
 		Filter := ExpandPathPlaceholders(Filter)
 		SplitPath, filter, name, dir,,,drive
-		outputdebug refreshlist
 		if(dir)
 		{
 			if(this.AutocompletionString)
@@ -196,7 +195,6 @@ Class CFileSystemPlugin extends CAccessorPlugin
 	}
 	OnFilterChanged(ListEntry, Filter, LastFilter)
 	{
-		outputdebug filter changed
 		this.AutocompletionString := ""
 		return true
 	}

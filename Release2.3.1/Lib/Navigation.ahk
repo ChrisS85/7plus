@@ -45,7 +45,8 @@ Class Navigation
 	}
 	SetPath(Path, hwnd = 0)
 	{
-		return this.Call("SetPath", 0, Path, hwnd)
+		if(this.Call("SetPath", 0, Path, hwnd) = 0)
+			Run, % "Explorer """ Path """"
 	}
 	GetSelectedFilepaths(hwnd = 0)
 	{

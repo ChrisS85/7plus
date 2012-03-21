@@ -778,15 +778,21 @@ Finally, here are some settings that you're likely to change at the beginning:
 	CreateAccessorPlugins()
 	{
 		Page := this.Pages.AccessorPlugins.Tabs[1]
+		Page.AddControl("CheckBox", "chkAccessorLargeIcons", "x197 y31 h17", "Large icons")
+		Page.AddControl("CheckBox", "chkAccessorCloseWhenDeactivated", "x197 y51 h17", "Close Accessor window when it gets deactivated")
+		Page.AddControl("CheckBox", "chkAccessorTitleBar", "x197 y71 h17", "Show title bar")
 		Page.AddControl("Text", "txtAccessorText", "x197 y373 w431 h39", "Accessor is a versatile tool that is used to perform many commands through the keyboard, `nlike launching programs, switching windows, open URLs, browsing the filesystem,...`nPress the assigned hotkey (Default: ALT+Space) and start typing!")
-		Page.AddControl("Button", "btnAccessorHelp", "x730 y60 w90 h23", "&Help")
-		Page.AddControl("Button", "btnAccessorSettings", "x730 y31 w90 h23", "Plugin &Settings")
-		Page.AddControl("ListView", "listAccessorPlugins", "x197 y31 w525 h332 Checked", "Plugin Name")
+		Page.AddControl("Button", "btnAccessorHelp", "x730 y160 w90 h23", "&Help")
+		Page.AddControl("Button", "btnAccessorSettings", "x730 y131 w90 h23", "Plugin &Settings")
+		Page.AddControl("ListView", "listAccessorPlugins", "x197 y131 w525 h232 Checked", "Plugin Name")
 		Page.Controls.listAccessorPlugins.IndependentSorting := true
 	}
 	InitAccessorPlugins()
 	{
 		Page := this.Pages.AccessorPlugins.Tabs[1].Controls
+		Page.chkAccessorLargeIcons.Checked := CAccessor.Instance.Settings.LargeIcons
+		Page.chkAccessorCloseWhenDeactivated.Checked := CAccessor.Instance.Settings.CloseWhenDeactivated
+		Page.chkAccessorTitleBar.Checked := CAccessor.Instance.Settings.TitleBar
 		this.AccessorPlugins := Array() ;We don't copy the whole AccessorPlugins structure here to save some memory (program launcher might take some for example)
 		Page.listAccessorPlugins.Items.Clear()
 		for index, Plugin in CAccessor.Plugins
@@ -802,6 +808,9 @@ Finally, here are some settings that you're likely to change at the beginning:
 	ApplyAccessorPlugins()
 	{
 		Page := this.Pages.AccessorPlugins.Tabs[1].Controls
+		CAccessor.Instance.Settings.LargeIcons := Page.chkAccessorLargeIcons.Checked
+		CAccessor.Instance.Settings.CloseWhenDeactivated := Page.chkAccessorCloseWhenDeactivated.Checked
+		CAccessor.Instance.Settings.TitleBar := Page.chkAccessorTitleBar.Checked
 		for index, Plugin in CAccessor.Plugins
 		{
 			SettingsPlugin := this.AccessorPlugins.GetItemWithValue("Type", Plugin.Type)

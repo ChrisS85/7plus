@@ -369,22 +369,17 @@ UpdateLauncherPrograms()
 	global WindowList
 	if(!IsObject(CAccessor.Instance) || !IsObject(WindowList))
 		return
-	outputdebug update launcher programs
 	for i, Window in WindowList
 	{
 		if(Window.Path) ;Fails sometimes for some reason
 		{
 			if(!CProgramLauncherPlugin.Instance.List.FindKeyWithValue("Command", Window.Path))
 			{
-				outputdebug % "didn't find " window.path
 				path := Window.Path
 				SplitPath, path, name
 				exclude := CProgramLauncherPlugin.Instance.Settings.Exclude
 				if path not contains %exclude%
-				{
-					outputdebug add %name%
 					CProgramLauncherPlugin.Instance.List.Insert(Object("Name", name,"Command", Window.Path))
-				}
 			}
 		}
 	}
