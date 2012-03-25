@@ -120,7 +120,7 @@ API_SetWinEventHook(0x8001,0x800B,0,ApplicationState.HookProcAdr,0,0,0) ;Make su
 API_SetWinEventHook(0x0016,0x0016,0,ApplicationState.HookProcAdr,0,0,0) ;EVENT_SYSTEM_MINIMIZESTART
 ; API_SetWinEventHook(0x000E,0x000E,0,HookProcAdr,0,0,0)
 API_SetWinEventHook(0x000A,0x000B,0,ApplicationState.HookProcAdr,0,0,0) ;EVENT_SYSTEM_MOVESIZESTART
-if(Vista7 && (ApplicationState.ClipboardListenerRegistered := DllCall("AddClipboardFormatListener", "PTR", A_ScriptHwnd)))
+if(WinVer >= WIN_Vista && (ApplicationState.ClipboardListenerRegistered := DllCall("AddClipboardFormatListener", "PTR", A_ScriptHwnd)))
 	OnMessage(0x031D, "OnClipboardChange")
 
 SlideWindows := new CSlideWindows()

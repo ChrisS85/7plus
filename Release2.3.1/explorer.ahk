@@ -209,14 +209,14 @@ EnhancedRenaming()
 ;Mouse "gestures" (hold left/right and click right/left)
 #if Settings.Explorer.MouseGestures && GetKeyState("RButton") && (WinActive("ahk_group ExplorerGroup")||IsDialog()) && IsMouseOverFileList()
 LButton::
-	SuppressRButtonUp:=true
+	SuppressRButtonUp := true
 	Navigation.GoBack()
 	return
 #if
 
 #if Settings.Explorer.MouseGestures && SuppressRButtonUp
 ~RButton UP::
-	SuppressRButtonUp:=false
+	SuppressRButtonUp := false
 	Send, {Esc}
 	Return
 #if
@@ -224,7 +224,7 @@ LButton::
 #if Settings.Explorer.MouseGestures && GetKeyState("LButton","P") && (WinActive("ahk_group ExplorerGroup")||IsDialog()) && IsMouseOverFileList()
 RButton::
 	Navigation.GoForward()
-	SuppressRButtonUp:=true
+	SuppressRButtonUp := true
 	Return
 #if
 
@@ -233,8 +233,23 @@ RButton::
 Enter::
 NumpadEnter::
 	ExecuteFocusedFile()
+	SetTimerF("ExplorerPathChanged", -100)
 	return
 #if
+
+;Register path changes caused by pressing enter. This is done in addition to the shell message that gets sent when the path changes because it does not work for all paths.
+#if WinActive("ahk_group ExplorerGroup") && !IsRenaming()
+~LButton::
+~Enter::
+~NumpadEnter::
+~!Up::
+~!Left::
+~!Right::
+~Backspace::
+	SetTimerF("ExplorerPathChanged", -100)
+	return
+#if
+
 ExecuteFocusedFile()
 {
 	files := Navigation.GetSelectedFilePaths()
@@ -330,7 +345,7 @@ InitExplorerWindows()
 	ExplorerHistory := new CExplorerHistory()
 	RegisterExplorerWindows()
 	TabContainerList := Array()
-	if(Vista7)
+	if(WinVer >= WIN_Vista)
 		TabContainerList.Font := "Segoe UI"
 	Else
 		TabContainerList.Font := "Tahoma"
@@ -610,9 +625,14 @@ ExplorerMoved(hwnd)
 ;Called when active explorer changes its path.
 ExplorerPathChanged(ExplorerWindow)
 {
-	global ExplorerHistory
+	global ExplorerHistory, ExplorerWindows
 	if(!IsObject(ExplorerWindow))
-		return
+	{
+		ExplorerWindow := ExplorerWindows.GetItemWithValue("hwnd", WinExist("A"))
+		if(!ExplorerWindow)
+			return
+	}
+	outputdebug path change
 	OldPath := ExplorerWindow.Path
 	ExplorerWindow.RegisterSelectionChangedEvent() ;This will also refresh the path in ExplorerWindow
 	Path := ExplorerWindow.Path
@@ -635,7 +655,7 @@ ExplorerPathChanged(ExplorerWindow)
 	{
 		SplitPath, Path, name, dir,,,drive
 		x := Navigation.GetSelectedFilepaths()
-		if(!x.MaxIndex() && dir && (!vista7||SubStr(Path, 1 ,40)!="::{26EE0668-A00A-44D7-9371-BEB064C98683}"))
+		if(!x.MaxIndex() && dir && (WinVer < WIN_Vista||SubStr(Path, 1 ,40)!="::{26EE0668-A00A-44D7-9371-BEB064C98683}"))
 		{
 			if(A_OSVersion="WIN_7")
 			{

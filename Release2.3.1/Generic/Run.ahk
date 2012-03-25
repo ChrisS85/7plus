@@ -88,7 +88,7 @@ return
 Run(Target, WorkingDir = "", Mode = "", NonElevated=-1) 
 {
 	;run as current user
-	if(!Vista7 || NonElevated = -1 || (!A_IsAdmin && NonElevated) || (A_IsAdmin && !NonElevated))
+	if(WinVer < WIN_Vista || NonElevated = -1 || (!A_IsAdmin && NonElevated) || (A_IsAdmin && !NonElevated))
 	{
 		Run, %Target% , %WorkingDir%, %Mode% UseErrorLevel, v
 		if(A_LastError)

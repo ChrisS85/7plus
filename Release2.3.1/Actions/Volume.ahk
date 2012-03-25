@@ -10,7 +10,7 @@ Class CVolumeAction Extends CAction
 	{
 		;Need to check for sign before and after expansion because AHK will swallow the + sign on numeric strings and turn it into a number.
 		Current := 0
-		if(Vista7)
+		if(WinVer >= WIN_Vista)
 		{
 			if(InStr(this.Volume, "+") = 1 || InStr(this.Volume, "-") = 1)
 				Current := VA_GetMasterVolume()
@@ -102,7 +102,7 @@ return
 
 ToggleMute:
 ApplicationState.VolumeNotifyID := ""
-if(Vista7)
+if(WinVer >= WIN_VISTA)
 {
 	if(VA_GetMasterMute())
 		VA_SetMasterMute(0)

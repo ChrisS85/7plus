@@ -9,19 +9,19 @@ Class CExplorerButtonTrigger Extends CTrigger
 
 	Enable(Event)
 	{
-		if(!ApplicationState.IsPortable && A_IsAdmin && Vista7 && !FindButton("IsExplorerButton", Event))
+		if(!ApplicationState.IsPortable && A_IsAdmin && WinVer >= WIN_Vista && !FindButton("IsExplorerButton", Event))
 			AddButton("","",Event.ID, this.Name, this.Tooltip, (this.ShowSelected && this.ShowNoSelected ? "Both" : this.ShowSelected ? "Selected" : this.ShowNoSelected ? "NoSelected" : "")) ;Event.ID here
 	}
 	
 	Disable(Event)
 	{
-		if(!Event.Enabled && A_IsAdmin && Vista7 && !ApplicationState.IsPortable)
+		if(!Event.Enabled && A_IsAdmin && WinVer >= WIN_Vista && !ApplicationState.IsPortable)
 			RemoveButton("IsExplorerButton", Event)
 	}
 	
 	Delete(Event)
 	{
-		if(!ApplicationState.IsPortable && Vista7 && A_IsAdmin)
+		if(!ApplicationState.IsPortable && WinVer >= WIN_Vista && A_IsAdmin)
 			RemoveButton("IsExplorerButton", Event)
 	}
 	
@@ -32,7 +32,7 @@ Class CExplorerButtonTrigger Extends CTrigger
 			return
 		
 		;something changed, so lets remove the button. It is later recreated in CExplorerButtonTrigger.Enable()
-		if(!ApplicationState.IsPortable && Vista7 && A_IsAdmin)
+		if(!ApplicationState.IsPortable && WinVer >= WIN_Vista && A_IsAdmin)
 			RemoveButton("IsExplorerButton", Event1)
 	}
 
@@ -48,7 +48,7 @@ Class CExplorerButtonTrigger Extends CTrigger
 
 	GuiShow(GUI)
 	{
-		if(Vista7)
+		if(WinVer >= WIN_Vista)
 		{
 			this.AddControl(GUI, "Text", "Desc", "This button will show up in the explorer folder band bar at the top (Vista/7 only)")
 			this.AddControl(GUI, "Edit", "Name", this.Name, "", "Button Name:")

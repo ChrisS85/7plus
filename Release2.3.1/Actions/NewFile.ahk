@@ -2,8 +2,8 @@ Class CNewFileAction Extends CAction
 {
 	static Type := RegisterType(CNewFileAction, "Create new file")
 	static Category := RegisterCategory(CNewFileAction, "Explorer")
-	;Vista7 variable isn't set yet here
-	static Filename := IsVista7() ? TranslateMUI("notepad.exe",470) ".txt" : TranslateMUI("shell32.dll",8587) " " TranslateMUI("notepad.exe",469) ".txt" ;"New Textfile" ".txt"    versus   "New" "Textfile" ".txt"
+	;WinVer variable isn't set yet here
+	static Filename := GetWindowsVersion() >= 6.0 ? TranslateMUI("notepad.exe",470) ".txt" : TranslateMUI("shell32.dll",8587) " " TranslateMUI("notepad.exe",469) ".txt" ;"New Textfile" ".txt"    versus   "New" "Textfile" ".txt"
 	static BaseFile := ""
 	static Rename := true
 

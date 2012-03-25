@@ -5,7 +5,7 @@ Class CFlatViewAction Extends CAction
 	static Paths := "${SelN}"
 	Execute(Event)
 	{
-		if(Vista7)
+		if(WinVer >= Win_Vista)
 			FlatView(ToArray(Event.ExpandPlaceholders(this.Paths)))
 		return 1
 	} 

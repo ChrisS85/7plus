@@ -95,7 +95,7 @@ ExpandPlaceholder(Placeholder)
 		return WinGetTitle("A")
 	else if(Placeholder = "Control")
 	{
-		if(Vista7)
+		if(WinVer >= WIN_Vista)
 			ControlGetFocus focussed, A
 		else
 			focussed:=XPGetFocussed()

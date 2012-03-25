@@ -69,7 +69,7 @@ Class WindowsSettings
 
 	GetDisableUAC()
 	{
-		if(Vista7)
+		if(WinVer >= WIN_Vista)
 		{
 			RegRead, DisableUAC, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System, EnableLUA 
 			return DisableUAC = 0 ? 1 : 0
@@ -89,7 +89,7 @@ Class WindowsSettings
 
 	GetRemoveLibraries()
 	{
-		if(Vista7 && A_OSVersion != "WIN_VISTA")
+		if(WinVer >= WIN_Vista && A_OSVersion != "WIN_VISTA")
 		{
 			RegRead, RemoveLibraries, HKCR, CLSID\{031E4825-7B94-4dc3-B131-E946B44C8DD5}\ShellFolder, Attributes
 			return  RemoveLibraries = 0xb090010d ? 1 : 0	
@@ -99,7 +99,7 @@ Class WindowsSettings
 
 	GetCycleThroughTaskbarGroup()
 	{
-		if(Vista7 && A_OSVersion != "WIN_VISTA")
+		if(WinVer >= WIN_Vista && A_OSVersion != "WIN_VISTA")
 		{
 			RegRead, ActivateBehavior, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick
 			return ActivateBehavior = 1
@@ -111,7 +111,7 @@ Class WindowsSettings
 	;This function actually returns a time in ms.
 	GetThumbnailHoverTime()
 	{
-		if(Vista7 && A_OSVersion != "WIN_VISTA")
+		if(WinVer >= WIN_Vista && A_OSVersion != "WIN_VISTA")
 		{
 			RegRead, ThumbnailHoverTime, HKCU, Control Panel\Mouse, MouseHoverTime
 			return ThumbnailHoverTime = "" ? 400 : ThumbnailHoverTime	
@@ -193,7 +193,7 @@ Class WindowsSettings
 
 	SetDisableUAC(DisableUAC)
 	{
-		if(Vista7)
+		if(WinVer >= WIN_Vista)
 		{
 			RegWrite, REG_DWORD, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System, EnableLUA, % DisableUAC = 1 ? 0 : 1
 			return 1
@@ -210,7 +210,7 @@ Class WindowsSettings
 
 	SetRemoveLibraries(RemoveLibraries)
 	{
-		if(Vista7 && A_OSVersion != "WIN_VISTA")
+		if(WinVer >= WIN_Vista && A_OSVersion != "WIN_VISTA")
 		{
 			RegGivePermissions("HKCR\CLSID\{031E4825-7B94-4dc3-B131-E946B44C8DD5}\ShellFolder")
 			RegGivePermissions("HKCR\Folder\ShellEx\ContextMenuHandlers\Library Location")
@@ -228,7 +228,7 @@ Class WindowsSettings
 
 	SetCycleThroughTaskbarGroup(CycleThroughTaskbarGroup)
 	{
-		if(Vista7 && A_OSVersion != "WIN_VISTA")
+		if(WinVer >= WIN_Vista && A_OSVersion != "WIN_VISTA")
 		{
 			RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick, % CycleThroughTaskbarGroup
 			return 2
@@ -238,7 +238,7 @@ Class WindowsSettings
 
 	SetThumbnailHoverTime(ThumbnailHoverTime)
 	{
-		if(Vista7 A_OSVersion != "WIN_VISTA")
+		if(WinVer >= WIN_Vista A_OSVersion != "WIN_VISTA")
 		{
 			RegWrite, REG_SZ, HKCU, Control Panel\Mouse, MouseHoverTime, % ThumbnailHoverTime
 			return 2

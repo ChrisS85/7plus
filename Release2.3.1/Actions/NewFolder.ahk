@@ -9,7 +9,7 @@ Class CNewFolderAction Extends CAction
 	Startup()
 	{
 		global shell32muipath
-		if(Vista7)
+		if(WinVer >= WIN_Vista)
 			this.FolderName:=TranslateMUI(shell32muipath,16859) ;"New Folder"
 	}
 	

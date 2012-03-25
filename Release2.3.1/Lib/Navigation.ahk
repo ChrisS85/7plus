@@ -521,11 +521,17 @@ Class CExplorerNavigationSource
 	{
 		static Exists := FileExist(A_ScriptDir "\Explorer.dll")
 		if(Exists)
+		{
 			DllCall(A_ScriptDir "\Explorer.dll\SetPath", "Ptr", hwnd, "Str", Path, "Cdecl")
+			SetTimerF("ExplorerPathChanged", -100)
+		}
 		else
 			for Window in ComObjCreate("Shell.Application").Windows
 				if(Window.hwnd = hwnd)
+				{
 					Window.Navigate2[Path]
+					SetTimerF("ExplorerPathChanged", -100)
+				}
 	}
 	GetSelectedFilepaths(hwnd)
 	{
@@ -637,6 +643,7 @@ Class CExplorerNavigationSource
 			if(Window.hwnd = hwnd)
 			{
 				Window.GoBack()
+				SetTimerF("ExplorerPathChanged", -100)
 				return
 			}
 	}
@@ -646,16 +653,18 @@ Class CExplorerNavigationSource
 			if(Window.hwnd = hwnd)
 			{
 				Window.GoForward()
+				SetTimerF("ExplorerPathChanged", -100)
 				return
 			}
 	}
 	GoUpward(hwnd)
 	{
 		path := this.GetPath(hwnd)
-		if(Vista7 && !strEndsWith(path,".search-ms"))
+		if(WinVer >= WIN_Vista && !strEndsWith(path,".search-ms"))
 			Send !{Up}
 		else
 			Send {Backspace}
+		SetTimerF("ExplorerPathChanged", -100)
 	}
 	Refresh(hwnd)
 	{

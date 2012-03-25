@@ -577,7 +577,7 @@ Class CTabContainer
 			}
 			else
 			{
-				if(Vista7)
+				if(WinVer >= WIN_Vista)
 					pBrushGradient := Gdip_CreateLineBrushFromRect(0,0, tab.width, tab.height, 0xFFF8F8F8, 0x22222222)
 				else
 					pBrushGradient := Gdip_CreateLineBrushFromRect(0,0, tab.width, tab.height, 0xFFF8F8F8, 0xFFAAAAAA)

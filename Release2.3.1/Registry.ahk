@@ -13,7 +13,7 @@ RegRevokePermissions(key)
 }
 PrepareFolderBand()
 {
-	if(Vista7)
+	if(WinVer >= WIN_Vista)
 	{
 		;Give us all rights
 		RegGivePermissions("hklm\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes")
@@ -22,7 +22,7 @@ PrepareFolderBand()
 }
 BackupAndRemoveFolderBandButtons()
 {
-	if(Vista7)
+	if(WinVer >= WIN_Vista)
 	{
 		;Give us all rights
 		RegGivePermissions("hklm\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell")
@@ -44,14 +44,14 @@ BackupPlacesBar()
 
 RestoreFolderBand()
 {
-	if(!Vista7)
+	if(WinVer < WIN_Vista)
 		return
 	RemoveAllExplorerButtons()	
 	RegRevokePermissions("hklm\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes")
 }
 RestoreFolderBandButtons()
 {
-	if(Vista7)
+	if(WinVer >= WIN_Vista)
 	{
 		RegRename("HKLM","SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\Windows.Burn7pBackup","SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\Windows.Burn")
 		RegRename("HKLM","SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\Windows.Organize7pBackup","SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\CommandStore\shell\Windows.Organize")

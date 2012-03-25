@@ -10,7 +10,7 @@ Class CDoubleClickDesktopTrigger Extends CTrigger
 }
 
 #MaxThreadsPerHotkey 2
-#if (Vista7 && IsWindowUnderCursor("WorkerW")) || (!Vista7 && IsWindowUnderCursor("ProgMan"))
+#if (WinVer >= WIN_Vista && IsWindowUnderCursor("WorkerW")) || (WinVer < WIN_Vista && IsWindowUnderCursor("ProgMan"))
 ~LButton::DoubleClickDesktop()
 #if
 #MaxThreadsPerHotkey 1

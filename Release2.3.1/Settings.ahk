@@ -397,7 +397,7 @@ Settings_CreateWindowsSettings(ByRef TabCount) {
 	yIt+=checkboxstep
 	Gui, 1:Add, Checkbox, x%x1% y%yIt% vRemoveCrashReporting, Remove crash reporting dialog
 	yIt+=checkboxstep
-	if(Vista7)
+	if(WinVer >= WIN_Vista)
 	{		
 		Gui, 1:Add, Checkbox, x%x1% y%yIt% vDisableUAC, Disable UAC
 		yIt+=checkboxstep

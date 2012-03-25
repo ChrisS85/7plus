@@ -26,6 +26,8 @@ Class CAccessor
 		LargeIcons := false
 		CloseWhenDeactivated := true
 		TitleBar := false
+		UseAero := true
+		Transparency := 0 ;0 to 255. 0 is considered opaque here so the attribute isn't set
 		__new(XML)
 		{
 			for key, value in this
@@ -569,7 +571,6 @@ Class CAccessorGUI extends CGUI
 	ListView := this.AddControl("ListView", "ListView", "w800 y+10 AltSubmit 0x8 -Multi R15 NoSortHdr", "Title|Path| | |")
 	btnOK := this.AddControl("Button", "btnOK", "y10 x+10 w75 section Default", "&OK")
 	btnCancel := this.AddControl("Button", "btnCancel", "y+8 w75", "&Cancel")
-	txtConfig := this.AddControl("Text", "txtConfig", "xs+0 y" this.Height - 71, "Config:")
 	btnConfigKeywords := this.AddControl("Button", "btnConfigKeywords", "xs+0 y" this.Height - 56 " w75", "&Keywords")
 	btnConfigPlugins := this.AddControl("Button", "btnConfigPlugins", "xs+0 y" this.Height - 28 " w75", "&Plugins")
 	__new()
@@ -577,12 +578,33 @@ Class CAccessorGUI extends CGUI
 		this.MinimizeBox := false
 		this.MaximizeBox := false
 		this.AlwaysOnTop := true
-		if(!CAccessor.Instance.Settings.TitleBar)
+		DllCall("dwmapi\DwmIsCompositionEnabled","IntP", DWMEnabled)
+		if(!CAccessor.Instance.Settings.TitleBar && (CAccessor.Instance.Settings.UseAero && WinVer >= WIN_Vista && DWMEnabled))
+			this.SysMenu := false
+		else if(!CAccessor.Instance.Settings.TitleBar)
 			this.Caption := false
+			
 		this.Border := true
 		this.Title := "7Plus Accessor"
 		this.CloseOnEscape := true
 		this.DestroyOnClose := true
+		
+		if(CAccessor.Instance.Settings.UseAero && WinVer >= WIN_Vista && DWMEnabled)
+		{
+			VarSetCapacity(margin,16)
+			NumPut(-1,&margin,0,Uint)
+			NumPut(-1,&margin,4,Uint)
+			NumPut(-1,&margin,8,Uint)
+			NumPut(-1,&margin,12,Uint)
+			Gui, % this.GUINum ":Color", 0x070809
+			WinSet,TransColor,0x070809,% "ahk_id " this.hwnd 
+			DllCall("Dwmapi.dll\DwmExtendFrameIntoClientArea", "Ptr", this.hwnd, "Ptr", &margin)
+		}
+		else
+			this.txtConfig := this.AddControl("Text", "txtConfig", "xs+0 y" this.Height - 71, "Config:")
+		
+		if(CAccessor.Instance.Settings.Transparency)
+			WinSet, Trans, % CAccessor.Instance.Settings.Transparency, % "ahk_id " this.hwnd
 		
 		this.ListView.LargeIcons := CAccessor.Instance.Settings.LargeIcons
 		this.ListView.IndependentSorting := true
@@ -593,7 +615,20 @@ Class CAccessorGUI extends CGUI
 		this.ListView.ModifyCol(2, 330) ; resize path column
 		this.ListView.ModifyCol(3, 70)
 		this.ListView.ModifyCol(4, "AutoHdr") ; OnTop
-		this.OnGUIMessage(0x06,"WM_ACTIVATE")
+		this.OnMessage(0x06,"WM_ACTIVATE")
+	}
+	
+	CalcWin(msg, wParam,handle,lParam) {
+		outputdebug calcwin
+		return 0
+	}
+
+	WM_NCHITTEST(msg, wParam, lParam, handle)
+	{
+		outputdebug hittest
+		VarSetCapacity(outPointer,1,0)
+		DllCall("Dwmapi.dll\DwmDefWindowProc","UInt",handle,"UInt",msg,"UInt",wParam,"UInt",lParam,"UInt",&outPointer)
+		return,true
 	}
 	SetFilter(Text)
 	{
@@ -924,7 +959,16 @@ Class CAccessorPlugin
 	{
 	}
 }
+CalcWin() {
+return 0
+}
 
+WM_NCHITTEST(wParam, lParam, msg, handle)
+{
+   global
+   DllCall("Dwmapi.dll\DwmDefWindowProc","UInt",handle,"UInt",msg,"UInt",wParam,"UInt",lParam,"UInt",&outPointer)
+   return,true
+}
 #include %A_ScriptDir%\Accessor\CEventPlugin.ahk
 ;~ #include %A_ScriptDir%\Accessor\Calc.ahk
 #include %A_ScriptDir%\Accessor\CExplorerHistoryPlugin.ahk

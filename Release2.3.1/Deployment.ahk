@@ -118,7 +118,7 @@ ApplyUpdateFixes()
 	{
 		;Switch to new autorun method
 		RegRead, key, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus
-		if(Vista7 && key != "")
+		if(WinVer >= WIN_Vista && key != "")
 		{
 			DisableAutorun()
 			EnableAutorun()
@@ -218,7 +218,7 @@ RemoveUninstallInformation()
 
 IsAutorunEnabled()
 {
-	if(Vista7)
+	if(WinVer >= WIN_Vista)
 	{
 		objService := ComObjCreate("Schedule.Service") 
 		objService.Connect()
@@ -236,7 +236,7 @@ IsAutorunEnabled()
 DisableAutorun()
 {
 	RegDelete, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus
-	if(Vista7)
+	if(WinVer >= WIN_Vista)
 	{
 		objService := ComObjCreate("Schedule.Service") 
 		objService.Connect()
@@ -249,7 +249,7 @@ EnableAutorun()
 {
 	if(IsAutorunEnabled())
 		DisableAutorun() ;Better re-enable it if paths have changed
-	if(!Vista7)
+	if(WinVer < WIN_Vista)
 	{
 		if(A_IsCompiled)
 			RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Run, 7plus, %A_ScriptFullPath%

@@ -781,10 +781,13 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("CheckBox", "chkAccessorLargeIcons", "x197 y31 h17", "Large icons")
 		Page.AddControl("CheckBox", "chkAccessorCloseWhenDeactivated", "x197 y51 h17", "Close Accessor window when it gets deactivated")
 		Page.AddControl("CheckBox", "chkAccessorTitleBar", "x197 y71 h17", "Show title bar")
+		Page.AddControl("CheckBox", "chkAccessorUseAero", "x197 y91 h17", "Use Aero glass effect (Vista/7 and newer)")
+		Page.AddControl("Text", "txtAccessorTransparency", "x197 y115 h17", "Transparency (looks ugly with Aero enabled!):")
+		Page.AddControl("Slider", "sldAccessorTransparency", "x+10 y111 Range50-255", 255)
 		Page.AddControl("Text", "txtAccessorText", "x197 y373 w431 h39", "Accessor is a versatile tool that is used to perform many commands through the keyboard, `nlike launching programs, switching windows, open URLs, browsing the filesystem,...`nPress the assigned hotkey (Default: ALT+Space) and start typing!")
-		Page.AddControl("Button", "btnAccessorHelp", "x730 y160 w90 h23", "&Help")
-		Page.AddControl("Button", "btnAccessorSettings", "x730 y131 w90 h23", "Plugin &Settings")
-		Page.AddControl("ListView", "listAccessorPlugins", "x197 y131 w525 h232 Checked", "Plugin Name")
+		Page.AddControl("Button", "btnAccessorHelp", "x730 y180 w90 h23", "&Help")
+		Page.AddControl("Button", "btnAccessorSettings", "x730 y151 w90 h23", "Plugin &Settings")
+		Page.AddControl("ListView", "listAccessorPlugins", "x197 y151 w525 h212 Checked", "Plugin Name")
 		Page.Controls.listAccessorPlugins.IndependentSorting := true
 	}
 	InitAccessorPlugins()
@@ -793,6 +796,9 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.chkAccessorLargeIcons.Checked := CAccessor.Instance.Settings.LargeIcons
 		Page.chkAccessorCloseWhenDeactivated.Checked := CAccessor.Instance.Settings.CloseWhenDeactivated
 		Page.chkAccessorTitleBar.Checked := CAccessor.Instance.Settings.TitleBar
+		Page.chkAccessorUseAero.Checked := CAccessor.Instance.Settings.UseAero
+		if(CAccessor.Instance.Settings.Transparency)
+			Page.sldAccessorTransparency.Value := CAccessor.Instance.Settings.Transparency
 		this.AccessorPlugins := Array() ;We don't copy the whole AccessorPlugins structure here to save some memory (program launcher might take some for example)
 		Page.listAccessorPlugins.Items.Clear()
 		for index, Plugin in CAccessor.Plugins
@@ -811,6 +817,10 @@ Finally, here are some settings that you're likely to change at the beginning:
 		CAccessor.Instance.Settings.LargeIcons := Page.chkAccessorLargeIcons.Checked
 		CAccessor.Instance.Settings.CloseWhenDeactivated := Page.chkAccessorCloseWhenDeactivated.Checked
 		CAccessor.Instance.Settings.TitleBar := Page.chkAccessorTitleBar.Checked
+		CAccessor.Instance.Settings.UseAero := Page.chkAccessorUseAero.Checked
+		CAccessor.Instance.Settings.Transparency := Page.sldAccessorTransparency.Value
+		if(CAccessor.Instance.Settings.Transparency = 255)
+			CAccessor.Instance.Settings.Transparency := 0
 		for index, Plugin in CAccessor.Plugins
 		{
 			SettingsPlugin := this.AccessorPlugins.GetItemWithValue("Type", Plugin.Type)

@@ -6,7 +6,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 	;On dialog popup, check if its an explorer confirmation dialog
 	if(event=0x00008002) ;EVENT_OBJECT_SHOW
 	{
-		if(IsObject(Settings) && Settings.Explorer.AutoCheckApplyToAllFiles && Vista7)
+		if(IsObject(Settings) && Settings.Explorer.AutoCheckApplyToAllFiles && WinVer >= WIN_Vista)
 			FixExplorerConfirmationDialogs()
 		return
 	}
