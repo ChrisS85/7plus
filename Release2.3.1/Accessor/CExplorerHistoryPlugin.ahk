@@ -33,7 +33,7 @@ Class CExplorerHistoryPlugin extends CAccessorPlugin
 	}
 	OnOpen(Accessor)
 	{
-		if(this.ExplorerOpen := InStr("ExploreWClass,CabinetWClass", WinGetClass("ahk_id " Accessor.PreviousWindow)))
+		if(Navigation.FindNavigationSource(Accessor.PreviousWindow, "SetPath"))
 		{
 			Accessor.SetFilter(this.Settings.Keyword " ")
 			Edit_Select(0, -1, "", "ahk_id " Accessor.GUI.EditControl.hwnd)

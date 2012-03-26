@@ -74,7 +74,10 @@ Class CArray extends CRichObject
 	}
 	Contains(val)
 	{
-		return this.indexOf(val) > 0
+		Loop % this.MaxIndex()
+			if(this[A_Index] = val)
+				return true
+		return false
 	}
 	Join(sep="`n"){ 
 	   Loop, % this.MaxIndex() 

@@ -55,33 +55,62 @@ ExpandInternalPlaceholders(text)
 }
 
 ;Expand path placeholders like %ProgramFiles% or %TEMP%
-ExpandPathPlaceholders(text)
+ExpandPathPlaceholders(InputString)
 {
-	static sProgramFiles, sWinDir, sTemp, sAppData, sDesktop, sMyDocuments, sStartMenu, sStartMenuCommon, s7plusDrive
-	if(!sProgramFiles)
-	{
-		sProgramFiles := GetFullPathName(A_ProgramFiles)
-		sWinDir := GetFullPathName(A_WinDir)
-		sTemp := GetFullPathName(A_Temp)
-		sAppData := GetFullPathName(A_AppData)
-		sDesktop := GetFullPathName(A_Desktop)
-		sMyDocuments := GetFullPathName(A_MyDocuments)
-		sStartMenu := GetFullPathName(A_StartMenu)
-		sStartMenuCommon := GetFullPathName(A_StartMenuCommon)
+	static sStartMenu := GetFullPathName(A_StartMenu)
+	static sStartMenuCommon := GetFullPathName(A_StartMenuCommon)
+	static sMyDocuments := GetFullPathName(A_MyDocuments)
+	static sDesktop := GetFullPathName(A_Desktop)
+	static s7plusDrive
+	if(!s7plusDrive)
 		SplitPath, A_ScriptDir,,,,,s7plusDrive
-	}
-	StringReplace, text, text, `%ProgramFiles`%, %sProgramFiles%, All
-	StringReplace, text, text, `%Windir`%, %sWindir%, All
-	StringReplace, text, text, `%Temp`%, %sTemp%, All
-	StringReplace, text, text, `%AppData`%, %sAppData%, All
-	StringReplace, text, text, `%Desktop`%, %sDesktop%, All
-	StringReplace, text, text, `%MyDocuments`%, %sMyDocuments%, All
-	StringReplace, text, text, `%StartMenu`%, %sStartMenu%, All
-	StringReplace, text, text, `%StartMenuCommon`%, %sStartMenuCommon%, All
-	StringReplace, text, text, `%7plusDrive`%, %s7plusDrive%, All
-	StringReplace, text, text, `%7plusDir`%, %A_ScriptDir%, All
-	return text
+	StringReplace, InputString, InputString, `%Desktop`%, %sDesktop%, All
+	StringReplace, InputString, InputString, `%MyDocuments`%, %sMyDocuments%, All
+	StringReplace, InputString, InputString, `%StartMenu`%, %sStartMenu%, All
+	StringReplace, InputString, InputString, `%StartMenuCommon`%, %sStartMenuCommon%, All
+	StringReplace, InputString, InputString, `%7plusDrive`%, %s7plusDrive%, All
+	StringReplace, InputString, InputString, `%7plusDir`%, %A_ScriptDir%, All
+	; get the required size for the expanded string
+	SizeNeeded := DllCall("ExpandEnvironmentStrings", "Str", InputString, "PTR", 0, "Int", 0)
+	If (SizeNeeded == "" || SizeNeeded <= 0)
+		return InputString ; unable to get the size for the expanded string for some reason
+
+	ByteSize := SizeNeeded * 2 + 2
+	VarSetCapacity(TempValue, ByteSize, 0)
+
+	; attempt to expand the environment string
+	If (!DllCall("ExpandEnvironmentStrings", "Str", InputString, "Str", TempValue, "Int", SizeNeeded))
+		return InputString ; unable to expand the environment string
+	return TempValue
 }
+
+;ExpandPathPlaceholders(text)
+;{
+;	static sProgramFiles, sWinDir, sTemp, sAppData, sDesktop, sMyDocuments, sStartMenu, sStartMenuCommon, s7plusDrive
+;	if(!sProgramFiles)
+;	{
+;		sProgramFiles := GetFullPathName(A_ProgramFiles)
+;		sWinDir := GetFullPathName(A_WinDir)
+;		sTemp := GetFullPathName(A_Temp)
+;		sAppData := GetFullPathName(A_AppData)
+;		sDesktop := GetFullPathName(A_Desktop)
+;		sMyDocuments := GetFullPathName(A_MyDocuments)
+;		sStartMenu := GetFullPathName(A_StartMenu)
+;		sStartMenuCommon := GetFullPathName(A_StartMenuCommon)
+;		SplitPath, A_ScriptDir,,,,,s7plusDrive
+;	}
+;	StringReplace, text, text, `%ProgramFiles`%, %sProgramFiles%, All
+;	StringReplace, text, text, `%Windir`%, %sWindir%, All
+;	StringReplace, text, text, `%Temp`%, %sTemp%, All
+;	StringReplace, text, text, `%AppData`%, %sAppData%, All
+;	StringReplace, text, text, `%Desktop`%, %sDesktop%, All
+;	StringReplace, text, text, `%MyDocuments`%, %sMyDocuments%, All
+;	StringReplace, text, text, `%StartMenu`%, %sStartMenu%, All
+;	StringReplace, text, text, `%StartMenuCommon`%, %sStartMenuCommon%, All
+;	StringReplace, text, text, `%7plusDrive`%, %s7plusDrive%, All
+;	StringReplace, text, text, `%7plusDir`%, %A_ScriptDir%, All
+;	return text
+;}
 ;Expands a single placeholder. Placeholder argument contains only the name, without ${}
 ExpandPlaceholder(Placeholder)
 {

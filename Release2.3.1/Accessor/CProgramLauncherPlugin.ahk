@@ -72,10 +72,12 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		GUI.btnRefreshCache := GUI.AddControl("Button", "btnRefreshCache", "y+10 w80", "&Refresh Cache")
 		GUI.btnRefreshCache.Click.Handler := new Delegate(this, "Settings_RefreshCache")
 		
-		GUI.txtExtensions := GUI.AddControl("Text", "txtExtensions", "x" PluginGUI.x " y+35", "File extensions:")
+		GUI.txtExtensions := GUI.AddControl("Text", "txtExtensions", "x" PluginGUI.x " y+10", "File extensions:")
 		GUI.editExtensions := GUI.AddControl("Edit", "editExtensions", "x+10 y+-17 w248", "")
 		GUI.editExtensions.TextChanged.Handler := new Delegate(this, "Settings_ExtensionChanged")
 		GUI.txtSeparator := GUI.AddControl("Text", "txtSeparator", "x+10 y+-17", "Separator: Comma")
+		GUI.chkUpdateOnOpen := GUI.AddControl("Checkbox", "chkUpdateOnOpen", "x" PluginGUI.x " y+17", "Update this path each time Accessor opens")
+		GUI.chkUpdateOnOpen.CheckedChanged.Handler := new Delegate(this, "Settings_UpdateOnOpenChanged")
 	}
 	SaveSettings(Settings, GUI, PluginGUI)
 	{
@@ -83,11 +85,12 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		for index, Item in this.SettingsWindow.GUI.ListBox.Items
 		{
 			if(InStr(FileExist(ExpandPathPlaceholders(Item.Text)), "D"))
-				this.Paths.Insert(Object("Path", Item.Text,"Extensions",this.SettingsWindow.Paths[index].Extensions))
+				this.Paths.Insert(Object("Path", Item.Text, "Extensions",this.SettingsWindow.Paths[index].Extensions, "UpdateOnOpen", this.SettingsWindow.Paths[index].UpdateOnOpen))
 			else
 				MsgBox % "Ignoring " Item.Text " because it is invalid."
 		}
 		this.RefreshCache()
+		this.Remove("SettingsWindow")
 	}
 	Settings_PathSelectionChanged(Sender, Row)
 	{
@@ -95,10 +98,13 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		{
 			this.SettingsWindow.GUI.btnDeletePath.Enabled := 1
 			this.SettingsWindow.GUI.btnBrowse.Enabled := 1
+			this.SettingsWindow.GUI.chkUpdateOnOpen.Enabled := 1
 			this.SettingsWindow.GUI.editExtensions.Text := this.SettingsWindow.Paths[this.SettingsWindow.GUI.ListBox.SelectedIndex].Extensions
+			this.SettingsWindow.GUI.chkUpdateOnOpen.checked := this.SettingsWindow.Paths[this.SettingsWindow.GUI.ListBox.SelectedIndex].UpdateOnOpen
 		}
 		else
 		{
+			this.SettingsWindow.GUI.chkUpdateOnOpen.Enabled := 0
 			this.SettingsWindow.GUI.btnDeletePath.Enabled := 0
 			this.SettingsWindow.GUI.btnBrowse.Enabled := 0
 		}
@@ -107,6 +113,11 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 	{
 		if(this.SettingsWindow.GUI.ListBox.SelectedItem)
 			this.SettingsWindow.Paths[this.SettingsWindow.GUI.ListBox.SelectedIndex].Extensions := this.SettingsWindow.GUI.editExtensions.Text
+	}
+	Settings_UpdateOnOpenChanged(Sender)
+	{
+		if(this.SettingsWindow.GUI.ListBox.SelectedItem)
+			this.SettingsWindow.Paths[this.SettingsWindow.GUI.ListBox.SelectedIndex].UpdateOnOpen := this.SettingsWindow.GUI.chkUpdateOnOpen.Checked
 	}
 	Settings_AddPath(Sender)
 	{
@@ -154,6 +165,12 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 	}
 	OnOpen(Accessor)
 	{
+		for index, ListEntry in this.Paths
+		{
+			outputdebug % ListEntry.Path ListEntry.UpdateOnOpen
+			if(ListEntry.UpdateOnOpen)
+				this.RefreshCache(ListEntry)
+		}
 	}
 	OnClose(Accessor)
 	{
@@ -242,10 +259,10 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		this.Paths := Array()
 		if(!FileExist(Settings.ConfigPath "\ProgramCache.xml")) ;File doesn't exist, create default values
 		{
-			this.Paths.Insert(Object("Path","%StartMenu%","Extensions","lnk,exe"))
-			this.Paths.Insert(Object("Path","%StartMenuCommon%","Extensions","lnk,exe"))
-			this.Paths.Insert(Object("Path","%Desktop%","Extensions","lnk,exe"))
-			this.Paths.Insert(Object("Path","%AppData%\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar","Extensions","lnk,exe"))
+			this.Paths.Insert(Object("Path", "%StartMenu%", "Extensions", "lnk,exe", "UpdateOnOpen", false))
+			this.Paths.Insert(Object("Path", "%StartMenuCommon%", "Extensions", "lnk,exe", "UpdateOnOpen", false))
+			this.Paths.Insert(Object("Path", "%Desktop%", "Extensions", "lnk,exe", "UpdateOnOpen", false))
+			this.Paths.Insert(Object("Path", "%AppData%\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar", "Extensions", "lnk,exe", "UpdateOnOpen", false))
 			return
 		}
 		
@@ -270,7 +287,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		Loop % XMLObject.Paths.MaxIndex() ;Read scan directories
 		{
 			XMLPath := XMLObject.Paths[A_Index]
-			this.Paths.Insert(Object("Path", XMLPath.Path, "Extensions", XMLPath.Extensions))
+			this.Paths.Insert(Object("Path", XMLPath.Path, "Extensions", XMLPath.Extensions, "UpdateOnOpen", XMLPath.UpdateOnOpen = 1))
 		}
 	}
 	
@@ -281,14 +298,14 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		XMLObject := Object("List", Array(), "Paths", Array())
 		for index, ListEntry in this.List
 			XMLObject.List.Insert(Object("Command", ListEntry.Command, "Name", ListEntry.Name, "args", ListEntry.args, "BasePath", ListEntry.BasePath))
-		for index, ListEntry in this.Paths
-			XMLObject.Paths.Insert(Object("Path", ListEntry.Path, "Extensions", ListEntry.Extensions))
+		for index2, ListEntry in this.Paths
+			XMLObject.Paths.Insert(Object("Path", ListEntry.Path, "Extensions", ListEntry.Extensions, "UpdateOnOpen", ListEntry.UpdateOnOpen))
 		
 		XML_Save(XMLObject, Settings.ConfigPath "\ProgramCache.xml")
 	}
 	
 	;Updates the list of cached programs, optionally for a specific path only
-	RefreshCache(Path ="")
+	RefreshCache(Path = "")
 	{
 		;Delete old cache entries which are to be refreshed
 		pos := 1
@@ -313,10 +330,10 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			Path := ExpandInternalPlaceholders(Path)
 			if(!Path)
 				continue
-			extList := Paths[A_Index].Extensions
+			extList := ToArray(Paths[A_Index].Extensions, ",")
 			Loop, %Path%\*.*, , 1
 			{
-				if A_LoopFileExt in %extList%
+				if(extList.Contains(A_LoopFileExt) || extList.Contains("*"))
 				{
 					exclude := this.Settings.Exclude
 					command := A_LoopFileLongPath
@@ -330,7 +347,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 							command := ResolvedCommand
 							
 							SplitPath, command,,,ext
-							if ext not in %extList%
+							if(!extList.Contains(ext))
 								continue
 							if(!args)
 								SplitPath, command,ExeName ;Executable name
