@@ -3,10 +3,10 @@
 ;x:=TranslateMUI("shell32.dll",31236)
 TranslateMUI(resDll, resID)
 {
-VarSetCapacity(buf, 256) 
-hDll := DllCall("LoadLibrary", "str", resDll, "Ptr") 
-Result := DllCall("LoadString", "Ptr", hDll, "uint", resID, "str", buf, "int", 128)
-return buf
+	VarSetCapacity(buf, 256) 
+	hDll := DllCall("LoadLibrary", "str", resDll, "Ptr") 
+	Result := DllCall("LoadString", "Ptr", hDll, "uint", resID, "str", buf, "int", 128)
+	return buf
 }
 
 ;Finds the path of the Shell32.dll.mui file

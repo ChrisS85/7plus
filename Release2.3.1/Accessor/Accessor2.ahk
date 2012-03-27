@@ -560,6 +560,14 @@ Class CAccessor
 			return 1
 		}
 	}
+	OpenPathWithAccessor(ListEntry, Plugin)
+	{
+		if(ListEntry.Path)
+		{
+			this.SetFilter(ListEntry.Path (strEndsWith(ListEntry.Path, "\") ? "" : "\"))
+			return 1
+		}
+	}
 }
 AccessorContextMenu:
 CAccessor.Instance.PerformAction(A_ThisMenuItem)
@@ -893,6 +901,7 @@ Class CAccessorPlugin
 		static OpenExplorer := new CAccessor.CAction("Open in Explorer", "OpenExplorer")
 		static OpenCMD := new CAccessor.CAction("Open in CMD", "OpenCMD")
 		static ExplorerContextMenu := new CAccessor.CAction("Explorer context menu", "ExplorerContextMenu")
+		static OpenPathWithAccessor := new CAccessor.CAction("Open path with Accessor", "OpenPathWithAccessor")
 	}
 	
 	;An object representing a result of an Accessor query
@@ -969,15 +978,15 @@ WM_NCHITTEST(wParam, lParam, msg, handle)
    DllCall("Dwmapi.dll\DwmDefWindowProc","UInt",handle,"UInt",msg,"UInt",wParam,"UInt",lParam,"UInt",&outPointer)
    return,true
 }
+#include %A_ScriptDir%\Accessor\CProgramLauncherPlugin.ahk
 #include %A_ScriptDir%\Accessor\CEventPlugin.ahk
 ;~ #include %A_ScriptDir%\Accessor\Calc.ahk
-#include %A_ScriptDir%\Accessor\CExplorerHistoryPlugin.ahk
+#include %A_ScriptDir%\Accessor\CRecentFoldersPlugin.ahk
 ;~ #include %A_ScriptDir%\Accessor\FastFolders.ahk
 #include %A_ScriptDir%\Accessor\CFileSystemPlugin.ahk
 ;~ #include %A_ScriptDir%\Accessor\Google.ahk
 ;~ #include %A_ScriptDir%\Accessor\Notepad++.ahk
 ;~ #include %A_ScriptDir%\Accessor\Notes.ahk
-#include %A_ScriptDir%\Accessor\CProgramLauncherPlugin.ahk
 #include %A_ScriptDir%\Accessor\CSciTE4AutoHotkeyPlugin.ahk
 #include %A_ScriptDir%\Accessor\CWindowSwitcherPlugin.ahk
 #include %A_ScriptDir%\Accessor\CUninstallPlugin.ahk

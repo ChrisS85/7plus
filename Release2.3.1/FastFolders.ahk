@@ -5,7 +5,7 @@ ClearStoredFolder(Slot)
 	global FastFolders
 	Slot+=1
 	FastFolders[Slot].Path := ""
-	FastFolders[Slot].Title := ""
+	FastFolders[Slot].Name := ""
 	if (Settings.Explorer.FastFolders.ShowInFolderBand)
 	{
 		RemoveAllExplorerButtons("IsFastFolderButton")
@@ -13,7 +13,7 @@ ClearStoredFolder(Slot)
 		{
 			pos:=A_Index-1
 			if(FastFolders[A_Index].Path)
-				AddButton("",FastFolders[A_Index].Path,,pos ":" FastFolders[A_Index].Title)
+				AddButton("",FastFolders[A_Index].Path,,pos ":" FastFolders[A_Index].Name)
 		}
 	}
 }
@@ -26,14 +26,14 @@ UpdateStoredFolder(Slot, Folder="")
 		FastFolders[Slot].Path := Folder
 	else
 		FastFolders[Slot].Path := Navigation.GetPath()
-	title:=FastFolders[Slot].Path	
-	if(InStr(title,"::") = 1 && WinActive("ahk_group ExplorerGroup"))
-		WinGetTitle,title,A
+	Name:=FastFolders[Slot].Path	
+	if(InStr(Name,"::") = 1 && WinActive("ahk_group ExplorerGroup"))
+		WinGetTitle,Name,A
 	
-	SplitPath, title , split
-	FastFolders[Slot].Title := split
-	if(!FastFolders[Slot].Title)
-		FastFolders[Slot].Title:=title
+	SplitPath, Name , split
+	FastFolders[Slot].Name := split
+	if(!FastFolders[Slot].Name)
+		FastFolders[Slot].Name := Name
 	RefreshFastFolders()	
 }
 
@@ -53,7 +53,7 @@ AddAllButtons(FolderBand,PlacesBar)
 		if(FastFolders[A_Index].Path)
 		{				
 			if (FolderBand)		
-				AddButton("",FastFolders[A_Index].Path,,pos ":" FastFolders[A_Index].Title)
+				AddButton("",FastFolders[A_Index].Path,,pos ":" FastFolders[A_Index].Name)
 			if(pos<=4 && PlacesBar)	;Also update placesbar
 			{
 				value:=FastFolders[A_Index].Path
@@ -64,10 +64,10 @@ AddAllButtons(FolderBand,PlacesBar)
 }
 
 ;Callback function for determining if a specific registry key was created by 7plus
-IsFastFolderButton(Command,Title,Tooltip)
+IsFastFolderButton(Command,Name,Tooltip)
 {
-	x:=substr(Title,1,1)
-	if(IsNumeric(x)&&substr(Title,2,1)=":")
+	x:=substr(Name,1,1)
+	if(IsNumeric(x)&&substr(Name,2,1)=":")
 		return true
 	return false
 }
@@ -86,7 +86,7 @@ FastFolderMenu()
 			i := A_INDEX - 1
 			if(FastFolders[A_Index].Path)
 			{
-				x := FastFolders[A_Index].Title
+				x := FastFolders[A_Index].Name
 				if(x && (!InStr(x,"ftp://") = 1||!y.MaxIndex()))
 				{
 					x := "&" i ": " x
@@ -152,7 +152,7 @@ FastFolderMenuClicked(index)
 	Menu, FastFolders, DeleteAll
 }
 
-;Removes all buttons created with this script. Function can be the name of a function with these arguments: func(command,title,tooltip) and it can be used to tell the script if an entry may be deleted
+;Removes all buttons created with this script. Function can be the name of a function with these arguments: func(command,Name,tooltip) and it can be used to tell the script if an entry may be deleted
 RemoveAllExplorerButtons(function="")
 {
 	;go into view folders (clsid)
@@ -170,11 +170,11 @@ RemoveAllExplorerButtons(function="")
 			{
 				skip:=false
 				RegRead, value, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%\%A_LoopRegName%, InfoTip
-				RegRead, title, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%\%A_LoopRegName%, Title
+				RegRead, Name, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%\%A_LoopRegName%, Name
 				RegRead, cmd, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%\%A_LoopRegName%\shell\InvokeTask\command
 				
 				if(IsFunc(function))
-					if(!%function%(cmd,title,value))
+					if(!%function%(cmd,Name,value))
 					{
 						skip:=true
 						break
@@ -198,11 +198,11 @@ RemoveAllExplorerButtons(function="")
 			{
 				skip:=false
 				RegRead, value, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%numberfolder%\%A_LoopRegName%, InfoTip
-				RegRead, title, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%numberfolder%\%A_LoopRegName%, Title
+				RegRead, Name, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%numberfolder%\%A_LoopRegName%, Title
 				RegRead, cmd, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%numberfolder%\%A_LoopRegName%\shell\InvokeTask\command
 				
 				if(IsFunc(function))
-					if(!%function%(cmd,title,value))
+					if(!%function%(cmd,Name,value))
 					{
 						skip:=true
 						break

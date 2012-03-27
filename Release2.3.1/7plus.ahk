@@ -48,6 +48,7 @@ ComObjError(0)
 #include <Notify>
 #include <_Struct>
 #include <ControlHotkey>
+#include <UniqueArray>
 #include <WaitForEvent>
 #include <WorkerThread>
 

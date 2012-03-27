@@ -78,6 +78,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		GUI.txtSeparator := GUI.AddControl("Text", "txtSeparator", "x+10 y+-17", "Separator: Comma")
 		GUI.chkUpdateOnOpen := GUI.AddControl("Checkbox", "chkUpdateOnOpen", "x" PluginGUI.x " y+17", "Update this path each time Accessor opens")
 		GUI.chkUpdateOnOpen.CheckedChanged.Handler := new Delegate(this, "Settings_UpdateOnOpenChanged")
+		GUI.chkUpdateOnOpen.Tooltip := "This option might be desired for the recent docs folder, but it will increase Accessor opening times."
 	}
 	SaveSettings(Settings, GUI, PluginGUI)
 	{
@@ -131,7 +132,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 	}
 	Settings_Browse(Sender)
 	{
-		if(this.SettingsWindow.GUI.ListBox.SelectedIndices.MaxIndex() = 1)
+		if(this.SettingsWindow.GUI.ListBox.SelectedItem)
 		{
 			fd := new CFolderDialog()
 			fd.Title := "Set indexing path"
@@ -144,7 +145,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 	}
 	Settings_DeletePath(Sender)
 	{
-		if(this.SettingsWindow.GUI.ListBox.SelectedIndices.MaxIndex() = 1)
+		if(this.SettingsWindow.GUI.ListBox.SelectedItem)
 		{
 			this.SettingsWindow.Paths.Remove(this.SettingsWindow.GUI.ListBox.SelectedIndex)
 			this.SettingsWindow.GUI.ListBox.Items.Delete(this.SettingsWindow.GUI.ListBox.SelectedIndex)
@@ -263,6 +264,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			this.Paths.Insert(Object("Path", "%StartMenuCommon%", "Extensions", "lnk,exe", "UpdateOnOpen", false))
 			this.Paths.Insert(Object("Path", "%Desktop%", "Extensions", "lnk,exe", "UpdateOnOpen", false))
 			this.Paths.Insert(Object("Path", "%AppData%\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar", "Extensions", "lnk,exe", "UpdateOnOpen", false))
+			this.Paths.Insert(Object("Path", "%UserProfile%\AppData\Roaming\Microsoft\Windows\Recent", "Extensions", "*", "UpdateOnOpen", true))
 			return
 		}
 		
@@ -342,18 +344,22 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 					if(ext = "lnk")
 					{
 						FileGetShortcut, %Command% , ResolvedCommand, , args
-						if(!InStr(ResolvedCommand, A_WinDir "\Installer")) ; Fix for MSI Installer shortcuts which don't resolve to the proper executable
+						; Don't resolve:
+						; - MSI Installer shortcuts which don't resolve to the proper executable
+						; - Network paths which may take too long
+						if(!InStr(ResolvedCommand, A_WinDir "\Installer") && InStr(ResolvedCommand, "\\") != 1)
 						{
 							command := ResolvedCommand
 							
+							;Check the extension again after resolving the link. Make sure no directories are used
 							SplitPath, command,,,ext
-							if(!extList.Contains(ext))
+							if((!extList.Contains(ext) && !extList.Contains("*")) || InStr(FileExist(command),"D"))
 								continue
 							if(!args)
 								SplitPath, command,ExeName ;Executable name
 						}
 					}
-					if(!command)
+					if(!command || InStr(FileExist(command),"D"))
 						continue
 					
 					;Exclude undesired programs (uninstall, setup,...)
