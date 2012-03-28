@@ -3,7 +3,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 	;Register this plugin with the Accessor main object
 	static Type := CAccessor.RegisterPlugin("File System", CFileSystemPlugin)
 	
-	Description := "Browse the file system by typing a path. `nUse Tab for switching through matching entries and enter to enter a folder.`nApplications launched through this method are directly added to the program launcher plugin cache."
+	Description := "Browse the file system by typing a path. Use Tab for switching through matching entries and`nenter to enter a folder. Programs launched with this plugin are added to the program launcher`nplugin cache. If you select a path in another program you can directly open it in Accessor."
 	
 	;List of current icon handles
 	Icons := Array()
@@ -69,7 +69,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		SplitPath, Filter, name, dir,,,drive
 		if((x := InStr(dir, ":") ) != 0 && x != 2) ;Colon may only be drive separator
 			return false
-		return dir != "" && !InStr(Filter, "://") ;Don't match URLs
+		return dir != "" && !InStr(Filter, "://") && InStr(Filter, "HK") != 1 ;Don't match URLs and registry keys
 	}
 	GetDisplayStrings(ListEntry, ByRef Title, ByRef Path, ByRef Detail1, ByRef Detail2)
 	{
@@ -77,6 +77,19 @@ Class CFileSystemPlugin extends CAccessorPlugin
 			Detail1 := "Folder"
 		else
 			Detail1 := "File"
+	}
+	OnOpen(Accessor)
+	{
+		;Automatically open path when a path is selected before Accessor is opened
+		if(Accessor.CurrentSelection && !Accessor.Filter)
+		{
+			Path := ExpandPathPlaceholders(Accessor.CurrentSelection)
+			SplitPath, Path, Name, Dir
+			if(InStr(FileExist(Path), "D"))
+				Accessor.SetFilter(Path (strEndsWith(Path, "\") ? "" : "\"))
+			else if(InStr(FileExist(Dir), "D"))
+				Accessor.SetFilter(Dir (strEndsWith(Dir, "\") ? "" : "\"))
+		}
 	}
 	OnClose(Accessor)
 	{
@@ -100,12 +113,19 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		{
 			if(this.AutocompletionString)
 				name := this.AutocompletionString
-			Loop %dir%\*%name%*, 1, 0
+			Loop %dir%\*%name%*, 2, 0
 			{
-				IsFolder := InStr(FileExist(A_LoopFileFullPath), "D")
+				Result := new this.CResult("Folder")
+				Result.Title := A_LoopFileName
+				Result.Path := A_LoopFileFullPath
+				Result.Icon := Accessor.GenericIcons.Folder
+				Results.Insert(Result)
+			}
+			Loop %dir%\*%name%*, 0, 0
+			{
 				IsExecutable := A_LoopFileExt && InStr("exe,cmd,bat,ahk", A_LoopFileExt)
 				
-				Result := new this.CResult(IsFolder ? "Folder" : (IsExecutable ? "Executable" : "File"))
+				Result := new this.CResult(IsExecutable ? "Executable" : "File")
 				Result.Title := A_LoopFileName
 				Result.Path := A_LoopFileFullPath
 				if(this.Settings.UseIcons)
@@ -115,9 +135,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 				}
 				else
 				{
-					if(IsFolder)
-						hIcon := Accessor.GenericIcons.Folder
-					else if(IsExecutable)
+					if(IsExecutable)
 						hIcon := Accessor.GenericIcons.Application
 					else
 						hIcon := Accessor.GenericIcons.File

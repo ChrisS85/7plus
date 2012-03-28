@@ -305,6 +305,9 @@ Class CAccessor
 		{
 			if(Plugin.Settings.Enabled && SingleContext := ((Plugin.Settings.Keyword && Filter && KeywordSet := InStr(Filter, Plugin.Settings.Keyword " ") = 1) || Plugin.IsInSinglePluginContext(Filter, LastFilter)))
 			{
+				if(KeywordSet && this.CurrentSelection && Filter = Plugin.Settings.Keyword " ")
+					Filter .= this.CurrentSelection
+				outputdebug %filter%
 				this.SingleContext := Plugin.Type
 				Filter := strTrimLeft(Filter, Plugin.Settings.Keyword " ")
 				Result := Plugin.RefreshList(this, Filter, LastFilter, KeywordSet, Parameters)
@@ -410,6 +413,7 @@ Class CAccessor
 		for index, Plugin in this.Plugins
 			Plugin.OnClose(this)
 		this.LastFilter := ""
+		this.Filter := ""
 		this.GUI := ""
 		this.List := ""
 		OnMessage(0x100, this.OldKeyDown) ; Restore previous KeyDown handler
@@ -632,19 +636,6 @@ Class CAccessorGUI extends CGUI
 		this.ListView.ModifyCol(3, 70)
 		this.ListView.ModifyCol(4, "AutoHdr") ; OnTop
 		this.OnMessage(0x06,"WM_ACTIVATE")
-	}
-	
-	CalcWin(msg, wParam,handle,lParam) {
-		outputdebug calcwin
-		return 0
-	}
-
-	WM_NCHITTEST(msg, wParam, lParam, handle)
-	{
-		outputdebug hittest
-		VarSetCapacity(outPointer,1,0)
-		DllCall("Dwmapi.dll\DwmDefWindowProc","UInt",handle,"UInt",msg,"UInt",wParam,"UInt",lParam,"UInt",&outPointer)
-		return,true
 	}
 	SetFilter(Text)
 	{
@@ -976,16 +967,7 @@ Class CAccessorPlugin
 	{
 	}
 }
-CalcWin() {
-return 0
-}
 
-WM_NCHITTEST(wParam, lParam, msg, handle)
-{
-   global
-   DllCall("Dwmapi.dll\DwmDefWindowProc","UInt",handle,"UInt",msg,"UInt",wParam,"UInt",lParam,"UInt",&outPointer)
-   return,true
-}
 #include %A_ScriptDir%\Accessor\CProgramLauncherPlugin.ahk
 #include %A_ScriptDir%\Accessor\CEventPlugin.ahk
 ;~ #include %A_ScriptDir%\Accessor\Calc.ahk
@@ -1000,3 +982,4 @@ WM_NCHITTEST(wParam, lParam, msg, handle)
 #include %A_ScriptDir%\Accessor\CURLPlugin.ahk
 #include %A_ScriptDir%\Accessor\CWeatherPlugin.ahk
 #include %A_ScriptDir%\Accessor\CRunPlugin.ahk
+#include %A_ScriptDir%\Accessor\CRegistryPlugin.ahk

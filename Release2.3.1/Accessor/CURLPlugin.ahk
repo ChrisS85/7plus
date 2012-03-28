@@ -3,7 +3,7 @@ Class CURLPlugin extends CAccessorPlugin
 	;Register this plugin with the Accessor main object
 	static Type := CAccessor.RegisterPlugin("URL", CURLPlugin)
 	
-	Description := "This plugin allows to open URLs in the browser and also has a history function."
+	Description := "This plugin allows to open URLs in the browser and also has a history function.`nSelect a URL in another application, open Accessor and press enter to open that URL."
 	
 	;History containing the recently used URLs
 	History := Array()
@@ -54,6 +54,11 @@ Class CURLPlugin extends CAccessorPlugin
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
 		return IsURL(Filter)
+	}
+	OnOpen(Accessor)
+	{
+		if(!Accessor.Filter && Accessor.CurrentSelection && IsURL(Accessor.CurrentSelection))
+			Accessor.SetFilter(Accessor.CurrentSelection)
 	}
 	OnExit(Accessor)
 	{
