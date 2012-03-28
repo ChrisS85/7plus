@@ -133,7 +133,10 @@ Class CAccessor
 		
 		;Active window for plugins that depend on the context
 		this.PreviousWindow := WinExist("A")
-		
+
+		;Store current selection so it can be inserted into keyword queries
+		this.CurrentSelection := GetSelectedText()
+
 		;Create and show GUI
 		this.GUI := new CAccessorGUI()
 		this.GUI.Show()
@@ -249,6 +252,8 @@ Class CAccessor
 		{
 			if(InStr(Filter, "${1}"))
 				Filter := p1 ;If atleast one placeholder is used, all parameters will be inserted
+
+			UsingPlaceholder := false
 			;Code below treats the ${1}-${10} placeholders that may be used with keywords, e.g. to launch a search engine url with a specific query.
 			for Index2, Parameter in Parameters
 			{
@@ -274,6 +279,9 @@ Class CAccessor
 			}
 			if(UsingPlaceholder)
 				Parameters := Array() ;Clear parameters since they are now integrated in the query
+			;if no parameters are entered after query, lets try to insert the current selection so the user can quickly search for it with a keyword query.
+			else if(InStr(Filter, "${1}") && this.CurrentSelection)
+				Filter := StringReplace(Filter, "${1}", this.CurrentSelection, "ALL")
 		}
 		return Parameters
 	}
@@ -982,7 +990,6 @@ WM_NCHITTEST(wParam, lParam, msg, handle)
 #include %A_ScriptDir%\Accessor\CEventPlugin.ahk
 ;~ #include %A_ScriptDir%\Accessor\Calc.ahk
 #include %A_ScriptDir%\Accessor\CRecentFoldersPlugin.ahk
-;~ #include %A_ScriptDir%\Accessor\FastFolders.ahk
 #include %A_ScriptDir%\Accessor\CFileSystemPlugin.ahk
 ;~ #include %A_ScriptDir%\Accessor\Google.ahk
 ;~ #include %A_ScriptDir%\Accessor\Notepad++.ahk
@@ -991,5 +998,5 @@ WM_NCHITTEST(wParam, lParam, msg, handle)
 #include %A_ScriptDir%\Accessor\CWindowSwitcherPlugin.ahk
 #include %A_ScriptDir%\Accessor\CUninstallPlugin.ahk
 #include %A_ScriptDir%\Accessor\CURLPlugin.ahk
-;~ #include %A_ScriptDir%\Accessor\Weather.ahk
+#include %A_ScriptDir%\Accessor\CWeatherPlugin.ahk
 #include %A_ScriptDir%\Accessor\CRunPlugin.ahk
