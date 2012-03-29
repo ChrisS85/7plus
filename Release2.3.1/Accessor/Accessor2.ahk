@@ -975,7 +975,7 @@ Class CAccessorPlugin
 #include %A_ScriptDir%\Accessor\CFileSystemPlugin.ahk
 ;~ #include %A_ScriptDir%\Accessor\Google.ahk
 ;~ #include %A_ScriptDir%\Accessor\Notepad++.ahk
-;~ #include %A_ScriptDir%\Accessor\Notes.ahk
+#include %A_ScriptDir%\Accessor\CNotePlugin.ahk
 #include %A_ScriptDir%\Accessor\CSciTE4AutoHotkeyPlugin.ahk
 #include %A_ScriptDir%\Accessor\CWindowSwitcherPlugin.ahk
 #include %A_ScriptDir%\Accessor\CUninstallPlugin.ahk
