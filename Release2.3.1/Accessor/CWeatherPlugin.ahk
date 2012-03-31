@@ -18,7 +18,7 @@ Class CWeatherPlugin extends CAccessorPlugin
 	{
 		Class CActions extends CArray
 		{
-			DefaultAction := CAccessorPlugin.CActions.Copy
+			DefaultAction := new CAccessor.CAction("Copy`tCTRL + C", "Copy", "", true, false)
 			__new()
 			{
 			}
@@ -71,7 +71,6 @@ Class CWeatherPlugin extends CAccessorPlugin
 	Copy(Accessor, ListEntry)
 	{
 		Clipboard := ListEntry.Title
-		return true
 	}
 	OnFilterChanged(ListEntry, Filter, LastFilter)
 	{

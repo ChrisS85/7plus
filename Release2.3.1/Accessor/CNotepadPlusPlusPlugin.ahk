@@ -8,7 +8,10 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 	MRUList := Array()
 	
 	WindowClassName := "Notepad++"
-
+	
+	;This plugin is not listed by the history plugin because the results may not be valid anymore.
+	SaveHistory := false
+	
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "np"
@@ -21,7 +24,7 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 	{
 		Class CActions extends CArray
 		{
-			DefaultAction := new CAccessor.CAction("Activate Tab", "ActivateTab")
+			DefaultAction := new CAccessor.CAction("Activate Tab", "ActivateTab", "", true, false)
 			__new()
 			{
 				this.Insert(CAccessorPlugin.CActions.Run)
@@ -180,8 +183,6 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 			this.ActivateNotepadPlusPlusTab(this.List2.indexOf(ListEntry.Path), 2)
 		else
 			this.ActivateNotepadPlusPlusTab(this.List1.indexOf(ListEntry.Path), 1)
-
-		return
 	}
 	
 	ActivateNotepadPlusPlusTab(Index, View = 1)

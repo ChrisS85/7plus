@@ -22,15 +22,12 @@ Class CRunPlugin extends CAccessorPlugin
 			}
 		}
 		Type := "Run"
+		Detail1 := "Run command"
 		Actions := new this.CActions()
 	}
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
 		return false
-	}
-	GetDisplayStrings(ListEntry, ByRef Title, ByRef Path, ByRef Detail1, ByRef Detail2)
-	{
-		Detail1 := "Run command"
 	}
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
@@ -38,7 +35,6 @@ Class CRunPlugin extends CAccessorPlugin
 		Result := new this.CResult()
 		Result.Title := Filter
 		Result.Path := Filter
-		outputdebug % isobject(Accessor.GenericIcons)
 		Result.Icon := Accessor.GenericIcons.Application
 		Results.Insert(Result)
 		return Results

@@ -8,11 +8,14 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 	;List of windows that are open when accessor is opened.
 	List := Array()
 	
+	;This plugin is not listed in the history plugin because the single entries may not be valid anymore.
+	SaveHistory := false
+
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "switch"
 		KeywordOnly := false
-		MinChars := 0
+		MinChars := 2
 		IgnoreFileExtensions := true
 		FuzzySearch := false
 	}
@@ -20,16 +23,16 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 	{
 		Class CActions extends CArray
 		{
-			DefaultAction := new CAccessor.CAction("Activate", "ActivateWindow")
+			DefaultAction := new CAccessor.CAction("Activate", "ActivateWindow", "", true, false)
 			__new()
 			{
-				this.Insert(new CAccessor.CAction("End process", "EndProcess"))
-				this.Insert(new CAccessor.CAction("Close window", "CloseWindow"))
+				this.Insert(new CAccessor.CAction("End process", "EndProcess", "", false, false))
+				this.Insert(new CAccessor.CAction("Close window", "CloseWindow", "", false, false))
 				this.Insert(CAccessorPlugin.CActions.OpenExplorer)
 				this.Insert(CAccessorPlugin.CActions.OpenCMD)
 				this.Insert(CAccessorPlugin.CActions.Copy)
 				this.Insert(CAccessorPlugin.CActions.ExplorerContextMenu)
-				this.Insert(new CAccessor.CAction("Toggle Always On Top", "ToggleOnTop"))
+				this.Insert(new CAccessor.CAction("Toggle Always On Top", "ToggleOnTop", "", false, false))
 			}
 		}
 		Type := "Window switcher"

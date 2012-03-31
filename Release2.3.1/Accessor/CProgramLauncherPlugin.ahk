@@ -173,9 +173,6 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 				this.RefreshCache(ListEntry)
 		}
 	}
-	OnClose(Accessor)
-	{
-	}
 	OnExit(Accessor)
 	{
 		for index, ListEntry in this.List

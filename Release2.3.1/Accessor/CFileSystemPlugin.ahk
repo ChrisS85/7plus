@@ -43,7 +43,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		}
 		Class CFolderActions extends CArray
 		{
-			DefaultAction := new CAccessor.CAction("Enter folder", "EnterDirectory")
+			DefaultAction := new CAccessor.CAction("Enter folder", "EnterDirectory", "", false, false)
 			__new()
 			{
 				this.Insert(CAccessorPlugin.CActions.OpenExplorer)
@@ -156,7 +156,6 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		this.AutoCompletionString := ""
 		if(InStr(FileExist(ListEntry.Path),"D"))
 			Accessor.SetFilter(ListEntry.Path "\")
-		return 1
 	}
 	OnTab()
 	{

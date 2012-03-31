@@ -18,7 +18,7 @@ Class CCalculatorPlugin extends CAccessorPlugin
 	{
 		Class CActions extends CArray
 		{
-			DefaultAction := new CAccessor.CAction("Copy Result", "Copy")
+			DefaultAction := new CAccessor.CAction("Copy Result`tCTRL + C", "Copy")
 			__new()
 			{
 			}

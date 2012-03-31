@@ -42,14 +42,20 @@ Class CAccessor
 		}
 	}
 	;An action that can be performed on an Accessor result
-	Class CAction
+	Class CAction extends CRichObject
 	{
-		;Name: Appears in context menus and on the OK button. Function: Called to carry out the action. Condition: Called to check if this action is valid in the current context. Supports Delegates
-		__new(Name, Function, Condition = "")
+		; Name: Appears in context menus and on the OK button.
+		; Function: Called to carry out the action. 
+		; Condition: Called to check if this action is valid in the current context. Supports Delegates
+		; SaveHistory: If true, the result will be saved in the history when this action is performed.
+		; Close: If true, Accessor will be closed after this action is performed.
+		__new(Name, Function, Condition = "", SaveHistory = true, Close = true)
 		{
 			this.Name := Name
 			this.Function := Function
 			this.Condition := Condition
+			this.SaveHistory := SaveHistory
+			this.Close := Close
 		}
 	}
 	__new()
@@ -460,15 +466,19 @@ Class CAccessor
 			Plugin := this.Plugins.GetItemWithValue("Type", ListEntry.Type)
 			if(Action && (IsFunc(Plugin[Action.Function]) || IsFunc(this[Action.Function])))
 			{
+				;Call PreExecute function to notify plugins of execution
+				for index, p in this.Plugins
+					p.OnPreExecute(this, ListEntry, Action, Plugin)
+				;Update filter history
 				this.History.Insert(2, this.Filter)
 				while(this.History.MaxIndex() > 10)
 					this.History.Delete(11)
 				if(IsFunc(Plugin[Action.Function]))
-					KeepAccessorOpen := Plugin[Action.Function](this, ListEntry)
+					Plugin[Action.Function](this, ListEntry)
 				else if(IsFunc(this[Action.Function]))
-					KeepAccessorOpen := this[Action.Function](ListEntry, this.Plugins.GetItemWithValue("Type", ListEntry.Type))
+					this[Action.Function](ListEntry, this.Plugins.GetItemWithValue("Type", ListEntry.Type))
 				
-				if(!KeepAccessorOpen && this.GUI)
+				if(Action.Close && this.GUI)
 					this.GUI.Close()
 			}
 		}
@@ -499,7 +509,7 @@ Class CAccessor
 	HasAction(Action)
 	{
 		if(IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]))
-			return ListEntry.Actions.DefaultAction = Action || ListEntry.Actions.Contains(Action)
+			return ListEntry.Actions.DefaultAction.Function = Action.Function || ListEntry.Actions.FindKeyWithValue("Function", Action.Function)
 	}
 	;Runs the selected entry as command and possibly caches it in program launcher plugin
 	Run(ListEntry, Plugin)
@@ -548,7 +558,6 @@ Class CAccessor
 	Copy(ListEntry, Plugin, Field = "Path")
 	{
 		Clipboard := ListEntry[Field]
-		return 1
 	}
 	
 	OpenExplorer(ListEntry, Plugin)
@@ -573,18 +582,12 @@ Class CAccessor
 	ExplorerContextMenu(ListEntry, Plugin)
 	{
 		if(ListEntry.Path)
-		{
 			ShellContextMenu(ListEntry.Path)
-			return 1
-		}
 	}
 	OpenPathWithAccessor(ListEntry, Plugin)
 	{
 		if(ListEntry.Path)
-		{
 			this.SetFilter(ListEntry.Path (strEndsWith(ListEntry.Path, "\") ? "" : "\"))
-			return 1
-		}
 	}
 }
 AccessorContextMenu:
@@ -859,6 +862,11 @@ Class CAccessorPlugin
 	Settings := new this.CSettings()
 	Description := "No description here, move along"
 	
+	;The plugin can set if it can be listed by the Accessor history plugin.
+	;If the single results from this plugin depend on outer circumstances, such as the existence of a window, it should not be listed
+	;since the result may have become invalid.
+	SaveHistory := true
+	
 	;This class contains settings for an Accessor plugin. The values shown here are required for all plugins!
 	;Commented values can be read-only.
 	Class CSettings extends CRichObject
@@ -912,15 +920,18 @@ Class CAccessorPlugin
 		static Run := new CAccessor.CAction("Run", "Run")
 		static RunAsAdmin := new CAccessor.CAction("Run as admin", "RunAsAdmin")
 		static RunWithArgs := new CAccessor.CAction("Run with arguments", "RunWithArgs")
-		static Copy := new CAccessor.CAction("Copy path`tCTRL + C", "Copy")
+		static Copy := new CAccessor.CAction("Copy path`tCTRL + C", "Copy", "", false, false)
 		static OpenExplorer := new CAccessor.CAction("Open in Explorer`tCTRL + E", "OpenExplorer")
 		static OpenCMD := new CAccessor.CAction("Open in CMD", "OpenCMD")
-		static ExplorerContextMenu := new CAccessor.CAction("Explorer context menu", "ExplorerContextMenu")
-		static OpenPathWithAccessor := new CAccessor.CAction("Open path with Accessor`tCTRL + F", "OpenPathWithAccessor")
+		static ExplorerContextMenu := new CAccessor.CAction("Explorer context menu", "ExplorerContextMenu", "", false)
+		static OpenPathWithAccessor := new CAccessor.CAction("Open path with Accessor`tCTRL + F", "OpenPathWithAccessor", "", false)
 	}
 	
-	;An object representing a result of an Accessor query
-	Class CResult
+	;An object representing a result of an Accessor query.
+	; IMPORTANT: All plugins need to only rely on the contents of a result object to perform their actions.
+	;            They must not store temporary data in the plugin object that is needed to perform an action.
+	;            This is because of the Accessor History plugin that creates copies of results and shows them when the original plugin may not be aware of it.
+	Class CResult extends CRichObject
 	{
 		;The array contains all possible actions on this result (of type CAccessor.CAction).
 		;It needs to have a DefaultAction member which is not included in the array itself.
@@ -999,6 +1010,7 @@ Class CAccessorPlugin
 #include %A_ScriptDir%\Accessor\CWeatherPlugin.ahk
 #include %A_ScriptDir%\Accessor\CRunPlugin.ahk
 #include %A_ScriptDir%\Accessor\CRegistryPlugin.ahk
+#include %A_ScriptDir%\Accessor\CAccessorHistoryPlugin.ahk ;This should be included last, so it will only show on Accessor opening when other plugins don't show things
 
 /*
 Future plugins:

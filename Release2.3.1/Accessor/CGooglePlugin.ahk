@@ -21,7 +21,7 @@ Class CGooglePlugin extends CAccessorPlugin
 			DefaultAction := new CAccessor.CAction("Open URL", "OpenURL")
 			__new()
 			{
-				this.Insert(new CAccessor.CAction("Copy URL", "Copy"))
+				this.Insert(new CAccessor.CAction("Copy URL`tCTRL + C", "Copy", "", false, false))
 			}
 		}
 		Type := "Google"
@@ -71,7 +71,6 @@ Class CGooglePlugin extends CAccessorPlugin
 	Copy(Accessor, ListEntry)
 	{
 		Clipboard := ListEntry.URL
-		return true
 	}
 	OnFilterChanged(ListEntry, Filter, LastFilter)
 	{

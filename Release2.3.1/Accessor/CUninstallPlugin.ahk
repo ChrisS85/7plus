@@ -8,6 +8,9 @@ Class CUninstallPlugin extends CAccessorPlugin
 	;List containing the uninstallation entries
 	List := Array()
 	
+	;This plugin is not listed by the history plugin because the results may not be valid anymore.
+	SaveHistory := false
+	
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "Uninstall"
@@ -19,13 +22,13 @@ Class CUninstallPlugin extends CAccessorPlugin
 	{
 		Class CActions extends CArray
 		{
-			DefaultAction := new CAccessor.CAction("Uninstall", "Uninstall")
+			DefaultAction := new CAccessor.CAction("Uninstall", "Uninstall", "", true, false)
 			__new()
 			{
-				this.Insert(new CAccessor.CAction("Remove entry", "RemoveUninstallEntry"))
-				this.Insert(new CAccessor.CAction("Open installation path in explorer", "OpenExplorer", new Delegate(this, "HasInstallLocation")))
-				this.Insert(new CAccessor.CAction("Open installation path in CMD", "OpenCMD", new Delegate(this, "HasInstallLocation")))
-				this.Insert(new CAccessor.CAction("Copy installation path", "Copy", new Delegate(this, "HasInstallLocation")))
+				this.Insert(new CAccessor.CAction("Remove entry", "RemoveUninstallEntry", "", false, false))
+				this.Insert(new CAccessor.CAction("Open installation path in explorer`tCTRL + E", "OpenExplorer", new Delegate(this, "HasInstallLocation"), true, false))
+				this.Insert(new CAccessor.CAction("Open installation path in CMD", "OpenCMD", new Delegate(this, "HasInstallLocation"), true, false))
+				this.Insert(new CAccessor.CAction("Copy installation path`tCTRL + C", "Copy", new Delegate(this, "HasInstallLocation"), false, false))
 			}
 			HasInstallLocation(ListEntry)
 			{
@@ -104,10 +107,15 @@ Class CUninstallPlugin extends CAccessorPlugin
 	{
 		Run(ListEntry.UninstallString)
 	}
+
 	RemoveUninstallEntry(Accessor, ListEntry)
 	{
 		RegDelete, HKLM, % "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\" ListEntry.GUID
-		this.List.Remove(this.List.FindKeyWithValue("GUID", ListEntry.GUID))
-		Accessor.RefreshList()
+		key := this.List.FindKeyWithValue("GUID", ListEntry.GUID)
+		if(key)
+		{
+			this.List.Remove(key)
+			Accessor.RefreshList()
+		}
 	}
 }

@@ -1589,3 +1589,9 @@ SetTimerF( Function, Period=0, ParmObject=0, Priority=0 ) {
             ,((A_TickCount-tmr.Tick) > tmr.Period) ? 0 : (tmr.Period-(A_TickCount-tmr.Tick)), UInt,tmr.CBA)
  }
 }
+
+;Duplicates an icon. The copy needs to be deleted with DestroyIcon.
+DuplicateIcon(hIcon)
+{
+	return DllCall("Shell32.dll\DuplicateIcon", "PTR", 0, "Ptr", hIcon, "PTR")
+}

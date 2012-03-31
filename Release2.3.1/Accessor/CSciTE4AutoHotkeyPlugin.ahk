@@ -7,6 +7,11 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 		
 	MRUList := Array()
 	
+	WindowClassName := "SciTEWindow"
+	
+	;This plugin is not listed by the history plugin because the results may not be valid anymore.
+	SaveHistory := false
+	
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "sc"
@@ -19,7 +24,7 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 	{
 		Class CActions extends CArray
 		{
-			DefaultAction := new CAccessor.CAction("Activate Tab", "ActivateTab")
+			DefaultAction := new CAccessor.CAction("Activate Tab", "ActivateTab", "", true, false)
 			__new()
 			{
 				this.Insert(CAccessorPlugin.CActions.Run)
@@ -64,7 +69,7 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 				this.Icon := ExtractIcon(path, 1, 64)
 		}
 		;if SciTEWindow is open and there is an entry with the last used command for the current tab, put it in edit box
-		if(WinExist("ahk_class SciTEWindow") = Accessor.PreviousWindow)
+		if(WinExist("ahk_class " this.WindowClassName) = Accessor.PreviousWindow)
 		{
 			this.Priority := 10000
 			if(index := this.MRUList.FindKeyWithValue("Path", Path := this.GetSciTE4AutoHotkeyActiveTab()))
@@ -96,7 +101,7 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 	}
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
-		if(!WinActive("ahk_class SciTEWindow") && strLen(Filter) < 2 && !KeywordSet)
+		if(!WinActive("ahk_class " this.WindowClassName) && strLen(Filter) < 2 && !KeywordSet)
 			return
 		if(!this.List1.MaxIndex())
 			return
@@ -148,7 +153,7 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 	;Functions specific to this plugin:
 	ActivateTab(Accessor, ListEntry)
 	{
-		if(WinExist("ahk_class SciTEWindow") = Accessor.PreviousWindow)
+		if(WinExist("ahk_class " this.WindowClassName) = Accessor.PreviousWindow)
 		{
 			if(Accessor.Filter)
 			{
@@ -164,25 +169,23 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 				Msgbox Filter not found!
 		}
 		this.ActivateSciTE4AutoHotkeyTab(this.List1.indexOf(ListEntry.Path))
-		return
 	}
 	
 	ActivateSciTE4AutoHotkeyTab(Index)
 	{
-		hwnd := WinExist("ahk_class SciTEWindow")
-		if(!hwnd)
-			return
 		scite := ComObjActive("SciTE4AHK.Application")
-		scite.SwitchToTab(Index - 1) ; the index is zero-based
-		WinActivate, % "ahk_id " scite.SciTEHandle
+		if(scite)
+		{
+			scite.SwitchToTab(Index - 1) ; the index is zero-based
+			WinActivate, % "ahk_id " scite.SciTEHandle
+		}
 	}
 	GetListOfOpenSciTE4AutoHotkeyTabs()
 	{
-		hwnd := WinExist("ahk_class SciTEWindow")
-		if(!hwnd) ;SciTEWindow not running, empty list
+		scite := ComObjActive("SciTE4AHK.Application")
+		if(!scite) ;SciTE not running, empty list
 			return Array()
 		list := Array()
-		scite := ComObjActive("SciTE4AHK.Application")
 		tabs := scite.Tabs.Array 
 		; tabs is a SafeArray containing the file names 
 		Loop, % scite.tabs.Count
@@ -191,7 +194,7 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 	}
 	GetSciTE4AutoHotkeyPath()
 	{
-		hwnd := WinExist("ahk_class SciTEWindow")
+		hwnd := WinExist("ahk_class " this.WindowClassName)
 		if(!hwnd)
 			return ""
 		WinGet, pid, PID, ahk_id %hwnd%
@@ -199,11 +202,10 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 		return Path
 	}
 	GetSciTE4AutoHotkeyActiveTab()
-	{
-		hwnd := WinExist("ahk_class SciTEWindow")
-		if(!hwnd)
-			return ""		
+	{		
 		scite := ComObjActive("SciTE4AHK.Application")
+		if(!scite)
+			return ""
 		return scite.CurrentFile
 	}
 }

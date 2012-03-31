@@ -47,9 +47,6 @@ Class CRegistryPlugin extends CAccessorPlugin
 		}
 		return Results
 	}
-	ShowSettings(PluginSettings, Accessor, PluginGUI)
-	{
-	}
 	OpenKey(Accessor, ListEntry)
 	{
 		if(ListEntry.Title)
@@ -60,7 +57,6 @@ Class CRegistryPlugin extends CAccessorPlugin
 			RegWrite, Reg_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Applets\Regedit, LastKey, % "Computer\" Path
 			run RegEdit,, UseErrorLevel
 		}
-		return
 	}
 }
 ;Determines if a string is a registry key. Returns the full length version of it if it is.

@@ -10,6 +10,9 @@ Class CNotesPlugin extends CAccessorPlugin
 
 	Icon := ExtractIcon("shell32.dll", 115, 64)
 
+	;This plugin is not listed by the history plugin
+	SaveHistory := false
+	
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "Note"
@@ -21,13 +24,13 @@ Class CNotesPlugin extends CAccessorPlugin
 	{
 		Class CActions extends CArray
 		{
-			DefaultAction := new CAccessor.CAction("Copy note", "Copy")
+			DefaultAction := new CAccessor.CAction("Copy note", "Copy", "", true, false)
 			__new(NewNote = false)
 			{
 				if(NewNote)
-					this.DefaultAction := new CAccessor.CAction("Create note", "CreateNote")
+					this.DefaultAction := new CAccessor.CAction("Create note", "CreateNote", "", false, false)
 				else
-					this.Insert(new CAccessor.CAction("Delete note", "DeleteNote"))
+					this.Insert(new CAccessor.CAction("Delete note", "DeleteNote", "", false, false))
 			}
 		}
 		Type := "Notes"
@@ -101,7 +104,6 @@ Class CNotesPlugin extends CAccessorPlugin
 			this.List.Insert(Object("Text", ListEntry.Path))
 			Accessor.RefreshList()
 		}
-		return true
 	}
 	DeleteNote(Accessor, ListEntry)
 	{
@@ -110,6 +112,5 @@ Class CNotesPlugin extends CAccessorPlugin
 			this.List.Remove(ListEntry.ID)
 			Accessor.RefreshList()
 		}
-		return true
 	}
 }

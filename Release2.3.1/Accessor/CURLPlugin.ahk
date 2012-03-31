@@ -24,8 +24,8 @@ Class CURLPlugin extends CAccessorPlugin
 			DefaultAction := new CAccessor.CAction("Open URL", "OpenURL")
 			__new()
 			{
-				this.Insert(new CAccessor.CAction("Clear URL history", "ClearHistory"))
-				this.Insert(new CAccessor.CAction("Remove from history", "RemoveHistoryEntry", new Delegate(this, "IsHistory")))
+				this.Insert(new CAccessor.CAction("Clear URL history", "ClearHistory", "", false, false))
+				this.Insert(new CAccessor.CAction("Remove from history", "RemoveHistoryEntry", new Delegate(this, "IsHistory"), "", false, false))
 			}
 			IsHistory(ListEntry)
 			{
@@ -118,7 +118,6 @@ Class CURLPlugin extends CAccessorPlugin
 			url := (!InStr(ListEntry.Title, "://") ? "http://" : "") ListEntry.Title
 			run %url%,, UseErrorLevel
 		}
-		return
 	}
 	ClearHistory(Accessor, ListEntry)
 	{
