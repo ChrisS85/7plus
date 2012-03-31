@@ -245,7 +245,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 	{
 		if(!ListEntry.Path)
 			return
-		if(this.List.FindKeyWithValue("Command",ListEntry.Path) = 0)
+		if(!this.List.FindKeyWithValue("Command",ListEntry.Path))
 		{
 			path := ListEntry.Path
 			SplitPath, path, name
@@ -353,7 +353,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 							
 							;Check the extension again after resolving the link. Make sure no directories are used
 							SplitPath, command,,,ext
-							if((!extList.Contains(ext) && !extList.Contains("*")) || InStr(FileExist(command),"D"))
+							if((!extList.Contains(ext) && !extList.Contains("*")))
 								continue
 							if(!args)
 								SplitPath, command,ExeName ;Executable name

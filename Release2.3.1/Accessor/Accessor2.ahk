@@ -495,6 +495,12 @@ Class CAccessor
 				Menu, AccessorContextMenu, Show
 		}
 	}
+	;Checks if the selected result has a specific action
+	HasAction(Action)
+	{
+		if(IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]))
+			return ListEntry.Actions.DefaultAction = Action || ListEntry.Actions.Contains(Action)
+	}
 	;Runs the selected entry as command and possibly caches it in program launcher plugin
 	Run(ListEntry, Plugin)
 	{
@@ -752,16 +758,27 @@ PostMessage, 0x100, 0x5D, 0,, % "ahk_id " CAccessor.Instance.GUI.ListView.hwnd
 return
 #if
 
-#if CAccessor.Instance.GUI && (!CAccessor.Instance.SingleContext || !CAccessor.Plugins.GetItemWithValue("Type", CAccessor.Instance.SingleContext).HandlesEnter)
-Enter::
-NumpadEnter::
-CAccessor.Instance.PerformAction()
+;#if CAccessor.Instance.GUI && (!CAccessor.Instance.SingleContext || !CAccessor.Plugins.GetItemWithValue("Type", CAccessor.Instance.SingleContext).HandlesEnter)
+;Enter::
+;NumpadEnter::
+;CAccessor.Instance.PerformAction()
+;return
+;#if
+
+
+#if (CAccessor.Instance.GUI && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenExplorer))
+^e::
+CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.OpenExplorer)
 return
 #if
-
+#if (CAccessor.Instance.GUI && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenPathWithAccessor))
+^f::
+CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.OpenPathWithAccessor)
+return
+#if
 #if CAccessor.Instance.GUI && !Edit_TextIsSelected("", "ahk_id " CAccessor.Instance.GUI.EditControl.hwnd)
 ^c::
-CAccessor.Instance.PerformAction(CAccessor.CActions.Copy)
+CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.Copy)
 return
 #if
 
@@ -830,7 +847,6 @@ Class CAccessorPluginSettingsWindow extends CGUI
 		run % "http://code.google.com/p/7plus/wiki/docsAccessor" this.Plugin.Type ",,UseErrorLevel"
 	}
 }
-
 Class CAccessorPlugin
 {
 	;Register this plugin with the Accessor main object
@@ -896,11 +912,11 @@ Class CAccessorPlugin
 		static Run := new CAccessor.CAction("Run", "Run")
 		static RunAsAdmin := new CAccessor.CAction("Run as admin", "RunAsAdmin")
 		static RunWithArgs := new CAccessor.CAction("Run with arguments", "RunWithArgs")
-		static Copy := new CAccessor.CAction("Copy path", "Copy")
-		static OpenExplorer := new CAccessor.CAction("Open in Explorer", "OpenExplorer")
+		static Copy := new CAccessor.CAction("Copy path`tCTRL + C", "Copy")
+		static OpenExplorer := new CAccessor.CAction("Open in Explorer`tCTRL + E", "OpenExplorer")
 		static OpenCMD := new CAccessor.CAction("Open in CMD", "OpenCMD")
 		static ExplorerContextMenu := new CAccessor.CAction("Explorer context menu", "ExplorerContextMenu")
-		static OpenPathWithAccessor := new CAccessor.CAction("Open path with Accessor", "OpenPathWithAccessor")
+		static OpenPathWithAccessor := new CAccessor.CAction("Open path with Accessor`tCTRL + F", "OpenPathWithAccessor")
 	}
 	
 	;An object representing a result of an Accessor query
@@ -983,3 +999,13 @@ Class CAccessorPlugin
 #include %A_ScriptDir%\Accessor\CWeatherPlugin.ahk
 #include %A_ScriptDir%\Accessor\CRunPlugin.ahk
 #include %A_ScriptDir%\Accessor\CRegistryPlugin.ahk
+
+/*
+Future plugins:
+Services
+Processes
+Accessor History
+twitter
+
+"Open with" setting for program launcher
+*/
