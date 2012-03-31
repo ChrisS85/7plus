@@ -986,11 +986,11 @@ Class CAccessorPlugin
 
 #include %A_ScriptDir%\Accessor\CProgramLauncherPlugin.ahk
 #include %A_ScriptDir%\Accessor\CEventPlugin.ahk
-;~ #include %A_ScriptDir%\Accessor\Calc.ahk
+#include %A_ScriptDir%\Accessor\CCalculatorPlugin.ahk
 #include %A_ScriptDir%\Accessor\CRecentFoldersPlugin.ahk
 #include %A_ScriptDir%\Accessor\CFileSystemPlugin.ahk
 #include %A_ScriptDir%\Accessor\CGooglePlugin.ahk
-;~ #include %A_ScriptDir%\Accessor\Notepad++.ahk
+#include %A_ScriptDir%\Accessor\CNotepadPlusPlusPlugin.ahk
 #include %A_ScriptDir%\Accessor\CNotePlugin.ahk
 #include %A_ScriptDir%\Accessor\CSciTE4AutoHotkeyPlugin.ahk
 #include %A_ScriptDir%\Accessor\CWindowSwitcherPlugin.ahk

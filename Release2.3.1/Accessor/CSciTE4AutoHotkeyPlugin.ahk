@@ -88,7 +88,8 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 	}
 	OnExit(Accessor)
 	{
-		DestroyIcon(this.Icon)
+		if(this.Icon)
+			DestroyIcon(this.Icon)
 		;If the SciTE4AutoHotkey COM object was registered temporarily by 7plus, it needs to be deregistered on exit.
 		if(!this.IsRegistered)
 			RegDelete, HKCR, Scite4AHK.Application
@@ -100,7 +101,6 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 		if(!this.List1.MaxIndex())
 			return
 		Results := Array()
-		Actions := 
 		if(!Filter && KeywordSet)
 		{
 			for index, Path in this.List1
@@ -126,7 +126,7 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 				GoSub S4AHK_CreateResult
 				InStrList.Insert(Result)
 			}
-			else if(SciTE4AutoHotkey.Settings.FuzzySearch && FuzzySearch(Name,Filter) < 0.3)
+			else if(this.Settings.FuzzySearch && FuzzySearch(Name,Filter) < 0.3)
 			{
 				GoSub S4AHK_CreateResult
 				FuzzyList.Insert(Result)
