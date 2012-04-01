@@ -1,6 +1,7 @@
-= 7plus Version 2.5.0 Changelog =
+= 7plus Version 2.6.0 Changelog =
 New Functions:
  * Complete rewrite of the Accessor launcher and its plugins. See below for details.
+ * Added Explorer path history and frequent paths to the clipboard manager menu.
 
 Accessor:
  * Accessor has been rewritten from scratch and is now much more modular and powerful. All of its plugins were also rewritten and improved. There are also some new ones. Here's an excerpt of the most important new things:
@@ -12,8 +13,11 @@ Accessor:
   * The URL plugin can now read and access bookmarks of Opera, Chrome and IE.
   * Various hotkeys and additional actions have been added for the plugins. As an example, results that are folders can now be opened directly in the file system plugin by pressing CTRL + F while the result is selected.
   * Some new settings to control the behavior and appearance, including support for Aero window style.
+
 Bugfixes:
+Added a bug which caused flashing of file dialog close box while mouse was over it.
 
 Changes:
+Rewrote navigation code that sets/gets paths/selections in explorer, file dialogs, CMD, Desktop etc.
 
 If you like this program and want to support its development, please consider donating!
