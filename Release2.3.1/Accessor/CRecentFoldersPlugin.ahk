@@ -35,6 +35,12 @@ Class CRecentFoldersPlugin extends CAccessorPlugin
 	{
 		return false
 	}
+	ShowSettings(Settings, GUI, PluginGUI)
+	{
+		AddControl(Settings, PluginGUI, "Checkbox", "UseHistory", "Use directory history")
+		AddControl(Settings, PluginGUI, "Checkbox", "UseFrequent", "Use frequent directories")
+		AddControl(Settings, PluginGUI, "Checkbox", "UseFastFolders", "Use directories from Fast Folders")
+	}
 	OnOpen(Accessor)
 	{
 		if(Navigation.FindNavigationSource(Accessor.PreviousWindow, "SetPath"))

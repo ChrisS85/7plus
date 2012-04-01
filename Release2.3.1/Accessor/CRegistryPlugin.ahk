@@ -10,6 +10,7 @@ Class CRegistryPlugin extends CAccessorPlugin
 		Keyword := "reg"
 		KeywordOnly := true
 		MinChars := 4
+		CloseRegedit := true
 	}
 	Class CResult extends CAccessorPlugin.CResult
 	{
@@ -32,6 +33,10 @@ Class CRegistryPlugin extends CAccessorPlugin
 		if(!Accessor.Filter && Accessor.CurrentSelection && IsRegKey(Accessor.CurrentSelection))
 			Accessor.SetFilter(Accessor.CurrentSelection)
 	}
+	ShowSettings(Settings, GUI, PluginGUI)
+	{
+		AddControl(Settings, PluginGUI, "Checkbox", "CloseRegedit", "Close open Regedit windows when opening key (recommended)", "", "", "", "", "", "", "This is suggested since there might be problems`n to open the correct key when Regedit is already running.")
+	}
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		Results := Array()
@@ -51,6 +56,8 @@ Class CRegistryPlugin extends CAccessorPlugin
 	{
 		if(ListEntry.Title)
 		{
+			while(this.Settings.CloseRegedit && hwnd := WinExist("ahk_class RegEdit_RegEdit"))
+				WinClose, ahk_id %hwnd%
 			Path := ListEntry.Title
 			Name := ""
 			RegistryKeyType(Path, Name, Path)

@@ -15,7 +15,10 @@ Class CAccessorHistoryPlugin extends CAccessorPlugin
 		MaxEntries := 100
 		MinChars := 0 ;This is actually 2, but not when Notepad++ is active
 	}
-	
+	ShowSettings(Settings, GUI, PluginGUI)
+	{
+		AddControl(Settings, PluginGUI, "UpDown", "MaxEntries", "3-1000", "", "History length:", "", "", "", "", "The number of history entries to keep.")
+	}
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
 	}

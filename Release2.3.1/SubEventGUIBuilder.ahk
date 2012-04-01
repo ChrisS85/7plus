@@ -34,6 +34,22 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 		if(Tooltip)
 			AddToolTIp(Text_%name%, Tooltip)
 	}
+	else if(type = "UpDown")
+	{
+		y += 1
+		options := "x" x " y" y " w" w " hwndEdit_" name " -Multi R1 Number"
+		options .= InStr(name, "password") ? " Password" : ""
+		Gui, Add, Edit, %options% , % ValueObj[name]
+		Gui, Add, UpDown, % "hwndUpDown_" name (text ? " Range" text : ""), % ValueObj[name]
+		y -= 1
+		y += 30
+		if(GUI.HasKey("Edit_" name))
+			Msgbox Subevent GUI control already exists: %name%
+		GUI["Edit_" name] := hwnd := Edit_%name%
+		GUI["UpDown_" name] := hwnd := UpDown_%name%
+		if(Tooltip)
+			AddToolTIp(Edit_%name%, Tooltip)
+	}
 	else if(type = "Checkbox")
 	{
 		if(ValueObj[name] = 1)
@@ -79,7 +95,7 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 	else if(type = "DropDownList" || type = "ComboBox")
 	{
 		;Select event dropdownlist. This only works while the settings window is open.
-		if(strStartsWith(text, "TriggerType:"))
+		if(InStr(text, "TriggerType:") = 1)
 		{
 			Triggertype := SubStr(text, 13)
 			text := ""
@@ -131,7 +147,6 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 	else if(type = "Time")
 	{
 		text := ValueObj[name]
-		outputdebug time %text%
 		Gui, Add, DateTime, x%x% y%y% hwndTime_%name% Choose20100101%text%, Time
 		y += 30		
 		if(GUI.HasKey("Time_" name))
@@ -171,52 +186,47 @@ SubmitControls(ValueObj, GUI)
 	enum := GUI._newEnum()
 	while enum[key,value]
 	{
-		if(strStartsWith(key, "Desc_") || strStartsWith(key, "Text_") || strStartsWith(key, "Button"))
-		{
+		if(InStr(key, "Desc_") = 1 || InStr(key, "Text_") = 1 || InStr(key, "Button") = 1)
 			WinKill, ahk_id %value%
-		}
-		else if(strStartsWith(key, "Check_"))
+		else if(InStr(key, "Check_") = 1)
 		{
 			name := SubStr(key,7)
 			ControlGet, Checked, Checked, , ,ahk_id %value%
 			ValueObj[name] := Checked
-			outputdebug save %name% %checked%
 			WinKill, ahk_id %value%
 		}
-		else if(strStartsWith(key, "Edit_"))
+		else if(InStr(key, "Edit_") = 1)
 		{
 			name := SubStr(key, 6)
+			if(GUI.HasKey("UpDown_" name))
+				WinKill, % "ahk_id " GUI["UpDown_" name]
 			ControlGetText, text, , ahk_id %value%
 			ValueObj[name] := text
-			outputdebug save %name% %text%
 			WinKill, ahk_id %value%
 		}
-		else if(strStartsWith(key, "DropDown_"))
+		else if(InStr(key, "DropDown_") = 1)
 		{
 			name := SubStr(key, 10)
 			ControlGetText, text, , ahk_id %value%
 			if(InStr(text, ": ")) ;If the selection starts with "\d+: " or similar, (\d+) is returned instead
 				text := SubStr(text, 1, InStr(text, ": ") - 1)
-			outputdebug save %name% %text%
 			ValueObj[name] := text
 			WinKill, ahk_id %value%
 		}
-		else if(strStartsWith(key, "ComboBox_"))
+		else if(InStr(key, "ComboBox_") = 1)
 		{
 			name := SubStr(key, 10)
 			ControlGetText, text, , ahk_id %value%
 			if(InStr(text, ": ")) ;If the selection starts with "\d+: " or similar, (\d+) is returned instead
 				text := SubStr(text, 1, InStr(text, ": ") - 1)
-			outputdebug save %name% %text%
 			ValueObj[name] := text
 			WinKill, ahk_id %value%
 		}
-		else if(strStartsWith(key, "Time_"))
+		else if(InStr(key, "Time_") = 1)
 		{
 			name := SubStr(key, 6)
 			ControlGetText, text, , ahk_id %value%
 			StringReplace, text, text, :,,All
-			outputdebug store %text% in %name%
 			ValueObj[name] := text
 			WinKill, ahk_id %value%
 		}
@@ -224,7 +234,7 @@ SubmitControls(ValueObj, GUI)
 }
 
 ;Shows a browse dialog and shows the result in the GUI control associated with "name". This function is used in combination with AddControl()
-Browse(Subevent, GUI, name, Title="Select Folder",Options=0, Quote=0)
+Browse(Subevent, GUI, name, Title = "Select Folder", Options = 0, Quote = 0)
 {
 	Gui +OwnDialogs
 	path:=COMObjCreate("Shell.Application").BrowseForFolder(0, Title, Options).Self.Path
@@ -244,7 +254,7 @@ Browse(Subevent, GUI, name, Title="Select Folder",Options=0, Quote=0)
 	}
 }
 ;Shows a file selection dialog and shows the result in the GUI control associated with "name". This function is used in combination with AddControl()
-SelectFile(SubEvent, GUI, name, Title = "Select File", Filter = "", Quote=0, options = 3)
+SelectFile(SubEvent, GUI, name, Title = "Select File", Filter = "", Quote = 0, options = 3)
 {
 	Gui +OwnDialogs
 	FileSelectFile, path , %options%, , %Title%, %Filter%
