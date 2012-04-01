@@ -470,8 +470,6 @@
 <Type>Ask for user input</Type>
 <Validate>1</Validate>
 </Action><Action>
-<Clear>1</Clear>
-<Deselect>0</Deselect>
 <Filter>${Input}</Filter>
 <Type>Select files</Type>
 <Wildcard>1</Wildcard>

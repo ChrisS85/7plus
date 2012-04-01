@@ -141,3 +141,4 @@ XML_Save(PatchXMLObject, A_ScriptDir "\Events\ReleasePatch\" PatchXMLObject.Majo
 #include %A_ScriptDir%\miscfunctions.ahk
 #include %A_ScriptDir%\lib\array.ahk
 #include %A_ScriptDir%\lib\functions.ahk
+#include %A_ScriptDir%\lib\DllCalls.ahk

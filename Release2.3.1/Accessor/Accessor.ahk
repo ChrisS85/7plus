@@ -1000,8 +1000,8 @@ Class CAccessorPlugin
 	}
 }
 
-#include %A_ScriptDir%\Accessor\CProgramLauncherPlugin.ahk
 #include %A_ScriptDir%\Accessor\CEventPlugin.ahk
+#include %A_ScriptDir%\Accessor\CProgramLauncherPlugin.ahk
 #include %A_ScriptDir%\Accessor\CCalculatorPlugin.ahk
 #include %A_ScriptDir%\Accessor\CRecentFoldersPlugin.ahk
 #include %A_ScriptDir%\Accessor\CFileSystemPlugin.ahk
@@ -1023,9 +1023,15 @@ Future plugins:
 Services
 Processes
 twitter
-Browser Bookmarks
 Control panel
 trillian
 
 "Open with" setting for program launcher
+Generic icons control and support in accessor events and maybe elsewhere
+Accessor height
+take care of accessor horizontal scroll bar
+Other TODO:
+Settings tree width
+take care of event list horizontal scroll bar
+
 */

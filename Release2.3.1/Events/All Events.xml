@@ -517,8 +517,6 @@
 <Type>Ask for user input</Type>
 <Validate>1</Validate>
 </Action><Action>
-<Clear>1</Clear>
-<Deselect>0</Deselect>
 <Filter>${Input}</Filter>
 <Type>Select files</Type>
 <Wildcard>1</Wildcard>
@@ -683,7 +681,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>1</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>309</ID>
 <Name>Toggle always on top -&gt; Context menu active</Name>
@@ -714,7 +712,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>310</ID>
 <Name>Toggle always on top -&gt; No context menu active</Name>
@@ -747,7 +745,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>311</ID>
 <Name>Toggle always on top -&gt; context menu timeout</Name>
@@ -4215,7 +4213,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event asks for a message and starts the message timer.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>1602</ID>
 <Name>Dynamic Timer: Ask for message and start message timer</Name>
@@ -4258,7 +4256,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event asks for the program to be launched and starts the Run program timer</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>1603</ID>
 <Name>Dynamic Timer: Ask for program and start Run program timer</Name>
@@ -5492,6 +5490,181 @@
 <Trigger>
 <Key>#G</Key>
 <Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<KeyDelay>0</KeyDelay>
+<Keys>{Escape}</Keys>
+<Type>Send keyboard input</Type>
+<WriteText>0</WriteText>
+</Action></Actions>
+<Category>Uncategorized</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description></Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1653</ID>
+<Name>New event</Name>
+<OfficialEvent>51</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Window activated</Type>
+<WindowFilterTitle>This is an unregistered copy</WindowFilterTitle>
+<WindowMatchType>Specific Window</WindowMatchType>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<ForceClose>0</ForceClose>
+<ShutDownSelection>Shutdown</ShutDownSelection>
+<Type>Shutdown computer</Type>
+</Action></Actions>
+<Category>Accessor commands</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event provides a Shutdown command for the Accessor launcher.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1654</ID>
+<Name>Accessor: Shutdown</Name>
+<OfficialEvent>53</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<ButtonText>Shutdown</ButtonText>
+<Keyword>Shutdown</Keyword>
+<Title>Shutdown Windows</Title>
+<Type>Accessor Trigger</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<ForceClose>0</ForceClose>
+<ShutDownSelection>Hibernate</ShutDownSelection>
+<Type>Shutdown computer</Type>
+</Action></Actions>
+<Category>Accessor commands</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event provides a Hibernate command for the Accessor launcher.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1655</ID>
+<Name>Accessor: Hibernate</Name>
+<OfficialEvent>54</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<ButtonText>Hibernate</ButtonText>
+<Keyword>Hibernate</Keyword>
+<Title>Go into hibernation</Title>
+<Type>Accessor Trigger</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<ForceClose>0</ForceClose>
+<ShutDownSelection>Standby</ShutDownSelection>
+<Type>Shutdown computer</Type>
+</Action></Actions>
+<Category>Accessor commands</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event provides a Standby command for the Accessor launcher.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1656</ID>
+<Name>Accessor: Standby</Name>
+<OfficialEvent>55</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<ButtonText>Standby</ButtonText>
+<Keyword>Standby</Keyword>
+<Title>Go into Standby</Title>
+<Type>Accessor Trigger</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<ForceClose>0</ForceClose>
+<ShutDownSelection>Reboot</ShutDownSelection>
+<Type>Shutdown computer</Type>
+</Action></Actions>
+<Category>Accessor commands</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event provides a Reboot command for the Accessor launcher.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1657</ID>
+<Name>Accessor: Reboot</Name>
+<OfficialEvent>56</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<ButtonText>Reboot</ButtonText>
+<Keyword>Reboot</Keyword>
+<Title>Reboot Windows</Title>
+<Type>Accessor Trigger</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<ForceClose>0</ForceClose>
+<ShutDownSelection>LogOff</ShutDownSelection>
+<Type>Shutdown computer</Type>
+</Action></Actions>
+<Category>Accessor commands</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event provides a Log Off command for the Accessor launcher.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1658</ID>
+<Name>Accessor: Log Off</Name>
+<OfficialEvent>57</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<ButtonText>Log Off</ButtonText>
+<Keyword>LogOff</Keyword>
+<Title>Log off the current user</Title>
+<Type>Accessor Trigger</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<ForceClose>0</ForceClose>
+<ShutDownSelection>Lock Workstation</ShutDownSelection>
+<Type>Shutdown computer</Type>
+</Action></Actions>
+<Category>Accessor commands</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event provides a command for the Accessor launcher to lock the computer.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1659</ID>
+<Name>Accessor: Lock workstation</Name>
+<OfficialEvent>58</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<ButtonText>Lock</ButtonText>
+<Keyword>Lock</Keyword>
+<Title>Lock workstation</Title>
+<Type>Accessor Trigger</Type>
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>

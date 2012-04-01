@@ -13,7 +13,12 @@ Class CShutdownAction Extends CAction
 			code := 1 + 8
 		else if(this.ShutdownSelection = "Reboot")
 			code := 2
-		else
+		else if(this.ShutdownSelection = "Lock Workstation")
+		{
+			DllCall("LockWorkStation", "UINT")
+			return 1
+		}
+		else if(this.ShutdownSelection = "Hibernate")
 		{
 			; Parameter #1: Pass 1 instead of 0 to hibernate rather than suspend.
 			; Parameter #2: Pass 1 instead of 0 to suspend immediately rather than asking each application for permission.
@@ -23,6 +28,11 @@ Class CShutdownAction Extends CAction
 			else if(this.ShutdownSelection = "Standby")
 				DllCall("PowrProf\SetSuspendState", "int", 0, "int", 0, "int", 0)
 			return 1
+		}
+		else
+		{
+			MsgBox % this.__Class ": Invalid action: " this.ShutDownSelection
+			return 0
 		}
 		if(this.ForceClose)
 			code += 4
@@ -37,7 +47,7 @@ Class CShutdownAction Extends CAction
 	
 	GuiShow(GUI)
 	{
-		this.AddControl(GUI, "DropDownList", "ShutdownSelection", "LogOff|Shutdown|Reboot|Hibernate|Standby", "", "Selection:")
+		this.AddControl(GUI, "DropDownList", "ShutdownSelection", "LogOff|Shutdown|Reboot|Hibernate|Standby|Lock Workstation", "", "Selection:")
 		this.AddControl(GUI, "Checkbox", "ForceClose", "Force-close applications", "", "")
 	}
 }
