@@ -17,7 +17,7 @@ Accessor:
   * New Recent Folders plugin that keeps track of recently used folders. It can be used to quickly switch folders in Explorer, file dialogs, CMD and WinRar. Very useful!
   * New Keyword plugin to quickly create keywords by selecting text or a file, open Accessor and type "Learn as [Keyword]". Credits go out to Enso Launcher for the idea!
   * The URL plugin can now read and access bookmarks of Opera, Chrome and IE.
-  * New commands: Shutdown,Reboot,Hibernate,Standby,LogOff,Lock
+  * New commands: Shutdown, Reboot, Hibernate, Standby, LogOff, Lock
   * Various hotkeys and additional actions have been added for the plugins. As an example, results that are folders can now be opened directly in the file system plugin by pressing CTRL + F while the result is selected.
   * Some new settings to control the behavior and appearance, including support for Aero window style.
 
