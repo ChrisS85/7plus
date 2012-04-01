@@ -918,13 +918,22 @@ Finally, here are some settings that you're likely to change at the beginning:
 	{
 		this.AddAccessorKeyword()
 	}
-	AddAccessorKeyword()
+	;This function is also called by the keywords plugin when a keyword is added through the Accessor window while settings window is open.
+	AddAccessorKeyword(Key = "", Command = "")
 	{
 		Page := this.Pages.AccessorKeywords.Tabs[1].Controls
-		this.AccessorKeywords.Insert(Object("Key", "Key", "Command", "Command"))
-		Item := Page.listAccessorKeywords.Items.Add("Select", "Key", "Command")
-		Page.listAccessorKeywords.SelectedItem := Item
-		this.ActiveControl := Page.listAccessorKeywords
+		if(Key && index := this.AccessorKeywords.FindKeyWithValue("Key", Key))
+		{
+			this.AccessorKeywords[index].Command := Command
+			Page.listAccessorKeywords.Items[index][2] := Command
+		}
+		else
+		{
+			this.AccessorKeywords.Insert(Object("Key", Key, "Command", Command))
+			Item := Page.listAccessorKeywords.Items.Add("Select", Key, Command)
+			Page.listAccessorKeywords.SelectedItem := Item
+			this.ActiveControl := Page.listAccessorKeywords
+		}
 	}
 	btnDeleteAccessorKeyword_Click()
 	{

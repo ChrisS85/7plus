@@ -513,7 +513,7 @@ GetModuleFileNameEx( pid )
    return, name 
 }
 ; Extract an icon from an executable, DLL or icon file. 
-ExtractIcon(Filename, IconNumber, IconSize = 64) 
+ExtractIcon(Filename, IconNumber = 0, IconSize = 64) 
 { 
     ; LoadImage is not used.. 
     ; ..with exe/dll files because: 

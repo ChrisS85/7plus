@@ -131,6 +131,7 @@ Class CAccessor
 		FileAppend, test, %A_Temp%\7plus\test.htm
 		this.GenericIcons.URL := ExtractAssociatedIcon(0, A_Temp "\7plus\test.htm", iIndex)
 		FileDelete, %A_Temp%\7plus\test.htm
+		this.GenericIcons.7plus := ExtractIcon(A_ScriptDir "\7+-w.ico")
 	}
 	Show(Action)
 	{
@@ -355,6 +356,10 @@ Class CAccessor
 		if(this.GUI.ListView.SelectedItems.MaxIndex() != 1)
 			this.GUI.ListView.SelectedIndex := 1
 		this.GUI.ListView.Redraw := true
+
+		;Set default text when no results and set enabled state
+		if(!(this.GUI.btnOK.Enabled := this.List.MaxIndex()))
+			this.GUI.btnOK.Text := "Run"
 	}
 	
 	;Registers an Accessor plugin with this class. This needs to be done
@@ -1010,14 +1015,17 @@ Class CAccessorPlugin
 #include %A_ScriptDir%\Accessor\CWeatherPlugin.ahk
 #include %A_ScriptDir%\Accessor\CRunPlugin.ahk
 #include %A_ScriptDir%\Accessor\CRegistryPlugin.ahk
+#include %A_ScriptDir%\Accessor\CKeywordPlugin.ahk
 #include %A_ScriptDir%\Accessor\CAccessorHistoryPlugin.ahk ;This should be included last, so it will only show on Accessor opening when other plugins don't show things
 
 /*
 Future plugins:
 Services
 Processes
-Accessor History
 twitter
+Browser Bookmarks
+Control panel
+trillian
 
 "Open with" setting for program launcher
 */
