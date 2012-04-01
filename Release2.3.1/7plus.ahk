@@ -36,6 +36,7 @@ ComObjError(0)
 #include <Edit>
 #include <Functions>
 #include <gdip>
+;#include <json> ;Can be used for CURLPlugin Chrome bookmark import. Right now lson is used because that is included anyway.
 #include <Navigation>
 #include <Parse>
 #include <RemoteBuf>

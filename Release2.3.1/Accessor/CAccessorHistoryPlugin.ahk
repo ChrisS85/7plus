@@ -37,7 +37,10 @@ Class CAccessorHistoryPlugin extends CAccessorPlugin
 				DestroyIcon(this.List.Remove(this.Settings.MaxEntries).Icon)
 
 			;Create a copy of the entry and duplicate its icon (it needs to be destroyed later)
+			; NOTE: Actions can contain references to the plugin which mustn't be copied and is not changed, so we may use a reference to it
+			Actions := ListEntry.Remove("Actions")
 			Copy := ListEntry.DeepCopy()
+			Copy.Actions := Actions
 			Copy.Icon := DuplicateIcon(Copy.Icon)
 			this.List.Insert(1, Copy)
 		}
