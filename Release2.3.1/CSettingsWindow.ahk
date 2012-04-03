@@ -820,6 +820,10 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("CheckBox", "chkAccessorUseAero", "xs+21 ys+129 h17", "Use Aero glass effect (Vista/7 and newer)")
 		Page.AddControl("Text", "txtAccessorTransparency", "xs+21 ys+152 h17", "Transparency (looks ugly with Aero enabled!):")
 		Page.AddControl("Slider", "sldAccessorTransparency", "x+10 ys+149 Range50-255", 255)
+		Page.AddControl("Text", "txtAccessorWidth", "xs+21 ys+182 h17", "Accessor Width:")
+		Page.AddControl("Edit", "editAccessorWidth", "xs+120 ys+179 w60 h20 Number", "")
+		Page.AddControl("Text", "txtAccessorHeight", "xs+21 ys+212 h17", "Accessor Height:")
+		Page.AddControl("Edit", "editAccessorHeight", "xs+120 ys+209 w60 h20 Number", "")
 	}
 	InitAccessor()
 	{
@@ -830,6 +834,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.chkAccessorUseAero.Checked := CAccessor.Instance.Settings.UseAero
 		if(CAccessor.Instance.Settings.Transparency)
 			Page.sldAccessorTransparency.Value := CAccessor.Instance.Settings.Transparency
+		Page.editAccessorWidth.Text := Clamp(CAccessor.Instance.Settings.Width, 600, 2000)
+		Page.editAccessorHeight.Text := Clamp(CAccessor.Instance.Settings.Height, 200, 2000)
 	}
 	ApplyAccessor()
 	{
@@ -841,6 +847,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 		CAccessor.Instance.Settings.Transparency := Page.sldAccessorTransparency.Value
 		if(CAccessor.Instance.Settings.Transparency = 255)
 			CAccessor.Instance.Settings.Transparency := 0
+		CAccessor.Instance.Settings.Width := Clamp(Page.editAccessorWidth.Text, 600, 2000)
+		CAccessor.Instance.Settings.Height := Clamp(Page.editAccessorHeight.Text, 200, 2000)
 	}
 	;Accessor Plugins
 	CreatePlugins()

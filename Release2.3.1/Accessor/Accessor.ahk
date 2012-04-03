@@ -28,6 +28,8 @@ Class CAccessor
 		TitleBar := false
 		UseAero := true
 		Transparency := 0 ;0 to 255. 0 is considered opaque here so the attribute isn't set
+		Width := 900
+		Height := 360
 		__new(XML)
 		{
 			for key, value in this
@@ -147,7 +149,8 @@ Class CAccessor
 		;Create and show GUI
 		this.GUI := new CAccessorGUI()
 		this.GUI.Show()
-		
+		;Redraw is needed because Aero can cause rendering issues without it
+		this.GUI.Redraw()
 		this.LauncherHotkey := Action.LauncherHotkey
 		
 		;Init History TODO: Is this correct when a plugin changes it?
@@ -601,8 +604,8 @@ return
 
 Class CAccessorGUI extends CGUI
 {
-	Height := 360
-	Width := 900
+	Width := CAccessor.Instance.Settings.Width
+	Height := CAccessor.Instance.Settings.Height
 	EditControl := this.AddControl("Edit", "EditControl", "w800 y10 -Multi", "")
 	ListView := this.AddControl("ListView", "ListView", "w" this.Width - 94 " y+10 h" (this.Height - 46) " AltSubmit 0x8 -Multi NoSortHdr", "Title|Path| | |")
 	btnOK := this.AddControl("Button", "btnOK", "y10 x+10 w75 section Default", "&OK")
@@ -652,6 +655,7 @@ Class CAccessorGUI extends CGUI
 		this.ListView.ModifyCol(3, 70)
 		this.ListView.ModifyCol(4, "AutoHdr") ; OnTop
 		this.OnMessage(0x06,"WM_ACTIVATE")
+		this.Redraw()
 	}
 	SetFilter(Text)
 	{
@@ -1030,15 +1034,12 @@ trillian
 winget
 
 Set position of accessor based on the monitor where the cursor is (maybe as setting)
-move accessor settings in an accessor page and put keywords and plugins as subpages
 timer for any (or most) accessor actions
 "Open with" setting for program launcher
 Generic icons control and support in accessor events and maybe elsewhere
-Accessor height and width
 take care of accessor horizontal scroll bar
 Other TODO:
 Upward navigation
-Settings tree width
 take care of event list horizontal scroll bar
 
 */
