@@ -359,6 +359,12 @@ Class CAccessor
 		selected := LV_GetNext()
 		if(this.GUI.ListView.SelectedItems.MaxIndex() != 1)
 			this.GUI.ListView.SelectedIndex := 1
+
+		this.GUI.ListView.ModifyCol(1, Round(this.GUI.ListView.Width * 3 / 8)) ;Col_3_w) ; resize title column
+		this.GUI.ListView.ModifyCol(2, Round(this.GUI.ListView.Width * 3.3 / 8)) ; resize path column
+		this.GUI.ListView.ModifyCol(3, Round(this.GUI.ListView.Width * 0.8 / 8)) ; resize detail1 column
+		this.GUI.ListView.ModifyCol(4, "AutoHdr") ; resize detail2 column
+
 		this.GUI.ListView.Redraw := true
 
 		;Set default text when no results and set enabled state
@@ -659,13 +665,10 @@ Class CAccessorGUI extends CGUI
 		
 		this.ListView.LargeIcons := CAccessor.Instance.Settings.LargeIcons
 		this.ListView.IndependentSorting := true
-		this.ListView.ModifyCol()
-		;~ this.GUI.ListView.ModifyCol(1, "Auto") ; icon column
-		;~ this.GUI.ListView.(2, 0) ; hidden column for row number    
-		this.ListView.ModifyCol(1, 300) ;Col_3_w) ; resize title column
-		this.ListView.ModifyCol(2, 330) ; resize path column
-		this.ListView.ModifyCol(3, 70)
-		this.ListView.ModifyCol(4, "AutoHdr") ; OnTop
+		this.ListView.ModifyCol(1, Round(this.ListView.Width * 3 / 8)) ;Col_3_w) ; resize title column
+		this.ListView.ModifyCol(2, Round(this.ListView.Width * 3.3 / 8)) ; resize path column
+		this.ListView.ModifyCol(3, Round(this.ListView.Width * 0.8 / 8)) ; resize detail1 column
+		this.ListView.ModifyCol(4, "AutoHdr") ; resize detail2 column
 		this.OnMessage(0x06,"WM_ACTIVATE")
 		this.Redraw()
 	}
@@ -1045,7 +1048,6 @@ Control panel
 trillian
 winget
 
-Set position of accessor based on the monitor where the cursor is (maybe as setting)
 timer for any (or most) accessor actions
 "Open with" setting for program launcher
 Generic icons control and support in accessor events and maybe elsewhere
