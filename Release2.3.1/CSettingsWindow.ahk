@@ -129,11 +129,11 @@ Class CSettingsWindow Extends CGUI
 	{
 		this.Enabled := false
 		PageNames := this.PageNames
-		this["ApplyIntroduction"]
-		this["ApplyEvents"]
-		this["ApplyAccessor"]
-		this["ApplyKeywords"]
-		this["ApplyPlugins"]
+		this.ApplyIntroduction()
+		this.ApplyEvents()
+		this.ApplyAccessor()
+		this.ApplyKeywords()
+		this.ApplyPlugins()
 		Loop, Parse, PageNames, |
 		{
 			Name := StringReplace(A_LoopField, " ", "")

@@ -607,7 +607,7 @@ Class CAccessorGUI extends CGUI
 {
 	Width := CAccessor.Instance.Settings.Width
 	Height := CAccessor.Instance.Settings.Height
-	EditControl := this.AddControl("Edit", "EditControl", "w800 y10 -Multi", "")
+	EditControl := this.AddControl("Edit", "EditControl", "w" this.Width - 94 " y10 -Multi", "")
 	ListView := this.AddControl("ListView", "ListView", "w" this.Width - 94 " y+10 h" (this.Height - 46) " AltSubmit 0x8 -Multi NoSortHdr", "Title|Path| | |")
 	btnOK := this.AddControl("Button", "btnOK", "y10 x+10 w75 section Default", "&OK")
 	btnCancel := this.AddControl("Button", "btnCancel", "y+8 w75", "&Cancel")
