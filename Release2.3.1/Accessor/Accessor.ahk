@@ -30,6 +30,7 @@ Class CAccessor
 		Transparency := 0 ;0 to 255. 0 is considered opaque here so the attribute isn't set
 		Width := 900
 		Height := 360
+		OpenInMonitorOfMouseCursor := true ;If true, Accessor window will open in the monitor where the mouse cursor is.
 		__new(XML)
 		{
 			for key, value in this
@@ -614,6 +615,17 @@ Class CAccessorGUI extends CGUI
 	btnConfigPlugins := this.AddControl("Button", "btnConfigPlugins", "xs+0 y" this.Height - 28 " w75", "&Plugins")
 	__new()
 	{
+		if(CAccessor.Instance.Settings.OpenInMonitorOfMouseCursor)
+		{
+			Monitor := FindMonitorFromMouseCursor()
+			this.X := (Monitor.Right - Monitor.Left) / 2 - this.Width / 2
+			this.Y := (Monitor.Bottom - Monitor.Top) / 2 - this.Height / 2
+		}
+		else
+		{
+			this.X := A_ScreenWidth / 2 - this.Width / 2
+			this.Y := A_ScreenHeight / 2 - this.Height / 2
+		}
 		this.MinimizeBox := false
 		this.MaximizeBox := false
 		this.AlwaysOnTop := true

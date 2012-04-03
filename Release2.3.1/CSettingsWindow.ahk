@@ -815,15 +815,16 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page := this.Pages.Accessor.Tabs[1]
 		Page.AddControl("Text", "txtAccessorText", "xs+21 ys+19 w431 h39", "Accessor is a versatile tool that is used to perform many commands through the keyboard, `nlike launching programs, switching windows, open URLs, browsing the filesystem,...`nPress the assigned hotkey (Default: ALT+Space) and start typing!")
 		Page.AddControl("CheckBox", "chkAccessorLargeIcons", "xs+21 ys+69 h17", "Large icons")
-		Page.AddControl("CheckBox", "chkAccessorCloseWhenDeactivated", "xs+21 ys+89 h17", "Close Accessor window when it gets deactivated")
-		Page.AddControl("CheckBox", "chkAccessorTitleBar", "xs+21 ys+109 h17", "Show title bar")
-		Page.AddControl("CheckBox", "chkAccessorUseAero", "xs+21 ys+129 h17", "Use Aero glass effect (Vista/7 and newer)")
-		Page.AddControl("Text", "txtAccessorTransparency", "xs+21 ys+152 h17", "Transparency (looks ugly with Aero enabled!):")
-		Page.AddControl("Slider", "sldAccessorTransparency", "x+10 ys+149 Range50-255", 255)
-		Page.AddControl("Text", "txtAccessorWidth", "xs+21 ys+182 h17", "Accessor Width:")
-		Page.AddControl("Edit", "editAccessorWidth", "xs+120 ys+179 w60 h20 Number", "")
-		Page.AddControl("Text", "txtAccessorHeight", "xs+21 ys+212 h17", "Accessor Height:")
-		Page.AddControl("Edit", "editAccessorHeight", "xs+120 ys+209 w60 h20 Number", "")
+		Page.AddControl("CheckBox", "chkAccessorCloseWhenDeactivated", "xs+21 y+3 h17", "Close Accessor window when it gets deactivated")
+		Page.AddControl("CheckBox", "chkAccessorTitleBar", "xs+21 y+3 h17", "Show title bar")
+		Page.AddControl("CheckBox", "chkAccessorUseAero", "xs+21 y+3 h17", "Use Aero glass effect (Vista/7 and newer)")
+		Page.AddControl("CheckBox", "chkAccessorOpenInMonitorOfMouseCursor", "xs+21 y+3 h17", "Open in the monitor where the mouse cursor is")
+		Page.AddControl("Slider", "sldAccessorTransparency", "x+10 y+3 Range50-255", 255)
+		Page.AddControl("Text", "txtAccessorTransparency", "xs+21 yp+3 h17", "Transparency (looks ugly with Aero enabled!):")
+		Page.AddControl("Text", "txtAccessorWidth", "xs+21 y+13 h17", "Accessor Width:")
+		Page.AddControl("Edit", "editAccessorWidth", "xs+120 yp-3 w60 h20 Number", "")
+		Page.AddControl("Text", "txtAccessorHeight", "xs+21 y+13 h17", "Accessor Height:")
+		Page.AddControl("Edit", "editAccessorHeight", "xs+120 yp-3 w60 h20 Number", "")
 	}
 	InitAccessor()
 	{
@@ -832,6 +833,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.chkAccessorCloseWhenDeactivated.Checked := CAccessor.Instance.Settings.CloseWhenDeactivated
 		Page.chkAccessorTitleBar.Checked := CAccessor.Instance.Settings.TitleBar
 		Page.chkAccessorUseAero.Checked := CAccessor.Instance.Settings.UseAero
+		Page.chkOpenInMonitorOfMouseCursor.Checked := CAccessor.Instance.Settings.OpenInMonitorOfMouseCursor
 		if(CAccessor.Instance.Settings.Transparency)
 			Page.sldAccessorTransparency.Value := CAccessor.Instance.Settings.Transparency
 		Page.editAccessorWidth.Text := Clamp(CAccessor.Instance.Settings.Width, 600, 2000)
@@ -844,6 +846,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		CAccessor.Instance.Settings.CloseWhenDeactivated := Page.chkAccessorCloseWhenDeactivated.Checked
 		CAccessor.Instance.Settings.TitleBar := Page.chkAccessorTitleBar.Checked
 		CAccessor.Instance.Settings.UseAero := Page.chkAccessorUseAero.Checked
+		CAccessor.Instance.Settings.OpenInMonitorOfMouseCursor := Page.chkOpenInMonitorOfMouseCursor.Checked
 		CAccessor.Instance.Settings.Transparency := Page.sldAccessorTransparency.Value
 		if(CAccessor.Instance.Settings.Transparency = 255)
 			CAccessor.Instance.Settings.Transparency := 0

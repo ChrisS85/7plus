@@ -1595,3 +1595,14 @@ DuplicateIcon(hIcon)
 {
 	return DllCall("Shell32.dll\DuplicateIcon", "PTR", 0, "Ptr", hIcon, "PTR")
 }
+FindMonitorFromMouseCursor()
+{
+    MouseGetPos, x, y
+	SysGet, Mon0, MonitorCount
+    Loop %Mon0%
+    { ;Loop through each monitor 
+        SysGet, Mon%A_Index%, Monitor, %A_Index% 
+        if(x >= Mon%A_Index%Left && x < Mon%A_Index%Right && y >= Mon%A_Index%Top && y < Mon%A_Index%Bottom)
+        	return {Index : A_Index, Left : Mon%A_Index%Left, Top : Mon%A_Index%Top, Right : Mon%A_Index%Right, Bottom : Mon%A_Index%Bottom}
+    }
+}
