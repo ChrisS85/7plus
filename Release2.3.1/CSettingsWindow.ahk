@@ -102,8 +102,22 @@ Class CSettingsWindow Extends CGUI
 		if(this.treePages.SelectedItem.Text != Page && !((Page = "Events" && this.treePages.SelectedItem.Text = "All Events")))
 		{
 			for index, item in this.treePages.Items
+			{
 				if(item.Text = Page || (Page = "Events" && item.Text = "All Events"))
+				{
 					this.treePages.SelectedItem := Item
+					break
+				}
+				;Treat second level of tree
+				for index2, item2 in item
+				{
+					if(item2.Text = Page)
+					{
+						this.treePages.SelectedItem := Item2
+						break 2
+					}
+				}
+			}
 		}
 		else
 			this.RecreateTreeView()

@@ -65,8 +65,8 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		GUI.btnAddPath := GUI.AddControl("Button", "btnAddPath", "x+10 w80", "&Add Path")
 		GUI.btnAddPath.Click.Handler := new Delegate(this, "Settings_AddPath")
 		
-		GUI.btnBrowse := GUI.AddControl("Button", "btnBrowse", "y+10 w80", "&Browse")
-		GUI.btnBrowse.Click.Handler := new Delegate(this, "Settings_Browse")
+		GUI.btnEdit := GUI.AddControl("Button", "btnEdit", "y+10 w80", "&Edit")
+		GUI.btnEdit.Click.Handler := new Delegate(this, "Settings_Edit")
 		
 		GUI.btnDeletePath := GUI.AddControl("Button", "btnDeletePath", "y+10 w80", "&Delete Path")
 		GUI.btnDeletePath.Click.Handler := new Delegate(this, "Settings_DeletePath")
@@ -132,17 +132,19 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			this.SettingsWindow.GUI.ListBox.Items.Add(fd.Folder)
 		}
 	}
-	Settings_Browse(Sender)
+	Settings_Edit(Sender)
 	{
 		if(this.SettingsWindow.GUI.ListBox.SelectedItem)
 		{
-			fd := new CFolderDialog()
-			fd.Title := "Set indexing path"
-			if(fd.Show())
-			{
-				this.SettingsWindow.Paths[this.SettingsWindow.GUI.ListBox.SelectedIndex].Path := fd.Folder
-				this.SettingsWindow.GUI.ListBox.SelectedItem.Text := fd.Folder
-			}
+			PathEditorWindow := new CProgramLauncherPathEditorWindow()
+			PathEditorWindow.Show()
+			;fd := new CFolderDialog()
+			;fd.Title := "Set indexing path"
+			;if(fd.Show())
+			;{
+			;	this.SettingsWindow.Paths[this.SettingsWindow.GUI.ListBox.SelectedIndex].Path := fd.Folder
+			;	this.SettingsWindow.GUI.ListBox.SelectedItem.Text := fd.Folder
+			;}
 		}
 	}
 	Settings_DeletePath(Sender)
@@ -404,5 +406,30 @@ UpdateLauncherPrograms()
 					CProgramLauncherPlugin.Instance.List.Insert(Object("Name", name,"Command", Window.Path))
 			}
 		}
+	}
+}
+
+Class CProgramLauncherPathEditorWindow extends CGUI
+{
+	txtPath := this.AddControl("Text", "txtPath", "x10 y13 section", "Path:")
+	editPath := this.AddControl("Edit", "editPath", "x80 yp-3 w350", "")
+	btnPath := this.AddControl("Button", "btnPath", "x+10 yp-2 w60", "Browse")
+	txtExtensions := this.AddControl("Text", "txtExtensions", "xs+0 y+13", "Extensions:")
+	editExtensions := this.AddControl("Edit", "editExtensions", "x80 yp-3 w350", "")
+	txtSeparator := this.AddControl("Text", "txtSeparator", "x+10 yp+3", "Separator: Comma")
+	chkUpdateOnOpen := this.AddControl("CheckBox", "chkUpdateOnOpen", "xs+0 y+13", "Update this path each time Accessor opens")
+	chkUpdateOnStart := this.AddControl("CheckBox", "chkUpdateOnStart", "xs+0 y+10", "Update this path when 7plus starts")
+	listActions := this.AddControl("ListView", "listActions", "xs+0 y+10 w520", "Action|Command")
+	txtAction := this.AddControl("Text", "txtAction", "xs+0 y+10", "Action:")
+	editAction := this.AddControl("Edit", "editAction", "x+10 yp-3", "")
+	txtCommand := this.AddControl("Text", "txtCommand", "x+10 yp+3", "Command:")
+	editCommand := this.AddControl("Edit", "editCommand", "x+10 yp-3 w217", "")
+	btnBrowse := this.AddControl("Button", "btnBrowse", "x+10 yp-2 w60", "Browse")
+	btnOK := this.AddControl("BUtton", "btnOK", "xs+350 y+15 w80 Default", "&OK")
+	btnCancel := this.AddControl("BUtton", "btnCancel", "x+10 yp+0 w80", "&Cancel")
+	__new()
+	{
+		this.Title := "Edit Program Launcher indexing path"
+		this.chkUpdateOnOpen.Tooltip := "This option might be desired for the recent docs folder, but it will increase Accessor opening times."
 	}
 }

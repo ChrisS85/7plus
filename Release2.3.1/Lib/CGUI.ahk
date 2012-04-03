@@ -459,7 +459,7 @@ Class CGUI
 	
 	Returns: The created control object
 	*/
-	AddControl(Control, Name, Options, Text, ControlList="", ParentControl = "")
+	AddControl(Control, Name, Options = "", Text = "", ControlList="", ParentControl = "")
 	{
 		local hControl, type, testHWND, vName, NeedsGLabel
 		if(this.IsDestroyed)

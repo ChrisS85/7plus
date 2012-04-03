@@ -522,7 +522,7 @@ Class CAccessor
 					Event.Trigger := new CTimerTrigger()
 					Event.Trigger.Time := ListEntry.Time * 1000
 					Event.Trigger.ShowProgress := true
-					Event.Trigger.Text := ListEntry.Title
+					Event.Trigger.Text := ListEntry.Title " " ListEntry.Path
 					Event.Actions.Insert(new CAccessorResultAction())
 
 					Copy := this.CopyResult(ListEntry)
@@ -781,12 +781,12 @@ Class CAccessorGUI extends CGUI
 	btnConfigPlugins_Click()
 	{
 		this.Close()
-		SettingsWindow.Show("Accessor Plugins")
+		SettingsWindow.Show("Plugins")
 	}
 	btnConfigKeywords_Click()
 	{
 		this.Close()
-		SettingsWindow.Show("Accessor Keywords")
+		SettingsWindow.Show("Keywords")
 	}
 	OnUp()
 	{
@@ -1114,6 +1114,4 @@ winget
 
 "Open with" setting for program launcher
 Generic icons control and support in accessor events and maybe elsewhere
-Other TODO:
-Upward navigation
 */
