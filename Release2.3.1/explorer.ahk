@@ -238,17 +238,17 @@ NumpadEnter::
 #if
 
 ;Register path changes caused by pressing enter. This is done in addition to the shell message that gets sent when the path changes because it does not work for all paths.
-#if WinActive("ahk_group ExplorerGroup") && !IsRenaming()
-~LButton::
-~Enter::
-~NumpadEnter::
-~!Up::
-~!Left::
-~!Right::
-~Backspace::
-	SetTimerF("ExplorerPathChanged", -100)
-	return
-#if
+;#if WinActive("ahk_group ExplorerGroup") && !IsRenaming()
+;~LButton::
+;~Enter::
+;~NumpadEnter::
+;~!Up::
+;~!Left::
+;~!Right::
+;~Backspace::
+;	SetTimerF("ExplorerPathChanged", -100)
+;	return
+;#if
 
 ExecuteFocusedFile()
 {

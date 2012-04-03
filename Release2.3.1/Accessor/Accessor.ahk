@@ -1116,6 +1116,4 @@ winget
 Generic icons control and support in accessor events and maybe elsewhere
 Other TODO:
 Upward navigation
-take care of event list horizontal scroll bar
-FIX LISTVIEW CRASH
 */

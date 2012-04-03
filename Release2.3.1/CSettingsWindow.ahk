@@ -107,6 +107,9 @@ Class CSettingsWindow Extends CGUI
 		}
 		else
 			this.RecreateTreeView()
+		Monitor := FindMonitorFromMouseCursor()
+		this.X := (Monitor.Right - Monitor.Left) / 2 - this.Width / 2
+		this.Y := (Monitor.Bottom - Monitor.Top) / 2 - this.Height / 2
 		base.Show()
 	}
 	btnApply_Click()
