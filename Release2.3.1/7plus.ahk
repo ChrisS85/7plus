@@ -83,4 +83,4 @@ ComObjError(0)
 #include %A_ScriptDir%\SlideWindows.ahk
 #include %A_ScriptDir%\JoyControl.ahk
 #include %A_ScriptDir%\ExplorerTabs.ahk
-#include *i %A_ScriptDir%\Tools\ObjTree.ahk
+;#include *i %A_ScriptDir%\Tools\ObjTree.ahk
