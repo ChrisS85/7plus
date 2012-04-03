@@ -10,6 +10,8 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 	
 	;List of cached paths
 	Paths := Array()
+
+	AllowDelayedExecution := true
 	
 	Class CSettings extends CAccessorPlugin.CSettings
 	{

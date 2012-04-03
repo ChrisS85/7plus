@@ -5,7 +5,6 @@ Class CAccessorTrigger Extends CTrigger
 	static Title := "Accessor Trigger"
 	static Path := ""
 	static Detail1 := ""
-	static Detail2 := ""
 	static Keyword := "Event"
 	static ButtonText := "Execute"
 	Matches(Filter, Event)
@@ -27,6 +26,5 @@ Class CAccessorTrigger Extends CTrigger
 		this.AddControl(GUI, "Edit", "Title", "", "", "Title:", "", "", "", "", "", "The text of the title column in Accessor window.")
 		this.AddControl(GUI, "Edit", "Path", "", "", "Path:", "", "", "", "", "", "The text of the path column in Accessor window.")
 		this.AddControl(GUI, "Edit", "Detail1", "", "", "Detail1:", "", "", "", "", "", "The text of the third column in Accessor window.")
-		this.AddControl(GUI, "Edit", "Detail2", "", "", "Detail2:", "", "", "", "", "", "The text of the fourth column in Accessor window.")
 	}
 }

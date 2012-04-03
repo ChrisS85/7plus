@@ -4,7 +4,9 @@ Class CEventPlugin extends CAccessorPlugin
 	static Type := CAccessor.RegisterPlugin("Event Plugin", CEventPlugin)
 	
 	Description := "Makes it possible to implement an Accessor function by using the event system.`nThe parameters after the keyword of an event can be accessed`nthrough the ${Acc1} - ${Acc9} placeholders."
-		
+	
+	AllowDelayedExecution := true
+
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "Event"
@@ -29,13 +31,12 @@ Class CEventPlugin extends CAccessorPlugin
 		Results := Array()
 		for index, Event in EventSystem.Events
 		{
-			if(Event.Trigger.Is(CAccessorTrigger) && Filter = Event.Trigger.Keyword)
+			if(Event.Trigger.Is(CAccessorTrigger) && InStr(Filter, Event.Trigger.Keyword) = 1)
 			{
 				Result := new this.CResult()
 				Result.Title := Event.Trigger.Title
-				Result.Path := Event.Trigger.Path
-				Result.Detail1 := ListEntry.Event.Trigger.Detail1
-				Result.Detail2 := ListEntry.Event.Trigger.Detail2
+				Result.Path := Event.ExpandPlaceholders(Event.Trigger.Path)
+				Result.Detail1 := Event.ExpandPlaceholders(ListEntry.Event.Trigger.Detail1)
 				Result.Event := Event
 				Result.Parameters := Parameters
 				Result.Icon := Accessor.GenericIcons.Application

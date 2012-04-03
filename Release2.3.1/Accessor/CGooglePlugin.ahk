@@ -7,7 +7,9 @@ Class CGooglePlugin extends CAccessorPlugin
 	
 	Cleared := false
 	List := Array()
-
+	
+	AllowDelayedExecution := false
+	
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "g"
@@ -88,10 +90,10 @@ return
 QueryGoogleResult()
 {
 	outputdebug query google result
-	if(InStr(CAccessor.Instance.Filter, CGooglePlugin.Instance.Settings.Keyword " ") != 1)
+	if(InStr(CAccessor.Instance.FilterWithoutTimer, CGooglePlugin.Instance.Settings.Keyword " ") != 1)
 		return
 	outputdebug do it
-	Filter := strTrim(CAccessor.Instance.Filter, CGooglePlugin.Instance.Settings.Keyword " ")
+	Filter := strTrim(CAccessor.Instance.FilterWithoutTimer, CGooglePlugin.Instance.Settings.Keyword " ")
 	
 	URL := uriEncode("http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=") uriEncode(Filter, 1) "&rsz=8&key=ABQIAAAA7YzZ21dHSNKA2c0eu0LVKRTn4CuOUlhiyluSCHXJ1XXcqBr54RRnE69I0b16vHAVgBri6LxRQYtELw"
 	Headers := "Referer: http://code.google.com/p/7plus/"

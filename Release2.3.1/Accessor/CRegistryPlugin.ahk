@@ -5,6 +5,8 @@ Class CRegistryPlugin extends CAccessorPlugin
 	
 	Description := "This plugin allows to quickly open registry keys in RegEdit.`nThe easiest way is to select a registry key in another application,`nopen Accessor and press Enter to open the key."
 	
+	AllowDelayedExecution := false
+	
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "reg"
@@ -30,7 +32,7 @@ Class CRegistryPlugin extends CAccessorPlugin
 	}
 	OnOpen(Accessor)
 	{
-		if(!Accessor.Filter && Accessor.CurrentSelection && IsRegKey(Accessor.CurrentSelection))
+		if(!Accessor.FilterWithoutTimer && Accessor.CurrentSelection && IsRegKey(Accessor.CurrentSelection))
 			Accessor.SetFilter(Accessor.CurrentSelection)
 	}
 	ShowSettings(Settings, GUI, PluginGUI)

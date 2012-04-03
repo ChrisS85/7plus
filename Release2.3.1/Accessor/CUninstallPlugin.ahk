@@ -10,6 +10,8 @@ Class CUninstallPlugin extends CAccessorPlugin
 	
 	;This plugin is not listed by the history plugin because the results may not be valid anymore.
 	SaveHistory := false
+
+	AllowDelayedExecution := false
 	
 	Class CSettings extends CAccessorPlugin.CSettings
 	{

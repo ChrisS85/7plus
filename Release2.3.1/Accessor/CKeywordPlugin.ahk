@@ -6,6 +6,8 @@ Class CKeywordPlugin extends CAccessorPlugin
 	Description := "This plugin makes it possible to quickly create keywords by selecting text or a file,`nopen Accessor and type ""Learn as [keyword]"".`nCredits for the idea of this plugin go to Enso Launcher."
 	
 	SaveHistory := false
+	
+	AllowDelayedExecution := false
 
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
@@ -28,7 +30,7 @@ Class CKeywordPlugin extends CAccessorPlugin
 	}
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
-		if(Accessor.CurrentSelection && Filter := SubStr(Accessor.Filter, StrLen(this.Settings.Keyword) + 2))
+		if(Accessor.CurrentSelection && Filter := SubStr(Accessor.FilterWithoutTimer, StrLen(this.Settings.Keyword) + 2))
 		{
 			Results := Array()
 			Result := new this.CResult()

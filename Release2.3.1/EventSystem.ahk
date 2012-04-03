@@ -1196,6 +1196,7 @@ Class CExampleAction extends CAction
 #include %A_ScriptDir%\Conditions\WindowExists.ahk
 
 #include %A_ScriptDir%\Actions\Accessor.ahk
+#include %A_ScriptDir%\Actions\AccessorResult.ahk
 #include %A_ScriptDir%\Actions\AeroFlip.ahk
 #include %A_ScriptDir%\Actions\Autoupdate.ahk
 #include %A_ScriptDir%\Actions\Clipboard.ahk

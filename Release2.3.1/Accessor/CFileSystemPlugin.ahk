@@ -7,7 +7,9 @@ Class CFileSystemPlugin extends CAccessorPlugin
 	
 	;List of current icon handles
 	Icons := Array()
-	
+
+	AllowDelayedExecution := true
+
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "fs"
@@ -17,6 +19,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 	}
 	Class CResult extends CAccessorPlugin.CResult
 	{
+		AllowDelayedExecution := true
 		Class CFileActions extends CArray
 		{
 			DefaultAction := new CAccessor.CAction("Open file", "Run")
@@ -55,7 +58,10 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		__new(Type)
 		{
 			if(Type = "Folder")
+			{
 				this.Actions := new this.CFolderActions()
+				this.AllowDelayedExecution := false
+			}
 			else if(Type = "Executable")
 				this.Actions := new this.CExecutableActions()
 			else
@@ -81,7 +87,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 	OnOpen(Accessor)
 	{
 		;Automatically open path when a path is selected before Accessor is opened
-		if(Accessor.CurrentSelection && !Accessor.Filter)
+		if(Accessor.CurrentSelection && !Accessor.FilterWithoutTimer)
 		{
 			Path := ExpandPathPlaceholders(Accessor.CurrentSelection)
 			SplitPath, Path, Name, Dir
@@ -166,7 +172,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 			return
 		}
 		
-		Filter := ExpandPathPlaceholders(Accessor.Filter)
+		Filter := ExpandPathPlaceholders(Accessor.FilterWithoutTimer)
 		SplitPath, Filter, name, dir,,,drive
 		
 		if(name)
@@ -223,7 +229,7 @@ return
 #if
 #if (CAccessor.Instance.GUI && CAccessor.Instance.SingleContext = "File System" && CAccessor.Instance.GUI.ActiveControl = CAccessor.Instance.GUI.ListView)
 Backspace::
-CAccessor.Instance.SetFilter(SubStr(CAccessor.Instance.Filter, 1, InStr(CAccessor.Instance.Filter, "\", false, 0, strEndsWith(CAccessor.Instance.Filter, "\") ? 2 : 1)))
+CAccessor.Instance.SetFilter(SubStr(CAccessor.Instance.FilterWithoutTimer, 1, InStr(CAccessor.Instance.FilterWithoutTimer, "\", false, 0, strEndsWith(CAccessor.Instance.FilterWithoutTimer, "\") ? 2 : 1)))
 return
 #if
 ;~ Accessor_FileSystem_OnKeyDown(FileSystem, wParam, lParam, Filter, selected, AccessorListEntry)

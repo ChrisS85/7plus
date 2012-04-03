@@ -8,6 +8,8 @@ Class CWeatherPlugin extends CAccessorPlugin
 	Cleared := false
 	List := Array()
 
+	AllowDelayedExecution := false
+	
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "Weather"
@@ -62,8 +64,6 @@ Class CWeatherPlugin extends CAccessorPlugin
 			Result.Title := ListEntry.Title
 			Result.Path := ListEntry.Path
 			Result.Icon := ListEntry.Icon
-			Result.Detail1 := ListEntry.Detail1
-			Result.Detail2 := ListEntry.Detail2
 			Results.Insert(Result)
 		}
 		return Results
@@ -90,9 +90,9 @@ QueryWeatherResult()
 	if(!CAccessor.Instance.GUI)
 		return
 	Accessor := CAccessor.Instance
-	if(InStr(Accessor.Filter, CWeatherPlugin.Instance.Settings.Keyword " ") != 1)
+	if(InStr(Accessor.FilterWithoutTimer, CWeatherPlugin.Instance.Settings.Keyword " ") != 1)
 		return
-	Filter := strTrim(Accessor.Filter, CWeatherPlugin.Instance.Settings.Keyword " ")
+	Filter := strTrim(Accessor.FilterWithoutTimer, CWeatherPlugin.Instance.Settings.Keyword " ")
 	outputdebug query weather for %filter%
 
 	for index, ListEntry in CWeatherPlugin.Instance.List

@@ -4,7 +4,9 @@ Class CRunPlugin extends CAccessorPlugin
 	static Type := CAccessor.RegisterPlugin("Run", CRunPlugin)
 	
 	Description := "This plugin tries to execute the entered text directly. You can press CTRL+Enter`n in the Accessor window to execute this action even if it is not selected.`nCTRL+SHIFT+Enter will run it with admin permissions."
-		
+	
+	AllowDelayedExecution := true
+	
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "run"

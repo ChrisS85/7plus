@@ -14,6 +14,8 @@ Class CURLPlugin extends CAccessorPlugin
 	;Array of IE bookmarks
 	IEBookmarks := Array()
 
+	AllowDelayedExecution := false
+	
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "URL"
@@ -50,7 +52,7 @@ Class CURLPlugin extends CAccessorPlugin
 	}
 	OnOpen(Accessor)
 	{
-		if(!Accessor.Filter && Accessor.CurrentSelection && IsURL(Accessor.CurrentSelection))
+		if(!Accessor.FilterWithoutTimer && Accessor.CurrentSelection && IsURL(Accessor.CurrentSelection))
 			Accessor.SetFilter(Accessor.CurrentSelection)
 	}
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)

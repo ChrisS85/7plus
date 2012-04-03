@@ -11,6 +11,8 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 	
 	;This plugin is not listed by the history plugin because the results may not be valid anymore.
 	SaveHistory := false
+
+	AllowDelayedExecution := false
 	
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
@@ -166,13 +168,13 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 	{
 		if(WinExist("ahk_class " this.WindowClassName) = Accessor.PreviousWindow)
 		{
-			if(Accessor.Filter)
+			if(Accessor.FilterWithoutTimer)
 			{
 				if(!(index := this.MRUList.FindKeyWithValue("Path", ActiveTab := this.GetNotepadPlusPlusActiveTab())))
-					this.MRUList.Insert(Object("Path", ActiveTab, "Command", Accessor.Filter, "Entry", ListEntry.Path))
+					this.MRUList.Insert(Object("Path", ActiveTab, "Command", Accessor.FilterWithoutTimer, "Entry", ListEntry.Path))
 				else
 				{
-					this.MRUList[index].Command := Accessor.Filter
+					this.MRUList[index].Command := Accessor.FilterWithoutTimer
 					this.MRUList[index].Entry := ListEntry.Path
 				}
 			}

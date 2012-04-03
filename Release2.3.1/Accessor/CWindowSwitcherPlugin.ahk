@@ -11,6 +11,8 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 	;This plugin is not listed in the history plugin because the single entries may not be valid anymore.
 	SaveHistory := false
 
+	AllowDelayedExecution := false
+	
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "switch"

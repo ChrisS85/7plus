@@ -6,6 +6,8 @@ Class CAccessorHistoryPlugin extends CAccessorPlugin
 	Description := "This plugin stores the recently executed Accessor entries and shows them when Accessor opens `n(and no other plugin shows things in the current context)."
 		
 	List := Array()
+
+	AllowDelayedExecution := false
 	
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
@@ -33,18 +35,16 @@ Class CAccessorHistoryPlugin extends CAccessorPlugin
 	}
 	OnPreExecute(Accessor, ListEntry, Action, Plugin)
 	{
-		if(Action.SaveHistory && Plugin.SaveHistory)
+		if(!ListEntry.IsHistory && Action.SaveHistory && Plugin.SaveHistory)
 		{
 			;Remove all redundant history entries and destroy their icon copies
 			while(this.List.MaxIndex() >= this.Settings.MaxEntries)
 				DestroyIcon(this.List.Remove(this.Settings.MaxEntries).Icon)
 
 			;Create a copy of the entry and duplicate its icon (it needs to be destroyed later)
-			; NOTE: Actions can contain references to the plugin which mustn't be copied and is not changed, so we may use a reference to it
-			Actions := ListEntry.Remove("Actions")
-			Copy := ListEntry.DeepCopy()
-			Copy.Actions := Actions
+			Copy := Accessor.CopyResult(ListEntry)
 			Copy.Icon := DuplicateIcon(Copy.Icon)
+			Copy.IsHistory := true
 			this.List.Insert(1, Copy)
 		}
 	}

@@ -4,7 +4,9 @@ Class CRecentFoldersPlugin extends CAccessorPlugin
 	static Type := CAccessor.RegisterPlugin("Recent Folders", CRecentFoldersPlugin)
 	
 	Description := "Access recently used folders and quickly navigate to them in many programs."
-		
+	
+	AllowDelayedExecution := false
+	
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "RF"

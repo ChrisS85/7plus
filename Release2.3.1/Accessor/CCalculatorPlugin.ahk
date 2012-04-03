@@ -8,6 +8,8 @@ Class CCalculatorPlugin extends CAccessorPlugin
 	Cleared := false
 	List := Array()
 
+	AllowDelayedExecution := false
+	
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "="
@@ -44,7 +46,7 @@ Class CCalculatorPlugin extends CAccessorPlugin
 	}
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
-		if(!KeywordSet && InStr(Accessor.Filter, this.SetTimer.Keyword) != 1)
+		if(!KeywordSet && InStr(Accessor.FilterWithoutTimer, this.SetTimer.Keyword) != 1)
 			return
 		Results := Array()
 		for index, ListEntry in this.List
@@ -76,9 +78,9 @@ QueryCalcResult()
 return
 QueryCalcResult()
 {
-	if(InStr(CAccessor.Instance.Filter, CCalculatorPlugin.Instance.Settings.Keyword) != 1)
+	if(InStr(CAccessor.Instance.FilterWithoutTimer, CCalculatorPlugin.Instance.Settings.Keyword) != 1)
 		return
-	Filter := strTrimLeft(CAccessor.Instance.Filter, CCalculatorPlugin.Instance.Settings.Keyword)
+	Filter := strTrimLeft(CAccessor.Instance.FilterWithoutTimer, CCalculatorPlugin.Instance.Settings.Keyword)
 	Filter := strTrimLeft(Filter, " ")
 	
 	URL := uriEncode("http://www.google.com/search?q=" Filter)

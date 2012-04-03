@@ -52,13 +52,15 @@ Class CAccessor
 		; Condition: Called to check if this action is valid in the current context. Supports Delegates
 		; SaveHistory: If true, the result will be saved in the history when this action is performed.
 		; Close: If true, Accessor will be closed after this action is performed.
-		__new(Name, Function, Condition = "", SaveHistory = true, Close = true)
+		; AllowDelayedExecution: If true, this action will be visible when a timer is set by the user
+		__new(Name, Function, Condition = "", SaveHistory = true, Close = true, AllowDelayedExecution = true)
 		{
 			this.Name := Name
 			this.Function := Function
 			this.Condition := Condition
 			this.SaveHistory := SaveHistory
 			this.Close := Close
+			this.AllowDelayedExecution := AllowDelayedExecution
 		}
 	}
 	__new()
@@ -239,7 +241,7 @@ Class CAccessor
 	}
 	
 	;This function parses and expands an entered filter string using the Accessor Keywords
-	ExpandFilter(ByRef Filter, LastFilter)
+	ExpandFilter(ByRef Filter, LastFilter, ByRef Time)
 	{
 		;Expand keywords into their real commands
 		for Index, Keyword in this.Keywords
@@ -253,9 +255,26 @@ Class CAccessor
 			}
 		}
 		
+		;Mighty timer parsing
+		if(InStr(Filter, " in "))
+		{
+			if(pos := RegexMatch(Filter, "iJ) in (?:(?<m>\d+) *(?:minutes?|mins?|m)?$|(?<h>\d+) *(?:hours?|h)$|(?<s>\d+) *(?:seconds?|secs?|s)$|(?<m>\d+) *(?:minutes?|mins?|m)?(?:[ ,]+(?<s>\d+) *(?:seconds?|secs?|s)?)?$|(?<h>\d+) *(?:hours?|h)(?:[ ,]+(?<m>\d+) *(?:minutes?|mins?|m))?(?:[ ,]+(?<s>\d+) *(?:seconds?|secs?|s)?)?$|(?:(?<h>\d+):)?(?<m>\d+)(?::(?<s>\d+))?$)", Timer))
+			{
+				Filter := SubStr(Filter, 1, pos - 1)
+				Time := (Timerh ? Timerh * 3600 : 0) + (Timerm ? Timerm * 60 : 0) + (Timers ? Timers : 0)
+			}
+		}
+
 		;Parse parameters. They are split by spaces. Quotes (" ") can be used to treat multiple words as one parameter. The first parameter is the Filter variable without the options.
 		Parameters := Array()
 		p0 := Parse(Filter, "q"")1 2 3 4 5 6 7 8 9 10", p1, p2, p3, p4, p5, p6, p7, p8, p9, p10)
+
+		Loop 9
+		{
+			Index := A_Index + 1
+			EventSystem.GlobalPlaceholders.Remove("Acc" A_Index)
+			EventSystem.GlobalPlaceholders.Insert("Acc" A_Index, p%Index%)
+		}
 		Loop % min(p0, 10)
 			Parameters.Insert(A_Index - 1, p%A_Index%) ;Store parameters with offset of -1, so p1 will become p0 since it isn't a real parameter but rather the keyword
 		
@@ -304,7 +323,14 @@ Class CAccessor
 			return
 		LastFilter := this.LastFilter
 		Filter := this.Filter
-		Parameters := this.ExpandFilter(Filter, LastFilter)
+		Parameters := this.ExpandFilter(Filter, LastFilter, Time)
+
+		if(Time)
+			FormattedTime := "in " Floor(Time/3600) ":" Floor(Mod(Time, 3600) / 60) ":" Floor(Mod(Time, 60))
+
+		;Plugins which need to use the filter string without any preparsing should use this one which doesn't contain the timer at the end
+		this.FilterWithoutTimer := Filter
+
 		this.GUI.ListView.Redraw := false
 		
 		this.GUI.ListView.Items.Clear()
@@ -314,11 +340,10 @@ Class CAccessor
 		;Find out if we are in a single plugin context, and add only those items
 		for index, Plugin in this.Plugins
 		{
-			if(Plugin.Settings.Enabled && SingleContext := ((Plugin.Settings.Keyword && Filter && KeywordSet := InStr(Filter, Plugin.Settings.Keyword " ") = 1) || Plugin.IsInSinglePluginContext(Filter, LastFilter)))
+			if(Plugin.Settings.Enabled && ((Time > 0 && Plugin.AllowDelayedExecution) || !Time) && SingleContext := ((Plugin.Settings.Keyword && Filter && KeywordSet := InStr(Filter, Plugin.Settings.Keyword " ") = 1) || Plugin.IsInSinglePluginContext(Filter, LastFilter)))
 			{
 				if(KeywordSet && this.CurrentSelection && Filter = Plugin.Settings.Keyword " ")
 					Filter .= this.CurrentSelection
-				outputdebug %filter%
 				this.SingleContext := Plugin.Type
 				Filter := strTrimLeft(Filter, Plugin.Settings.Keyword " ")
 				Result := Plugin.RefreshList(this, Filter, LastFilter, KeywordSet, Parameters)
@@ -327,6 +352,7 @@ Class CAccessor
 				break
 			}
 		}
+
 		;If we aren't, let all plugins add the items we want according to their priorities
 		if(!SingleContext)
 		{
@@ -338,7 +364,7 @@ Class CAccessor
 			Loop, Parse, Pluginlist, `,
 			{
 				Plugin := this.Plugins[A_LoopField]
-				if(Plugin.Settings.Enabled && !Plugin.Settings.KeywordOnly && StrLen(Filter) >= Plugin.Settings.MinChars)
+				if(Plugin.Settings.Enabled && ((Time > 0 && Plugin.AllowDelayedExecution) || !Time) && !Plugin.Settings.KeywordOnly && StrLen(Filter) >= Plugin.Settings.MinChars)
 				{
 					Result := Plugin.RefreshList(this, Filter, LastFilter, False, Parameters)
 					if(Result)
@@ -346,14 +372,21 @@ Class CAccessor
 				}
 			}
 		}
+
 		;Now that items are added, add them to the listview
 		for index3, ListEntry in this.List
 		{
+			if(Time > 0)
+			{
+				ListEntry.Time := Time
+				ListEntry.Detail2 := FormattedTime
+			}
 			Plugin := this.Plugins.GetItemWithValue("Type", ListEntry.Type)
 			Plugin.GetDisplayStrings(ListEntry, Title := ListEntry.Title, Path := ListEntry.Path, Detail1 := ListEntry.Detail1, Detail2 := ListEntry.Detail2)
 			item := this.GUI.ListView.Items.Add("", Title, Path, Detail1, Detail2)
 			item.Icon := ListEntry.Icon
 		}
+
 		this.LastFilter := Filter
 		this.LastParameters := Parameters
 		selected := LV_GetNext()
@@ -481,22 +514,53 @@ Class CAccessor
 			Plugin := this.Plugins.GetItemWithValue("Type", ListEntry.Type)
 			if(Action && (IsFunc(Plugin[Action.Function]) || IsFunc(this[Action.Function])))
 			{
-				;Call PreExecute function to notify plugins of execution
-				for index, p in this.Plugins
-					p.OnPreExecute(this, ListEntry, Action, Plugin)
-				;Update filter history
-				this.History.Insert(2, this.Filter)
-				while(this.History.MaxIndex() > 10)
-					this.History.Delete(11)
-				if(IsFunc(Plugin[Action.Function]))
-					Plugin[Action.Function](this, ListEntry)
-				else if(IsFunc(this[Action.Function]))
-					this[Action.Function](ListEntry, this.Plugins.GetItemWithValue("Type", ListEntry.Type))
-				
+				if(ListEntry.Time > 0)
+				{
+					Event := new CEvent()
+					Event.Name := "Timed Accessor Result"
+					Event.Temporary := true
+					Event.Trigger := new CTimerTrigger()
+					Event.Trigger.Time := ListEntry.Time * 1000
+					Event.Trigger.ShowProgress := true
+					Event.Trigger.Text := ListEntry.Title
+					Event.Actions.Insert(new CAccessorResultAction())
+
+					Copy := this.CopyResult(ListEntry)
+					Copy.Remove("Time")
+					Event.Actions[1].Result := Copy
+					Event.Actions[1].Action := Action
+					EventSystem.TemporaryEvents.RegisterEvent(Event)
+					Event.Enable()
+					;Event.TriggerThisEvent()
+				}
+				else
+				{
+					;Call PreExecute function to notify plugins of execution
+					for index, p in this.Plugins
+						p.OnPreExecute(this, ListEntry, Action, Plugin)
+					;Update filter history
+					this.History.Insert(2, this.Filter)
+					while(this.History.MaxIndex() > 10)
+						this.History.Delete(11)
+					if(IsFunc(Plugin[Action.Function]))
+						Plugin[Action.Function](this, ListEntry)
+					else if(IsFunc(this[Action.Function]))
+						this[Action.Function](ListEntry, this.Plugins.GetItemWithValue("Type", ListEntry.Type))
+				}
 				if(Action.Close && this.GUI)
 					this.GUI.Close()
 			}
 		}
+	}
+	;Used to copy an Accessor result
+	CopyResult(Result)
+	{
+		; NOTE: Actions can contain references to the plugin which mustn't be copied and is not changed, so we may use a reference to it
+		Actions := Result.Remove("Actions")
+		Copy := Result.DeepCopy()
+		Copy.Actions := Actions
+		Result.Actions := Actions
+		return Copy
 	}
 	ShowActionMenu()
 	{
@@ -504,14 +568,14 @@ Class CAccessor
 		{
 			Menu, AccessorContextMenu, Add, test, AccessorContextMenu
 			Menu, AccessorContextMenu, DeleteAll
-			if(!ListEntry.Actions.DefaultAction.Condition || ListEntry.Actions.DefaultAction.Condition.(ListEntry))
+			if((!ListEntry.Actions.DefaultAction.Condition || ListEntry.Actions.DefaultAction.Condition.(ListEntry)) && ((ListEntry.Time > 0 && ListEntry.Actions.DefaultAction.AllowDelayedExecution) || !ListEntry.Time))
 			{
 				entries := true
 				Menu, AccessorContextMenu, Add, % ListEntry.Actions.DefaultAction.Name, AccessorContextMenu
 				Menu, AccessorContextMenu, Default, % ListEntry.Actions.DefaultAction.Name
 			}
 			for key, action in ListEntry.Actions
-				if(!action.Condition || action.Condition.(ListEntry))
+				if((!action.Condition || action.Condition.(ListEntry)) && ((ListEntry.Time > 0 && action.AllowDelayedExecution) || !ListEntry.Time))
 				{
 					entries := true
 					Menu, AccessorContextMenu, Add, % action.Name, AccessorContextMenu
@@ -946,11 +1010,11 @@ Class CAccessorPlugin
 		static Run := new CAccessor.CAction("Run", "Run")
 		static RunAsAdmin := new CAccessor.CAction("Run as admin", "RunAsAdmin")
 		static RunWithArgs := new CAccessor.CAction("Run with arguments", "RunWithArgs")
-		static Copy := new CAccessor.CAction("Copy path`tCTRL + C", "Copy", "", false, false)
+		static Copy := new CAccessor.CAction("Copy path`tCTRL + C", "Copy", "", false, false, false)
 		static OpenExplorer := new CAccessor.CAction("Open in Explorer`tCTRL + E", "OpenExplorer")
 		static OpenCMD := new CAccessor.CAction("Open in CMD", "OpenCMD")
-		static ExplorerContextMenu := new CAccessor.CAction("Explorer context menu", "ExplorerContextMenu", "", false)
-		static OpenPathWithAccessor := new CAccessor.CAction("Open path with Accessor`tCTRL + F", "OpenPathWithAccessor", "", false)
+		static ExplorerContextMenu := new CAccessor.CAction("Explorer context menu", "ExplorerContextMenu", "", false, false, false)
+		static OpenPathWithAccessor := new CAccessor.CAction("Open path with Accessor`tCTRL + F", "OpenPathWithAccessor", "", false, false, false)
 	}
 	
 	;An object representing a result of an Accessor query.
@@ -1048,12 +1112,10 @@ Control panel
 trillian
 winget
 
-timer for any (or most) accessor actions
 "Open with" setting for program launcher
 Generic icons control and support in accessor events and maybe elsewhere
-take care of accessor horizontal scroll bar
 Other TODO:
 Upward navigation
 take care of event list horizontal scroll bar
-
+FIX LISTVIEW CRASH
 */
