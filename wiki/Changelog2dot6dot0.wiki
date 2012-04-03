@@ -5,6 +5,7 @@ New Functions:
 
 Bugfixes:
  * Added a bug which caused flashing of file dialog close box while mouse was over it.
+ * Fixed a bug that caused crashes and hangups on windows which contain ListViews.
 
 Changes:
  * Rewrote navigation code that sets/gets paths/selections in explorer, file dialogs, CMD, Desktop etc.
