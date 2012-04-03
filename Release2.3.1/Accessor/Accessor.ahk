@@ -601,8 +601,10 @@ return
 
 Class CAccessorGUI extends CGUI
 {
+	Height := 360
+	Width := 900
 	EditControl := this.AddControl("Edit", "EditControl", "w800 y10 -Multi", "")
-	ListView := this.AddControl("ListView", "ListView", "w800 y+10 AltSubmit 0x8 -Multi R15 NoSortHdr", "Title|Path| | |")
+	ListView := this.AddControl("ListView", "ListView", "w" this.Width - 94 " y+10 h" (this.Height - 46) " AltSubmit 0x8 -Multi NoSortHdr", "Title|Path| | |")
 	btnOK := this.AddControl("Button", "btnOK", "y10 x+10 w75 section Default", "&OK")
 	btnCancel := this.AddControl("Button", "btnCancel", "y+8 w75", "&Cancel")
 	btnConfigKeywords := this.AddControl("Button", "btnConfigKeywords", "xs+0 y" this.Height - 56 " w75", "&Keywords")
@@ -1025,12 +1027,17 @@ Processes
 twitter
 Control panel
 trillian
+winget
 
+Set position of accessor based on the monitor where the cursor is (maybe as setting)
+move accessor settings in an accessor page and put keywords and plugins as subpages
+timer for any (or most) accessor actions
 "Open with" setting for program launcher
 Generic icons control and support in accessor events and maybe elsewhere
-Accessor height
+Accessor height and width
 take care of accessor horizontal scroll bar
 Other TODO:
+Upward navigation
 Settings tree width
 take care of event list horizontal scroll bar
 

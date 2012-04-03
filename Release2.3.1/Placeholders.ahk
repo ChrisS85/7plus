@@ -84,33 +84,6 @@ ExpandPathPlaceholders(InputString)
 	return TempValue
 }
 
-;ExpandPathPlaceholders(text)
-;{
-;	static sProgramFiles, sWinDir, sTemp, sAppData, sDesktop, sMyDocuments, sStartMenu, sStartMenuCommon, s7plusDrive
-;	if(!sProgramFiles)
-;	{
-;		sProgramFiles := GetFullPathName(A_ProgramFiles)
-;		sWinDir := GetFullPathName(A_WinDir)
-;		sTemp := GetFullPathName(A_Temp)
-;		sAppData := GetFullPathName(A_AppData)
-;		sDesktop := GetFullPathName(A_Desktop)
-;		sMyDocuments := GetFullPathName(A_MyDocuments)
-;		sStartMenu := GetFullPathName(A_StartMenu)
-;		sStartMenuCommon := GetFullPathName(A_StartMenuCommon)
-;		SplitPath, A_ScriptDir,,,,,s7plusDrive
-;	}
-;	StringReplace, text, text, `%ProgramFiles`%, %sProgramFiles%, All
-;	StringReplace, text, text, `%Windir`%, %sWindir%, All
-;	StringReplace, text, text, `%Temp`%, %sTemp%, All
-;	StringReplace, text, text, `%AppData`%, %sAppData%, All
-;	StringReplace, text, text, `%Desktop`%, %sDesktop%, All
-;	StringReplace, text, text, `%MyDocuments`%, %sMyDocuments%, All
-;	StringReplace, text, text, `%StartMenu`%, %sStartMenu%, All
-;	StringReplace, text, text, `%StartMenuCommon`%, %sStartMenuCommon%, All
-;	StringReplace, text, text, `%7plusDrive`%, %s7plusDrive%, All
-;	StringReplace, text, text, `%7plusDir`%, %A_ScriptDir%, All
-;	return text
-;}
 ;Expands a single placeholder. Placeholder argument contains only the name, without ${}
 ExpandPlaceholder(Placeholder)
 {
@@ -130,7 +103,9 @@ ExpandPlaceholder(Placeholder)
 			focussed:=XPGetFocussed()
 		return focussed
 	}
-	else if(Placeholder = "WinVer")
+	else if(Placeholder = "WindowsVersion")
+		return WinVer
+	else if(Placeholder = "WinVer") ;Deprecated
 		return A_OSVersion
 	else if(Placeholder = "U" || strStartsWith(Placeholder,"M")) ;Mouse submenu
 	{
