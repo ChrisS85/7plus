@@ -297,9 +297,9 @@ Finally, here are some settings that you're likely to change at the beginning:
 			Page.editEventFilter.Text := ""
 		}
 		this.RecreateTreeView()
-		Page.listEvents.ModifyCol(2, 40)
-		Page.listEvents.ModifyCol(3, 195)
-		Page.listEvents.ModifyCol(4, 230)
+		;Page.listEvents.ModifyCol(2, 40)
+		;Page.listEvents.ModifyCol(3, 195)
+		;Page.listEvents.ModifyCol(4, "AutoHdr")
 		this.ActiveControl := Page.listEvents
 		this.Remove("SupressFillEventsList")
 	}
@@ -368,6 +368,9 @@ Finally, here are some settings that you're likely to change at the beginning:
 			this.ActiveControl := Page.listEvents
 		this.treePages.DisableNotifications := false
 		Page.listEvents.DisableNotifications := false
+		;Page.listEvents.ModifyCol(2, 40)
+		;Page.listEvents.ModifyCol(3, 195)
+		;Page.listEvents.ModifyCol(4, "AutoHdr")
 	}
 	
 	;This function needs to use speed optimizations
@@ -405,6 +408,10 @@ Finally, here are some settings that you're likely to change at the beginning:
 		if(Page.listEvents.SelectedItems.MaxIndex() = 1)
 			Page.editEventDescription.Text := this.Events.GetItemWithValue("ID", Page.listEvents.SelectedItem[2]).Description
 		this.listEvents_SelectionChanged("")
+
+		Page.listEvents.ModifyCol(2, 40)
+		Page.listEvents.ModifyCol(3, 195)
+		Page.listEvents.ModifyCol(4, 225)
 	}
 	IsEventVisible(Event, Filter, TriggerDisplayString, SelectedCategory, ShowAdvancedEvents)
 	{
