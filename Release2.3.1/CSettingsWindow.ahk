@@ -15,7 +15,7 @@ ShowSettings(Page = "Events")
 Class CSettingsWindow Extends CGUI
 {
 	Width := 890
-	Height := 520
+	Height := 560
 	treePages := this.AddControl("TreeView", "treePages", "x19 y12 w182 h" this.Height - 47, "")
 	grpPage := this.AddControl("GroupBox", "grpPage", "x+17 w" this.Width - 186 " h" this.Height - 47 " Section", "Events")
 	btnApply := this.AddControl("Button", "btnApply", "x" this.Width - 83 " y" this.Height - 29 " w73 h23", "Apply")
@@ -263,22 +263,22 @@ Finally, here are some settings that you're likely to change at the beginning:
 		
 		Page.AddControl("Button", "btnEventHelp", "xs+567 ys+48 w80 h23", "&Help")
 		Page.AddControl("Button", "btnAddEvent", "xs+567 ys+76 w80 h23", "&Add Event")
-		Page.AddControl("Button", "btnEditEvent", "xs+567 ys+104 w80 h23", "&Edit Event")
-		Page.AddControl("Button", "btnDeleteEvents", "xs+567 ys+132 w80 h23", "&Delete Events")
-		Page.AddControl("Button", "btnEnableEvents", "xs+567 ys+160 w80 h23", "E&nable Events")
-		Page.AddControl("Button", "btnDisableEvents", "xs+567 ys+188 w80 h23", "D&isable Events")
-		Page.AddControl("Button", "btnCopyEvent", "xs+567 ys+216 w80 h23", "&Copy Events")
-		Page.AddControl("Button", "btnPasteEvent", "xs+567 ys+244 w80 h23", "&Paste Events")
+		Page.AddControl("Button", "btnEditEvent", "xs+567 y+9 w80 h23", "&Edit Event")
+		Page.AddControl("Button", "btnDeleteEvents", "xs+567 y+9 w80 h23", "&Delete Events")
+		Page.AddControl("Button", "btnEnableEvents", "xs+567 y+9 w80 h23", "E&nable Events")
+		Page.AddControl("Button", "btnDisableEvents", "xs+567 y+9 w80 h23", "D&isable Events")
+		Page.AddControl("Button", "btnCopyEvent", "xs+567 y+9 w80 h23", "&Copy Events")
+		Page.AddControl("Button", "btnPasteEvent", "xs+567 y+9 w80 h23", "&Paste Events")
 		
-		Page.AddControl("Button", "btnImportEvents", "xs+567 ys+272 w80 h23", "&Import")
-		Page.AddControl("Button", "btnExportEvents", "xs+567 ys+300 w80 h23", "E&xport")
-		Page.AddControl("Button", "btnCreateShortcut", "xs+567 ys+328 w80 h23", "Create &Shortcut")
+		Page.AddControl("Button", "btnImportEvents", "xs+567 y+9 w80 h23", "&Import")
+		Page.AddControl("Button", "btnExportEvents", "xs+567 y+9 w80 h23", "E&xport")
+		Page.AddControl("Button", "btnCreateShortcut", "xs+567 y+9 w80 h23", "Create &Shortcut")
 		
-		Page.AddControl("Edit", "editEventDescription", "xs+21 ys+353 w536 h81 ReadOnly", "")
 		Page.AddControl("Edit", "editEventFilter", "xs+413 ys+50 w144 h20", "")
 		Page.AddControl("Text", "txtEventSearch", "xs+332 ys+53 w75 h13", "Event Search:")
 		;ListView uses indices that are independent of the listview sorting so it can access the array with the data more easily
-		Page.AddControl("ListView", "listEvents", "xs+21 ys+76 w536 h275 Grid Checked -LV0x10 Count300", "Enabled|ID|Trigger|Name")
+		Page.AddControl("ListView", "listEvents", "xs+21 ys+76 w536 h311 Grid Checked -LV0x10 Count300", "Enabled|ID|Trigger|Name")
+		Page.AddControl("Edit", "editEventDescription", "xs+21 y+5 w536 h81 ReadOnly", "")
 		Page.Controls.listEvents.IndependentSorting := true
 		Page.AddControl("Text", "txtEventDescription", "xs+21 ys+16 w606 h26", "You can add events here that are triggered under certain conditions. When triggered, the event can launch a series of actions.`n This is a very powerful tool to add all kinds of features, and many features from 7plus are now implemented with this system.")
 		Page.Controls.editEventDescription.Multi := 1
