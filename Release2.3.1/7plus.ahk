@@ -49,7 +49,6 @@ ComObjError(0)
 #include <Notify>
 #include <_Struct>
 #include <ControlHotkey>
-#include <UniqueArray>
 #include <WaitForEvent>
 #include <WorkerThread>
 
@@ -83,4 +82,3 @@ ComObjError(0)
 #include %A_ScriptDir%\SlideWindows.ahk
 #include %A_ScriptDir%\JoyControl.ahk
 #include %A_ScriptDir%\ExplorerTabs.ahk
-;#include *i %A_ScriptDir%\Tools\ObjTree.ahk

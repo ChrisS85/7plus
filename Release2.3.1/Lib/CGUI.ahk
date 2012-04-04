@@ -50,6 +50,17 @@ Class CGUI
 	;Used for keeping track of the window size. Until the window is shown for the first time or manual size is set
 	;it will keep updating the size of the (invisible) window when new controls are added.
 	_Initialized := false
+
+	/*
+	Event Handler: OnClose(Source)
+	Invoked when the window is closed (hidden or destroyed).
+
+	Event Handler: OnDestroy(Source)
+	Invoked when the window is destroyed.
+	*/
+	OnClose := new EventHandler()
+	OnDestroy := new EventHandler()
+
 	__New(instance)
 	{
 		if(!CGUI_Assert(IsObject(instance) && !instance.HasKey("hwnd"), "CGUI constructor must not be called!"))
@@ -238,7 +249,10 @@ Class CGUI
 		Gui, % this.GUINum ":Destroy"
 		;Call PostDestroy function
 		if(IsFunc(this.PostDestroy))
+		{
 			this.PostDestroy()
+			this.OnDestroy.(this)
+		}
 	}
 	
 	/*
@@ -1007,6 +1021,9 @@ Class CGUI
 				}
 				if(!this.IsDestroyed)
 				{
+					;Call event handler
+					if(func = "PreClose")
+						this.OnClose.(this)
 					if(func = "PreClose" && !result && !GUI.DestroyOnClose) ;Hide the GUI if closing was not aborted and the GUI should not destroy itself on closing
 						GUI.Hide()
 					else if(func = "PreClose" && !result) ;Otherwise if not aborted destroy the GUI
