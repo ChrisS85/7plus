@@ -137,7 +137,7 @@ GetWorkingDir(Command)
 		SplitPath, Command,, WorkingDir
 	return WorkingDir
 }
-RunAsUser(Command, WorkingDir, Options)
+RunAsUser(Command, WorkingDir = "", Options = "")
 {
 	result := DllCall("Explorer.dll\CreateProcessMediumIL", Str, Command, Str, WorkingDir, Str, Options, "UInt")
 	if(A_LastError = 740) ;ERROR_ELEVATION_REQUIRED
@@ -148,7 +148,7 @@ RunAsUser(Command, WorkingDir, Options)
 		Return, v
 	}
 }
-RunAsAdmin(target, args, WorkingDir)
+RunAsAdmin(target, args = "", WorkingDir = "")
 {
 	uacrep := DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, target, str, args, str, WorkingDir, int, 1)
 	return uacrep = 42 ;UAC dialog confirmed

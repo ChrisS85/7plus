@@ -103,8 +103,24 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		Class CActions extends CArray
 		{
 			DefaultAction := CAccessorPlugin.CActions.Run
-			__new()
+			__new(BasePath = "")
 			{
+				outputdebug basepath %basepath%
+				;If this program is from an indexed path there can be customized actions for it
+				if(BasePath)
+				{
+					Actions := CProgramLauncherPlugin.Instance.Paths.GetItemWithValue("Path", BasePath).Actions
+					if(Actions)
+						for index, Action in Actions
+						{
+							CustomAction := new CAccessor.CAction(Action.Action, "CustomAction")
+							CustomAction.Command := Action.Command
+							if(index = 1)
+								this.DefaultAction := CustomAction
+							else
+								this.Insert(CustomAction)
+						}
+				}
 				this.Insert(CAccessorPlugin.CActions.RunWithArgs)
 				this.Insert(CAccessorPlugin.CActions.RunAsAdmin)
 				this.Insert(CAccessorPlugin.CActions.OpenExplorer)
@@ -114,7 +130,10 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			}
 		}
 		Type := "Program Launcher"
-		Actions := new this.CActions()
+		__new(BasePath = "")
+		{
+			this.Actions := new this.CActions(BasePath)
+		}
 	}
 	Init()
 	{
@@ -279,12 +298,12 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			
 			;Match by name of the resolved filename
 			strippedResolvedName := this.Settings.IgnoreFileExtensions ? RegexReplace(ListEntry.ResolvedName, "\.\w+") : ListEntry.ResolvedName 
-			ExeMatch := strippedResolvedName && ((MatchPos := InStr(strippedResolvedName,StrippedFilter)) || (this.Settings.FuzzySearch && strlen(StrippedFilter) < 5 && FuzzySearch(strippedResolvedName,StrippedFilter) < 0.4))
+			ResolvedMatch := strippedResolvedName && ((MatchPos := InStr(strippedResolvedName,StrippedFilter)) || (this.Settings.FuzzySearch && strlen(StrippedFilter) < 5 && FuzzySearch(strippedResolvedName,StrippedFilter) < 0.4))
 			
 			;Match by filename
 			FilenameMatch := ListEntry.Filename && ((MatchPos := InStr(ListEntry.Filename,StrippedFilter)) || (this.Settings.FuzzySearch && strlen(StrippedFilter) < 5 && FuzzySearch(ListEntry.Filename,StrippedFilter) < 0.4))
 			
-			if(ExeMatch || NameMatch)
+			if(ResolvedMatch || FilenameMatch)
 			{
 				;~ IconCount++
 				if(!ListEntry.hIcon) ;Program launcher icons are cached lazy, only when needed
@@ -293,7 +312,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 				Name := ListEntry.Filename ? ListEntry.Filename : ListEntry.ResolvedName
 				
 				;Create result
-				result := new this.CResult()
+				result := new this.CResult(ListEntry.BasePath)
 				result.Title := Name
 				result.Path := ListEntry.Command
 				result.args := ListEntry.args
@@ -314,7 +333,14 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 	}	
 	
 	;Functions specific to this plugin:
-	
+
+	;All customized actions use this action
+	CustomAction(ListEntry, Plugin, Action)
+	{
+		Command := StringReplace(Action.Command, "${File}", ListEntry.Path)
+		RunAsUser(Command)
+	}
+
 	;Possibly add the selected program to ProgramLauncher cache
 	AddToCache(ListEntry)
 	{
@@ -458,14 +484,17 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 					if(!command || InStr(FileExist(command),"D"))
 						continue
 					
+					outputdebug command %command% exclude %exclude%
 					;Exclude undesired programs (uninstall, setup,...)
 					if command not contains %exclude%
 					{
 						if Filename not contains %exclude%
 						{
+							outputdebug not excluded
 							;Check for existing duplicates
 							if(!this.List.FindKeyWithValue("Command", command))
 							{
+								outputdebug no dupe
 								IndexedFile := new this.CIndexedFile()
 								IndexedFile.Command := Command
 								IndexedFile.args := args
@@ -528,6 +557,8 @@ Class CProgramLauncherPathEditorWindow extends CGUI
 	listActions := this.AddControl("ListView", "listActions", "xs+0 y+10 w520 Section", "Action|Command")
 	btnAddAction := this.AddControl("Button", "btnAddAction", "x+10 yp+0 w80", "&Add Action")
 	btnDeleteAction := this.AddControl("Button", "btnDeleteAction", "xp+0 y+10 w80", "&Delete Action")
+	btnMoveActionUp := this.AddControl("Button", "btnMoveActionUp", "xp+0 y+10 w80", "Move &Up")
+	btnMoveActionDown := this.AddControl("Button", "btnMoveActionDown", "xp+0 y+10 w80", "Move &Down")
 	txtAction := this.AddControl("Text", "txtAction", "xs+0", "Action:")
 	editAction := this.AddControl("Edit", "editAction", "x+10 yp-3", "")
 	txtCommand := this.AddControl("Text", "txtCommand", "x+10 yp+3", "Command:")
@@ -663,6 +694,30 @@ Class CProgramLauncherPathEditorWindow extends CGUI
 		if(this.listActions.SelectedItems.MaxIndex() = 1)
 			this.listActions.Items.Delete(this.listActions.SelectedIndex)
 	}
+	btnMoveActionUp_Click()
+	{
+		if(this.listActions.SelectedIndex > 1)
+		{
+			Action := this.listActions.SelectedItem.Text
+			Command := this.listActions.SelectedItem[2]
+			this.listActions.SelectedItem.Text := this.listActions.Items[this.listActions.SelectedIndex - 1].Text
+			this.listActions.SelectedItem[2] := this.listActions.Items[this.listActions.SelectedIndex - 1][2]
+			this.listActions.Items[this.listActions.SelectedIndex - 1].Text := Action
+			this.listActions.Items[this.listActions.SelectedIndex - 1][2] := Command
+		}
+	}
+	btnMoveActionDown_Click()
+	{
+		if(this.listActions.SelectedIndex && this.listActions.SelectedIndex < this.listActions.Items.MaxIndex())
+		{
+			Action := this.listActions.SelectedItem.Text
+			Command := this.listActions.SelectedItem[2]
+			this.listActions.SelectedItem.Text := this.listActions.Items[this.listActions.SelectedIndex + 1].Text
+			this.listActions.SelectedItem[2] := this.listActions.Items[this.listActions.SelectedIndex + 1][2]
+			this.listActions.Items[this.listActions.SelectedIndex + 1].Text := Action
+			this.listActions.Items[this.listActions.SelectedIndex + 1][2] := Command
+		}
+	}
 	listActions_SelectionChanged()
 	{
 		if(this.listActions.SelectedItems.MaxIndex() = 1)
@@ -670,6 +725,8 @@ Class CProgramLauncherPathEditorWindow extends CGUI
 			this.editAction.Enabled := true
 			this.editCommand.Enabled := true
 			this.btnBrowse.Enabled := true
+			this.btnMoveActionUp.Enabled := this.listActions.SelectedIndex > 1
+			this.btnMoveActionDown.Enabled := this.listActions.SelectedIndex < this.listActions.Items.MaxIndex()
 			this.editAction.Text := this.listActions.SelectedItem.Text
 			this.editCommand.Text := this.listActions.SelectedItem[2]
 		}
@@ -678,6 +735,8 @@ Class CProgramLauncherPathEditorWindow extends CGUI
 			this.editAction.Enabled := false
 			this.editCommand.Enabled := false
 			this.btnBrowse.Enabled := false
+			this.btnMoveActionUp.Enabled := false
+			this.btnMoveActionDown.Enabled := false
 			this.editAction.Text := ""
 			this.editCommand.Text := ""
 		}
@@ -693,3 +752,10 @@ Class CProgramLauncherPathEditorWindow extends CGUI
 			this.listActions.SelectedItem[2] := this.editCommand.Text
 	}
 }
+
+/*
+TODO:
+Modal window
+Save exclude properly
+Figure out how to open files with Sublime
+*/

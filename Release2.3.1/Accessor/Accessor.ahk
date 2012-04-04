@@ -543,9 +543,9 @@ Class CAccessor
 					while(this.History.MaxIndex() > 10)
 						this.History.Delete(11)
 					if(IsFunc(Plugin[Action.Function]))
-						Plugin[Action.Function](this, ListEntry)
+						Plugin[Action.Function](this, ListEntry, Action)
 					else if(IsFunc(this[Action.Function]))
-						this[Action.Function](ListEntry, this.Plugins.GetItemWithValue("Type", ListEntry.Type))
+						this[Action.Function](ListEntry, this.Plugins.GetItemWithValue("Type", ListEntry.Type), Action)
 				}
 				if(Action.Close && this.GUI)
 					this.GUI.Close()
