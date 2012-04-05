@@ -26,7 +26,7 @@ ProcessCommandLineParameters() ;Possible exit point
 
 ;NOTE: If 7plus would be translated, this will not get trasnlated because languages and settings are loaded later on. It might be beneficial to use
 ;	   lazy language loading or something similar.
-if(A_PtrSize = 4 && DllCall("IsWow64Process"))
+if(A_PtrSize = 4 && IsWow64Process())
 	Msgbox 32bit version of 7plus is running on an x64 operating system.`nSome features are not going to work. Please use an x64 version of 7plus!
 
 global Settings := new CSettings()

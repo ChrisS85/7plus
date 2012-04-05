@@ -31,42 +31,45 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		UpdateOnStart := true
 		UpdateOnOpen := false
 		Exclude := "setup,install,uninst,remove"
-		Load(XML)
+		Load(json)
 		{
-			if(XML.HasKey("Path"))
+			if(json.HasKey("Path"))
 			{
 				for key, value in this
 				{
-					if(!IsFunc(value) && key != "Base" && key != "Actions" && XML.HasKey(key))
-						this[key] := XML[key]
-					else if(key = "Actions" && XML.HasKey("Actions"))
+					if(!IsFunc(value) && key != "Base" && key != "Actions" && json.HasKey(key))
+					{
+						outputdebug % "load " key ": " json[key]
+						this[key] := json[key]
+					}
+					else if(key = "Actions" && json.HasKey("Actions"))
 					{
 						this.Actions := Array()
-						if(!XML.Actions.MaxIndex())
-							XML.Actions := [XML.Actions]
-						for index, action in XML.Actions
+						if(!json.Actions.MaxIndex())
+							json.Actions := [json.Actions]
+						for index, action in json.Actions
 							if(action.HasKey("Action") && action.HasKey("Command"))
 								this.Actions.Insert({Action : action.Action, Command : action.Command})
 					}
 				}
 			}
 		}
-		Write(XML)
+		Write(json)
 		{
-			XMLPath := {}
+			jsonPath := {}
 			for key, value in this
 			{
 				if(!IsFunc(value) && key != "Base" && key != "Actions")
-					XMLPath[key] := this[key]
+					jsonPath[key] := this[key]
 				else if(key = "Actions")
 				{
-					XMLPath.Actions := Array()
+					jsonPath.Actions := Array()
 					for index, action in value
 						if(action.HasKey("Action") && action.HasKey("Command"))
-							XMLPath.Actions.Insert({Action : action.Action, Command : action.Command})
+							jsonPath.Actions.Insert({Action : action.Action, Command : action.Command})
 				}
 			}
-			XML.Insert(XMLPath)
+			json.Insert(jsonPath)
 		}
 	}
 	Class CIndexedFile
@@ -76,12 +79,12 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		Command := ""
 		ResolvedName := ""
 		Filename := ""
-		Load(XML)
+		Load(json)
 		{
-			if(XML.HasKey("Command"))
+			if(json.HasKey("Command"))
 				for key, value in this
-					if(!IsFunc(value) && key != "Base" && XML.HasKey(key))
-						this[key] := XML[key]
+					if(!IsFunc(value) && key != "Base" && json.HasKey(key))
+						this[key] := json[key]
 			if(!this.ResolvedName)
 			{
 				Command := this.Command
@@ -89,13 +92,13 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 				this.ResolvedName := Command
 			}
 		}
-		Write(XML)
+		Write(json)
 		{
-			XMLFile := {}
+			jsonFile := {}
 			for key, value in this
 				if(!IsFunc(value) && key != "Base")
-					XMLFile[key] := this[key]
-			XML.Insert(XMLFile)
+					jsonFile[key] := this[key]
+			json.Insert(jsonFile)
 		}
 	}
 	Class CResult extends CAccessorPlugin.CResult
@@ -149,8 +152,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		this.SettingsWindow := {Settings: Settings, GUI: GUI, PluginGUI: PluginGUI}
 		this.SettingsWindow.Paths := this.Paths.DeepCopy()
 		AddControl(Settings, PluginGUI, "Checkbox", "IgnoreExtensions", "Ignore file extensions", "", "", "", "", "", "", "If checked, file extensions will be excluded from the query.")
-		AddControl(Settings, PluginGUI, "Edit", "Exclude", "", "", "Exclude:", "", "", "", "", "Files which contain one of these strings will not be listed as results.")
-		x := PGUI.x
+		
 		GUI.ListBox := GUI.AddControl("ListBox", "ListBox", "-Hdr -Multi -ReadOnly x" PluginGUI.x " y+10 w330 R9", "")
 		for index, IndexedPath in this.SettingsWindow.Paths
 			GUI.ListBox.Items.Add(IndexedPath.Path)
@@ -228,7 +230,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 	}
 	IndexPath_OnClose(Sender)
 	{
-		outputdebug % "onclose" sender.Result.Path
+		this.SettingsWindow.GUI.Enabled := true
 		if(IndexPathObject := Sender.Result)
 		{
 			if(Sender.Temporary)
@@ -335,7 +337,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 	;Functions specific to this plugin:
 
 	;All customized actions use this action
-	CustomAction(ListEntry, Plugin, Action)
+	CustomAction(Accessor, ListEntry, Action)
 	{
 		Command := StringReplace(Action.Command, "${File}", ListEntry.Path)
 		RunAsUser(Command)
@@ -362,7 +364,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 	{
 		this.List := Array()
 		this.Paths := Array()
-		if(!FileExist(Settings.ConfigPath "\ProgramCache.xml")) ;File doesn't exist, create default values
+		if(!FileExist(Settings.ConfigPath "\ProgramCache.json") && !FileExist(Settings.ConfigPath "\ProgramCache.xml")) ;File doesn't exist, create default values
 		{
 			IndexingPath := new this.CIndexingPath()
 			IndexingPath.Path := "%StartMenu%"
@@ -388,28 +390,33 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			;this.Paths.Insert(IndexingPath)
 			return
 		}
-		
-		FileRead, xml, % Settings.ConfigPath "\ProgramCache.xml"
-		XMLObject := XML_Read(xml)
-		
-		;Convert empty and single arrays to real array
-		if(!XMLObject.List.MaxIndex())
-			XMLObject.List := IsObject(XMLObject.List) ? Array(XMLObject.List) : Array()
-		if(!XMLObject.Paths.MaxIndex())
-			XMLObject.Paths := IsObject(XMLObject.Paths) ? Array(XMLObject.Paths) : Array()
-		
-		for index, XML in XMLObject.List ;Read cached files
+		else if(FileExist(Settings.ConfigPath "\ProgramCache.json"))
 		{
-			XMLFile := new this.CIndexedFile()
-			XMLFile.Load(XML)
-			if(!this.List.FindKeyWithValue("Command", XMLFile.Command))
-				this.List.Insert(XMLFile)
+			FileRead, json, % Settings.ConfigPath "\ProgramCache.json"
+			jsonObject := lson(json)
+		}
+		else ;Backwards compatibility with xml format
+		{
+			jsonObject := XML_Read(Settings.ConfigPath "\ProgramCache.xml")
+			;Convert empty and single arrays to real array
+			if(!jsonObject.List.MaxIndex())
+				jsonObject.List := IsObject(jsonObject.List) ? Array(jsonObject.List) : Array()
+			if(!jsonObject.Paths.MaxIndex())
+				jsonObject.Paths := IsObject(jsonObject.Paths) ? Array(jsonObject.Paths) : Array()
+			FileDelete, % Settings.ConfigPath "\ProgramCache.xml"
+		}
+		for index, json in jsonObject.List ;Read cached files
+		{
+			jsonFile := new this.CIndexedFile()
+			jsonFile.Load(json)
+			if(!this.List.FindKeyWithValue("Command", jsonFile.Command))
+				this.List.Insert(jsonFile)
 		}
 		
-		for index2, XML in XMLObject.Paths ;Read scan directories
+		for index2, json in jsonObject.Paths ;Read scan directories
 		{
 			Path := new this.CIndexingPath()
-			Path.Load(XML)
+			Path.Load(json)
 			this.Paths.Insert(Path)
 		}
 	}
@@ -417,14 +424,14 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 	;Writes the cached programs to disk
 	WriteCache()
 	{
-		FileDelete, % Settings.ConfigPath "\ProgramCache.xml"
-		XMLObject := Object("List", Array(), "Paths", Array())
+		FileDelete, % Settings.ConfigPath "\ProgramCache.json"
+		jsonObject := Object("List", Array(), "Paths", Array())
 		for index, IndexedFile in this.List
-			IndexedFile.Write(XMLObject.List)
+			IndexedFile.Write(jsonObject.List)
 		for index2, Path in this.Paths
-			Path.Write(XMLObject.Paths)
-		
-		XML_Save(XMLObject, Settings.ConfigPath "\ProgramCache.xml")
+			Path.Write(jsonObject.Paths)
+		string := lson(jsonObject)
+		FileAppend, %string%, % Settings.ConfigPath "\ProgramCache.json"
 	}
 	
 	;Updates the list of cached programs, optionally for a specific path only
@@ -569,6 +576,10 @@ Class CProgramLauncherPathEditorWindow extends CGUI
 	__new(IndexPathObject, Temporary)
 	{
 		this.Temporary := Temporary
+		this.Owner := CProgramLauncherPlugin.Instance.SettingsWindow.GUI.hwnd
+		this.ToolWindow := true
+		this.OwnDialogs := true
+		CProgramLauncherPlugin.Instance.SettingsWindow.GUI.Enabled := false
 		this.Title := "Edit Program Launcher indexing path"
 		this.chkUpdateOnOpen.Tooltip := "This option might be desired for the recent docs folder, but it will increase Accessor opening times."
 		this.DestroyOnClose := true
@@ -752,10 +763,3 @@ Class CProgramLauncherPathEditorWindow extends CGUI
 			this.listActions.SelectedItem[2] := this.editCommand.Text
 	}
 }
-
-/*
-TODO:
-Modal window
-Save exclude properly
-Figure out how to open files with Sublime
-*/

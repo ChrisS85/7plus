@@ -77,7 +77,7 @@ XML_Read(xml,node = 0)
 		node := Object()
 	xml := strTrim(xml,"`r`n")
 	xml := strTrim(xml,"`n")
-	if(!strstartswith(xml,"<"))
+	if(InStr(xml,"<") != 1)
 		return ""
 	start := 1
 	while(start != 0) ;loop until no more keys, all keys from this level read

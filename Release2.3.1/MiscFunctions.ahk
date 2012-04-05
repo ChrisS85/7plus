@@ -1606,3 +1606,14 @@ FindMonitorFromMouseCursor()
         	return {Index : A_Index, Left : Mon%A_Index%Left, Top : Mon%A_Index%Top, Right : Mon%A_Index%Right, Bottom : Mon%A_Index%Bottom}
     }
 }
+
+IsWow64Process()
+{
+	ThisProcess := DllCall("GetCurrentProcess")
+	; If IsWow64Process() fails or can not be found,
+	; assume this process is not running under wow64.
+	; Otherwise, use the value returned in IsWow64Process.
+	if !DllCall("IsWow64Process", "PTR", ThisProcess, "PTR*", IsWow64Process)
+	    IsWow64Process := false
+    return IsWow64Process
+}
