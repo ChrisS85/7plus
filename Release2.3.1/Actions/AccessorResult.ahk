@@ -17,5 +17,4 @@ Class CAccessorResultAction Extends CAction
 	{
 		return this.Type
 	}
-
 }

@@ -21,6 +21,11 @@ Class CEventPlugin extends CAccessorPlugin
 		}
 		Type := "Event Plugin"
 		Actions := new this.CActions()
+		__Delete()
+		{
+			if(this.Icon && !CAccessor.Instance.GenericIcons.IndexOf(this.Icon))
+				DestroyIcon(this.Icon)
+		}
 	}
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
@@ -39,7 +44,13 @@ Class CEventPlugin extends CAccessorPlugin
 				Result.Detail1 := Event.ExpandPlaceholders(ListEntry.Event.Trigger.Detail1)
 				Result.Event := Event
 				Result.Parameters := Parameters
-				Result.Icon := Accessor.GenericIcons.Application
+				if(Icon := Event.Trigger.Icon)
+				{
+					StringSplit, icon, icon, `,,%A_Space%
+					Result.Icon := ExtractIcon(icon1, icon2 + 1, 64)
+				}
+				else
+					Result.Icon := Accessor.GenericIcons.Application
 				Results.Insert(Result)
 			}
 		}

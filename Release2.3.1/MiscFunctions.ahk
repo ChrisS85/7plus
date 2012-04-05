@@ -1617,3 +1617,14 @@ IsWow64Process()
 	    IsWow64Process := false
     return IsWow64Process
 }
+PickIcon(ByRef sIconPath, ByRef nIndex)
+{
+	VarSetCapacity(IconPath, 260 * 2, 0)
+	DllCall("shell32\PickIconDlg", "Ptr", 0, "str", IconPath, "Uint", 260, "PTRP", nIndex)
+	if(IconPath)
+	{
+		sIconPath := IconPath
+		return true
+	}
+	return false
+}
