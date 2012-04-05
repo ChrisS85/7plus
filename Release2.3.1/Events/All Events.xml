@@ -5666,6 +5666,62 @@
 <Title>Lock workstation</Title>
 <Type>Accessor Trigger</Type>
 </Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Text>${AccAll}</Text>
+<Timeout>0</Timeout>
+<Title>Message</Title>
+<Type>Message</Type>
+</Action></Actions>
+<Category>Accessor commands</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event provides a command for the Accessor launcher to show a message box.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1660</ID>
+<Name>Accessor: Show Message</Name>
+<OfficialEvent>59</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<ButtonText>Message</ButtonText>
+<Detail1></Detail1>
+<Keyword>Message</Keyword>
+<Path>${AccAll}</Path>
+<Title>Show Message:</Title>
+<Type>Accessor Trigger</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Text>${AccAll}</Text>
+<Timeout>0</Timeout>
+<Title>Message</Title>
+<Type>Message</Type>
+</Action></Actions>
+<Category>Accessor commands</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event provides a command for the Accessor launcher to show a message box.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1661</ID>
+<Name>Accessor: Show Message</Name>
+<OfficialEvent>60</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<ButtonText>Message</ButtonText>
+<Detail1></Detail1>
+<Keyword>msg</Keyword>
+<Path>${AccAll}</Path>
+<Title>Show Message:</Title>
+<Type>Accessor Trigger</Type>
+</Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
 <MinorVersion>6</MinorVersion>

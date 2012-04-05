@@ -269,12 +269,18 @@ Class CAccessor
 		Parameters := Array()
 		p0 := Parse(Filter, "q"")1 2 3 4 5 6 7 8 9 10", p1, p2, p3, p4, p5, p6, p7, p8, p9, p10)
 
+		;Make parameters available to events
+		All := ""
 		Loop 9
 		{
 			Index := A_Index + 1
 			EventSystem.GlobalPlaceholders.Remove("Acc" A_Index)
 			EventSystem.GlobalPlaceholders.Insert("Acc" A_Index, p%Index%)
+			All .= (A_Index = 1 ? "" : " ") p%Index%
 		}
+		EventSystem.GlobalPlaceholders.Remove("AccAll")
+		EventSystem.GlobalPlaceholders.Insert("AccAll", All)
+
 		Loop % min(p0, 10)
 			Parameters.Insert(A_Index - 1, p%A_Index%) ;Store parameters with offset of -1, so p1 will become p0 since it isn't a real parameter but rather the keyword
 		
@@ -1112,6 +1118,5 @@ Control panel
 trillian
 winget
 
-"Open with" setting for program launcher
 Generic icons control and support in accessor events and maybe elsewhere
 */

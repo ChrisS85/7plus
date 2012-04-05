@@ -229,15 +229,16 @@ ShowPlaceholderMenu(SubEventGUI, name, ClickedMenu="")
 		Menu, Placeholders, add, System, :Placeholders_System
 		Menu, Placeholders, add, Windows, :Placeholders_Windows
 		
+		Menu, Placeholders_Accessor, add, ${AccAll} - All parameters of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
 		Menu, Placeholders_Accessor, add, ${Acc1} - First parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
-		Menu, Placeholders_Accessor, add, ${Acc2} - First parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
-		Menu, Placeholders_Accessor, add, ${Acc3} - First parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
-		Menu, Placeholders_Accessor, add, ${Acc4} - First parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
-		Menu, Placeholders_Accessor, add, ${Acc5} - First parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
-		Menu, Placeholders_Accessor, add, ${Acc6} - First parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
-		Menu, Placeholders_Accessor, add, ${Acc7} - First parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
-		Menu, Placeholders_Accessor, add, ${Acc8} - First parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
-		Menu, Placeholders_Accessor, add, ${Acc9} - First parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
+		Menu, Placeholders_Accessor, add, ${Acc2} - second parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
+		Menu, Placeholders_Accessor, add, ${Acc3} - third parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
+		Menu, Placeholders_Accessor, add, ${Acc4} - 4th parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
+		Menu, Placeholders_Accessor, add, ${Acc5} - 5th parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
+		Menu, Placeholders_Accessor, add, ${Acc6} - 6th parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
+		Menu, Placeholders_Accessor, add, ${Acc7} - 7th parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
+		Menu, Placeholders_Accessor, add, ${Acc8} - 8th parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
+		Menu, Placeholders_Accessor, add, ${Acc9} - 9th parameter of the Accessor command (for an event using an Accessor trigger), PlaceholderHandler
 		
 		Menu, Placeholders_DateTime, add, ${DateTime} - Language-specific time and date (4:55 PM Saturday`, November 27`, 2010), PlaceholderHandler
 		Menu, Placeholders_DateTime, add, ${DateTimeLongDate} - Language-specific long date (Friday`, April 23`, 2010), PlaceholderHandler
