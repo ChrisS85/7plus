@@ -506,6 +506,7 @@ Class CAccessor
 	;Plugins may handle each function on their own, otherwise they will be handled directly by Accessor if available.
 	PerformAction(Action = "", ListEntry = "")
 	{
+		this.Remove("ClickedListEntry") ;Not needed anymore
 		if(IsObject(ListEntry) || IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]))
 		{
 			if(Action && !IsObject(Action))
@@ -568,9 +569,9 @@ Class CAccessor
 		Result.Actions := Actions
 		return Copy
 	}
-	ShowActionMenu()
+	ShowActionMenu(ListEntry = "")
 	{
-		if(IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]))
+		if(IsObject(ListEntry) || IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]) || IsObject(ListEntry := this.Plugins.GetItemWithValue("Type", this.SingleContext).Result))
 		{
 			Menu, AccessorContextMenu, Add, test, AccessorContextMenu
 			Menu, AccessorContextMenu, DeleteAll
@@ -676,7 +677,7 @@ Class CAccessor
 	}
 }
 AccessorContextMenu:
-CAccessor.Instance.PerformAction(A_ThisMenuItem)
+CAccessor.Instance.PerformAction(A_ThisMenuItem, CAccessor.Instance.ClickedListEntry) ;ClickedListEntry is only valid for clicks on empty parts of the window
 return
 
 Class CAccessorGUI extends CGUI
@@ -769,7 +770,17 @@ Class CAccessorGUI extends CGUI
 	}
 	ListView_ContextMenu()
 	{
+		if(IsObject(ListEntry := CAccessor.Instance.Plugins.GetItemWithValue("Type", CAccessor.Instance.SingleContext).Result))
+			CAccessor.Instance.ClickedListEntry := ListEntry
 		CAccessor.Instance.ShowActionMenu()
+	}
+	ContextMenu()
+	{
+		if(IsObject(ListEntry := CAccessor.Instance.Plugins.GetItemWithValue("Type", CAccessor.Instance.SingleContext).Result))
+		{
+			CAccessor.Instance.ClickedListEntry := ListEntry
+			CAccessor.Instance.ShowActionMenu(ListEntry)
+		}
 	}
 	PreClose()
 	{
@@ -1027,6 +1038,8 @@ Class CAccessorPlugin
 	; IMPORTANT: All plugins need to only rely on the contents of a result object to perform their actions.
 	;            They must not store temporary data in the plugin object that is needed to perform an action.
 	;            This is because of the Accessor History plugin that creates copies of results and shows them when the original plugin may not be aware of it.
+	;			 The plugin can have a SaveHistory property that indicates if it is indexed by the history plugin.
+	;			 When results may not be valid anymore at another time or context this should be set to true.
 	Class CResult extends CRichObject
 	{
 		;The array contains all possible actions on this result (of type CAccessor.CAction).
@@ -1117,6 +1130,4 @@ twitter
 Control panel
 trillian
 winget
-
-Generic icons control and support in accessor events and maybe elsewhere
 */

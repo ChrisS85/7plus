@@ -117,6 +117,13 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		SplitPath, filter, name, dir,,,drive
 		if(dir)
 		{
+			Result := new this.CResult("Folder")
+			Result.Title := name
+			Result.Path := dir
+			Result.Icon := Accessor.GenericIcons.Folder
+			Result.Actions.DefaultAction := Result.Actions.Remove()
+			this.Result := Result
+
 			if(this.AutocompletionString)
 				name := this.AutocompletionString
 			Loop %dir%\*%name%*, 2, 0
@@ -150,6 +157,8 @@ Class CFileSystemPlugin extends CAccessorPlugin
 				Results.Insert(Result)
 			}
 		}
+		else
+			this.Remove("Result")
 		return Results
 	}
 	ShowSettings(PluginSettings, Accessor, PluginGUI)
@@ -232,20 +241,3 @@ Backspace::
 CAccessor.Instance.SetFilter(SubStr(CAccessor.Instance.FilterWithoutTimer, 1, InStr(CAccessor.Instance.FilterWithoutTimer, "\", false, 0, strEndsWith(CAccessor.Instance.FilterWithoutTimer, "\") ? 2 : 1)))
 return
 #if
-;~ Accessor_FileSystem_OnKeyDown(FileSystem, wParam, lParam, Filter, selected, AccessorListEntry)
-;~ {
-	;~ global AccessorEdit, Accessor
-	;~ if(wParam = 9)
-	;~ {
-		
-	;~ }
-	;~ else
-		;~ WindowSwitcher.AutocompletionString := ""
-	;~ if(wParam = 13 && selected && InStr(FileExist(AccessorListEntry.Path),"D")) ;Enter on Folders
-	;~ {
-		;~ FileSystemSetFolder(AccessorListEntry.Title)
-		;~ return 1
-	;~ }
-	
-	;~ return 0
-;~ }
