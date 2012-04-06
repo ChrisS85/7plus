@@ -121,7 +121,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 			Result.Title := name
 			Result.Path := dir
 			Result.Icon := Accessor.GenericIcons.Folder
-			Result.Actions.DefaultAction := Result.Actions.Remove()
+			Result.Actions.DefaultAction := Result.Actions.Remove(1)
 			this.Result := Result
 
 			if(this.AutocompletionString)

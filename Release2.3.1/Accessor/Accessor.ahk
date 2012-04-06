@@ -4,7 +4,7 @@ Class CAccessor
 	GUI := ""
 	
 	;History of previous entries
-	History := {}
+	History := []
 	
 	;Plugins used by the Accessor
 	static Plugins := Array()
@@ -506,6 +506,7 @@ Class CAccessor
 	;Plugins may handle each function on their own, otherwise they will be handled directly by Accessor if available.
 	PerformAction(Action = "", ListEntry = "")
 	{
+		outputdebug % "PerformAction: " ListEntry.path
 		this.Remove("ClickedListEntry") ;Not needed anymore
 		if(IsObject(ListEntry) || IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]))
 		{
@@ -548,7 +549,7 @@ Class CAccessor
 					;Update filter history
 					this.History.Insert(2, this.Filter)
 					while(this.History.MaxIndex() > 10)
-						this.History.Delete(11)
+						this.History.Remove()
 					if(IsFunc(Plugin[Action.Function]))
 						Plugin[Action.Function](this, ListEntry, Action)
 					else if(IsFunc(this[Action.Function]))
@@ -573,6 +574,7 @@ Class CAccessor
 	{
 		if(IsObject(ListEntry) || IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]) || IsObject(ListEntry := this.Plugins.GetItemWithValue("Type", this.SingleContext).Result))
 		{
+			outputdebug % "actionmenu: " ListEntry.path
 			Menu, AccessorContextMenu, Add, test, AccessorContextMenu
 			Menu, AccessorContextMenu, DeleteAll
 			if((!ListEntry.Actions.DefaultAction.Condition || ListEntry.Actions.DefaultAction.Condition.(ListEntry)) && ((ListEntry.Time > 0 && ListEntry.Actions.DefaultAction.AllowDelayedExecution) || !ListEntry.Time))
@@ -770,7 +772,7 @@ Class CAccessorGUI extends CGUI
 	}
 	ListView_ContextMenu()
 	{
-		if(IsObject(ListEntry := CAccessor.Instance.Plugins.GetItemWithValue("Type", CAccessor.Instance.SingleContext).Result))
+		if(!IsObject(ListEntry := CAccessor.Instance.List[this.ListView.SelectedIndex]) && IsObject(ListEntry := CAccessor.Instance.Plugins.GetItemWithValue("Type", CAccessor.Instance.SingleContext).Result))
 			CAccessor.Instance.ClickedListEntry := ListEntry
 		CAccessor.Instance.ShowActionMenu()
 	}
