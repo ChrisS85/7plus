@@ -183,10 +183,6 @@ Class CAccessor
 		this.SuppressListViewUpdate := true
 		this.GUI.SetFilter(Text)
 		SetTimerF(this.WaitTimer := new Delegate(this, "WaitForRefresh"), -100)
-		;~ while(this.SuppressListViewUpdate && A_Index < 500)
-			;~ Sleep 10
-		;~ if(!this.SuppressListViewUpdate)
-			;~ this.OnFilterChanged(Text)
 	}
 	WaitForRefresh()
 	{

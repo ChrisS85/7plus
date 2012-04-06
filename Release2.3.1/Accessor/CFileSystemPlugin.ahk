@@ -46,7 +46,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		}
 		Class CFolderActions extends CArray
 		{
-			DefaultAction := new CAccessor.CAction("Enter folder", "EnterDirectory", "", false, false)
+			DefaultAction := new CAccessor.CAction("Enter folder", "EnterDirectory", new Delegate(CFileSystemPlugin.Instance, "IsInDifferentPath"), false, false)
 			__new()
 			{
 				this.Insert(CAccessorPlugin.CActions.OpenExplorer)
@@ -117,11 +117,14 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		SplitPath, filter, name, dir,,,drive
 		if(dir)
 		{
+			;Store for temporary use
+			this.Path := dir
+
 			Result := new this.CResult("Folder")
 			Result.Title := name
 			Result.Path := dir
 			Result.Icon := Accessor.GenericIcons.Folder
-			Result.Actions.DefaultAction := Result.Actions.Remove(1)
+			;Result.Actions.DefaultAction := Result.Actions.Remove(1)
 			this.Result := Result
 
 			if(this.AutocompletionString)
@@ -229,6 +232,11 @@ Class CFileSystemPlugin extends CAccessorPlugin
 	{
 		this.AutocompletionString := ""
 		return true
+	}
+	IsInDifferentPath(ListEntry)
+	{
+		outputdebug check condition
+		return this.Path != ListEntry.Path
 	}
 }
 #if (CAccessor.Instance.GUI && CAccessor.Instance.SingleContext = "File System")
