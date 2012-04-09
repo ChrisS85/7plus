@@ -22,6 +22,8 @@ Class CImageConverter extends CGUI
 		
 		this.txtPath := this.AddControl("Text", "txtPath", "x10 y375 Section", "Target Path:")
 		this.editPath := this.AddControl("Edit", "editPath", "x+14 ys-4 w196", "")
+		if(Action.TargetPath)
+			this.editPath.Text := Action.TargetPath
 		this.btnBrowse := this.AddControl("Button", "btnBrowse", "x+5 ys-6 w26", "...")
 		this.txtName := this.AddControl("Text", "txtName", "x10 ys+30", "Target Name:")
 		this.editName := this.AddControl("Edit", "editName", "x+8 ys+26 w196", "")
@@ -171,7 +173,7 @@ Class CImageConverter extends CGUI
 		{
 			this.FillTargetFilenames()
 			this.ListView.SelectedIndex := this.Files.MaxIndex() - Files.MaxIndex() + 1
-			if(this.TemporaryFiles && this.Files.MaxIndex() = Files.MaxIndex()) ;Select first file if list was empty before
+			if(this.TemporaryFiles && this.Files.MaxIndex() = Files.MaxIndex() && !this.editPath.Text) ;Select first file if list was empty before
 			{
 				SplitPath(this.Files[1].SourceFile,"",Path)
 				this.editPath.Text := Path
