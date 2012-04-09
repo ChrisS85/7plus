@@ -16,6 +16,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		KeywordOnly := false
 		MinChars := 3
 		UseIcons := false
+		UseSelectedText := true
 	}
 	Class CResult extends CAccessorPlugin.CResult
 	{
@@ -87,7 +88,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 	OnOpen(Accessor)
 	{
 		;Automatically open path when a path is selected before Accessor is opened
-		if(Accessor.CurrentSelection && !Accessor.SelectedFile && !Accessor.FilterWithoutTimer)
+		if(this.Settings.UseSelectedText && Accessor.CurrentSelection && !Accessor.SelectedFile && !Accessor.FilterWithoutTimer)
 		{
 			Path := ExpandPathPlaceholders(Accessor.CurrentSelection)
 			SplitPath, Path, Name, Dir
@@ -167,6 +168,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 	ShowSettings(PluginSettings, Accessor, PluginGUI)
 	{
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "UseIcons", "Use exact icons (much slower)", "", "")
+		AddControl(PluginSettings, PluginGUI, "Checkbox", "UseSelectedText", "Automatically open the selected text as path in Accessor when appropriate", "", "")
 	}
 	
 	EnterDirectory(Accessor, ListEntry)

@@ -31,6 +31,7 @@ Class CAccessor
 		Width := 900
 		Height := 360
 		OpenInMonitorOfMouseCursor := true ;If true, Accessor window will open in the monitor where the mouse cursor is.
+		UseSelectionForKeywords := true ;If set, the selected text will automatically be used as ${1} parameter in keywords if no text is typed
 		__new(XML)
 		{
 			for key, value in this
@@ -312,7 +313,7 @@ Class CAccessor
 			if(UsingPlaceholder)
 				Parameters := Array() ;Clear parameters since they are now integrated in the query
 			;if no parameters are entered after query, lets try to insert the current selection so the user can quickly search for it with a keyword query.
-			else if(InStr(Filter, "${1}") && this.CurrentSelection)
+			else if(this.CurrentSelection && this.Settings.UseSelectionForKeywords && InStr(Filter, "${1}"))
 				Filter := StringReplace(Filter, "${1}", this.CurrentSelection, "ALL")
 		}
 		return Parameters
@@ -344,7 +345,7 @@ Class CAccessor
 		{
 			if(Plugin.Settings.Enabled && ((Time > 0 && Plugin.AllowDelayedExecution) || !Time) && SingleContext := ((Plugin.Settings.Keyword && Filter && KeywordSet := InStr(Filter, Plugin.Settings.Keyword " ") = 1) || Plugin.IsInSinglePluginContext(Filter, LastFilter)))
 			{
-				if(KeywordSet && this.CurrentSelection && Filter = Plugin.Settings.Keyword " ")
+				if(KeywordSet && this.CurrentSelection && this.Settings.UseSelectionForKeywords && Filter = Plugin.Settings.Keyword " ")
 					Filter .= this.CurrentSelection
 				this.SingleContext := Plugin.Type
 				Filter := strTrimLeft(Filter, Plugin.Settings.Keyword " ")

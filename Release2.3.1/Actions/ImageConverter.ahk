@@ -27,7 +27,7 @@ Class CImageConverterAction Extends CAction
 	DisplayString()
 	{
 		return "Open Image Converter: " this.Files
-	} 
+	}
 	
 	GuiShow(GUI, GoToLabel = "")
 	{

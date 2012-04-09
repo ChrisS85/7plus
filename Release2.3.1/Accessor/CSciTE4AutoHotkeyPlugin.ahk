@@ -20,6 +20,8 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 		KeywordOnly := false
 		FuzzySearch := false
 		MinChars := 0 ;This is actually 2, but not when SciTE4AutoHotkey is active
+		RememberQueries := true
+		UseWhenActive := true
 	}
 	
 	Class CResult extends CAccessorPlugin.CResult
@@ -61,6 +63,11 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 	{
 		return false
 	}
+	ShowSettings(Settings, GUI, PluginGUI)
+	{
+		AddControl(Settings, PluginGUI, "Checkbox", "RememberQueries", "Remember and show the S4AHK tabs of the last query for each S4AHK tab.")
+		AddControl(Settings, PluginGUI, "Checkbox", "UseWhenActive", "Show all S4AHK tabs when Accessor opens and no saved queries for the current tab are available.")
+	}
 	OnOpen(Accessor)
 	{
 		this.List1 := this.GetListOfOpenSciTE4AutoHotkeyTabs()
@@ -74,7 +81,7 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 		if(WinExist("ahk_class " this.WindowClassName) = Accessor.PreviousWindow)
 		{
 			this.Priority := 10000
-			if(index := this.MRUList.FindKeyWithValue("Path", Path := this.GetSciTE4AutoHotkeyActiveTab()))
+			if(this.Settings.RememberQueries && index := this.MRUList.FindKeyWithValue("Path", Path := this.GetSciTE4AutoHotkeyActiveTab()))
 			{
 				Accessor.SetFilter(this.MRUList[index].Command)
 				Edit_Select(0, -1, "", "ahk_id " Accessor.GUI.EditControl.hwnd)
@@ -86,7 +93,7 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 						break
 					}
 			}
-			else
+			else if(this.Settings.UseWhenActive)
 			{
 				Accessor.SetFilter(this.Settings.Keyword " ")
 				Edit_Select(0, -1, "", "ahk_id " Accessor.GUI.EditControl.hwnd)

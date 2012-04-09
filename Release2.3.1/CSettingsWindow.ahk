@@ -843,6 +843,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("CheckBox", "chkAccessorTitleBar", "xs+21 y+3 h17", "Show title bar")
 		Page.AddControl("CheckBox", "chkAccessorUseAero", "xs+21 y+3 h17", "Use Aero glass effect (Vista/7 and newer)")
 		Page.AddControl("CheckBox", "chkAccessorOpenInMonitorOfMouseCursor", "xs+21 y+3 h17", "Open in the monitor where the mouse cursor is")
+		chkUseSelectionForKeywords := Page.AddControl("CheckBox", "chkUseSelectionForKeywords", "xs+21 y+3 h17", "Use the selected text as first parameter in keywords when no text is entered")
+		chkUseSelectionForKeywords.ToolTip := "This can be used like this for example:`nSelect some text, open Accessor, type w and press enter.`nThis will search for the selected text on Wikipedia."
 		Page.AddControl("Slider", "sldAccessorTransparency", "x+10 y+3 Range50-255", 255)
 		Page.AddControl("Text", "txtAccessorTransparency", "xs+21 yp+3 h17", "Transparency (looks ugly with Aero enabled!):")
 		Page.AddControl("Text", "txtAccessorWidth", "xs+21 y+13 h17", "Accessor Width:")
@@ -858,6 +860,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.chkAccessorTitleBar.Checked := CAccessor.Instance.Settings.TitleBar
 		Page.chkAccessorUseAero.Checked := CAccessor.Instance.Settings.UseAero
 		Page.chkOpenInMonitorOfMouseCursor.Checked := CAccessor.Instance.Settings.OpenInMonitorOfMouseCursor
+		Page.chkUseSelectionForKeywords.Checked := CAccessor.Instance.Settings.UseSelectionForKeywords
 		if(CAccessor.Instance.Settings.Transparency)
 			Page.sldAccessorTransparency.Value := CAccessor.Instance.Settings.Transparency
 		Page.editAccessorWidth.Text := Clamp(CAccessor.Instance.Settings.Width, 600, 2000)
@@ -871,6 +874,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		CAccessor.Instance.Settings.TitleBar := Page.chkAccessorTitleBar.Checked
 		CAccessor.Instance.Settings.UseAero := Page.chkAccessorUseAero.Checked
 		CAccessor.Instance.Settings.OpenInMonitorOfMouseCursor := Page.chkOpenInMonitorOfMouseCursor.Checked
+		CAccessor.Instance.Settings.UseSelectionForKeywords := Page.chkUseSelectionForKeywords.Checked
 		CAccessor.Instance.Settings.Transparency := Page.sldAccessorTransparency.Value
 		if(CAccessor.Instance.Settings.Transparency = 255)
 			CAccessor.Instance.Settings.Transparency := 0

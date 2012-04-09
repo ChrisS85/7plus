@@ -20,6 +20,8 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 		KeywordOnly := false
 		FuzzySearch := false
 		MinChars := 0 ;This is actually 2, but not when Notepad++ is active
+		RememberQueries := true
+		UseWhenActive := true
 	}
 	
 	Class CResult extends CAccessorPlugin.CResult
@@ -49,6 +51,11 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
 	}
+	ShowSettings(Settings, GUI, PluginGUI)
+	{
+		AddControl(Settings, PluginGUI, "Checkbox", "RememberQueries", "Remember and show the NP++ tabs of the last query for each NP++ tab.")
+		AddControl(Settings, PluginGUI, "Checkbox", "UseWhenActive", "Show all NP++ tabs when Accessor opens and no saved queries for the current tab are available.")
+	}
 	OnOpen(Accessor)
 	{
 		this.List1 := this.GetListOfOpenNotepadPlusPlusTabs()
@@ -63,7 +70,7 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 		if(WinExist("ahk_class " this.WindowClassName) = Accessor.PreviousWindow)
 		{
 			this.Priority := 10000
-			if(index := this.MRUList.FindKeyWithValue("Path", Path := this.GetNotepadPlusPlusActiveTab()))
+			if(this.Settings.RememberQueries && index := this.MRUList.FindKeyWithValue("Path", Path := this.GetNotepadPlusPlusActiveTab()))
 			{
 				Accessor.SetFilter(this.MRUList[index].Command)
 				Edit_Select(0, -1, "", "ahk_id " Accessor.GUI.EditControl.hwnd)
@@ -75,7 +82,7 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 						break
 					}
 			}
-			else
+			else if(this.Settings.UseWhenActive)
 			{
 				Accessor.SetFilter(this.Settings.Keyword " ")
 				Edit_Select(0, -1, "", "ahk_id " Accessor.GUI.EditControl.hwnd)

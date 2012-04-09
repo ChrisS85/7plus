@@ -24,6 +24,7 @@ Class CURLPlugin extends CAccessorPlugin
 		IncludeOperaBookmarks := true
 		IncludeChromeBookmarks := true
 		IncludeIEBookmarks := true
+		UseSelectedText := true
 	}
 	Class CResult extends CAccessorPlugin.CResult
 	{
@@ -52,7 +53,7 @@ Class CURLPlugin extends CAccessorPlugin
 	}
 	OnOpen(Accessor)
 	{
-		if(!Accessor.FilterWithoutTimer && Accessor.CurrentSelection && IsURL(Accessor.CurrentSelection))
+		if(this.Settings.UseSelectedText && !Accessor.FilterWithoutTimer && Accessor.CurrentSelection && IsURL(Accessor.CurrentSelection))
 			Accessor.SetFilter(Accessor.CurrentSelection)
 	}
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
@@ -108,6 +109,7 @@ Class CURLPlugin extends CAccessorPlugin
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "IncludeOperaBookmarks", "Include Opera bookmarks", "", "")
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "IncludeChromeBookmarks", "Include Chrome bookmarks", "", "")
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "IncludeIEBookmarks", "Include IE bookmarks", "", "")
+		AddControl(PluginSettings, PluginGUI, "Checkbox", "UseSelectedText", "Automatically open the selected text as URL in Accessor when appropriate", "", "")
 	}
 
 	LoadChromeBookmarks(obj = "")

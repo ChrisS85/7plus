@@ -1664,7 +1664,7 @@ AppendPaths(BasePath, RelativePath)
 }
 
 ;Add quotes around a string if necessary
-Quote(string, once=1)
+Quote(string, once = 1)
 {
 	if(once)
 	{

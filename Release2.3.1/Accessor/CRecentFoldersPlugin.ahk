@@ -16,6 +16,7 @@ Class CRecentFoldersPlugin extends CAccessorPlugin
 		UseHistory := true
 		UseFrequent := true
 		UseFastFolders := true
+		UseWhenNavigable := true ;If true, this plugin will set its keyword when Accessor is opened and the previous window can be navigated.
 	}
 	Class CResult extends CAccessorPlugin.CResult
 	{
@@ -42,10 +43,11 @@ Class CRecentFoldersPlugin extends CAccessorPlugin
 		AddControl(Settings, PluginGUI, "Checkbox", "UseHistory", "Use directory history")
 		AddControl(Settings, PluginGUI, "Checkbox", "UseFrequent", "Use frequent directories")
 		AddControl(Settings, PluginGUI, "Checkbox", "UseFastFolders", "Use directories from Fast Folders")
+		AddControl(Settings, PluginGUI, "Checkbox", "UseWhenNavigable", "Automatically set the keyword for this plugin when the current window can be navigated by 7plus.", "", "", "", "", "", "", "Enabling this will make the Accessor show the recently used directories`nwhen opened if navigable applications like explorer or CMD were active."))
 	}
 	OnOpen(Accessor)
 	{
-		if(Navigation.FindNavigationSource(Accessor.PreviousWindow, "SetPath"))
+		if(this.Settings.UseWhenNavigable && Navigation.FindNavigationSource(Accessor.PreviousWindow, "SetPath"))
 		{
 			Accessor.SetFilter(this.Settings.Keyword " ")
 			Edit_Select(0, -1, "", "ahk_id " Accessor.GUI.EditControl.hwnd)
