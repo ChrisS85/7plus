@@ -2,7 +2,6 @@
 SetWorkingDir %a_scriptdir%
 loop 3
 	arg%A_Index% := %A_Index%
-
 if(!arg1)
 {
 	FileSelectFile, OldFile , 1, %A_ScriptDir%, Select old file, *.xml
@@ -34,7 +33,7 @@ Loop, Read, 7plus.ahk
 	else if(InStr(A_LoopReadLine, "BugfixVersion := "))
 		PatchXMLObject.BugfixVersion := SubStr(A_LoopReadLine, InStr(A_LoopReadLine, " := ") + 4)
 }
-if(!arg3)
+if(!StrLen(arg3))
 {
 	InputBox, PatchVersion, Patch version, Enter patch version (0 for release)
 	if(Errorlevel)

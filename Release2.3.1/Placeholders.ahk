@@ -107,6 +107,14 @@ ExpandPlaceholder(Placeholder)
 		return WinVer
 	else if(Placeholder = "WinVer") ;Deprecated
 		return A_OSVersion
+	else if(Placeholder = "WINXP")
+		return WIN_XP
+	else if(Placeholder = "WINVISTA")
+		return WIN_VISTA
+	else if(Placeholder = "WIN7")
+		return WIN_7
+	else if(Placeholder = "WIN8")
+		return WIN_8
 	else if(Placeholder = "U" || strStartsWith(Placeholder,"M")) ;Mouse submenu
 	{
 		if(strlen(Placeholder > 1) && InStr(Placeholder, "A") = 2)
@@ -281,8 +289,13 @@ ShowPlaceholderMenu(SubEventGUI, name, ClickedMenu="")
 		Menu, Placeholders_System, add, ${wParam} - wParam value if this condition/action was triggered by OnMessage trigger, PlaceholderHandler
 		Menu, Placeholders_System, add, ${lParam} - lParam value if this condition/action was triggered by OnMessage trigger, PlaceholderHandler
 		Menu, Placeholders_System, add, ${Context} - List of selected files(with paths) from Contextmenu trigger`, separated by newlines, PlaceholderHandler
-		Menu, Placeholders_System, add, ${WinVer} - Windows version(WIN_7`, WIN_VISTA`, WIN_XP`, WIN_2003`,...), PlaceholderHandler
 		Menu, Placeholders_System, add, ${SelText} - Selected Text, PlaceholderHandler
+		Menu, Placeholders_System, add, ${WinVer} - Windows version(WIN_7`, WIN_VISTA`, WIN_XP`, WIN_2003`,...), PlaceholderHandler
+		Menu, Placeholders_System, add, ${WindowsVersion} - Numeric Windows version(XP : 5.1`, VISTA : 6.0`, 7 : 6.1`, 8 : 6.2`,...), PlaceholderHandler
+		Menu, Placeholders_System, add, ${WINXP} - Windows XP version number(5.1), PlaceholderHandler
+		Menu, Placeholders_System, add, ${WINVISTA} - Windows Vista version number(6.0), PlaceholderHandler
+		Menu, Placeholders_System, add, ${WIN7} - Windows 7 version number(6.1), PlaceholderHandler
+		Menu, Placeholders_System, add, ${WIN8} - Windows 8 version number(6.2), PlaceholderHandler
 		
 		Menu, Placeholders_Windows, add, ${A} - Active window handle, PlaceholderHandler
 		Menu, Placeholders_Windows, add, ${Class} - Active window class, PlaceholderHandler
