@@ -87,7 +87,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 	OnOpen(Accessor)
 	{
 		;Automatically open path when a path is selected before Accessor is opened
-		if(Accessor.CurrentSelection && !Accessor.FilterWithoutTimer)
+		if(Accessor.CurrentSelection && !Accessor.SelectedFile && !Accessor.FilterWithoutTimer)
 		{
 			Path := ExpandPathPlaceholders(Accessor.CurrentSelection)
 			SplitPath, Path, Name, Dir
@@ -235,7 +235,6 @@ Class CFileSystemPlugin extends CAccessorPlugin
 	}
 	IsInDifferentPath(ListEntry)
 	{
-		outputdebug check condition
 		return this.Path != ListEntry.Path
 	}
 }
