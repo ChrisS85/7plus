@@ -1305,8 +1305,17 @@ Finally, here are some settings that you're likely to change at the beginning:
 	InitFastFolders()
 	{
 		Page := this.Pages.FastFolders.Tabs[1].Controls
-		Page.chkShowInFolderBand.Checked := Settings.Explorer.FastFolders.ShowInFolderBand
-		Page.chkCleanFolderBand.Checked := Settings.Explorer.FastFolders.CleanFolderBand
+		if(WinVer >= WIN_Vista && WinVer < WIN_8)
+		{
+			Page.chkShowInFolderBand.Checked := Settings.Explorer.FastFolders.ShowInFolderBand
+			Page.chkCleanFolderBand.Checked := Settings.Explorer.FastFolders.CleanFolderBand
+		}
+		else
+		{
+			Page.chkShowInFolderBand.Enabled := false
+			Page.chkCleanFolderBand.Enabled := false
+			Page.btnRemoveCustomButtons.Enabled := false
+		}
 		Page.chkShowInPlacesBar.Checked := Settings.Explorer.FastFolders.ShowInPlacesBar
 	}
 	ApplyFastFolders()
@@ -1316,24 +1325,26 @@ Finally, here are some settings that you're likely to change at the beginning:
 		;Folder band settings are only usable when running non-portable as admin
 		if(!ApplicationState.IsPortable || !A_IsAdmin)
 		{
-			if(Page.chkShowInFolderBand.Checked != Settings.Explorer.FastFolders.ShowInFolderBand || this.RequireFastFolderRecreation)
+			if(WinVer >= WIN_Vista && WinVer < WIN_8)
 			{
-				if(!Settings.Explorer.FastFolders.ShowInFolderBand || this.RequireFastFolderRecreation) ;Was off, enable
-					SetTimer, PrepareFolderBand, -1000 ;Call as timer so that applying settings appears faster (but it isn't!)
-				else
-					RestoreFolderBand()
+				if(Page.chkShowInFolderBand.Checked != Settings.Explorer.FastFolders.ShowInFolderBand || this.RequireFastFolderRecreation)
+				{
+					if(!Settings.Explorer.FastFolders.ShowInFolderBand || this.RequireFastFolderRecreation) ;Was off, enable
+						SetTimer, PrepareFolderBand, -1000 ;Call as timer so that applying settings appears faster (but it isn't!)
+					else
+						RestoreFolderBand()
+				}
+				Settings.Explorer.FastFolders.ShowInFolderBand := Page.chkShowInFolderBand.Checked
+				
+				if(Page.chkCleanFolderBand.Checked != Settings.Explorer.FastFolders.CleanFolderBand)
+				{
+					if(!Settings.Explorer.FastFolders.CleanFolderBand) ;Was off, enable
+						BackupAndRemoveFolderBandButtons()
+					else
+						RestoreFolderBandButtons()
+				}
+				Settings.Explorer.FastFolders.CleanFolderBand := Page.chkCleanFolderBand.Checked
 			}
-			Settings.Explorer.FastFolders.ShowInFolderBand := Page.chkShowInFolderBand.Checked
-			
-			if(Page.chkCleanFolderBand.Checked != Settings.Explorer.FastFolders.CleanFolderBand)
-			{
-				if(!Settings.Explorer.FastFolders.CleanFolderBand) ;Was off, enable
-					BackupAndRemoveFolderBandButtons()
-				else
-					RestoreFolderBandButtons()
-			}
-			Settings.Explorer.FastFolders.CleanFolderBand := Page.chkCleanFolderBand.Checked
-			
 			if(Page.chkShowInPlacesBar.Checked != Settings.Explorer.FastFolders.ShowInPlacesBar)
 			{
 				if(!Settings.Explorer.FastFolders.ShowInPlacesBar) ;Was off, enable
@@ -1346,9 +1357,12 @@ Finally, here are some settings that you're likely to change at the beginning:
 	}
 	btnRemoveCustomButtons_Click()
 	{
-		RemoveAllExplorerButtons()
-		this.RequireFastFolderRecreation := true
-		MsgBox If you have defined any custom explorer buttons (or use FastFolder buttons) and you press OK or Apply now, they will reappear!
+		if(WinVer >= WIN_Vista && WinVer < WIN_8)
+		{
+			RemoveAllExplorerButtons()
+			this.RequireFastFolderRecreation := true
+			MsgBox If you have defined any custom explorer buttons (or use FastFolder buttons) and you press OK or Apply now, they will reappear!
+		}
 	}
 	
 	
