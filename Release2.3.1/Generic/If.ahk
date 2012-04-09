@@ -27,7 +27,7 @@ If_Evaluate(SubEvent, Event)
 	else if(SubEvent.Operator = "matches regular expression")
 		return RegexMatch(Compare, With) > 0
 	else if(SubEvent.Operator = "starts with")
-		return strStartsWith(Compare, With)
+		return InStr(Compare, With) = 1
 	else if(SubEvent.Operator = "ends with")
 		return strEndsWith(Compare, With)
 }

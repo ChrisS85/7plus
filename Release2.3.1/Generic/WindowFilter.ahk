@@ -115,7 +115,7 @@ WindowFilter_Matches(WindowFilter, TargetWindow, TriggerFilter = "")
 		{
 			return ((!WindowFilter.WindowFilterExecutable || GetProcessName(TargetWindow) = WindowFilter.WindowFilterExecutable)
 					&&(!WindowFilter.WindowFilterClass || class = WindowFilter.WindowFilterClass)
-					&&(!WindowFilter.WindowFilterTitle || strStartsWith(title,WindowFilter.WindowFilterTitle)))
+					&&(!WindowFilter.WindowFilterTitle || InStr(title,WindowFilter.WindowFilterTitle) = 1))
 		}
 		else if(WindowFilter.WindowMatchType = "Active")	
 		{

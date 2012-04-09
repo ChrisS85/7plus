@@ -115,7 +115,7 @@ ExpandPlaceholder(Placeholder)
 		return WIN_7
 	else if(Placeholder = "WIN8")
 		return WIN_8
-	else if(Placeholder = "U" || strStartsWith(Placeholder,"M")) ;Mouse submenu
+	else if(Placeholder = "U" || InStr(Placeholder,"M") = 1) ;Mouse submenu
 	{
 		if(strlen(Placeholder > 1) && InStr(Placeholder, "A") = 2)
 			CoordMode, Mouse, Relative
@@ -137,7 +137,7 @@ ExpandPlaceholder(Placeholder)
 		else if(InStr(Placeholder, "C") = 2)
 			return WinGetClass("ahk_id " UnderMouse)
 	}
-	else if(strStartsWith(Placeholder, "DateTime"))
+	else if(InStr(Placeholder, "DateTime") = 1)
 	{
 		Placeholder := SubStr(Placeholder, 9)
 		FormatTime, Placeholder ,, %Placeholder%
@@ -162,7 +162,7 @@ ExpandPlaceholder(Placeholder)
 		return Settings.Explorer.PreviousPath
 	else if(Placeholder = "SelText")
 		return GetSelectedText()
-	else if(strStartsWith(Placeholder, "Sel") && (WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog()))
+	else if(InStr(Placeholder, "Sel") = 1 && (WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog()))
 	{
 		files := Navigation.GetSelectedFilepaths()
 		RegExMatch(Placeholder,"Sel\d+",number)

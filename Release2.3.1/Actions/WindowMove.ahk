@@ -20,13 +20,13 @@ Class CWindowMoveAction Extends CAction
 			XValue *= A_ScreenWidth/100
 		if(strEndsWith(Y,"%"))
 			YValue *= A_ScreenHeight/100
-		if(strStartsWith(X,"+"))
+		if(InStr(X,"+") = 1)
 			XValue += curX
-		if(strStartsWith(Y,"+"))
+		if(InStr(Y,"+") = 1)
 			YValue += curY
-		if(strStartsWith(X,"-"))
+		if(InStr(X,"-") = 1)
 			XValue -= curX
-		if(strStartsWith(Y,"-"))
+		if(InStr(Y,"-") = 1)
 			YValue -= curY
 		if(this.CenterX)
 			XValue -= curW / 2

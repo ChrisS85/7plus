@@ -25,7 +25,7 @@ LocateShell32MUI()
 ;Splits a command into command and arguments
 SplitCommand(fullcmd, ByRef cmd, ByRef args)
 {
-	if(strStartsWith(fullcmd,""""))
+	if(InStr(fullcmd,"""") = 1)
 	{
 		pos:=InStr(fullcmd, """" ,0, 2)
 		cmd:=SubStr(fullcmd,2,pos-2)
@@ -354,11 +354,11 @@ DecToHex( ByRef var )
    ; SetFormat, Integer, %f%
    return var
 } 
-strStartsWith(string,start)
-{	
-	x:=(strlen(start)<=strlen(string)&&Substr(string,1,strlen(start))=start)
-	return x
-}
+;strStartsWith(string,start)
+;{	
+;	x:=(strlen(start)<=strlen(string)&&Substr(string,1,strlen(start))=start)
+;	return x
+;}
 
 strEndsWith(string,end)
 {
@@ -366,27 +366,34 @@ strEndsWith(string,end)
 }
 
 ;Removes all occurences of trim at the beggining and end of string
+;trim can be an array of strings that should be removed.
 strTrim(string, trim)
 {
 	return strTrimLeft(strTrimRight(string,trim),trim)
 }
 
-strTrimLeft(string,trim)
+strTrimLeft(string, trim)
 {
-	len:=strLen(trim)
-	while(strStartsWith(string,trim))
+	if(!IsObject(trim))
+		trim := [trim]
+	for index, trimString in trim
 	{
-		StringTrimLeft, string, string, %len% 
+		len := strLen(trimString)
+		while(InStr(string, trimString) = 1)
+			StringTrimLeft, string, string, %len%
 	}
 	return string
 }
 
-strTrimRight(string,trim)
+strTrimRight(string, trim)
 {
-	len:=strLen(trim)
-	while(strEndsWith(string,trim))
-	{					
-		StringTrimRight, string, string, %len% 
+	if(!IsObject(trim))
+		trim := [trim]
+	for index, trimString in trim
+	{
+		len := strLen(trimString)
+		while(strEndsWith(string, trimString))
+			StringTrimRight, string, string, %len%
 	}
 	return string
 }
@@ -409,42 +416,7 @@ strStrip(string, strip)
 	return strStripLeft(strStripRight(string,strip),strip)
 }
 
-Quote(string, once=1)
-{
-	if(once)
-	{
-		if(!strStartsWith(string,""""))
-			string:="""" string
-		if(!strEndsWith(string,""""))
-			string:=string """"
-		return string
-	}
-	return """" string """"
-}
 
-UnQuote(string)
-{
-	if(strStartswith(string,"""") && strEndsWith(string,""""))
-		return strTrim(string,"""")
-	return string
-}
-
-SplitByExtension(ByRef files, ByRef SplitFiles,extensions)
-{
-	;Init string incase it wasn't resetted before or so
-	SplitFiles := Array()
-	newFiles := Array()
-	Loop, Parse, files, `n,`r  ; Rows are delimited by linefeeds ('r`n). 
-	{ 
-		SplitPath, A_LoopField , , , OutExtension
-		if (InStr(extensions, OutExtension) && OutExtension != "")
-			SplitFiles.Insert(A_LoopField)
-		else
-			newFiles.Insert(A_LoopField)
-	}
-	files := newFiles
-	return
-}
 
 FindWindow(title,class="",style="",exstyle="",processname="",allowempty=false)
 {
@@ -1065,15 +1037,6 @@ DeAttachToolWindow(GUINumber)
 	}
 }
 
-;Append two paths together and treat possibly double or missing backslashes
-AppendPaths(Base,child)
-{
-	if(!Base)
-		return child
-	if(!child)
-		return Base
-	return strTrimRight(Base, "\") "\" strTrimLeft(child, "\")
-}
 
 AddToolTip(con,text,Modify = 0)
 {
@@ -1627,4 +1590,70 @@ PickIcon(ByRef sIconPath, ByRef nIndex)
 		return true
 	}
 	return false
+}
+
+
+;Append two paths together and treat possibly double or missing backslashes
+AppendPaths(BasePath, RelativePath)
+{
+	if(!BasePath)
+		return RelativePath
+	if(!RelativePath)
+		return BasePath
+	return strTrimRight(BasePath, "\") "\" strTrimLeft(RelativePath, "\")
+}
+
+;Add quotes around a string if necessary
+Quote(string, once=1)
+{
+	if(once)
+	{
+		if(InStr(string,"""") != 1)
+			string := """" string
+		if(!strEndsWith(string,""""))
+			string := string """"
+		return string
+	}
+	return """" string """"
+}
+
+;Remove quotes from a string if necessary
+UnQuote(string)
+{
+	if(InStr(string,"""") = 1 && strEndsWith(string,""""))
+		return strTrim(string,"""")
+	return string
+}
+
+;This function separates a list of file paths into two lists,
+;where one contains the files that have one of the extensions specified in extensions and one (SplitFiles) that doesn't
+SplitByExtension(ByRef files, ByRef SplitFiles,extensions)
+{
+	;Init string incase it wasn't resetted before or so
+	SplitFiles := Array()
+	newFiles := Array()
+	Loop, Parse, files, `n,`r  ; Rows are delimited by linefeeds ('r`n). 
+	{ 
+		SplitPath, A_LoopField , , , OutExtension
+		if (InStr(extensions, OutExtension) && OutExtension != "")
+			SplitFiles.Insert(A_LoopField)
+		else
+			newFiles.Insert(A_LoopField)
+	}
+	files := newFiles
+	return
+}
+
+;This function makes an absolute path relative to a base path
+MakeRelativePath(AbsolutePath, BasePath)
+{
+	if(InStr(AbsolutePath, BasePath) != 1)
+	{
+		MsgBox MakeRelativePath: %AbsolutePath% doesn't start with %BasePath%
+		return ""
+	}
+	RelativePath := SubStr(AbsolutePath, StrLen(BasePath) + 1)
+	if(InStr(RelativePath, "\") = 1|| InStr(RelativePath, "/") = 1)
+		RelativePath := Substr(RelativePath, 2)
+	return RelativePath
 }

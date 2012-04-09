@@ -24,7 +24,7 @@ Class CFilterListAction Extends CAction
 							|| 	this.Operator = "that are lower than" && array[A_Index] > Filter
 							|| 	this.Operator = "that contain" && InStr(array[A_Index], Filter) > 0
 							|| 	this.Operator = "that match regular expression" && RegexMatch(array[A_Index], "i)" Filter) > 0
-							|| 	this.Operator = "that start with" && strStartsWith(array[A_Index], Filter)
+							|| 	this.Operator = "that start with" && InStr(array[A_Index], Filter) = 1
 							|| 	this.Operator = "that end with" && strEndsWith(array[A_Index], Filter))
 			if((this.Action = "Keep list entries from" && result) || (this.Action = "Remove list entries from" && !result))
 				newarray.Insert(array[A_Index])

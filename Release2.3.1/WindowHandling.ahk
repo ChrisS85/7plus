@@ -85,7 +85,7 @@ IsEditControlActive()
 		ControlGetFocus active, A
 	else
 		active:=XPGetFocussed()
-	if(strStartsWith(active,"edit")||RegexMatch(active,"WindowsForms\d*.EDIT."))
+	if(InStr(active,"edit") = 1 || RegexMatch(active,"WindowsForms\d*.EDIT."))
 		return true
 	return false
 }

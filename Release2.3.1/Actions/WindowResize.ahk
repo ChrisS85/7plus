@@ -24,24 +24,24 @@ Class CWindowResizeAction Extends CAction
 		if(strEndsWith(Height,"%"))
 			HeightValue *= A_ScreenHeight/100
 			
-		if(strStartsWith(Width,"+"))
+		if(InStr(Width,"+") = 1)
 			WidthValue += curW
-		if(strStartsWith(Height,"+"))
+		if(InStr(Height,"+") = 1)
 			HeightValue += curH
 			
-		if(strStartsWith(Width,"-"))
+		if(InStr(Width,"-") = 1)
 			WidthValue -= curW
-		if(strStartsWith(Height,"-"))
+		if(InStr(Height,"-") = 1)
 			HeightValue -= curH
 			
-		if(strStartsWith(Width,"*"))
+		if(InStr(Width,"*") = 1)
 			WidthValue *= curW
-		if(strStartsWith(Height,"*"))
+		if(InStr(Height,"*") = 1)
 			HeightValue *= curH
 			
-		if(strStartsWith(Width,"/"))
+		if(InStr(Width,"/") = 1)
 			WidthValue /= curW
-		if(strStartsWith(Height,"/"))
+		if(InStr(Height,"/") = 1)
 			HeightValue /= curH
 			
 		if(this.CenterX)
