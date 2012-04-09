@@ -105,7 +105,7 @@ Class CWinRarNavigationSource
 					{
 						if(InStr(A_LoopReadLine,"8f827d31") = 1)
 						{
-							WinRarTitle:=strStrip(A_LoopReadLine,"""")
+							WinRarTitle := Unquote(A_LoopReadLine)
 							break
 						}
 					}

@@ -1,6 +1,10 @@
+;This file contains various functions for all kinds of things. YAY!
+
 #include *i %A_ScriptDir%\lib\Array.ahk
+
+;Gets a localized string from a resource file.
 ;usage example:
-;x:=TranslateMUI("shell32.dll",31236)
+;x := TranslateMUI("shell32.dll",31236)
 TranslateMUI(resDll, resID)
 {
 	VarSetCapacity(buf, 256) 
@@ -45,6 +49,7 @@ SplitCommand(fullcmd, ByRef cmd, ByRef args)
 	}
 }
 
+;Gets a free gui number.
 /* Group: About
 	o v0.81 by majkinetor.
 	o Licenced under BSD <http://creativecommons.org/licenses/BSD/> 
@@ -61,26 +66,30 @@ GetFreeGuiNum(start, prefix = ""){
 	return 0
 }
 
-IsWindowUnderCursor(what)
+;Checks if a specific window is under the cursor.
+IsWindowUnderCursor(hwnd)
 {
 	MouseGetPos, , , win
-	if(InStr(WinGetClass("ahk_id " win),what))
+	if(InStr(WinGetClass("ahk_id " win), hwnd))
 		return true
 	return false
 }
 
-IsControlUnderCursor(what)
+;Checks if a specific control is under the cursor and returns its ClassNN if it is.
+IsControlUnderCursor(ControlClass)
 {
 	MouseGetPos, , , , control
-	IfInString control, %what%
+	if(InStr(Control, ControlClass))
 		return control
 	return false
 }
 
+;Sets window event hook
 API_SetWinEventHook(eventMin, eventMax, hmodWinEventProc, lpfnWinEventProc, idProcess, idThread, dwFlags) {
    return DllCall("SetWinEventHook", "uint", eventMin, "uint", eventMax, "Ptr", hmodWinEventProc, "uint", lpfnWinEventProc, "uint", idProcess, "uint", idThread, "uint", dwFlags, "Ptr") 
 } 
 
+;Unhooks window event hook
 API_UnhookWinEvent( hWinEventHook ) { 
    return DllCall("UnhookWinEvent", "Ptr", hWinEventHook) 
 } 
@@ -105,6 +114,7 @@ DisableMinimizeAnim(disable)
 		NumPut(1, struct, 4, "UInt")
 	DllCall("SystemParametersInfo", "UINT", 0x0049,"UINT", 8,"Ptr", &struct,"UINT", 0x0003) ;SPI_SETANIMATION            0x0049 SPIF_SENDWININICHANGE 0x0002
 }
+
 /* 
 Performs a hittest on the window under the mouse and returns the WM_NCHITTEST Result
 #define HTERROR             (-2) 
@@ -149,10 +159,13 @@ MouseHitTest()
 	SendMessage, 0x84,, ( (MouseY&0xFFFF) << 16 )|(MouseX&0xFFFF),, ahk_id %WindowUnderMouseID%
 	return ErrorLevel
 }
+
+;Returns true if there is an available internet connection
 IsConnected(URL="http://code.google.com/p/7plus/")
 {
 	return DllCall("Wininet.dll\InternetCheckConnection", "Str", URL,"UInt", 1, "UInt",0, "UInt")
 }
+
 /*! TheGood (modified a bit by Fragman)
     Checks if a window is in fullscreen mode. 
     ______________________________________________________________________________________________________________ 
@@ -263,6 +276,7 @@ GetActiveMonitorWorkspaceArea(ByRef MonLeft, ByRef MonTop, ByRef MonW, ByRef Mon
 		MonH := MonBottom - MonTop
 	}
 }
+
 ;Returns the monitor the mouse or the active window is in
 GetActiveMonitor(hWndOrMouseX, MouseY = "")
 {
@@ -302,50 +316,62 @@ GetActiveMonitor(hWndOrMouseX, MouseY = "")
 ;Returns the (signed) minimum of the absolute values of x and y 
 absmin(x,y)
 {
-	return abs(x)>abs(y) ? y : x
+	return abs(x) > abs(y) ? y : x
 }
 
 ;Returns the (signed) maximum of the absolute values of x and y
 absmax(x,y)
 {
-	return abs(x)<abs(y) ? y : x
+	return abs(x) < abs(y) ? y : x
 }
 
-;Returns 1 if x is positive and -1 if x is negative
+;Returns 1 if x is positive or 0 and -1 if x is negative
 sign(x)
 {
-	return x<0 ? -1 : 1
+	return x < 0 ? -1 : 1
 }
 
 ;returns the maximum of xdir and y, but with the sign of xdir
 dirmax(xdir,y)
 {
-	if(xdir=0)
+	if(xdir = 0)
 		return 0
-	if(abs(xdir)>y)
+	if(abs(xdir) > y)
 		return xdir
-	return xdir/abs(xdir)*abs(y)
+	return xdir / abs(xdir) * abs(y)
 }
 
 ;returns the maximum of xdir and y, but with the sign of xdir
 dirmin(xdir,y)
 {
-	if(xdir=0)
+	if(xdir = 0)
 		return 0
-	if(abs(xdir)<y)
+	if(abs(xdir) < y)
 		return xdir
-	return xdir/abs(xdir)*abs(y)
+	return xdir / abs(xdir) * abs(y)
 }
 
-min(x,y)
+;Minimum of parameters
+min(vars*)
 {
-	return x>y ? y : x
+	min := vars[1]
+	for index, var in vars
+		if(var < min)
+			min := var
+	return min
 }
 
-max(x, y)
+;Maximum of parameters
+max(vars*)
 {
-	return x < y ? y : x
+	max := vars[1]
+	for index, var in vars
+		if(var > max)
+			max := var
+	return max
 }
+
+;Formats a number in hexadecimal
 DecToHex( ByRef var ) 
 { 
 	f := A_FormatInteger
@@ -353,25 +379,29 @@ DecToHex( ByRef var )
    var += 0
    ; SetFormat, Integer, %f%
    return var
-} 
-;strStartsWith(string,start)
-;{	
-;	x:=(strlen(start)<=strlen(string)&&Substr(string,1,strlen(start))=start)
-;	return x
-;}
-
-strEndsWith(string,end)
-{
-	return strlen(end)<=strlen(string) && Substr(string,-strlen(end)+1)=end
 }
 
-;Removes all occurences of trim at the beggining and end of string
+;Determines if a string starts with another string. NOTE: It's a bit faster to simply use InStr(string, start) = 1
+strStartsWith(string,start)
+{	
+	return InStr(string, start) = 1
+}
+
+;Determines if a string ends with another string
+strEndsWith(string, end)
+{
+	return strlen(end) <= strlen(string) && Substr(string, -strlen(end) + 1) = end
+}
+
+;Removes all occurences of trim at the beginning and end of string
 ;trim can be an array of strings that should be removed.
 strTrim(string, trim)
 {
-	return strTrimLeft(strTrimRight(string,trim),trim)
+	return strTrimLeft(strTrimRight(string, trim), trim)
 }
 
+;Removes all occurences of trim at the beginning of string
+;trim can be an array of strings that should be removed.
 strTrimLeft(string, trim)
 {
 	if(!IsObject(trim))
@@ -385,6 +415,8 @@ strTrimLeft(string, trim)
 	return string
 }
 
+;Removes all occurences of trim at the end of string
+;trim can be an array of strings that should be removed.
 strTrimRight(string, trim)
 {
 	if(!IsObject(trim))
@@ -398,27 +430,8 @@ strTrimRight(string, trim)
 	return string
 }
 
-strStripLeft(string,strip)
-{
-	return substr(string,InStr(string, strip ,0, 0)+strLen(strip))
-}
-
-strStripRight(string,strip)
-{
-	StringGetPos, pos, string, %strip% ,R
-	x:=substr(string,1,pos)
-	return substr(string,1,pos)
-}
-
-;Removes all characters in string before the first occurence of strip and after the last occurence of strip in string
-strStrip(string, strip)
-{
-	return strStripLeft(strStripRight(string,strip),strip)
-}
-
-
-
-FindWindow(title,class="",style="",exstyle="",processname="",allowempty=false)
+;Finds the first window matching specific criterias.
+FindWindow(title, class="", style="", exstyle="", processname="", allowempty = false)
 {
 	WinGet, id, list,,, Program Manager
 	Loop, %id%
@@ -446,15 +459,16 @@ FindWindow(title,class="",style="",exstyle="",processname="",allowempty=false)
 	}
 	return 0
 }
-GetActiveProcessName()
-{
-	return GetProcessName(WinExist("A"))
-}
+
+
+;Gets the process name from a window handle.
 GetProcessName(hwnd)
 {
 	WinGet, ProcessName, processname, ahk_id %hwnd%
 	return ProcessName
 }
+
+;Gets the path of a process by its pid
 GetModuleFileNameEx( pid ) 
 { 
    if A_OSVersion in WIN_95,WIN_98,WIN_ME 
@@ -484,6 +498,7 @@ GetModuleFileNameEx( pid )
    DllCall( "CloseHandle", "Ptr", h_process )
    return, name 
 }
+
 ; Extract an icon from an executable, DLL or icon file. 
 ExtractIcon(Filename, IconNumber = 0, IconSize = 64) 
 { 
@@ -500,6 +515,8 @@ ExtractIcon(Filename, IconNumber = 0, IconSize = 64)
 		return h_icon 
     return h_icon ? h_icon : 0 
 }
+
+;Gets the visible window at a screen coordinate
 GetVisibleWindowAtPoint(x,y,IgnoredWindow)
 {
 	DetectHiddenWindows,off
@@ -519,25 +536,34 @@ GetVisibleWindowAtPoint(x,y,IgnoredWindow)
 	DetectHiddenWindows,on
 }
 
+;checks if a point is in a rectangle
 IsInArea(px,py,x,y,w,h)
 {
 	return (px>x&&py>y&&px<x+w&&py<y+h)
 }
+
+;Checks if two rectangles overlap
 RectsOverlap(x1,y1,w1,h1,x2,y2,w2,h2)
 {
 	Union := RectUnion(x1,y1,w1,h1,x2,y2,w2,h2)
 	return Union.w && Union.h
 }
+
+;Checks if two rectangles are separate
 RectsSeparate(x1,y1,w1,h1,x2,y2,w2,h2)
 {
 	Union := RectUnion(x1,y1,w1,h1,x2,y2,w2,h2)
 	return Union.w = 0 && Union.h = 0
 }
+
+;Check if the first rectangle includes the second one
 RectIncludesRect(x1,y1,w1,h1,ix,iy,iw,ih)
 {
 	Union := RectUnion(x1,y1,w1,h1,ix,iy,iw,ih)
 	return Union.x = ix && Union.y = iy && Union.w = iw && Union.h = ih
 }
+
+;Calculates the union of two rectangles
 RectUnion(x1,y1,w1,h1,x2,y2,w2,h2)
 {
 	x3 := ""
@@ -568,6 +594,8 @@ RectUnion(x1,y1,w1,h1,x2,y2,w2,h2)
 		w3 := 0
 	return Object("x", x3, "y", y3, "w", w3, "h", h3)
 }
+
+;Gets window position using workspace coordinates (-> no taskbar)
 WinGetPlacement(hwnd, ByRef x="", ByRef y="", ByRef w="", ByRef h="", ByRef state="") 
 { 
     VarSetCapacity(wp, 44), NumPut(44, wp) 
@@ -579,6 +607,8 @@ WinGetPlacement(hwnd, ByRef x="", ByRef y="", ByRef w="", ByRef h="", ByRef stat
 	state := NumGet(wp, 8, "UInt")
 	;outputdebug get x%x% y%y% w%w% h%h% state%state%
 }
+
+;Sets window position using workspace coordinates (-> no taskbar)
 WinSetPlacement(hwnd, x="",y="",w="",h="",state="")
 {
 	WinGetPlacement(hwnd, x1, y1, w1, h1, state1)
@@ -607,24 +637,20 @@ WinSetPlacement(hwnd, x="",y="",w="",h="",state="")
     NumPut(y+h, wp, 40, "Int")
 	DllCall("SetWindowPlacement", "Ptr", hwnd, "Ptr", &wp) 
 }
-ExpandEnvVars(path)
-{
-	VarSetCapacity(dest, 2000) 
-	DllCall("ExpandEnvironmentStrings", "str", path, "str", dest, int, 1999, "Cdecl int") 
-	return dest
-}
 
+;Checks if the current LClick hotkey comes from a double click
 IsDoubleClick()
 {	
 	return A_TimeSincePriorHotkey < DllCall("GetDoubleClickTime") && A_ThisHotkey=A_PriorHotkey
 }
 
+;Checks if a specific control class is active. Matches by start of ClassNN.
 IsControlActive(controlclass)
 {
 	if(A_OSVersion="WIN_7")
 		ControlGetFocus active, A
 	else
-		active:=XPGetFocussed()
+		active := XPGetFocussed()
 	if(InStr(active, controlclass))
 		return true
 	return false
@@ -670,29 +696,8 @@ CloseKill(hwnd)
 		Process, close, %pid%
 }
 
-RemoveLineFeedsAndSurroundWithDoubleQuotes(files)
-{
-	if(isobject(files))
-	{
-		result := Array()
-		Loop % files.MaxIndex()
-			if !InStr(FileExist(files[A_Index]), "D")
-				result.Insert("""" files[A_Index] """")
-		return result
-	}
-	else
-	{
-		result:=""
-		Loop, Parse, files, `n,`r  ; Rows are delimited by linefeeds ('r`n). 
-		{ 
-			if !InStr(FileExist(A_LoopField), "D")
-				result=%result% "%A_LoopField%"
-		} 
-		return result
-	}
-}
-
 /*
+Converts a string list with separators to an array. It also removes and splits at quotes
 To be parsed:
 
 file a
@@ -757,6 +762,7 @@ ToArray(SourceFiles, ByRef Separator = "`n", ByRef wasQuoted = 0)
 	return files
 }
 
+;Flattens an array to a list with separators
 ArrayToList(array, separator = "`n", quote = 0)
 {
 	Loop % array.MaxIndex()
@@ -779,6 +785,7 @@ CompareVersion(major1,major2,minor1,minor2,bugfix1,bugfix2)
 		return -1
 }
 
+;Returns true if x is a number
 IsNumeric(x)
 {
    If x is number 
@@ -786,14 +793,17 @@ IsNumeric(x)
    Return 0 
 }
 
+;Performs quote unescaping of a string. Transforms \" to " and \\ to \
 StringUnescape(String)
 {
 	return StringReplace(StringReplace(StringReplace(String, "\\", Chr(1), 1), "\""", """", 1), Chr(1), "\", 1)
 }
+;Performs quote escaping of a string. Transforms " to \" and \ to \\
 StringEscape(String)
 {
 	return StringReplace(StringReplace(String, "\", "\\", 1), """", "\""", 1)
 }
+;Decodes a URL
 uriDecode(str) { 
    Loop 
       If RegExMatch(str, "i)(?<=%)[\da-f]{1,2}", hex) 
@@ -801,6 +811,8 @@ uriDecode(str) {
       Else Break 
    Return, str 
 } 
+
+;Encodes a URL
 uriEncode(str, full=0) { 
    f = %A_FormatInteger% 
    SetFormat, Integer, Hex 
@@ -815,6 +827,7 @@ uriEncode(str, full=0) {
    Return, pr . str 
 }
 
+;Old function for codepage conversions. AHK_L can do this now.
 Unicode2Ansi(ByRef wString, ByRef sString, CP = 0) 
 { 
 	nSize := DllCall("WideCharToMultiByte" , "Uint", CP, "Uint", 0 , "UintP", wString , "int",  -1 , "Uint", 0 , "int",  0 , "Uint", 0 , "Uint", 0) 
@@ -822,6 +835,7 @@ Unicode2Ansi(ByRef wString, ByRef sString, CP = 0)
 	DllCall("WideCharToMultiByte" , "Uint", CP , "Uint", 0 , "UintP", wString , "int",  -1 , "str",  sString , "int",  nSize , "Uint", 0 , "Uint", 0) 
 }
 
+;Old function for codepage conversions. AHK_L can do this now.
 Ansi2Unicode(ByRef sString, ByRef wString, CP = 0) 
 { 
 	nSize := DllCall("MultiByteToWideChar" , "Uint", CP , "Uint", 0 , "UintP", sString , "int",  -1 , "Uint", 0 , "int",  0) 
@@ -829,6 +843,8 @@ Ansi2Unicode(ByRef sString, ByRef wString, CP = 0)
 	DllCall("MultiByteToWideChar" , "Uint", CP , "Uint", 0 , "UintP",  sString , "int",  -1 , "UintP", wString , "int",  nSize) 
 }
 
+;Performs a fuzzy search for string2 in string1.
+;return values range from 0.0 = identical to 1.0 = completely different. 0.4 seems appropriate
 FuzzySearch(string1, string2)
 {
 	lenl := StrLen(string1)
@@ -898,14 +914,18 @@ StringDifference(string1, string2, maxOffset=3) {    ;returns a float: between "
   Return ((n0 + m0)/2 - lcs) / (n0 > m0 ? n0 : m0) 
 }
 
+;Returns true if the string is in URL format. Use CouldBeURL() for weaker checks.
 IsURL(string)
 {
 	return RegexMatch(strTrim(string, " "), "(?:(?:ht|f)tps?://|www\.).+\..+") > 0
 }
+;Returns true if the string could be a URL. Use IsURL() to be sure.
 CouldBeURL(string)
 {
 	return RegexMatch(strTrim(string, " "), "(?:(?:ht|f)tps?://|www\.)?.+\..+") > 0
 }
+
+;Tests for write access to a specific file
 WriteAccess( F ) {
 	if(FileExist(F))
 		Return ((h:=DllCall("_lopen", AStr, F, Int, 1, "Ptr")) > 0 ? 1 : 0) (DllCall("_lclose","Ptr",h)+NULL) 
@@ -916,6 +936,8 @@ WriteAccess( F ) {
 		return !ErrorLevel
 	}
 }
+
+;Generates MD5 value of a file
 FileMD5( sFile="", cSz=4 ) { ; www.autohotkey.com/forum/viewtopic.php?p=275910#275910 
  cSz  := (cSz<0||cSz>8) ? 2**22 : 2**(18+cSz), VarSetCapacity( Buffer,cSz,0 ) 
  hFil := DllCall( "CreateFile", Str,sFile,UInt,0x80000000, Int,1,Int,0,Int,3,Int,0,Int,0, "Ptr") 
@@ -930,6 +952,8 @@ FileMD5( sFile="", cSz=4 ) { ; www.autohotkey.com/forum/viewtopic.php?p=275910#2
   N := NumGet( MD5_CTX,87+A_Index,"Char"), MD5 .= SubStr(Hex,N>>4,1) . SubStr(Hex,N&15,1) 
  Return MD5
 }
+
+;Formats a file size in bytes to a human-readable size string
 FormatFileSize(Bytes, Decimals=1, Prefixes="B,KB,MB,GB,TB,PB,EB,ZB,YB")
 {
 	StringSplit, Prefix, Prefixes, `,
@@ -937,11 +961,14 @@ FormatFileSize(Bytes, Decimals=1, Prefixes="B,KB,MB,GB,TB,PB,EB,ZB,YB")
 		if(Bytes < e := 1024**A_Index)
 			return % Round(Bytes/(e/1024), decimals) Prefix%A_Index%
 }
+
+;Returns a string containing the formatted object keys and values
 ExploreObj(Obj, NewRow="`n", Equal="  =  ", Indent="`t", Depth=12, CurIndent="") { 
     for k,v in Obj 
         ToReturn .= CurIndent . k . (IsObject(v) && depth>1 ? NewRow . ExploreObj(v, NewRow, Equal, Indent, Depth-1, CurIndent . Indent) : Equal . v) . NewRow 
     return RTrim(ToReturn, NewRow) 
 }
+
 
 GetFullPathName(SPath)
 {
@@ -994,6 +1021,7 @@ FindFreeFileName(FilePath)
 	return TestPath
 }
 
+;Attaches a window as a tool window to another window from a different process. QUESTION: Is this still needed?
 AttachToolWindow(hParent, GUINumber, AutoClose)
 {
 		global ToolWindows
@@ -1037,7 +1065,7 @@ DeAttachToolWindow(GUINumber)
 	}
 }
 
-
+;Adds a tooltip to a control.
 AddToolTip(con,text,Modify = 0)
 {
 	Static TThwnd,GuiHwnd
@@ -1092,6 +1120,8 @@ CreateTooltipControl(hwind)
 	,"PTR",0, "PTR")
 	Return Ret
 }
+
+;Gets width of all screens combined. NOTE: Single screens may have different vertical resolutions so some parts of the area returned here might not belong to any screens!
 GetVirtualScreenCoordinates(ByRef x, ByRef y, ByRef w, ByRef h)
 {
 	SysGet, x, 76 ;Get virtual screen coordinates of all monitors
@@ -1099,16 +1129,21 @@ GetVirtualScreenCoordinates(ByRef x, ByRef y, ByRef w, ByRef h)
 	SysGet, w, 78
 	SysGet, h, 79
 }
+
+;WinGetPos function wrapper
 WinGetPos(WinTitle = "", WinText = "", ExcludeTitle = "", ExcludeText = "")
 {
 	WinGetPos, x, y, w, h, %WinTitle%, %WinText%, %ExcludeTitle%, %ExcludeText%
 	return Object("x", x, "y", y, "w", w, "h", h)
 }
 
+;WinMove function wrapper
 WinMove(WinTitle, Rect, WinText = "", ExcludeTitle = "", ExcludeText = "")
 {
 	WinMove, %WinTitle%, %WinText%, % Rect.x, % Rect.y, % Rect.w, % Rect.h, %ExcludeTitle%, %ExcludeText%
 }
+
+;Returns true if a window is visible in Alt+Tab list
 IsAltTabWindow(hwnd)
 {
 	if(!hwnd)
@@ -1128,6 +1163,7 @@ IsAltTabWindow(hwnd)
 	return hwndWalk = hwnd
 }
 
+;Gets ClassNN from hwnd
 HWNDToClassNN(hwnd)
 {
 	win := DllCall("GetParent", "PTR", hwnd, "PTR")
@@ -1140,6 +1176,8 @@ HWNDToClassNN(hwnd)
 			return A_LoopField
 	}
 }
+
+;Gets focused control in XP to prevent blocking double clicks like with ControlGetFocus
 XPGetFocussed()
 {
   WinGet ctrlList, ControlList, A 
@@ -1154,6 +1192,7 @@ XPGetFocussed()
   } 
 }
 
+;Watches a directory/file for file changes
 ;By HotKeyIt
 ;Docs: http://www.autohotkey.com/forum/viewtopic.php?p=398565#398565
 WatchDirectory(p*){ 
@@ -1300,6 +1339,8 @@ WatchDirectory(p*){
    } 
    Return 
 }
+
+;Clamps a value
 Clamp(value, min, max)
 {
 	if(value < min)
@@ -1308,6 +1349,8 @@ Clamp(value, min, max)
 		value := max
 	return value
 }
+
+;Generates 7plus version string
 VersionString(Short = 0)
 {
 	global
@@ -1316,6 +1359,8 @@ VersionString(Short = 0)
 	else
 		return MajorVersion "." MinorVersion "." BugfixVersion "." PatchVersion
 }
+
+;Generates an UUID
 uuid(c = false) { ; v1.1 - by Titan 
    static n = 0, l, i 
    f := A_FormatInteger, t := A_Now, s := "-" 
@@ -1347,12 +1392,16 @@ ConvertFilterStringToRegex(FilterString)
 	StringReplace,FilterString,FilterString,%A_Space%,\s,A
 	return "i)" FilterString
 }
+
+;Gets client area of a window
 GetClientRect(hwnd)
 {
 	VarSetCapacity(rc, 16)
 	result := DllCall("GetClientRect", "PTR", hwnd, "PTR", &rc, "UINT")
 	return {x : NumGet(rc, 0, "int"), y : NumGet(rc, 4, "int"), w : NumGet(rc, 8, "int"), h : NumGet(rc, 12, "int")}
 }
+
+;Gets the selected text by copying it to the clipboard. OnClipboardChange ignores this due to MuteClipboardList flag
 GetSelectedText()
 {
 	MuteClipboardList := true
@@ -1367,6 +1416,7 @@ GetSelectedText()
 	return result
 }
 
+;Gets all kind of window information of open windows.
 GetWindowInfo()
 {
 	global WindowList
@@ -1430,7 +1480,9 @@ GetWindowInfo()
 	}
 	return windows
 }
-GetWindowIcon(wid, LargeIcons) ; (window id, whether to get large icons)
+
+; (window id, whether to get large icons)
+GetWindowIcon(wid, LargeIcons)
 {
 	Local NR_temp, h_icon
 	; check status of window - if window is responding or "Not Responding"
@@ -1472,7 +1524,8 @@ GetWindowIcon(wid, LargeIcons) ; (window id, whether to get large icons)
 	Else	; use a generic icon
 		return Accessor.GenericIcons.Application
 }
-GetCPA_file_name( p_hw_target ) ; retrives Control Panel applet icon
+; retrives Control Panel applet icon
+GetCPA_file_name( p_hw_target )
 {
    WinGet, pid_target, PID, ahk_id %p_hw_target%
    hp_target := DllCall( "OpenProcess", "uint", 0x18, "int", false, "uint", pid_target, "Ptr")
@@ -1504,6 +1557,7 @@ GetCPA_file_name( p_hw_target ) ; retrives Control Panel applet icon
       return, false
 }
 
+;gets CPU Usage
 GetSystemTimes()    ;Total CPU Load
 {
    Static oldIdleTime, oldKrnlTime, oldUserTime
@@ -1517,6 +1571,7 @@ GetSystemTimes()    ;Total CPU Load
    Return (1 - (newIdleTime-oldIdleTime)/(newKrnlTime-oldKrnlTime + newUserTime-oldUserTime)) * 100
 }
 
+;Starts a timer that can call functions and object methods
 SetTimerF( Function, Period=0, ParmObject=0, Priority=0 ) { 
  Static current,tmrs:=Object() ;current will hold timer that is currently running
  If IsFunc( Function ) || IsObject( Function ){
@@ -1558,6 +1613,8 @@ DuplicateIcon(hIcon)
 {
 	return DllCall("Shell32.dll\DuplicateIcon", "PTR", 0, "Ptr", hIcon, "PTR")
 }
+
+;Returns an object containing the area of the monitor in pixels where the mouse cursor currently is
 FindMonitorFromMouseCursor()
 {
     MouseGetPos, x, y
@@ -1570,6 +1627,7 @@ FindMonitorFromMouseCursor()
     }
 }
 
+;Determines if this script is running as 32bit version in a 64bit OS
 IsWow64Process()
 {
 	ThisProcess := DllCall("GetCurrentProcess")
@@ -1580,6 +1638,8 @@ IsWow64Process()
 	    IsWow64Process := false
     return IsWow64Process
 }
+
+;Shows icon picker dialog. Returns true if OK is pressed, false if cancelled.
 PickIcon(ByRef sIconPath, ByRef nIndex)
 {
 	VarSetCapacity(IconPath, 260 * 2, 0)
@@ -1627,18 +1687,18 @@ UnQuote(string)
 
 ;This function separates a list of file paths into two lists,
 ;where one contains the files that have one of the extensions specified in extensions and one (SplitFiles) that doesn't
-SplitByExtension(ByRef files, ByRef SplitFiles,extensions)
+SplitByExtension(ByRef files, ByRef SplitFiles, extensions)
 {
 	;Init string incase it wasn't resetted before or so
 	SplitFiles := Array()
 	newFiles := Array()
-	Loop, Parse, files, `n,`r  ; Rows are delimited by linefeeds ('r`n). 
+	for index, file in files
 	{ 
-		SplitPath, A_LoopField , , , OutExtension
+		SplitPath, file , , , OutExtension
 		if (InStr(extensions, OutExtension) && OutExtension != "")
-			SplitFiles.Insert(A_LoopField)
+			SplitFiles.Insert(file)
 		else
-			newFiles.Insert(A_LoopField)
+			newFiles.Insert(file)
 	}
 	files := newFiles
 	return
@@ -1653,7 +1713,6 @@ MakeRelativePath(AbsolutePath, BasePath)
 		return ""
 	}
 	RelativePath := SubStr(AbsolutePath, StrLen(BasePath) + 1)
-	if(InStr(RelativePath, "\") = 1|| InStr(RelativePath, "/") = 1)
-		RelativePath := Substr(RelativePath, 2)
+	RelativePath := strTrimLeft(RelativePath, ["\", "/"])
 	return RelativePath
 }

@@ -25,7 +25,7 @@ Class CClipboardAction Extends CAction
 		}
 		else if(this.InsertType = "FileContent")
 		{
-			textfiles := Content
+			textfiles := ToArray(Content)
 			SplitByExtension(textfiles, imagefiles, Settings.Misc.ImageExtensions)
 			if(textfiles.MaxIndex() > 0 && FileExist(textfiles[1]))
 			{
