@@ -139,7 +139,7 @@ Class CAccessor
 		FileDelete, %A_Temp%\7plus\test.htm
 		this.GenericIcons.7plus := ExtractIcon(A_ScriptDir "\7+-w.ico")
 	}
-	Show(Action)
+	Show(Action, InitialQuery = "")
 	{
 		if(this.GUI)
 			return
@@ -161,13 +161,23 @@ Class CAccessor
 		this.History.Index := 1
 		this.History[1] := ""
 		
+		;The action can set a placeholder manually. All events should make sure that Filter is not set before adding their own results on startup
+		if(InitialQuery)
+			this.Filter := InitialQuery
+
 		;Notify plugins. They can adjust their priorities or set a filter here.
 		for index, Plugin in this.Plugins
 		{
 			Plugin.Priority := Plugin.Settings.BasePriority
 			Plugin.OnOpen(this)
 		}
-		
+
+		if(InitialQuery)
+		{
+			this.SetFilter(this.Filter)
+			this.RefreshList()
+		}
+
 		;Check if a plugin set a custom filter
 		if(!this.Filter)
 			this.RefreshList()

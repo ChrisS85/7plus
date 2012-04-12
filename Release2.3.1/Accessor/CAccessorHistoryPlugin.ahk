@@ -15,11 +15,13 @@ Class CAccessorHistoryPlugin extends CAccessorPlugin
 		KeywordOnly := false
 		FuzzySearch := false
 		MaxEntries := 100
-		MinChars := 0 ;This is actually 2, but not when Notepad++ is active
+		MinChars := 0
+		ShowWithEmptyQuery := true
 	}
 	ShowSettings(Settings, GUI, PluginGUI)
 	{
 		AddControl(Settings, PluginGUI, "UpDown", "MaxEntries", "3-1000", "", "History length:", "", "", "", "", "The number of history entries to keep.")
+		AddControl(Settings, PluginGUI, "Checkbox", "ShowWithEmptyQuery", "Show history when query string is empty")
 	}
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
@@ -51,7 +53,7 @@ Class CAccessorHistoryPlugin extends CAccessorPlugin
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		Results := Array()
-		if(!Filter)
+		if(!Filter && this.Settings.ShowWithEmptyQuery)
 		{
 			for index, item in this.List
 				Results.Insert(item)

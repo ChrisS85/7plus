@@ -1508,10 +1508,10 @@ GetWindowIcon(wid, LargeIcons)
 				If ( ! h_icon )
 				{
 					If LargeIcons =1
-						h_icon := DllCall( "GetClassLong", "Ptr", wid, "int", -14 ) ; GCL_HICON is -14
+						h_icon := DllCall( "GetClassLong" (A_PtrSize = 8 ? "Ptr" : ""), "Ptr", wid, "int", -14, UPtr) ; GCL_HICON is -14
 					If ( ! h_icon )
 					{
-						h_icon := DllCall( "GetClassLong", "Ptr", wid, "int", -34 ) ; GCL_HICONSM is -34
+						h_icon := DllCall( "GetClassLong" (A_PtrSize = 8 ? "Ptr" : ""), "Ptr", wid, "int", -34, UPtr) ; GCL_HICONSM is -34
 						If ( ! h_icon )
 							h_icon := DllCall( "LoadIcon", "Ptr", 0, "uint", 32512 ) ; IDI_APPLICATION is 32512
 					}

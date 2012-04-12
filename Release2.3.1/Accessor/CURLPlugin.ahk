@@ -53,7 +53,7 @@ Class CURLPlugin extends CAccessorPlugin
 	}
 	OnOpen(Accessor)
 	{
-		if(this.Settings.UseSelectedText && !Accessor.FilterWithoutTimer && Accessor.CurrentSelection && IsURL(Accessor.CurrentSelection))
+		if(this.Settings.UseSelectedText && !Accessor.Filter && !Accessor.FilterWithoutTimer && Accessor.CurrentSelection && IsURL(Accessor.CurrentSelection))
 			Accessor.SetFilter(Accessor.CurrentSelection)
 	}
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)

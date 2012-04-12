@@ -47,10 +47,13 @@ Class CRecentFoldersPlugin extends CAccessorPlugin
 	}
 	OnOpen(Accessor)
 	{
-		if(this.Settings.UseWhenNavigable && Navigation.FindNavigationSource(Accessor.PreviousWindow, "SetPath"))
+		if(Navigation.FindNavigationSource(Accessor.PreviousWindow, "SetPath"))
 		{
-			Accessor.SetFilter(this.Settings.Keyword " ")
-			Edit_Select(0, -1, "", "ahk_id " Accessor.GUI.EditControl.hwnd)
+			if(!Accessor.Filter && this.Settings.UseWhenNavigable)
+			{
+				Accessor.SetFilter(this.Settings.Keyword " ")
+				Edit_Select(0, -1, "", "ahk_id " Accessor.GUI.EditControl.hwnd)
+			}
 			this.Priority := 10000
 		}
 	}

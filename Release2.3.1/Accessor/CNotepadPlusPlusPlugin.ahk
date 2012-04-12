@@ -70,7 +70,7 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 		if(WinExist("ahk_class " this.WindowClassName) = Accessor.PreviousWindow)
 		{
 			this.Priority := 10000
-			if(this.Settings.RememberQueries && index := this.MRUList.FindKeyWithValue("Path", Path := this.GetNotepadPlusPlusActiveTab()))
+			if(!Accessor.Filter && this.Settings.RememberQueries && index := this.MRUList.FindKeyWithValue("Path", Path := this.GetNotepadPlusPlusActiveTab()))
 			{
 				Accessor.SetFilter(this.MRUList[index].Command)
 				Edit_Select(0, -1, "", "ahk_id " Accessor.GUI.EditControl.hwnd)
@@ -82,7 +82,7 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 						break
 					}
 			}
-			else if(this.Settings.UseWhenActive)
+			else if(!Accessor.Filter && this.Settings.UseWhenActive)
 			{
 				Accessor.SetFilter(this.Settings.Keyword " ")
 				Edit_Select(0, -1, "", "ahk_id " Accessor.GUI.EditControl.hwnd)
