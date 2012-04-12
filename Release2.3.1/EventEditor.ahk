@@ -3,7 +3,7 @@ GetCurrentSubEvent()
 {
 	if(!IsObject(EventEditor := CGUI.GUIList[A_GUI]))
 	{
-		MsgBox Can't find the trigger/condition or action of the currently edited event because the event editor was not found!
+		Notify("Event Editor Error!", "Can't find the trigger/condition or action of the currently edited event because the event editor was not found!", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
 		return
 	}
 	CurrentTab := EventEditor.Tab.SelectedItem.Text
@@ -86,7 +86,7 @@ Class CEventEditor extends CGUI
 	{
 		if(!Event)
 		{
-			MsgBox Event Editor: Event not found!
+			Notify("Event Editor Error!", "Event not found!", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
 			this.Result := ""
 			this.Close()
 		}

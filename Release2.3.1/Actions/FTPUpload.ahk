@@ -65,8 +65,9 @@ Class CFTPUploadAction Extends CAction
 		targets := Array()
 		for index, File in SourceFiles
 		{
-			Splitpath, file, filename, , fileextension, filenamenoextension
 			SplitPath, TargetFile, , , targetfileextension, targetfilenamenoextension
+			
+			Splitpath, file, filename, , fileextension, filenamenoextension
 			if(targetfilenamenoextension && targetfileextension)
 				targets.Insert(targetfilenamenoextension "." targetfileextension)
 			else if(targetfilenamenoextension)

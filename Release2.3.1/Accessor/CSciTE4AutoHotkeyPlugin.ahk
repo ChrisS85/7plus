@@ -175,7 +175,7 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 				}
 			}
 			else
-				Msgbox Filter not found!
+				Notify("Accessor Error", "Filter string empty!", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
 		}
 		this.ActivateSciTE4AutoHotkeyTab(this.List1.indexOf(ListEntry.Path))
 	}

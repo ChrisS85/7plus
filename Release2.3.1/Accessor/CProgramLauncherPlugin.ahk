@@ -188,7 +188,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			if(InStr(FileExist(ExpandPathPlaceholders(IndexedPath.Path)), "D"))
 				this.Paths.Insert(IndexedPath)
 			else
-				MsgBox % "Ignoring " IndexedPath.Path " because it is invalid."
+				Notify("Invalid indexing path", "Ignoring " IndexedPath.Path " because it is invalid.", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
 		}
 		this.RefreshCache()
 		this.Remove("SettingsWindow")

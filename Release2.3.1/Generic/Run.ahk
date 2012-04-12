@@ -27,7 +27,7 @@ Run_Execute(SubEvent, Event)
 			SubEvent.tmpPid := Run(command, WorkingDirectory, "", !SubEvent.RunAsAdmin)
 			if(SubEvent.tmpPid) ;If retrieved properly
 				return -1
-			MsgBox Waiting for %command% failed!
+			Notify("Run Command Error!", "Waiting for " command "failed", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
 			return 0
 		}
 		else
@@ -92,7 +92,7 @@ Run(Target, WorkingDir = "", Mode = "", NonElevated=-1)
 	{
 		Run, %Target% , %WorkingDir%, %Mode% UseErrorLevel, v
 		if(A_LastError)
-			Msgbox Error launching %Target%
+			Notify("Error", "Error launching " Target, "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
 		Return, v
 	}
 	
@@ -110,7 +110,7 @@ Run(Target, WorkingDir = "", Mode = "", NonElevated=-1)
 			return 0
 	}
 	;Still here, error
-	Msgbox Error launching %Target%
+	Notify("Error", "Error launching " Target, "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
 }
 
 SplitCommandLine(ByRef Target, ByRef Args)
@@ -144,7 +144,7 @@ RunAsUser(Command, WorkingDir = "", Options = "")
 	{
 		Run, %Command% , %WorkingDir%, %Mode% UseErrorLevel, v
 		if(A_LastError)
-			Msgbox Error launching %Target%
+			Notify("Error", "Error launching " Target, "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
 		Return, v
 	}
 }

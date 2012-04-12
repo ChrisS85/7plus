@@ -31,7 +31,7 @@ Class CShutdownAction Extends CAction
 		}
 		else
 		{
-			MsgBox % this.__Class ": Invalid action: " this.ShutDownSelection
+			Notify(this.Type " Error!", "Invalid action: " this.ShutDownSelection, "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
 			return 0
 		}
 		if(this.ForceClose)

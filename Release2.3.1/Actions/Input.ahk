@@ -129,7 +129,7 @@ Class CInputAction Extends CAction
 		Base.GuiSubmit(GUI)
 		if(!this.HasKey("Placeholder"))
 		{
-			Msgbox Placeholder must not be empty! It is now being set to "Input".
+			Notify("Invalid value for ""Placeholder"" field!", "Placeholder must not be empty! It is now being set to ""Input"".", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
 			this.Placeholder := "Input"
 		}
 	}

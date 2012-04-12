@@ -121,5 +121,5 @@ SendMail_WorkerThread(WorkerThread, Parameters)
 SendMail_OnFinish(WorkerThread, Result)
 {
 	if(Result)
-		Msgbox % "Send mail error: " FormatMessageFromSystem(Result)
+		Notify(this.Type " Error!", FormatMessageFromSystem(Result), "5", "GC=555555 TC=White MC=White", NotifyIcons.Error) 
 }

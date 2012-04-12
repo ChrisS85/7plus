@@ -11,7 +11,7 @@ Class CNewFileAction Extends CAction
 	{
 		if(!(WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog()))
 		{
-			Msgbox This action requires explorer to be active!
+			Notify(this.Type " Error!", "This action requires explorer to be active!", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
 			return 0
 		}
 		if(IsRenaming())

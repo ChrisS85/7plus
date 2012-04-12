@@ -513,7 +513,6 @@ Class CAccessor
 	;Plugins may handle each function on their own, otherwise they will be handled directly by Accessor if available.
 	PerformAction(Action = "", ListEntry = "")
 	{
-		outputdebug % "PerformAction: " ListEntry.path
 		this.Remove("ClickedListEntry") ;Not needed anymore
 		if(IsObject(ListEntry) || IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]))
 		{
@@ -523,7 +522,7 @@ Class CAccessor
 				Action := ListEntry.Actions.DefaultAction
 			else if(!Action)
 			{
-				Msgbox % "No Action found for " ListEntry.Type "!"
+				Notify("Accessor Error", "No Action found for " ListEntry.Type "!", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
 				return
 			}
 			Plugin := this.Plugins.GetItemWithValue("Type", ListEntry.Type)

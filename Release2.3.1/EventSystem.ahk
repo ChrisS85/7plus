@@ -81,7 +81,7 @@ Class CEventSystem extends CRichObject
 	{
 		if(!Trigger.Extends("CTrigger"))
 		{
-			MsgBox % "Invalid trigger!`nName: " Trigger.Name "`nID: " Trigger.ID
+			Notify("Event System Error!", "Invalid trigger!`nName: " Trigger.Name "`nID: " Trigger.ID, "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
 			return
 		}
 		
@@ -552,7 +552,7 @@ Class CEvents extends CArray
 				{
 					if(!CTrigger.CLegacyTypes.HasKey(XMLEvent.Trigger.Type) || !IsObject(EventSystem.Triggers[CTrigger.CLegacyTypes[xmlEvent.Trigger.Type]]))
 					{
-						MsgBox % "No known trigger of Type " XMLEvent.Trigger.Type ", skipping event " Event.ID ": " Event.Name
+						Notify("Event System Error!", "No known trigger of Type " XMLEvent.Trigger.Type ", skipping event " Event.ID ": " Event.Name, "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
 						continue
 					}
 					else
@@ -579,7 +579,7 @@ Class CEvents extends CArray
 					{
 						if(!CCondition.CLegacyTypes.HasKey(XMLCondition.Type) || !IsObject(EventSystem.Conditions[CCondition.CLegacyTypes[XMLCondition.Type]]))
 						{
-							MsgBox % "No known Condition of Type " XMLCondition.Type ", skipping event " Event.ID ": " Event.Name
+							Notify("Event System Error!", "No known Condition of Type " XMLCondition.Type ", skipping event " Event.ID ": " Event.Name, "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
 							continue
 						}
 						else
@@ -612,7 +612,7 @@ Class CEvents extends CArray
 					{
 						if(!CAction.CLegacyTypes.HasKey(XMLAction.Type) || !IsObject(EventSystem.Actions[CAction.CLegacyTypes[XMLAction.Type]]))
 						{
-							MsgBox % "No known Action of Type " XMLAction.Type ", skipping event " Event.ID ": " Event.Name
+							Notify("Event System Error!", "No known Action of Type " XMLAction.Type ", skipping event " Event.ID ": " Event.Name, "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
 							continue
 						}
 						else

@@ -8,12 +8,12 @@ Class CFastFoldersStoreAction Extends CAction
 	{
 		if(ApplicationState.IsPortable)
 		{
-			MsgBox 7plus is running in portable mode. Features which need to make changes to the registry won't be available.
+			Notify("Unsupported in portable mode", "7plus is running in portable mode. Features which need to make changes to the registry won't be available.", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
 			return
 		}	
 		if(!A_IsAdmin)
 		{
-			MsgBox 7plus is running without admin priviledges. Features which need to make changes to the registry won't be available.
+			Notify("Admin privileges required!", "7plus is running without admin priviledges. Features which need to make changes to the registry won't be available.", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
 			return
 		}
 		Slot := this.Slot

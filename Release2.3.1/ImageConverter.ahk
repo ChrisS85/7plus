@@ -150,7 +150,7 @@ Class CImageConverter extends CGUI
 		Files := ToArray(Files)
 		if(Files.MaxIndex() < 1)
 		{
-			Msgbox Image Converter: No files selected!
+			Notify("Image Converter Error", "No files selected!", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
 			return
 		}
 		Added := false
@@ -159,7 +159,7 @@ Class CImageConverter extends CGUI
 			SplitPath(file, Filename, "", Extension)
 			if Extension not in BMP,DIB,RLE,JPG,JPEG,JPE,JFIF,GIF,TIF,TIFF,PNG
 			{
-				Msgbox % file " is no supported image format!"
+				Notify("Image Converter Error", file " is no supported image format!", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
 				continue
 			}
 			if(!this.Files.GetItemWithValue("SourceFile", file)) ;Append files which aren't yet in the list
@@ -181,7 +181,7 @@ Class CImageConverter extends CGUI
 			this.Show()
 		}
 		else
-			Msgbox Image converter: No new files!
+			Notify("Image Converter Error", "No new files!", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
 		return
 	}
 	
@@ -367,7 +367,7 @@ Class CImageConverter extends CGUI
 			Gdip_DisposeImage(pConverted)
 		}
 		else
-			Msgbox Failed to convert image!
+			Notify("Image Converter Error", "Failed to convert image!", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
 	}
 	btnUpload_Click()
 	{
