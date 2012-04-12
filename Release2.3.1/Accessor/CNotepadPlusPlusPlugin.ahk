@@ -51,10 +51,10 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
 	}
-	ShowSettings(Settings, GUI, PluginGUI)
+	ShowSettings(PluginSettings, GUI, PluginGUI)
 	{
-		AddControl(Settings, PluginGUI, "Checkbox", "RememberQueries", "Remember and show the NP++ tabs of the last query for each NP++ tab.")
-		AddControl(Settings, PluginGUI, "Checkbox", "UseWhenActive", "Show all NP++ tabs when Accessor opens and no saved queries for the current tab are available.")
+		AddControl(PluginSettings, PluginGUI, "Checkbox", "RememberQueries", "Remember and show the NP++ tabs of the last query for each NP++ tab.")
+		AddControl(PluginSettings, PluginGUI, "Checkbox", "UseWhenActive", "Show all NP++ tabs when Accessor opens and no saved queries for the current tab are available.")
 	}
 	OnOpen(Accessor)
 	{

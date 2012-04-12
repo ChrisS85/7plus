@@ -18,10 +18,10 @@ Class CAccessorHistoryPlugin extends CAccessorPlugin
 		MinChars := 0
 		ShowWithEmptyQuery := true
 	}
-	ShowSettings(Settings, GUI, PluginGUI)
+	ShowSettings(PluginSettings, GUI, PluginGUI)
 	{
-		AddControl(Settings, PluginGUI, "UpDown", "MaxEntries", "3-1000", "", "History length:", "", "", "", "", "The number of history entries to keep.")
-		AddControl(Settings, PluginGUI, "Checkbox", "ShowWithEmptyQuery", "Show history when query string is empty")
+		AddControl(PluginSettings, PluginGUI, "UpDown", "MaxEntries", "3-1000", "", "History length:", "", "", "", "", "The number of history entries to keep.")
+		AddControl(PluginSettings, PluginGUI, "Checkbox", "ShowWithEmptyQuery", "Show history when query string is empty")
 	}
 	IsInSinglePluginContext(Filter, LastFilter)
 	{

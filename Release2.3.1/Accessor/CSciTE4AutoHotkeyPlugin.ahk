@@ -63,10 +63,10 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 	{
 		return false
 	}
-	ShowSettings(Settings, GUI, PluginGUI)
+	ShowSettings(PluginSettings, GUI, PluginGUI)
 	{
-		AddControl(Settings, PluginGUI, "Checkbox", "RememberQueries", "Remember and show the S4AHK tabs of the last query for each S4AHK tab.")
-		AddControl(Settings, PluginGUI, "Checkbox", "UseWhenActive", "Show all S4AHK tabs when Accessor opens and no saved queries for the current tab are available.")
+		AddControl(PluginSettings, PluginGUI, "Checkbox", "RememberQueries", "Remember and show the S4AHK tabs of the last query for each S4AHK tab.")
+		AddControl(PluginSettings, PluginGUI, "Checkbox", "UseWhenActive", "Show all S4AHK tabs when Accessor opens and no saved queries for the current tab are available.")
 	}
 	OnOpen(Accessor)
 	{

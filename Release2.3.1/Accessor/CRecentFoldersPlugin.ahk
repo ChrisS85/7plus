@@ -38,12 +38,12 @@ Class CRecentFoldersPlugin extends CAccessorPlugin
 	{
 		return false
 	}
-	ShowSettings(Settings, GUI, PluginGUI)
+	ShowSettings(PluginSettings, GUI, PluginGUI)
 	{
-		AddControl(Settings, PluginGUI, "Checkbox", "UseHistory", "Use directory history")
-		AddControl(Settings, PluginGUI, "Checkbox", "UseFrequent", "Use frequent directories")
-		AddControl(Settings, PluginGUI, "Checkbox", "UseFastFolders", "Use directories from Fast Folders")
-		AddControl(Settings, PluginGUI, "Checkbox", "UseWhenNavigable", "Automatically set the keyword for this plugin when the current window can be navigated by 7plus.", "", "", "", "", "", "", "Enabling this will make the Accessor show the recently used directories`nwhen opened if navigable applications like explorer or CMD were active.")
+		AddControl(PluginSettings, PluginGUI, "Checkbox", "UseHistory", "Use directory history")
+		AddControl(PluginSettings, PluginGUI, "Checkbox", "UseFrequent", "Use frequent directories")
+		AddControl(PluginSettings, PluginGUI, "Checkbox", "UseFastFolders", "Use directories from Fast Folders")
+		AddControl(PluginSettings, PluginGUI, "Checkbox", "UseWhenNavigable", "Automatically set the keyword for this plugin when the current window can be navigated by 7plus.", "", "", "", "", "", "", "Enabling this will make the Accessor show the recently used directories`nwhen opened if navigable applications like explorer or CMD were active.")
 	}
 	OnOpen(Accessor)
 	{

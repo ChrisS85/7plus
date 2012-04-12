@@ -36,9 +36,9 @@ Class CRegistryPlugin extends CAccessorPlugin
 		if(this.Settings.UseSelectedText && !Accessor.FilterWithoutTimer && !Accessor.Filter && Accessor.CurrentSelection && IsRegKey(Accessor.CurrentSelection))
 			Accessor.SetFilter(Accessor.CurrentSelection)
 	}
-	ShowSettings(Settings, GUI, PluginGUI)
+	ShowSettings(PluginSettings, GUI, PluginGUI)
 	{
-		AddControl(Settings, PluginGUI, "Checkbox", "CloseRegedit", "Close open Regedit windows when opening key (recommended)", "", "", "", "", "", "", "This is suggested since there might be problems`n to open the correct key when Regedit is already running.")
+		AddControl(PluginSettings, PluginGUI, "Checkbox", "CloseRegedit", "Close open Regedit windows when opening key (recommended)", "", "", "", "", "", "", "This is suggested since there might be problems`n to open the correct key when Regedit is already running.")
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "UseSelectedText", "Automatically open the selected text as registry path in Accessor when appropriate", "", "")
 	}
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)

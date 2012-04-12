@@ -17,9 +17,10 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 	{
 		Keyword := "switch"
 		KeywordOnly := false
-		MinChars := 2
+		MinChars := 0
 		IgnoreFileExtensions := true
 		FuzzySearch := false
+		ShowWithEmptyQuery := false
 	}
 	Class CResult extends CAccessorPlugin.CResult
 	{
@@ -71,7 +72,7 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 		{
 			x := 0
 			ExeName := this.Settings.IgnoreFileExtensions ? strTrimRight(window.ExeName,".exe") : window.ExeName
-			if(x := (Filter = "" || InStr(window.Title,Filter)) || (this.Settings.FuzzySearch && FuzzySearch(ExeName, Filter) < 0.4))
+			if(x := ((this.Settings.ShowWithEmptyQuery && Filter = "") || Filter && InStr(window.Title, Filter)) || (this.Settings.FuzzySearch && FuzzySearch(ExeName, Filter) < 0.4))
 			{
 				Result := new this.CResult()
 				Result.Title := window.Title
@@ -94,7 +95,8 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 	}
 	ShowSettings(PluginSettings, Accessor, PluginGUI)
 	{
-		AddControl(PluginSettings, PluginGUI, "Checkbox", "IgnoreFileExtensions", "Ignore .exe extension in program paths", "", "")	
+		AddControl(PluginSettings, PluginGUI, "Checkbox", "IgnoreFileExtensions", "Ignore .exe extension in program paths", "", "")
+		AddControl(PluginSettings, PluginGUI, "Checkbox", "ShowWithEmptyQuery", "Show open windows when query string is empty")
 	}
 	ActivateWindow(Accessor, ListEntry)
 	{

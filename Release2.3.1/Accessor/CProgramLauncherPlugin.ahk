@@ -147,11 +147,11 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		SetTimer, UpdateLauncherPrograms, 60000
 	}
 	
-	ShowSettings(Settings, GUI, PluginGUI)
+	ShowSettings(PluginSettings, GUI, PluginGUI)
 	{
-		this.SettingsWindow := {Settings: Settings, GUI: GUI, PluginGUI: PluginGUI}
+		this.SettingsWindow := {Settings: PluginSettings, GUI: GUI, PluginGUI: PluginGUI}
 		this.SettingsWindow.Paths := this.Paths.DeepCopy()
-		AddControl(Settings, PluginGUI, "Checkbox", "IgnoreExtensions", "Ignore file extensions", "", "", "", "", "", "", "If checked, file extensions will be excluded from the query.")
+		AddControl(PluginSettings, PluginGUI, "Checkbox", "IgnoreExtensions", "Ignore file extensions", "", "", "", "", "", "", "If checked, file extensions will be excluded from the query.")
 		
 		GUI.ListBox := GUI.AddControl("ListBox", "ListBox", "-Hdr -Multi -ReadOnly x" PluginGUI.x " y+10 w330 R9", "")
 		for index, IndexedPath in this.SettingsWindow.Paths
@@ -180,7 +180,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			GUI.btnDeletePath.Enabled := false
 		}
 	}
-	SaveSettings(Settings, GUI, PluginGUI)
+	SaveSettings(PluginSettings, GUI, PluginGUI)
 	{
 		this.Paths := Array()
 		for index, IndexedPath in this.SettingsWindow.Paths
