@@ -1012,7 +1012,7 @@ FindFreeFileName(FilePath)
 {
 	SplitPath, FilePath,, dir, extension, filename
 	Testpath := FilePath
-	i:=1 ;Find free filename
+	i := 1 ;Find free filename
 	while FileExist(TestPath)
 	{
 		i++

@@ -147,12 +147,16 @@ Class CAccessor
 		;Active window for plugins that depend on the context
 		this.PreviousWindow := WinExist("A")
 
-		;Store current selection so it can be inserted into keyword queries
+		;Store current selection and selected file (if available) so they can be inserted into keyword queries
 		this.CurrentSelection := GetSelectedText()
+		this.SelectedFile := Navigation.GetSelectedFilepaths()[1]
+		this.Filter := ""
+		this.FilterWithoutTimer := ""
 
 		;Create and show GUI
 		this.GUI := new CAccessorGUI()
 		this.GUI.Show()
+		
 		;Redraw is needed because Aero can cause rendering issues without it
 		this.GUI.Redraw()
 		this.LauncherHotkey := Action.LauncherHotkey
