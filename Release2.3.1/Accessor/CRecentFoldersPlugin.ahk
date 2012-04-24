@@ -22,7 +22,7 @@ Class CRecentFoldersPlugin extends CAccessorPlugin
 	{
 		Class CActions extends CArray
 		{
-			DefaultAction := new CAccessor.CAction("Open Folder", "OpenFolder")
+			DefaultAction := new CAccessor.CAction("Open Folder", "OpenExplorer")
 			__new()
 			{
 				this.Insert(CAccessorPlugin.CActions.OpenCMD)
@@ -141,9 +141,5 @@ Class CRecentFoldersPlugin extends CAccessorPlugin
 		Result.Icon := Accessor.GenericIcons.Folder
 		Result.Detail1 := Detail
 		return
-	}
-	OpenFolder(Accessor, ListEntry)
-	{
-		Navigation.SetPath(ListEntry.Path, Accessor.PreviousWindow)
 	}
 }

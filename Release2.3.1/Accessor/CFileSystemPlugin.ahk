@@ -17,6 +17,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		MinChars := 3
 		UseIcons := false
 		UseSelectedText := true
+		ShowFilesOfCurrentFolder := false
 	}
 	Class CResult extends CAccessorPlugin.CResult
 	{
@@ -116,6 +117,8 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		Results := Array()
 		Filter := ExpandPathPlaceholders(Filter)
 		SplitPath, filter, name, dir,,,drive
+		if(!dir && Accessor.CurrentDirectory && this.Settings.ShowFilesOfCurrentFolder)
+			dir := Accessor.CurrentDirectory
 		if(dir)
 		{
 			;Store for temporary use
@@ -169,6 +172,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 	{
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "UseIcons", "Use exact icons (much slower)", "", "")
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "UseSelectedText", "Automatically open the selected text as path in Accessor when appropriate", "", "")
+		AddControl(PluginSettings, PluginGUI, "Checkbox", "ShowFilesOfCurrentFolder", "Show files from a previously active Explorer window (or similar windows)", "", "")
 	}
 	
 	EnterDirectory(Accessor, ListEntry)

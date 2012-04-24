@@ -21,6 +21,24 @@ Class CAccessor
 	;The list of visible entries
 	List := Array()
 	
+	;Current Filter string (as entered by user)
+	Filter := ""
+
+	;Previous filter string (as entered by user)
+	LastFilter := ""
+
+	;Current filter string without a possibly existing timer string
+	FilterWithoutTimer := ""
+
+	;Selected file before Accessor was open
+	SelectedFile := ""
+
+	;Directory of a previously active navigateable program
+	CurrentDirectory := ""
+
+	;Selected filepath of a previously active navigateable program (first file only)
+	CurrentSelection := ""
+
 	Class CSettings
 	{
 		LargeIcons := false
@@ -150,13 +168,14 @@ Class CAccessor
 		;Store current selection and selected file (if available) so they can be inserted into keyword queries
 		this.CurrentSelection := GetSelectedText()
 		this.SelectedFile := Navigation.GetSelectedFilepaths()[1]
+		this.CurrentDirectory := Navigation.GetPath()
 		this.Filter := ""
 		this.FilterWithoutTimer := ""
 
 		;Create and show GUI
 		this.GUI := new CAccessorGUI()
 		this.GUI.Show()
-		
+
 		;Redraw is needed because Aero can cause rendering issues without it
 		this.GUI.Redraw()
 		this.LauncherHotkey := Action.LauncherHotkey
@@ -485,6 +504,10 @@ Class CAccessor
 			Plugin.OnClose(this)
 		this.LastFilter := ""
 		this.Filter := ""
+		this.FilterWithoutTimer := ""
+		this.SelectedFile := ""
+		this.CurrentDirectory := ""
+		this.CurrentSelection := ""
 		this.GUI := ""
 		this.List := ""
 		OnMessage(0x100, this.OldKeyDown) ; Restore previous KeyDown handler
@@ -661,12 +684,7 @@ Class CAccessor
 	OpenExplorer(ListEntry, Plugin)
 	{
 		if(type := FileExist(ListEntry.Path))
-		{
-			if(!InStr(type,"D"))
-				Run(A_WinDir "\explorer.exe /Select," ListEntry.Path)
-			else
-				Run(A_WinDir "\explorer.exe /n,/e," ListEntry.Path)
-		}
+			Navigation.SetPath(ListEntry.Path, CAccessor.Instance.PreviousWindow)
 	}
 	OpenCMD(ListEntry, Plugin)
 	{
