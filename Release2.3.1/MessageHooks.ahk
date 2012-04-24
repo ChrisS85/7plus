@@ -258,6 +258,6 @@ UpdateWindowPosition()
 }
 WM_POWERBROADCAST(wParam, lParam, msg)
 {
-	if (wParam = 7 || wParam = 8)
+	if (wParam = 18)
 		AutoCloseWindowsUpdate(WinExist("Windows Update ahk_class #32770"))
 }
