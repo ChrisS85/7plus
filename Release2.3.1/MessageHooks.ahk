@@ -256,3 +256,8 @@ UpdateWindowPosition()
 	WindowList[WindowList.MovedWindow].w := w
 	WindowList[WindowList.MovedWindow].h := h
 }
+WM_POWERBROADCAST(wParam, lParam, msg)
+{
+	if (wParam = 7 || wParam = 8)
+		AutoCloseWindowsUpdate(WinExist("Windows Update ahk_class #32770"))
+}

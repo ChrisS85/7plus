@@ -113,13 +113,15 @@ outputdebug % "7plus window handle: " A_ScriptHwnd
 DllCall("RegisterShellHookWindow", "Ptr", A_ScriptHwnd) 
 ApplicationState.ShellHookMessage := DllCall("RegisterWindowMessage", Str, "SHELLHOOK") 
 OnMessage(ApplicationState.ShellHookMessage, "ShellMessage") 
- 
+
+;Close windows autoupdate on wakeup
+OnMessage(0x218, "WM_POWERBROADCAST")
 ;Register an event hook to catch move and dialog creation messages
 ApplicationState.HookProcAdr := RegisterCallback("HookProc", "F" ) 
-API_SetWinEventHook(0x8001,0x800B,0,ApplicationState.HookProcAdr,0,0,0) ;Make sure not to register unneccessary messages, as this causes cpu load
-API_SetWinEventHook(0x0016,0x0016,0,ApplicationState.HookProcAdr,0,0,0) ;EVENT_SYSTEM_MINIMIZESTART
+ApplicationState.WinEventHook1 := API_SetWinEventHook(0x8001,0x800B,0,ApplicationState.HookProcAdr,0,0,0) ;Make sure not to register unneccessary messages, as this causes cpu load
+ApplicationState.WinEventHook2 := API_SetWinEventHook(0x0016,0x0016,0,ApplicationState.HookProcAdr,0,0,0) ;EVENT_SYSTEM_MINIMIZESTART
 ; API_SetWinEventHook(0x000E,0x000E,0,HookProcAdr,0,0,0)
-API_SetWinEventHook(0x000A,0x000B,0,ApplicationState.HookProcAdr,0,0,0) ;EVENT_SYSTEM_MOVESIZESTART
+ApplicationState.WinEventHook3 := API_SetWinEventHook(0x000A,0x000B,0,ApplicationState.HookProcAdr,0,0,0) ;EVENT_SYSTEM_MOVESIZESTART
 if(WinVer >= WIN_Vista && (ApplicationState.ClipboardListenerRegistered := DllCall("AddClipboardFormatListener", "PTR", A_ScriptHwnd)))
 	OnMessage(0x031D, "OnClipboardChange")
 
@@ -223,6 +225,13 @@ OnExit(reload=0)
 		SaveHotstrings()
 		if(Settings.General.DebugEnabled)
 			DebuggingEnd()
+		OnMessage(0x218, "")
+		OnMessage(0x031D, "")
+		OnMessage(ApplicationState.ShellHookMessage, "")
+		API_UnhookWinEvent(ApplicationState.WinEventHook1)
+		API_UnhookWinEvent(ApplicationState.WinEventHook2)
+		API_UnhookWinEvent(ApplicationState.WinEventHook3)
+		DllCall("DeregisterShellHookWindow", "Ptr", A_ScriptHwnd)
 	}
 	
 	if(reload)

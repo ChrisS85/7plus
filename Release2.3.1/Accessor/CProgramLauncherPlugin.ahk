@@ -38,10 +38,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 				for key, value in this
 				{
 					if(!IsFunc(value) && key != "Base" && key != "Actions" && json.HasKey(key))
-					{
-						outputdebug % "load " key ": " json[key]
 						this[key] := json[key]
-					}
 					else if(key = "Actions" && json.HasKey("Actions"))
 					{
 						this.Actions := Array()
@@ -108,7 +105,6 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			DefaultAction := CAccessorPlugin.CActions.Run
 			__new(BasePath = "")
 			{
-				outputdebug basepath %basepath%
 				;If this program is from an indexed path there can be customized actions for it
 				if(BasePath)
 				{
@@ -491,17 +487,14 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 					if(!command || InStr(FileExist(command),"D"))
 						continue
 					
-					outputdebug command %command% exclude %exclude%
 					;Exclude undesired programs (uninstall, setup,...)
 					if command not contains %exclude%
 					{
 						if Filename not contains %exclude%
 						{
-							outputdebug not excluded
 							;Check for existing duplicates
 							if(!this.List.FindKeyWithValue("Command", command))
 							{
-								outputdebug no dupe
 								IndexedFile := new this.CIndexedFile()
 								IndexedFile.Command := Command
 								IndexedFile.args := args
