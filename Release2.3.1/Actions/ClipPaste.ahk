@@ -189,7 +189,7 @@ PasteText(Text)
 		Sleep 20
 	}
 	else
-		Notify("Error pasting text", "Error pasting text", "5", "GC=555555 TC=White MC=White",NotifyIcons.Error)
+		Notify("Error pasting text", "Error pasting text", 5, NotifyIcons.Error)
 	Clipboard:=ClipboardBackup
 	Clipwait,1,1
 	MuteClipboardList := false

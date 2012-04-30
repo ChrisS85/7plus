@@ -33,7 +33,7 @@ Class CControlTimerAction Extends CAction
 				Event.Trigger.Time := (hours * 3600 + minutes * 60 + seconds) * 1000
 			}
 			else
-				Notify("Timer: Invalid Format", "Control Timer: " Time ": Wrong time format! Format needs to be HH:MM:SS. A placeholder from an input action with Datatype=Time can also be used.", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
+				Notify("Timer: Invalid Format", "Control Timer: " Time ": Wrong time format! Format needs to be HH:MM:SS. A placeholder from an input action with Datatype=Time can also be used.", 5, NotifyIcons.Error)
 		}
 		return 1
 	} 

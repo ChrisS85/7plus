@@ -70,13 +70,13 @@ Class CWindowStateAction Extends CAction
 					WinSet, Transparent, %newValue%, ahk_id %hwnd%
 				}
 				if(this.ShowState)
-					Notify("Window state", "Transparency: " newValue , 2, "GC=555555 TC=White MC=White",NotifyIcons.Info)
+					Notify("Window state", "Transparency: " newValue , 2, NotifyIcons.Info)
 				return 1
 			}
 			if(this.ShowState)
 			{
 				WinGet, es, ExStyle, ahk_id %hwnd%
-				Notify("Window state", "Always on top: " (es & 0x8 > 0 ? "On" : "Off") , 2, "GC=555555 TC=White MC=White",NotifyIcons.Info)
+				Notify("Window state", "Always on top: " (es & 0x8 > 0 ? "On" : "Off") , 2, NotifyIcons.Info)
 			}
 			return 1
 		}
@@ -90,7 +90,7 @@ Class CWindowStateAction Extends CAction
 			else if(state = 1)
 				String := "Window maximized"
 			
-			Notify("Window state", String , 2, "GC=555555 TC=White MC=White",NotifyIcons.Info)
+			Notify("Window state", String , 2, NotifyIcons.Info)
 		}
 		return 1
 	}

@@ -549,7 +549,7 @@ Class CAccessor
 				Action := ListEntry.Actions.DefaultAction
 			else if(!Action)
 			{
-				Notify("Accessor Error", "No Action found for " ListEntry.Type "!", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
+				Notify("Accessor Error", "No Action found for " ListEntry.Type "!", 5, NotifyIcons.Error)
 				return
 			}
 			Plugin := this.Plugins.GetItemWithValue("Type", ListEntry.Type)

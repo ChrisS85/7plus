@@ -61,7 +61,7 @@ MD5Dialog(Files)
 		Files := ToArray(Files)
 	if(!(Files.MaxIndex() > 0))
 	{
-		Notify("MD5 Checksums Error!", "Invalid Files specified!", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
+		Notify("MD5 Checksums Error!", "Invalid Files specified!", 5, NotifyIcons.Error)
 		return 0
 	}
 	WasCritical := A_IsCritical

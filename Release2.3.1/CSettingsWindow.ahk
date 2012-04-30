@@ -765,7 +765,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 				}
 			}
 			if(found)
-				Notify("Note", "Make sure to assign the FTP profiles of all imported FTP actions!", 2, "GC=555555 TC=White MC=White", NotifyIcons.Info)
+				Notify("Note", "Make sure to assign the FTP profiles of all imported FTP actions!", 2, NotifyIcons.Info)
 			this.Enabled := true
 		}
 	}
@@ -827,7 +827,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 				}
 				ExportEvents.WriteEventsFile(File)
 				if(FTP)
-					Notify("Note", "FTP profiles won't be exported by this function. To save them, create a backup of FTPProfiles.xml. This file is only updated at program exit!", 2, "GC=555555 TC=White MC=White", NotifyIcons.Info)
+					Notify("Note", "FTP profiles won't be exported by this function. To save them, create a backup of FTPProfiles.xml. This file is only updated at program exit!", 5, NotifyIcons.Info)
 			}
 		}
 		this.Enabled := true
@@ -1455,7 +1455,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.ddlFTPProfile.Items.Delete(Page.ddlFTPProfile.SelectedIndex)
 		if(!this.FTPProfiles.MaxIndex())
 			Page.ddlFTPProfile.Enabled := false
-		Notify("Info", "Make sure to update any FTP event profile assignments that pointed to the deleted profile!", 2, "GC=555555 TC=White MC=White", NotifyIcons.Info)
+		Notify("Info", "Make sure to update any FTP event profile assignments that pointed to the deleted profile!", 2, NotifyIcons.Info)
 	}
 	btnTestFTPProfile_Click()
 	{

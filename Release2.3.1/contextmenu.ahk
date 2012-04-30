@@ -29,5 +29,5 @@ ShellContextMenu(sPath,idn=0)
 { 
 	result := DllCall(A_ScriptDir "\Explorer.dll\ExecuteContextMenuCommand", "Str", sPath, "Int", idn, "PTR", A_ScriptHwnd)
 	if(Errorlevel != 0)
-		Notify("Couldn't execute context menu command!", "Error Calling ExecuteContextMenuCommand() in Explorer.dll!", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
+		Notify("Couldn't execute context menu command!", "Error Calling ExecuteContextMenuCommand() in Explorer.dll!", 5, NotifyIcons.Error)
 } 

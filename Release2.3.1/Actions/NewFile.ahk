@@ -11,7 +11,7 @@ Class CNewFileAction Extends CAction
 	{
 		if(!(WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog()))
 		{
-			Notify(this.Type " Error!", "This action requires explorer to be active!", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
+			Notify(this.Type " Error!", "This action requires explorer to be active!", 5, NotifyIcons.Error)
 			return 0
 		}
 		if(IsRenaming())
@@ -29,7 +29,7 @@ Class CNewFileAction Extends CAction
 			FileAppend, %A_Space%, %TestPath%	;Create file and then select it and rename it
 		if(!FileExist(TestPath))
 		{
-			Notify("Could not create new file!", "Could not create a new file here. Make sure you have the correct permissions!", "5", "GC=555555 TC=White MC=White",NotifyIcons.Error)
+			Notify("Could not create new file!", "Could not create a new file here. Make sure you have the correct permissions!", 5, "GC=555555 TC=White MC=White",NotifyIcons.Error)
 			return 0
 		}
 		Navigation.Refresh()

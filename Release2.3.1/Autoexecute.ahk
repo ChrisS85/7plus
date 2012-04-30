@@ -245,7 +245,7 @@ wizardry:
 MsgBox, 4,,Welcome to 7plus!`nBefore we begin, would you like to see a list of features?	
 IfMsgBox Yes
 	run http://code.google.com/p/7plus/wiki/Features,,UseErrorlevel
-Notify("Open Settings?", "At the beginning you should take some minutes and check out the settings.`nDouble click on the tray icon or click here to open the settings window.", "10", "GC=555555 TC=White MC=White AC=SettingsHandler", NotifyIcons.Question)
+Notify("Open Settings?", "At the beginning you should take some minutes and check out the settings.`nDouble click on the tray icon or click here to open the settings window.", 10, NotifyIcons.Question, "ShowSettings")
 return
 
 ProcessCommandLineParameters()

@@ -17,7 +17,7 @@ Class CNewFolderAction Extends CAction
 	{
 		if(!(WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup") || IsDialog()))
 		{
-			Notify(this.Type " Error!", "This action requires explorer to be active!", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
+			Notify(this.Type " Error!", "This action requires explorer to be active!", 5, NotifyIcons.Error)
 			return 0
 		}
 		if(IsRenaming())
@@ -45,7 +45,7 @@ Class CNewFolderAction Extends CAction
 		
 		if(!InStr(FileExist(Testpath), "D"))
 		{
-			Notify("Could not create new folder!", "Could not create a new folder here. Make sure you have the correct permissions!", "5", "GC=555555 TC=White MC=White",NotifyIcons.Error)
+			Notify("Could not create new folder!", "Could not create a new folder here. Make sure you have the correct permissions!", 5, NotifyIcons.Error)
 			return 0
 		}
 		Navigation.Refresh()

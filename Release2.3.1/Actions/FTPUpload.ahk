@@ -89,7 +89,7 @@ Class CFTPUploadAction Extends CAction
 			this.GetFTPVariables(this.FTPProfile, Hostname, Port, User, Password, URL, NumberOfFTPSubDirs)
 			if(!Hostname || Hostname = "Hostname.com")
 			{
-				Notify("FTP profile not set", "The FTP profile was not created yet or is invalid. Click here to enter a valid FTP login.", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",NotifyIcons.Error)
+				Notify("FTP profile not set", "The FTP profile was not created yet or is invalid. Click here to enter a valid FTP login.", 5, NotifyIcons.Error, "FTP_Notify_Error")
 				return 0
 			}
 			decrypted:=Decrypt(Password)
@@ -102,7 +102,7 @@ Class CFTPUploadAction Extends CAction
 			if !FTP.Open(Hostname, User, decrypted) 
 			{ 
 				if(!this.Silent)
-					Notify("Connection Error", "Couldn't connect to " Hostname ". Correct host/username/password?", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",NotifyIcons.Error)
+					Notify("Connection Error", "Couldn't connect to " Hostname ". Correct host/username/password?", 5, NotifyIcons.Error, "FTP_Notify_Error")
 				result := 0
 			}
 			else
@@ -119,7 +119,7 @@ Class CFTPUploadAction Extends CAction
 						if(ftp.CreateDirectory(A_LoopField) != true)
 						{
 							if(!this.Silent)
-								Notify("FTP Error", "Couldn't create target directory " A_LoopField ". Check permissions!", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",NotifyIcons.Error)
+								Notify("FTP Error", "Couldn't create target directory " A_LoopField ". Check permissions!", 5, NotifyIcons.Error, "FTP_Notify_Error")
 							result := 0
 							break
 						}
@@ -127,7 +127,7 @@ Class CFTPUploadAction Extends CAction
 						if(ftp.SetCurrentDirectory(A_LoopField) != true)
 						{
 							if(!this.Silent)
-								Notify("FTP Error", "Couldn't switch to created target directory" A_LoopField ". Check permissions!", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",NotifyIcons.Error)
+								Notify("FTP Error", "Couldn't switch to created target directory" A_LoopField ". Check permissions!", 5, NotifyIcons.Error, "FTP_Notify_Error")
 							result := 0
 							break
 						}
@@ -158,7 +158,7 @@ Class CFTPUploadAction Extends CAction
 						if(!success && result)
 							success := result
 						if(result=0 && !this.Silent)
-							Notify("Couldn't upload file", "Couldn't upload "  targets[A_Index] " properly. Make sure you have write rights and the path exists", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",NotifyIcons.Error)
+							Notify("Couldn't upload file", "Couldn't upload "  targets[A_Index] " properly. Make sure you have write rights and the path exists", 5, NotifyIcons.Error, "FTP_Notify_Error")
 						else if(result != 0 && URL && this.Clipboard)
 							cliptext .= (A_Index = 1 ? "" : "`r`n") URL "/" URLTargetFolder (URLTargetFolder ? "/" : "") StringReplace(targets[A_Index], " ", "%20", 1)
 					}
@@ -168,7 +168,7 @@ Class CFTPUploadAction Extends CAction
 					if(!this.Silent && success)
 					{
 						Notify("","",0, "Wait",FTP.NotifyID)
-						Notify("Transfer finished", "File uploaded", 2, "GC=555555 TC=White MC=White",NotifyIcons.Success)
+						Notify("Transfer finished", "File uploaded", 2, NotifyIcons.Success)
 						SoundBeep
 					}
 					result := 1
@@ -227,17 +227,18 @@ Action_FTPUpload_Progress()
 	total := my.BytesTotal
 	if(!FTP.init)
 	{
-		FTP.NotifyID := Notify("Uploading " FTP.NumFiles " file" (FTP.NumFiles = 1 ? "":"s") " to " FTP.Hostname,my.RemoteName " - " FormatFileSize(done) " / " FormatFileSize(total),"","PG=100 GC=555555 TC=White MC=White",NotifyIcons.Internet)
+		FTP.NotificationWindow := Notify("Uploading " FTP.NumFiles " file" (FTP.NumFiles = 1 ? "":"s") " to " FTP.Hostname,my.RemoteName " - " FormatFileSize(done) " / " FormatFileSize(total), "", NotifyIcons.Internet, "", {min : 0, max : 100, value : 0})
 		FTP.init := 1
 		return 1
 	}
-	Notify("","",done/total*100, "Progress",FTP.NotifyID)
-	Notify("","",my.RemoteName " - " FormatFileSize(done) " / " FormatFileSize(total), "Text",FTP.NotifyID)
+	FTP.NotificationWindow.Progress := done / total * 100
+	FTP.NotificationWindow.Text := my.RemoteName " - " FormatFileSize(done) " / " FormatFileSize(total)
 }
-FTP_Notify_Error:
-ShowSettings("FTP Profiles")
-return
-
+FTP_Notify_Error()
+{
+	ShowSettings("FTP Profiles")
+	return
+}
 Action_Upload_Placeholders_SourceFiles:
 GetCurrentSubEvent().GuiShow("", "Placeholders_SourceFiles")
 return

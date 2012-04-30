@@ -186,7 +186,7 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 				}
 			}
 			else
-				Notify("Accessor Error", "Filter string empty!", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
+				Notify("Accessor Error", "Filter string empty!", 5, NotifyIcons.Error)
 		}
 		if(strEndsWith(ListEntry.Path, "[2]"))
 			this.ActivateNotepadPlusPlusTab(this.List2.indexOf(ListEntry.Path), 2)

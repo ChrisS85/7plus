@@ -323,7 +323,7 @@ Class CTabContainer
 			this.ActivateTab(pos)
 		}
 		Else
-			Notify("Explorer Tabs Error!", "Tab container is too small!", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
+			Notify("Explorer Tabs Error!", "Tab container is too small!", 5, NotifyIcons.Error)
 	}
 	/*
 	 * Recreates Tabs
@@ -696,7 +696,7 @@ CreateTab(hwnd, path=-1,Activate=-1)
 	global ExplorerWindows
 	if(!hwnd)
 	{
-		Notify("Explorer Tabs Error!", "CreateTab(): No active tab!", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
+		Notify("Explorer Tabs Error!", "CreateTab(): No active tab!", 5, NotifyIcons.Error)
 		Return
 	}
 	WasCritical := A_IsCritical
@@ -706,7 +706,7 @@ CreateTab(hwnd, path=-1,Activate=-1)
 	ExplorerWindow := ExplorerWindows.GetItemWithValue("hwnd", hwnd+0)
 	if(!ExplorerWindow)
 	{
-		Notify("Explorer Tabs Error!", "Error creating tab: Explorer window not registered!", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
+		Notify("Explorer Tabs Error!", "Error creating tab: Explorer window not registered!", 5, NotifyIcons.Error)
 		return false
 	}
 	if(path="")

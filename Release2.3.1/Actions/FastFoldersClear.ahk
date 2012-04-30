@@ -8,12 +8,12 @@ Class CFastFoldersClearAction Extends CAction
 	{
 		if(ApplicationState.IsPortable)
 		{
-			Notify("Unsupported in portable mode", "7plus is running in portable mode. Features which need to make changes to the registry won't be available.", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
+			Notify("Unsupported in portable mode", "7plus is running in portable mode. Features which need to make changes to the registry won't be available.", 5, NotifyIcons.Error)
 			return 0
 		}
 		if(!A_IsAdmin)
 		{
-			Notify("Admin privileges required!", "7plus is running without admin priviledges. Features which need to make changes to the registry won't be available.", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
+			Notify("Admin privileges required!", "7plus is running without admin priviledges. Features which need to make changes to the registry won't be available.", 5, NotifyIcons.Error)
 			return 0
 		}
 		Slot := this.Slot

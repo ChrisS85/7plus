@@ -33,14 +33,14 @@ Class CImageUploadAction Extends CAction
 			{
 				if(this.CopyToClipboard)
 					Clipboard := this.tmpClipboard
-				Notify("","",0, "Wait",this.tmpNotifyID)
+				this.tmpNotificationWindow.Close()
 				if(this.tmpFailed.MaxIndex() = 0)
-					Notify("Transfer finished", "File(s) uploaded" (this.CopyToClipboard ? " and copied to clipboard" : ""), 2, "GC=555555 TC=White MC=White",NotifyIcons.Success)
+					Notify("Transfer finished", "File(s) uploaded" (this.CopyToClipboard ? " and copied to clipboard" : ""), 2, NotifyIcons.Success)
 				else if(this.tmpFailed.MaxIndex() = this.tmpFiles.MaxIndex() && this.tmpFiles.MaxIndex() > 0)
-					Notify("Transfer failed", "Maybe the file extension is not supported by this hoster?", "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",NotifyIcons.Error)
+					Notify("Transfer failed", "Maybe the file extension is not supported by this hoster?", 5, NotifyIcons.Error, "FTP_Notify_Error")
 				else
-					Notify("Transfer partially failed", "The following files could not be transferred:`n" this.tmpFailed.ToString() , "5", "GC=555555 AC=FTP_Notify_Error TC=White MC=White",NotifyIcons.Error)
-				this.Remove("tmpNotifyID")
+					Notify("Transfer partially failed", "The following files could not be transferred:`n" this.tmpFailed.ToString(), 5, NotifyIcons.Error, "FTP_Notify_Error")
+				this.Remove("tmpNotificationWindow")
 				this.Remove("tmpFiles")
 				this.Remove("tmpFile")
 				this.Remove("tmpClipboard")
@@ -94,13 +94,13 @@ Action_ImageUpload_ProgressHandler(WorkerThread, Progress)
 	ID := WorkerThread.Task.Parameters[2]
 	Event := EventSystem.EventSchedule.GetItemWithValue("ID", ID)
 	Action := Event.Actions[WorkerThread.Task.Parameters[4]]
-	if(!Action.HasKey("tmpNotifyID"))
+	if(!Action.HasKey("tmpNotificationWindow"))
 	{
-		Action.tmpNotifyID := Notify("Uploading " Action.tmpFiles.MaxIndex() " file" (Action.tmpFiles.MaxIndex() > 1 ? "s" : "" ) " to " Action.Hoster,"File " Action.tmpFile ": " Action.tmpFiles[Action.tmpFile],"","PG=100 GC=555555 TC=White MC=White",NotifyIcons.Internet)
+		Action.tmpNotificationWindow := Notify("Uploading " Action.tmpFiles.MaxIndex() " file" (Action.tmpFiles.MaxIndex() > 1 ? "s" : "" ) " to " Action.Hoster,"File " Action.tmpFile ": " Action.tmpFiles[Action.tmpFile], "", NotifyIcons.Internet, "", {min : 0, max : 100, value : 0})
 		return
 	}
-	Notify("","",Progress, "Progress",Action.tmpNotifyID)
-	Notify("","","File " Action.tmpFile ": " Action.tmpFiles[Action.tmpFile], "Text",Action.tmpNotifyID)
+	Action.tmpNotificationWindow.Progress := Progress
+	Action.tmpNotificationWindow.Text := "File " Action.tmpFile ": " Action.tmpFiles[Action.tmpFile]
 }
 Action_ImageUpload_OnStop(WorkerThread, Reason)
 {

@@ -5,7 +5,7 @@
 	
 	Execute(Event)
 	{
-		Notify("Deprecated Action", "The action " this.Type " is no longer supported! Please use the ""Show Menu"" action with the ClipboardMenu!", "5", "GC=555555 TC=White MC=White", NotifyIcons.Error)
+		Notify("Deprecated Action", "The action " this.Type " is no longer supported! Please use the ""Show Menu"" action with the ClipboardMenu!", 5, NotifyIcons.Error)
 		;~ if(!this.tmpShowing)
 		;~ {
 			;~ this.tmpShowing := true

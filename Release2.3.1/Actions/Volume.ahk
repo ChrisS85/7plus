@@ -32,15 +32,11 @@ Class CVolumeAction Extends CAction
 			}
 			if(this.ShowVolume)
 			{
-				if(!ApplicationState.VolumeNotifyID)
-				{
-					if(VA_GetMasterMute())
-						ApplicationState.VolumeNotifyID := Notify("Volume","","","PG=100 PW=250 GC=555555 SI=0 SC=0 ST=0 TC=White MC=White AC=ToggleMute", NotifyIcons.SoundMute)
-					else
-						ApplicationState.VolumeNotifyID := Notify("Volume","","","PG=100 PW=250 GC=555555 SI=0 SC=0 ST=0 TC=White MC=White AC=ToggleMute", NotifyIcons.Sound)
-				}
-				
-				Notify("","",VA_GetMasterVolume(),"Progress", ApplicationState.VolumeNotifyID)
+
+				if(!ApplicationState.VolumeNotificationWindow)
+					ApplicationState.VolumeNotificationWindow := Notify("Volume","","", VA_GetMasterMute() ? NotifyIcons.SoundMute : NotifyIcons.Sound, "ToggleMute", {min : 0, max : 0, value : VA_GetMasterVolume()})
+				Else
+					ApplicationState.VolumeNotificationWindow.Progress := VA_GetMasterVolume()
 				SetTimer, ClearNotifyID, -1500
 			}
 		}
@@ -66,15 +62,10 @@ Class CVolumeAction Extends CAction
 			}
 			if(this.ShowVolume)
 			{
-				if(!ApplicationState.VolumeNotifyID)
-				{
-					if(SoundGet("","Mute"))
-						ApplicationState.VolumeNotifyID := Notify("Volume","","","PG=100 PW=250 GC=555555 SI=0 ST=0 TC=White MC=White AC=ToggleMute", NotifyIcons.SoundMute)
-					else
-						ApplicationState.VolumeNotifyID := Notify("Volume","","","PG=100 PW=250 GC=555555 SI=0 ST=0 TC=White MC=White AC=ToggleMute", NotifyIcons.Sound)
-				}
-				;msgbox % SoundGet("","Volume")
-				Notify("","",SoundGet("","Volume"),"Progress", ApplicationState.VolumeNotifyID)
+				if(!ApplicationState.VolumeNotificationWindow)
+					ApplicationState.VolumeNotificationWindow := Notify("Volume","","", SoundGet("", "Mute") ? NotifyIcons.SoundMute : NotifyIcons.Sound, "ToggleMute", {min : 0, max : 0, value : SoundGet("", "Volume")})
+				else
+					ApplicationState.VolumeNotificationWindow.Progress := SoundGet("", "Volume")
 				SetTimer, ClearNotifyID, -1500
 			}
 		}
@@ -96,24 +87,26 @@ Class CVolumeAction Extends CAction
 }
 
 ClearNotifyID:
-Notify("","",0,"Wait", ApplicationState.VolumeNotifyID)
-ApplicationState.VolumeNotifyID := ""
+ApplicationState.VolumeNotificationWindow.Close()
+ApplicationState.Remove("VolumeNotificationWindow")
 return
 
-ToggleMute:
-ApplicationState.VolumeNotifyID := ""
-if(WinVer >= WIN_VISTA)
+ToggleMute()
 {
-	if(VA_GetMasterMute())
-		VA_SetMasterMute(0)
+	ApplicationState.Remove("VolumeNotificationWindow")
+	if(WinVer >= WIN_VISTA)
+	{
+		if(VA_GetMasterMute())
+			VA_SetMasterMute(0)
+		else
+			VA_SetMasterMute(1)
+	}
 	else
-		VA_SetMasterMute(1)
+	{
+		if(SoundGet("","Mute"))
+			SoundSet, 1,, Mute
+		else
+			SoundSet, 0,, Mute
+	}
+	return
 }
-else
-{
-	if(SoundGet("","Mute"))
-		SoundSet, 1,, Mute
-	else
-		SoundSet, 0,, Mute
-}
-return
