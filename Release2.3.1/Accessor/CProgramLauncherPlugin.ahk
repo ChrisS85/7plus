@@ -299,7 +299,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		if(Accessor.SelectedFile && this.Settings.OpenWithKeyword && InStr(Filter, this.Settings.OpenWithKeyword " ") = 1)
 		{
 			OpenWith := true
-			Filter := strStripLeft(SubStr(Filter, strlen(this.Settings.OpenWithKeyword) + 2), " ")
+			Filter := strTrimLeft(SubStr(Filter, strlen(this.Settings.OpenWithKeyword) + 2), " ")
 			if(strlen(Filter) < this.Settings.MinChars)
 				return
 		}
