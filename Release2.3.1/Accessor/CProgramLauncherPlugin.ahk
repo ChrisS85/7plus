@@ -21,6 +21,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		IgnoreExtensions := true
 		;Exclude := "setup,install,uninst,remove"
 		MinChars := 2
+		OpenWithKeyword := "ow"
 		;RefreshOnStartup := true
 	}
 	Class CIndexingPath
@@ -134,6 +135,19 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			this.Actions := new this.CActions(BasePath)
 		}
 	}
+	;result for open with actions
+	Class COpenWithResult extends CAccessorPlugin.CResult
+	{
+		Class CActions extends CArray
+		{
+			DefaultAction := new CAccessor.CAction("Open With", "OpenWith")
+		}
+		Type := "Program Launcher"
+		__new()
+		{
+			this.Actions := new this.CActions()
+		}
+	}
 	Init()
 	{
 		this.ReadCache()
@@ -148,6 +162,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		this.SettingsWindow := {Settings: PluginSettings, GUI: GUI, PluginGUI: PluginGUI}
 		this.SettingsWindow.Paths := this.Paths.DeepCopy()
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "IgnoreExtensions", "Ignore file extensions", "", "", "", "", "", "", "If checked, file extensions will be excluded from the query.")
+		AddControl(PluginSettings, PluginGUI, "Edit", "OpenWithKeyword", "", "", "Open With keyword", "", "", "", "", "Selected files in explorer or similar programs can be quickly opened by typing this keyword and then an application name, i.e. ""ow Notepad""")
 		
 		GUI.ListBox := GUI.AddControl("ListBox", "ListBox", "-Hdr -Multi -ReadOnly x" PluginGUI.x " y+10 w330 R9", "")
 		for index, IndexedPath in this.SettingsWindow.Paths
@@ -256,7 +271,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 	
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
-		return false
+		return this.Settings.OpenWithKeyword && InStr(Filter, this.Settings.OpenWithKeyword " ") = 1
 	}
 	GetDisplayStrings(ListEntry, ByRef Title, ByRef Path, ByRef Detail1, ByRef Detail2)
 	{
@@ -280,6 +295,15 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		FuzzyList := Array()
 		InStrList := Array()
 		
+		;Detect "Open with" functionality
+		if(Accessor.SelectedFile && this.Settings.OpenWithKeyword && InStr(Filter, this.Settings.OpenWithKeyword " ") = 1)
+		{
+			OpenWith := true
+			Filter := strStripLeft(SubStr(Filter, strlen(this.Settings.OpenWithKeyword) + 2), " ")
+			if(strlen(Filter) < this.Settings.MinChars)
+				return
+		}
+
 		;Possibly remove file extension from filter
 		strippedFilter := this.Settings.IgnoreFileExtensions ? RegexReplace(Filter, "\.\w+") : Filter
 		;~ Filter := ExpandInternalPlaceHolders(Filter) ;TODO: Is this really needed? Might save some performance to leave it out
@@ -310,7 +334,10 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 				Name := ListEntry.Filename ? ListEntry.Filename : ListEntry.ResolvedName
 				
 				;Create result
-				result := new this.CResult(ListEntry.BasePath)
+				if(OpenWith)
+					result := new this.COpenWithResult()
+				else
+					result := new this.CResult(ListEntry.BasePath)
 				result.Title := Name
 				result.Path := ListEntry.Command
 				result.args := ListEntry.args
@@ -338,7 +365,11 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		Command := StringReplace(Action.Command, "${File}", ListEntry.Path)
 		RunAsUser(Command)
 	}
-
+	;Open a file with a specific program
+	OpenWith(Accessor, ListEntry, Action)
+	{
+		OpenFileWithProgram(Accessor.SelectedFile, ListEntry.Path)
+	}
 	;Possibly add the selected program to ProgramLauncher cache
 	AddToCache(ListEntry)
 	{

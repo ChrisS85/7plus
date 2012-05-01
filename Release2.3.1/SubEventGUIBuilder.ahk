@@ -71,7 +71,7 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 	{
 		y += 1
 		text := ValueObj[name]
-		options = x%x% y%y% w%w% hwndEdit_%name% -Multi R1
+		options = x+10 y%y% w%w% hwndEdit_%name% -Multi R1
 		options .= InStr(name, "password") ? " Password" : ""
 		Gui, Add, Edit, %options% , %text%
 		y -= 1
