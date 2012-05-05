@@ -167,7 +167,7 @@ Class CFTPUploadAction Extends CAction
 						clipboard:=cliptext
 					if(!this.Silent && success)
 					{
-						Notify("","",0, "Wait",FTP.NotifyID)
+						FTP.NotificationWindow.Close()
 						Notify("Transfer finished", "File uploaded", 2, NotifyIcons.Success)
 						SoundBeep
 					}
