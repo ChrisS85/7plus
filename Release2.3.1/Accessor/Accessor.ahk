@@ -583,6 +583,8 @@ Class CAccessor
 					this.History.Insert(2, this.Filter)
 					while(this.History.MaxIndex() > 10)
 						this.History.Remove()
+
+					;Call action function
 					if(IsFunc(Plugin[Action.Function]))
 						Plugin[Action.Function](this, ListEntry, Action)
 					else if(IsFunc(this[Action.Function]))
@@ -676,8 +678,9 @@ Class CAccessor
 			Event.TriggerThisEvent()
 		}
 	}
-	Copy(ListEntry, Plugin, Field = "Path")
+	Copy(ListEntry, Plugin, Action, Field = "Path")
 	{
+		msgbox % "copy " Field ": " ListEntry[Field]
 		Clipboard := ListEntry[Field]
 	}
 	
