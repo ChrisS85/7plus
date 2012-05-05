@@ -550,9 +550,8 @@ Class CExplorerNavigationSource
 			if(Window.hwnd = hwnd)
 			{
 				doc := Window.Document
-				pos := 1
 				Loop % doc.SelectedItems.Count
-					Files.Insert(doc.selectedItems.item(pos-1).Path)
+					Files.Insert(doc.selectedItems.item(A_Index-1).Path)
 			}
 		return Files
 	}
@@ -563,9 +562,8 @@ Class CExplorerNavigationSource
 			if(Window.hwnd = hwnd)
 			{
 				doc := Window.Document
-				pos := 1
 				Loop % doc.SelectedItems.Count
-					Files.Insert(doc.selectedItems.item(pos-1).Name)
+					Files.Insert(doc.selectedItems.item(A_Index-1).Name)
 			}
 		return Files
 	}

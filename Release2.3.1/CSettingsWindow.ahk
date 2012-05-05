@@ -17,10 +17,10 @@ Class CSettingsWindow Extends CGUI
 	Width := 890
 	Height := 560
 	treePages := this.AddControl("TreeView", "treePages", "x19 y12 w182 h" this.Height - 47, "")
-	grpPage := this.AddControl("GroupBox", "grpPage", "x+17 w" this.Width - 186 " h" this.Height - 47 " Section", "Events")
-	btnApply := this.AddControl("Button", "btnApply", "x" this.Width - 83 " y" this.Height - 29 " w73 h23", "Apply")
-	btnCancel := this.AddControl("Button", "btnCancel", "x" this.Width - 162 " y" this.Height - 29 " w73 h23", "Cancel")
-	btnOK := this.AddControl("Button", "btnOK", "x" this.Width - 241 " y" this.Height - 29 " w73 h23", "OK")
+	grpPage := this.AddControl("GroupBox", "grpPage", "x+17 w" this.Width - 226 " h" this.Height - 47 " Section", "Events")
+	btnOK := this.AddControl("Button", "btnOK", "x" this.Width - 254 " y" this.Height - 29 " w73 h23", "OK")
+	btnCancel := this.AddControl("Button", "btnCancel", "x+5 w73 h23", "Cancel")
+	btnApply := this.AddControl("Button", "btnApply", "x+5 w73 h23", "Apply")
 	;~ txtVideoHint := this.AddControl("Text", "txtVideoHint", "x16 y436 w175 h13", "Click on ? to see video tutorial help!")
 	;This contains the settings pages after Introduction, Events and Accessor
 	PageNames := "Clipboard|Explorer|Explorer Tabs|Fast Folders|FTP Profiles|HotStrings|Windows|Windows Settings|Misc|About"

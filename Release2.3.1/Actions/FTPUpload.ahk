@@ -54,45 +54,88 @@ Class CFTPUploadAction Extends CAction
 		}
 		XML_Save(XMLObject, ConfigPath "\FTPProfiles.xml")
 	}
+
 	Execute(Event)
 	{
 		global FTP
 		SourceFiles := ToArray(Event.ExpandPlaceholders(this.SourceFiles))
 		TargetFolder := Event.ExpandPlaceholders(this.TargetFolder)
-		TargetFile := Event.ExpandPlaceholders(this.TargetFile)
-		files := ToArray(SourceFiles)
-		;Process target filenames
-		targets := Array()
+
+		;Fetch all files (from folders)
+		files := Array()
 		for index, File in SourceFiles
 		{
-			SplitPath, TargetFile, , , targetfileextension, targetfilenamenoextension
-			
-			Splitpath, file, filename, , fileextension, filenamenoextension
-			if(targetfilenamenoextension && targetfileextension)
-				targets.Insert(targetfilenamenoextension "." targetfileextension)
-			else if(targetfilenamenoextension)
-				targets.Insert(targetfilenamenoextension "." fileextension)
-			else if(targetfileextension)
-				targets.Insert(filenamenoextension "." targetfileextension)
-			else
-				targets.Insert(filename)
-			file1 := targets[index]
-			SplitPath, file1, ,,CheckExtension, CheckFilenameNoExtension
-			number := 1
-			Loop % index - 1 ;add (Number) to avoid duplicate filenames
-				if(targets[index] = CheckFilenameNoExtension (number > 1 ? " (" number ")" : "") "." CheckExtension)
-					number++
-			targets[index] := CheckFilenameNoExtension (number > 1 ? " (" number ")" : "") "." CheckExtension
+			if(InStr(FileExist(File), "D")) ;Directory
+			{
+				SplitPath, File,, Parent
+				Loop, %File%\*.*, 0, 1
+				{
+					;Target path is relative to the original directory.
+					Target := MakeRelativePath(A_LoopFileLongPath, Parent)
+					pos := InStr(Target, "\", 0, 0)
+					TargetPath := SubStr(Target, 1, pos - 1)
+					TargetFile := SubStr(Target, pos + 1)
+					files.Insert({File : A_LoopFileLongPath, TargetPath : TargetPath, TargetFile : TargetFile})
+				}
+			}
+			else if(FileExist(File))
+			{
+				SplitPath, File, Name
+				files.Insert({File : File, TargetPath : "", TargetFile : Name})
+			}
 		}
+
+		;Process target filenames
+		;The target file can be used to specify target file names and/or extensions. Filenames are checked afterwards to avoid conflicts
+		TargetFile := Event.ExpandPlaceholders(this.TargetFile)
+		SplitPath, TargetFile, , , TargetFileExtension, TargetFilenameNoExtension
+		for index2, File in files
+		{
+			Target := file.TargetFile
+			Splitpath, Target, Filename, , FileExtension, FilenameNoExtension
+
+			;Possibly use filename or extension from TargetFile property
+			if(TargetFilenameNoExtension && TargetFileExtension)
+				File.TargetFile := TargetFilenameNoExtension "." TargetFileExtension
+			else if(TargetFilenameNoExtension)
+				File.TargetFile := TargetFilenameNoExtension "." FileExtension
+			else if(TargetFileExtension)
+				File.TargetFile := FilenameNoExtension "." TargetFileExtension
+			else
+				File.TargetFile := Filename
+
+			;Now we need to make sure that there are no duplicates
+			Target := file.TargetFile
+			Splitpath, Target, Filename, , FileExtension, FilenameNoExtension
+			found := true
+			while(found)
+			{
+				Target := FilenameNoExtension (A_Index > 1 ? "(" A_Index ")" : "") "." FileExtension
+				found := false
+				for index3, File3 in files
+				{
+					if(File = File3)
+						break
+					if(File3.TargetPath = File.TargetPath) ;Only consider files from the same target folder
+						if(File3.TargetFile = Target)
+						{
+							found := true
+							break
+						}
+				}
+			}
+			file.TargetFile := Target
+		}
+
 		if(files.MaxIndex() > 0)
 		{
 			this.GetFTPVariables(this.FTPProfile, Hostname, Port, User, Password, URL, NumberOfFTPSubDirs)
 			if(!Hostname || Hostname = "Hostname.com")
 			{
-				Notify("FTP profile not set", "The FTP profile was not created yet or is invalid. Click here to enter a valid FTP login.", 5, NotifyIcons.Error, "FTP_Notify_Error")
+				Notify("FTP profile not set", "The FTP profile was not created yet or is invalid. Click here to enter a valid FTP login.", 5, NotifyIcons.Error, new Delegate(this, "NotifyError"))
 				return 0
 			}
-			decrypted:=Decrypt(Password)
+			decrypted := Decrypt(Password)
 			cliptext := ""
 			result := 1
 			; connect to FTP server 
@@ -102,15 +145,15 @@ Class CFTPUploadAction Extends CAction
 			if !FTP.Open(Hostname, User, decrypted) 
 			{ 
 				if(!this.Silent)
-					Notify("Connection Error", "Couldn't connect to " Hostname ". Correct host/username/password?", 5, NotifyIcons.Error, "FTP_Notify_Error")
+					Notify("Connection Error", "Couldn't connect to " Hostname ". Correct host/username/password?", 5, NotifyIcons.Error, new Delegate(this, "NotifyError"))
 				result := 0
 			}
 			else
 			{
 				;go into target directory, optionally creating directories along the way.
-				if(TargetFolder != "" && ftp.SetCurrentDirectory(TargetFolder) != true)
+				if(TargetFolder != "" && FTP.SetCurrentDirectory(TargetFolder) != true)
 				{
-					Loop, Parse, TargetFolder, /
+					Loop, Parse, TargetFolder, /\
 					{
 						;Skip current level if it exists
 						if(ftp.SetCurrentDirectory(A_LoopField))
@@ -119,7 +162,7 @@ Class CFTPUploadAction Extends CAction
 						if(ftp.CreateDirectory(A_LoopField) != true)
 						{
 							if(!this.Silent)
-								Notify("FTP Error", "Couldn't create target directory " A_LoopField ". Check permissions!", 5, NotifyIcons.Error, "FTP_Notify_Error")
+								Notify("FTP Error", "Couldn't create target directory " A_LoopField ". Check permissions!", 5, NotifyIcons.Error, new Delegate(this, "NotifyError"))
 							result := 0
 							break
 						}
@@ -127,7 +170,7 @@ Class CFTPUploadAction Extends CAction
 						if(ftp.SetCurrentDirectory(A_LoopField) != true)
 						{
 							if(!this.Silent)
-								Notify("FTP Error", "Couldn't switch to created target directory" A_LoopField ". Check permissions!", 5, NotifyIcons.Error, "FTP_Notify_Error")
+								Notify("FTP Error", "Couldn't switch to created target directory" A_LoopField ". Check permissions!", 5, NotifyIcons.Error, new Delegate(this, "NotifyError"))
 							result := 0
 							break
 						}
@@ -135,36 +178,72 @@ Class CFTPUploadAction Extends CAction
 				}
 				if(result != 0)
 				{
-					;The url is sometimes mapped differently on FTP vs. Web.
-					;FTP might have more directories while the webserver only mirrors a part of the directory structure.
-					;The code below allows skipping some directories
-					URLTargetFolder := TargetFolder
-					Loop % NumberOfFTPSubDirs
-					{
-						if(pos := InStr(URLTargetFolder, "/"))
-							URLTargetFolder := SubStr(URLTargetFolder, pos + 1)
-						else
-						{
-							URLTargetFolder := ""
-							break
-						}
-					}
+					FTPBaseDir := FTP.GetCurrentDirectory()
 					success := 0
-					FTP.NumFiles := files.MaxIndex()
-					Loop % files.MaxIndex()
+					for index4, File in files
 					{
-						FullPath := files[A_Index]
-						result := FTP.InternetWriteFile(FullPath,  targets[A_Index], "Action_FTPUpload_Progress")
+						FTP.NumFiles := files.MaxIndex() - index4 + 1
+						;The url is sometimes mapped differently on FTP vs. Web.
+						;FTP might have more directories while the webserver only mirrors a part of the directory structure.
+						;The code below allows skipping some directories
+						URLTargetFolder := File.TargetPath
+						URLTargetFolder := TargetFolder ? TargetFolder (URLTargetFolder ? "\" : "") : ""
+						Loop % NumberOfFTPSubDirs
+						{
+							if(pos := InStr(URLTargetFolder, "/"))
+								URLTargetFolder := SubStr(URLTargetFolder, pos + 1)
+							else
+							{
+								URLTargetFolder := ""
+								break
+							}
+						}
+
+						;Go back into base dir
+						if(A_Index > 1)
+							FTP.SetCurrentDirectory(FTPBaseDir)
+
+						;go into target directory, optionally creating directories along the way.
+						TargetPath := File.TargetPath
+						if(TargetPath != "" && FTP.SetCurrentDirectory(TargetPath) != true)
+						{
+							Loop, Parse, TargetPath, \/
+							{
+								;Skip current level if it exists
+								if(ftp.SetCurrentDirectory(A_LoopField))
+									continue
+								;Try to create current level
+								if(ftp.CreateDirectory(A_LoopField) != true)
+								{
+									if(!this.Silent)
+										Notify("FTP Error", "Couldn't create target directory " A_LoopField ". Check permissions!", 5, NotifyIcons.Error, new Delegate(this, "NotifyError"))
+									result := 0
+									break
+								}
+								;Try to go into newly created directory
+								if(ftp.SetCurrentDirectory(A_LoopField) != true)
+								{
+									if(!this.Silent)
+										Notify("FTP Error", "Couldn't switch to created target directory" A_LoopField ". Check permissions!", 5, NotifyIcons.Error, new Delegate(this, "NotifyError"))
+									result := 0
+									break
+								}
+							}
+						}
+
+						FullPath := File.File
+						result := FTP.InternetWriteFile(FullPath,  File.TargetFile, "Action_FTPUpload_Progress")
+
 						if(!success && result)
 							success := result
 						if(result=0 && !this.Silent)
-							Notify("Couldn't upload file", "Couldn't upload "  targets[A_Index] " properly. Make sure you have write rights and the path exists", 5, NotifyIcons.Error, "FTP_Notify_Error")
+							Notify("Couldn't upload file", "Couldn't upload " File.File " properly.`nMake sure you have write rights and the path exists", 5, NotifyIcons.Error, new Delegate(this, "NotifyError"))
 						else if(result != 0 && URL && this.Clipboard)
-							cliptext .= (A_Index = 1 ? "" : "`r`n") URL "/" URLTargetFolder (URLTargetFolder ? "/" : "") StringReplace(targets[A_Index], " ", "%20", 1)
+							cliptext .= StringReplace((A_Index = 1 ? "" : "`r`n") URL "/" URLTargetFolder (URLTargetFolder ? "/" : "") File.TargetFile, " ", "%20", 1)
 					}
 					FTP.Close()
 					if(URL && this.Clipboard && cliptext)
-						clipboard:=cliptext
+						clipboard := cliptext
 					if(!this.Silent && success)
 					{
 						FTP.NotificationWindow.Close()
@@ -176,6 +255,10 @@ Class CFTPUploadAction Extends CAction
 			}
 			return result
 		}
+	}
+	NotifyError()
+	{
+		ShowSettings("FTP Profiles")
 	}
 	DisplayString()
 	{
@@ -227,17 +310,13 @@ Action_FTPUpload_Progress()
 	total := my.BytesTotal
 	if(!FTP.init)
 	{
-		FTP.NotificationWindow := Notify("Uploading " FTP.NumFiles " file" (FTP.NumFiles = 1 ? "":"s") " to " FTP.Hostname,my.RemoteName " - " FormatFileSize(done) " / " FormatFileSize(total), "", NotifyIcons.Internet, "", {min : 0, max : 100, value : 0})
+		FTP.NotificationWindow := Notify("Uploading " FTP.NumFiles " file" (FTP.NumFiles = 1 ? "":"s") " to " FTP.Hostname, my.RemoteName " - " FormatFileSize(done) " / " FormatFileSize(total), "", NotifyIcons.Internet, "", {min : 0, max : 100, value : 0})
 		FTP.init := 1
 		return 1
 	}
 	FTP.NotificationWindow.Progress := done / total * 100
 	FTP.NotificationWindow.Text := my.RemoteName " - " FormatFileSize(done) " / " FormatFileSize(total)
-}
-FTP_Notify_Error()
-{
-	ShowSettings("FTP Profiles")
-	return
+	FTP.NotificationWindow.Title := "Uploading " FTP.NumFiles " file" (FTP.NumFiles = 1 ? "":"s") " to " FTP.Hostname
 }
 Action_Upload_Placeholders_SourceFiles:
 GetCurrentSubEvent().GuiShow("", "Placeholders_SourceFiles")

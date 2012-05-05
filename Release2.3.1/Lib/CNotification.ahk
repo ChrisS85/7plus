@@ -2,7 +2,6 @@
 
 Notify(Title, Text, Timeout = "", Icon = "", Action = "", Progress = "", Style = "")
 {
-	outputdebug % icon
 	return new CNotificationWindow(Title, Text, Icon, Timeout, Action, Progress, Style)
 }
 Class CNotification
@@ -249,7 +248,14 @@ Class CNotificationWindow Extends CGUI
 		;Set region for rounded windows
 		if(Style.Radius)
 			this.Region := "0-0 w" this.WindowWidth " h" this.WindowHeight " R" Style.Radius * 2 "-" Style.Radius * 2
-		
+		if(this.HasKey("icoIcon"))
+			this.icoIcon.Redraw()
+		if(this.HasKey("txtTitle"))
+			this.txtTitle.Redraw()
+		if(this.HasKey("lnkText"))
+			this.lnkText.Redraw()
+		if(this.HasKey("prgProgress"))
+			this.prgProgress.Redraw()
 		;Register handlers for all controls
 		for index, control in this.Controls
 			if(control.Type != "Progress" && control.Type != "Link")
@@ -273,6 +279,11 @@ Class CNotificationWindow Extends CGUI
 		{
 			this.lnkText.Text := Value
 			this.lnkText.AutoSize()
+		}
+		else if(Key = "Title")
+		{
+			this.txtTitle.Text := Value
+			this.txtTitle.AutoSize()
 		}
 		else
 			Ignore := true
