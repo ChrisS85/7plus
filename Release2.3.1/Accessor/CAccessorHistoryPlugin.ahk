@@ -17,11 +17,13 @@ Class CAccessorHistoryPlugin extends CAccessorPlugin
 		MaxEntries := 100
 		MinChars := 0
 		ShowWithEmptyQuery := true
+		SearchHistory := false
 	}
 	ShowSettings(PluginSettings, GUI, PluginGUI)
 	{
 		AddControl(PluginSettings, PluginGUI, "UpDown", "MaxEntries", "3-1000", "", "History length:", "", "", "", "", "The number of history entries to keep.")
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "ShowWithEmptyQuery", "Show history when query string is empty")
+		AddControl(PluginSettings, PluginGUI, "Checkbox", "SearchHistory", "Search in history", "", "", "", "", "", "", "This is disabled by default so history entries will only show up when Accessor is opened. This is usually desired because most history entries can still be found as regular results and duplicates can be avoided this way.")
 	}
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
@@ -59,39 +61,42 @@ Class CAccessorHistoryPlugin extends CAccessorPlugin
 				Results.Insert(item)
 			return Results
 		}
-		TitleStartsWithList := Array()
-		PathStartsWithList := Array()
-		TitleContainsList := Array()
-		PathContainsList := Array()
-		FuzzyTitleList := Array()
-		FuzzyPathList := Array()
-		for index, item in this.List
+		else if(Filter && this.Settings.SearchHistory)
 		{
-			if(pos := InStr(item.Title, Filter))
+			TitleStartsWithList := Array()
+			PathStartsWithList := Array()
+			TitleContainsList := Array()
+			PathContainsList := Array()
+			FuzzyTitleList := Array()
+			FuzzyPathList := Array()
+			for index, item in this.List
 			{
-				if(pos = 1)
-					TitleStartsWithList.Insert(item)
-				else if(pos > 1)
-					TitleContainsList.Insert(item)
+				if(pos := InStr(item.Title, Filter))
+				{
+					if(pos = 1)
+						TitleStartsWithList.Insert(item)
+					else if(pos > 1)
+						TitleContainsList.Insert(item)
+				}
+				else if(pos := InStr(item.Path, Filter))
+				{
+					if(pos = 1)
+						PathStartsWithList.Insert(item)
+					else if(pos > 1)
+						PathContainsList.Insert(item)
+				}
+				else if(this.Settings.FuzzySearch && FuzzySearch(item.Title, Filter) < 0.3)
+					FuzzyTitleList.Insert(item)
+				else if(this.Settings.FuzzySearch && FuzzySearch(item.Path, Filter) < 0.3)
+					FuzzyPathList.Insert(item)
 			}
-			else if(pos := InStr(item.Path, Filter))
-			{
-				if(pos = 1)
-					PathStartsWithList.Insert(item)
-				else if(pos > 1)
-					PathContainsList.Insert(item)
-			}
-			else if(this.Settings.FuzzySearch && FuzzySearch(item.Title, Filter) < 0.3)
-				FuzzyTitleList.Insert(item)
-			else if(this.Settings.FuzzySearch && FuzzySearch(item.Path, Filter) < 0.3)
-				FuzzyPathList.Insert(item)
+			Results.Extend(TitleStartsWithList)
+			Results.Extend(PathStartsWithList)
+			Results.Extend(TitleContainsList)
+			Results.Extend(PathContainsList)
+			Results.Extend(FuzzyTitleList)
+			Results.Extend(FuzzyPathList)
+			return Results
 		}
-		Results.Extend(TitleStartsWithList)
-		Results.Extend(PathStartsWithList)
-		Results.Extend(TitleContainsList)
-		Results.Extend(PathContainsList)
-		Results.Extend(FuzzyTitleList)
-		Results.Extend(FuzzyPathList)
-		return Results
 	}
 }
