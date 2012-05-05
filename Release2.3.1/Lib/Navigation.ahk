@@ -45,8 +45,18 @@ Class Navigation
 	}
 	SetPath(Path, hwnd = 0)
 	{
-		if(this.Call("SetPath", 0, Path, hwnd) = 0)
-			Run, % "Explorer """ Path """"
+		;If Path is a file, select it in new explorer instances or ignore it elsewhere
+		if(!InStr(FileExist(Path), "D"))
+			SplitPath, Path, Name, Dir
+		else
+			Dir := Path
+		if(this.Call("SetPath", 0, Dir, hwnd) = 0)
+		{
+			if(!Name)
+				RunAsUser(A_WinDir "\explorer.exe /n,/e," Path)
+			else
+				RunAsUser(A_WinDir "\explorer.exe /select," Path)
+		}
 	}
 	GetSelectedFilepaths(hwnd = 0)
 	{

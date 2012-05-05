@@ -1739,5 +1739,5 @@ OpenFileWithProgram(File, Program)
 		RunAsUser(command)
 	}
 	else
-		RunAsUser("%Program%" "%File%")
+		RunAsUser("""" Program """ """ File """")
 }

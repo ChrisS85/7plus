@@ -116,7 +116,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		
 		Results := Array()
 		Filter := ExpandPathPlaceholders(Filter)
-		SplitPath, filter, name, dir,,,drive
+		SplitPath, filter, name, dir, , , drive
 		if(!dir && Accessor.CurrentDirectory && this.Settings.ShowFilesOfCurrentFolder)
 			dir := Accessor.CurrentDirectory
 		if(dir)
