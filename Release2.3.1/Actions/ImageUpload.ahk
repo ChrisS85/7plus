@@ -59,7 +59,7 @@ Class CImageUploadAction Extends CAction
 				this.tmpWorkerThread.OnProgress.Handler := "Action_ImageUpload_ProgressHandler"
 				this.tmpWorkerThread.OnStop.Handler := "Action_ImageUpload_OnStop"
 				this.tmpWorkerThread.OnFinish.Handler := "Action_ImageUpload_OnFinish"
-				this.tmpWorkerThread.Start(File, Event.ID, this.Hoster, Event.Actions.IndexOf(this))
+				this.tmpWorkerThread.Start(File, Event.EventScheduleID, this.Hoster, Event.Actions.IndexOf(this))
 				return -1
 			}
 			else ;Upload still running, keep Action in EventSchedule
@@ -91,8 +91,8 @@ return
 ;This is called in the main 7plus process when a status message from an upload process is received
 Action_ImageUpload_ProgressHandler(WorkerThread, Progress)
 {
-	ID := WorkerThread.Task.Parameters[2]
-	Event := EventSystem.EventSchedule.GetItemWithValue("ID", ID)
+	EventScheduleID := WorkerThread.Task.Parameters[2]
+	Event := EventSystem.EventSchedule.GetItemWithValue("EventScheduleID", EventScheduleID)
 	Action := Event.Actions[WorkerThread.Task.Parameters[4]]
 	if(!Action.HasKey("tmpNotificationWindow"))
 	{
@@ -104,8 +104,8 @@ Action_ImageUpload_ProgressHandler(WorkerThread, Progress)
 }
 Action_ImageUpload_OnStop(WorkerThread, Reason)
 {
-	ID := WorkerThread.Task.Parameters[2]
-	Event := EventSystem.EventSchedule.GetItemWithValue("ID", ID)
+	EventScheduleID := WorkerThread.Task.Parameters[2]
+	Event := EventSystem.EventSchedule.GetItemWithValue("EventScheduleID", EventScheduleID)
 	Action := Event.Actions[WorkerThread.Task.Parameters[4]]
 	Action.tmpFailed.Insert(Action.tmpFiles[Action.tmpFile])
 	Action.tmpFile++
@@ -113,13 +113,13 @@ Action_ImageUpload_OnStop(WorkerThread, Reason)
 }
 Action_ImageUpload_OnFinish(WorkerThread, Result)
 {
-	ID := WorkerThread.Task.Parameters[2]
-	Event := EventSystem.EventSchedule.GetItemWithValue("ID", ID)
+	EventScheduleID := WorkerThread.Task.Parameters[2]
+	Event := EventSystem.EventSchedule.GetItemWithValue("EventScheduleID", EventScheduleID)
 	Action := Event.Actions[WorkerThread.Task.Parameters[4]]
 	
 	;Code to read link and copy to clipboard
-	FileRead, Link, %A_Temp%\7plus\Upload%ID%.txt
-	FileDelete, %A_Temp%\7plus\Upload%ID%.txt
+	FileRead, Link, %A_Temp%\7plus\Upload%EventScheduleID%.txt
+	FileDelete, %A_Temp%\7plus\Upload%EventScheduleID%.txt
 	Action.tmpClipboard .= (Action.tmpClipboard ? "`n" : "") Link
 	Action.tmpFile++
 	Action.Remove("tmpWorkerThread")
@@ -131,7 +131,7 @@ GetImageHosterList()
 }
 
 ;This function is run in another 7plus process to prevent blocking the only available real thread
-ImageUploadThread(WorkerThread, File, ID, Hoster, ActionIndex)
+ImageUploadThread(WorkerThread, File, EventScheduleID, Hoster, ActionIndex)
 {
 	if(!FileExist(File))
 	{
@@ -140,7 +140,7 @@ ImageUploadThread(WorkerThread, File, ID, Hoster, ActionIndex)
 	}
 	URL := %Hoster%_Upload(File,xml)
 	If(URL)
-		FileAppend, %URL%, %A_Temp%\7plus\Upload%ID%.txt
+		FileAppend, %URL%, %A_Temp%\7plus\Upload%EventScheduleID%.txt
 	else
 		WorkerThread.Stop()
 }

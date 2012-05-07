@@ -14,6 +14,10 @@ Class CEventSystem extends CRichObject
 	
 	;EventSchedule (contains copies of the event objects in the Events list) is a list of events that are currently being processed.
 	static EventSchedule := Array()
+
+	;Event schedule ID is assigned to each scheduled event so they can be identified by this ID.
+	EventScheduleID := 0
+
 	Startup()
 	{		
 		;Create CEvents instance
@@ -327,7 +331,11 @@ Class CEvent extends CRichObject
 		{
 			;Test if the event is already running and mustn't be run multiple times
 			if(!this.OneInstance || !EventSystem.EventSchedule.FindKeyWithValue("ID", this.ID))
+			{
 				EventSystem.EventSchedule.Insert(Copy := this.DeepCopy())
+				Copy.EventScheduleID := EventSystem.EventScheduleID
+				EventSystem.EventScheduleID++ ;Increment event schedule ID for next scheduled event.
+			}
 			return Copy
 		}
 	}
