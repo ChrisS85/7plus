@@ -420,7 +420,10 @@ Class CAccessor
 			Plugin := this.Plugins.GetItemWithValue("Type", ListEntry.Type)
 			Plugin.GetDisplayStrings(ListEntry, Title := ListEntry.Title, Path := ListEntry.Path, Detail1 := ListEntry.Detail1, Detail2 := ListEntry.Detail2)
 			item := this.GUI.ListView.Items.Add("", Title, Path, Detail1, Detail2)
-			item.Icon := ListEntry.Icon
+			if(!ListEntry.HasKey("IconNumber"))
+				item.Icon := ListEntry.Icon
+			Else
+				item.SetIcon(ListEntry.Icon, ListEntry.IconNumber)
 		}
 
 		this.LastFilter := Filter
@@ -680,7 +683,6 @@ Class CAccessor
 	}
 	Copy(ListEntry, Plugin, Action, Field = "Path")
 	{
-		msgbox % "copy " Field ": " ListEntry[Field]
 		Clipboard := ListEntry[Field]
 	}
 	
@@ -1140,6 +1142,7 @@ Class CAccessorPlugin
 #include %A_ScriptDir%\Accessor\CEventPlugin.ahk
 #include %A_ScriptDir%\Accessor\CProgramLauncherPlugin.ahk
 #include %A_ScriptDir%\Accessor\CCalculatorPlugin.ahk
+#include %A_ScriptDir%\Accessor\CControlPanelPlugin.ahk
 #include %A_ScriptDir%\Accessor\CRecentFoldersPlugin.ahk
 #include %A_ScriptDir%\Accessor\CFileSystemPlugin.ahk
 #include %A_ScriptDir%\Accessor\CGooglePlugin.ahk

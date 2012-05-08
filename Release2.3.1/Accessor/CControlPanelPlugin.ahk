@@ -1,0 +1,85 @@
+Class CControlPanelPlugin extends CAccessorPlugin
+{
+	;Register this plugin with the Accessor main object
+	static Type := CAccessor.RegisterPlugin("ControlPanel", CControlPanelPlugin)
+	
+	Description := "This plugin is used to index the control panel applets."
+	
+	;List of control panel applets
+	List := Array()
+
+	SaveHistory := true
+
+	AllowDelayedExecution := false
+	
+	Class CSettings extends CAccessorPlugin.CSettings
+	{
+		Keyword := "cpl"
+		KeywordOnly := false
+		MinChars := 2
+	}
+
+	Class CResult extends CAccessorPlugin.CResult
+	{
+		Class CActions extends CArray
+		{
+			DefaultAction := new CAccessor.CAction("Open", "Open")
+		}
+		Type := "ControlPanel"
+		__new()
+		{
+			this.Actions := new this.CActions()
+		}
+	}
+	Init()
+	{
+		Loop, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel\NameSpace\, 2, 0
+		{
+			RegRead, appname, HKCR, CLSID\%A_LoopRegName%, System.ApplicationName
+			RegRead, localstring, HKCR, CLSID\%A_LoopRegName%, LocalizedString
+			if(InStr(localstring, "@") = 1)
+				localstring := SubStr(localstring, 2)
+			file := SubStr(localstring, 1, InStr(localstring, ",") - 1)
+			id := SubStr(localstring, InStr(localstring, ",-") + 2)
+			localized := TranslateMUI(ExpandPathPlaceholders(file), id)
+
+			RegRead, iconstring, HKCR, CLSID\%A_LoopRegName%\DefaultIcon
+			if(InStr(iconstring, "@") = 1)
+				iconstring := SubStr(iconstring, 2)
+			file := ExpandPathPlaceholders(SubStr(iconstring, 1, InStr(iconstring, ",") - 1))
+			id := IndexOfIconResource(file, SubStr(iconstring, InStr(iconstring, ",-") + 2))
+			this.List.Insert({appname : appname, localString : localized, icon : file, IconNumber : id})
+		}
+	}
+	OnExit(Accessor)
+	{
+		
+	}
+	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
+	{
+		Results := Array()
+		for index, applet in this.List
+		{
+			if(InStr(applet.localString, Filter))
+			{
+				Result := new this.CResult()
+				Result.Title := applet.localString
+				Result.Path := ""
+				Result.Detail1 := "ControlPanel"
+				Result.Icon := applet.Icon
+				Result.IconNumber := applet.IconNumber
+				Result.AppName := applet.AppName
+				Results.Insert(Result)
+			}
+		}
+		return Results
+	}
+	ShowSettings(PluginSettings, Accessor, PluginGUI)
+	{
+	}
+	Open(Accessor, ListEntry)
+	{
+		if(ListEntry.AppName)
+			RunAsUser("control.exe /name " ListEntry.AppName)
+	}
+}

@@ -1011,12 +1011,12 @@ WriteText(Text)
 FindFreeFileName(FilePath)
 {
 	SplitPath, FilePath,, dir, extension, filename
-	Testpath := FilePath ;Return path if it doesn't exist
-	i := 1
+
+
 	while FileExist(TestPath)
 	{
 		i++
-		Testpath := dir "\" filename " (" i ")" (extension = "" ? "" : "." extension)
+
 	}
 	return TestPath
 }
@@ -1715,29 +1715,31 @@ MakeRelativePath(AbsolutePath, BasePath)
 	RelativePath := SubStr(AbsolutePath, StrLen(BasePath) + 1)
 	RelativePath := strTrimLeft(RelativePath, ["\", "/"])
 	return RelativePath
+
+
 }
 
-;Tries to read from HKCU and then from HKLM if not found
-RegReadUser(Key, Name)
+;These two functions are used to convert an icon resource id (as those used in the registry) to icon index(as used by ahk)
+IndexOfIconResource(Filename, ID)
 {
-	RegRead, value, HKCU, %Key%, %Name%
-	if(ErrorLevel)
-		RegRead, value, HKLM, %Key%, %Name%
-	return value
+    hmod := DllCall("GetModuleHandle", "str", Filename)
+    ; If the DLL isn't already loaded, load it as a data file.
+    loaded := !hmod
+        && hmod := DllCall("LoadLibraryEx", "str", Filename, "uint", 0, "uint", 0x2)
+    
+    enumproc := RegisterCallback("IndexOfIconResource_EnumIconResources","F")
+    VarSetCapacity(param,12,0), NumPut(ID,param,0)
+    ; Enumerate the icon group resources. (RT_GROUP_ICON=14)
+    DllCall("EnumResourceNames", "uint", hmod, "uint", 14, "uint", enumproc, "uint", &param)
+    DllCall("GlobalFree", "uint", enumproc)
+    
+    ; If we loaded the DLL, free it now.
+    if loaded
+        DllCall("FreeLibrary", "uint", hmod)
+    
+    return NumGet(param,8) ? NumGet(param,4) : 0
 }
 
-;Opens a file by looking up the required command line in the registry and then using it.
-;If not found, it will fall back by using a quoted path to the file as argument for the command line
-OpenFileWithProgram(File, Program)
+IndexOfIconResource_EnumIconResources(hModule, lpszType, lpszName, lParam)
 {
-	SplitPath, Program, Name
-	RegRead, command, HKCR, Applications\%Name%\shell\open\command
-	if(command)
-	{
-		StringReplace, command, command, `%1, %File%
-		command := ExpandPathPlaceholders(command)
-		RunAsUser(command)
-	}
-	else
-		RunAsUser("""" Program """ """ File """")
 }

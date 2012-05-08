@@ -47,7 +47,9 @@ Class CAccessorHistoryPlugin extends CAccessorPlugin
 
 			;Create a copy of the entry and duplicate its icon (it needs to be destroyed later)
 			Copy := Accessor.CopyResult(ListEntry)
-			Copy.Icon := DuplicateIcon(Copy.Icon)
+			;If the icon is stored as a hIcon it needs to be duplicated
+			if(!Copy.HasKey("IconNumber"))
+				Copy.Icon := DuplicateIcon(Copy.Icon)
 			Copy.IsHistory := true
 			this.List.Insert(1, Copy)
 		}
