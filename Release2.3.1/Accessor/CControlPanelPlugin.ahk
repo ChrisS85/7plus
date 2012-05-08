@@ -33,9 +33,13 @@ Class CControlPanelPlugin extends CAccessorPlugin
 	}
 	Init()
 	{
+		;Find all registered control panel applets
 		Loop, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel\NameSpace\, 2, 0
 		{
+			;Appname is used to open the applet with control.exe
 			RegRead, appname, HKCR, CLSID\%A_LoopRegName%, System.ApplicationName
+
+			;Get localized name
 			RegRead, localstring, HKCR, CLSID\%A_LoopRegName%, LocalizedString
 			if(InStr(localstring, "@") = 1)
 				localstring := SubStr(localstring, 2)
@@ -43,11 +47,14 @@ Class CControlPanelPlugin extends CAccessorPlugin
 			id := SubStr(localstring, InStr(localstring, ",-") + 2)
 			localized := TranslateMUI(ExpandPathPlaceholders(file), id)
 
+			;Get default icon
 			RegRead, iconstring, HKCR, CLSID\%A_LoopRegName%\DefaultIcon
 			if(InStr(iconstring, "@") = 1)
 				iconstring := SubStr(iconstring, 2)
 			file := ExpandPathPlaceholders(SubStr(iconstring, 1, InStr(iconstring, ",") - 1))
+			;Convert it from resource id to icon index
 			id := IndexOfIconResource(file, SubStr(iconstring, InStr(iconstring, ",-") + 2))
+			
 			this.List.Insert({appname : appname, localString : localized, icon : file, IconNumber : id})
 		}
 	}
