@@ -1,4 +1,6 @@
-﻿Notify(Title, Text, Timeout = -1, Icon = "", Action = "", Progress = "", Style = "")
+﻿#include <CGUI>
+
+Notify(Title, Text, Timeout = "", Icon = "", Action = "", Progress = "", Style = "")
 {
 	return new CNotificationWindow(Title, Text, Icon, Timeout, Action, Progress, Style)
 }
@@ -168,12 +170,14 @@ Class CNotificationWindow Extends CGUI
 
 	__new(Title, Text, Icon = "", Timeout = "", OnClick = "", Progress = "", Style = "")
 	{
-		this.Timeout := Timeout
-		this.CloseTime := A_TickCount + Timeout
+		this.Timeout := Timeout * 1000
+		this.CloseTime := A_TickCount + Timeout * 1000
 		this.OnClick.Handler := OnClick
 		this.AlwaysOnTop := true
 		this.Border := false
 		this.Caption := false
+		this.ToolWindow := true
+		;this.SysMenu := false
 		if(!Style)
 			Style := CNotification.Style
 
@@ -186,28 +190,29 @@ Class CNotificationWindow Extends CGUI
 		;Offset from border
 		Offset := Style.Border.Width > Style.Radius ? Style.Border.Width : Style.Radius
 		if(Icon)
-			this.icoIcon := this.AddControl("Picture", "icoIcon", "x" Offset " y" Offset " w" Style.ImageWidth " h" Style.ImageHeight, Icon)
-
+			this.icoIcon := this.AddControl("Picture", "icoIcon", "x" Offset " y" Offset " w" Style.ImageWidth " h" Style.ImageHeight " 0xE 0x40", Icon)
 		;Revert to basic functions here so the font can be set before the control is added
 		Gui, % this.GUINum ":Font", % "s" Style.Title.FontSize " w" Style.Title.FontWeight " c" Style.Title.FontColor, % Style.Title.Font
 		this.txtTitle := this.AddControl("Text", "txtTitle", Icon ? "x+5" : "", Title)
-
+		this.txtTitle.AutoSize()
 		;Progress control
 		if(Progress)
 			this.prgProgress := this.AddControl("Progress", "prgProgress", "y+5 Range" Progress.Min "-" Progress.Max, Progress.Value)
 
 		;Notification text is a link control
 		Gui, % this.GUINum ":Font", % "s" Style.Text.FontSize " w" Style.Text.FontWeight " c" Style.Text.FontColor, % Style.Text.Font
-		this.lnkText := this.AddControl("Link", "lnkText", "y+5", Text)
+		if(Text)
+			this.lnkText := this.AddControl("Link", "lnkText", "y+5", Text)
 
 		;Register and show window
 		this.Position := CNotification.RegisterNotificationWindow(this)
-		this.Show()
+		this.Show("NA")
 
 		;Calculate width of progress bar
-		w1 := this.lnkText.Width
+		w1 := this.HasKey("lnkText") ? this.lnkText.Width : 0
 		w2 := this.txtTitle.Width
 		width := w1 > w2 ? w1 : w2
+		width := width > this.prgProgress.Width ? width : this.prgProgress.Width
 		this.prgProgress.Width := width
 
 		;Resize background picture control to fit whole window
@@ -243,7 +248,14 @@ Class CNotificationWindow Extends CGUI
 		;Set region for rounded windows
 		if(Style.Radius)
 			this.Region := "0-0 w" this.WindowWidth " h" this.WindowHeight " R" Style.Radius * 2 "-" Style.Radius * 2
-		
+		if(this.HasKey("icoIcon"))
+			this.icoIcon.Redraw()
+		if(this.HasKey("txtTitle"))
+			this.txtTitle.Redraw()
+		if(this.HasKey("lnkText"))
+			this.lnkText.Redraw()
+		if(this.HasKey("prgProgress"))
+			this.prgProgress.Redraw()
 		;Register handlers for all controls
 		for index, control in this.Controls
 			if(control.Type != "Progress" && control.Type != "Link")
@@ -251,20 +263,28 @@ Class CNotificationWindow Extends CGUI
 	}
 	Click()
 	{
-		this.OnClick.()
 		this.Close()
+		this.OnClick.()
 	}
 	lnkText_Click(URLOrID, Index)
 	{
-		this.OnClick.(URLOrID, Index)
 		this.Close()
+		this.OnClick.(URLOrID, Index)
 	}
 	__Set(Key, Value)
 	{
 		if(Key = "Progress" && this.HasKey("prgProgress"))
 			this.prgProgress.Value := Value
 		else if(Key = "Text")
+		{
 			this.lnkText.Text := Value
+			this.lnkText.AutoSize()
+		}
+		else if(Key = "Title")
+		{
+			this.txtTitle.Text := Value
+			this.txtTitle.AutoSize()
+		}
 		else
 			Ignore := true
 		if(!Ignore)
