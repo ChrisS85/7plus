@@ -1,8 +1,7 @@
 #labels Featured,Phase-Support
 = 7plus Frequently Asked Questions =
 If you use 7plus for the first time, it may appear overwhelming in features, so here are some small pointers to get you started.
-If you have further questions, please refer to the docs first (click the help buttons available on specific event/trigger/condition/action pages),
-and start a new thread here if the topic hasn't been covered yet and you weren't able to solve it.
+If you have further questions, please refer to the docs first (click the help buttons available on specific event/trigger/condition/action pages) before requesting help.
 
 == About the event system ==
 
