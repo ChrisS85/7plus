@@ -2897,7 +2897,7 @@
 <ID>381</ID>
 <Name>Explorer: Upload selected files</Name>
 <OfficialEvent>382</OfficialEvent>
-<OneInstance>1</OneInstance>
+<OneInstance>0</OneInstance>
 <Trigger>
 <Key>^U</Key>
 <Type>Hotkey</Type>
@@ -2929,7 +2929,7 @@
 <ID>382</ID>
 <Name>File Dialog: Upload selected files</Name>
 <OfficialEvent>383</OfficialEvent>
-<OneInstance>1</OneInstance>
+<OneInstance>0</OneInstance>
 <Trigger>
 <Key>^U</Key>
 <Type>Hotkey</Type>
@@ -5537,7 +5537,6 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <ButtonText>Shutdown</ButtonText>
-<Icon>%SystemRoot%\system32\SHELL32.dll,27</Icon>
 <Keyword>Shutdown</Keyword>
 <Title>Shutdown Windows</Title>
 <Type>Accessor Trigger</Type>
@@ -5563,7 +5562,6 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <ButtonText>Hibernate</ButtonText>
-<Icon>%SystemRoot%\system32\SHELL32.dll,27</Icon>
 <Keyword>Hibernate</Keyword>
 <Title>Go into hibernation</Title>
 <Type>Accessor Trigger</Type>
@@ -5589,7 +5587,6 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <ButtonText>Standby</ButtonText>
-<Icon>%SystemRoot%\system32\SHELL32.dll,34</Icon>
 <Keyword>Standby</Keyword>
 <Title>Go into Standby</Title>
 <Type>Accessor Trigger</Type>
@@ -5615,7 +5612,6 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <ButtonText>Reboot</ButtonText>
-<Icon>%SystemRoot%\system32\SHELL32.dll,146</Icon>
 <Keyword>Reboot</Keyword>
 <Title>Reboot Windows</Title>
 <Type>Accessor Trigger</Type>
@@ -5641,7 +5637,6 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <ButtonText>Log Off</ButtonText>
-<Icon>%SystemRoot%\system32\SHELL32.dll,111</Icon>
 <Keyword>LogOff</Keyword>
 <Title>Log off the current user</Title>
 <Type>Accessor Trigger</Type>
@@ -5667,65 +5662,8 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <ButtonText>Lock</ButtonText>
-<Icon>%SystemRoot%\system32\SHELL32.dll,44</Icon>
 <Keyword>Lock</Keyword>
 <Title>Lock workstation</Title>
-<Type>Accessor Trigger</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Text>${AccAll}</Text>
-<Timeout>0</Timeout>
-<Title>Message</Title>
-<Type>Message</Type>
-</Action></Actions>
-<Category>Accessor commands</Category>
-<Conditions>
-</Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event provides a command for the Accessor launcher to show a message box.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>1660</ID>
-<Name>Accessor: Show Message</Name>
-<OfficialEvent>59</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<ButtonText>Message</ButtonText>
-<Icon>%SystemRoot%\system32\SHELL32.dll,156</Icon>
-<Keyword>Message</Keyword>
-<Path>${AccAll}</Path>
-<Title>Show Message:</Title>
-<Type>Accessor Trigger</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Text>${AccAll}</Text>
-<Timeout>0</Timeout>
-<Title>Message</Title>
-<Type>Message</Type>
-</Action></Actions>
-<Category>Accessor commands</Category>
-<Conditions>
-</Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event provides a command for the Accessor launcher to show a message box.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>1661</ID>
-<Name>Accessor: Show Message</Name>
-<OfficialEvent>60</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<ButtonText>Message</ButtonText>
-<Icon>%SystemRoot%\system32\SHELL32.dll,156</Icon>
-<Keyword>msg</Keyword>
-<Path>${AccAll}</Path>
-<Title>Show Message:</Title>
 <Type>Accessor Trigger</Type>
 </Trigger>
 </Event></Events>

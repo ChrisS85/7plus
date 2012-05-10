@@ -1762,18 +1762,34 @@ RegReadUser(Key, Name)
 	return value
 }
 
-;Opens a file by looking up the required command line in the registry and then using it.
-;If not found, it will fall back by using a quoted path to the file as argument for the command line
-OpenFileWithProgram(File, Program)
+
+;Expand path placeholders like %ProgramFiles% or %TEMP%.
+;It's basically ExpandEnvironmentStrings() with some additional directories
+ExpandPathPlaceholders(InputString)
 {
-	SplitPath, Program, Name
-	RegRead, command, HKCR, Applications\%Name%\shell\open\command
-	if(command)
-	{
-		StringReplace, command, command, `%1, %File%
-		command := ExpandPathPlaceholders(command)
-		RunAsUser(command)
-	}
-	else
-		RunAsUser("""" Program """ """ File """")
+	static sStartMenu := GetFullPathName(A_StartMenu)
+	static sStartMenuCommon := GetFullPathName(A_StartMenuCommon)
+	static sMyDocuments := GetFullPathName(A_MyDocuments)
+	static sDesktop := GetFullPathName(A_Desktop)
+	static s7plusDrive
+	if(!s7plusDrive)
+		SplitPath, A_ScriptDir,,,,,s7plusDrive
+	StringReplace, InputString, InputString, `%Desktop`%, %sDesktop%, All
+	StringReplace, InputString, InputString, `%MyDocuments`%, %sMyDocuments%, All
+	StringReplace, InputString, InputString, `%StartMenu`%, %sStartMenu%, All
+	StringReplace, InputString, InputString, `%StartMenuCommon`%, %sStartMenuCommon%, All
+	StringReplace, InputString, InputString, `%7plusDrive`%, %s7plusDrive%, All
+	StringReplace, InputString, InputString, `%7plusDir`%, %A_ScriptDir%, All
+	; get the required size for the expanded string
+	SizeNeeded := DllCall("ExpandEnvironmentStrings", "Str", InputString, "PTR", 0, "Int", 0)
+	If (SizeNeeded == "" || SizeNeeded <= 0)
+		return InputString ; unable to get the size for the expanded string for some reason
+
+	ByteSize := SizeNeeded * 2 + 2
+	VarSetCapacity(TempValue, ByteSize, 0)
+
+	; attempt to expand the environment string
+	If (!DllCall("ExpandEnvironmentStrings", "Str", InputString, "Str", TempValue, "Int", SizeNeeded))
+		return InputString ; unable to expand the environment string
+	return TempValue
 }

@@ -153,3 +153,19 @@ RunAsAdmin(target, args = "", WorkingDir = "")
 	uacrep := DllCall("shell32\ShellExecute", uint, 0, str, "RunAs", str, target, str, args, str, WorkingDir, int, 1)
 	return uacrep = 42 ;UAC dialog confirmed
 }
+
+;Opens a file by looking up the required command line in the registry and then using it.
+;If not found, it will fall back by using a quoted path to the file as argument for the command line
+OpenFileWithProgram(File, Program)
+{
+	SplitPath, Program, Name
+	RegRead, command, HKCR, Applications\%Name%\shell\open\command
+	if(command)
+	{
+		StringReplace, command, command, `%1, %File%
+		command := ExpandPathPlaceholders(command)
+		RunAsUser(command)
+	}
+	else
+		RunAsUser("""" Program """ """ File """")
+}

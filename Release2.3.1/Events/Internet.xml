@@ -29,7 +29,7 @@
 <ID>381</ID>
 <Name>Explorer: Upload selected files</Name>
 <OfficialEvent>382</OfficialEvent>
-<OneInstance>1</OneInstance>
+<OneInstance>0</OneInstance>
 <Trigger>
 <Key>^U</Key>
 <Type>Hotkey</Type>
@@ -61,7 +61,7 @@
 <ID>382</ID>
 <Name>File Dialog: Upload selected files</Name>
 <OfficialEvent>383</OfficialEvent>
-<OneInstance>1</OneInstance>
+<OneInstance>0</OneInstance>
 <Trigger>
 <Key>^U</Key>
 <Type>Hotkey</Type>
