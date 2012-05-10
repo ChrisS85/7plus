@@ -1,0 +1,54 @@
+#labels Featured,Phase-Support
+= 7plus Frequently Asked Questions =
+If you use 7plus for the first time, it may appear overwhelming in features, so here are some small pointers to get you started.
+If you have further questions, please refer to the docs first (click the help buttons available on specific event/trigger/condition/action pages),
+and start a new thread here if the topic hasn't been covered yet and you weren't able to solve it.
+
+== About the event system ==
+
+7plus is mostly based around the *event system*. An event consists of a trigger, multiple conditions and actions.
+A trigger can be a hotkey, a timer, a context menu entry or many other things. When it triggers the event, the event is put on an event queue.
+The events in this queue are (normally) processed one after another. At first, the conditions of an event are evaluated. A popular condition is that a specific window is active.
+This is often used in combination with a hotkey trigger, to make application specific hotkeys.
+The actions are performed when all conditions evaluate to TRUE. There are all kinds of actions available that deal with windows, explorer, files or general system actions (run programs, write something to clipboard,...).
+The combinations are nearly endless! :)
+
+== About some key features ==
+
+ * *Using the event system:* You can quickly find a specific event by using the categories on the left of the settings page or by typing a part of the event name, trigger text or event description in the search box at the top of the page. This can be useful if you're looking for a specific feature. Keep in mind that some features require more than one event; there might be different events for explorer, desktop and file dialogs for example.
+
+ * *Using the Accessor:* The Accessor is a launcher similar to programs like Launchy or Exekutor. By default you can make it show up by pressing *ALT + SPACE*, but you can change it to any other hotkey or make it show up through some other obscure way by modifying the Accessor event. The Accessor comes with many different plugins. A plugin takes care of a specific task, such as browsing the file system or looking up the weather. Most plugins have a specific keyword that is required to use them. You can adjust this keyword and other settings in the "Accessor Plugins" settings page. You can also gain an overview over the available plugins there. When you type something in the text box at the top of the Accessor window, all matching results will show up in the list below. If you press Enter, the action displayed on the top button is executed. For many plugins there are multiple actions available which can be accessed by right clicking a list item.
+
+ * *Hotstrings:* Hotstrings can be used to expand abbreviations (i.e. "btw" -> "by the way"). You can use PCRE-style regular expressions (see [http://www.autohotkey.com/docs/misc/RegEx-QuickRef.htm here]) for the hotstring. This allows very precise control about the hotstring, but also makes it a bit more difficult to use unfortunately. The value field contains the keys that will be send when a hotstring is matched. You can also use keys like "{Enter}" to write a new line.
+
+== Portable mode, admin permissions, interfacing with 7plus... ==
+
+ * *Portable mode:*It is possible to run 7plus in portable mode by adding *"-portable"* to its command line. If you don't know how to do this, you can create a shortcut to 7plus.exe, go to file properties in explorer, and append *-portable* in the command text box (after the quotes). In addition, there is also a *%7plusDrive%* placeholder available, so you can add events that refer to paths on an USB stick where 7plus is located.
+
+ * *Admin permissions:* If you don't have admin permissions on a system, you can still use 7plus, even though some/many features won't be available then. It is not possible to work with other windows which are running elevated, and features like FastFolders can't add buttons to the explorer window or the context menu. It is possible to always run 7plus in non-admin mode by setting "Run as admin" to "Never" on the Introduction settings page.
+
+ * *Interfacing with other programs:* It is possible to make 7plus react to other events/triggers from other programs by sending a message to it. To get the correct window handle of 7plus, the preferred way is to read the window handle from *%TEMP%\7plus\hwnd.txt* which exists while 7plus is running. Alternatively you can just send it to any AutoHotkey window, unless you have a script running that handles the same message value. The message value which is used for this is *55555*. The wParam value is the ID of the event that you want to trigger.
+If you don't have the ability to send a window message to 7plus, you may run 7plus with a command line parameter instead while it is already running. Append *-id [Number]* to the command line, where [Number] is the ID of the event that you want to trigger. 7plus will then take care of sending the message to the running instance.[/list]
+
+== 32 or 64 bit, binary or source? ==
+
+You should always use the version which matches your system architecture, if you have a 32 bit version of windows, you'll need to use the 32 bit version, and if you have a 64 bit version of windows, you should use the 64 bit version of 7plus. While it is possible to use the 32 bit version on a 64 bit version of windows, this is strongly discouraged because some features are not going to work then. I have not tested every feature with this combination, but I know that FastFolders can't display buttons on the explorer bar, and other things like context menu or features that access the windows registry are also likely affected.
+
+If you use the binary or the source version mostly depends on your personal taste. The binary version is easier to use because you just need to extract and run it, while the source version requires that you have a recent build of AutoHotkey_L Unicode installed that matches the bitness of the 7plus version you downloaded. This is mostly interesting for developers that want to modify the behavior of 7plus or open source advocates that like to see what is going on.
+
+== Using the source version / Getting source version from SVN ==
+You can get the latest available source code from Google Code using Subversion. To do this a Subversion client is required. I suggest using [http://tortoisesvn.net TortoiseSVN]. After installation please follow the descriptions on the project page (Source tab).
+You will need to copy Explorer.dll, ShellExtension.dll and subinacl.exe from the subdirectories into the main 7plus directory. This is required because there are 2 versions of those files, one for x86 and one for x64, so choose the correct one. ShellExtension.dll can be found in the Release and x64\Release subdirectories of the ShellExtension directory. The other files are located in x64/x86 directories.
+
+The source version should always be used with the latest available version of AutoHotkey_L which is available here.
+Make sure to use the Unicode version of the correct bitness.
+
+As this code is actively developed upon, most of the time it's not going to be stable and will likely have errors. It's even possible that it isn't startable due to syntax errors, but this should happen rarely. If this happens you can either wait for the next commit of source code or switch to an earlier revision.
+
+== If you encounter errors ==
+There are a few things that you should try:
+
+ * Try to start with a fresh event config file, or even better a fresh installation of 7plus. Uninstall 7plus and make sure that %Appdata%\7plus is deleted.
+ * If you use any other tweaking software or special drivers (especially mouse and keyboard drivers that implement extra functionality, like Logitech SetPoint driver), try to disable them and use the standard windows keyboard/mouse drivers. Such software often implements features that conflict with the features in 7plus. Contrary, it may also happen that 7plus disturbs other programs. If you encounter such behavior please let me know.
+
+If this doesn't help, please report the problems here or on the bugtracker.
