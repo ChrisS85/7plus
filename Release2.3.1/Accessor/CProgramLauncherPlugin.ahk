@@ -327,10 +327,9 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			
 			if(ResolvedMatch || FilenameMatch)
 			{
-				;~ IconCount++
 				if(!ListEntry.hIcon) ;Program launcher icons are cached lazy, only when needed
 					ListEntry.hIcon := ExtractAssociatedIcon(0, ListEntry.Command, iIndex)
-				;~ ImageList_ReplaceIcon(Accessor.ImageListID, -1, ListEntry.hIcon)
+				
 				Name := ListEntry.Filename ? ListEntry.Filename : ListEntry.ResolvedName
 				
 				;Create result

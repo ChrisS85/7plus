@@ -650,7 +650,7 @@ Class CAccessor
 			if(FileExist(ListEntry.Path) && InStr("exe,cmd,bat,ahk", ext))
 				CProgramLauncherPlugin.Instance.AddToCache(ListEntry)
 			
-			Run(Quote(ListEntry.Path) (ListEntry.args ? " " ListEntry.args : ""), WorkingDir)
+			RunAsUser("cmd.exe /c start """" " Quote(ListEntry.Path) (ListEntry.args ? " " ListEntry.args : ""), WorkingDir, "HIDE")
 		}
 	}
 	RunAsAdmin(ListEntry, Plugin)
