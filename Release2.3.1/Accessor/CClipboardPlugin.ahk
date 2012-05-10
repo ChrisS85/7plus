@@ -3,7 +3,7 @@ Class CClipboardPlugin extends CAccessorPlugin
 	;Register this plugin with the Accessor main object
 	static Type := CAccessor.RegisterPlugin("Clipboard", CClipboardPlugin)
 	
-	Description := "This plugin is used to search and paste persistent clips stored by the 7plus clipboard manager"
+	Description := "This plugin is used to add, search and paste persistent clips stored by the 7plus clipboard manager"
 
 	SaveHistory := false
 
@@ -57,7 +57,7 @@ Class CClipboardPlugin extends CAccessorPlugin
 	OnOpen(Accessor)
 	{
 		if(IsEditControlActive())
-			this.Priority := 10000
+			this.Priority := 5000 ;Lower priority than most other dynamic priorities, since they are more specialized
 	}
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{

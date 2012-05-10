@@ -1140,11 +1140,11 @@ Class CAccessorPlugin
 }
 
 #include %A_ScriptDir%\Accessor\CEventPlugin.ahk
-#include %A_ScriptDir%\Accessor\CClipboardPlugin.ahk
-#include %A_ScriptDir%\Accessor\CProgramLauncherPlugin.ahk
-#include %A_ScriptDir%\Accessor\CCalculatorPlugin.ahk
 #include %A_ScriptDir%\Accessor\CControlPanelPlugin.ahk
+#include %A_ScriptDir%\Accessor\CProgramLauncherPlugin.ahk
 #include %A_ScriptDir%\Accessor\CRecentFoldersPlugin.ahk
+#include %A_ScriptDir%\Accessor\CClipboardPlugin.ahk
+#include %A_ScriptDir%\Accessor\CCalculatorPlugin.ahk
 #include %A_ScriptDir%\Accessor\CFileSystemPlugin.ahk
 #include %A_ScriptDir%\Accessor\CGooglePlugin.ahk
 #include %A_ScriptDir%\Accessor\CNotepadPlusPlusPlugin.ahk
