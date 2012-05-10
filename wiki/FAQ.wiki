@@ -26,8 +26,7 @@ The combinations are nearly endless! :)
 
  * *Admin permissions:* If you don't have admin permissions on a system, you can still use 7plus, even though some/many features won't be available then. It is not possible to work with other windows which are running elevated, and features like FastFolders can't add buttons to the explorer window or the context menu. It is possible to always run 7plus in non-admin mode by setting "Run as admin" to "Never" on the Introduction settings page.
 
- * *Interfacing with other programs:* It is possible to make 7plus react to other events/triggers from other programs by sending a message to it. To get the correct window handle of 7plus, the preferred way is to read the window handle from *%TEMP%\7plus\hwnd.txt* which exists while 7plus is running. Alternatively you can just send it to any AutoHotkey window, unless you have a script running that handles the same message value. The message value which is used for this is *55555*. The wParam value is the ID of the event that you want to trigger.
-If you don't have the ability to send a window message to 7plus, you may run 7plus with a command line parameter instead while it is already running. Append " *-id [Number]*" (without quotes) to the command line, where [Number] is the ID of the event that you want to trigger. 7plus will then take care of sending the message to the running instance.[/list]
+ * *Interfacing with other programs:* It is possible to make 7plus react to other events/triggers from other programs by sending a message to it. To get the correct window handle of 7plus, the preferred way is to read the window handle from *%TEMP%\7plus\hwnd.txt* which exists while 7plus is running. Alternatively you can just send it to any AutoHotkey window, unless you have a script running that handles the same message value. The message value which is used for this is *55555*. The wParam value is the ID of the event that you want to trigger. If you don't have the ability to send a window message to 7plus, you may run 7plus with a command line parameter instead while it is already running. Append " *-id [Number]*" (without quotes) to the command line, where [Number] is the ID of the event that you want to trigger. 7plus will then take care of sending the message to the running instance.
 
 == 32 or 64 bit, binary or source? ==
 
@@ -50,4 +49,4 @@ There are a few things that you should try:
  * Try to start with a fresh event config file, or even better a fresh installation of 7plus. Uninstall 7plus and make sure that %Appdata%\7plus is deleted.
  * If you use any other tweaking software or special drivers (especially mouse and keyboard drivers that implement extra functionality, like Logitech SetPoint driver), try to disable them and use the standard windows keyboard/mouse drivers. Such software often implements features that conflict with the features in 7plus. Contrary, it may also happen that 7plus disturbs other programs. If you encounter such behavior please let me know.
 
-If this doesn't help, please report the problems here or on the bugtracker.
+If this doesn't help, please report the problems on the bugtracker.
