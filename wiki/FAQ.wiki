@@ -22,12 +22,12 @@ The combinations are nearly endless! :)
 
 == Portable mode, admin permissions, interfacing with 7plus... ==
 
- * *Portable mode:*It is possible to run 7plus in portable mode by adding *"-portable"* to its command line. If you don't know how to do this, you can create a shortcut to 7plus.exe, go to file properties in explorer, and append *-portable* in the command text box (after the quotes). In addition, there is also a *%7plusDrive%* placeholder available, so you can add events that refer to paths on an USB stick where 7plus is located.
+ * *Portable mode:* It is possible to run 7plus in portable mode by adding *"-portable"* to its command line. If you don't know how to do this, you can create a shortcut to 7plus.exe, go to file properties in explorer, and append *-portable* in the command text box (after the quotes). In addition, there is also a *%7plusDrive%* placeholder available, so you can add events that refer to paths on an USB stick where 7plus is located.
 
  * *Admin permissions:* If you don't have admin permissions on a system, you can still use 7plus, even though some/many features won't be available then. It is not possible to work with other windows which are running elevated, and features like FastFolders can't add buttons to the explorer window or the context menu. It is possible to always run 7plus in non-admin mode by setting "Run as admin" to "Never" on the Introduction settings page.
 
  * *Interfacing with other programs:* It is possible to make 7plus react to other events/triggers from other programs by sending a message to it. To get the correct window handle of 7plus, the preferred way is to read the window handle from *%TEMP%\7plus\hwnd.txt* which exists while 7plus is running. Alternatively you can just send it to any AutoHotkey window, unless you have a script running that handles the same message value. The message value which is used for this is *55555*. The wParam value is the ID of the event that you want to trigger.
-If you don't have the ability to send a window message to 7plus, you may run 7plus with a command line parameter instead while it is already running. Append *-id [Number]* to the command line, where [Number] is the ID of the event that you want to trigger. 7plus will then take care of sending the message to the running instance.[/list]
+If you don't have the ability to send a window message to 7plus, you may run 7plus with a command line parameter instead while it is already running. Append " *-id [Number]*" (without quotes) to the command line, where [Number] is the ID of the event that you want to trigger. 7plus will then take care of sending the message to the running instance.[/list]
 
 == 32 or 64 bit, binary or source? ==
 
