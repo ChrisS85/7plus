@@ -9,7 +9,7 @@ AutoUpdate()
 		Suspend, On
 		URLDownloadToFile, http://7plus.googlecode.com/files/NewVersion.ini?x=%rand%, %A_Temp%\7plus\Version.ini
 		Suspend, Off
-		if(!Errorlevel)
+		if(!Errorlevel && FileExist(A_Temp "\7plus\Version.ini"))
 		{
 			IniRead, tmpMajorVersion, %A_Temp%\7plus\Version.ini, Version,MajorVersion
 			IniRead, tmpMinorVersion, %A_Temp%\7plus\Version.ini, Version,MinorVersion
@@ -18,36 +18,41 @@ AutoUpdate()
 			if(Update)
 			{
 				IniRead, UpdateMessage, %A_Temp%\7plus\Version.ini, Version,UpdateMessage
-				MsgBox,4,,%UpdateMessage%
-				IfMsgBox Yes
+				if(UpdateMessage != "ERROR")
 				{
-					Progress zh0 fs18,Downloading Update, please wait.
-					Sleep 10
-					;Versions pre 2.4.0 have the following, erroneous code, and thus need a separate updating script that downloads the correct update:
-					;~ if(A_IsCompiled)
-						;~ IniRead, Link, %A_Temp%\7plus\Version.ini, Version,Link
-					;~ else
-						;~ IniRead, Link, %A_Temp%\7plus\Version.ini, Version,LinkSource
-					
-					link := "Link" (!A_IsCompiled ? "Source" : "") (A_PtrSize = 8 ? "x64" : "x86")
-					IniRead, Link, %A_Temp%\7plus\Version.ini, Version,%Link%
-					
-					URLDownloadToFile, %link%?x=%rand%,%A_Temp%\7plus\Updater.exe
-					if(!Errorlevel)
+					MsgBox,4,,%UpdateMessage%
+					IfMsgBox Yes
 					{
-						;Write config path and script dir location to temp file to let updater know
-						IniWrite, % Settings.ConfigPath, %A_Temp%\7plus\Update.ini, Update, ConfigPath
-						IniWrite, %A_ScriptDir%, %A_Temp%\7plus\Update.ini, Update, ScriptDir
-						Run %A_Temp%\7plus\Updater.exe,,UseErrorlevel
-						OnExit
-						ExitApp
-					}
-					else
-					{
-						MsgBox Error while updating. Make sure http://7plus.googlecode.com is reachable.
-						Progress, Off
+						Progress zh0 fs18,Downloading Update, please wait.
+						Sleep 10
+						;Versions pre 2.4.0 have the following, erroneous code, and thus need a separate updating script that downloads the correct update:
+						;~ if(A_IsCompiled)
+							;~ IniRead, Link, %A_Temp%\7plus\Version.ini, Version,Link
+						;~ else
+							;~ IniRead, Link, %A_Temp%\7plus\Version.ini, Version,LinkSource
+						
+						link := "Link" (!A_IsCompiled ? "Source" : "") (A_PtrSize = 8 ? "x64" : "x86")
+						IniRead, Link, %A_Temp%\7plus\Version.ini, Version,%Link%
+						
+						URLDownloadToFile, %link%?x=%rand%,%A_Temp%\7plus\Updater.exe
+						if(!Errorlevel)
+						{
+							;Write config path and script dir location to temp file to let updater know
+							IniWrite, % Settings.ConfigPath, %A_Temp%\7plus\Update.ini, Update, ConfigPath
+							IniWrite, %A_ScriptDir%, %A_Temp%\7plus\Update.ini, Update, ScriptDir
+							Run %A_Temp%\7plus\Updater.exe,,UseErrorlevel
+							OnExit
+							ExitApp
+						}
+						else
+						{
+							MsgBox Error while updating. Make sure http://7plus.googlecode.com is reachable.
+							Progress, Off
+						}
 					}
 				}
+				else
+					MsgBox Error while updating. Make sure http://7plus.googlecode.com is reachable.
 			}
 		}
 		else

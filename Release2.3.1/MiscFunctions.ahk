@@ -1793,3 +1793,41 @@ ExpandPathPlaceholders(InputString)
 		return InputString ; unable to expand the environment string
 	return TempValue
 }
+Class CInputWindow extends CGUI
+{
+	editText := this.AddControl("Edit", "editText", "x10 y10 w300", "")
+	btnOK := this.AddControl("Button", "btnOK", "x180 y+10 Default w50", "&OK")
+	btnCancel := this.AddControl("Button", "btnCancel", "x+10 w70", "&Cancel")
+	static EM_SETSEL := 0x00B1
+	__new(Text)
+	{
+		this.ActiveControl := this.editText
+		this.editText.Text := Text
+		this.DestroyOnClose := true
+		this.CloseOnEscape := true
+	}
+
+	WaitForInput()
+	{
+		this.Show()
+		SendMessage, this.EM_SETSEL, 0, -1, , % "ahk_id " this.editText.hwnd
+		while(!this.IsDestroyed)
+			Sleep 10
+		return result
+	}
+	WaitForInputAsync(OnCloseHandler)
+	{
+		this.Show()
+		SendMessage, this.EM_SETSEL, 0, -1, , % "ahk_id " this.editText.hwnd
+		this.OnClose.Handler := OnCloseHandler
+	}
+	btnCancel_Click()
+	{
+		this.Close()
+	}
+	btnOK_Click()
+	{
+		this.result := this.editText.Text
+		this.Close()
+	}
+}

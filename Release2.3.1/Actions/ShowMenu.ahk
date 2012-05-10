@@ -62,6 +62,7 @@ BuildMenu(Name)
 	global ClipboardList, ExplorerHistory
 	Menu, Tray, UseErrorLevel
 	Menu, %Name%, DeleteAll
+	;Fake default menu items
 	if(Name = "Tray")
 	{
 		Menu, tray, NoStandard
@@ -82,14 +83,21 @@ BuildMenu(Name)
 		Menu, tray, add, Exit, Tray_Exit
 	}
 	else if(Name = "ClipboardMenu")
-	{	
+	{
+		;Persistent clips
+		Menu, PersistentClipboard, DeleteAll
+
+		if(text := GetSelectedText())
+			Menu, PersistentClipboard, add, Add selected text as persistent clip ..., AddClip
+
+		Menu, PersistentClipboard, add, Edit persistent clips ..., EditClips
+
 		if(ClipboardList.Persistent.MaxIndex())
-		{
-			Menu, PersistentClipboard, DeleteAll
 			for index, Entry in ClipboardList.Persistent
 				Menu, PersistentClipboard, add, % Entry.Name, PersistentClipboardHandler
-			Menu, ClipboardMenu, add, Clips, :PersistentClipboard
-		}
+		Menu, ClipboardMenu, add, Clips, :PersistentClipboard
+
+		;Explorer history
 		if(ExplorerHistory.MaxIndex())
 		{
 			Menu, ExplorerHistory, DeleteAll
@@ -101,20 +109,21 @@ BuildMenu(Name)
 				Menu, ExplorerFrequent, add, % Entry.Path, ExplorerHistoryHandler
 			Menu, ClipboardMenu, add, Frequent Paths, :ExplorerFrequent
 		}
+
+		;Clipboard history
 		Loop % ClipboardList.MaxIndex()
-		{		
-			i:=A_Index ;ClipboardList.MaxIndex()-A_Index+1
-			
-			x:=ClipboardList[i]
-			StringReplace,x,x,`r,,All
-			StringReplace,x,x,`n,[NEWLINE],All
-			y:="`t"
-			StringReplace,x,x,%y%,[TAB],All ;Weird syntax bug requires `t to be stored in a variable here
-			x:="&" (A_Index-1) ": " Substr(x,1,100)
+		{
+			x := ClipboardList[A_Index]
+			StringReplace, x, x, `r,, All
+			StringReplace, x, x, `n, [NEWLINE], All
+			y := "`t"
+			StringReplace, x, x, %y%, [TAB], All ;Weird syntax bug requires `t to be stored in a variable here
+			x := "&" (A_Index - 1) ": " Substr(x, 1, 100)
 			if(x)
-				Menu, ClipboardMenu, add, %x%, ClipboardHandler%i%
+				Menu, ClipboardMenu, add, %x%, ClipboardHandler%A_Index%
 		}
 	}
+	;Add menu entries that are defined through events
 	for index, Event in EventSystem.Events
 	{
 		if(Event.Trigger.Is(CMenuItemTrigger) && Event.Trigger.Menu = Name)
@@ -134,6 +143,8 @@ BuildMenu(Name)
 			entries := true
 		}
 	}
+
+	;Add tools for Tray menu
 	if(Name = "Tray")
 	{
 		Loop %A_ScriptDir%\Tools\*.ahk, 0, 0

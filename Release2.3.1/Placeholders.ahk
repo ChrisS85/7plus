@@ -54,35 +54,6 @@ ExpandInternalPlaceholders(text)
 	return text
 }
 
-;Expand path placeholders like %ProgramFiles% or %TEMP%
-ExpandPathPlaceholders(InputString)
-{
-	static sStartMenu := GetFullPathName(A_StartMenu)
-	static sStartMenuCommon := GetFullPathName(A_StartMenuCommon)
-	static sMyDocuments := GetFullPathName(A_MyDocuments)
-	static sDesktop := GetFullPathName(A_Desktop)
-	static s7plusDrive
-	if(!s7plusDrive)
-		SplitPath, A_ScriptDir,,,,,s7plusDrive
-	StringReplace, InputString, InputString, `%Desktop`%, %sDesktop%, All
-	StringReplace, InputString, InputString, `%MyDocuments`%, %sMyDocuments%, All
-	StringReplace, InputString, InputString, `%StartMenu`%, %sStartMenu%, All
-	StringReplace, InputString, InputString, `%StartMenuCommon`%, %sStartMenuCommon%, All
-	StringReplace, InputString, InputString, `%7plusDrive`%, %s7plusDrive%, All
-	StringReplace, InputString, InputString, `%7plusDir`%, %A_ScriptDir%, All
-	; get the required size for the expanded string
-	SizeNeeded := DllCall("ExpandEnvironmentStrings", "Str", InputString, "PTR", 0, "Int", 0)
-	If (SizeNeeded == "" || SizeNeeded <= 0)
-		return InputString ; unable to get the size for the expanded string for some reason
-
-	ByteSize := SizeNeeded * 2 + 2
-	VarSetCapacity(TempValue, ByteSize, 0)
-
-	; attempt to expand the environment string
-	If (!DllCall("ExpandEnvironmentStrings", "Str", InputString, "Str", TempValue, "Int", SizeNeeded))
-		return InputString ; unable to expand the environment string
-	return TempValue
-}
 
 ;Expands a single placeholder. Placeholder argument contains only the name, without ${}
 ExpandPlaceholder(Placeholder)
