@@ -172,6 +172,7 @@ Class CSettingsWindow Extends CGUI
 		if(IsObject(this.treePages.PreviouslySelectedItem) && PreviousText := StringReplace(this.treePages.PreviouslySelectedItem.Text, " ", ""))
 			this["Hide" PreviousText]()
 		
+
 		;This property is stored specifically for this routine to speed things up! It helps at least 500ms to do this than to check for item parent and item text like this: if(Item.Parent.ID != 0 || Item.Text = "All Events")
 		if(Item.IsEvents)
 		{
@@ -190,6 +191,8 @@ Class CSettingsWindow Extends CGUI
 		GuiControl, % this.GUINum ":MoveDraw", % this.BtnOK.hwnd
 		GuiControl, % this.GUINum ":MoveDraw", % this.BtnCancel.hwnd
 		GuiControl, % this.GUINum ":MoveDraw", % this.BtnApply.hwnd
+
+		this["Show" StringReplace(this.treePages.SelectedItem.Text, " ", "")]()
 	}
 	
 	
@@ -887,8 +890,15 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page := this.Pages.Plugins.Tabs[1]
 		Page.AddControl("Button", "btnAccessorHelp", "xs+554 ys+19 w90 h23", "&Help")
 		Page.AddControl("Button", "btnAccessorSettings", "xs+554 ys+48 w90 h23", "Plugin &Settings")
-		Page.AddControl("ListView", "listAccessorPlugins", "xs+21 ys+19 w525 h332 Checked", "Plugin Name")
+		Page.AddControl("ListView", "listAccessorPlugins", "xs+21 ys+19 w525 h400 Checked", "Plugin Name")
 		Page.Controls.listAccessorPlugins.IndependentSorting := true
+
+		Page.AddControl("Edit", "editPluginDescription", "xs+21 y+5 w525 h81 ReadOnly", "")
+	}
+	ShowPlugins()
+	{
+		Page := this.Pages.Plugins.Tabs[1].Controls
+		this.ActiveControl := Page.listAccessorPlugins
 	}
 	InitPlugins()
 	{
@@ -904,6 +914,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 			Page.listAccessorPlugins.Items.Add((PluginCopy.Settings.Enabled ? "Check" : ""), PluginCopy.Type)
 		}
 		Page.listAccessorPlugins.ModifyCol(1, "AutoHdr")
+		Page.listAccessorPlugins.SelectedIndex := 1
 	}
 	ApplyPlugins()
 	{
@@ -911,11 +922,14 @@ Finally, here are some settings that you're likely to change at the beginning:
 		for index, Plugin in CAccessor.Plugins
 		{
 			SettingsPlugin := this.AccessorPlugins.GetItemWithValue("Type", Plugin.Type)
-			outputdebug % IsObject(settingsplugin.settings)
 			SettingsPlugin.Settings.Enabled := Page.listAccessorPlugins.Items[this.AccessorPlugins.FindKeyWithValue("Type", Plugin.Type)].Checked
 			Plugin.Settings := SettingsPlugin.Settings.DeepCopy()
-			OutputDebug % settingsplugin.settings.enabled "," Page.listAccessorPlugins.Items[this.AccessorPlugins.FindKeyWithValue("Type", Plugin.Type)].Checked
 		}
+	}
+	listAccessorPlugins_SelectionChanged()
+	{
+		Page := this.Pages.Plugins.Tabs[1].Controls
+		Page.editPluginDescription.Text := CAccessor.Plugins[Page.listAccessorPlugins.SelectedIndex].Description
 	}
 	btnAccessorHelp_Click()
 	{
@@ -977,6 +991,11 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Loop % this.AccessorKeywords.MaxIndex()
 			Page.listAccessorKeywords.Items.Add(A_Index = 1 ? "Select" : "", this.AccessorKeywords[A_Index].Key, this.AccessorKeywords[A_Index].Command)
 		this.listAccessorKeywords_SelectionChanged("")
+	}
+	ShowKeywords()
+	{
+		Page := this.Pages.Keywords.Tabs[1].Controls
+		this.ActiveControl := Page.listAccessorKeywords
 	}
 	ApplyKeywords()
 	{
@@ -1098,6 +1117,13 @@ Finally, here are some settings that you're likely to change at the beginning:
 			Page.listClipboard.Items.Add(A_Index = 1 ? "Select" : "", this.ClipboardList[A_Index].Name, this.ClipboardList[A_Index].Text)
 		this.listClipboard_SelectionChanged("")
 	}
+
+	ShowClipboard()
+	{
+		Page := this.Pages.Clipboard.Tabs[1].Controls
+		this.ActiveControl := Page.listClipboard
+	}
+
 	ApplyClipboard()
 	{
 		global ClipboardList
@@ -1560,6 +1586,13 @@ Finally, here are some settings that you're likely to change at the beginning:
 			Page.listHotStrings.Items.Add(A_Index = 1 ? "Select" : "", HotString.Key, HotString.Value)
 		this.listHotStrings_SelectionChanged("")
 	}
+
+	ShowHotStrings()
+	{
+		Page := this.Pages.HotStrings.Tabs[1].Controls
+		this.ActiveControl := Page.listHotStrings
+	}
+
 	ApplyHotStrings()
 	{
 		global HotStrings
