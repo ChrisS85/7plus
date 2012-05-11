@@ -15,7 +15,9 @@ OnClipboardChange()
 	}
 	if(WinActive("ahk_group ExplorerGroup") || WinActive("ahk_group DesktopGroup")|| IsDialog())
 		CreateFileFromClipboard()
-	text:=ReadClipboardText()
+	else
+		ShowTip({Min : 1, Max : 2})
+	text := ReadClipboardText()
 	FileAppend, %A_Now%: Clipboard changed to %text%`n, %A_Temp%\7plus\Log.log
 	if(text && IsObject(ClipboardList))
 		ClipboardList.Push(text)
@@ -27,33 +29,32 @@ CreateFileFromClipboard()
 {
 	global MuteClipboardList
 	static CF_HDROP := 0xF
-	;outputdebug CreateFile
-	if(!MuteClipboardList)
+	MuteClipboardList := true
+	if(!DllCall("IsClipboardFormatAvailable", "Uint", CF_HDROP))
 	{
-		MuteClipboardList:=true
-		if(!DllCall("IsClipboardFormatAvailable", "Uint", CF_HDROP))
+		If(DllCall("IsClipboardFormatAvailable", "Uint", 2) && Settings.Explorer.PasteImageAsFileName !="" )
 		{
-			If(DllCall("IsClipboardFormatAvailable", "Uint", 2) && Settings.Explorer.PasteImageAsFileName !="" )
-			{
-				outputdebug image in clipboard			
-				PasteImageAsFilePath := A_Temp "\" Settings.Explorer.PasteImageAsFileName
-				success := WriteClipboardImageToFile(PasteImageAsFilePath, Settings.Misc.ImageQuality)
-				if(success)
-					CopyToClipboard(PasteImageAsFilePath, false)
-			}
-			else if (DllCall("IsClipboardFormatAvailable", "Uint", 1) && Settings.Explorer.PasteTextAsFileName !="" )
-			{
-				outputdebug text in clipboard
-				PasteTextAsFilePath := A_Temp "\" Settings.Explorer.PasteTextAsFileName
-				success := WriteClipboardTextToFile(PasteTextAsFilePath)
-				if(success)
-					CopyToClipboard(PasteTextAsFilePath, false)
-			}
+			ShowTip(3)
+			PasteImageAsFilePath := A_Temp "\" Settings.Explorer.PasteImageAsFileName
+			success := WriteClipboardImageToFile(PasteImageAsFilePath, Settings.Misc.ImageQuality)
+			if(success)
+				CopyToClipboard(PasteImageAsFilePath, false)
 		}
-		else
-			outputdebug a file is already in the clipboard
-		MuteClipboardList:=false
+		else if (DllCall("IsClipboardFormatAvailable", "Uint", 1) && Settings.Explorer.PasteTextAsFileName !="" )
+		{
+			ShowTip(3)
+			PasteTextAsFilePath := A_Temp "\" Settings.Explorer.PasteTextAsFileName
+			success := WriteClipboardTextToFile(PasteTextAsFilePath)
+			if(success)
+				CopyToClipboard(PasteTextAsFilePath, false)
+		}
 	}
+	else
+	{
+		ShowTip({Min : 14, Max : 15})
+		outputdebug a file is already in the clipboard
+	}
+	MuteClipboardList := false
 }
 ;Read real text (=not filenames, when CF_HDROP is in clipboard) from clipboard
 ReadClipboardText()

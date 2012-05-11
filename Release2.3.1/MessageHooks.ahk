@@ -53,12 +53,16 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 		SetTimer, ResizeWindowTooltip, 50
 		SlideWindows.CheckResizeReleaseCondition(hwnd)
 	}
-	else if(event = 0x000B && Settings.Windows.ShowResizeTooltip)
+	else if(event = 0x000B)
 	{
-		ResizeWindow := ""
-		SetTimer, ResizeWindowTooltip, Off
-		ResizeWindowTooltip(true)
-		Tooltip
+		ShowTip({Min : 4, Max : 7}, 0.1)
+		if(Settings.Windows.ShowResizeTooltip)
+		{
+			ResizeWindow := ""
+			SetTimer, ResizeWindowTooltip, Off
+			ResizeWindowTooltip(true)
+			Tooltip
+		}
 	}
 	ListLines, On
 }
@@ -161,11 +165,15 @@ ShellMessage( wParam, lParam, Msg)
 	{
 		lParam += 0
 		if(!BlinkingWindows.indexOf(lParam))
+		{
 			BlinkingWindows.Insert(lParam)
+			ShowTip(12)
+		}
 	}	
 	;Window Activation
 	else if(wParam=4||wParam=32772) ;HSHELL_WINDOWACTIVATED||HSHELL_RUDEAPPACTIVATED
 	{
+		ShowTip(13, 0.05)
 		if(IsAltTabWindow(lParam))
 		{
 			PreviousWindow := CurrentWindow

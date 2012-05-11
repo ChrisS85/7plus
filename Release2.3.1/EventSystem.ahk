@@ -1257,6 +1257,7 @@ Class CExampleAction extends CAction
 #include %A_ScriptDir%\Actions\ShortenURL.ahk
 #include %A_ScriptDir%\Actions\ShowMenu.ahk
 #include %A_ScriptDir%\Actions\ShowSettings.ahk
+#include %A_ScriptDir%\Actions\ShowTip.ahk
 #include %A_ScriptDir%\Actions\ShutDown.ahk
 #include %A_ScriptDir%\Actions\TaskButtonClose.ahk
 #include %A_ScriptDir%\Actions\ToggleWallpaper.ahk

@@ -99,13 +99,15 @@ Class CSettings
 	
 	Class CGeneral
 	{
-		static DebugEnabled 		                 := 0
-		static ProfilingEnabled 	                 := 0
-		static AutoUpdate 		                     := 1
-		static FirstRun								 := 1
-		static ShowAdvancedEvents	                 := 0
-		static ShowExecutingEvents             	     := 0	
+		static DebugEnabled 		                 := false
+		static ProfilingEnabled 	                 := false
+		static AutoUpdate 		                     := true
+		static FirstRun								 := true
+		static ShowAdvancedEvents	                 := false
+		static ShowExecutingEvents             	     := false
 		static Language								 := "En"
+		static ShowTips								 := true
+		static ShownTips							 := "00000000000000000000000000000000000000000000000000000000000000" ;Array of values that indicate if a tip has been shown yet
 	}
 	General := new this.CGeneral()
 	

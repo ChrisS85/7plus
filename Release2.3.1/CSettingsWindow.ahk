@@ -200,15 +200,6 @@ Class CSettingsWindow Extends CGUI
 	CreateIntroduction()
 	{
 		Page := this.Pages.Introduction.Tabs[1]
-		Page.AddControl("Text", "txtLanguage", "xs+21 ys+316 w129 h13", "Documentation language:")
-		Page.AddControl("DropDownList", "ddlLanguage", "xs+203 ys+313 w160", "")
-		Page.AddControl("Text", "txtRunAsAdmin", "xs+21 ys+289 w75 h13", "Run as admin:")
-		Page.AddControl("DropDownList", "ddlRunAsAdmin", "xs+203 ys+286 w160", "Always/Ask|Never")
-		Page.Controls.txtRunAsAdmin.ToolTip := "Required for explorer buttons, Autoupdate and for accessing programs which are running as admin. Also make sure that 7plus has write access to its config files when not running as admin."
-		Page.Controls.ddlRunAsAdmin.ToolTip := "Required for explorer buttons, Autoupdate and for accessing programs which are running as admin. Also make sure that 7plus has write access to its config files when not running as admin."
-		Page.AddControl("CheckBox", "chkAutoUpdate", "xs+24 ys+263 w219 h17", "Automatically look for updates on startup")
-		Page.AddControl("CheckBox", "chkHideTrayIcon", "xs+24 ys+240 w339 h17", "Hide Tray Icon (press WIN + H (default settings) to show settings!)")
-		Page.AddControl("CheckBox", "chkAutoRun", "xs+24 ys+217 w187 h17", "Autorun 7plus on windows startup")
 		Text = 
 		(
 		Welcome to 7plus! If you are new to this program, here are some tips:
@@ -227,6 +218,18 @@ Class CSettingsWindow Extends CGUI
 Finally, here are some settings that you're likely to change at the beginning:
 )
 		Page.AddControl("Text", "textIntroduction", "xs+21 ys+16 w574 h182", Text)
+
+		Page.AddControl("CheckBox", "chkAutoUpdate", "xs+24 ys+263 w219 h17", "Automatically look for updates on startup")
+		Page.AddControl("CheckBox", "chkHideTrayIcon", "xs+24 ys+240 w339 h17", "Hide Tray Icon (press WIN + H (default settings) to show settings!)")
+		Page.AddControl("CheckBox", "chkAutoRun", "xs+24 ys+217 w187 h17", "Autorun 7plus on windows startup")
+		chkShowTips := Page.AddControl("CheckBox", "chkShowTips", "xs+24 ys+286 w187 h17", "Show tips about the usage of 7plus (highly recommended to discover its features)")
+		chkShowTips.ToolTip := "Tips will be shown when specific actions, such as pasting some text, are carried out. Each tip is only shown once in a non-obstrusive manner. This is recommended for most users that don't want to go through all the whole configuration of 7plus to discover most of its features."
+		Page.AddControl("Text", "txtLanguage", "xs+21 ys+339 w129 h13", "Documentation language:")
+		Page.AddControl("DropDownList", "ddlLanguage", "xs+203 ys+336 w160", "")
+		Page.AddControl("Text", "txtRunAsAdmin", "xs+21 ys+312 w75 h13", "Run as admin:")
+		Page.AddControl("DropDownList", "ddlRunAsAdmin", "xs+203 ys+309 w160", "Always/Ask|Never")
+		Page.Controls.txtRunAsAdmin.ToolTip := "Required for explorer buttons, Autoupdate and for accessing programs which are running as admin. Also make sure that 7plus has write access to its config files when not running as admin."
+		Page.Controls.ddlRunAsAdmin.ToolTip := "Required for explorer buttons, Autoupdate and for accessing programs which are running as admin. Also make sure that 7plus has write access to its config files when not running as admin."
 	}
 	InitIntroduction()
 	{
@@ -236,6 +239,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.chkHideTrayIcon.Checked := Settings.Misc.HideTrayIcon
 		if(!ApplicationState.IsPortable)
 			Page.chkAutoRun.Checked := IsAutoRunEnabled()
+		Page.chkShowTips.Checked := Settings.General.ShowTips
 		Page.ddlRunAsAdmin.Text := Settings.Misc.RunAsAdmin
 		Page.ddlLanguage.Items.Clear()
 		for key, Language in Languages.Languages
@@ -266,7 +270,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 		}
 		
 		Settings.Misc.RunAsAdmin := Page.ddlRunAsAdmin.Text
-		
+		Settings.General.ShowTips := Page.chkShowTips.Checked
+
 		for index, Language in Languages.Languages
 			if(Language.FullName = Page.ddlLanguage.Text)
 			{
@@ -1027,7 +1032,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 	;This function is also called by the keywords plugin when a keyword is added through the Accessor window while settings window is open.
 	AddAccessorKeyword(Key = "", Command = "")
 	{
-		Page := this.Pages.AccessorKeywords.Tabs[1].Controls
+		Page := this.Pages.Keywords.Tabs[1].Controls
 		if(Key && index := this.AccessorKeywords.FindKeyWithValue("Key", Key))
 		{
 			this.AccessorKeywords[index].Command := Command
@@ -1047,7 +1052,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 	}
 	DeleteAccessorKeyword()
 	{
-		Page := this.Pages.AccessorKeywords.Tabs[1].Controls
+		Page := this.Pages.Keywords.Tabs[1].Controls
 		if(Page.listAccessorKeywords.SelectedItems.MaxIndex() != 1)
 			return
 		SelectedIndex := Page.listAccessorKeywords.SelectedIndex
@@ -1060,7 +1065,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 	}
 	listAccessorKeywords_SelectionChanged(Row)
 	{
-		Page := this.Pages.AccessorKeywords.Tabs[1].Controls
+		Page := this.Pages.Keywords.Tabs[1].Controls
 		SingleSelection := Page.listAccessorKeywords.SelectedItems.MaxIndex() = 1
 		Page.EditAccessorKeyword.Text := SingleSelection ? Page.listAccessorKeywords.SelectedItem[1] : ""
 		Page.EditAccessorCommand.Text := SingleSelection ? Page.listAccessorKeywords.SelectedItem[2] : ""
@@ -1071,7 +1076,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 	}
 	EditAccessorKeyword_TextChanged()
 	{
-		Page := this.Pages.AccessorKeywords.Tabs[1].Controls
+		Page := this.Pages.Keywords.Tabs[1].Controls
 		if(Page.listAccessorKeywords.SelectedItems.MaxIndex() != 1)
 			return
 		
@@ -1080,7 +1085,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 	}
 	EditAccessorCommand_TextChanged()
 	{		
-		Page := this.Pages.AccessorKeywords.Tabs[1].Controls
+		Page := this.Pages.Keywords.Tabs[1].Controls
 		if(Page.listAccessorKeywords.SelectedItems.MaxIndex() != 1)
 			return
 		
@@ -1809,7 +1814,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("CheckBox", "chkFixEditControlWordDelete", "xs+40 ys+45 w333 h17", "Make CTRL+Backspace and CTRL+Delete work in all textboxes")
 		Page.Controls.chkFixEditControlWordDelete.ToolTip := "Many text boxes in windows have the problem that it's not possible to use CTRL+Backspace to delete a word. Instead, it will write a square character. Enabling this will fix it."
 		;~ Page.AddControl("Link", "linkGamepadRemoteControl", "x19 ys+23 w13 h13", "?")
-		Page.AddControl("CheckBox", "chkGamepadRemoteControl", "xs+40 ys+20 w489 h17", "Use joystick/gamepad as remote control when not in fullscreen (optimized for XBOX")
+		Page.AddControl("CheckBox", "chkGamepadRemoteControl", "xs+40 ys+20 w489 h17", "Use joystick/gamepad as remote control when not in fullscreen (optimized for XBOX360 controller)")
 		
 		Page.AddControl("Text", "txtImageQuality", "xs+37 ys+80 w134 h13", "Image compression quality:")
 		Page.AddControl("Edit", "editImageQuality", "xs+228 ys+77 w52 h20", "")
@@ -1909,7 +1914,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 	{
 		static VK_DELETE := 46, VK_A := 65
 		PageEvents := this.Pages.Events.Tabs[1].Controls
-		PageAccessorKeywords := this.Pages.AccessorKeywords.Tabs[1].Controls
+		PageAccessorKeywords := this.Pages.Keywords.Tabs[1].Controls
 		PageHotStrings := this.Pages.HotStrings.Tabs[1].Controls
 		;VK_DELETE = 46, a=65
 		if(hwnd = PageEvents.listEvents.hwnd)

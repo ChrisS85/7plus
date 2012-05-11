@@ -188,6 +188,15 @@ FixExplorerConfirmationDialogs()
 #if Settings.Explorer.EnhancedRenaming && IsRenaming()
 F2::EnhancedRenaming()
 #if
+
+;For tip only
+#if InFileList() && !IsRenaming()
+F2::
+ShowTip(9)
+Send ${F2}
+return
+#if
+
 EnhancedRenaming()
 {
 	static EM_GETSEL:=0x00B0,EM_SETSEL:=0x00B1
@@ -695,12 +704,14 @@ ExplorerSelectionChanged(ExplorerCOMObject)
 		ExplorerWindows[index].Selection.IgnoreNextEvent := ExplorerWindows[index].Selection.IgnoreNextEvent - 1
 		return
 	}
+
+	ShowTip({Min : 10, Max : 11}, 0.1)
+
 	ExplorerWindows[index].Selection.History.Insert(Navigation.GetSelectedFilenames(ExplorerWindows[index].hwnd))
 	if(ExplorerWindows[index].Selection.History.MaxIndex() > 10)
 		ExplorerWindows[index].Selection.History.Delete(1)
 	if(A_OSVersion = "WIN_7")
 		ExplorerWindows[index].InfoGUI.UpdateInfos(ExplorerWindows[index]) ;Update the info GUI to reflect selection change
-	outputdebug explorer selection change end
 	; Critical, Off
 }
 
