@@ -8,8 +8,16 @@ Class CHotkeyTrigger Extends CTrigger
 	{
 		key := this.Key
 		key := "$" key ;Add $ so key can not be triggered through script to prevent loops
-		Hotkey, If, IsObject(HotkeyShouldFire(A_ThisHotkey))
-		Hotkey, %key%, HotkeyTrigger, On
+		if(InStr(key, "~"))
+		{
+			Hotkey, If, IsObject(HotkeyShouldFire( A_ThisHotkey))
+			Hotkey, %key%, HotkeyTrigger2, On
+		}
+		else
+		{
+			Hotkey, If, IsObject(HotkeyShouldFire(A_ThisHotkey))
+			Hotkey, %key%, HotkeyTrigger, On
+		}
 		Hotkey, If
 	}
 	
@@ -17,8 +25,16 @@ Class CHotkeyTrigger Extends CTrigger
 	{
 		key := this.Key
 		key := "$" key ;Add $ so key can not be triggered through script to prevent loops
-		Hotkey, If, IsObject(HotkeyShouldFire(A_ThisHotkey))	
-		Hotkey, %key%, HotkeyTrigger, On ;Do this to make sure it exists
+		if(InStr(key, "~"))
+		{
+			Hotkey, If, IsObject(HotkeyShouldFire( A_ThisHotkey))
+			Hotkey, %key%, HotkeyTrigger2, On ;Do this to make sure it exists
+		}
+		else
+		{
+			Hotkey, If, IsObject(HotkeyShouldFire(A_ThisHotkey))
+			Hotkey, %key%, HotkeyTrigger, On ;Do this to make sure it exists
+		}
 		Hotkey, %key%, Off
 		Hotkey, If
 	}
@@ -366,6 +382,12 @@ HotkeyTrigger(A_ThisHotkey)
 return
 #if
 
+;Handler for hotkeys that contain a tilde
+#if IsObject(HotkeyShouldFire( A_ThisHotkey))
+HotkeyTrigger2:
+HotkeyTrigger(A_ThisHotkey)
+return
+#if
 HotkeyTrigger(key)
 {
 	outputdebug, % "Hotkey triggered, key: " A_ThisHotkey
