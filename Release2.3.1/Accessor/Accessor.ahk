@@ -162,6 +162,11 @@ Class CAccessor
 		if(this.GUI)
 			return
 		
+		;Show some tips
+		TipIndex := 17
+		while(TipIndex < 41 && !(TipShown := ShowTip(TipIndex)))
+			TipIndex++
+
 		;Active window for plugins that depend on the context
 		this.PreviousWindow := WinExist("A")
 
