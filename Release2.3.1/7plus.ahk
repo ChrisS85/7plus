@@ -51,6 +51,7 @@ ComObjError(0)
 #include <ControlHotkey>
 #include <WaitForEvent>
 #include <WorkerThread>
+#include <ObjectTools>
 
 #include %A_ScriptDir%\CApplicationState.ahk
 #include %A_ScriptDir%\CSettings.ahk

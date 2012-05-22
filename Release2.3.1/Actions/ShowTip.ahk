@@ -96,10 +96,12 @@ ShowTip(TipIndex, Probability = 1)
 	;Possibly choose a random tip in a specific interval
 	if(IsObject(TipIndex))
 		Random, TipIndex, % TipIndex.Min, % TipIndex.Max
-	if(Settings.General.ShowTips && !HasTipBeenShown(TipIndex))
+	if(Settings.General.ShowTips && !HasTipBeenShown(TipIndex) && !Any(CNotification.Windows, "IsTip", true))
 	{
 		tip := CTips[TipIndex]
-		Notify(tip.Title, tip.Text, 10, NotifyIcons.Info)
+		NotifyWindow := Notify(tip.Title, tip.Text, 10, NotifyIcons.Info)
+		;Mark the notify window so tip windows can be counted
+		NotifyWindow.IsTip := true
 
 		;Mark the tip as shown
 		Settings.General.ShownTips := SubStr(Settings.General.ShownTips, 1, TipIndex - 1) "1" (StrLen(Settings.General.ShownTips) > TipIndex ? SubStr(Settings.General.ShownTips, TipIndex + 1) : "")

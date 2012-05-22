@@ -351,26 +351,6 @@ dirmin(xdir,y)
 	return xdir / abs(xdir) * abs(y)
 }
 
-;Minimum of parameters
-min(vars*)
-{
-	min := vars[1]
-	for index, var in vars
-		if(var < min)
-			min := var
-	return min
-}
-
-;Maximum of parameters
-max(vars*)
-{
-	max := vars[1]
-	for index, var in vars
-		if(var > max)
-			max := var
-	return max
-}
-
 ;Formats a number in hexadecimal
 DecToHex( ByRef var ) 
 { 
