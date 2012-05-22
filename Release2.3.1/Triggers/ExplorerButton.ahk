@@ -71,9 +71,6 @@ IsExplorerButton(value, key, Event)
 	RegRead, command, HKLM, %key%
 	RegexMatch(command,""" -id:(\d+)$", command)
 	if(command1 && command1 = Event.ID)
-	{
-		msgbox % "found button " Event.ID ": " Event.Name
 		return true
-	}
 	return false
 }
