@@ -37,6 +37,7 @@ UpdateStoredFolder(Slot, Folder = "")
 	RefreshFastFolders()	
 }
 
+;Removes and re-adds all FastFolder Buttons
 RefreshFastFolders()
 {
 	if(Settings.Explorer.FastFolders.ShowInFolderBand)
@@ -44,6 +45,7 @@ RefreshFastFolders()
 	AddAllButtons(Settings.Explorer.FastFolders.ShowInFolderBand, Settings.Explorer.FastFolders.ShowInPlacesBar)
 }
 
+;Adds all FastFolder Buttons
 AddAllButtons(ToFolderBand, ToPlacesBar)
 {
 	global FastFolders
@@ -54,7 +56,7 @@ AddAllButtons(ToFolderBand, ToPlacesBar)
 		if(FastFolders[A_Index].Path)
 		{				
 			if(ToFolderBand)		
-				AddButton("", FastFolders[A_Index].Path, "", pos ":" FastFolders[A_Index].Name)
+				AddButton("", FastFolders[A_Index].Path, "", pos ":" FastFolders[A_Index].Name, "", "Both", 2) ;7plus now uses AHK=2 key in registry to indicate FastFolder buttons
 			if(pos <= 4 && ToPlacesBar)	;Also update placesbar
 			{
 				value := FastFolders[A_Index].Path
@@ -65,10 +67,9 @@ AddAllButtons(ToFolderBand, ToPlacesBar)
 }
 
 ;Callback function for determining if a specific registry key was created by 7plus
-IsFastFolderButton(Command,Name,Tooltip)
+IsFastFolderButton(Command, Name, Tooltip, ahk)
 {
-	;msgbox % Name " -> " RegExMatch(Name, "^\d+:") = 1
-	return RegExMatch(Name, "^\d+:")
+	return ahk = 2 || RegExMatch(Name, "^\d+:") ;RegexMatch is legacy code for buttons which don't have ahk=2 set
 }
 
 FastFolderMenu()
@@ -80,7 +81,7 @@ FastFolderMenu()
 	y := Navigation.GetSelectedFilepaths()
 	loop 10
 	{
-		i := A_INDEX - 1
+		i := A_Index - 1
 		if(FastFolders[A_Index].Path)
 		{
 			x := FastFolders[A_Index].Name
@@ -147,8 +148,8 @@ FastFolderMenuClicked(index)
 	Menu, FastFolders, DeleteAll
 }
 
-;Removes all buttons created with this script. Function can be the name of a function with these arguments: func(command, Title, tooltip) and it can be used to tell the script if an entry may be deleted
-RemoveAllExplorerButtons(function="")
+;Removes all buttons created with this script. Function can be the name of a function with these arguments: func(command, Title, tooltip, ahk) and it can be used to tell the script if an entry may be deleted
+RemoveAllExplorerButtons(function = "")
 {
 	BaseKey := "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes"
 	;go into view folders (clsid)
@@ -163,6 +164,10 @@ RemoveAllExplorerButtons(function="")
 			Loop, HKLM, %BaseKey%\%clsid%\%Key%, 2, 0
 			{
 				ButtonNumber := A_LoopRegName
+
+				;This function will only remove buttons created by 7plus which have an additional AHK key
+				RegRead, ahk, HKLM, %BaseKey%\%clsid%\%Key%\%ButtonNumber%, AHK		
+
 				;go into clsid folder
 				Loop, HKLM, %BaseKey%\%clsid%\%Key%\%ButtonNumber%, 2, 0
 				{
@@ -173,16 +178,14 @@ RemoveAllExplorerButtons(function="")
 					
 					;Custom skip function code
 					if(IsFunc(function))
-						if(!%function%(cmd, Title, value))
+						if(!%function%(cmd, Title, value, ahk))
 						{
 							skip := true
 							break
 						}
 				}
 				if(skip)
-					continue
-				;This function will only remove buttons created by 7plus which have an additional AHK key
-				RegRead, ahk, HKLM, %BaseKey%\%clsid%\%Key%\%ButtonNumber%, AHK			
+					continue	
 				if(ahk)
 					RegDelete, HKLM, %BaseKey%\%clsid%\%Key%\%ButtonNumber%
 			}
@@ -193,7 +196,7 @@ RemoveAllExplorerButtons(function="")
 RemoveButton(Command, param="")
 {
 	if(!IsFunc(Command) && InStr(Command,"\",0,strlen(Command)))
-		StringTrimRight, Command, Command,1
+		StringTrimRight, Command, Command, 1
 	BaseKey := "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes"
 	ButtonFound := false
 	;go into view folders (clsid)
@@ -251,14 +254,15 @@ RemoveButton(Command, param="")
 }
 
 ;Adds a button. You may specify a command (and possibly an argument) or a path, and a name which should be used.
-AddButton(Command, path, Args="", Name="", Tooltip="", AddTo = "Both")
+;Other parameters are a ToolTip
+AddButton(Command, path, Args = "", Name = "", Tooltip = "", AddTo = "Both", ahk = 1)
 {
 	outputdebug addbutton command %command% path %path% args %args% name %name%
 	if(A_IsCompiled)
 		ahk_path:="""" A_ScriptDir "\7plus.exe"""
 	else
 		ahk_path := """" A_AhkPath """ """ A_ScriptFullPath """"
-	icon=`%SystemRoot`%\System32\shell32.dll`,3 ;Icon is not working, probably not supported by explorer, some ms entries have icons defined but they don't show up either
+	icon := "%SystemRoot%\System32\shell32.dll,3" ;Icon is not working, probably not supported by explorer, some ms entries have icons defined but they don't show up either
 	if(Command)
 	{
 		if(!Name)
@@ -267,71 +271,55 @@ AddButton(Command, path, Args="", Name="", Tooltip="", AddTo = "Both")
 			if(Name="")
 				Name:=Command
 		}
-		icon:=Command ",1"
-		description:=command
+		icon := Command ",1"
+		description := command
 		command .= " " args
 	}
 	
 	if(path)
 	{				
 		;Remove trailing backslash
-		if( InStr(path,"\",0,strlen(path)))
+		if(InStr(path,"\", 0, strlen(path)))
 			StringTrimRight, path, path,1
 		if(!name)
 		{
 			SplitPath, path , Name
-			if(Name="")
-				Name:=path
+			if(Name = "")
+				Name := path
 		}
 		Command := ahk_path " """ path """"	
-		description:=path	
+		description := path	
 	}		
 	if(!command && !path && args) ;args only, use start 7plus with -id param
 	{
 		Command := """" (A_IsCompiled ? A_ScriptPath : A_AhkPath """ """ A_ScriptFullPath) """ -id:" args
 		description := Tooltip
 	}
-	SomeCLSID:="{" . uuid(false) . "}"
+	SomeCLSID := "{" . uuid(false) . "}"
 	;go into view folders (clsid)
 	Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes, 2, 0
 	{
 		if(AddTo = "Both" || AddTo = "Selected")
-		{
-			;figure out first free key number
-			iterations:=0
-			regkey:=A_LoopRegName
-			Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected, 2, 0
-			{
-				iterations++
-			}
-			
-			;Marker for easier recognition of ahk-added entries
-			RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%iterations%, AHK, 1
-			;Write reg keys
-			RegWrite, REG_EXPAND_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%iterations%\%SomeCLSID%, Icon, %icon%
-			RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%iterations%\%SomeCLSID%, InfoTip, %description%
-			RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%iterations%\%SomeCLSID%, Title, %name%
-			RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%iterations%\%SomeCLSID%\shell\InvokeTask\command, , %command%
-		}
+			AddButton_Write("SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\" A_LoopRegName "\TasksItemsSelected", SomeCLSID, command, Name, Description, Icon, ahk)
 		if(AddTo = "Both" || AddTo = "NoSelected")
-		{
-			;Now the same for TasksNoItemsSelected
-			iterations:=0
-			;figure out first free key number
-			Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected, 2, 0
-			{
-				iterations++
-			}
-			
-			;Marker for easier recognition of ahk-added entries
-			RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%iterations%, AHK, 1
-			;Write reg keys
-			RegWrite, REG_EXPAND_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%iterations%\%SomeCLSID%, Icon, %icon%
-			RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%iterations%\%SomeCLSID%, InfoTip, %description%
-			RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%iterations%\%SomeCLSID%, Title, %name%
-			RegWrite, REG_SZ, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%iterations%\%SomeCLSID%\shell\InvokeTask\command, , %command%
-		}
+			AddButton_Write("SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\" A_LoopRegName "\TasksNoItemsSelected", SomeCLSID, command, Name, Description, Icon, ahk)
 	}
+}
+;Writes the data for a single button (for selected or no-selected state)
+AddButton_Write(Path, SomeCLSID, command, Title, InfoTip, Icon, AHK)
+{
+	;figure out first free key number
+	iterations := 0
+	Loop, HKLM, %Path%, 2, 0
+		iterations++
+	
+	;Marker for easier recognition of ahk-added entries
+	RegWrite, REG_SZ, HKLM, %Path%\%iterations%, AHK, %AHK%
+	;Write reg keys
+	RegWrite, REG_EXPAND_SZ, HKLM, %Path%\%iterations%\%SomeCLSID%, Icon, %icon%
+	RegWrite, REG_SZ, HKLM, %Path%\%iterations%\%SomeCLSID%, InfoTip, %InfoTip%
+	RegWrite, REG_SZ, HKLM, %Path%\%iterations%\%SomeCLSID%, Title, %Title%
+	RegWrite, REG_SZ, HKLM, %Path%\%iterations%\%SomeCLSID%\shell\InvokeTask\command, , %command%
 }
 FindButton(function, param)
 {
