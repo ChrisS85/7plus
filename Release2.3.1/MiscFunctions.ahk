@@ -1011,12 +1011,12 @@ WriteText(Text)
 FindFreeFileName(FilePath)
 {
 	SplitPath, FilePath,, dir, extension, filename
-
-
+	Testpath := FilePath ;Return path if it doesn't exist
+	i := 1
 	while FileExist(TestPath)
 	{
 		i++
-
+		Testpath := dir "\" filename " (" i ")" (extension = "" ? "" : "." extension)
 	}
 	return TestPath
 }
