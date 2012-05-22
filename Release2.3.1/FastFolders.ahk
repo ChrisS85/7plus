@@ -18,22 +18,22 @@ ClearStoredFolder(Slot)
 	}
 }
 
-UpdateStoredFolder(Slot, Folder="")
+;Assigns a new folder to a FastFolder slot and updates registry
+UpdateStoredFolder(Slot, Folder = "")
 {
 	global FastFolders
-	Slot+=1
+	;Fast folder slots are 0-based externally
+	Slot += 1
 	if(Folder)
 		FastFolders[Slot].Path := Folder
 	else
 		FastFolders[Slot].Path := Navigation.GetPath()
-	Name:=FastFolders[Slot].Path	
-	if(InStr(Name,"::") = 1 && WinActive("ahk_group ExplorerGroup"))
-		WinGetTitle,Name,A
-	
-	SplitPath, Name , split
-	FastFolders[Slot].Name := split
+	FastFolders[Slot].Name := Navigation.GetDisplayName()
 	if(!FastFolders[Slot].Name)
-		FastFolders[Slot].Name := Name
+	{
+		SplitPath, Path , split
+		FastFolders[Slot].Name := split
+	}
 	RefreshFastFolders()	
 }
 
@@ -44,19 +44,20 @@ RefreshFastFolders()
 	AddAllButtons(Settings.Explorer.FastFolders.ShowInFolderBand, Settings.Explorer.FastFolders.ShowInPlacesBar)
 }
 
-AddAllButtons(FolderBand,PlacesBar)
+AddAllButtons(ToFolderBand, ToPlacesBar)
 {
 	global FastFolders
 	loop 10
 	{
-		pos:=A_Index-1
+		;Fast folder slots are 0-based externally
+		pos := A_Index - 1
 		if(FastFolders[A_Index].Path)
 		{				
-			if (FolderBand)		
-				AddButton("",FastFolders[A_Index].Path,,pos ":" FastFolders[A_Index].Name)
-			if(pos<=4 && PlacesBar)	;Also update placesbar
+			if(ToFolderBand)		
+				AddButton("", FastFolders[A_Index].Path, "", pos ":" FastFolders[A_Index].Name)
+			if(pos <= 4 && ToPlacesBar)	;Also update placesbar
 			{
-				value:=FastFolders[A_Index].Path
+				value := FastFolders[A_Index].Path
 				RegWrite, REG_SZ,HKCU,Software\Microsoft\Windows\CurrentVersion\Policies\comdlg32\Placesbar, Place%pos%,%value%
 			}				
 		}
@@ -66,39 +67,33 @@ AddAllButtons(FolderBand,PlacesBar)
 ;Callback function for determining if a specific registry key was created by 7plus
 IsFastFolderButton(Command,Name,Tooltip)
 {
-	x:=substr(Name,1,1)
-	if(IsNumeric(x)&&substr(Name,2,1)=":")
-		return true
-	return false
+	;msgbox % Name " -> " RegExMatch(Name, "^\d+:") = 1
+	return RegExMatch(Name, "^\d+:")
 }
 
 FastFolderMenu()
 {
 	global FastFolders
-	Menu, FastFolders, add, 1,FastFolderMenuHandler1
+	Menu, FastFolders, add, 1, FastFolderMenuHandler1
 	Menu, FastFolders, DeleteAll
-	if ((IsWindowUnderCursor("ExploreWClass")||IsWindowUnderCursor("CabinetWClass")||IsWindowUnderCursor("WorkerW")||IsWindowUnderCursor("Progman")) && !IsRenaming())
+	win := WinExist("A")
+	y := Navigation.GetSelectedFilepaths()
+	loop 10
 	{
-		win := WinExist("A")
-		y := Navigation.GetSelectedFilepaths()
-		loop 10
+		i := A_INDEX - 1
+		if(FastFolders[A_Index].Path)
 		{
-			i := A_INDEX - 1
-			if(FastFolders[A_Index].Path)
+			x := FastFolders[A_Index].Name
+			if(x && (!InStr(x, "ftp://") = 1 || !y.MaxIndex()))
 			{
-				x := FastFolders[A_Index].Name
-				if(x && (!InStr(x,"ftp://") = 1||!y.MaxIndex()))
-				{
-					x := "&" i ": " x
-					Menu, FastFolders, add, %x%, FastFolderMenuHandler%i%
-				}
-			} 
-		}
-		hwnd := WinExist("A")
-		Menu, FastFolders, Show
-		return true
-	}	
-	return false
+				x := "&" i ": " x
+				Menu, FastFolders, add, %x%, FastFolderMenuHandler%i%
+			}
+		} 
+	}
+	hwnd := WinExist("A")
+	Menu, FastFolders, Show
+	return true
 }
 
 FastFolderMenuHandler0:
@@ -152,70 +147,45 @@ FastFolderMenuClicked(index)
 	Menu, FastFolders, DeleteAll
 }
 
-;Removes all buttons created with this script. Function can be the name of a function with these arguments: func(command,Name,tooltip) and it can be used to tell the script if an entry may be deleted
+;Removes all buttons created with this script. Function can be the name of a function with these arguments: func(command, Title, tooltip) and it can be used to tell the script if an entry may be deleted
 RemoveAllExplorerButtons(function="")
 {
+	BaseKey := "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes"
 	;go into view folders (clsid)
-	Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes, 2, 0
+	Loop, HKLM, %BaseKey%, 2, 0
 	{			
-		regkey:=A_LoopRegName
-		;go into number folder
-		Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected, 2, 0
+		clsid := A_LoopRegName
+		;code below needs to be executed for two folders each, [selected item / no selected item]
+		Keys := {TasksItemsSelected : "", TasksNoItemsSelected : ""}
+		for Key, v in Keys
 		{
-			numberfolder:=A_LoopRegName			
-			
-			;Custom skip function code
-			;go into clsid folder
-			Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%, 2, 0
+			;go into numbered folders of single buttons
+			Loop, HKLM, %BaseKey%\%clsid%\%Key%, 2, 0
 			{
-				skip:=false
-				RegRead, value, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%\%A_LoopRegName%, InfoTip
-				RegRead, Name, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%\%A_LoopRegName%, Name
-				RegRead, cmd, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%\%A_LoopRegName%\shell\InvokeTask\command
-				
-				if(IsFunc(function))
-					if(!%function%(cmd,Name,value))
-					{
-						skip:=true
-						break
-					}
+				ButtonNumber := A_LoopRegName
+				;go into clsid folder
+				Loop, HKLM, %BaseKey%\%clsid%\%Key%\%ButtonNumber%, 2, 0
+				{
+					skip := false
+					RegRead, value, HKLM, %BaseKey%\%clsid%\%Key%\%ButtonNumber%\%A_LoopRegName%, InfoTip
+					RegRead, Title, HKLM, %BaseKey%\%clsid%\%Key%\%ButtonNumber%\%A_LoopRegName%, Title
+					RegRead, cmd, HKLM, %BaseKey%\%clsid%\%Key%\%ButtonNumber%\%A_LoopRegName%\shell\InvokeTask\command
+					
+					;Custom skip function code
+					if(IsFunc(function))
+						if(!%function%(cmd, Title, value))
+						{
+							skip := true
+							break
+						}
+				}
+				if(skip)
+					continue
+				;This function will only remove buttons created by 7plus which have an additional AHK key
+				RegRead, ahk, HKLM, %BaseKey%\%clsid%\%Key%\%ButtonNumber%, AHK			
+				if(ahk)
+					RegDelete, HKLM, %BaseKey%\%clsid%\%Key%\%ButtonNumber%
 			}
-			if(skip) 
-				continue
-			;Custom skip function code
-			RegRead, ahk, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%, AHK			
-			if(ahk)
-				RegDelete, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%
-		}
-		Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected, 2, 0
-		{
-			numberfolder:=A_LoopRegName
-			
-			
-			;Custom skip function code
-			;go into clsid folder
-			Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%numberfolder%, 2, 0
-			{
-				skip:=false
-				RegRead, value, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%numberfolder%\%A_LoopRegName%, InfoTip
-				RegRead, Name, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%numberfolder%\%A_LoopRegName%, Title
-				RegRead, cmd, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%numberfolder%\%A_LoopRegName%\shell\InvokeTask\command
-				
-				if(IsFunc(function))
-					if(!%function%(cmd,Name,value))
-					{
-						skip:=true
-						break
-					}
-			}
-			if(skip) 
-				continue
-			;Custom skip function code
-			
-			
-			RegRead, ahk, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%numberfolder%, AHK
-			if(ahk)
-				RegDelete, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksNoItemsSelected\%numberfolder%
 		}
 	}
 }
@@ -237,24 +207,24 @@ RemoveButton(Command, param="")
 			;Local variable inside this loop for telling found state of the selected/no selected folders
 			maxnumber := -1
 			;Loop through all buttons of this view (reg loop goes backwards apparently)
-			Loop, HKLM, %BaseKey%\%clsid%\TasksItemsSelected, 2, 0
+			Loop, HKLM, %BaseKey%\%clsid%\%Key%, 2, 0
 			{
 				ButtonNumber := A_LoopRegName
 				maxnumber := max(ButtonNumber, maxnumber)
 				
 				;Keys created by 7plus have an "AHK" key added to them to make sure that only Keys related to 7plus are modified
-				RegRead, ahk, HKLM, %BaseKey%\%clsid%\TasksItemsSelected\%ButtonNumber%, AHK
+				RegRead, ahk, HKLM, %BaseKey%\%clsid%\%Key%\%ButtonNumber%, AHK
 				if(ahk)
 				{
-					;go into clsid folder
-					Loop, HKLM, %BaseKey%\%clsid%\TasksItemsSelected\%ButtonNumber%, 2, 0
+					;go into 2nd clsid folder
+					Loop, HKLM, %BaseKey%\%clsid%\%Key%\%ButtonNumber%, 2, 0
 					{
-						RegRead, value, HKLM, %BaseKey%\%clsid%\TasksItemsSelected\%ButtonNumber%\%A_LoopRegName%, InfoTip
+						RegRead, value, HKLM, %BaseKey%\%clsid%\%Key%\%ButtonNumber%\%A_LoopRegName%, InfoTip
 						;Check if the current key is the correct one (possibly with a caller-defined function)
-						if((!IsFunc(Command) && value = Command) || (IsFunc(Command) && %Command%(value, BaseKey "\" clsid "\TasksItemsSelected\" ButtonNumber "\" A_LoopRegName "\shell\InvokeTask\command", param)))
+						if((!IsFunc(Command) && value = Command) || (IsFunc(Command) && %Command%(value, BaseKey "\" clsid "\" Key "\" ButtonNumber "\" A_LoopRegName "\shell\InvokeTask\command", param)))
 						{
 							;If the key is correct, it may be deleted
-							RegDelete, HKLM, %BaseKey%\%clsid%\TasksItemsSelected\%ButtonNumber%
+							RegDelete, HKLM, %BaseKey%\%clsid%\%Key%\%ButtonNumber%
 							ButtonFound := true
 							;after item has been deleted, we need to move the higher ones down by one
 							if(maxnumber > ButtonNumber)
@@ -263,8 +233,8 @@ RemoveButton(Command, param="")
 								while i <= maxnumber
 								{
 									j := i - 1
-									Runwait, reg copy HKLM\%BaseKey%\%clsid%\TasksItemsSelected\%i% HKLM\%BaseKey%\%clsid%\TasksItemsSelected\%j% /s /f, , Hide
-									regdelete, HKLM, %BaseKey%\%clsid%\TasksItemsSelected\%i%
+									Runwait, reg copy HKLM\%BaseKey%\%clsid%\%Key%\%i% HKLM\%BaseKey%\%clsid%\%Key%\%j% /s /f, , Hide
+									regdelete, HKLM, %BaseKey%\%clsid%\%Key%\%i%
 									i++
 								}
 							}
@@ -281,7 +251,7 @@ RemoveButton(Command, param="")
 }
 
 ;Adds a button. You may specify a command (and possibly an argument) or a path, and a name which should be used.
-AddButton(Command,path,Args="",Name="", Tooltip="",AddTo = "Both")
+AddButton(Command, path, Args="", Name="", Tooltip="", AddTo = "Both")
 {
 	outputdebug addbutton command %command% path %path% args %args% name %name%
 	if(A_IsCompiled)
