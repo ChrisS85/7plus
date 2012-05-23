@@ -73,6 +73,23 @@ get(list, keys*)
 	return values
 }
 
+;Gets a subset of items from a list where listEntry[KeyOrValue] = value or listEntry = KeyOrValue
+GetAll(list, KeyOrValue, value = "")
+{
+	values := []
+	for index, VarOrObject in list
+	{
+		if(IsObject(VarOrObject))
+		{
+			if(VarOrObject[KeyOrValue] = value)
+				values.Insert(VarOrObject)
+		}
+		else
+			if(VarOrObject = KeyOrValue)
+				values.Insert(VarOrObject)
+	}
+	return values
+}
 ;Minimum from a list of values
 min(values*)
 {

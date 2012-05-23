@@ -130,8 +130,10 @@ Class CFileSystemPlugin extends CAccessorPlugin
 			Filter := Accessor.CurrentDirectory Filter
 
 		SplitPath, filter, name, dir, , , drive
+		;Possibly show current files in normal search?
 		if(!dir && Accessor.CurrentDirectory && this.Settings.ShowFilesOfCurrentFolder)
 			dir := Accessor.CurrentDirectory
+
 		if(dir)
 		{
 			;Store for temporary use
@@ -141,8 +143,13 @@ Class CFileSystemPlugin extends CAccessorPlugin
 			Result.Title := name
 			Result.Path := dir
 			Result.Icon := Accessor.GenericIcons.Folder
-			;Result.Actions.DefaultAction := Result.Actions.Remove(1)
+
+			;Possibly add an action to select the currently entered files
+			if(Navigation.FindNavigationSource(Accessor.PreviousWindow, "SelectFiles"))
+				Result.Actions.Insert(new CAccessor.CAction("Select these files", "SelectFiles"))
+
 			this.Result := Result
+
 
 			if(this.AutocompletionString)
 				name := this.AutocompletionString
@@ -193,6 +200,11 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		this.AutoCompletionString := ""
 		if(InStr(FileExist(ListEntry.Path),"D"))
 			Accessor.SetFilter(ListEntry.Path "\")
+	}
+	SelectFiles(Accessor, ListEntry)
+	{
+		Files := Get(GetAll(Accessor.List, "Type", "File System"), "Title")
+		Navigation.SelectFiles(Files, Accessor.PreviousWindow)
 	}
 	OnTab()
 	{
