@@ -5494,31 +5494,6 @@
 </Event><Event>
 <Actions>
 <Action>
-<KeyDelay>0</KeyDelay>
-<Keys>{Escape}</Keys>
-<Type>Send keyboard input</Type>
-<WriteText>0</WriteText>
-</Action></Actions>
-<Category>Uncategorized</Category>
-<Conditions>
-</Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description></Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>1653</ID>
-<Name>New event</Name>
-<OfficialEvent>51</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Type>Window activated</Type>
-<WindowFilterTitle>This is an unregistered copy</WindowFilterTitle>
-<WindowMatchType>Specific Window</WindowMatchType>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
 <ForceClose>0</ForceClose>
 <ShutDownSelection>Shutdown</ShutDownSelection>
 <Type>Shutdown computer</Type>
@@ -5675,7 +5650,15 @@
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
-</Conditions>
+<Condition>
+<FeatureType>GetPath</FeatureType>
+<Negate>0</Negate>
+<Type>Can Window be Navigated</Type>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
+<WindowMatchType>Active</WindowMatchType>
+</Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event makes it possible to quickly use Accessor in explorer or file dialog windows to select a file from the current directory and run it.</Description>
 <DisableAfterUse>0</DisableAfterUse>
@@ -5698,7 +5681,15 @@
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
-</Conditions>
+<Condition>
+<FeatureType>GetSelectedFilepaths</FeatureType>
+<Negate>0</Negate>
+<Type>Can Window be Navigated</Type>
+<WindowFilterClass></WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
+<WindowMatchType>Active</WindowMatchType>
+</Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This hotkey opens Accessor in a mode that can be used to open the selected file with a program other than the default file association. It's like Open With dialog, just faster!</Description>
 <DisableAfterUse>0</DisableAfterUse>
