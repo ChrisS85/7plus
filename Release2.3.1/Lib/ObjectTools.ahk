@@ -147,6 +147,38 @@ sorted(list, Callback = "")
 	}
 }
 
+;Sorts an array by one of the members keys
+ArraySort(object, key, order = "Up")
+{
+	static obj, k, o
+	;Called by user
+	if(order = "Up" || order = "Down")
+	{
+		obj := object
+		k := key
+		o := order
+		SortString := ""
+		Loop % obj.MaxIndex()
+			SortString .= (A_Index = 1 ? "" : "`n") A_Index
+		Sort, SortString, % "F ArraySort"
+		obj := ""
+		k := ""
+		o := ""
+		sorted := Array()
+		Loop, Parse, SortString, `n
+			sorted.Insert(object[A_LoopField])
+		return sorted
+	}
+	else ;Called by Sort command
+	{
+		if(obj[object][k] = obj[key][k])
+			result := 0
+		else
+			result := (o = "Up" && obj[object][k] > obj[key][k]) || (o = "Down" && obj[object][k] < obj[key][k]) ? 1 : -1
+		return result
+	}
+}
+
 ;Escapes all occurences of "separator" in "string" with "EscapeChar". This allows to use "separator" as a separator for string lists
 escape(string, escapechar = "\", separator = ",")
 {

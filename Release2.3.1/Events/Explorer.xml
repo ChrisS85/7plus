@@ -822,6 +822,52 @@
 <Key>^+H</Key>
 <Type>Hotkey</Type>
 </Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<FlashingWindows>0</FlashingWindows>
+<InitialQuery>\</InitialQuery>
+<Type>Show Accessor</Type>
+</Action></Actions>
+<Category>Explorer</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event makes it possible to quickly use Accessor in explorer or file dialog windows to select a file from the current directory and run it.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1660</ID>
+<Name>Open Accessor to execute files from the current directory</Name>
+<OfficialEvent>59</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^.</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<FlashingWindows>0</FlashingWindows>
+<InitialQuery>ow </InitialQuery>
+<Type>Show Accessor</Type>
+</Action></Actions>
+<Category>Explorer</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This hotkey opens Accessor in a mode that can be used to open the selected file with a program other than the default file association. It's like Open With dialog, just faster!</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1661</ID>
+<Name>Use Accessor to open the selected file with a program</Name>
+<OfficialEvent>60</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^O</Key>
+<Type>Hotkey</Type>
+</Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
 <MinorVersion>6</MinorVersion>
