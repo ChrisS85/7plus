@@ -430,7 +430,7 @@ Class CEventEditor extends CGUI
 	}
 	btnConditionHelp_Click()
 	{
-		static OldTypes := {"Context menu active" : "IsContextMenuActive", "Window is file dialog" : "IsDialog", "Window is dragable" : "IsDragable", "Fullscreen window active" : "IsFullScreen", "Explorer is renaming" : "IsRenaming", "Key is down" : "KeyIsDown", "Mouse over" : "MouseOver", "Mouse over file list" : "MouseOverFileList", "Mouse over tab button" : "MouseOverTabButton", "Mouse over taskbar list" : "MouseOverTaskList", "Window active" : "WindowActive", "Window exists" : "WindowExists"}
+		static OldTypes := {"Context menu active" : "IsContextMenuActive", "Window is file dialog" : "IsDialog", "Window is dragable" : "IsDragable", "Fullscreen window active" : "IsFullScreen", "Explorer is renaming" : "IsRenaming", "Key is down" : "KeyIsDown", "Mouse over" : "MouseOver", "Mouse over file list" : "MouseOverFileList", "Mouse over tab button" : "MouseOverTabButton", "Mouse over taskbar list" : "MouseOverTaskList", "Window active" : "WindowActive", "Window exists" : "WindowExists", "Can Window be Navigated" : "NavigatableWindow"}
 		OpenWikiPage("docsConditions" (OldTypes.HasKey(this.Condition.Type) ? OldTypes[this.Condition.Type] : this.Condition.Type))
 	}
 	

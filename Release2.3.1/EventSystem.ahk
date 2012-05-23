@@ -1200,6 +1200,7 @@ Class CExampleAction extends CAction
 #include %A_ScriptDir%\Conditions\MouseOverFileList.ahk
 #include %A_ScriptDir%\Conditions\MouseOverTaskList.ahk
 #include %A_ScriptDir%\Conditions\MouseOverTabButton.ahk
+#include %A_ScriptDir%\Conditions\NavigatableWindow.ahk
 #include %A_ScriptDir%\Conditions\WindowActive.ahk
 #include %A_ScriptDir%\Conditions\WindowExists.ahk
 
