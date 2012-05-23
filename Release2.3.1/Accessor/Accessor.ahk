@@ -238,7 +238,7 @@ Class CAccessor
 		
 		;Show some tips
 		TipIndex := 17
-		while(TipIndex < 41 && !(TipShown := ShowTip(TipIndex)))
+		while(TipIndex < 43 && !(TipShown := ShowTip(TipIndex)))
 			TipIndex++
 
 		;Active window for plugins that depend on the context
@@ -1286,6 +1286,7 @@ Processes
 twitter
 trillian
 winget
+file search using mft: http://www.autohotkey.com/community/viewtopic.php?t=85072&p=528553
 
 TODO:
 Condition for various navigation functions and usage of it in all relevant events
