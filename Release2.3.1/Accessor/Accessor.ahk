@@ -545,17 +545,19 @@ Class CAccessor
 			this.RefreshList()
 	}
 	
-	;Registers an Accessor plugin with this class. This needs to be done
+	;Registers an Accessor plugin with this class. This needs to be done.
 	RegisterPlugin(Type, Plugin)
 	{
 		this.Plugins.Insert(Plugin)
 		return Type
 	}
+
 	Close()
 	{
 		;Needs to be delayed because it is called from within a message handler which is critical.
 		SetTimerF(new Delegate(this.GUI, "Close"), -10)
 	}
+
 	OnExit()
 	{
 		;Close an open instance
@@ -563,6 +565,8 @@ Class CAccessor
 			this.Close()
 		
 		;Save Accessor related data
+		this.ResultUsageTracker.OnExit()
+
 		FileDelete, % Settings.ConfigPath "\Accessor.xml"
 		XMLObject := {}
 		for index, Plugin in this.Plugins
@@ -1055,7 +1059,7 @@ Class CAccessorPluginSettingsWindow extends CGUI
 		if(!Plugin.Settings.HasKey("Keyword"))
 			GuiControl, % this.GUINum ":Disable", %hwnd%
 		
-		AddControl(Plugin.Settings, this.PluginGUI, "Edit", "BasePriority", "", "", "Base Priority:", "", "", "", "", "The priority of a plugin determines the order of its results in the Accessor window.`n Some plugins dynamically adjust their priority based on the current context.")
+		AddControl(Plugin.Settings, this.PluginGUI, "Edit", "BasePriority", "", "", "Base Priority:", "", "", "", "", "The priority of a plugin determines the order of its results in the Accessor window. Some plugins dynamically adjust their priority based on the current context. You should only modify this value if you know what you're doing :)`nReasonable values range from 0 to 1, higher values can be used to force the results from this plugin to the top of the list.")
 		
 		hwnd := AddControl(Plugin.Settings, this.PluginGUI, "Checkbox", "KeywordOnly", "Keyword Only", "", "", "", "", "", "", "If checked, this plugin will only show results when its keyword was entered.")
 		if(!Plugin.Settings.HasKey("KeywordOnly"))
@@ -1285,6 +1289,5 @@ winget
 
 TODO:
 Condition for various navigation functions and usage of it in all relevant events
-Accessor result usage tracking for better weighting
 Documentation of new Accessor features
 */

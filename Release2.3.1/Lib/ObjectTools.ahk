@@ -70,7 +70,7 @@ get(list, keys*)
 	else
 		for index, value in list
 			values.Insert(value[keys[1]])
-	return values
+	return values.MaxIndex() ? values : ""
 }
 
 ;Gets a subset of items from a list where listEntry[KeyOrValue] = value or listEntry = KeyOrValue
@@ -88,7 +88,7 @@ GetAll(list, KeyOrValue, value = "")
 			if(VarOrObject = KeyOrValue)
 				values.Insert(VarOrObject)
 	}
-	return values
+	return values.MaxIndex() ? values : ""
 }
 ;Minimum from a list of values
 min(values*)
