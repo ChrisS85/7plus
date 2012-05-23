@@ -39,6 +39,12 @@ Class CAccessor
 	;Selected filepath of a previously active navigateable program (first file only)
 	CurrentSelection := ""
 
+	;Used to manage parallelism of quick query text changes
+	;If the Accessor is currently refreshing, it is instructed to refresh again when the text changes while it is refreshing
+	;By doing this it should be possible to always be up to date with the minimum amount of refreshes.
+	RepeatRefresh := false
+	IsRefreshing := false
+
 	Class CSettings
 	{
 		LargeIcons := false
@@ -272,8 +278,11 @@ Class CAccessor
 			this.History[1] := Filter
 		else
 			this.History.CycleHistory := 0
-		if(NeedsUpdate)
+
+		if(NeedsUpdate && !this.IsRefreshing)
 			this.RefreshList()
+		else if(this.IsRefreshing)
+			this.RepeatRefresh := true
 	}
 	
 	;This function parses and expands an entered filter string using the Accessor Keywords
@@ -363,6 +372,11 @@ Class CAccessor
 	{
 		if(!this.GUI)
 			return
+
+		;Reset refreshing status
+		this.IsRefreshing := true
+		this.RepeatRefresh := false
+
 		LastFilter := this.LastFilter
 		Filter := this.Filter
 		Parameters := this.ExpandFilter(Filter, LastFilter, Time)
@@ -454,6 +468,10 @@ Class CAccessor
 		;Set default text when no results and set enabled state
 		if(!(this.GUI.btnOK.Enabled := this.List.MaxIndex()))
 			this.GUI.btnOK.Text := "Run"
+
+		this.IsRefreshing := false
+		if(this.RepeatRefresh)
+			this.RefreshList()
 	}
 	
 	;Registers an Accessor plugin with this class. This needs to be done
