@@ -23,6 +23,7 @@ Class CEventPlugin extends CAccessorPlugin
 		Type := "Event Plugin"
 		Actions := new this.CActions()
 		Priority := CEventPlugin.Instance.Priority
+		ResultIndexingKey := "ID"
 		__Delete()
 		{
 			if(this.Icon && !CAccessor.Instance.GenericIcons.IndexOf(this.Icon))
@@ -45,6 +46,8 @@ Class CEventPlugin extends CAccessorPlugin
 				Result.Path := Event.ExpandPlaceholders(Event.Trigger.Path)
 				Result.Detail1 := Event.ExpandPlaceholders(ListEntry.Event.Trigger.Detail1)
 				Result.Event := Event
+				;This ID is stored for indexing results to improve weighting.
+				Result.ID := Event.ID
 				Result.Parameters := Parameters
 				Result.MatchQuality := MatchQuality
 				if(Icon := Event.Trigger.Icon)

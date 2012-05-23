@@ -42,6 +42,7 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 		Detail1 := "S4AHK Tab"
 		Actions := new this.CActions()
 		Priority := CSciTE4AutoHotkeyPlugin.Instance.Priority
+		ResultIndexingKey := "Path"
 	}
 	Init()
 	{

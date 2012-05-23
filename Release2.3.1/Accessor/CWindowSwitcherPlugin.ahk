@@ -41,6 +41,7 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 		Type := "Window switcher"
 		Actions := new this.CActions()
 		Priority := CWindowSwitcherPlugin.Instance.Priority
+		ResultIndexingKey := "Title"
 	}
 	IsInSinglePluginContext(Filter, LastFilter)
 	{

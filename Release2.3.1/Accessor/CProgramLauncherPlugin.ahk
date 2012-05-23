@@ -13,6 +13,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 
 	AllowDelayedExecution := true
 	
+
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "run"
@@ -132,6 +133,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		}
 		Type := "Program Launcher"
 		Priority := CProgramLauncherPlugin.Instance.Priority
+		ResultIndexingKey := "Path"
 		__new(BasePath = "")
 		{
 			this.Actions := new this.CActions(BasePath)
@@ -145,6 +147,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			DefaultAction := new CAccessor.CAction("Open With", "OpenWith")
 		}
 		Type := "Program Launcher"
+		ResultIndexingKey := "Path" ;By using the same index for normal and OpenWith results the weighting can be shared
 		__new()
 		{
 			this.Actions := new this.CActions()

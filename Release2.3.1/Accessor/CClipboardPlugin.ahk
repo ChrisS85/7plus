@@ -101,6 +101,9 @@ Class CClipboardPlugin extends CAccessorPlugin
 					Result.Detail1 := "Clip"
 					Result.ClipType := "Persistent"
 					Result.MatchQuality := MatchQuality - 0.1
+					;This ID is stored only for identifying and weighting this result
+					Result.ID := index2 ":" Result.Title
+					Result.ResultIndexingKey := "ID"
 					Result.Index := index2
 					Results.Insert(Result)
 				}
@@ -113,6 +116,9 @@ Class CClipboardPlugin extends CAccessorPlugin
 					Result.Detail1 := "Clip"
 					Result.ClipType := "Persistent"
 					Result.MatchQuality := MatchQuality
+					;This ID is stored only for identifying and weighting this result
+					Result.ID := index2 ":" Result.Title
+					Result.ResultIndexingKey := "ID"
 					Result.Index := index2
 					Results.Insert(Result)
 				}

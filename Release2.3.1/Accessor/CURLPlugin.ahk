@@ -77,6 +77,7 @@ Class CURLPlugin extends CAccessorPlugin
 			Result.Path := "Open URL"
 			Result.Icon := Accessor.GenericIcons.URL
 			Result.Detail1 := "URL"
+			Result.ResultIndexingKey := "Title"
 			Result.MatchQuality := 0.8 ;Not sure if this is a good match, so lower value
 			Results.Insert(Result)
 		}
@@ -89,6 +90,7 @@ Class CURLPlugin extends CAccessorPlugin
 					Result.Path := OperaBookmark.URL
 					Result.Icon := Accessor.GenericIcons.URL
 					Result.MatchQuality := MatchQuality
+					Result.ResultIndexingKey := "Path"
 					Results.Insert(Result)
 				}
 		if(this.Settings.IncludeChromeBookmarks)
@@ -100,6 +102,7 @@ Class CURLPlugin extends CAccessorPlugin
 					Result.Path := ChromeBookmark.URL
 					Result.Icon := Accessor.GenericIcons.URL
 					Result.MatchQuality := MatchQuality
+					Result.ResultIndexingKey := "Path"
 					Results.Insert(Result)
 				}
 		if(this.Settings.IncludeIEBookmarks)
@@ -111,6 +114,7 @@ Class CURLPlugin extends CAccessorPlugin
 					Result.Path := IEBookmark.URL
 					Result.Icon := Accessor.GenericIcons.URL
 					Result.MatchQuality := MatchQuality
+					Result.ResultIndexingKey := "Path"
 					Results.Insert(Result)
 				}
 		return Results

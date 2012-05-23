@@ -89,6 +89,70 @@ Class CAccessor
 			this.AllowDelayedExecution := AllowDelayedExecution
 		}
 	}
+
+	;This class tracks the usage history of single Accessor results to improve the ordering in the results list.
+	Class CResultUsageTracker
+	{
+		;Each plugin can define a key which is used to index its results
+		Plugins := {}
+		;Each time a result is executed its weighting factor is increased by this value divided by the current value + 1.
+		static UsageIncrement := 0.1
+		;Each time a result is executed all weighting factors are decreased by this value so that often used results can be removed after a while when they haven't been used anymore.
+		static TimePenalty := 0.004
+
+		__new()
+		{
+			this.LoadResultUsageHistory()
+		}
+		OnExit()
+		{
+			this.SaveResultUsageHistory()
+		}
+		LoadResultUsageHistory()
+		{
+			if(FileExist(Settings.ConfigPath "\AccessorUsageHistory.json"))
+			{
+				FileRead, json, % Settings.ConfigPath "\AccessorUsageHistory.json"
+				this.Plugins := lson(json)
+			}
+			;Make sure that objects for all plugins exist
+			for index, Plugin in CAccessor.Plugins
+				if(!this.Plugins.HasKey(Plugin.Type))
+					this.Plugins[Plugin.Type] := {}
+		}
+		SaveResultUsageHistory()
+		{
+			FileDelete, % Settings.ConfigPath "\AccessorUsageHistory.json"
+			string := lson(this.Plugins)
+			FileAppend, %string%, % Settings.ConfigPath "\AccessorUsageHistory.json"
+		}
+		TrackResultUsage(ExecutedResult, Plugin)
+		{
+			if(!ExecutedResult.ResultIndexingKey)
+				return
+			;This result has been tracked before
+			if(this.Plugins[Plugin.Type].HasKey(ExecutedResult[ExecutedResult.ResultIndexingKey]))
+				this.Plugins[Plugin.Type][ExecutedResult[ExecutedResult.ResultIndexingKey]] += this.UsageIncrement / (this.Plugins[Plugin.Type][ExecutedResult[ExecutedResult.ResultIndexingKey]] + 1)
+			;New result
+			else
+				this.Plugins[Plugin.Type][ExecutedResult[ExecutedResult.ResultIndexingKey]] := this.UsageIncrement
+
+			;Add penalty to all results so they will be forgotten over time
+			for index, p in this.Plugins
+			{
+				NewPlugin := {}
+				for IndexingKey, weighting in p
+				{
+					weighting -= this.TimePenalty
+					;Remove weightings which have become too low
+					if(weighting > 0)
+						NewPlugin[IndexingKey] := weighting
+				}
+				this.Plugins[index] := NewPlugin
+			}
+		}
+	}
+
 	__new()
 	{
 		;Singleton
@@ -154,6 +218,9 @@ Class CAccessor
 		for index, Keyword in XMLObject.Keywords.Keyword
 			this.Keywords.Insert({Key : Keyword.Key, Command : Keyword.Command})
 		
+		;Init result usage tracker
+		this.ResultUsageTracker := new this.CResultUsageTracker()
+
 		;Init generic icons
 		this.GenericIcons.Application := ExtractIcon("shell32.dll", 3, 64)
 		this.GenericIcons.File := ExtractIcon("shell32.dll", 1, 64)
@@ -428,7 +495,11 @@ Class CAccessor
 
 		;Calculate the weighting of the individual results as the average value of the single weighting indicators
 		for index, ListEntry in this.List
-			ListEntry.SortOrder := ListEntry.Priority + (ListEntry.MatchQuality - this.Settings.FuzzySearchThreshold) / (1 - this.Settings.FuzzySearchThreshold)
+		{
+			Plugin := this.Plugins.GetItemWithValue("Type", ListEntry.Type)
+			ListEntry.SortOrder := ListEntry.Priority + (ListEntry.MatchQuality - this.Settings.FuzzySearchThreshold) / (1 - this.Settings.FuzzySearchThreshold) + (ListEntry.ResultIndexingKey && this.ResultUsageTracker.Plugins[ListEntry.Type].HasKey(ListEntry[ListEntry.ResultIndexingKey]) ? this.ResultUsageTracker.Plugins[ListEntry.Type][ListEntry[ListEntry.ResultIndexingKey]] : 0)
+		}
+
 		;Sort the list by the weighting
 		this.List := ArraySort(this.List, "SortOrder", "Down")
 
@@ -588,6 +659,9 @@ Class CAccessor
 			Plugin := this.Plugins.GetItemWithValue("Type", ListEntry.Type)
 			if(Action && (IsFunc(Plugin[Action.Function]) || IsFunc(this[Action.Function])))
 			{
+				;Track the usage of this result for weighting
+				this.ResultUsageTracker.TrackResultUsage(ListEntry, Plugin.Instance)
+
 				if(ListEntry.Time > 0)
 				{
 					Event := new CEvent()
@@ -1206,7 +1280,11 @@ Future plugins:
 Services
 Processes
 twitter
-Control panel
 trillian
 winget
+
+TODO:
+Condition for various navigation functions and usage of it in all relevant events
+Accessor result usage tracking for better weighting
+Documentation of new Accessor features
 */

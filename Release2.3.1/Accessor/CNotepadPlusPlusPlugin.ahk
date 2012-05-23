@@ -42,6 +42,7 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 		Detail1 := "NP++ Tab"
 		Actions := new this.CActions()
 		Priority := CNotepadPlusPlusPlugin.Instance.Priority
+		ResultIndexingKey := "Path"
 	}
 	Init()
 	{

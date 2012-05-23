@@ -28,6 +28,7 @@ Class CControlPanelPlugin extends CAccessorPlugin
 		Type := "ControlPanel"
 		Priority := CControlPanelPlugin.Instance.Priority
 		Detail1 := "ControlPanel"
+		ResultIndexingKey := "Title"
 		__new()
 		{
 			this.Actions := new this.CActions()

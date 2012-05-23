@@ -29,6 +29,8 @@ Class CRunPlugin extends CAccessorPlugin
 		Actions := new this.CActions()
 		Priority := CRunPlugin.Instance.Priority
 		MatchQuality := 1 ; Only one result with perfect matching
+		;By indexing the results from this plugin it will rank higher when a specific command has been executed multiple times
+		ResultIndexingKey := "Path"
 	}
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
