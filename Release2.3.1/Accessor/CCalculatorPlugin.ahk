@@ -27,6 +27,7 @@ Class CCalculatorPlugin extends CAccessorPlugin
 		}
 		Type := "Calculator"
 		Actions := new this.CActions()
+		Priority := CCalculatorPlugin.Instance.Priority
 	}
 	IsInSinglePluginContext(Filter, LastFilter)
 	{

@@ -27,6 +27,7 @@ Class CClipboardPlugin extends CAccessorPlugin
 
 		Type := "Clipboard"
 		Icon := CClipboardPlugin.Instance.Icon
+		Priority := CClipboardPlugin.Instance.Priority
 
 		__new()
 		{
@@ -42,6 +43,7 @@ Class CClipboardPlugin extends CAccessorPlugin
 
 		Type := "Clipboard"
 		Icon := CClipboardPlugin.Instance.Icon
+		Priority := CClipboardPlugin.Instance.Priority
 
 		__new()
 		{

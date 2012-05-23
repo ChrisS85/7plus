@@ -301,10 +301,13 @@ Finally, here are some settings that you're likely to change at the beginning:
 		
 		Page.AddControl("Edit", "editEventFilter", "xs+413 ys+50 w144 h20", "")
 		Page.AddControl("Text", "txtEventSearch", "xs+332 ys+53 w75 h13", "Event Search:")
+		
 		;ListView uses indices that are independent of the listview sorting so it can access the array with the data more easily
-		Page.AddControl("ListView", "listEvents", "xs+21 ys+76 w536 h311 Grid Checked -LV0x10 Count300", "Enabled|ID|Trigger|Name")
-		Page.AddControl("Edit", "editEventDescription", "xs+21 y+5 w536 h81 ReadOnly", "")
+		lv := Page.AddControl("ListView", "listEvents", "xs+21 ys+76 w536 h311 Grid Checked -LV0x10 Count300", "Enabled|ID|Trigger|Name")
+		lv.ExStyle := "+0x00010000"
 		Page.Controls.listEvents.IndependentSorting := true
+
+		Page.AddControl("Edit", "editEventDescription", "xs+21 y+5 w536 h81 ReadOnly", "")
 		Page.AddControl("Text", "txtEventDescription", "xs+21 ys+16 w606 h26", "You can add events here that are triggered under certain conditions. When triggered, the event can launch a series of actions.`n This is a very powerful tool to add all kinds of features, and many features from 7plus are now implemented with this system.")
 		Page.Controls.editEventDescription.Multi := 1
 	}	

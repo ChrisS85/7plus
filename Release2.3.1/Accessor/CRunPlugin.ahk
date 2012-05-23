@@ -26,6 +26,7 @@ Class CRunPlugin extends CAccessorPlugin
 		Type := "Run"
 		Detail1 := "Run command"
 		Actions := new this.CActions()
+		Priority := CRunPlugin.Instance.Priority
 	}
 	IsInSinglePluginContext(Filter, LastFilter)
 	{

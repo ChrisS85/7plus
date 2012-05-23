@@ -27,6 +27,7 @@ Class CWeatherPlugin extends CAccessorPlugin
 		}
 		Type := "Weather"
 		Actions := new this.CActions()
+		Priority := CUninstallPlugin.Instance.Priority
 	}
 	IsInSinglePluginContext(Filter, LastFilter)
 	{

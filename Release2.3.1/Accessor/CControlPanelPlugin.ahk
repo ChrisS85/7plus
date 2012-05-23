@@ -26,6 +26,7 @@ Class CControlPanelPlugin extends CAccessorPlugin
 			DefaultAction := new CAccessor.CAction("Open", "Open")
 		}
 		Type := "ControlPanel"
+		Priority := CControlPanelPlugin.Instance.Priority
 		__new()
 		{
 			this.Actions := new this.CActions()

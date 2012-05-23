@@ -26,6 +26,7 @@ Class CRegistryPlugin extends CAccessorPlugin
 		}
 		Type := "Registry"
 		Actions := new this.CActions()
+		Priority := CRegistryPlugin.Instance.Priority
 	}
 	IsInSinglePluginContext(Filter, LastFilter)
 	{

@@ -36,6 +36,7 @@ Class CNotesPlugin extends CAccessorPlugin
 			}
 		}
 		Type := "Notes"
+		Priority := CNotesPlugin.Instance.Priority
 		__new(NewNote = false)
 		{
 			this.Actions := new this.CActions(NewNote)

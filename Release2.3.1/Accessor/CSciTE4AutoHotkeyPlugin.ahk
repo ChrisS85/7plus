@@ -41,6 +41,7 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 		Type := "SciTE4AutoHotkey Tab Switcher"
 		Detail1 := "S4AHK Tab"
 		Actions := new this.CActions()
+		Priority := CSciTE4AutoHotkeyPlugin.Instance.Priority
 	}
 	Init()
 	{

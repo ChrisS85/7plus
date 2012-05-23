@@ -70,6 +70,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 				this.Actions := new this.CFileActions()
 		}
 		Type := "File System"
+		Priority := CFileSystemPlugin.Instance.Priority
 	}
 	IsInSinglePluginContext(Filter, LastFilter)
 	{

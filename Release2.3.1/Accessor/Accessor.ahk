@@ -393,18 +393,14 @@ Class CAccessor
 				break
 			}
 		}
-
+		index := ""
 		;If we aren't, let all plugins add the items we want according to their priorities
 		if(!SingleContext)
 		{
 			this.SingleContext := false
 			Pluginlist := ""
-			for index2, Plugin in this.Plugins
-				Pluginlist .= (Pluginlist ? "," : "") index2
-			Sort, Pluginlist, F AccessorPrioritySort D`,
-			Loop, Parse, Pluginlist, `,
+			for index, Plugin in this.Plugins
 			{
-				Plugin := this.Plugins[A_LoopField]
 				if(Plugin.Settings.Enabled && ((Time > 0 && Plugin.AllowDelayedExecution) || !Time) && !Plugin.Settings.KeywordOnly && StrLen(Filter) >= Plugin.Settings.MinChars)
 				{
 					Result := Plugin.RefreshList(this, Filter, LastFilter, False, Parameters)
@@ -412,9 +408,16 @@ Class CAccessor
 						this.List.Extend(Result)
 				}
 			}
+			index := ""
 		}
 
-		;Now that items are added, add them to the listview
+		;Calculate the weighting of the individual results as the average value of the single weighting indicators
+		for index, ListEntry in this.List
+			ListEntry.SortOrder := (ListEntry.Priority + ListEntry.MatchQuality + ListEntry.UsageFrequency) / 3
+		;Sort the list by the weighting
+		this.List := ArraySort(this.List, "SortOrder", "Down")
+
+		;Now that items are available and sorted, add them to the listview
 		for index3, ListEntry in this.List
 		{
 			if(Time > 0)
@@ -424,7 +427,10 @@ Class CAccessor
 			}
 			Plugin := this.Plugins.GetItemWithValue("Type", ListEntry.Type)
 			Plugin.GetDisplayStrings(ListEntry, Title := ListEntry.Title, Path := ListEntry.Path, Detail1 := ListEntry.Detail1, Detail2 := ListEntry.Detail2)
-			item := this.GUI.ListView.Items.Add("", Title, Path, Detail1, Detail2)
+			if(!Settings.General.DebugEnabled)
+				item := this.GUI.ListView.Items.Add("", Title, Path, Detail1, Detail2)
+			else
+				item := this.GUI.ListView.Items.Add("", Title, Path, Detail1, ListEntry.Priority)
 			if(!ListEntry.HasKey("IconNumber"))
 				item.Icon := ListEntry.Icon
 			Else
@@ -774,6 +780,7 @@ Class CAccessorGUI extends CGUI
 		if(CAccessor.Instance.Settings.Transparency)
 			WinSet, Trans, % CAccessor.Instance.Settings.Transparency, % "ahk_id " this.hwnd
 		
+		this.ListView.ExStyle := "+0x00010000"
 		this.ListView.LargeIcons := CAccessor.Instance.Settings.LargeIcons
 		this.ListView.IndependentSorting := true
 		this.ListView.ModifyCol(1, Round(this.ListView.Width * 3 / 8)) ;Col_3_w) ; resize title column
@@ -1091,6 +1098,22 @@ Class CAccessorPlugin
 		Path := ""
 		Detail1 := ""
 		Detail2 := ""
+
+		;The ranking of the results is calculated by the indicators below. Accessor takes the average value of these indicators and sorts all results by this value
+
+		;The priority is determined by the plugin and the current context. Entries from the same plugin may have different priorities, this is up to the plugin.
+		;This value should be between 0 and 1, where 1 is the highest priority.
+		Priority := 0
+
+		;The MatchQuality is an indicator for the similarity of the query to the name/path/whatever of this result. It is also calculated by each plugin individually
+		;and ranges from ]0:1] (that means that values of 0 should be omitted by the plugins)
+		MatchQuality := 0
+
+		;This value is calculated by the Accessor and isn't used directly by the plugin. Accessor keeps a table of usage histories which is used to create an additional
+		;ranking measure for results. It also goes from 0 (never used) to 1(always used). It does not use a linear scale because its impact would be too little then.
+		;The addressing of the results is done through a table that is indexed by the plugin type, name and text of a single result. If this is undesirable and a plugin 
+		;doesn't want to store a usage history it can disable this by TODO: Create Setting for this.
+		UsageFrequency := 0
 	}
 	
 	__New()

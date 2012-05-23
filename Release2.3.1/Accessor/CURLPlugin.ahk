@@ -37,6 +37,7 @@ Class CURLPlugin extends CAccessorPlugin
 		}
 		Type := "URL"
 		Actions := new this.CActions()
+		Priority := CURLPlugin.Instance.Priority
 	}
 	Init(PluginSettings)
 	{

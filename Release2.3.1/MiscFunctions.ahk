@@ -825,32 +825,57 @@ Ansi2Unicode(ByRef sString, ByRef wString, CP = 0)
 
 ;Performs a fuzzy search for string2 in string1.
 ;return values range from 0.0 = identical to 1.0 = completely different. 0.4 seems appropriate
-FuzzySearch(string1, string2)
+FuzzySearch(longer, shorter, UseFuzzySearch = false)
 {
-	lenl := StrLen(string1)
-	lens := StrLen(string2)
-	if(lenl > lens)
+	if(longer = shorter)
+		return 1
+
+	lenl := StrLen(longer)
+	lens := StrLen(shorter)
+
+	if(lens > lenl)
+		return 0
+
+	;Check if the shorter string is a substring of the longer string
+	Contained := InStr(longer, shorter)
+	if(Contained)
+		return Contained = 1 ? 1 : 0.8
+
+	;Check if string can be matched by omitting characters
+	pos := 0
+	matched := 0
+	Loop % lens
 	{
-		shorter := string2
-		longer := string1
+		char := SubStr(shorter, A_Index, 1)
+		StringUpper, char, char
+		Loop % lenl - pos
+		{
+			if(SubStr(longer, pos + A_Index, 1) == char)
+			{
+				pos := A_Index
+				matched++
+				break
+			}
+			else
+				continue
+		}
 	}
-	else if(lens > lenl)
+	if(matched = lens)
+		return 0.9 ;Slightly worse than direct matches
+
+	;Calculate fuzzy string difference
+	if(UseFuzzySearch)
 	{
-		shorter := string1
-		longer := string2
-		lens := lenl
-		lenl := StrLen(string2)
+		max := 0
+		Loop % lenl - lens + 1
+		{
+			distance := 1 - StringDifference(shorter, SubStr(longer, A_Index, lens))
+			if(distance < max)
+				max := distance
+		}
+		return max
 	}
-	else
-		return StringDifference(string1, string2)
-	min := 1
-	Loop % lenl - lens + 1
-	{
-		distance := StringDifference(shorter, SubStr(longer, A_Index, lens))
-		if(distance < min)
-			min := distance
-	}
-	return min
+	return 0
 }
 ;By Toralf:
 ;basic idea for SIFT3 code by Siderite Zackwehdex 
@@ -1809,5 +1834,37 @@ Class CInputWindow extends CGUI
 	{
 		this.result := this.editText.Text
 		this.Close()
+	}
+}
+
+;Sorts an array by one of the members keys
+ArraySort(object, key, order = "Up")
+{
+	static obj, k, o
+	;Called by user
+	if(order = "Up" || order = "Down")
+	{
+		obj := object
+		k := key
+		o := order
+		SortString := ""
+		Loop % obj.MaxIndex()
+			SortString .= (A_Index = 1 ? "" : "`n") A_Index
+		Sort, SortString, % "F ArraySort"
+		obj := ""
+		k := ""
+		o := ""
+		sorted := Array()
+		Loop, Parse, SortString, `n
+			sorted.Insert(object[A_LoopField])
+		return sorted
+	}
+	else ;Called by Sort command
+	{
+		if(obj[object][k] = obj[key][k])
+			result := 0
+		else
+			result := (o = "Up" && obj[object][k] > obj[key][k]) || (o = "Down" && obj[object][k] < obj[key][k]) ? 1 : -1
+		return result
 	}
 }

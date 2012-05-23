@@ -319,13 +319,18 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			MatchPos := 0
 			
 			;Match by name of the resolved filename
-			strippedResolvedName := this.Settings.IgnoreFileExtensions ? RegexReplace(ListEntry.ResolvedName, "\.\w+") : ListEntry.ResolvedName 
-			ResolvedMatch := strippedResolvedName && ((MatchPos := InStr(strippedResolvedName,StrippedFilter)) || (this.Settings.FuzzySearch && strlen(StrippedFilter) < 5 && FuzzySearch(strippedResolvedName,StrippedFilter) < 0.4))
+			strippedResolvedName := this.Settings.IgnoreFileExtensions ? RegexReplace(ListEntry.ResolvedName, "\.\w+") : ListEntry.ResolvedName
+			ResolvedMatch := 1
+			if(strippedResolvedName)
+				ResolvedMatch := FuzzySearch(strippedResolvedName, StrippedFilter, this.Settings.FuzzySearch)
 			
 			;Match by filename
-			FilenameMatch := ListEntry.Filename && ((MatchPos := InStr(ListEntry.Filename,StrippedFilter)) || (this.Settings.FuzzySearch && strlen(StrippedFilter) < 5 && FuzzySearch(ListEntry.Filename,StrippedFilter) < 0.4))
+			FilenameMatch := 1
+			if(ListEntry.Filename)
+				FilenameMatch := ListEntry.Filename && FuzzySearch(ListEntry.Filename,StrippedFilter, this.Settings.FuzzySearch)
 			
-			if(ResolvedMatch || FilenameMatch)
+			;ResolvedMatch is weighted slightly better
+			if((Quality := min(ResolvedMatch - 0.1, FilenameMatch)) < 0.4)
 			{
 				if(!ListEntry.hIcon) ;Program launcher icons are cached lazy, only when needed
 					ListEntry.hIcon := ExtractAssociatedIcon(0, ListEntry.Command, iIndex)
@@ -341,18 +346,22 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 				result.Path := ListEntry.Command
 				result.args := ListEntry.args
 				result.icon := ListEntry.hIcon
+				result.Quality := Quality
 				;Put entries which start with the match at first
-				if(MatchPos = 1)
+				;if(MatchPos = 1)
 					Results.Insert(result)
-				else if(MatchPos)
-					InStrList.Insert(result)
-				else
-					FuzzyList.Insert(result)
+				;else if(MatchPos)
+				;	InStrList.Insert(result)
+				;else
+				;	FuzzyList.Insert(result)
 			}
 			index++
 		}
-		Results.Extend(InStrList)
-		Results.Extend(FuzzyList)
+		outputdebug % Results.MaxIndex()
+		;Results.Extend(InStrList)
+		;Results.Extend(FuzzyList)
+		Results := ArraySort(Results, "Quality", "Up")
+		outputdebug % results.MaxIndex()
 		return Results
 	}	
 	

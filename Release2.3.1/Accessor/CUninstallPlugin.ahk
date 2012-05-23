@@ -39,6 +39,7 @@ Class CUninstallPlugin extends CAccessorPlugin
 		}
 		Type := "Uninstall"
 		Actions := new this.CActions()
+		Priority := CUninstallPlugin.Instance.Priority
 	}
 	IsInSinglePluginContext(Filter, LastFilter)
 	{

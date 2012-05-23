@@ -23,6 +23,7 @@ MajorVersion := 2
 MinorVersion := 6
 BugfixVersion := 0
 ComObjError(0)
+
 #include %A_ScriptDir%\Globals.ahk ;Some global variable definitions
 #include %A_ScriptDir%\Autoexecute.ahk ;include first to avoid issues with autoexecute ending too soon because of labels
 #include <RichObject>

@@ -23,6 +23,7 @@ Class CKeywordPlugin extends CAccessorPlugin
 		}
 		Type := "Keyword Plugin"
 		Actions := new this.CActions()
+		Priority := CKeywordPlugin.Instance.Priority
 	}
 	IsInSinglePluginContext(Filter, LastFilter)
 	{

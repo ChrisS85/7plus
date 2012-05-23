@@ -21,6 +21,7 @@ Class CEventPlugin extends CAccessorPlugin
 		}
 		Type := "Event Plugin"
 		Actions := new this.CActions()
+		Priority := CEventPlugin.Instance.Priority
 		__Delete()
 		{
 			if(this.Icon && !CAccessor.Instance.GenericIcons.IndexOf(this.Icon))

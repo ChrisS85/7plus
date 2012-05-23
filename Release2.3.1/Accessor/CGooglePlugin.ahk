@@ -28,6 +28,7 @@ Class CGooglePlugin extends CAccessorPlugin
 		}
 		Type := "Google"
 		Actions := new this.CActions()
+		Priority := CGooglePlugin.Instance.Priority
 	}
 	IsInSinglePluginContext(Filter, LastFilter)
 	{

@@ -41,6 +41,7 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 		Type := "Notepad++ Tab Switcher"
 		Detail1 := "NP++ Tab"
 		Actions := new this.CActions()
+		Priority := CNotepadPlusPlusPlugin.Instance.Priority
 	}
 	Init()
 	{

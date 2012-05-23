@@ -33,6 +33,7 @@ Class CRecentFoldersPlugin extends CAccessorPlugin
 		}
 		Type := "Recent Folders"
 		Actions := new this.CActions()
+		Priority := CRecentFoldersPlugin.Instance.Priority
 	}
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
