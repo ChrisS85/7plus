@@ -18,6 +18,7 @@ Class CAccessorHistoryPlugin extends CAccessorPlugin
 		MinChars := 0
 		ShowWithEmptyQuery := true
 		SearchHistory := false
+		BasePriority := 0.3
 	}
 	ShowSettings(PluginSettings, GUI, PluginGUI)
 	{
@@ -60,44 +61,24 @@ Class CAccessorHistoryPlugin extends CAccessorPlugin
 		if(!Filter && this.Settings.ShowWithEmptyQuery)
 		{
 			for index, item in this.List
+			{
+				item.MatchQuality := 1
 				Results.Insert(item)
+			}
 			return Results
 		}
 		else if(Filter && this.Settings.SearchHistory)
 		{
-			TitleStartsWithList := Array()
-			PathStartsWithList := Array()
-			TitleContainsList := Array()
-			PathContainsList := Array()
-			FuzzyTitleList := Array()
-			FuzzyPathList := Array()
 			for index, item in this.List
 			{
-				if(pos := InStr(item.Title, Filter))
+				if((item.MatchQuality := FuzzySearch(item.Title, Filter, this.Settings.FuzzySearch)) > Accessor.Settings.FuzzySearchThreshold)
+					Results.Insert(item)
+				else if((item.MatchQuality := FuzzySearch(item.Path, Filter, this.Settings.FuzzySearch)) > Accessor.Settings.FuzzySearchThreshold)
 				{
-					if(pos = 1)
-						TitleStartsWithList.Insert(item)
-					else if(pos > 1)
-						TitleContainsList.Insert(item)
+					item.MatchQuality -= 0.1
+					Results.Insert(item)
 				}
-				else if(pos := InStr(item.Path, Filter))
-				{
-					if(pos = 1)
-						PathStartsWithList.Insert(item)
-					else if(pos > 1)
-						PathContainsList.Insert(item)
-				}
-				else if(this.Settings.FuzzySearch && FuzzySearch(item.Title, Filter) < 0.3)
-					FuzzyTitleList.Insert(item)
-				else if(this.Settings.FuzzySearch && FuzzySearch(item.Path, Filter) < 0.3)
-					FuzzyPathList.Insert(item)
 			}
-			Results.Extend(TitleStartsWithList)
-			Results.Extend(PathStartsWithList)
-			Results.Extend(TitleContainsList)
-			Results.Extend(PathContainsList)
-			Results.Extend(FuzzyTitleList)
-			Results.Extend(FuzzyPathList)
 			return Results
 		}
 	}

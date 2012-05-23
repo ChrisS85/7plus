@@ -50,6 +50,7 @@ Class CAccessor
 		Height := 360
 		OpenInMonitorOfMouseCursor := true ;If true, Accessor window will open in the monitor where the mouse cursor is.
 		UseSelectionForKeywords := true ;If set, the selected text will automatically be used as ${1} parameter in keywords if no text is typed
+		FuzzySearchThreshold := 0.6
 		__new(XML)
 		{
 			for key, value in this
@@ -413,7 +414,7 @@ Class CAccessor
 
 		;Calculate the weighting of the individual results as the average value of the single weighting indicators
 		for index, ListEntry in this.List
-			ListEntry.SortOrder := (ListEntry.Priority + ListEntry.MatchQuality + ListEntry.UsageFrequency) / 3
+			ListEntry.SortOrder := ListEntry.Priority + (ListEntry.MatchQuality - this.Settings.FuzzySearchThreshold) / (1 - this.Settings.FuzzySearchThreshold)
 		;Sort the list by the weighting
 		this.List := ArraySort(this.List, "SortOrder", "Down")
 
@@ -430,7 +431,7 @@ Class CAccessor
 			if(!Settings.General.DebugEnabled)
 				item := this.GUI.ListView.Items.Add("", Title, Path, Detail1, Detail2)
 			else
-				item := this.GUI.ListView.Items.Add("", Title, Path, Detail1, ListEntry.Priority)
+				item := this.GUI.ListView.Items.Add("", Title, Path, Detail1, ListEntry.SortOrder)
 			if(!ListEntry.HasKey("IconNumber"))
 				item.Icon := ListEntry.Icon
 			Else
@@ -893,11 +894,6 @@ Class CAccessorGUI extends CGUI
 	}
 }
 
-
-AccessorPrioritySort(First,Second)
-{
-	return CAccessor.Plugins[First].Priority = CAccessor.Plugins[Second].Priority ? First > Second ? 1 : First < Second ? -1 : 0 : CAccessor.Plugins[First].Priority < CAccessor.Plugins[Second].Priority ? 1 : -1
-}
 #if CAccessor.Instance.GUI
 Tab::Down
 *Up::CAccessor.Instance.GUI.OnUp()
@@ -1033,7 +1029,7 @@ Class CAccessorPlugin
 		
 		;The default priority of this plugin when Accessor opens.
 		;The plugin may use a higher priority when the context requires it in OnOpen()
-		BasePriority := 0
+		BasePriority := 0.5
 		
 		;If true, the results from this plugin are only shown when the keyword is entered in the query.
 		;~ KeywordOnly := false

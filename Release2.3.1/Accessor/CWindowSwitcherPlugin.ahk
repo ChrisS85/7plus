@@ -71,9 +71,11 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 		FuzzyList := Array()
 		for index, window in this.List
 		{
-			x := 0
 			ExeName := this.Settings.IgnoreFileExtensions ? strTrimRight(window.ExeName,".exe") : window.ExeName
-			if(x := ((this.Settings.ShowWithEmptyQuery && Filter = "") || Filter && InStr(window.Title, Filter)) || (this.Settings.FuzzySearch && FuzzySearch(ExeName, Filter) < 0.4))
+			EmptyMatch := this.Settings.ShowWithEmptyQuery && Filter = ""
+			TitleMatch := FuzzySearch(window.Title, Filter, this.Settings.FuzzySearch)
+			ExeMatch := FuzzySearch(ExeName, Filter, this.Settings.FuzzySearch)
+			if((MatchQuality := max(EmptyMatch, TitleMatch, ExeMatch)) > Accessor.Settings.FuzzySearchThreshold)
 			{
 				Result := new this.CResult()
 				Result.Title := window.Title
@@ -84,14 +86,10 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 				Result.PID := window.PID
 				Result.hwnd := window.hwnd
 				Result.Icon := window.Icon ? window.Icon : Accessor.GenericIcons.Application
-				
-				if(x)
-					Results.Insert(Result)
-				else
-					FuzzyList.Insert(Result)
+				Result.MatchQuality := MatchQuality
+				Results.Insert(Result)
 			}
 		}
-		Results.extend(FuzzyList)
 		return Results
 	}
 	ShowSettings(PluginSettings, Accessor, PluginGUI)

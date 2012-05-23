@@ -37,6 +37,9 @@ Class CNotesPlugin extends CAccessorPlugin
 		}
 		Type := "Notes"
 		Priority := CNotesPlugin.Instance.Priority
+		MatchQuality := 1
+		Detail1 := "Notes"
+
 		__new(NewNote = false)
 		{
 			this.Actions := new this.CActions(NewNote)
@@ -77,7 +80,6 @@ Class CNotesPlugin extends CAccessorPlugin
 			Result := new this.CResult(true)
 			Result.Title := "New note:"
 			Result.Path := Filter
-			Result.Detail1 := "Notes"
 			Result.Icon := this.Icon
 			Results.Insert(Result)
 		}
@@ -86,7 +88,6 @@ Class CNotesPlugin extends CAccessorPlugin
 			Result := new this.CResult()
 			Result.Title := note.Text
 			Result.Path := ""
-			Result.Detail1 := "Notes"
 			Result.ID := index
 			Result.Icon := this.Icon
 			Results.Insert(Result)

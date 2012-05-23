@@ -28,6 +28,8 @@ Class CCalculatorPlugin extends CAccessorPlugin
 		Type := "Calculator"
 		Actions := new this.CActions()
 		Priority := CCalculatorPlugin.Instance.Priority
+		MatchQuality := 1
+		Detail1 := "Calculator"
 	}
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
@@ -56,7 +58,6 @@ Class CCalculatorPlugin extends CAccessorPlugin
 			Result.Title := ListEntry.Result
 			Result.Path := ListEntry.URL
 			Result.Icon := ListEntry.Icon
-			Result.Detail1 := "Calculator"
 			Results.Insert(Result)
 		}
 		return Results

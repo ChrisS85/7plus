@@ -81,7 +81,7 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 		;if SciTEWindow is open and there is an entry with the last used command for the current tab, put it in edit box
 		if(WinExist("ahk_class " this.WindowClassName) = Accessor.PreviousWindow)
 		{
-			this.Priority := 10000
+			this.Priority += 1
 			if(!Accessor.Filter && this.Settings.RememberQueries && index := this.MRUList.FindKeyWithValue("Path", Path := this.GetSciTE4AutoHotkeyActiveTab()))
 			{
 				Accessor.SetFilter(this.MRUList[index].Command)
@@ -118,6 +118,7 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 		Results := Array()
 		if(!Filter && KeywordSet)
 		{
+			MatchQuality := 1
 			for index, Path in this.List1
 			{
 				GoSub S4AHK_CreateResult
@@ -130,25 +131,12 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 		for index, Path in this.List1
 		{
 			SplitPath, Path, Name
-			pos := InStr(Name, Filter)
-			if(pos = 1)
-			{
-				GoSub S4AHK_CreateResult
-				Results.Insert(Result)
-			}
-			else if(pos > 1)
-			{
-				GoSub S4AHK_CreateResult
-				InStrList.Insert(Result)
-			}
-			else if(this.Settings.FuzzySearch && FuzzySearch(Name,Filter) < 0.3)
+			if((MatchQuality := FuzzySearch(Name, Filter, this.Settings.FuzzySearch)) > Accessor.Settings.FuzzySearchThreshold)
 			{
 				GoSub S4AHK_CreateResult
 				FuzzyList.Insert(Result)
 			}
 		}
-		Results.Extend(InStrList)
-		Results.Extend(FuzzyList)
 		return Results
 		
 		S4AHK_CreateResult:
@@ -157,6 +145,7 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 		Result.Title := Name
 		Result.Path := Path
 		Result.Icon := this.Icon
+		Result.MatchQuality := MatchQuality
 		return
 	}
 	

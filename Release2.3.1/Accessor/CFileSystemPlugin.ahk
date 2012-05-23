@@ -18,6 +18,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		UseIcons := false
 		UseSelectedText := true
 		ShowFilesOfCurrentFolder := false
+		BasePriority := 0.4
 	}
 	Class CResult extends CAccessorPlugin.CResult
 	{
@@ -71,10 +72,16 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		}
 		Type := "File System"
 		Priority := CFileSystemPlugin.Instance.Priority
+		MatchQuality := 1 ;Only direct matches are used by FileSystem plugin
 	}
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
 		Filter := ExpandPathPlaceholders(Filter)
+
+		;Make it possible to use the current directory with \
+		if(SubStr(Filter, 1, 1) = "\")
+			Filter := CAccessor.Instance.CurrentDirectory Filter
+
 		SplitPath, Filter, name, dir,,,drive
 		if((x := InStr(dir, ":") ) != 0 && x != 2) ;Colon may only be drive separator
 			return false
@@ -117,6 +124,11 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		
 		Results := Array()
 		Filter := ExpandPathPlaceholders(Filter)
+		
+		;Make it possible to use the current directory with \
+		if(SubStr(Filter, 1, 1) = "\")
+			Filter := Accessor.CurrentDirectory Filter
+
 		SplitPath, filter, name, dir, , , drive
 		if(!dir && Accessor.CurrentDirectory && this.Settings.ShowFilesOfCurrentFolder)
 			dir := Accessor.CurrentDirectory

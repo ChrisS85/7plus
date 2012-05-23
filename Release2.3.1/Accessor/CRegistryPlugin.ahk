@@ -27,6 +27,9 @@ Class CRegistryPlugin extends CAccessorPlugin
 		Type := "Registry"
 		Actions := new this.CActions()
 		Priority := CRegistryPlugin.Instance.Priority
+		MatchQuality := 1 ;Only one result which matches perfectly
+		Path := "Open Registry"
+		Detail1 := "Registry"
 	}
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
@@ -50,9 +53,7 @@ Class CRegistryPlugin extends CAccessorPlugin
 		{
 			Result := new this.CResult()
 			Result.Title := Filter
-			Result.Path := "Open Registry"
 			Result.Icon := Accessor.GenericIcons.Folder
-			Result.Detail1 := "Registry"
 			Results.Insert(Result)
 		}
 		return Results

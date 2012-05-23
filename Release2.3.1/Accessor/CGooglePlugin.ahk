@@ -29,6 +29,8 @@ Class CGooglePlugin extends CAccessorPlugin
 		Type := "Google"
 		Actions := new this.CActions()
 		Priority := CGooglePlugin.Instance.Priority
+		MatchQuality := 1 ;Only direct matches are used by this plugin
+		Detail1 := "Google result"
 	}
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
@@ -62,7 +64,6 @@ Class CGooglePlugin extends CAccessorPlugin
 			Result.Path := ListEntry.visibleUrl
 			Result.URL := ListEntry.unescapedUrl
 			Result.Icon := Accessor.GenericIcons.URL
-			Result.Detail1 := "Google result"
 			Results.Insert(Result)
 		}
 		return Results

@@ -24,6 +24,7 @@ Class CKeywordPlugin extends CAccessorPlugin
 		Type := "Keyword Plugin"
 		Actions := new this.CActions()
 		Priority := CKeywordPlugin.Instance.Priority
+		MatchQuality := 1 ;Only one result if this plugin applies
 	}
 	IsInSinglePluginContext(Filter, LastFilter)
 	{

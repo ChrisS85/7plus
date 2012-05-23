@@ -59,7 +59,7 @@ Class CClipboardPlugin extends CAccessorPlugin
 	OnOpen(Accessor)
 	{
 		if(IsEditControlActive())
-			this.Priority := 5000 ;Lower priority than most other dynamic priorities, since they are more specialized
+			this.Priority += 0.5 ;Lower priority than most other dynamic priorities, since they are more specialized
 	}
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
@@ -67,55 +67,57 @@ Class CClipboardPlugin extends CAccessorPlugin
 		Results := Array()
 		NameResults := Array()
 		TextResults := Array()
-		if(Accessor.CurrentSelection)
+		if(Accessor.CurrentSelection && !Filter)
 		{
 			Result := new this.CStoreResult()
 			Result.Title := "Store selected text as clip"
 			Result.Path := Accessor.CurrentSelection
-			Result.Detail1 := "Clip"
 			Result.ClipType := "SelectedText"
+			Result.MatchQuality := 1
 			Results.Insert(Result)
 		}
 		if(StrLen(Filter) >= 2)
 		{
 			for index, clip in ClipboardList
 			{
-				if(InStr(clip, Filter))
+				if((MatchQuality := FuzzySearch(clip, Filter, false)) > Accessor.Settings.FuzzySearchThreshold)
 				{
 					Result := new this.CResult()
 					Result.Title := index
 					Result.Path := clip
 					Result.Detail1 := "Clip"
 					Result.ClipType := "History"
+					Result.MatchQuality := MatchQuality
 					Results.Insert(Result)
 				}
 			}
 			for index2, clip in ClipboardList.Persistent
 			{
-				if(InStr(clip.Name, Filter))
+				if((MatchQuality := FuzzySearch(clip.Name, Filter, false)) > Accessor.Settings.FuzzySearchThreshold)
 				{
 					Result := new this.CResult()
 					Result.Title := clip.Name
 					Result.Path := clip.Text
 					Result.Detail1 := "Clip"
 					Result.ClipType := "Persistent"
+					Result.MatchQuality := MatchQuality - 0.1
 					Result.Index := index2
-					NameResults.Insert(Result)
+					Results.Insert(Result)
 				}
-				else if(InStr(clip.Text, Filter))
+				;Only search in the text of the clip when the user entered a longer query
+				else if(strLen(Filter) > 8 && (MatchQuality := FuzzySearch(clip.Text, Filter, false)) > Accessor.Settings.FuzzySearchThreshold)
 				{
 					Result := new this.CResult()
 					Result.Title := clip.Name
 					Result.Path := clip.Text
 					Result.Detail1 := "Clip"
 					Result.ClipType := "Persistent"
+					Result.MatchQuality := MatchQuality
 					Result.Index := index2
-					TextResults.Insert(Result)
+					Results.Insert(Result)
 				}
 			}
 		}
-		Results.Extend(NameResults)
-		Results.Extend(TextResults)
 		return Results
 	}
 	ShowSettings(PluginSettings, Accessor, PluginGUI)

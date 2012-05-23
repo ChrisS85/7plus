@@ -23,6 +23,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		MinChars := 2
 		OpenWithKeyword := "ow"
 		;RefreshOnStartup := true
+		BasePriority := 0.7
 	}
 	Class CIndexingPath
 	{
@@ -130,6 +131,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			}
 		}
 		Type := "Program Launcher"
+		Priority := CProgramLauncherPlugin.Instance.Priority
 		__new(BasePath = "")
 		{
 			this.Actions := new this.CActions(BasePath)
@@ -292,8 +294,6 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		Results := Array()
-		FuzzyList := Array()
-		InStrList := Array()
 		
 		;Detect "Open with" functionality
 		if(Accessor.SelectedFile && this.Settings.OpenWithKeyword && InStr(Filter, this.Settings.OpenWithKeyword " ") = 1)
@@ -306,7 +306,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 
 		;Possibly remove file extension from filter
 		strippedFilter := this.Settings.IgnoreFileExtensions ? RegexReplace(Filter, "\.\w+") : Filter
-		;~ Filter := ExpandInternalPlaceHolders(Filter) ;TODO: Is this really needed? Might save some performance to leave it out
+
 		index := 1
 		Loop % this.List.MaxIndex()
 		{
@@ -320,17 +320,17 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			
 			;Match by name of the resolved filename
 			strippedResolvedName := this.Settings.IgnoreFileExtensions ? RegexReplace(ListEntry.ResolvedName, "\.\w+") : ListEntry.ResolvedName
-			ResolvedMatch := 1
+			ResolvedMatch := 0
 			if(strippedResolvedName)
 				ResolvedMatch := FuzzySearch(strippedResolvedName, StrippedFilter, this.Settings.FuzzySearch)
 			
 			;Match by filename
-			FilenameMatch := 1
+			FilenameMatch := 0
 			if(ListEntry.Filename)
-				FilenameMatch := ListEntry.Filename && FuzzySearch(ListEntry.Filename,StrippedFilter, this.Settings.FuzzySearch)
+				FilenameMatch := FuzzySearch(ListEntry.Filename, StrippedFilter, this.Settings.FuzzySearch)
 			
 			;ResolvedMatch is weighted slightly better
-			if((Quality := min(ResolvedMatch - 0.1, FilenameMatch)) < 0.4)
+			if((Quality := max(ResolvedMatch - 0.1, FilenameMatch)) > Accessor.Settings.FuzzySearchThreshold)
 			{
 				if(!ListEntry.hIcon) ;Program launcher icons are cached lazy, only when needed
 					ListEntry.hIcon := ExtractAssociatedIcon(0, ListEntry.Command, iIndex)
@@ -346,22 +346,11 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 				result.Path := ListEntry.Command
 				result.args := ListEntry.args
 				result.icon := ListEntry.hIcon
-				result.Quality := Quality
-				;Put entries which start with the match at first
-				;if(MatchPos = 1)
-					Results.Insert(result)
-				;else if(MatchPos)
-				;	InStrList.Insert(result)
-				;else
-				;	FuzzyList.Insert(result)
+				result.MatchQuality := Quality
+				Results.Insert(result)
 			}
 			index++
 		}
-		outputdebug % Results.MaxIndex()
-		;Results.Extend(InStrList)
-		;Results.Extend(FuzzyList)
-		Results := ArraySort(Results, "Quality", "Up")
-		outputdebug % results.MaxIndex()
 		return Results
 	}	
 	

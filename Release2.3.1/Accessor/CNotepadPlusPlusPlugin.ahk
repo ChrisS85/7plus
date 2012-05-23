@@ -70,7 +70,7 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 		;if Notepad++ is open and there is an entry with the last usd command for the current tab, put it in edit box
 		if(WinExist("ahk_class " this.WindowClassName) = Accessor.PreviousWindow)
 		{
-			this.Priority := 10000
+			this.Priority += 1
 			if(!Accessor.Filter && this.Settings.RememberQueries && index := this.MRUList.FindKeyWithValue("Path", Path := this.GetNotepadPlusPlusActiveTab()))
 			{
 				Accessor.SetFilter(this.MRUList[index].Command)
@@ -104,6 +104,7 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 		Results := Array()
 		if(!Filter && KeywordSet)
 		{
+			MatchQuality := 1
 			for index, Path in this.List1
 			{
 				GoSub NPPlusPlus_CreateResult
@@ -116,50 +117,24 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 			}
 			return Results
 		}
-		InStrList := Array()
-		FuzzyList := Array()
 		for index, Path in this.List1
 		{
 			SplitPath, Path, Name
-			pos := InStr(Name, Filter)
-			if(pos = 1)
+			if((MatchQuality := FuzzySearch(Name, Filter, this.Settings.FuzzySearch)) > Accessor.Settings.FuzzySearchThreshold)
 			{
 				GoSub NPPlusPlus_CreateResult
 				Results.Insert(Result)
-			}
-			else if(pos > 1)
-			{
-				GoSub NPPlusPlus_CreateResult
-				InStrList.Insert(Result)
-			}
-			else if(this.Settings.FuzzySearch && FuzzySearch(Name, Filter) < 0.3)
-			{
-				GoSub NPPlusPlus_CreateResult
-				FuzzyList.Insert(Result)
 			}
 		}
 		for index2, Path in this.List2
 		{
 			SplitPath, Path, Name
-			pos := InStr(Name, Filter)
-			if(pos = 1)
+			if((MatchQuality := FuzzySearch(Name, Filter, this.Settings.FuzzySearch)) > Accessor.Settings.FuzzySearchThreshold)
 			{
 				GoSub NPPlusPlus_CreateResult
 				Results.Insert(Result)
 			}
-			else if(pos > 1)
-			{
-				GoSub NPPlusPlus_CreateResult
-				InStrList.Insert(Result)
-			}
-			else if(this.Settings.FuzzySearch && FuzzySearch(Name, Filter) < 0.3)
-			{
-				GoSub NPPlusPlus_CreateResult
-				FuzzyList.Insert(Result)
-			}
 		}
-		Results.Extend(InStrList)
-		Results.Extend(FuzzyList)
 		return Results
 		
 		NPPlusPlus_CreateResult:
@@ -167,6 +142,7 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 		Result := new this.CResult()
 		Result.Title := Name
 		Result.Path := Path
+		Result.MatchQuality := MatchQuality
 		Result.Icon := this.Icon
 		return
 	}

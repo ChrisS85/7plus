@@ -59,36 +59,12 @@ Class CUninstallPlugin extends CAccessorPlugin
 	{
 		;Lazy loading
 		if(this.List.MaxIndex() = 0)
-		{
-			Loop, HKLM , SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, 2, 0
-			{
-				GUID := A_LoopRegName ;Note: This is not always a GUID but can also be a regular name. It seems that MSIExec likes to use GUIDs
-				RegRead, DisplayName, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%GUID%, DisplayName
-				RegRead, UninstallString, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%GUID%, UninstallString
-				RegRead, InstallLocation, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%GUID%, InstallLocation
-				RegRead, DisplayIcon, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%GUID%, DisplayIcon
-				if(RegexMatch(DisplayIcon,".+,\d*"))
-				{
-					Number := strTrim(SubStr(DisplayIcon, InStr(DisplayIcon,",",0,0) + 1), " ")
-					DisplayIcon := strTrim(SubStr(DisplayIcon, 1, InStr(DisplayIcon,",",0,0) - 1), " ")
-				}
-				if(!Number)
-					Number := 0
-				if(FileExist(DisplayIcon))
-					hIcon := ExtractAssociatedIcon(Number, DisplayIcon, iIndex)
-				else
-					hIcon := Accessor.GenericIcons.Application
-				if(DisplayName)
-					this.List.Insert(Object("GUID", GUID, "DisplayName", DisplayName, "UninstallString", UninstallString, "InstallLocation", InstallLocation, "Icon", hIcon))
-			}
-		}
+			this.LoadUninstallEntries()
 		
 		Results := Array()
-		FuzzyResults := Array()
 		for index, ListEntry in this.List
 		{
-			x := 0
-			if(x := (Filter = "" || InStr(ListEntry.DisplayName, Filter)) || y := (this.Settings.FuzzySearch && FuzzySearch(ListEntry.DisplayName, Filter) < 0.4))
+			if((MatchQuality := FuzzySearch(ListEntry.DisplayName, Filter, this.Settings.FuzzySearch) > Accessor.Settings.FuzzySearchThreshold))
 			{
 				Result := new this.CResult()
 				Result.Title := ListEntry.DisplayName
@@ -96,14 +72,10 @@ Class CUninstallPlugin extends CAccessorPlugin
 				Result.Path := ListEntry.InstallLocation
 				Result.GUID := ListEntry.GUID
 				Result.Icon := ListEntry.Icon
-				
-				if(x)
-					Results.Insert(Result)
-				else
-					FuzzyList.Insert(Result)
+				Result.MatchQuality := MatchQuality
+				Results.Insert(Result)
 			}
 		}
-		Results.extend(FuzzyResults)
 		return Results
 	}
 	Uninstall(Accessor, ListEntry)
@@ -119,6 +91,30 @@ Class CUninstallPlugin extends CAccessorPlugin
 		{
 			this.List.Remove(key)
 			Accessor.RefreshList()
+		}
+	}
+	LoadUninstallEntries()
+	{
+		Loop, HKLM , SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, 2, 0
+		{
+			GUID := A_LoopRegName ;Note: This is not always a GUID but can also be a regular name. It seems that MSIExec likes to use GUIDs
+			RegRead, DisplayName, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%GUID%, DisplayName
+			RegRead, UninstallString, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%GUID%, UninstallString
+			RegRead, InstallLocation, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%GUID%, InstallLocation
+			RegRead, DisplayIcon, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\%GUID%, DisplayIcon
+			if(RegexMatch(DisplayIcon,".+,\d*"))
+			{
+				Number := strTrim(SubStr(DisplayIcon, InStr(DisplayIcon,",",0,0) + 1), " ")
+				DisplayIcon := strTrim(SubStr(DisplayIcon, 1, InStr(DisplayIcon,",",0,0) - 1), " ")
+			}
+			if(!Number)
+				Number := 0
+			if(FileExist(DisplayIcon))
+				hIcon := ExtractAssociatedIcon(Number, DisplayIcon, iIndex)
+			else
+				hIcon := Accessor.GenericIcons.Application
+			if(DisplayName)
+				this.List.Insert(Object("GUID", GUID, "DisplayName", DisplayName, "UninstallString", UninstallString, "InstallLocation", InstallLocation, "Icon", hIcon))
 		}
 	}
 }

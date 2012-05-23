@@ -12,6 +12,7 @@ Class CEventPlugin extends CAccessorPlugin
 		Keyword := "Event"
 		KeywordOnly := false
 		MinChars := 2
+		BasePriority := 0.8
 	}
 	Class CResult extends CAccessorPlugin.CResult
 	{
@@ -37,7 +38,7 @@ Class CEventPlugin extends CAccessorPlugin
 		Results := Array()
 		for index, Event in EventSystem.Events
 		{
-			if(Event.Trigger.Is(CAccessorTrigger) && InStr(Filter, Event.Trigger.Keyword) = 1)
+			if(Event.Trigger.Is(CAccessorTrigger) && (MatchQuality := FuzzySearch(Event.Trigger.Keyword, Filter, false)) > Accessor.Settings.FuzzySearchThreshold)
 			{
 				Result := new this.CResult()
 				Result.Title := Event.Trigger.Title
@@ -45,6 +46,7 @@ Class CEventPlugin extends CAccessorPlugin
 				Result.Detail1 := Event.ExpandPlaceholders(ListEntry.Event.Trigger.Detail1)
 				Result.Event := Event
 				Result.Parameters := Parameters
+				Result.MatchQuality := MatchQuality
 				if(Icon := Event.Trigger.Icon)
 				{
 					StringSplit, icon, icon, `,,%A_Space%

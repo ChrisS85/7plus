@@ -7,12 +7,15 @@ Class CURLPlugin extends CAccessorPlugin
 		
 	;Array of Opera bookmarks
 	OperaBookmarks := Array()
+	OperaClass := "OperaWindowClass"
 
 	;Array of Chrome bookmarks
 	ChromeBookmarks := Array()
+	ChromeClass := "Chrome_WidgetWin_0"
 
 	;Array of IE bookmarks
 	IEBookmarks := Array()
+	IEClass := "IEFrame"
 
 	AllowDelayedExecution := false
 	
@@ -38,6 +41,7 @@ Class CURLPlugin extends CAccessorPlugin
 		Type := "URL"
 		Actions := new this.CActions()
 		Priority := CURLPlugin.Instance.Priority
+		Detail1 := "Bookmark"
 	}
 	Init(PluginSettings)
 	{
@@ -54,10 +58,13 @@ Class CURLPlugin extends CAccessorPlugin
 	}
 	OnOpen(Accessor)
 	{
-		outputdebug if(this.Settings.UseSelectedText && !Accessor.Filter && !Accessor.FilterWithoutTimer && Accessor.CurrentSelection && IsURL(Accessor.CurrentSelection))
-		outputdebug % (this.Settings.UseSelectedText) (!Accessor.Filter) (!Accessor.FilterWithoutTimer) (Accessor.CurrentSelection) (IsURL(Accessor.CurrentSelection))
 		if(this.Settings.UseSelectedText && !Accessor.Filter && !Accessor.FilterWithoutTimer && Accessor.CurrentSelection && IsURL(Accessor.CurrentSelection))
 			Accessor.SetFilter(Accessor.CurrentSelection)
+		if({this.OperaClass : "", this.ChromeClass : "", this.IEClass : ""}.HasKey(WinGetClass("ahk_id " Accessor.PreviousWindow)))
+		{
+			outputdebug increase priority
+			this.Priority += 0.5
+		}
 	}
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
@@ -70,39 +77,40 @@ Class CURLPlugin extends CAccessorPlugin
 			Result.Path := "Open URL"
 			Result.Icon := Accessor.GenericIcons.URL
 			Result.Detail1 := "URL"
+			Result.MatchQuality := 0.8 ;Not sure if this is a good match, so lower value
 			Results.Insert(Result)
 		}
 		if(this.Settings.IncludeOperaBookmarks)
-			for index2, OperaBookmark in this.OperaBookmarks
-				if(InStr(OperaBookmark.Name, Filter) || InStr(OperaBookmark.URL, Filter))
+			for index, OperaBookmark in this.OperaBookmarks
+				if((MatchQuality := FuzzySearch(OperaBookmark.Name, Filter, false)) > Accessor.Settings.FuzzySearchThreshold || (MatchQuality := FuzzySearch(OperaBookmark.URL, Filter, false) - 0.2) > Accessor.Settings.FuzzySearchThreshold)
 				{
 					Result := new this.CResult()
 					Result.Title := OperaBookmark.Name
 					Result.Path := OperaBookmark.URL
-					Result.Detail1 := "Bookmark"
 					Result.Icon := Accessor.GenericIcons.URL
+					Result.MatchQuality := MatchQuality
 					Results.Insert(Result)
 				}
 		if(this.Settings.IncludeChromeBookmarks)
-			for index3, ChromeBookmark in this.ChromeBookmarks
-				if(InStr(ChromeBookmark.Name, Filter) || InStr(ChromeBookmark.URL, Filter))
+			for index2, ChromeBookmark in this.ChromeBookmarks
+				if((MatchQuality := FuzzySearch(ChromeBookmark.Name, Filter, false)) > Accessor.Settings.FuzzySearchThreshold || (MatchQuality := FuzzySearch(ChromeBookmark.URL, Filter, false) - 0.2) > Accessor.Settings.FuzzySearchThreshold)
 				{
 					Result := new this.CResult()
 					Result.Title := ChromeBookmark.Name
 					Result.Path := ChromeBookmark.URL
-					Result.Detail1 := "Bookmark"
 					Result.Icon := Accessor.GenericIcons.URL
+					Result.MatchQuality := MatchQuality
 					Results.Insert(Result)
 				}
 		if(this.Settings.IncludeIEBookmarks)
-			for index4, IEBookmark in this.IEBookmarks
-				if(InStr(IEBookmark.Name, Filter) || InStr(IEBookmark.URL, Filter))
+			for index3, IEBookmark in this.IEBookmarks
+				if((MatchQuality := FuzzySearch(IEBookmark.Name, Filter, false)) > Accessor.Settings.FuzzySearchThreshold || (MatchQuality := FuzzySearch(IEBookmark.URL, Filter, false) - 0.2) > Accessor.Settings.FuzzySearchThreshold)
 				{
 					Result := new this.CResult()
 					Result.Title := IEBookmark.Name
 					Result.Path := IEBookmark.URL
-					Result.Detail1 := "Bookmark"
 					Result.Icon := Accessor.GenericIcons.URL
+					Result.MatchQuality := MatchQuality
 					Results.Insert(Result)
 				}
 		return Results

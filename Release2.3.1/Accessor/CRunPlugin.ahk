@@ -12,6 +12,7 @@ Class CRunPlugin extends CAccessorPlugin
 		Keyword := "run"
 		KeywordOnly := false
 		MinChars := 1
+		BasePriority := 0.2
 	}
 	Class CResult extends CAccessorPlugin.CResult
 	{
@@ -27,6 +28,7 @@ Class CRunPlugin extends CAccessorPlugin
 		Detail1 := "Run command"
 		Actions := new this.CActions()
 		Priority := CRunPlugin.Instance.Priority
+		MatchQuality := 1 ; Only one result with perfect matching
 	}
 	IsInSinglePluginContext(Filter, LastFilter)
 	{

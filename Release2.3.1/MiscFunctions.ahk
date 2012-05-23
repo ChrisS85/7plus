@@ -842,27 +842,29 @@ FuzzySearch(longer, shorter, UseFuzzySearch = false)
 		return Contained = 1 ? 1 : 0.8
 
 	;Check if string can be matched by omitting characters
-	pos := 0
-	matched := 0
-	Loop % lens
+	if(lens < 5)
 	{
-		char := SubStr(shorter, A_Index, 1)
-		StringUpper, char, char
-		Loop % lenl - pos
+		pos := 0
+		matched := 0
+		Loop % lens
 		{
-			if(SubStr(longer, pos + A_Index, 1) == char)
+			char := SubStr(shorter, A_Index, 1)
+			StringUpper, char, char
+			Loop % lenl - pos
 			{
-				pos := A_Index
-				matched++
-				break
+				if(SubStr(longer, pos + A_Index, 1) == char)
+				{
+					pos := A_Index
+					matched++
+					break
+				}
+				else
+					continue
 			}
-			else
-				continue
 		}
+		if(matched = lens)
+			return 0.9 ;Slightly worse than direct matches
 	}
-	if(matched = lens)
-		return 0.9 ;Slightly worse than direct matches
-
 	;Calculate fuzzy string difference
 	if(UseFuzzySearch)
 	{

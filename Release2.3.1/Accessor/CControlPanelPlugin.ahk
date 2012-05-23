@@ -27,6 +27,7 @@ Class CControlPanelPlugin extends CAccessorPlugin
 		}
 		Type := "ControlPanel"
 		Priority := CControlPanelPlugin.Instance.Priority
+		Detail1 := "ControlPanel"
 		__new()
 		{
 			this.Actions := new this.CActions()
@@ -68,15 +69,15 @@ Class CControlPanelPlugin extends CAccessorPlugin
 		Results := Array()
 		for index, applet in this.List
 		{
-			if(InStr(applet.localString, Filter))
+			if((MatchQuality := FuzzySearch(applet.localString, Filter, false)) > Accessor.Settings.FuzzySearchThreshold)
 			{
 				Result := new this.CResult()
 				Result.Title := applet.localString
 				Result.Path := ""
-				Result.Detail1 := "ControlPanel"
 				Result.Icon := applet.Icon
 				Result.IconNumber := applet.IconNumber
 				Result.AppName := applet.AppName
+				Result.MatchQuality := MatchQuality
 				Results.Insert(Result)
 			}
 		}
