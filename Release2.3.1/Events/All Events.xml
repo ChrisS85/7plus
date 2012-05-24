@@ -5682,7 +5682,7 @@
 <Category>Explorer</Category>
 <Conditions>
 <Condition>
-<FeatureType>GetSelectedFilepaths</FeatureType>
+<FeatureType>GetPath</FeatureType>
 <Negate>0</Negate>
 <Type>Can Window be Navigated</Type>
 <WindowFilterClass></WindowFilterClass>

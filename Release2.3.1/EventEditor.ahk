@@ -133,7 +133,7 @@ Class CEventEditor extends CGUI
 			this.btnMoveConditionDown.Enabled := false
 			this.btnMoveConditionUp.Enabled := false
 		}
-		this.btnPasteCondition.Enabled := EventSystem.IsObject(ConditionClipboard)
+		this.btnPasteCondition.Enabled := IsObject(EventSystem.ConditionClipboard)
 		
 		AssignHotkeyToControl(this.listConditions.hwnd, "Delete", "EventEditor_DeleteCondition")
 		
@@ -160,7 +160,7 @@ Class CEventEditor extends CGUI
 			this.btnMoveActionDown.Enabled := false
 			this.btnMoveActionUp.Enabled := false
 		}
-		this.btnPasteAction.Enabled := EventSystem.IsObject(ActionClipboard)
+		this.btnPasteAction.Enabled := IsObject(EventSystem.ActionClipboard)
 		
 		AssignHotkeyToControl(this.listActions.hwnd, "Delete", "EventEditor_DeleteAction")
 		
