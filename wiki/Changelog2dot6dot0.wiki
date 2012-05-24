@@ -7,8 +7,8 @@
  * FTP upload action can now upload directories. In addition, FTP and image uploads are carried out in a separate process for better responsiveness.
 
 *Accessor:*
- * Results are now sorted by a new algorithm that includes the usage frequency and match quality. Execute a result a few times and it will appear at the top of the list!
  * Accessor has been rewritten from scratch and is now much more modular and powerful. All of its plugins were also rewritten and improved. There are also some new ones. Here's an excerpt of the most important new things:
+  * Results are now sorted by a new algorithm that includes the usage frequency and match quality. Execute a result a few times and it will appear at the top of the list!
   * Accessor now makes use of the text that is selected before the Accessor window is opened. Among other things it's now possible to select a file path, URL or registry key, open Accessor and it will be inserted as command automatically. The selection is also used in other plugins where appropriate.
   * It is now possible to use a timer in combination with Accessor commands. Examples:
    * Message Pizza in 10 min
