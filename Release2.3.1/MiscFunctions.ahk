@@ -627,7 +627,7 @@ IsDoubleClick()
 ;Checks if a specific control class is active. Matches by start of ClassNN.
 IsControlActive(controlclass)
 {
-	if(A_OSVersion="WIN_7")
+	if(WinVer >= WIN_7)
 		ControlGetFocus active, A
 	else
 		active := XPGetFocussed()
@@ -1031,23 +1031,25 @@ FindFreeFileName(FilePath)
 ;Attaches a window as a tool window to another window from a different process. QUESTION: Is this still needed?
 AttachToolWindow(hParent, GUINumber, AutoClose)
 {
-		global ToolWindows
-		outputdebug AttachToolWindow %GUINumber% to %hParent%
-		if(!IsObject(ToolWindows))
-			ToolWindows := Object()
-		if(!WinExist("ahk_id " hParent))
-			return false
-		Gui %GUINumber%: +LastFoundExist
-		if(!(hGui := WinExist()))
-			return false
-		;SetWindowLongPtr is defined as SetWindowLong in x86
-		if(A_PtrSize = 4)
-			DllCall("SetWindowLong", "Ptr", hGui, "int", -8, "PTR", hParent) ;This line actually sets the owner behavior
-		else
-			DllCall("SetWindowLongPtr", "Ptr", hGui, "int", -8, "PTR", hParent) ;This line actually sets the owner behavior
-		ToolWindows.Insert(Object("hParent", hParent, "hGui", hGui,"AutoClose", AutoClose))
-		Gui %GUINumber%: Show, NA
-		return true
+	global ToolWindows
+	outputdebug AttachToolWindow %GUINumber% to %hParent%
+	if(!IsObject(ToolWindows))
+		ToolWindows := Object()
+	if(!WinExist("ahk_id " hParent))
+		return false
+	Gui %GUINumber%: +LastFoundExist
+	if(!(hGui := WinExist()))
+		return false
+	;SetWindowLongPtr is defined as SetWindowLong in x86
+	if(A_PtrSize = 4)
+		DllCall("SetWindowLong", "Ptr", hGui, "int", -8, "PTR", hParent) ;This line actually sets the owner behavior
+	else
+		DllCall("SetWindowLongPtr", "Ptr", hGui, "int", -8, "PTR", hParent) ;This line actually sets the owner behavior
+	ToolWindows.Insert(Object("hParent", hParent, "hGui", hGui,"AutoClose", AutoClose))
+	msgbox b
+	Gui %GUINumber%: Show, NoActivate
+	msgbox c
+	return true
 }
 
 DeAttachToolWindow(GUINumber)

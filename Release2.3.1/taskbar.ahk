@@ -28,43 +28,42 @@ IsMouseOverTaskList()
 {
 	CoordMode, Mouse, Screen
 	WinGetPos , X, Y,,, ahk_class Shell_TrayWnd
-	if(A_OSVersion="WIN_7")
+	if(WinVer >= WIN_7)
 		ControlGetPos , TaskListX, TaskListY, TaskListWidth, TaskListHeight, MSTaskListWClass1, ahk_class Shell_TrayWnd
 	else
 		ControlGetPos , TaskListX, TaskListY, TaskListWidth, TaskListHeight, MSTaskSwWClass1, ahk_class Shell_TrayWnd
 	;Transform to screen coordinates
-	TaskListX+=X
-	TaskListY+=Y
+	TaskListX += X
+	TaskListY += Y
 	MouseGetPos,x,y
-	z:=GetTaskBarDirection()
-	if(z=2||z=4)
-		return IsMouseOverTaskbar() && IsInArea(x,y,TaskListX,TaskListY,TaskListWidth,TaskListHeight)
-	if(z=1||z=3)
-		return IsMouseOverTaskbar() && IsInArea(x,y,TaskListX,TaskListY,TaskListWidth,TaskListHeight)
+	z := GetTaskBarDirection()
+	if(z = 2 || z = 4)
+		return IsMouseOverTaskbar() && IsInArea(x, y, TaskListX, TaskListY, TaskListWidth, TaskListHeight)
+	if(z = 1 || z = 3)
+		return IsMouseOverTaskbar() && IsInArea(x, y, TaskListX, TaskListY, TaskListWidth, TaskListHeight)
 	return false
 }
 
 IsMouseOverTray()
 {
 	CoordMode, Mouse, Screen
-	MouseGetPos,x,y
+	MouseGetPos, x, y
 	ControlGetPos , TrayX, TrayX, TrayWidth, TrayHeight, ToolbarWindow321, ahk_class Shell_TrayWnd
-	z:=GetTaskBarDirection()
-	if(z=2||z=4)
-		return IsMouseOverTaskbar() && IsInArea(x,y,TrayX,TrayY,TrayWidth,TrayHeight)
-	if(z=1||z=3)
-		return IsMouseOverTaskbar() && IsInArea(x,y,TrayX,TrayY,TrayWidth,TrayHeight)
+	z := GetTaskBarDirection()
+	if(z = 2 || z = 4)
+		return IsMouseOverTaskbar() && IsInArea(x, y, TrayX, TrayY, TrayWidth, TrayHeight)
+	if(z = 1 || z = 3)
+		return IsMouseOverTaskbar() && IsInArea(x, y, TrayX, TrayY, TrayWidth, TrayHeight)
 	return false
 }
 
 IsMouseOverClock()
 {
 	CoordMode, Mouse, Screen
-	MouseGetPos, , , , ControlUnderMouse   
-	outputdebug control under mouse: %ControlUnderMouse%
-	result:=false
-	if(ControlUnderMouse="TrayClockWClass1")
-		result:=true
+	MouseGetPos, , , , ControlUnderMouse
+	result := false
+	if(ControlUnderMouse = "TrayClockWClass1")
+		result := true
 	outputdebug IsMouseOverClock()? %result%
 	return result
 }
@@ -95,21 +94,20 @@ IsMouseOverTaskbar()
 
 IsMouseOverFreeTaskListSpace()
 {
-	static result,IsRunning
+	static result, IsRunning
 	CoordMode, Mouse, Screen
 	SetWinDelay 0
 	SetKeyDelay 0
 	SetMouseDelay 0
 	if(!IsMouseOverTaskList())
 	{
-		IsRunning:=false
+		IsRunning := false
 		return false
 	}
-	if(A_OSVersion!="WIN_7")
+	if(WinVer < WIN_7)
 	{
-		x:=HitTest()
-		outputdebug HitTest: %x%
-		return x<0
+		x := HitTest()
+		return x < 0
 	}
 	IsRunning:=true
 	Click Right
@@ -143,14 +141,14 @@ TaskButtonClose()
 	if(IsMouseOverTaskList())
 	{
 		click right
-		while(!IsContextMenuActive() && A_OSVersion!="WIN_7")
+		while(!IsContextMenuActive() && WinVer < WIN_7)
 			sleep 10
-		if(A_OsVersion="WIN_7") ;wait until the menu has slided out
+		if(WinVer >= WIN_7) ;wait until the menu has slided out
 		{
-			prevx:=0
-			prevy:=0
-			x:=1
-			y:=1
+			prevx := 0
+			prevy := 0
+			x := 1
+			y := 1
 			while(true)
 			{
 				if(IsContextMenuActive())

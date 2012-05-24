@@ -9,19 +9,19 @@ IsMouseOverDesktop()
 
 InFileList()
 {
-	if(A_OSVersion="WIN_7")
+	if(WinVer >= WIN_7)
 		ControlGetFocus focussed, A
 	else
 	  focussed:=XPGetFocussed()
 
 	if(WinActive("ahk_group ExplorerGroup"))
 	{		
-		if((A_OSVersion="WIN_7" && focussed="DirectUIHWND3") || (A_OSVersion!="WIN_7" && focussed="SysListView321"))
+		if((WinVer >= WIN_7 && focussed="DirectUIHWND3") || (WinVer < WIN_7 && focussed="SysListView321"))
 			return true
 	}
 	else if((x:=IsDialog())=1)
 	{
-		if((A_OSVersion="WIN_7" && focussed="DirectUIHWND2") || (A_OSVersion!="WIN_7" && focussed="SysListView321"))
+		if((WinVer >= WIN_7 && focussed="DirectUIHWND2") || (WinVer < WIN_7 && focussed="SysListView321"))
 			return true
 	}
 	else if(x=2)
@@ -37,24 +37,24 @@ IsMouseOverFileList()
 	CoordMode,Mouse,Relative
 	MouseGetPos, MouseX, MouseY,Window , UnderMouse
 	WinGetClass, winclass , ahk_id %Window%
-	if(A_OSVersion="WIN_7" && (winclass="CabinetWClass" || winclass="ExploreWClass")) ;Win7 Explorer
+	if(WinVer >= WIN_7 && (winclass = "CabinetWClass" || winclass = "ExploreWClass")) ;Win7 Explorer
 	{		
 		ControlGetPos , cX, cY, Width, Height, DirectUIHWND3, A
 		;Offsets are estimated values in my windows skin and don't need to be correct for everyone. They're used to prevent catching double clicks on the column headers.
-		if(IsInArea(MouseX,MouseY,cX,cY + 25,Width,Height - 25))
+		if(IsInArea(MouseX, MouseY, cX, cY + 25,Width, Height - 25))
 			return true		
 	}	
-	else if((z:=IsDialog(window))=1) ;New dialogs
+	else if((z := IsDialog(window)) = 1) ;New dialogs
 	{
 		ControlGetPos , cX, cY, Width, Height, DirectUIHWND2, A
 		;Offsets are estimated values in my windows skin and don't need to be correct for everyone. They're used to prevent catching double clicks on the column headers.
-		if(IsInArea(MouseX,MouseY,cX,cY + 25,Width,Height - 25)) ;Checking for area because rename might be in process and mouse might be over edit control
+		if(IsInArea(MouseX, MouseY, cX, cY + 25, Width, Height - 25)) ;Checking for area because rename might be in process and mouse might be over edit control
 			return true
 	}
-	else if(winclass="CabinetWClass" || winclass="ExploreWClass" || z=2) ;Old dialogs or Vista/XP
+	else if(winclass="CabinetWClass" || winclass="ExploreWClass" || z = 2) ;Old dialogs or Vista/XP
 	{
 		ControlGetPos , cX, cY, Width, Height, SysListView321, A
-		if(IsInArea(MouseX,MouseY,cX,cY,Width,Height) && UnderMouse = "SysListView321") ;Additional check needed for XP because of header
+		if(IsInArea(MouseX, MouseY, cX, cY, Width, Height) && UnderMouse = "SysListView321") ;Additional check needed for XP because of header
 			return true			
 	}
 	return false
@@ -64,50 +64,50 @@ InTree()
 {
 	if(WinActive("ahk_group ExplorerGroup")||IsDialog()=1) ;Explorer or new dialog
 	{
-		if(A_OSVersion="WIN_7")
+		if(WinVer >= WIN_7)
 			ControlGetFocus focussed, A
 		else
-		  focussed:=XPGetFocussed()
-		if(focussed="SysTreeView321")
+		  focussed := XPGetFocussed()
+		if(focussed = "SysTreeView321")
 			return true
 	}
 	return false
 }
 IsRenaming()
 {		
-	if(A_OSVersion="WIN_7")
+	if(WinVer >= WIN_7)
 		ControlGetFocus focussed, A
 	else
-		focussed:=XPGetFocussed()
+		focussed := XPGetFocussed()
 	if(WinActive("ahk_group ExplorerGroup")) ;Explorer
 	{
-		if(InStr(focussed,"Edit") = 1)
+		if(InStr(focussed, "Edit") = 1)
 		{
-			if(A_OSVersion="WIN_7")
-				ControlGetPos , X, Y, Width, Height, DirectUIHWND3, A
+			if(WinVer >= WIN_7)
+				ControlGetPos, X, Y, Width, Height, DirectUIHWND3, A
 			else
 				ControlGetPos , X, Y, Width, Height, SysListView321, A
-			ControlGetPos , X1, Y1, Width1, Height1, %focussed%, A
-			if(IsInArea(X1,Y1, X, Y, Width, Height)&&IsInArea(X1+Width1,Y1, X, Y, Width, Height)&&IsInArea(X1,Y1+Height1, X, Y, Width, Height)&&IsInArea(X1+Width1,Y1+Height1, X, Y, Width, Height))
+			ControlGetPos, X1, Y1, Width1, Height1, %focussed%, A
+			if(IsInArea(X1, Y1, X, Y, Width, Height)&&IsInArea(X1 + Width1, Y1, X, Y, Width, Height) && IsInArea(X1, Y1 + Height1, X, Y, Width, Height) && IsInArea(X1 + Width1, Y1 + Height1, X, Y, Width, Height))
 				return focussed
 		}
 	}
 	else if (WinActive("ahk_group DesktopGroup")) ;Desktop
 	{
-		if(focussed="Edit1")
+		if(focussed = "Edit1")
 			return focussed
 	}
-	else if((x:=IsDialog())) ;FileDialogs
+	else if((x := IsDialog())) ;FileDialogs
 	{		
-		if(InStr(focussed,"Edit1") = 1)
+		if(InStr(focussed, "Edit1") = 1)
 		{
 			;figure out if the the edit control is inside the DirectUIHWND2 or SysListView321
-			if(x=1 && A_OSVersion="WIN_7") ;New Dialogs
-				ControlGetPos , X, Y, Width, Height, DirectUIHWND2, A
+			if(x = 1 && WinVer >= WIN_7) ;New Dialogs
+				ControlGetPos, X, Y, Width, Height, DirectUIHWND2, A
 			else ;Old Dialogs
-				ControlGetPos , X, Y, Width, Height, SysListView321, A
-			ControlGetPos , X1, Y1, Width1, Height1, %focussed%, A
-			if(IsInArea(X1,Y1, X, Y, Width, Height)&&IsInArea(X1+Width1,Y1, X, Y, Width, Height)&&IsInArea(X1,Y1+Height1, X, Y, Width, Height)&&IsInArea(X1+Width1,Y1+Height1, X, Y, Width, Height))
+				ControlGetPos, X, Y, Width, Height, SysListView321, A
+			ControlGetPos, X1, Y1, Width1, Height1, %focussed%, A
+			if(IsInArea(X1, Y1, X, Y, Width, Height) && IsInArea(X1 + Width1, Y1, X, Y, Width, Height) && IsInArea(X1, Y1 + Height1, X, Y, Width, Height) && IsInArea(X1 + Width1, Y1 + Height1, X, Y, Width, Height))
 				return focussed
 		}
 	}
@@ -115,10 +115,10 @@ IsRenaming()
 }
 IsInAddressBar()
 {		
-  if(A_OSVersion="WIN_7")
+  if(WinVer >= WIN_7)
     ControlGetFocus focussed, A
 	else
-		focussed:=XPGetFocussed()
+		focussed := XPGetFocussed()
 	if(WinActive("ahk_group ExplorerGroup")) ;Explorer
 	{		
 		if(focussed = "Edit1" && !IsRenaming()) ;Renaming Control can be Edit1 when rename is made before addressbar is focussed
@@ -135,22 +135,20 @@ SetFocusToFileView()
 {
 	if(WinActive("ahk_group ExplorerGroup"))
 	{
-		if(A_OSVersion="WIN_7")
+		if(WinVer >= WIN_7)
 			ControlFocus DirectUIHWND3, A
 		else ;XP, Vista
 		 	ControlFocus SysListView321, A
 	}
-	else if((x:=IsDialog())=1) ;New Dialogs
+	else if((x := IsDialog())=1) ;New Dialogs
 	{
-		if(A_OSVersion="WIN_7")
+		if(WinVer >= WIN_7)
 			ControlFocus DirectUIHWND2, A
 		else
 			ControlFocus SysListView321, A
 	}
-	else if(x=2) ;Old Dialogs
-	{
+	else if(x = 2) ;Old Dialogs
 		ControlFocus SysListView321, A
-	}
 	return
 }
 
@@ -275,11 +273,11 @@ ExecuteFocusedFile()
 #if
 RunExplorer()
 {
-	active:=WinActive("ahk_group ExplorerGroup")
+	active := WinActive("ahk_group ExplorerGroup")
 	if(active && Settings.Explorer.AlignNewExplorer)
 	{
 		WinRestore ahk_id %active%
-		if(A_OSVersion="WIN_7")
+		if(WinVer >= WIN_7)
 		{
 			WinGetPos, x,y,w,h,ahk_id %active%
 			x++
@@ -317,7 +315,7 @@ RunExplorer()
 			if(visible & 0x10000000 || A_TickCount - Start > Timeout)
 				break
 		}
-		if(A_OSVersion="WIN_7")
+		if(WinVer >= WIN_7)
 			Send #{Right}
 		else
 		{
@@ -366,7 +364,7 @@ InitExplorerWindows()
 	TabContainerList.InActiveHeightDifference := 2
 	TabContainerList.MinWidth := 40
 	ExplorerWindows.TabContainerList := TabContainerList
-	if(A_OSVersion = "WIN_7")
+	if(WinVer = WIN_7)
 	{
 		ExplorerWindows.InfoGUI_FreeText := TranslateMUI(shell32MUIpath,12336) ;Aquire a translated version of "free"
 		ExplorerWindows.InfoGUI_FreeText:=SubStr(ExplorerWindows.InfoGUI_FreeText,InStr(ExplorerWindows.InfoGUI_FreeText," ",0,0)+1)
@@ -505,7 +503,6 @@ RegisterExplorerWindows()
 		if(!ExplorerWindows.FindKeyWithValue("hwnd", hWndList%A_Index%+0))
 			ExplorerWindows.Insert(new CExplorerWindow(hwndList%A_Index%+0))
 	}
-	
 	SetTimer, WaitForClose, 1000
 }
 
@@ -627,7 +624,7 @@ ExplorerMoved(hwnd)
 	{
 		if(Settings.Explorer.Tabs.UseTabs && IsObject(ExplorerWindow.TabContainer) && IsObject(ExplorerWindows.TabContainerList) &&  !ExplorerWindows.TabContainerList.TabActivationInProgress)
 			ExplorerWindow.TabContainer.UpdatePosition()
-		if(Settings.Explorer.AdvancedStatusBarInfo && A_OsVersion = "WIN_7")
+		if(Settings.Explorer.AdvancedStatusBarInfo && WinVer >= WIN_7)
 			ExplorerWindow.InfoGUI.UpdateInfoPosition()
 	}
 }
@@ -664,9 +661,9 @@ ExplorerPathChanged(ExplorerWindow)
 	{
 		SplitPath, Path, name, dir,,,drive
 		x := Navigation.GetSelectedFilepaths()
-		if(!x.MaxIndex() && dir && (WinVer < WIN_Vista||SubStr(Path, 1 ,40)!="::{26EE0668-A00A-44D7-9371-BEB064C98683}"))
+		if(!x.MaxIndex() && dir && (WinVer < WIN_Vista || SubStr(Path, 1 ,40) != "::{26EE0668-A00A-44D7-9371-BEB064C98683}"))
 		{
-			if(A_OSVersion="WIN_7")
+			if(WinVer >= WIN_7)
 			{
 				ControlGetFocus focussed, A
 				ControlFocus DirectUIHWND3, A
@@ -674,7 +671,7 @@ ExplorerPathChanged(ExplorerWindow)
 			}
 			else
 			{
-				focussed:=XPGetFocussed()
+				focussed := XPGetFocussed()
 				ControlFocus SysListView321, A
 				ControlSend SysListView321, {Home},A
 			}
@@ -687,7 +684,6 @@ ExplorerPathChanged(ExplorerWindow)
 ExplorerSelectionChanged(ExplorerCOMObject)
 {
 	global ExplorerWindows
-	; Critical ;This apparently makes it stop working and blocks the explorer window somehow
 	Critical, Off
 	Loop % ExplorerWindows.MaxIndex()
 	{
@@ -710,9 +706,8 @@ ExplorerSelectionChanged(ExplorerCOMObject)
 	ExplorerWindows[index].Selection.History.Insert(Navigation.GetSelectedFilenames(ExplorerWindows[index].hwnd))
 	if(ExplorerWindows[index].Selection.History.MaxIndex() > 10)
 		ExplorerWindows[index].Selection.History.Delete(1)
-	if(A_OSVersion = "WIN_7")
+	if(WinVer = WIN_7)
 		ExplorerWindows[index].InfoGUI.UpdateInfos(ExplorerWindows[index]) ;Update the info GUI to reflect selection change
-	; Critical, Off
 }
 
 ;This class displays additional information in the status bar of explorer windows
@@ -720,7 +715,7 @@ Class InfoGUI
 {
 	__New(hParent)
 	{
-		if(A_OSVersion != "WIN_7")
+		if(WinVer != WIN_7)
 			return 0
 		GuiNum := GetFreeGuiNum(1, this.__Class)
 		this.GuiNum := GuiNum
@@ -742,7 +737,7 @@ Class InfoGUI
 	UpdateInfos(ExplorerWindow)
 	{
 		global ExplorerWindows
-		if(A_OSVersion != "WIN_7")
+		if(WinVer != WIN_7)
 			return
 		totalsize:=0
 		realfiles:=false ;check if only folders are selected
@@ -795,7 +790,7 @@ Class CExplorerWindow
 		this.hWnd := hWnd
 		this.Path := Path ? Path : Navigation.GetPath(hWnd)
 		this.DisplayName := Navigation.GetDisplayName(hWnd)
-		if(A_OSVersion = "WIN_7")
+		if(WinVer = WIN_7)
 			this.InfoGUI := new InfoGUI(hWnd)
 		this.Selection := Object()
 		this.RegisterSelectionChangedEvent()
@@ -803,13 +798,15 @@ Class CExplorerWindow
 	RegisterSelectionChangedEvent()
 	{
 		global ExplorerWindows
+		if(Settings.General.DontRegisterSelectionChanged)
+			return
 		for Item in ComObjCreate("Shell.Application").Windows
 		{
 			if(Item.hWnd != this.hWnd)
 				continue
 			if(!this.Selection.COMObject) ;New explorer window
 			{
-				doc:=Item.Document
+				doc := Item.Document
 				if(!doc)
 					return 0
 				ComObjConnect(doc, "Explorer")
@@ -818,7 +815,7 @@ Class CExplorerWindow
 			}
 			else ;explorer window is already registered, lets see if its view changed
 			{
-				doc:=Item.Document
+				doc := Item.Document
 				if(!doc)
 					continue			
 				Path := doc.Folder.Self.path

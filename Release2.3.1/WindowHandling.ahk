@@ -81,29 +81,29 @@ MouseMovePolling()
 
 IsEditControlActive()
 {
-	if(A_OSVersion="WIN_7")
+	if(WinVer >= WIN_7)
 		ControlGetFocus active, A
 	else
-		active:=XPGetFocussed()
+		active := XPGetFocussed()
 	if(InStr(active,"edit") = 1 || RegexMatch(active,"WindowsForms\d*.EDIT."))
 		return true
 	return false
 }
 NothingSelected()
 {
-	if(A_OSVersion="WIN_7")
+	if(WinVer >= WIN_7)
 		ControlGetFocus focussed, A
 	else
-		focussed:=XPGetFocussed()
+		focussed := XPGetFocussed()
 	ControlGet, selection, Selected,,%focussed%,A
 	return selection = ""
 }
 ControlBackspaceFix()
 {
-	if(A_OSVersion="WIN_7")
+	if(WinVer >= WIN_7)
 		ControlGetFocus focussed, A
 	else
-		focussed:=XPGetFocussed()
+		focussed := XPGetFocussed()
 	ControlGet, line,CurrentLine,,%focussed%,A
 	ControlGet, col,CurrentCol,,%focussed%,A
 	ControlGet, text, Line,%line%,%focussed%,A
@@ -148,10 +148,10 @@ ControlBackspaceFix()
     
 ControlDeleteFix()
 {
-	if(A_OSVersion="WIN_7")
+	if(WinVer >= WIN_7)
 		ControlGetFocus focussed, A
 	else
-		focussed:=XPGetFocussed()
+		focussed := XPGetFocussed()
 	ControlGet, line,CurrentLine,,%focussed%,A
 	ControlGet, col,CurrentCol,,%focussed%,A
 	ControlGet, text, Line,%line%,%focussed%,A

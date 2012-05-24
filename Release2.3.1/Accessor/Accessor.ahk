@@ -1289,6 +1289,7 @@ winget
 file search using mft: http://www.autohotkey.com/community/viewtopic.php?t=85072&p=528553
 
 TODO:
-Condition for various navigation functions and usage of it in all relevant events
 Documentation of new Accessor features
+Bug in condition/action editor: Forgets about some properties and doesn't allow pasting
+Setting to skip explorer SelectionChanged event registration
 */

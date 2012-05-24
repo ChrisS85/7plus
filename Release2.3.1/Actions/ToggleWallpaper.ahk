@@ -17,7 +17,7 @@ Class CToggleWallpaperAction Extends CAction
 ToggleWallpaper()
 {
 	global
-	if(!IsMouseOverDesktop() || A_OSVersion != "WIN_7")
+	if(!IsMouseOverDesktop() || WinVer < WIN_7)
 		return false
 	ShellContextMenu("Desktop",1)
 	return true

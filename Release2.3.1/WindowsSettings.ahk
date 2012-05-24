@@ -89,7 +89,7 @@ Class WindowsSettings
 
 	GetRemoveLibraries()
 	{
-		if(WinVer >= WIN_Vista && A_OSVersion != "WIN_VISTA")
+		if(WinVer >= WIN_7)
 		{
 			RegRead, RemoveLibraries, HKCR, CLSID\{031E4825-7B94-4dc3-B131-E946B44C8DD5}\ShellFolder, Attributes
 			return  RemoveLibraries = 0xb090010d ? 1 : 0	
@@ -99,7 +99,7 @@ Class WindowsSettings
 
 	GetCycleThroughTaskbarGroup()
 	{
-		if(WinVer >= WIN_Vista && A_OSVersion != "WIN_VISTA")
+		if(WinVer >= WIN_7)
 		{
 			RegRead, ActivateBehavior, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick
 			return ActivateBehavior = 1
@@ -111,7 +111,7 @@ Class WindowsSettings
 	;This function actually returns a time in ms.
 	GetThumbnailHoverTime()
 	{
-		if(WinVer >= WIN_Vista && A_OSVersion != "WIN_VISTA")
+		if(WinVer >= WIN_7)
 		{
 			RegRead, ThumbnailHoverTime, HKCU, Control Panel\Mouse, MouseHoverTime
 			return ThumbnailHoverTime = "" ? 400 : ThumbnailHoverTime	
@@ -210,7 +210,7 @@ Class WindowsSettings
 
 	SetRemoveLibraries(RemoveLibraries)
 	{
-		if(WinVer >= WIN_Vista && A_OSVersion != "WIN_VISTA")
+		if(WinVer >= WIN_7)
 		{
 			RegGivePermissions("HKCR\CLSID\{031E4825-7B94-4dc3-B131-E946B44C8DD5}\ShellFolder")
 			RegGivePermissions("HKCR\Folder\ShellEx\ContextMenuHandlers\Library Location")
@@ -228,7 +228,7 @@ Class WindowsSettings
 
 	SetCycleThroughTaskbarGroup(CycleThroughTaskbarGroup)
 	{
-		if(WinVer >= WIN_Vista && A_OSVersion != "WIN_VISTA")
+		if(WinVer >= WIN_7)
 		{
 			RegWrite, REG_SZ, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced, LastActiveClick, % CycleThroughTaskbarGroup
 			return 2
@@ -238,7 +238,7 @@ Class WindowsSettings
 
 	SetThumbnailHoverTime(ThumbnailHoverTime)
 	{
-		if(WinVer >= WIN_Vista A_OSVersion != "WIN_VISTA")
+		if(WinVer >= WIN_7)
 		{
 			RegWrite, REG_SZ, HKCU, Control Panel\Mouse, MouseHoverTime, % ThumbnailHoverTime
 			return 2

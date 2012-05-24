@@ -1814,20 +1814,25 @@ Finally, here are some settings that you're likely to change at the beginning:
 	{
 		Page := this.Pages.Misc.Tabs[1]
 		;~ Page.AddControl("Link", "linkFixEditControlWordDelete", "xs+21 y58 w13 h13", "?")
-		Page.AddControl("CheckBox", "chkFixEditControlWordDelete", "xs+40 ys+45 w333 h17", "Make CTRL+Backspace and CTRL+Delete work in all textboxes")
+		Page.AddControl("CheckBox", "chkFixEditControlWordDelete", "xs+40 ys+45", "Make CTRL+Backspace and CTRL+Delete work in all textboxes")
 		Page.Controls.chkFixEditControlWordDelete.ToolTip := "Many text boxes in windows have the problem that it's not possible to use CTRL+Backspace to delete a word. Instead, it will write a square character. Enabling this will fix it."
 		;~ Page.AddControl("Link", "linkGamepadRemoteControl", "x19 ys+23 w13 h13", "?")
-		Page.AddControl("CheckBox", "chkGamepadRemoteControl", "xs+40 ys+20 w489 h17", "Use joystick/gamepad as remote control when not in fullscreen (optimized for XBOX360 controller)")
+		Page.AddControl("CheckBox", "chkGamepadRemoteControl", "xs+40 ys+20", "Use joystick/gamepad as remote control when not in fullscreen (optimized for XBOX360 controller)")
 		
-		Page.AddControl("Text", "txtImageQuality", "xs+37 ys+80 w134 h13", "Image compression quality:")
-		Page.AddControl("Edit", "editImageQuality", "xs+228 ys+77 w52 h20", "")
-		Page.AddControl("Text", "txtDefaultImageExtension", "xs+37 ys+106 w123 h13", "Default image extension:")
-		Page.AddControl("Edit", "editDefaultImageExtension", "xs+228 ys+102 w52 h20", "")
-		Page.AddControl("Text", "txtFullScreenDescription", "xs+37 ys+140 w511 h26", "Many features of 7plus check if there is a fullscreen window active. You can add window class names to include and exclude filters here to influence the fullscreen recognition.")
-		Page.AddControl("Text", "txtFullscreenInclude", "xs+37 ys+172 w157 h13", "Fullscreen detection include list:")
-		Page.AddControl("Edit", "editFullscreenInclude", "xs+228 ys+169 w261 h20", "")
-		Page.AddControl("Text", "txtFullscreenExclude", "xs+37 ys+198 w160 h13", "Fullscreen detection exclude list:")
-		Page.AddControl("Edit", "editFullscreenExclude", "xs+228 ys+195 w261 h20", "")
+		Page.AddControl("Text", "txtImageQuality", "xs+47 ys+180", "Image compression quality:")
+		Page.AddControl("Edit", "editImageQuality", "xs+228 ys+177 w52", "")
+		Page.AddControl("Text", "txtDefaultImageExtension", "xs+47 ys+206", "Default image extension:")
+		Page.AddControl("Edit", "editDefaultImageExtension", "xs+228 ys+202 w52", "")
+		Page.AddControl("Text", "txtFullScreenDescription", "xs+47 ys+240", "Many features of 7plus check if there is a fullscreen window active.`nYou can add window class names to include and exclude filters here to influence the fullscreen recognition.")
+		Page.AddControl("Text", "txtFullscreenInclude", "xs+47 ys+272", "Fullscreen detection include list:")
+		Page.AddControl("Edit", "editFullscreenInclude", "xs+228 ys+269 w261", "")
+		Page.AddControl("Text", "txtFullscreenExclude", "xs+47 ys+298", "Fullscreen detection exclude list:")
+		Page.AddControl("Edit", "editFullscreenExclude", "xs+228 ys+295 w261", "")
+		Page.AddControl("GroupBox", "grpAdvanced", "xs+37 ys+150 w" this.Width - 300 " h350", "Advanced Settings")
+		Page.AddControl("CheckBox", "chkEnableDebugging", "xs+47 ys+380", "Enable debugging")
+		Page.Controls.chkEnableDebugging.ToolTip := "Enable this to see debug messages. A program like DebugView is recommended for this.`nThis will also affect some other parts of 7plus, such as event exporting."
+		Page.AddControl("CheckBox", "chkDontRegisterSelectionChanged", "xs+47 ys+405", "Fix hanging issues with Explorer (prevents file selection tracking and undo)")
+		Page.chkDontRegisterSelectionChanged.ToolTip := "Under some circumstances 7plus and an involved Explorer window won't react anymore.`nIf don't use the ""Restore Selection"" feature you can avoid this problem.`nClose all Explorer windows or restart 7plus to apply this setting."
 	}
 	InitMisc()
 	{
@@ -1839,7 +1844,9 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.editImageQuality.Text := Settings.Misc.ImageQuality
 		Page.editDefaultImageExtension.Text := Settings.Misc.DefaultImageExtension
 		Page.editFullscreenInclude.Text := Settings.Misc.FullscreenInclude
-		Page.editFullscreenExclude.Text := Settings.Misc.FullscreenExclude		
+		Page.editFullscreenExclude.Text := Settings.Misc.FullscreenExclude
+		Page.chkEnableDebugging.Checked := Settings.General.DebugEnabled
+		Page.chkDontRegisterSelectionChanged.Checked := Settings.General.DontRegisterSelectionChanged
 	}
 	ApplyMisc()
 	{
@@ -1856,6 +1863,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Settings.Misc.DefaultImageExtension := Page.editDefaultImageExtension.Text
 		Settings.Misc.FullscreenInclude := Page.editFullscreenInclude.Text
 		Settings.Misc.FullscreenExclude := Page.editFullscreenExclude.Text
+		Settings.General.DebugEnabled := Page.chkEnableDebugging.Checked
+		Settings.General.DontRegisterSelectionChanged := Page.chkDontRegisterSelectionChanged.Checked
 	}
 	; Doesn't work :(
 	/*
