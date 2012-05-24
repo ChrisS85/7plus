@@ -1046,9 +1046,7 @@ AttachToolWindow(hParent, GUINumber, AutoClose)
 	else
 		DllCall("SetWindowLongPtr", "Ptr", hGui, "int", -8, "PTR", hParent) ;This line actually sets the owner behavior
 	ToolWindows.Insert(Object("hParent", hParent, "hGui", hGui,"AutoClose", AutoClose))
-	msgbox b
 	Gui %GUINumber%: Show, NoActivate
-	msgbox c
 	return true
 }
 
