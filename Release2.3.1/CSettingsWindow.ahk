@@ -1100,12 +1100,12 @@ Finally, here are some settings that you're likely to change at the beginning:
 	CreateClipboard()
 	{
 		Page := this.Pages.Clipboard.Tabs[1]
-		Page.AddControl("Text", "txtClipboardDescription", "xs+21 ys+19", "You can define custom clips here that can be inserted through the clipboard manager menu (Default: WIN + V).`n These clips support %Parameters%.")
+		Page.AddControl("Text", "txtClipboardDescription", "xs+21 ys+19", "You can define custom clips here that can be inserted through the clipboard manager menu (Default: WIN + V)`nor through Accessor (Default: ALT + Space). These clips support %Parameters%.")
 		Page.AddControl("Text", "txtClipboardName", "xs+21 ys+290 w51 h13", "Name:")
 		Page.AddControl("Edit", "editClipboardName", "xs+84 ys+287 w462 h20", "")
 		Page.Controls.editClipboardName.ToolTip := "The name of the clip"
 		Page.AddControl("Text", "txtClipboardText", "xs+21 ys+316 w57 h13", "Text:")
-		Page.AddControl("Edit", "editClipboardText", "xs+84 ys+313 w462 r6 Multi", "")
+		Page.AddControl("Edit", "editClipboardText", "xs+84 ys+313 w462 r13 Multi", "")
 		Page.Controls.editClipboardText.ToolTip := "The text of the clip. You can use parameters like this: ""Hello %Name%""`nWhen the clip is inserted, a dialog will show up and ask for a value."
 		
 		Page.AddControl("Button", "btnDeleteClip", "xs+554 ys+78 w90 h23", "&Delete Clip")
@@ -1291,7 +1291,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.Controls.btnTabStartupPath := chkUseTabs.AddControl("Button", "btnTabStartupPath", "xs+473 ys+110 w33 h23", "...", 1)
 		Page.AddControl("Text", "txtOnTabClose", "xs+56 ys+188 w64 h13", "On tab close:")
 		Page.Controls.ddlOnTabClose := chkUseTabs.AddControl("DropDownList", "ddlOnTabClose", "xs+308 ys+184 w159", "Activate left tab|Activate right tab", 1)
-		Page.AddControl("Text", "txtTabDescription", "xs+40 ys+20 w469 h39", "7plus makes it possible to use tabs in explorer. New tabs are opened with the middle mouse button`n,and with CTRL+T, Tabs are cycled by clicking the Tabs or pressing CTRL+(SHIFT)+TAB,`nand closed by middle clicking a tab and with CTRL+W")
+		Page.AddControl("Text", "txtTabDescription", "xs+40 ys+20 w469 h39", "7plus makes it possible to use tabs in explorer. New tabs are opened with the middle mouse button,`nand with CTRL+T, Tabs are cycled by clicking the Tabs or pressing CTRL+(SHIFT)+TAB,`nand closed by middle clicking a tab and with CTRL+W")
 		Page.Controls.chkTabWindowClose := chkUseTabs.AddControl("CheckBox", "chkTabWindowClose", "xs+53 ys+161 h17", "Close all tabs when window is closed", 1)
 		Page.Controls.chkActivateTab := chkUseTabs.AddControl("CheckBox", "chkActivateTab", "xs+53 ys+138 h17", "Activate tab on tab creation", 1)
 		;~ Page.AddControl("Link", "linkUseTabs", "x19 ys+63 w13 h13", "?")

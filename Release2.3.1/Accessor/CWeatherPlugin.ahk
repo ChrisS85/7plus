@@ -57,15 +57,18 @@ Class CWeatherPlugin extends CAccessorPlugin
 	}
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
+		static Penalty := 0.00001
 		if(!KeywordSet)
 			return
 		Results := Array()
+
 		for index, ListEntry in this.List
 		{
 			Result := new this.CResult()
 			Result.Title := ListEntry.Title
 			Result.Path := ListEntry.Path
 			Result.Icon := ListEntry.Icon
+			Result.Priority -= Penalty * index ;For sorting by day
 			Results.Insert(Result)
 		}
 		return Results
@@ -108,39 +111,41 @@ QueryWeatherResult()
 		FileDelete, %A_Temp%\7plus\WeatherQuery.xml
 		URLDownloadToFile, %URL%, %A_Temp%\7plus\WeatherQuery.xml
 		FileRead, WeatherQuery, %A_Temp%\7plus\WeatherQuery.xml
-		
 		Loop 5
 			pos%A_Index% := 0
-		RegexMatch(WeatherQuery, "i)<city data=""(.*?)""/>",city,1)
+		RegexMatch(WeatherQuery, "i)<city data=""(.*?)""/>", city, 1)
 		if(!city1) ;No results
 			return
-		pos1 := RegexMatch(WeatherQuery, "i)<condition data=""(.*?)""/>",condition,pos1+1)
-		RegexMatch(WeatherQuery, "i)<temp_c data=""(.*?)""/>",temp_c,1)
-		RegexMatch(WeatherQuery, "i)<humidity data=""(.*?)""/>",humidity,1)
-		RegexMatch(WeatherQuery, "i)<icon data=""(.*?)""/>",icon,1)
-		name := SubStr(icon1, InStr(icon1, "/", 0, 0) + 1)
-		if(!FileExist(A_Temp "\7plus\" name))
-			URLDownloadToFile, http://google.com%icon1%, %A_Temp%\7plus\%name%		
-		pBitmap := Gdip_CreateBitmapFromFile(A_Temp "\7plus\" name)
-		hIcon := Gdip_CreateHICONFromBitmap(pBitmap)
-		CWeatherPlugin.Instance.List.Insert(Object("Title", "Now: " condition1 ", " temp_c1 "°C, " humidity1, "Path","Weather in " city1, "Icon", hIcon ))
+		WeatherQuery := SubStr(WeatherQuery, InStr(WeatherQuery, "/curren"))
+		;pos1 := RegexMatch(WeatherQuery, "i)<condition data=""(.*?)""/>", condition, pos1+1)
+		;RegexMatch(WeatherQuery, "i)<temp_c data=""(.*?)""/>", temp_c, 1)
+		;RegexMatch(WeatherQuery, "i)<humidity data=""(.*?)""/>", humidity, 1)
+		;RegexMatch(WeatherQuery, "i)<icon data=""(.*?)""/>", icon, 1)
+		;name := SubStr(icon1, InStr(icon1, "/", 0, 0) + 1)
+		;if(!FileExist(A_Temp "\7plus\" name))
+		;	URLDownloadToFile, http://www.google.com%icon1%, %A_Temp%\7plus\%name%
+		;outputdebug % "1: " name
+		;pBitmap := Gdip_CreateBitmapFromFile(A_Temp "\7plus\" name)
+		;hIcon := Gdip_CreateHICONFromBitmap(pBitmap)
+		;CWeatherPlugin.Instance.List.Insert(Object("Title", "Now: " condition1 ", " temp_c1 "°C, " humidity1, "Path", "Weather in " city1, "Icon", hIcon))
 		Loop
 		{
-			pos1 := RegexMatch(WeatherQuery, "i)<condition data=""(.*?)""/>",condition,pos1+1)
-			pos2 := RegexMatch(WeatherQuery, "i)<low data=""(.*?)""/>",low,pos2+1)
-			pos3 := RegexMatch(WeatherQuery, "i)<high data=""(.*?)""/>",high,pos3+1)
-			pos4 := RegexMatch(WeatherQuery, "i)<day_of_week data=""(.*?)""/>",day_of_week,pos4+1)
-			pos5 := RegexMatch(WeatherQuery, "i)<icon data=""(.*?)""/>",icon,pos5+1)
+			pos1 := RegexMatch(WeatherQuery, "i)<condition data=""(.*?)""/>", condition, pos1+1)
+			pos2 := RegexMatch(WeatherQuery, "i)<low data=""(.*?)""/>", low, pos2+1)
+			pos3 := RegexMatch(WeatherQuery, "i)<high data=""(.*?)""/>", high, pos3+1)
+			pos4 := RegexMatch(WeatherQuery, "i)<day_of_week data=""(.*?)""/>", day_of_week, pos4+1)
+			pos5 := RegexMatch(WeatherQuery, "i)<icon data=""(.*?)""/>", icon, pos5+1)
 			
-			if(pos1 && pos2 && pos3 && pos4 && pos5 && condition1 && low1 && high1 &&day_of_week1 && icon1)
+			if(pos1 && pos2 && pos3 && pos4 && pos5 && condition1 && low1 && high1 && day_of_week1 && icon1)
 			{
 				name := SubStr(icon1, InStr(icon1, "/", 0, 0) + 1)
 				if(!FileExist(A_Temp "\7plus\" name))
-					URLDownloadToFile, http://google.com%icon1%, %A_Temp%\7plus\%name%	
+					URLDownloadToFile, http://www.google.com%icon1%, %A_Temp%\7plus\%name%	
 				pBitmap := Gdip_CreateBitmapFromFile(A_Temp "\7plus\" name)
 				hIcon := Gdip_CreateHICONFromBitmap(pBitmap)
 				low1 := Round((5/9)*(low1-32)) ;Convert °F to °C
 				high1 := Round((5/9)*(high1-32)) ;Convert °F to °C
+				outputdebug % (A_Index) ": " name
 				CWeatherPlugin.Instance.List.Insert(Object("Title", day_of_week1 ": " condition1 ", Low: " low1 "°C, high: " high1 "°C", "Path", "Weather in " city1, "Icon", hIcon ))
 			}
 			else

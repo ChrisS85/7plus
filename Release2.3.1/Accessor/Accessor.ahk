@@ -589,8 +589,10 @@ Class CAccessor
 	{
 		if(IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]))
 		{
-			if(this.GUI.btnOK.Text != ListEntry.Actions.DefaultAction.Name)
-				this.GUI.btnOK.Text := ListEntry.Actions.DefaultAction.Name
+			;Remove hotkey text after tab character
+			ButtonText := (Pos := InStr(ListEntry.Actions.DefaultAction.Name, "`t")) ? SubStr(ListEntry.Actions.DefaultAction.Name, 1, Pos - 1) : ListEntry.Actions.DefaultAction.Name
+			if(this.GUI.btnOK.Text != ButtonText)
+				this.GUI.btnOK.Text := ButtonText
 			if(!ListEntry.Actions.DefaultAction.Condition || ListEntry.Actions.DefaultAction.Condition.(ListEntry))
 				this.GUI.btnOK.Enabled := true
 			else
@@ -720,7 +722,6 @@ Class CAccessor
 	{
 		if(IsObject(ListEntry) || IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]) || IsObject(ListEntry := this.Plugins.GetItemWithValue("Type", this.SingleContext).Result))
 		{
-			outputdebug % "actionmenu: " ListEntry.path
 			Menu, AccessorContextMenu, Add, test, AccessorContextMenu
 			Menu, AccessorContextMenu, DeleteAll
 			if((!ListEntry.Actions.DefaultAction.Condition || ListEntry.Actions.DefaultAction.Condition.(ListEntry)) && ((ListEntry.Time > 0 && ListEntry.Actions.DefaultAction.AllowDelayedExecution) || !ListEntry.Time))
@@ -884,7 +885,7 @@ Class CAccessorGUI extends CGUI
 		this.ListView.ModifyCol(2, Round(this.ListView.Width * 3.3 / 8)) ; resize path column
 		this.ListView.ModifyCol(3, Round(this.ListView.Width * 0.8 / 8)) ; resize detail1 column
 		this.ListView.ModifyCol(4, "AutoHdr") ; resize detail2 column
-		this.OnMessage(0x06,"WM_ACTIVATE")
+		this.OnMessage(0x06, "WM_ACTIVATE")
 		this.Redraw()
 	}
 	SetFilter(Text)
