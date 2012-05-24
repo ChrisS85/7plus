@@ -222,7 +222,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("CheckBox", "chkAutoUpdate", "xs+24 ys+263 w219 h17", "Automatically look for updates on startup")
 		Page.AddControl("CheckBox", "chkHideTrayIcon", "xs+24 ys+240 w339 h17", "Hide Tray Icon (press WIN + H (default settings) to show settings!)")
 		Page.AddControl("CheckBox", "chkAutoRun", "xs+24 ys+217 w187 h17", "Autorun 7plus on windows startup")
-		chkShowTips := Page.AddControl("CheckBox", "chkShowTips", "xs+24 ys+286 w187 h17", "Show tips about the usage of 7plus (highly recommended to discover its features)")
+		chkShowTips := Page.AddControl("CheckBox", "chkShowTips", "xs+24 ys+286", "Show tips about the usage of 7plus (highly recommended to discover its features)")
 		chkShowTips.ToolTip := "Tips will be shown when specific actions, such as pasting some text, are carried out. Each tip is only shown once in a non-obstrusive manner. This is recommended for most users that don't want to go through all the whole configuration of 7plus to discover most of its features."
 		Page.AddControl("Text", "txtLanguage", "xs+21 ys+339 w129 h13", "Documentation language:")
 		Page.AddControl("DropDownList", "ddlLanguage", "xs+203 ys+336 w160", "")
@@ -1220,7 +1220,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page := this.Pages.Explorer.Tabs[1]
 		Page.AddControl("CheckBox", "chkAutoCheckApplyToAllFiles", "xs+40 ys+134 h17", "Automatically check ""Apply to all further operations"" checkboxes in file operations")
 		;~ Page.AddControl("Link", "linkAutoCheckApplyToAllFiles", "xs+21 ys+135 w13 h13", "?")
-		Page.AddControl("CheckBox", "chkAdvancedStatusBarInfo", "xs+40 ys+111 h17", "Show free space and size of selected files in status bar like in XP (7 only)")
+		Page.AddControl("CheckBox", "chkAdvancedStatusBarInfo", "xs+40 ys+111 h17" (WinVer != Win_7 ? " Disabled" : ""), "Show free space and size of selected files in status bar like in XP (7 only)")
 		;~ Page.AddControl("Link", "linkAdvancedStatusBarInfo", "xs+21 ys+112 w13 h13", "?")
 		Page.AddControl("CheckBox", "chkScrollTreeUnderMouse", "xs+40 ys+88 h17", "Scroll explorer scrollbars with mouse over them when they are not focused")
 		;~ Page.AddControl("Link", "linkScrollTreeUnderMouse", "xs+21 ys+89 w13 h13", "?")
