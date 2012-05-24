@@ -1,11 +1,13 @@
 = 7plus Version 2.6.0 Changelog =
 *New Functions:* 
  * Complete rewrite of the Accessor launcher and its plugins. See below for details.
+ * Full Windows 8 compatibility
  * Improved Clipboard Manager by adding persistent clipboard entries that can be searched and support parameters. This is now backed by an Accessor plugin, see below.
  * Added Explorer path history and frequent paths to the Clipboard Manager menu.
  * FTP upload action can now upload directories. In addition, FTP and image uploads are carried out in a separate process for better responsiveness.
 
 *Accessor:*
+ * Results are now sorted by a new algorithm that includes the usage frequency and match quality. Execute a result a few times and it will appear at the top of the list!
  * Accessor has been rewritten from scratch and is now much more modular and powerful. All of its plugins were also rewritten and improved. There are also some new ones. Here's an excerpt of the most important new things:
   * Accessor now makes use of the text that is selected before the Accessor window is opened. Among other things it's now possible to select a file path, URL or registry key, open Accessor and it will be inserted as command automatically. The selection is also used in other plugins where appropriate.
   * It is now possible to use a timer in combination with Accessor commands. Examples:
@@ -26,15 +28,19 @@
 
 *Changes to existing Accessor plugins:* 
  * The URL plugin can now read and access bookmarks of Opera, Chrome and IE.
+ * Program Launcher plugin: It's now possible to use CTRL + O in Explorer to select a program for opening the selected file
+ * File System plugin: By pressing CTRL + . in Explorer or file dialogs Accessor will show the current directory
  * Various hotkeys and additional actions have been added for the plugins. As an example, results that are folders can now be opened directly in the file system plugin by pressing CTRL + F while the result is selected.
  
 *Bugfixes:* 
  * Added a bug which caused flashing of file dialog close box while mouse was over it.
  * Fixed a bug that caused crashes and hangups on windows which contain ListViews. This fix also improves responsiveness of ListView and TreeView selections.
+ * Fixed Explorer windows getting activated at the start of 7plus
 
 *Changes:* 
  * Rewrote navigation code that sets/gets paths/selections in explorer, file dialogs, CMD, Desktop etc.
  * Rewrote notifications to properly stack and to add support for hyperlinks.
  * Adjusted some window sizes to get rid of redundant scrollbars.
+ * Added a setting to avoid 7plus-related Explorer hang-ups.
 
 If you like this program and want to support its development, please consider donating!
