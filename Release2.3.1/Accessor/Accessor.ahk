@@ -825,6 +825,11 @@ Class CAccessor
 		if(ListEntry.Path)
 			this.SetFilter(ListEntry.Path (strEndsWith(ListEntry.Path, "\") ? "" : "\"))
 	}
+	SelectProgram(ListEntry, Plugin)
+	{
+		this.TemporaryFile := ListEntry.Path
+		this.SetFilter(CProgramLauncherPlugin.Instance.Settings.OpenWithKeyword " ")
+	}
 }
 AccessorContextMenu:
 CAccessor.Instance.PerformAction(A_ThisMenuItem, CAccessor.Instance.ClickedListEntry) ;ClickedListEntry is only valid for clicks on empty parts of the window
@@ -1028,8 +1033,13 @@ CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.OpenExplorer)
 return
 #if
 #if (CAccessor.Instance.GUI && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenPathWithAccessor))
-^f::
+^b::
 CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.OpenPathWithAccessor)
+return
+#if
+#if (CAccessor.Instance.GUI && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenWith))
+^o::
+CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.OpenWith)
 return
 #if
 #if CAccessor.Instance.GUI && !Edit_TextIsSelected("", "ahk_id " CAccessor.Instance.GUI.EditControl.hwnd)
@@ -1040,7 +1050,7 @@ return
 
 Class CAccessorPluginSettingsWindow extends CGUI
 {
-	PluginGUI := object("x",38,"y",80)
+	PluginGUI := object("x", 38,"y", 80)
 	Width := 500
 	Height := 560
 	btnHelp := this.AddControl("Button", "btnHelp", "x" this.PluginGUI.x " y" (this.Height - 34) " w70 h23", "&Help")
@@ -1177,7 +1187,8 @@ Class CAccessorPlugin
 		static OpenExplorer := new CAccessor.CAction("Open in Explorer`tCTRL + E", "OpenExplorer")
 		static OpenCMD := new CAccessor.CAction("Open in CMD", "OpenCMD")
 		static ExplorerContextMenu := new CAccessor.CAction("Explorer context menu", "ExplorerContextMenu", "", false, false, false)
-		static OpenPathWithAccessor := new CAccessor.CAction("Open path with Accessor`tCTRL + F", "OpenPathWithAccessor", "", false, false, false)
+		static OpenPathWithAccessor := new CAccessor.CAction("Open path with Accessor`tCTRL + B", "OpenPathWithAccessor", "", false, false, false)
+		static OpenWith := new CAccessor.CAction("Open with`tCTRL + O", "SelectProgram", "", false, false, true)
 	}
 	
 	;An object representing a result of an Accessor query.

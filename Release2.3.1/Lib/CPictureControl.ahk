@@ -15,6 +15,7 @@ Class CPictureControl Extends CControl
 			base.__New(Name, Options, Text, GUINum)
 		else
 			base.__New(Name, Options, Text, GUINum)
+		Gdip_GetImageDimensions(pBitmap, w, h)
 		this.Type := "Picture"
 		this._.Insert("Picture", Text)
 		this._.Insert("ControlStyles", {Center : 0x200, ResizeImage : 0x40})
@@ -24,8 +25,10 @@ Class CPictureControl Extends CControl
 	{
 		base.PostCreate()
 		text := this._.Picture
+		outputdebug postcreate %text%
 		if text is number
 		{
+			outputdebug % "set picture" this.hwnd
 			this._.Picture := ""
 			this.SetImageFromHBitmap(text)
 		}

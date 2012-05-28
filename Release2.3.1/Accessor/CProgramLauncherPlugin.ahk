@@ -125,6 +125,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 				}
 				this.Insert(CAccessorPlugin.CActions.RunWithArgs)
 				this.Insert(CAccessorPlugin.CActions.RunAsAdmin)
+				this.Insert(CAccessorPlugin.CActions.OpenWith)
 				this.Insert(CAccessorPlugin.CActions.OpenExplorer)
 				this.Insert(CAccessorPlugin.CActions.OpenCMD)
 				this.Insert(CAccessorPlugin.CActions.Copy)
@@ -299,7 +300,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		Results := Array()
 		
 		;Detect "Open with" functionality
-		if(Accessor.SelectedFile && this.Settings.OpenWithKeyword && InStr(Filter, this.Settings.OpenWithKeyword " ") = 1)
+		if((Accessor.SelectedFile || Accessor.TemporaryFile) && this.Settings.OpenWithKeyword && InStr(Filter, this.Settings.OpenWithKeyword " ") = 1)
 		{
 			OpenWith := true
 			Filter := strTrimLeft(SubStr(Filter, strlen(this.Settings.OpenWithKeyword) + 2), " ")
@@ -368,8 +369,15 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 	;Open a file with a specific program
 	OpenWith(Accessor, ListEntry, Action)
 	{
-		OpenFileWithProgram(Accessor.SelectedFile, ListEntry.Path)
+		OpenFileWithProgram(Accessor.SelectedFile ? Accessor.SelectedFile : Accessor.TemporaryFile, ListEntry.Path)
 	}
+
+	OnFilterChanged(ListEntry, Filter, LastFilter)
+	{
+		if(InStr(LastFilter, this.Settings.OpenWithKeyword " ") = 1 && InStr(Filter, this.Settings.OpenWithKeyword " ") != 1)
+			CAccessor.Remove("TemporaryFile")
+	}
+
 	;Possibly add the selected program to ProgramLauncher cache
 	AddToCache(ListEntry)
 	{

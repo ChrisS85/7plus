@@ -1147,7 +1147,6 @@ Class CGUI
 		{
 			; MouseGetPos,,,,ControlHWND, 2
 			GuiControlGet, ControlHWND, % this.GUINum ":hwnd", % A_GuiControl
-			outputdebug hwnd %hwnd%
 			if(this.Controls.HasKey(ControlHWND) && this.Controls[ControlHWND].Link)
 			{
 				if(!this._.Hovering)

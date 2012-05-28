@@ -28,6 +28,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 			DefaultAction := new CAccessor.CAction("Open file", "Run")
 			__new()
 			{
+				this.Insert(CAccessorPlugin.CActions.OpenWith)
 				this.Insert(CAccessorPlugin.CActions.OpenExplorer)
 				this.Insert(CAccessorPlugin.CActions.OpenCMD)
 				this.Insert(CAccessorPlugin.CActions.Copy)
@@ -39,6 +40,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 			DefaultAction := CAccessorPlugin.CActions.Run
 			__new()
 			{
+				this.Insert(CAccessorPlugin.CActions.OpenWith)
 				this.Insert(CAccessorPlugin.CActions.RunWithArgs)
 				this.Insert(CAccessorPlugin.CActions.RunAsAdmin)
 				this.Insert(CAccessorPlugin.CActions.OpenExplorer)
