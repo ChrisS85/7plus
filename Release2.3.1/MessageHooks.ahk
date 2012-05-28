@@ -125,7 +125,6 @@ ShellMessage( wParam, lParam, Msg)
 					WinGetClass, class, ahk_id %hwnd%
 					WinGet, exe, ProcessName, ahk_id %hwnd%
 					WinGet, Path, ProcessPath, ahk_id %hwnd%
-					outputdebug add %path% to list
 					WindowList[hwnd] := Object("class", class, "title", title, "Executable", exe, "Path", Path)
 				}
 			}
@@ -161,7 +160,7 @@ ShellMessage( wParam, lParam, Msg)
 		} ;	SlideWindows.WindowCreated(lParam)
 	}	
 	;Blinking windows detection, add new blinking windows
-	else if(wParam=32774)
+	else if(wParam = 32774)
 	{
 		lParam += 0
 		if(!BlinkingWindows.indexOf(lParam))
@@ -171,7 +170,7 @@ ShellMessage( wParam, lParam, Msg)
 		}
 	}	
 	;Window Activation
-	else if(wParam=4||wParam=32772) ;HSHELL_WINDOWACTIVATED||HSHELL_RUDEAPPACTIVATED
+	else if(wParam = 4 || wParam = 32772) ;HSHELL_WINDOWACTIVATED||HSHELL_RUDEAPPACTIVATED
 	{
 		ShowTip(13, 0.05)
 		if(IsAltTabWindow(lParam))

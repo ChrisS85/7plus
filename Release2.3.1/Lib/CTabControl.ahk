@@ -208,7 +208,7 @@ Class CTabControl Extends CControl
 		Adds a tab.
 		
 		Parameters:
-			Text - The text of the new tab. If this parameter contains a pipe character (|), multiple tabs will be created and the return value is an array of CTab objects.
+			Text - The text of the new tab. If this parameter contains the Delimiter of the GUI (default: |), multiple tabs will be created and the return value is an array of CTab objects.
 			
 		Returns:
 			An object of type <CTabControl.CTabs.CTab>. If multiple tabs are created, an array of CTab objects is returned.
@@ -223,7 +223,7 @@ Class CTabControl Extends CControl
 			Static TCIF_TEXT := 0x0001
 			Static TEXTPos := (3 * 4) + (A_PtrSize - 4)
 			Tabs := []
-			Loop, Parse, Text, |
+			Loop, Parse, Text, % CGUI.GUIList[this.GUINum].Delimiter
 			{
 				TabNumber := this._.MaxIndex() ? this._.MaxIndex() + 1 : 1
 				Tab := new this.CTab(A_LoopField, TabNumber, this.GUINum, this.hwnd)
@@ -258,7 +258,7 @@ Class CTabControl Extends CControl
 				this._.GUINum := GUINum
 				this._.hwnd := hwnd
 				this._.Controls := {}
-				if (CGUI.GUIList[GUINum].Controls.HasKey(hwnd))
+				if(CGUI.GUIList[GUINum].Controls.HasKey(hwnd))
 					GuiControl, %GUINum%:, % CGUI.GUIList[GUINum].Controls[hwnd].ClassNN, %Text%
 			}
 			
@@ -320,13 +320,14 @@ Class CTabControl Extends CControl
 				}
 				if(Name = "Text")
 				{
-					Control := CGUI.GUIList[this.GUINum].Controls[this.hwnd]
+					GUI := CGUI.GUIList[this.GUINum]
+					Control := GUI.Controls[this.hwnd]
 					Tabs := ""
 					for index, Tab in Control.Tabs
 						if(index != this._.TabNumber)
-							Tabs .= "|" Tab.Text
+							Tabs .= GUI._.Delimiter Tab.Text
 						else
-							Tabs .= "|" Value
+							Tabs .= GUI._.Delimiter Value
 					this._[Name] := Value
 					GuiControl, % this.GUINum ":", % Control.ClassNN, %Tabs%
 					return Value

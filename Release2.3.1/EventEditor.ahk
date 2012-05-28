@@ -17,10 +17,11 @@ GetCurrentSubEvent()
 }
 Class CEventEditor extends CGUI
 {
-	;~ static Instance := new CEventEditor("")
+	;Some controls use | in text so newline is used as delimiter
+	Delimiter := "`n"
 	btnOK := this.AddControl("Button", "btnOK", "x729 y557 w70 h23", "&OK")
 	btnCancel := this.AddControl("Button", "btnCancel", "x809 y557 w80 h23", "&Cancel")
-	Tab := this.AddControl("Tab", "Tab", "x17 y8 w872 h512", "Trigger|Conditions|Actions|Options")
+	Tab := this.AddControl("Tab", "Tab", "x17 y8 w872 h512", "Trigger`nConditions`nActions`nOptions")
 	
 	;Trigger controls
 	txtTrigger := this.Tab.Tabs[1].AddControl("Text", "txtTrigger", "x31 y36", "Here you can define how this event gets triggered.")
@@ -33,7 +34,7 @@ Class CEventEditor extends CGUI
 	
 	;Condition controls
 	txtCondition := this.Tab.Tabs[2].AddControl("Text", "txtCondition", "x31 y36", "The conditions below must be fullfilled to allow this event to execute.")
-	listConditions := this.Tab.Tabs[2].AddControl("ListView", "listConditions", "x31 y56 w270 h454 -Multi", "Conditions")
+	listConditions := this.Tab.Tabs[2].AddControl("ListBox", "listConditions", "x31 y56 w270 h454", "")
 	btnAddCondition := this.Tab.Tabs[2].AddControl("Button", "btnAddCondition", "x311 y56 w90", "Add Condition")
 	btnDeleteCondition := this.Tab.Tabs[2].AddControl("Button", "btnDeleteCondition", "x311 y86 w90", "Delete Condition")
 	btnCopyCondition := this.Tab.Tabs[2].AddControl("Button", "btnCopyCondition", "x311 y116 w90", "Copy Condition")
@@ -51,7 +52,7 @@ Class CEventEditor extends CGUI
 	
 	;Action controls
 	txtAction := this.Tab.Tabs[3].AddControl("Text", "txtAction", "x31 y36", "These actions will be executed when the event gets triggered.")
-	listActions := this.Tab.Tabs[3].AddControl("ListView", "listActions", "x31 y56 w270 h454 -Multi", "Actions")
+	listActions := this.Tab.Tabs[3].AddControl("ListBox", "listActions", "x31 y56 w270 h454 -Multi", "")
 	btnAddAction := this.Tab.Tabs[3].AddControl("Button", "btnAddAction", "x311 y56 w90", "Add Action")
 	btnDeleteAction := this.Tab.Tabs[3].AddControl("Button", "btnDeleteAction", "x311 y86 w90", "Delete Action")
 	btnCopyAction := this.Tab.Tabs[3].AddControl("Button", "btnCopyAction", "x311 y116 w90", "Copy Action")
@@ -92,7 +93,7 @@ Class CEventEditor extends CGUI
 		}
 		this.Event := Event
 		this.TemporaryEvent := TemporaryEvent
-		
+
 		;Disable the settings window that opened this dialog if it exists
 		SettingsWindow.Enabled := false
 		this.Owner := SettingsWindow.hwnd
@@ -114,8 +115,8 @@ Class CEventEditor extends CGUI
 		
 		;Fill conditions list
 		for index, Condition in this.Event.Conditions
-			this.listConditions.Items.Add("", (Condition.Negate ? "NOT " : "" ) Condition.DisplayString())
-		
+			this.listConditions.Items.Add((Condition.Negate ? "NOT " : "" ) Condition.DisplayString())
+
 		;Fill condition categories
 		for CategoryName, Category in CCondition.Categories
 			this.ddlConditionCategory.Items.Add(CategoryName)
@@ -143,7 +144,7 @@ Class CEventEditor extends CGUI
 		
 		;Fill actions list
 		for index, Action in this.Event.Actions
-			this.listActions.Items.Add("", Action.DisplayString())
+			this.listActions.Items.Add(Action.DisplayString())
 		
 		;Fill action categories
 		for CategoryName, Category in CAction.Categories
@@ -213,6 +214,13 @@ Class CEventEditor extends CGUI
 		SettingsWindow.Enabled := true
 		SettingsWindow.FinishEditing(this.Result, this.TemporaryEvent)
 	}
+
+
+
+	/*
+	Trigger
+	*/
+
 	ddlTriggerCategory_SelectionChanged(Item)
 	{
 		if(this.TriggerGUI) ;if a trigger is already showing a gui, check if the new one is different
@@ -262,7 +270,7 @@ Class CEventEditor extends CGUI
 	}
 	ShowTrigger()
 	{
-		this.TriggerGUI := {Type: this.Event.Trigger.Type}
+		this.TriggerGUI := {Type: this.Event.Trigger.Type, Delimiter : this.Delimiter}
 		this.TriggerGUI.x := 38
 		this.TriggerGUI.y := 148
 		this.TriggerGUI.GUINum := this.GUINum
@@ -278,16 +286,21 @@ Class CEventEditor extends CGUI
 		static OldTypes := {"On 7plus start" : "7plusStart", "Context menu" : "ContextMenu", "Double click on desktop" : "DoubleClickDesktop", "Double click on taskbar" : "DoubleClickTaskbar", "Explorer bar button" : "ExplorerButton", "Double click on empty space" : "ExplorerDoubleClickSpace", "Explorer path changed" : "ExplorerPathChanged", "Menu item clicked" : "MenuItem", "On window message" : "OnMessage", "Screen corner" : "ScreenCorner", "Triggered by an action" : "None", "Window activated" : "WindowActivated", "Window closed" : "WindowClosed", "Window created" : "WindowCreated", "Window state changed" : "WindowStateChange"}
 		OpenWikiPage("docsTriggers" (OldTypes.HasKey(this.Event.Trigger.Type) ? OldTypes[this.Event.Trigger.Type] : this.Event.Trigger.Type))
 	}
+
+
+	/*
+	Conditions
+	*/
+
 	listConditions_SelectionChanged(Item)
 	{
+		this.RefreshConditionControlStates()
 		;A new item was selected
-		if(this.listConditions.SelectedIndices.MaxIndex() = 1 && this.listConditions.SelectedIndex != this.listConditions.PreviouslySelectedIndex)
+		if(this.listConditions.SelectedIndex && this.listConditions.PreviouslySelectedItem.Index != this.listConditions.SelectedIndex)
 		{
 			if(this.Condition)
 				this.SubmitCondition()
-			this.ddlConditionCategory.Enabled := true
-			this.ddlConditionType.Enabled := true
-			this.chkNegateCondition.Enabled := true
+
 			this.Condition :=  this.Event.Conditions[this.listConditions.SelectedIndex]
 			;Mark that the Condition stored under this.Condition should be used instead of creating a new one of the type set in the type dropdownlist.
 			this.UseCondition := true
@@ -298,14 +311,8 @@ Class CEventEditor extends CGUI
 			else ;The Condition is of the same type
 				this.ddlConditionType_SelectionChanged(this.ddlConditionType.SelectedItem)
 		}		
-		else if(!this.listConditions.SelectedIndices.MaxIndex()) ;Item deselected
-		{
-			this.ddlConditionCategory.Enabled := false
-			this.ddlConditionType.Enabled := false
-			this.chkNegateCondition.Enabled := false
+		else if(!this.listConditions.SelectedIndex) ;Item deselected
 			this.SubmitCondition()
-			this.chkNegateCondition.Checked := false
-		}
 	}
 	ddlConditionCategory_SelectionChanged(Item)
 	{
@@ -336,14 +343,12 @@ Class CEventEditor extends CGUI
 		}
 		this.UseCondition := false
 		
-		;Show Condition-specific part of the gui and store hwnds in ConditionGUI		
+		;Show Condition-specific part of the gui and store hwnds in ConditionGUI
 		this.ShowCondition()
 		return
 	}
 	SubmitCondition()
 	{
-		;~ if(!this.Condition)
-			;~ return
 		Gui, % this.GUINum ": Default"
 		Gui, Tab, 2
 		this.Condition.GuiSubmit(this.ConditionGUI)
@@ -355,7 +360,7 @@ Class CEventEditor extends CGUI
 	ShowCondition()
 	{
 		this.chkNegateCondition.Checked := this.Condition.Negate
-		this.ConditionGUI := {Type: this.Condition.Type}
+		this.ConditionGUI := {Type: this.Condition.Type, Delimiter : this.Delimiter, glabel : "EventEditor_ConditionLabel"}
 		this.ConditionGUI.x := 438
 		this.ConditionGUI.y := 178
 		this.ConditionGUI.GUINum := this.GUINum
@@ -366,6 +371,10 @@ Class CEventEditor extends CGUI
 		Gui, Tab		
 		;Needed for changing the type of a condition
 		this.listConditions.Items[this.Event.Conditions.IndexOf(this.Condition)].Text := (this.Condition.Negate ? "NOT " : "" ) this.Condition.DisplayString()
+	}
+	RefreshConditionDisplayString()
+	{
+		this.listConditions.SelectedItem.Text := (this.Condition.Negate ? "NOT " : "" ) this.Condition.DisplayString()
 	}
 	chkNegateCondition_CheckedChanged()
 	{
@@ -378,22 +387,36 @@ Class CEventEditor extends CGUI
 	btnAddCondition_Click()
 	{
 		this.Event.Conditions.Insert(Condition := new CWindowActiveCondition())
-		this.listConditions.Items.Add("", (Condition.Negate ? "NOT " : "" ) Condition.DisplayString())
+		this.listConditions.Items.Add((Condition.Negate ? "NOT " : "" ) Condition.DisplayString())
 		this.UseCondition := true
 		this.listConditions.SelectedIndex := this.listConditions.Items.MaxIndex()
 	}
 	btnDeleteCondition_Click()
 	{
-		if(this.listConditions.SelectedIndices.MaxIndex() = 1)
+		if(SelectedIndex := this.listConditions.SelectedIndex)
 		{
 			this.SubmitCondition()
-			this.Event.Conditions.Remove(this.listConditions.SelectedIndex)
+			this.Event.Conditions.Remove(SelectedIndex)
 			this.Remove("Condition")
-			this.listConditions.Items.Delete(this.listConditions.SelectedIndex)
-			this.listConditions.SelectedIndex := max(min(selected, this.listConditions.Items.MaxIndex()), 1)
+			this.listConditions.Items.Delete(SelectedIndex)
+			if(Count := this.listConditions.Items.MaxIndex())
+				this.listConditions.SelectedIndex := clamp(SelectedIndex, 1, Count)
 		}
 	}
-	
+	RefreshConditionControlStates()
+	{
+		SelectedIndex := this.listConditions.SelectedIndex
+		this.ddlConditionCategory.Enabled 	:= SelectedIndex > 0
+		this.ddlConditionType.Enabled 		:= SelectedIndex > 0
+		this.chkNegateCondition.Enabled 	:= SelectedIndex > 0
+		if(!(SelectedIndex > 0))
+			this.chkNegateCondition.Checked := false
+		this.btnConditionHelp.Enabled 		:= SelectedIndex > 0
+		this.btnDeleteCondition.Enabled 	:= SelectedIndex > 0
+		this.btnCopyCondition.Enabled 		:= SelectedIndex > 0
+		this.btnMoveConditionDown.Enabled 	:= SelectedIndex < this.listConditions.Items.MaxIndex()
+		this.btnMoveConditionUp.Enabled 	:= SelectedIndex > 1
+	}
 	btnCopyCondition_Click()
 	{
 		EventSystem.ConditionClipboard := this.Event.Conditions[this.listConditions.SelectedIndex].DeepCopy()
@@ -402,19 +425,20 @@ Class CEventEditor extends CGUI
 	btnPasteCondition_Click()
 	{
 		this.Event.Conditions.Insert(EventSystem.ConditionClipboard.DeepCopy())
-		this.listConditions.Items.Add("Select", (EventSystem.ConditionClipboard.Negate ? "NOT " : "") EventSystem.ConditionClipboard.DisplayString())
+		this.listConditions.Items.Add((EventSystem.ConditionClipboard.Negate ? "NOT " : "") EventSystem.ConditionClipboard.DisplayString(), -1, true)
 	}
 	btnMoveConditionUp_Click()
 	{
 		SelectedIndex := this.listConditions.SelectedIndex
 		if(!(SelectedIndex > 1))
 			return
-		Text := this.listConditions.Items[SelectedIndex].Text
+		Text := this.listConditions.SelectedItem.Text
 		this.Event.Conditions.swap(SelectedIndex, SelectedIndex - 1)
 		this.listConditions.DisableNotifications := true
 		this.listConditions.Items.Delete(SelectedIndex)
-		this.listConditions.Items.Insert(SelectedIndex - 1, "Select", Text)
+		this.listConditions.Items.Add(Text, SelectedIndex - 1, true)
 		this.listConditions.DisableNotifications := false
+		this.RefreshConditionControlStates()
 	}
 	btnMoveConditionDown_Click()
 	{
@@ -425,8 +449,9 @@ Class CEventEditor extends CGUI
 		this.Event.Conditions.swap(SelectedIndex, SelectedIndex + 1)
 		this.listConditions.DisableNotifications := true
 		this.listConditions.Items.Delete(SelectedIndex)
-		this.listConditions.Items.Insert(SelectedIndex + 1, "Select", Text)
+		this.listConditions.Items.Add(Text, SelectedIndex + 1, true)
 		this.listConditions.DisableNotifications := false
+		this.RefreshConditionControlStates()
 	}
 	btnConditionHelp_Click()
 	{
@@ -434,31 +459,32 @@ Class CEventEditor extends CGUI
 		OpenWikiPage("docsConditions" (OldTypes.HasKey(this.Condition.Type) ? OldTypes[this.Condition.Type] : this.Condition.Type))
 	}
 	
+
+	/*
+	Actions
+	*/
+
 	listActions_SelectionChanged(Item)
 	{
+		this.RefreshActionControlStates()
 		;A new item was selected
-		if(this.listActions.SelectedIndices.MaxIndex() = 1 && this.listActions.SelectedIndex != this.listActions.PreviouslySelectedIndex)
+		if(this.listActions.SelectedIndex && this.listActions.PreviouslySelectedItem.Index != this.listActions.SelectedIndex)
 		{
 			if(this.Action)
 				this.SubmitAction()
-			this.ddlActionCategory.Enabled := true
-			this.ddlActionType.Enabled := true
+
 			this.Action :=  this.Event.Actions[this.listActions.SelectedIndex]
-			;Mark that the action stored under this.Action should be used instead of creating a new one of the type set in the type dropdownlist.
+			;Mark that the Action stored under this.Action should be used instead of creating a new one of the type set in the type dropdownlist.
 			this.UseAction := true
-			if(this.Action.Category != this.ddlActionCategory.Text) ;The category of the new action is different from the old one
+			if(this.Action.Category != this.ddlActionCategory.Text) ;The category of the new Action is different from the old one
 				this.ddlActionCategory.Text := this.Action.Category
-			else if(this.Action.Type != this.ddlActionType.Text) ;The type of the new action is different from the old one
+			else if(this.Action.Type != this.ddlActionType.Text) ;The type of the new Action is different from the old one
 				this.ddlActionType.Text := this.Action.Type
-			else ;The action is of the same type
+			else ;The Action is of the same type
 				this.ddlActionType_SelectionChanged(this.ddlActionType.SelectedItem)
-		}
-		else if(!this.listActions.SelectedIndices.MaxIndex()) ;item deselected
-		{
-			this.ddlActionCategory.Enabled := false
-			this.ddlActionType.Enabled := false
+		}		
+		else if(!this.listActions.SelectedIndex) ;Item deselected
 			this.SubmitAction()
-		}
 	}
 	ddlActionCategory_SelectionChanged(Item)
 	{
@@ -479,7 +505,7 @@ Class CEventEditor extends CGUI
 	{
 		if(!IsObject(Item)) ;Make sure not to do anything when type DropDownList is cleared
 			return
-		;Instantiate new action if this value is set
+		;Instantiate new Action if this value is set
 		if(!this.UseAction)
 		{
 			this.SubmitAction()
@@ -487,14 +513,13 @@ Class CEventEditor extends CGUI
 			this.Event.Actions[this.listActions.SelectedIndex] := this.Action := new ActionTemplate()
 		}
 		this.UseAction := false
+		
 		;Show Action-specific part of the gui and store hwnds in ActionGUI
 		this.ShowAction()
 		return
 	}
 	SubmitAction()
 	{
-		if(!this.Action)
-			return
 		Gui, % this.GUINum ": Default"
 		Gui, Tab, 3
 		this.Action.GuiSubmit(this.ActionGUI)
@@ -505,7 +530,7 @@ Class CEventEditor extends CGUI
 	}
 	ShowAction()
 	{
-		this.ActionGUI := {Type: this.Action.Type}
+		this.ActionGUI := {Type: this.Action.Type, Delimiter : this.Delimiter, glabel : "EventEditor_ActionLabel"}
 		this.ActionGUI.x := 438
 		this.ActionGUI.y := 148
 		this.ActionGUI.GUINum := this.GUINum
@@ -513,29 +538,44 @@ Class CEventEditor extends CGUI
 		Gui, % this.GUINum ": Default"
 		Gui, Tab, 3
 		this.Action.GuiShow(this.ActionGUI)
-		Gui, Tab
-		;Needed for changing the type of an action
+		Gui, Tab		
+		;Needed for changing the type of a Action
+		this.listActions.Items[this.Event.Actions.IndexOf(this.Action)].Text := this.Action.DisplayString()
+	}
+	RefreshActionDisplayString()
+	{
 		this.listActions.Items[this.Event.Actions.IndexOf(this.Action)].Text := this.Action.DisplayString()
 	}
 	btnAddAction_Click()
 	{
-		this.Event.Actions.Insert(Action := new CRunAction())
-		this.listActions.Items.Add("", Action.DisplayString())
+		this.Event.Actions.Insert(Action := new CWindowActiveAction())
+		this.listActions.Items.Add(Action.DisplayString())
 		this.UseAction := true
 		this.listActions.SelectedIndex := this.listActions.Items.MaxIndex()
 	}
 	btnDeleteAction_Click()
 	{
-		if(this.listActions.SelectedIndices.MaxIndex() = 1)
+		if(SelectedIndex := this.listActions.SelectedIndex)
 		{
 			this.SubmitAction()
-			this.Event.Actions.Remove(this.listActions.SelectedIndex)
+			this.Event.Actions.Remove(SelectedIndex)
 			this.Remove("Action")
-			this.listActions.Items.Delete(selected := this.listActions.SelectedIndex)
-			this.listActions.SelectedIndex := max(min(selected, this.listActions.Items.MaxIndex()), 1)
+			this.listActions.Items.Delete(SelectedIndex)
+			if(Count := this.listActions.Items.MaxIndex())
+				this.listActions.SelectedIndex := clamp(SelectedIndex, 1, Count)
 		}
 	}
-	
+	RefreshActionControlStates()
+	{
+		SelectedIndex := this.listActions.SelectedIndex
+		this.ddlActionCategory.Enabled 	:= SelectedIndex > 0
+		this.ddlActionType.Enabled 		:= SelectedIndex > 0
+		this.btnActionHelp.Enabled 		:= SelectedIndex > 0
+		this.btnDeleteAction.Enabled 	:= SelectedIndex > 0
+		this.btnCopyAction.Enabled 		:= SelectedIndex > 0
+		this.btnMoveActionDown.Enabled 	:= SelectedIndex < this.listActions.Items.MaxIndex()
+		this.btnMoveActionUp.Enabled 	:= SelectedIndex > 1
+	}
 	btnCopyAction_Click()
 	{
 		EventSystem.ActionClipboard := this.Event.Actions[this.listActions.SelectedIndex].DeepCopy()
@@ -544,19 +584,20 @@ Class CEventEditor extends CGUI
 	btnPasteAction_Click()
 	{
 		this.Event.Actions.Insert(EventSystem.ActionClipboard.DeepCopy())
-		this.listActions.Items.Add("Select", EventSystem.ActionClipboard.DisplayString())
+		this.listActions.Items.Add(EventSystem.ActionClipboard.DisplayString(), -1, true)
 	}
 	btnMoveActionUp_Click()
 	{
 		SelectedIndex := this.listActions.SelectedIndex
 		if(!(SelectedIndex > 1))
 			return
-		Text := this.listActions.Items[SelectedIndex].Text
+		Text := this.listActions.SelectedItem.Text
 		this.Event.Actions.swap(SelectedIndex, SelectedIndex - 1)
-		this.listActions.DisableNotifications := true		
+		this.listActions.DisableNotifications := true
 		this.listActions.Items.Delete(SelectedIndex)
-		this.listActions.Items.Insert(SelectedIndex - 1, "Select", Text)
+		this.listActions.Items.Add(Text, SelectedIndex - 1, true)
 		this.listActions.DisableNotifications := false
+		this.RefreshActionControlStates()
 	}
 	btnMoveActionDown_Click()
 	{
@@ -565,10 +606,11 @@ Class CEventEditor extends CGUI
 			return
 		Text := this.listActions.Items[SelectedIndex].Text
 		this.Event.Actions.swap(SelectedIndex, SelectedIndex + 1)
-		this.listActions.DisableNotifications := true		
+		this.listActions.DisableNotifications := true
 		this.listActions.Items.Delete(SelectedIndex)
-		this.listActions.Items.Insert(SelectedIndex + 1, "Select", Text)
+		this.listActions.Items.Add(Text, SelectedIndex + 1, true)
 		this.listActions.DisableNotifications := false
+		this.RefreshActionControlStates()
 	}
 	btnActionHelp_Click()
 	{
@@ -576,6 +618,17 @@ Class CEventEditor extends CGUI
 		OpenWikiPage("docsActions" (OldTypes.HasKey(this.Action.Type) ? OldTypes[this.Action.Type] : this.Action.Type))
 	}
 }
+
+;These events get triggered as g-labels by the controls added with AddControl(). However, right now they can't refresh the DisplayStrings of the conditions/actions because
+;the values have not been updated yet in the condition or action. Fixing this would require to adjust many conditions/actions to use a new parameter in GuiSubmit() that tells
+;it if only the values should get updated or if the controls should also be removed. This wasn't planned originally and now limits the updating here.
+EventEditor_ConditionLabel:
+CGUI.GUIList["CEventEditor1"].RefreshConditionDisplayString()
+return
+EventEditor_ActionLabel:
+CGUI.GUIList["CEventEditor1"].RefreshActionDisplayString()
+return
+
 EventEditor_DeleteCondition:
 CGUI.GUIList["CEventEditor1"].btnDeleteCondition_Click()
 return

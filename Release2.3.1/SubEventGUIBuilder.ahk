@@ -4,6 +4,14 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 	x := GUI.x
 	y := GUI.y
 	w := 200
+	;GUI may use a different delimiter as the default one (which is also used here)
+	if(GUI.HasKey("Delimiter"))
+		Gui, +Delimiter|
+
+	;GUI may want to be notified about changes
+	if(!glabel && GUI.HasKey("glabel"))
+		glabel := GUI.glabel
+
 	if(description != "")
 	{
 		y += 4
@@ -37,7 +45,7 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 	else if(type = "UpDown")
 	{
 		y += 1
-		options := "x" x " y" y " w" w " hwndEdit_" name " -Multi R1 Number"
+		options := "x" x " y" y " w" w " hwndEdit_" name " -Multi R1 Number g" gLabel
 		options .= InStr(name, "password") ? " Password" : ""
 		Gui, Add, Edit, %options% , % ValueObj[name]
 		Gui, Add, UpDown, % "hwndUpDown_" name (text ? " Range" text : ""), % ValueObj[name]
@@ -53,10 +61,10 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 	else if(type = "Checkbox")
 	{
 		if(ValueObj[name] = 1)
-			Gui, Add, Checkbox, x%x% y%y% hwndCheck_%name% Checked, %text%
+			Gui, Add, Checkbox, x%x% y%y% hwndCheck_%name% Checked g%glabel%, %text%
 		else
 		{
-			Gui, Add, Checkbox, x%x% y%y% hwndCheck_%name%, %text%
+			Gui, Add, Checkbox, x%x% y%y% hwndCheck_%name% g%glabel%, %text%
 			if(ValueObj[name] != 0)
 				Msgbox SubEvent.AddControl(%type%,%name%, %text%, %description%) has wrong checkbox value!
 		}
@@ -71,7 +79,7 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 	{
 		y += 1
 		text := ValueObj[name]
-		options = x+10 y%y% w%w% hwndEdit_%name% -Multi R1
+		options := "x+10 y" y " w" w " hwndEdit_" name " -Multi R1 g" glabel
 		options .= InStr(name, "password") ? " Password" : ""
 		Gui, Add, Edit, %options% , %text%
 		y -= 1
@@ -118,7 +126,7 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 			text1 := SubStr(text1, 1, -1)
 		if(type = "DropDownList")
 		{
-			options = x%x% y%y% w%w% hwndDropDown_%name%
+			options := "x" x " y" y " w" w " hwndDropDown_" name
 			if(gLabel != "")
 				options .= " g" gLabel
 			Gui, Add, DropDownList, %options%, %text1%
@@ -130,7 +138,7 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 		}
 		else if(type = "ComboBox")
 		{
-			options = x%x% y%y% w%w% hwndComboBox_%name%
+			options := "x" x " y" y " w" w " hwndComboBox_" name
 			if(gLabel != "")
 				options .= " g" gLabel
 			Gui, Add, ComboBox, %options%, %text1%
@@ -147,7 +155,7 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 	else if(type = "Time")
 	{
 		text := ValueObj[name]
-		Gui, Add, DateTime, x%x% y%y% hwndTime_%name% Choose20100101%text%, Time
+		Gui, Add, DateTime, x%x% y%y% hwndTime_%name% Choose20100101%text% g%glabel%, Time
 		y += 30		
 		if(GUI.HasKey("Time_" name))
 			Msgbox Subevent GUI control already exists: %name%
@@ -176,6 +184,8 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 		}
 	}
 	GUI.y := y
+	if(GUI.HasKey("Delimiter"))
+		Gui, % "+Delimiter" GUI.Delimiter
 	return hwnd
 }
 

@@ -148,7 +148,7 @@ sorted(list, Callback = "")
 }
 
 ;Sorts an array by one of the members keys
-ArraySort(object, key, order = "Up")
+ArraySort(object, key, order = "Down")
 {
 	static obj, k, o
 	;Called by user
@@ -171,11 +171,10 @@ ArraySort(object, key, order = "Up")
 	}
 	else ;Called by Sort command
 	{
-		if(obj[object][k] = obj[key][k])
-			result := 0
+		if(obj[object][k] != obj[key][k])
+			return (o = "Down" && obj[object][k] < obj[key][k]) || (o = "Up" && obj[object][k] > obj[key][k]) ? 1 : -1
 		else
-			result := (o = "Up" && obj[object][k] > obj[key][k]) || (o = "Down" && obj[object][k] < obj[key][k]) ? 1 : -1
-		return result
+			return 0
 	}
 }
 

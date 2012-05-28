@@ -7,7 +7,7 @@ Class CAccessor
 	History := []
 	
 	;Plugins used by the Accessor
-	static Plugins := Array()
+	static Plugins := RichObject()
 	
 	;The current (singleton) instance
 	static Instance
@@ -437,6 +437,9 @@ Class CAccessor
 	;This is the main function that populates the Accessor list.
 	RefreshList()
 	{
+		DllCall("QueryPerformanceCounter", "Int64*", perfStart)
+		global searchtime
+		searchtime := 0
 		if(!this.GUI)
 			return
 
@@ -496,7 +499,7 @@ Class CAccessor
 		;Calculate the weighting of the individual results as the average value of the single weighting indicators
 		for index, ListEntry in this.List
 		{
-			Plugin := this.Plugins.GetItemWithValue("Type", ListEntry.Type)
+			Plugin := this.Plugins[ListEntry.Type]
 			ListEntry.SortOrder := ListEntry.Priority + (ListEntry.MatchQuality - this.Settings.FuzzySearchThreshold) / (1 - this.Settings.FuzzySearchThreshold) + (ListEntry.ResultIndexingKey && this.ResultUsageTracker.Plugins[ListEntry.Type].HasKey(ListEntry[ListEntry.ResultIndexingKey]) ? this.ResultUsageTracker.Plugins[ListEntry.Type][ListEntry[ListEntry.ResultIndexingKey]] : 0)
 		}
 
@@ -511,7 +514,7 @@ Class CAccessor
 				ListEntry.Time := Time
 				ListEntry.Detail2 := FormattedTime
 			}
-			Plugin := this.Plugins.GetItemWithValue("Type", ListEntry.Type)
+			Plugin := this.Plugins[ListEntry.Type]
 			Plugin.GetDisplayStrings(ListEntry, Title := ListEntry.Title, Path := ListEntry.Path, Detail1 := ListEntry.Detail1, Detail2 := ListEntry.Detail2)
 			if(!Settings.General.DebugEnabled)
 				item := this.GUI.ListView.Items.Add("", Title, Path, Detail1, Detail2)
@@ -541,6 +544,9 @@ Class CAccessor
 			this.GUI.btnOK.Text := "Run"
 
 		this.IsRefreshing := false
+		DllCall("QueryPerformanceCounter", "Int64*", perfEnd)
+		DllCall("QueryPerformanceFrequency", "Int64*", freq)
+		outputdebug % "Refresh: " ((perfEnd - perfstart)/freq*1000) ", SearchTime: " (SearchTime / freq*1000)
 		if(this.RepeatRefresh)
 			this.RefreshList()
 	}
@@ -548,7 +554,7 @@ Class CAccessor
 	;Registers an Accessor plugin with this class. This needs to be done.
 	RegisterPlugin(Type, Plugin)
 	{
-		this.Plugins.Insert(Plugin)
+		this.Plugins[Type] := Plugin
 		return Type
 	}
 
@@ -880,7 +886,7 @@ Class CAccessorGUI extends CGUI
 		
 		this.ListView.ExStyle := "+0x00010000"
 		this.ListView.LargeIcons := CAccessor.Instance.Settings.LargeIcons
-		this.ListView.IndependentSorting := true
+		;this.ListView.IndependentSorting := true
 		this.ListView.ModifyCol(1, Round(this.ListView.Width * 3 / 8)) ;Col_3_w) ; resize title column
 		this.ListView.ModifyCol(2, Round(this.ListView.Width * 3.3 / 8)) ; resize path column
 		this.ListView.ModifyCol(3, Round(this.ListView.Width * 0.8 / 8)) ; resize detail1 column
@@ -1292,5 +1298,4 @@ file search using mft: http://www.autohotkey.com/community/viewtopic.php?t=85072
 TODO:
 Documentation of new Accessor features
 Bug in condition/action editor: Forgets about some properties and doesn't allow pasting
-Setting to skip explorer SelectionChanged event registration
 */

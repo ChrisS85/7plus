@@ -31,8 +31,8 @@ Class CSettingsWindow Extends CGUI
 		this.treePages.Style := "+0x20"
 		this.treePages.Style := "+0x1000"
 		this.Pages := {}
-		PageNames := this.PageNames
 
+		PageNames := this.PageNames
 		Item := this.treePages.Items.Add("Introduction", "")
 		Page := this.Pages["Introduction"] := Item.AddControl("Tab", "Introduction", "xs+0 ys+2 w" this.Width - 386 " h350", "bla")
 		this.CreateIntroduction()
@@ -572,7 +572,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.listEvents.SelectedItem := ListItem
 		SelectedCategory := this.GetSelectedCategory(true)
 		Event.Category := SelectedCategory
-		this.EditEvent(1)
+		this.EditEvent(Event.ID)
 	}
 	
 	EditEvent(TemporaryEvent)
@@ -580,7 +580,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page := this.Pages.Events.Tabs[1].Controls
 		if(Page.listEvents.SelectedItems.MaxIndex() != 1)
 			return
-		ID := Page.listEvents.SelectedItem[2]
+		ID := TemporaryEvent ? TemporaryEvent : Page.listEvents.SelectedItem[2]
 		OriginalEvent := this.Events.GetItemWithValue("ID", ID)
 		if((ApplicationState.IsPortable || !A_IsAdmin) && OriginalEvent.Trigger.Is(CExplorerButtonTrigger))
 		{
@@ -593,7 +593,6 @@ Finally, here are some settings that you're likely to change at the beginning:
 	}
 	FinishEditing(NewEvent, TemporaryEvent)
 	{
-		;~ Suspend, Off
 		Page := this.Pages.Events.Tabs[1].Controls
 		if(NewEvent && (ApplicationState.IsPortable || !A_IsAdmin) && NewEvent.Trigger.Is(CExplorerButtonTrigger)) ;Explorer buttons may not be added in portable/non-admin mode
 		{
@@ -1291,7 +1290,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.Controls.btnTabStartupPath := chkUseTabs.AddControl("Button", "btnTabStartupPath", "xs+473 ys+110 w33 h23", "...", 1)
 		Page.AddControl("Text", "txtOnTabClose", "xs+56 ys+188 w64 h13", "On tab close:")
 		Page.Controls.ddlOnTabClose := chkUseTabs.AddControl("DropDownList", "ddlOnTabClose", "xs+308 ys+184 w159", "Activate left tab|Activate right tab", 1)
-		Page.AddControl("Text", "txtTabDescription", "xs+40 ys+20 w469 h39", "7plus makes it possible to use tabs in explorer. New tabs are opened with the middle mouse button,`nand with CTRL+T, Tabs are cycled by clicking the Tabs or pressing CTRL+(SHIFT)+TAB,`nand closed by middle clicking a tab and with CTRL+W")
+		Page.AddControl("Text", "txtTabDescription", "xs+40 ys+20 w469 h39", "7plus makes it possible to use tabs in explorer. New tabs are opened with the middle mouse button,`nand with CTRL+T, Tabs are cycled by clicking the Tabs or pressing CTRL+(SHIFT)+TAB,`nand closed by middle clicking a tab and with CTRL+W.")
 		Page.Controls.chkTabWindowClose := chkUseTabs.AddControl("CheckBox", "chkTabWindowClose", "xs+53 ys+161 h17", "Close all tabs when window is closed", 1)
 		Page.Controls.chkActivateTab := chkUseTabs.AddControl("CheckBox", "chkActivateTab", "xs+53 ys+138 h17", "Activate tab on tab creation", 1)
 		;~ Page.AddControl("Link", "linkUseTabs", "x19 ys+63 w13 h13", "?")
@@ -1329,7 +1328,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 	CreateFastFolders()
 	{
 		Page := this.Pages.FastFolders.Tabs[1]
-		Page.AddControl("Text", "txtFastFoldersDescription", "xs+37 ys+20 w482 h26", "In explorer and file dialogs you can store a path in one of ten slots by pressing CTRL`nand a numpad number key (default settings), and restore it by pressing the numpad number key again")
+		Page.AddControl("Text", "txtFastFoldersDescription", "xs+37 ys+20 w482 h26", "In explorer and file dialogs you can store a path in one of ten slots by pressing CTRL`nand a numpad number key (default settings), and restore it by pressing the numpad number key again.")
 		Page.AddControl("CheckBox", "chkShowInFolderBand", "xs+40 ys+51 h17", "Integrate Fast Folders into explorer folder band bar (Vista/7 only)")
 		;~ Page.AddControl("Link", "linkShowInFolderBand", "x19 ys+52 w13 h13", "?")
 		Page.AddControl("CheckBox", "chkCleanFolderBand", "xs+40 ys+74 h17", "Remove windows folder band buttons (Vista/7 only)")
@@ -1408,7 +1407,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 	CreateFTPProfiles()
 	{
 		Page := this.Pages.FTPProfiles.Tabs[1]
-		Page.AddControl("Text", "txtFTPDescription", "xs+37 ys+20 w307 h13", "You can define FTP profiles for use with the upload action here.")
+		Page.AddControl("Text", "txtFTPDescription", "xs+37 ys+20 w307 h13", "You can define FTP profiles for use with the upload action here.`nBy default the selected files and folders can be uploaded by pressing CTRL + U.")
 		Page.AddControl("DropDownList", "ddlFTPProfile", "xs+40 ys+38 w297", "")
 		Page.AddControl("Button", "btnAddFTPProfile", "xs+343 ys+36 w79 h23", "&Add profile")
 		Page.AddControl("Button", "btnDeleteFTPProfile", "xs+428 ys+36 w79 h23", "&Delete profile")

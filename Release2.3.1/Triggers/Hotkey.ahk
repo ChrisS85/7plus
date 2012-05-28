@@ -188,7 +188,7 @@ Class CHotkeyTrigger Extends CTrigger
 			if(!InStr(KeyList, "ƒƒ"))
 				KeyList := StringReplace(KeyList, "ƒ", "ƒƒ")
 			GUIControl ,, % sGUI.tmphKeyList,ƒ%KeyList%
-			Gui, +Delimiter|
+			Gui, % "+Delimiter" sGUI.Delimiter
 			;Reset Hotkey and HKDesc
 			this.GuiShow("", "UpdateHotkey")
 		}
