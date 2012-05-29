@@ -46,7 +46,7 @@ Class Navigation
 	SetPath(Path, hwnd = 0)
 	{
 		;If Path is a file, select it in new explorer instances or ignore it elsewhere
-		if(!InStr(FileExist(Path), "D"))
+		if(!InStr(FileExist(Path), "D") && !StrEndsWith(Path, ".search-ms"))
 			SplitPath, Path, Name, Dir
 		else
 			Dir := Path

@@ -67,14 +67,14 @@ FlatView(files)
 	{ 
 		if(InStr(FileExist(files[A_Index]), "D"))
 		{
-			searchString:=searchString "<include path=""" files[A_Index] """/>"
+			searchString .= "<include path=""" files[A_Index] """/>"
 			DirectoriesFound := true
 		}
 	}
 	if(DirectoriesFound)
 	{
-		searchString.="</scope></query></persistedQuery>"
-		Fileappend,%searchString%, %Path%
+		searchString .= "</scope></query></persistedQuery>"
+		FileAppend, %searchString%, %Path%
 		Navigation.SetPath(Path)
 	}
 }
