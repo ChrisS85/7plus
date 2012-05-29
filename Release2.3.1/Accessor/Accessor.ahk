@@ -138,18 +138,15 @@ Class CAccessor
 				this.Plugins[Plugin.Type][ExecutedResult[ExecutedResult.ResultIndexingKey]] := this.UsageIncrement
 
 			;Add penalty to all results so they will be forgotten over time
-			for index, p in this.Plugins
+			NewPlugin := {}
+			for IndexingKey, weighting in this.Plugins[Plugin.Type]
 			{
-				NewPlugin := {}
-				for IndexingKey, weighting in p
-				{
-					weighting -= this.TimePenalty
-					;Remove weightings which have become too low
-					if(weighting > 0)
-						NewPlugin[IndexingKey] := weighting
-				}
-				this.Plugins[index] := NewPlugin
+				weighting -= this.TimePenalty
+				;Remove weightings which have become too low
+				if(weighting > 0)
+					NewPlugin[IndexingKey] := weighting
 			}
+			this.Plugins[Plugin.Type] := NewPlugin
 		}
 	}
 
