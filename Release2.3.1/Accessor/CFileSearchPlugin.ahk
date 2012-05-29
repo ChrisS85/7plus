@@ -7,7 +7,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 	
 	Cleared := false
 	List := Array()
-	
+	Icons := Array()
 	AllowDelayedExecution := true
 	
 	Class CSettings extends CAccessorPlugin.CSettings
@@ -15,6 +15,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 		Keyword := "find"
 		KeywordOnly := true
 		MinChars := 2
+		UseIcons := true
 		ShowResultsInAccessor := true
 	}
 	Class CSearchInAccessorResult extends CAccessorPlugin.CResult
@@ -87,7 +88,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 		}
 		Type := "File Search"
 		Priority := CFileSearchPlugin.Instance.Priority
-		MatchQuality := 1 ;Only direct matches are used by this plugin
+		MatchQuality := 1 ;Only direct matches are used by this plugin 
 		Detail1 := "Search result"
 	}
 
@@ -111,7 +112,11 @@ Class CFileSearchPlugin extends CAccessorPlugin
 	;	this.List := Array()
 	;	this.Cleared := false
 	;}
-
+	Init(Settings)
+	{
+		;Perform a random MFT search to speed up searches by the user
+		wt := new CWorkerThread("AccessorMFTSearch", 0, 1, 1).Start({Query : "xyz", SearchPath : "C:"})
+	}
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		if(!KeywordSet)
@@ -123,15 +128,21 @@ Class CFileSearchPlugin extends CAccessorPlugin
 			;Show results from worker thread
 			for index, ListEntry in this.List
 			{
-				Result := new this.CSearchResult()
-				Result.Title := Name := ListEntry.Name
-				Result.Path := ListEntry.Path
-
-				IsDirectory := InStr(FileExist(Result.Path), "D")
 				SplitPath, Name, , , ext
 				IsExecutable := !ListEntry.IsDir && ext && InStr("exe,cmd,bat,ahk", ext)
-
-				Result.Icon := ListEntry.IsDir ? Accessor.GenericIcons.Folder : (IsExecutable ? Accessor.GenericIcons.Application : Accessor.GenericIcons.File)
+				Result := new this.CSearchResult(ListEntry.IsDir ? "Folder" : (IsExecutable ? "Executable" : "File"))
+				Result.Title := Name := ListEntry.Name
+				Result.Path := ListEntry.Path "\" ListEntry.Name
+				Result.DisplayPath := ListEntry.Path
+				Result.MatchQuality := ListEntry.MatchQuality
+				if(this.Settings.UseIcons)
+				{
+					hIcon := ExtractAssociatedIcon(0, ListEntry.Path "\" ListEntry.Name, iIndex)
+					this.Icons.Insert(hIcon)
+					Result.Icon := hIcon
+				}
+				else
+					Result.Icon := ListEntry.IsDir ? Accessor.GenericIcons.Folder : (IsExecutable ? Accessor.GenericIcons.Application : Accessor.GenericIcons.File)
 				Results.Insert(Result)
 			}
 		}
@@ -152,6 +163,18 @@ Class CFileSearchPlugin extends CAccessorPlugin
 		}
 		return Results
 	}
+	GetDisplayStrings(ListEntry, ByRef Name, ByRef Path, ByRef Detail1, ByRef Detail2)
+	{
+		Path := ListEntry.DisplayPath
+	}
+	OnClose(Accessor)
+	{
+		;Get rid of old icons from last query
+		if(this.Settings.UseIcons)
+			for index, Icon in this.Icons
+				DestroyIcon(Icon)
+	}
+
 	SearchInAccessor(Accessor, ListEntry)
 	{
 		this.StartWorkerThread(Accessor, ListEntry)
@@ -222,7 +245,6 @@ AccessorMFTSearch(WorkerThread, Task)
 	SHARE_RW := 3 ;FILE_SHARE_READ | FILE_SHARE_WRITE
 	if((hRoot := DllCall("CreateFileW", wstr, "\\.\" drive "\", uint, 0, uint, SHARE_RW, PTR, 0, uint, OPEN_EXISTING := 3, uint, FILE_FLAG_BACKUP_SEMANTICS := 0x2000000, PTR, 0, PTR)) = -1)
 		return
-	tooltip a
 	;BY_HANDLE_FILE_INFORMATION
 	;   0   DWORD dwFileAttributes;
 	;   4   FILETIME ftCreationTime;
@@ -239,7 +261,6 @@ AccessorMFTSearch(WorkerThread, Task)
 	DllCall("CloseHandle", PTR, hRoot, "UINT")
 	if(!result)
 		return
-	tooltip b
 	dirdict := {}
 	rootDirKey := "" ((NumGet(fi, 44) << 32) + NumGet(fi, 48))
 	dirdict[rootDirKey] := {name : drive, parent : "0"}
@@ -248,7 +269,6 @@ AccessorMFTSearch(WorkerThread, Task)
 	GENERIC_RW := 0xC0000000 ;GENERIC_READ | GENERIC_WRITE
 	if((hJRoot := DllCall("CreateFileW", wstr, "\\.\" drive, uint, GENERIC_RW, uint, SHARE_RW, PTR, 0, uint, OPEN_EXISTING := 3, uint, 0, uint, 0, PTR)) = -1)
 		return
-	tooltip c
 	cb := 0
 	VarSetCapacity(cujd, 16) ;CREATE_USN_JOURNAL_DATA
 	NumPut(0x800000, cujd, 0, "uint64")
@@ -258,7 +278,6 @@ AccessorMFTSearch(WorkerThread, Task)
 		DllCall("CloseHandle", PTR, hJRoot, "UINT")
 		return
 	}
-	tooltip d
 	;=== prepare data to query USN journal
 	;USN_JOURNAL_DATA
 	;   0   DWORDLONG UsnJournalID;
@@ -274,7 +293,6 @@ AccessorMFTSearch(WorkerThread, Task)
 		DllCall("CloseHandle", PTR, hJRoot, "UINT")
 		return
 	}
-	tooltip e
 	JournalMaxSize := NumGet(ujd, 40, "uint64")
 
 	;=== enumerate USN journal
@@ -294,7 +312,6 @@ AccessorMFTSearch(WorkerThread, Task)
 	WorkerThread.Progress := 0
 	while(DllCall("DeviceIoControl", PTR, hJRoot, uint, FSCTL_ENUM_USN_DATA := 0x000900b3, PTR, &med, uint, 24, PTR, &pData, uint, 8 + JournalChunkSize, uintp, cb, PTR, "UINT"))
 	{
-		tooltip % A_Index
 		pUSN := &pData + 8
 		;USN_RECORD
 		;   0   DWORD RecordLength;
@@ -316,20 +333,19 @@ AccessorMFTSearch(WorkerThread, Task)
 			ref := "" NumGet(pUSN + 8, "uint64") ;USN.FileReferenceNumber
 			refparent := "" NumGet(pUSN + 16, "uint64") ;USN.ParentFileReferenceNumber
 			fn := StrGet(pUSN + 60, NumGet(pUSN + 56, "ushort") // 2, "UTF-16") ;USN.FileName
-			if(NumGet(pUSN + 52) & 0x10) ;USN.FileAttributes & FILE_ATTRIBUTE_DIRECTORY
-				dirdict[ref] := {name : fn, parent : refparent, IsDir : true}
-			else
-				if(Query = "" || InStr(fn, Query))
-				{
-					filedict[ref] := {name : fn, parent : refparent, IsDir : false}
-					num++
-				}
+			if(IsDir := NumGet(pUSN + 52) & 0x10) ;USN.FileAttributes & FILE_ATTRIBUTE_DIRECTORY
+				dirdict[ref] := {name : fn, parent : refparent}
+			if(Query = "" || (MatchQuality := FuzzySearch(fn, Query, false)) > 0.6)
+			{
+				filedict[ref] := {name : fn, parent : refparent, IsDir : IsDir, MatchQuality : MatchQuality}
+				num++
+			}
 			i := NumGet(pUSN + 0) ;USN.RecordLength
 			pUSN += i
 			cb -= i
 		}
 		NumPut(NumGet(pData, "uint64"), med, "uint64")
-		WorkerThread.Progress := Round(A_index * JournalChunkSize / JournalMaxSize * 100 / 2)
+		WorkerThread.Progress := Round(A_index * JournalChunkSize / JournalMaxSize * 90)
 	}
 	DllCall("CloseHandle", PTR, hJRoot, "UINT")
 
@@ -351,9 +367,9 @@ AccessorMFTSearch(WorkerThread, Task)
 		if(Instr(fn, SearchPath) = 1)
 		{
 			SplitPath, fn, Name, Path
-			filelist.Insert({Name : Name, Path : Path, IsDir : v.IsDir})
+			filelist.Insert({Name : Name, Path : Path, IsDir : v.IsDir, MatchQuality : v.MatchQuality})
 		}
-		WorkerThread.Progress := 50 + (A_index / num * 50)
+		WorkerThread.Progress := 90 + (A_index / num * 10)
 	}
 	filelist := ArraySort(filelist, "Name", "Up")
 	return filelist

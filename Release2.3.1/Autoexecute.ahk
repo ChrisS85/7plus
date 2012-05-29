@@ -169,7 +169,6 @@ if (Settings.General.Firstrun)
 ApplicationState.ProgramStartupFinished := true
 
 Suspend, Off
-outputdebug pre settings
 ;Create settings window in advance to save some time when it is first shown.
 global SettingsWindow := new CSettingsWindow()
 

@@ -1841,3 +1841,7 @@ Class CInputWindow extends CGUI
 	}
 }
 
+New(Obj, Params*)
+{
+	return value := new Obj(Params*)
+}
