@@ -21,6 +21,9 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		ShowFilesOfCurrentFolder := false
 		BasePriority := 0.4
 	}
+
+	SearchDirAction := new CAccessor.CAction("Search in this directory`tCTRL + F", "SearchDir", "", false, false, false)
+
 	Class CResult extends CAccessorPlugin.CResult
 	{
 		Class CFileActions extends CArray
@@ -148,7 +151,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 			;Possibly add an action to select the currently entered files
 			if(Navigation.FindNavigationSource(Accessor.PreviousWindow, "SelectFiles"))
 				Result.Actions.Insert(new CAccessor.CAction("Select these files", "SelectFiles"))
-
+			Result.Actions.Insert(this.SearchDirAction)
 			this.Result := Result
 
 
@@ -206,6 +209,11 @@ Class CFileSystemPlugin extends CAccessorPlugin
 	{
 		Files := Get(GetAll(Accessor.List, "Type", "File System"), "Title")
 		Navigation.SelectFiles(Files, Accessor.PreviousWindow)
+	}
+	SearchDir(Accessor, ListEntry)
+	{
+		CFileSearchPlugin.Instance.SearchPath := ListEntry.Path
+		Accessor.SetFilter(CFileSearchPlugin.Instance.Settings.Keyword " ")
 	}
 	OnTab()
 	{

@@ -653,8 +653,10 @@ Class CAccessor
 	;Plugins may handle each function on their own, otherwise they will be handled directly by Accessor if available.
 	PerformAction(Action = "", ListEntry = "")
 	{
+		value := IsObject(ListEntry) || IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]) || (!this.HasKey("ClickedListEntry") && IsObject(ListEntry := this.Plugins[this.SingleContext].Result))
 		this.Remove("ClickedListEntry") ;Not needed anymore
-		if(IsObject(ListEntry) || IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]))
+		
+		if(value)
 		{
 			if(Action && !IsObject(Action))
 				Action := ListEntry.Actions.DefaultAction.Name = Action ? ListEntry.Actions.DefaultAction : ListEntry.Actions.GetItemWithValue("Name", Action)
@@ -723,7 +725,7 @@ Class CAccessor
 	}
 	ShowActionMenu(ListEntry = "")
 	{
-		if(IsObject(ListEntry) || IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]) || IsObject(ListEntry := this.Plugins.GetItemWithValue("Type", this.SingleContext).Result))
+		if(IsObject(ListEntry) || IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]) || IsObject(ListEntry := this.Plugins[this.SingleContext].Result))
 		{
 			Menu, AccessorContextMenu, Add, test, AccessorContextMenu
 			Menu, AccessorContextMenu, DeleteAll
@@ -746,8 +748,10 @@ Class CAccessor
 	;Checks if the selected result has a specific action
 	HasAction(Action)
 	{
-		if(IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]))
-			return ListEntry.Actions.DefaultAction.Function = Action.Function || ListEntry.Actions.FindKeyWithValue("Function", Action.Function)
+		SingleContextPlugin := this.Plugins[this.SingleContext]
+		outputdebug % "has action " (IsObject(ListEntry := SingleContextPlugin.Result) && (ListEntry.Actions.DefaultAction.Function = Action.Function || ListEntry.Actions.FindKeyWithValue("Function", Action.Function)))
+		return (IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]) && (ListEntry.Actions.DefaultAction.Function = Action.Function || ListEntry.Actions.FindKeyWithValue("Function", Action.Function)))
+			|| (IsObject(ListEntry := SingleContextPlugin.Result)				  && (ListEntry.Actions.DefaultAction.Function = Action.Function || ListEntry.Actions.FindKeyWithValue("Function", Action.Function)))
 	}
 	;Runs the selected entry as command and possibly caches it in program launcher plugin
 	Run(ListEntry, Plugin)
@@ -923,13 +927,13 @@ Class CAccessorGUI extends CGUI
 	}
 	ListView_ContextMenu()
 	{
-		if(!IsObject(ListEntry := CAccessor.Instance.List[this.ListView.SelectedIndex]) && IsObject(ListEntry := CAccessor.Instance.Plugins.GetItemWithValue("Type", CAccessor.Instance.SingleContext).Result))
+		if(!IsObject(ListEntry := CAccessor.Instance.List[this.ListView.SelectedIndex]) && IsObject(ListEntry := CAccessor.Instance.Plugins[CAccessor.Instance.SingleContext].Result))
 			CAccessor.Instance.ClickedListEntry := ListEntry
 		CAccessor.Instance.ShowActionMenu()
 	}
 	ContextMenu()
 	{
-		if(IsObject(ListEntry := CAccessor.Instance.Plugins.GetItemWithValue("Type", CAccessor.Instance.SingleContext).Result))
+		if(IsObject(ListEntry := CAccessor.Instance.Plugins[CAccessor.Instance.SingleContext].Result))
 		{
 			CAccessor.Instance.ClickedListEntry := ListEntry
 			CAccessor.Instance.ShowActionMenu(ListEntry)
@@ -1016,13 +1020,6 @@ PostMessage, 0x100, 0x5D, 0,, % "ahk_id " CAccessor.Instance.GUI.ListView.hwnd
 return
 #if
 
-;#if CAccessor.Instance.GUI && (!CAccessor.Instance.SingleContext || !CAccessor.Plugins.GetItemWithValue("Type", CAccessor.Instance.SingleContext).HandlesEnter)
-;Enter::
-;NumpadEnter::
-;CAccessor.Instance.PerformAction()
-;return
-;#if
-
 
 #if (CAccessor.Instance.GUI && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenExplorer))
 ^e::
@@ -1037,6 +1034,11 @@ return
 #if (CAccessor.Instance.GUI && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenWith))
 ^o::
 CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.OpenWith)
+return
+#if
+#if (CAccessor.Instance.GUI && CAccessor.Instance.SingleContext = CFileSystemPlugin.Instance.Type)
+^f::
+CAccessor.Instance.PerformAction(CFileSystemPlugin.Instance.SearchDirAction, CFileSystemPlugin.Instance.Result)
 return
 #if
 #if CAccessor.Instance.GUI && !Edit_TextIsSelected("", "ahk_id " CAccessor.Instance.GUI.EditControl.hwnd)
