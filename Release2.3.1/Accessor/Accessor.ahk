@@ -1280,6 +1280,7 @@ Class CAccessorPlugin
 #include %A_ScriptDir%\Accessor\CEventPlugin.ahk
 #include %A_ScriptDir%\Accessor\CControlPanelPlugin.ahk
 #include %A_ScriptDir%\Accessor\CProgramLauncherPlugin.ahk
+#include %A_ScriptDir%\Accessor\CFileSearchPlugin.ahk
 #include %A_ScriptDir%\Accessor\CRecentFoldersPlugin.ahk
 #include %A_ScriptDir%\Accessor\CClipboardPlugin.ahk
 #include %A_ScriptDir%\Accessor\CCalculatorPlugin.ahk

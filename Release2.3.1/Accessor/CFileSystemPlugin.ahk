@@ -51,7 +51,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		}
 		Class CFolderActions extends CArray
 		{
-			DefaultAction := new CAccessor.CAction("Enter folder", "EnterDirectory", new Delegate(CFileSystemPlugin.Instance, "IsInDifferentPath"), false, false)
+			DefaultAction := new CAccessor.CAction("Enter folder", "EnterDirectory", new Delegate(CFileSystemPlugin.Instance, "IsInDifferentPath"), false, false, false)
 			__new()
 			{
 				this.Insert(CAccessorPlugin.CActions.OpenExplorer)
@@ -63,10 +63,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		__new(Type)
 		{
 			if(Type = "Folder")
-			{
 				this.Actions := new this.CFolderActions()
-				this.AllowDelayedExecution := false
-			}
 			else if(Type = "Executable")
 				this.Actions := new this.CExecutableActions()
 			else

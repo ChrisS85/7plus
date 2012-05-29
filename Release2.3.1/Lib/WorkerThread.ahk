@@ -93,7 +93,7 @@
 	Start(Parameters*)
 	{
 		if(this.State != "Stopped" && this.State != "Finished" || this.IsWorkerThread)
-			return
+			return 0
 		
 		this.Task.Parameters := Parameters
 		this.Progress := 0
@@ -112,6 +112,7 @@
 				this.Threads[PID] := this
 			}
 		}
+		return 1
 	}
 	Pause()
 	{
@@ -208,6 +209,7 @@
 		Time := A_TickCount + Timeout * 1000
 		while(A_TickCount < Time && this.State != "Running")
 			Sleep 10
+		return this.State = "Running"
 	}
 }
 
