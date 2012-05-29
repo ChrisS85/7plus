@@ -18,7 +18,8 @@
 *New Accessor Plugins:* 
   * Registry plugin: Quickly open Regedit at a key. Useful for going to keys which are written on webpages by selecting the text and opening Accessor.
   * Accessor history plugin: Keeps track of the recently executed Accessor commands. This history is now visible when Accessor is opened in no specific context.
-  * Recent Folders plugin: Keeps track of recently used folders. It can be used to quickly switch folders in Explorer, file dialogs, CMD and WinRar. Very useful!
+  * File search plugin: Searches the file system.
+  * Recent folders plugin: Keeps track of recently used folders. It can be used to quickly switch folders in Explorer, file dialogs, CMD and WinRar. Very useful!
   * Keyword plugin: Quickly create keywords by selecting text or a file, open Accessor and type "Learn as [Keyword]". Credits go out to Enso Launcher for the idea!
   * Event plugin: Allows to create Accessor commands that trigger events. This allows to combine the ease of access(or) with the feature-rich event system.
     * New commands created with this plugin: Shutdown, Reboot, Hibernate, Standby, LogOff, Lock, Message
