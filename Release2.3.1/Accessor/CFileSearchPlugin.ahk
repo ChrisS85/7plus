@@ -9,7 +9,8 @@ Class CFileSearchPlugin extends CAccessorPlugin
 	List := Array()
 	Icons := Array()
 	AllowDelayedExecution := true
-	
+	SearchIcon := Gdip_CreateHBITMAPFromBitmap(Gdip_CreateBitmapFromFile("%WINDIR%\System32\shell32.dll", 23))
+
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "find"
@@ -25,15 +26,6 @@ Class CFileSearchPlugin extends CAccessorPlugin
 		Priority := CFileSearchPlugin.Instance.Priority
 		MatchQuality := 1 ;Only direct matches are used by this plugin
 		Title := "Show search results in Accessor for:"
-		Detail1 := "File search"
-	}
-	Class CSearchInExplorerResult extends CAccessorPlugin.CResult
-	{
-		Actions := {DefaultAction : new CAccessor.CAction("Search", "SearchInExplorer", "", false, true, false)}
-		Type := "File Search"
-		Priority := CFileSearchPlugin.Instance.Priority
-		MatchQuality := 0.9 ;Only direct matches are used by this plugin, lower rating for sorting
-		Title := "Show search results in Explorer for:"
 		Detail1 := "File search"
 	}
 	Class CSearchResult extends CAccessorPlugin.CResult
@@ -107,11 +99,10 @@ Class CFileSearchPlugin extends CAccessorPlugin
 	;	return false
 	;}
 
-	;OnOpen(Accessor)
-	;{
-	;	this.List := Array()
-	;	this.Cleared := false
-	;}
+	OnOpen(Accessor)
+	{
+		this.List := Array()
+	}
 	Init(Settings)
 	{
 		;Perform a random MFT search to speed up searches by the user
@@ -123,7 +114,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 			return
 
 		Results := Array()
-		if(this.SearchFinished)
+		if(this.HasKey("List"))
 		{
 			;Show results from worker thread
 			for index, ListEntry in this.List
@@ -147,28 +138,25 @@ Class CFileSearchPlugin extends CAccessorPlugin
 			}
 		}
 		;Not searched yet, show selection to start a new search
-		else
+		else if(((pos := InStr(Filter, " in ")) && InStr(FileExist(SearchPath := SubStr(Filter, pos + 4)), "D")) || SearchPath := Accessor.CurrentDirectory)
 		{
 			Result := new this.CSearchInAccessorResult()
-			Result.Path := Filter
-			Result.SearchPath := Accessor.CurrentDirectory
+			Result.Query := pos ? SubStr(Filter, 1, pos - 1) : Filter
+			Result.Title .= " " Result.Query
+			Result.SearchPath := SearchPath
 			Result.Icon := Accessor.GenericIcons.7plus
-			Results.Insert(Result)
-
-			Result := new this.CSearchInExplorerResult()
-			Result.Path := Filter
-			Result.SearchPath := Accessor.CurrentDirectory
-			Result.Icon := Accessor.GenericIcons.Folder
 			Results.Insert(Result)
 		}
 		return Results
 	}
-	GetDisplayStrings(ListEntry, ByRef Name, ByRef Path, ByRef Detail1, ByRef Detail2)
+	GetDisplayStrings(ListEntry, ByRef Title, ByRef Path, ByRef Detail1, ByRef Detail2)
 	{
-		Path := ListEntry.DisplayPath
+		Path := ListEntry.SearchPath
 	}
 	OnClose(Accessor)
 	{
+		this.CancelSearch()
+	
 		;Get rid of old icons from last query
 		if(this.Settings.UseIcons)
 			for index, Icon in this.Icons
@@ -179,21 +167,18 @@ Class CFileSearchPlugin extends CAccessorPlugin
 	{
 		this.StartWorkerThread(Accessor, ListEntry)
 	}
-	SearchInExplorer(Accessor, ListEntry)
-	{
-
-	}
 
 	StartWorkerThread(Accessor, ListEntry)
 	{
+		this.CancelSearch()
 		WorkerThread := new CWorkerThread("AccessorMFTSearch", 0, 1, 1)
 		WorkerThread.OnProgress.Handler := new Delegate(this, "ProgressHandler")
 		WorkerThread.OnStop.Handler := new Delegate(this, "OnStop")
 		WorkerThread.OnFinish.Handler := new Delegate(this, "OnFinish")
-		WorkerThread.Start({Query : ListEntry.Path, SearchPath : ListEntry.SearchPath})
+		WorkerThread.Start({Query : ListEntry.Query, SearchPath : ListEntry.SearchPath})
 		if(WorkerThread.WaitForStart(5))
 		{
-			WorkerThread.NotificationWindow := Notify("Searching for " WorkerThread.Task.Parameters.1.Query " in " WorkerThread.Task.Parameters.1.SearchPath, "", "", "", new Delegate(this, "CancelSearch"), {min : 0, max : 100, value : 0})
+			WorkerThread.NotificationWindow := Notify("Searching for " WorkerThread.Task.Parameters.1.Query " in " WorkerThread.Task.Parameters.1.SearchPath, "", "", this.SearchIcon, new Delegate(this, "CancelSearch"), {min : 0, max : 100, value : 0})
 			this.tmpWorkerThread := WorkerThread
 		}
 		else
@@ -208,7 +193,13 @@ Class CFileSearchPlugin extends CAccessorPlugin
 	;Called when user cancels the search
 	CancelSearch()
 	{
-		;Clear temporary data, stop worker thread, close accessor
+		;Clear temporary data, stop worker thread
+		if(this.HasKey("tmpWorkerThread") && this.tmpWorkerThread.State = "Running")
+			this.tmpWorkerThread.Stop()
+		if(this.tmpWorkerThread.HasKey("NotificationWindow"))
+			this.tmpWorkerThread.NotificationWindow.Close()
+		this.Remove("tmpWorkerThread")
+		this.Remove("List")
 	}
 
 	OnStop(WorkerThread, Reason)
@@ -221,16 +212,12 @@ Class CFileSearchPlugin extends CAccessorPlugin
 		this.tmpWorkerThread.NotificationWindow.Close()
 		this.Remove("tmpWorkerThread")
 		this.List := Result
-		this.SearchFinished := true
 		CAccessor.Instance.RefreshList()
 	}
 
 	OnFilterChanged(ListEntry, Filter, LastFilter)
 	{
-		this.SearchFinished := false
-		this.List := ""
-		if(this.tmpWorkerThread)
-			this.CancelSearch()
+		this.CancelSearch()
 		return true
 	}
 }

@@ -40,11 +40,11 @@ FlatView(files)
 		return
 		
 	Path := FindFreeFileName(A_Temp "\7plus\FlatView.search-ms")
-	searchString=
+	searchString = 
 	(
 	<?xml version="1.0"?>
 	<persistedQuery version="1.0">
-		<viewInfo viewMode="details" iconSize="16" stackIconSize="0" displayName="Test" autoListFlags="0">
+		<viewInfo viewMode="details" iconSize="16" stackIconSize="0" displayName="Search" autoListFlags="0">
 			<visibleColumns>
 				<column viewField="System.ItemNameDisplay"/>
 				<column viewField="System.ItemTypeText"/>
