@@ -17,7 +17,6 @@ Class CFileSearchPlugin extends CAccessorPlugin
 		KeywordOnly := true
 		MinChars := 2
 		UseIcons := true
-		ShowResultsInAccessor := true
 	}
 	Class CSearchInAccessorResult extends CAccessorPlugin.CResult
 	{

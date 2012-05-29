@@ -10,6 +10,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 
 	AllowDelayedExecution := true
 
+
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "fs"
@@ -22,7 +23,6 @@ Class CFileSystemPlugin extends CAccessorPlugin
 	}
 	Class CResult extends CAccessorPlugin.CResult
 	{
-		AllowDelayedExecution := true
 		Class CFileActions extends CArray
 		{
 			DefaultAction := new CAccessor.CAction("Open file", "Run")
@@ -71,6 +71,8 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		}
 		Type := "File System"
 		Priority := CFileSystemPlugin.Instance.Priority
+		AllowDelayedExecution := true
+		ResultIndexingKey := "Path"
 		MatchQuality := 1 ;Only direct matches are used by FileSystem plugin
 	}
 	IsInSinglePluginContext(Filter, LastFilter)
