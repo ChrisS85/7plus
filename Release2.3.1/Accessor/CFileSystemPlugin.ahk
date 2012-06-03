@@ -61,6 +61,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 				this.Insert(CAccessorPlugin.CActions.OpenCMD)
 				this.Insert(CAccessorPlugin.CActions.Copy)
 				this.Insert(CAccessorPlugin.CActions.ExplorerContextMenu)
+				this.Insert(CFileSystemPlugin.Instance.SearchDirAction)
 			}
 		}
 		__new(Type)
@@ -93,7 +94,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 	}
 	GetDisplayStrings(ListEntry, ByRef Title, ByRef Path, ByRef Detail1, ByRef Detail2)
 	{
-		if(InStr(FileExist(ListEntry.Path),"D"))
+		if(InStr(FileExist(ListEntry.Path), "D"))
 			Detail1 := "Folder"
 		else
 			Detail1 := "File"

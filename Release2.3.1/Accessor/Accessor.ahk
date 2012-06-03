@@ -434,9 +434,6 @@ Class CAccessor
 	;This is the main function that populates the Accessor list.
 	RefreshList()
 	{
-		DllCall("QueryPerformanceCounter", "Int64*", perfStart)
-		global searchtime
-		searchtime := 0
 		if(!this.GUI)
 			return
 
@@ -653,6 +650,8 @@ Class CAccessor
 	;Plugins may handle each function on their own, otherwise they will be handled directly by Accessor if available.
 	PerformAction(Action = "", ListEntry = "")
 	{
+		outputdebug % "object: " IsObject(CFileSystemPlugin.Instance.SearchDirAction) "index: " CAccessor.Instance.List[CAccessor.Instance.GUI.ListView.SelectedIndex].Actions.IndexOf(CFileSystemPlugin.Instance.SearchDirAction)
+		outputdebug % ExploreObj(CAccessor.Instance.List[CAccessor.Instance.GUI.ListView.SelectedIndex].Actions)
 		value := IsObject(ListEntry) || IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]) || (!this.HasKey("ClickedListEntry") && IsObject(ListEntry := this.Plugins[this.SingleContext].Result))
 		this.Remove("ClickedListEntry") ;Not needed anymore
 		
@@ -1038,7 +1037,7 @@ return
 #if
 #if (CAccessor.Instance.GUI && CAccessor.Instance.SingleContext = CFileSystemPlugin.Instance.Type)
 ^f::
-CAccessor.Instance.PerformAction(CFileSystemPlugin.Instance.SearchDirAction, CFileSystemPlugin.Instance.Result)
+CAccessor.Instance.PerformAction(CFileSystemPlugin.Instance.SearchDirAction, CAccessor.Instance.List[CAccessor.Instance.GUI.ListView.SelectedIndex].Actions.GetItemWithValue("Function", CFileSystemPlugin.Instance.SearchDirAction.Function) ? "" : CFileSystemPlugin.Instance.Result)
 return
 #if
 #if CAccessor.Instance.GUI && !Edit_TextIsSelected("", "ahk_id " CAccessor.Instance.GUI.EditControl.hwnd)
@@ -1095,7 +1094,6 @@ Class CAccessorPluginSettingsWindow extends CGUI
 	}
 	btnOK_Click()
 	{
-		
 		if(this.OriginalPlugin.SaveSettings(this.Plugin.Settings, this, this.PluginGUI) != false)
 		{
 			SubmitControls(this.Plugin.Settings, this.PluginGUI)

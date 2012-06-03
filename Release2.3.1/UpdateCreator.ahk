@@ -50,11 +50,14 @@ CreateUpdate(Platform, Version)
 	{
 		FileCopy, %A_ProgramFiles%\Autohotkey\Compiler\AutoHotkeySC_UNICODE_32.bin, %A_ProgramFiles%\Autohotkey\Compiler\AutoHotkeySC.bin, 1
 		FileCopy, %A_ScriptDir%\ShellExtension\Release\ShellExtension.dll, %A_TEMP%\7plusUpdateCreator, 1
+		FileCopy, %A_ScriptDir%\x86\sqlite3.dll, %A_TEMP%\7plusUpdateCreator\lib, 1
 	}
 	else
 	{
 		FileCopy, %A_ProgramFiles%\Autohotkey\Compiler\AutoHotkeySC_UNICODE_64.bin, %A_ProgramFiles%\Autohotkey\Compiler\AutoHotkeySC.bin, 1
 		FileCopy, %A_ScriptDir%\ShellExtension\x64\Release\ShellExtension.dll, %A_TEMP%\7plusUpdateCreator, 1
+		FileCreateDir, %A_TEMP%\7plusUpdateCreator\lib\x64
+		FileCopy, %A_ScriptDir%\x64\sqlite3.dll, %A_TEMP%\7plusUpdateCreator\lib\x64, 1
 	}
 	
 	;Compile 7plus and Uninstaller

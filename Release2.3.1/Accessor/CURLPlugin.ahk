@@ -13,6 +13,10 @@ Class CURLPlugin extends CAccessorPlugin
 	ChromeBookmarks := Array()
 	ChromeClass := "Chrome_WidgetWin_0"
 
+	;Array of Firefox bookmarks
+	FirefoxBookMarks := Array()
+	FirefoxClass := "MozillaWindowClass"
+
 	;Array of IE bookmarks
 	IEBookmarks := Array()
 	IEClass := "IEFrame"
@@ -26,6 +30,7 @@ Class CURLPlugin extends CAccessorPlugin
 		MinChars := 3
 		IncludeOperaBookmarks := true
 		IncludeChromeBookmarks := true
+		IncludeFirefoxBookmarks := true
 		IncludeIEBookmarks := true
 		UseSelectedText := true
 	}
@@ -49,6 +54,8 @@ Class CURLPlugin extends CAccessorPlugin
 			this.LoadOperaBookmarks()
 		if(this.Settings.IncludeChromeBookmarks)
 			this.LoadChromeBookmarks()
+		if(this.Settings.IncludeFirefoxBookmarks)
+			this.LoadFirefoxBookmarks()
 		if(this.Settings.IncludeIEBookmarks)
 			this.LoadIEBookmarks()
 	}
@@ -60,15 +67,12 @@ Class CURLPlugin extends CAccessorPlugin
 	{
 		if(this.Settings.UseSelectedText && !Accessor.Filter && !Accessor.FilterWithoutTimer && Accessor.CurrentSelection && IsURL(Accessor.CurrentSelection))
 			Accessor.SetFilter(Accessor.CurrentSelection)
-		if({this.OperaClass : "", this.ChromeClass : "", this.IEClass : ""}.HasKey(WinGetClass("ahk_id " Accessor.PreviousWindow)))
-		{
-			outputdebug increase priority
+		if({this.OperaClass : "", this.ChromeClass : "", this.IEClass : "", this.FirefoxClass : ""}.HasKey(WinGetClass("ahk_id " Accessor.PreviousWindow)))
 			this.Priority += 0.5
-		}
 	}
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
-		Results := Array()
+		Results := {}
 		
 		if(CouldBeURL(Filter))
 		{
@@ -91,7 +95,7 @@ Class CURLPlugin extends CAccessorPlugin
 					Result.Icon := Accessor.GenericIcons.URL
 					Result.MatchQuality := MatchQuality
 					Result.ResultIndexingKey := "Path"
-					Results.Insert(Result)
+					Results.Insert(Result.Path, Result)
 				}
 		if(this.Settings.IncludeChromeBookmarks)
 			for index2, ChromeBookmark in this.ChromeBookmarks
@@ -103,7 +107,19 @@ Class CURLPlugin extends CAccessorPlugin
 					Result.Icon := Accessor.GenericIcons.URL
 					Result.MatchQuality := MatchQuality
 					Result.ResultIndexingKey := "Path"
-					Results.Insert(Result)
+					Results.Insert(Result.Path, Result)
+				}
+		if(this.Settings.IncludeFirefoxBookmarks)
+			for index2, FirefoxBookmark in this.FirefoxBookmarks
+				if((MatchQuality := FuzzySearch(FirefoxBookmark.Name, Filter, false)) > Accessor.Settings.FuzzySearchThreshold || (MatchQuality := FuzzySearch(FirefoxBookmark.URL, Filter, false) - 0.2) > Accessor.Settings.FuzzySearchThreshold)
+				{
+					Result := new this.CResult()
+					Result.Title := FirefoxBookmark.Name
+					Result.Path := FirefoxBookmark.URL
+					Result.Icon := Accessor.GenericIcons.URL
+					Result.MatchQuality := MatchQuality
+					Result.ResultIndexingKey := "Path"
+					Results.Insert(Result.Path, Result)
 				}
 		if(this.Settings.IncludeIEBookmarks)
 			for index3, IEBookmark in this.IEBookmarks
@@ -115,7 +131,7 @@ Class CURLPlugin extends CAccessorPlugin
 					Result.Icon := Accessor.GenericIcons.URL
 					Result.MatchQuality := MatchQuality
 					Result.ResultIndexingKey := "Path"
-					Results.Insert(Result)
+					Results.Insert(Result.Path, Result)
 				}
 		return Results
 	}
@@ -123,6 +139,7 @@ Class CURLPlugin extends CAccessorPlugin
 	{
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "IncludeOperaBookmarks", "Include Opera bookmarks", "", "")
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "IncludeChromeBookmarks", "Include Chrome bookmarks", "", "")
+		AddControl(PluginSettings, PluginGUI, "Checkbox", "IncludeFirefoxBookmarks", "Include Firefox bookmarks", "", "")
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "IncludeIEBookmarks", "Include IE bookmarks", "", "")
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "UseSelectedText", "Automatically open the selected text as URL in Accessor when appropriate", "", "")
 	}
@@ -148,7 +165,7 @@ Class CURLPlugin extends CAccessorPlugin
 			if(obj.HasKey("Children"))
 				for index, node in obj.Children
 					this.LoadChromeBookmarks(node)
-			if(obj.Type = "URL")
+			if(obj.Type = "URL" && IsURL(obj.URL))
 				this.ChromeBookmarks.Insert({Name : obj.Name, URL : obj.URL})
 		}
 	}
@@ -185,7 +202,7 @@ Class CURLPlugin extends CAccessorPlugin
 						URL.URL := SubStr(A_LoopReadLine, InStr(A_LoopReadLine, "=") + 1)
 					else
 						continue
-					if(URL.HasKey("URL") && URL.HasKey("Name"))
+					if(URL.HasKey("URL") && URL.HasKey("Name") && IsURL(URL.url))
 					{
 						this.OperaBookmarks.Insert(URL)
 						state = 0
@@ -210,6 +227,20 @@ Class CURLPlugin extends CAccessorPlugin
 				this.IEBookmarks.Insert({Name : SubStr(A_LoopFileName, 1, -4), URL : Target})
 		}
 	}
+	LoadFirefoxBookmarks()
+	{
+		Loop, % DBPath := ExpandPathPlaceholders("%APPDATA%") "\Mozilla\Firefox\Profiles\*.*", 2, 0
+		{
+			if(strEndsWith(A_LoopFileLongPath, ".default"))
+			{
+				DB := DBA.DatabaseFactory.OpenDatabase("SqLite", A_LoopFileLongPath "\places.sqlite")
+				result := DB.Query("SELECT moz_bookmarks.title,moz_places.url FROM moz_bookmarks JOIN moz_places WHERE moz_bookmarks.type=1 AND moz_bookmarks.fk=moz_places.id AND moz_bookmarks.title NOT NULL").rows
+				for index, bookmark in result
+					if(IsURL(bookmark.url))
+						this.FirefoxBookmarks.Insert({Name : bookmark.title, URL : bookmark.url})
+			}
+		}
+	}
 
 	OpenURL(Accessor, ListEntry)
 	{
@@ -221,3 +252,4 @@ Class CURLPlugin extends CAccessorPlugin
 		}
 	}
 }
+#Include <DBA>

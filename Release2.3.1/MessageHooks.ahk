@@ -22,12 +22,12 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 		Trigger.Event := "Window minimized"
 		EventSystem.OnTrigger(Trigger)
 	}
-	else if(event=0x8001 && IsObject(Settings) && Settings.Explorer.Tabs.UseTabs) ;EVENT_OBJECT_DESTROY
+	else if(event = 0x8001 && IsObject(Settings) && Settings.Explorer.Tabs.UseTabs) ;EVENT_OBJECT_DESTROY
 	{
 		; DecToHex(hwnd)
 		; if(TabContainerList.ContainsHWND(hwnd))
 	}
-	else if(event=0x800B) ;EVENT_OBJECT_LOCATIONCHANGE
+	else if(event = 0x800B) ;EVENT_OBJECT_LOCATIONCHANGE
 	{
 		WinGet, state, minmax, ahk_id %hwnd%
 		if(state = 1)

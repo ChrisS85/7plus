@@ -29,13 +29,14 @@ Class CArray extends CRichObject
 		if(Params.MaxIndex() && !this.IndexOf(Params[1]))
 			this.Insert(Params*)
 	}
-	IndexOf(val, opts="", startpos=1)
+	IndexOf(val, opts = "", startpos = 1)
 	{
 		if(IsObject(val))
 		{
 			for k, v in this
-			  If ( k >= startpos && v = val )
-				 Return, k
+			  if(k >= startpos && v = val)
+				 return k
+			return 0
 		}
 		P := !!InStr(opts, "P"), C := !!InStr(opts, "C")
 		If A := !!InStr(opts, "A")
@@ -47,12 +48,12 @@ Class CArray extends CRichObject
 					If A
 						matches.Insert(A_Index)
 					Else
-						Return A_Index
+						return A_Index
 				}
 		If A
-		  Return matches
+		  return matches
 		Else
-		  Return 0
+		  return 0
 	}
 	IndexOfEqual(val, startpos = 0, key = "")
 	{
@@ -131,8 +132,8 @@ Class CArray extends CRichObject
 	Extend(Params*){ 
 		for index, Param in Params
 		  If IsObject(Param) 
-			 Loop, % Param.MaxIndex() 
-				this.Insert(Param[A_Index])
+			 for index2, value in Param
+				this.Insert(value)
 	   Return this 
 	} 
 	Pop(){ 
@@ -147,7 +148,7 @@ Class CArray extends CRichObject
 				this._Remove(Param)
 		}
 	   Return this 
-	} 
+	}
 
 	MaxIndex(){ 
 	   len := this._MaxIndex() 
