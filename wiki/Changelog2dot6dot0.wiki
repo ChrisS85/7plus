@@ -28,7 +28,7 @@
 
 
 *Changes to existing Accessor plugins:* 
- * The URL plugin can now read and access bookmarks of Opera, Chrome and IE.
+ * The URL plugin can now read and access bookmarks of Opera, Firefox, Chrome and IE.
  * Program Launcher plugin: It's now possible to use CTRL + O in Explorer to select a program for opening the selected file
  * File System plugin: By pressing CTRL + . in Explorer or file dialogs Accessor will show the current directory
  * Various hotkeys and additional actions have been added for the plugins. As an example, results that are folders can now be opened directly in the file system plugin by pressing CTRL + F while the result is selected.
