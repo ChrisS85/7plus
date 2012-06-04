@@ -160,47 +160,6 @@ Class CAccessor
 		if(FileExist(Settings.ConfigPath "\Accessor.xml"))
 		{
 			FileRead, xml, % Settings.ConfigPath "\Accessor.xml"
-			if(!xml)
-			{
-				xml = 
-				( LTrim
-					<Keywords>
-					<Keyword>
-					<Command>http://dict.leo.org/ende?search=${1}</Command>
-					<Key>leo</Key>
-					</Keyword><Keyword>
-					<Command>http://google.com/search?q=${1}</Command>
-					<Key>google</Key>
-					</Keyword><Keyword>
-					<Command>http://en.wikipedia.org/wiki/Special:Search?search=${1}</Command>
-					<Key>w</Key>
-					</Keyword><Keyword>
-					<Command>http://maps.google.com/maps?q=${1}</Command>
-					<Key>gm</Key>
-					</Keyword><Keyword>
-					<Command>http://www.amazon.com/s?url=search-alias`%3Daps&field-keywords=${1}</Command>
-					<Key>a</Key>
-					</Keyword><Keyword>
-					<Command>http://www.bing.com/search?q=${1}</Command>
-					<Key>bing</Key>
-					</Keyword><Keyword>
-					<Command>http://www.youtube.com/results?search_query=${1}</Command>
-					<Key>y</Key>
-					</Keyword><Keyword>
-					<Command>http://www.imdb.com/find?q=${1}</Command>
-					<Key>i</Key>
-					</Keyword><Keyword>
-					<Command>http://www.wolframalpha.com/input/?i=${1}</Command>
-					<Key>wa</Key>
-					</Keyword><Keyword>
-					<Command>http://www.ebay.com/sch/i.html?_nkw=${1}</Command>
-					<Key>ebay</Key>
-					</Keyword><Keyword>
-					<Command>http://de.search.yahoo.com/search?p=${1}</Command>
-					<Key>yahoo</Key>
-					</Keyword></Keywords>
-				)
-			}
 			SavedSettings := XML_Read(xml)
 			SavedPluginSettings := SavedSettings
 			SavedKeywords := SavedSettings.Keywords.Keyword
@@ -209,7 +168,23 @@ Class CAccessor
 		else
 		{
 			FileRead, json, % Settings.ConfigPath "\Accessor.json"
-			SavedSettings := lson(json)
+			if(!json)
+			{
+				SavedSettings := {Plugins : [], Keywords : []}
+				SavedSettings.Keywords.Insert({Key : "leo", 	Command : "http://dict.leo.org/ende?search=${1}"})
+				SavedSettings.Keywords.Insert({Key : "google", 	Command : "http://google.com/search?q=${1}"})
+				SavedSettings.Keywords.Insert({Key : "w", 		Command : "http://en.wikipedia.org/wiki/Special:Search?search=${1}"})
+				SavedSettings.Keywords.Insert({Key : "gm", 		Command : "http://maps.google.com/maps?q=${1}"})
+				SavedSettings.Keywords.Insert({Key : "a", 		Command : "http://www.amazon.com/s?url=search-alias`%3Daps&field-keywords=${1}"})
+				SavedSettings.Keywords.Insert({Key : "bing", 	Command : "http://www.bing.com/search?q=${1}"})
+				SavedSettings.Keywords.Insert({Key : "y", 		Command : "http://www.youtube.com/results?search_query=${1}"})
+				SavedSettings.Keywords.Insert({Key : "i", 		Command : "http://www.imdb.com/find?q=${1}"})
+				SavedSettings.Keywords.Insert({Key : "wa", 		Command : "http://www.wolframalpha.com/input/?i=${1}"})
+				SavedSettings.Keywords.Insert({Key : "ebay", 	Command : "http://www.ebay.com/sch/i.html?_nkw=${1}"})
+				SavedSettings.Keywords.Insert({Key : "yahoo", 	Command : "http://de.search.yahoo.com/search?p=${1}"})
+			}
+			else
+				SavedSettings := lson(json)
 			SavedPluginSettings := SavedSettings.Plugins
 			SavedKeywords := SavedSettings.Keywords
 		}
