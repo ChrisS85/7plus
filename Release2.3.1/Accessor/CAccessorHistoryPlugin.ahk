@@ -40,7 +40,7 @@ Class CAccessorHistoryPlugin extends CAccessorPlugin
 	}
 	OnPreExecute(Accessor, ListEntry, Action, Plugin)
 	{
-		if(!ListEntry.IsHistory && Action.SaveHistory && Plugin.SaveHistory && (!ListEntry.ResultIndexingKey || !get(getAll(this.List, "Type", ListEntry.Type), ListEntry.ResultIndexingKey, ListEntry[ListEntry.ResultIndexingKey])))
+		if(!ListEntry.IsHistory && Action.SaveHistory && Plugin.SaveHistory && (!ListEntry.ResultIndexingKey || !getAll(getAll(this.List, "Type", ListEntry.Type), ListEntry.ResultIndexingKey, ListEntry[ListEntry.ResultIndexingKey])))
 		{
 			;Remove all redundant history entries and destroy their icon copies
 			while(this.List.MaxIndex() >= this.Settings.MaxEntries)
