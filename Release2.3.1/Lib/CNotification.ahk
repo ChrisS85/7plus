@@ -190,7 +190,7 @@ Class CNotificationWindow Extends CGUI
 		;Offset from border
 		Offset := Style.Border.Width > Style.Radius ? Style.Border.Width : Style.Radius
 		if(Icon)
-			this.icoIcon := this.AddControl("Picture", "icoIcon", "x" Offset " y" Offset " w" Style.ImageWidth " h" Style.ImageHeight " 0xE 0x40", Icon)
+			this.icoIcon := this.AddControl("Picture", "icoIcon", "x" Offset " y" Offset " w" Style.ImageWidth " h" Style.ImageHeight " 0x40", Icon)
 		;Revert to basic functions here so the font can be set before the control is added
 		Gui, % this.GUINum ":Font", % "s" Style.Title.FontSize " w" Style.Title.FontWeight " c" Style.Title.FontColor, % Style.Title.Font
 		this.txtTitle := this.AddControl("Text", "txtTitle", Icon ? "x+5" : "", Title)

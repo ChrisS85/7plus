@@ -490,10 +490,13 @@ ExtractIcon(Filename, IconNumber = 0, IconSize = 64)
     ;   it can only load the first icon (of size %IconSize%) from an .ico file. 
     
     ; If possible, use PrivateExtractIcons, which supports any size of icon. 
-	r:=DllCall("PrivateExtractIcons" , "str", Filename, "int", IconNumber-1, "int", IconSize, "int", IconSize, "Ptr*", h_icon, "uint*", 0, "uint", 1, "uint", 0, "int") 
-	if !ErrorLevel 
-		return h_icon 
-    return h_icon ? h_icon : 0 
+	; r:=DllCall("PrivateExtractIcons" , "str", Filename, "int", IconNumber-1, "int", IconSize, "int", IconSize, "Ptr*", h_icon, "PTR*", 0, "uint", 1, "uint", 0, "int") 
+	;if !ErrorLevel 
+	;	return h_icon 
+	r := DllCall("Shell32.dll\SHExtractIconsW", "str", Filename, "int", IconNumber-1, "int", IconSize, "int", IconSize, "Ptr*", h_icon, "Ptr*", pIconId, "uint", 1, "uint", 0, "int")
+	If (!ErrorLevel && r != 0)
+    	return h_icon
+    return 0
 }
 
 ;Gets the visible window at a screen coordinate
