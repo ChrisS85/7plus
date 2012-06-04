@@ -88,11 +88,12 @@ Class CSettings
 		static ImageExtensions               := "jpg,png,bmp,gif,tga,tif,ico,jpeg"
 		static DefaultImageExtension         := "png"
 		static ImageQuality                  := 95
+		static GamepadRemoteControl          := 0
 		static FixEditControlWordDelete      := 1
+		static TabAutocompletion			 := 1
 		static FullscreenExclude             := "VLC DirectX,OpWindow,CabinetWClass"
 		static FullscreenInclude             := "Project64"
 		static RunAsAdmin                    := "Always/Ask"
-		static GamepadRemoteControl          := 0
 		static HideTrayIcon                  := 0
 	}
 	Misc := new this.CMisc()

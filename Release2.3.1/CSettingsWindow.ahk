@@ -587,8 +587,6 @@ Finally, here are some settings that you're likely to change at the beginning:
 			Msgbox ExplorerButton trigger events may not be modified in portable or non-admin mode, as this might cause inconsistencies with the registry.
 			return
 		}
-		;~ Suspend, On
-		;~ NewEvent:=GUI_EditEvent(OriginalEvent.DeepCopy())
 		EventEditor := new CEventEditor(OriginalEvent.DeepCopy(), TemporaryEvent)
 	}
 	FinishEditing(NewEvent, TemporaryEvent)
@@ -604,7 +602,6 @@ Finally, here are some settings that you're likely to change at the beginning:
 		if(NewEvent)
 		{
 			this.Events[this.Events.FindKeyWithValue("ID", NewEvent.ID)] := NewEvent ;overwrite edited event
-			;~ this.RecreateTreeView() ;Refresh Event display
 			this.UpdateEventsView(NewEvent)
 		}
 		else if(TemporaryEvent)
@@ -1812,11 +1809,12 @@ Finally, here are some settings that you're likely to change at the beginning:
 	CreateMisc()
 	{
 		Page := this.Pages.Misc.Tabs[1]
-		;~ Page.AddControl("Link", "linkFixEditControlWordDelete", "xs+21 y58 w13 h13", "?")
-		Page.AddControl("CheckBox", "chkFixEditControlWordDelete", "xs+40 ys+45", "Make CTRL+Backspace and CTRL+Delete work in all textboxes")
-		Page.Controls.chkFixEditControlWordDelete.ToolTip := "Many text boxes in windows have the problem that it's not possible to use CTRL+Backspace to delete a word. Instead, it will write a square character. Enabling this will fix it."
 		;~ Page.AddControl("Link", "linkGamepadRemoteControl", "x19 ys+23 w13 h13", "?")
 		Page.AddControl("CheckBox", "chkGamepadRemoteControl", "xs+40 ys+20", "Use joystick/gamepad as remote control when not in fullscreen (optimized for XBOX360 controller)")
+		;~ Page.AddControl("Link", "linkFixEditControlWordDelete", "xs+21 y58 w13 h13", "?")
+		Page.AddControl("CheckBox", "chkFixEditControlWordDelete", "xs+40 ys+43", "Make CTRL+Backspace and CTRL+Delete work in all textboxes")
+		Page.Controls.chkFixEditControlWordDelete.ToolTip := "Many text boxes in windows have the problem that it's not possible to use CTRL+Backspace to delete a word. Instead, it will write a square character. Enabling this will fix it."
+		Page.AddControl("CheckBox", "chkTabAutocompletion", "xs+40 ys+66 h17", "Autocomplete filenames and paths with TAB in file dialogs")
 		
 		Page.AddControl("Text", "txtImageQuality", "xs+47 ys+180", "Image compression quality:")
 		Page.AddControl("Edit", "editImageQuality", "xs+228 ys+177 w52", "")
@@ -1837,8 +1835,9 @@ Finally, here are some settings that you're likely to change at the beginning:
 	{
 		Page := this.Pages.Misc.Tabs[1].Controls
 		
+		Page.chkGamepadRemoteControl.Checked := Settings.Misc.GamepadRemoteControl
 		Page.chkFixEditControlWordDelete.Checked := Settings.Misc.FixEditControlWordDelete
-		Page.chkGamepadRemoteControl.Checked := Settings.Misc.GamepadRemoteControl		
+		Page.chkTabAutocompletion.Checked := Settings.Misc.TabAutocompletion
 		
 		Page.editImageQuality.Text := Settings.Misc.ImageQuality
 		Page.editDefaultImageExtension.Text := Settings.Misc.DefaultImageExtension
@@ -1851,12 +1850,13 @@ Finally, here are some settings that you're likely to change at the beginning:
 	{
 		Page := this.Pages.Misc.Tabs[1].Controls
 		
-		Settings.Misc.FixEditControlWordDelete := Page.chkFixEditControlWordDelete.Checked
 		Settings.Misc.GamepadRemoteControl := Page.chkGamepadRemoteControl.Checked
 		if(Settings.Misc.GamepadRemoteControl)
 			JoystickStart()
 		else
 			JoystickStop()
+		Settings.Misc.FixEditControlWordDelete := Page.chkFixEditControlWordDelete.Checked
+		Settings.Misc.TabAutocompletion := Page.chkTabAutocompletion.Checked
 		
 		Settings.Misc.ImageQuality := Page.editImageQuality.Text
 		Settings.Misc.DefaultImageExtension := Page.editDefaultImageExtension.Text

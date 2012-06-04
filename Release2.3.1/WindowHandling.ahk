@@ -74,6 +74,13 @@ MouseMovePolling()
 	return
 }
 
+
+;TAB autocompletion when Autocompletion list is visible
+#if Settings.Misc.TabAutocompletion && WinExist("ahk_class Auto-Suggest Dropdown")
+TAB::Down
+#if
+
+;Fix CTRL+Backspace and CTRL+Delete hotkeys in textboxes
 #if Settings.Misc.FixEditControlWordDelete && IsEditControlActive() && NothingSelected() ;Special checks for edit control to support .NET and native edit control
 ^Backspace::ControlBackspaceFix()
 ^Delete::ControlDeleteFix()
