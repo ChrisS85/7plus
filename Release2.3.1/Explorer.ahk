@@ -191,7 +191,7 @@ F2::EnhancedRenaming()
 #if InFileList() && !IsRenaming()
 F2::
 ShowTip(9)
-Send ${F2}
+Send {F2}
 return
 #if
 

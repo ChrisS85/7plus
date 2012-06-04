@@ -74,9 +74,13 @@ MouseMovePolling()
 	return
 }
 
-
+IsAutocompletionVisible()
+{
+	DetectHiddenWindows, Off
+	return WinExist("ahk_class Auto-Suggest Dropdown")
+}
 ;TAB autocompletion when Autocompletion list is visible
-#if Settings.Misc.TabAutocompletion && WinExist("ahk_class Auto-Suggest Dropdown")
+#if Settings.Misc.TabAutocompletion && IsAutocompletionVisible()
 TAB::Down
 #if
 

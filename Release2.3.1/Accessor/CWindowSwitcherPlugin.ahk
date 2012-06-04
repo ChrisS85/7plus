@@ -68,6 +68,8 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 	}
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
+		if(!Filter && !this.Settings.ShowWithEmptyQuery)
+			return
 		Results := Array()
 		FuzzyList := Array()
 		for index, window in this.List

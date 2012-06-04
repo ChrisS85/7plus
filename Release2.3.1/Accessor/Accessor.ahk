@@ -57,17 +57,17 @@ Class CAccessor
 		OpenInMonitorOfMouseCursor := true ;If true, Accessor window will open in the monitor where the mouse cursor is.
 		UseSelectionForKeywords := true ;If set, the selected text will automatically be used as ${1} parameter in keywords if no text is typed
 		FuzzySearchThreshold := 0.6
-		__new(XML)
+		__new(SavedSettings)
 		{
 			for key, value in this
-				if(!IsFunc(value) && key != "Base" && XML.HasKey(key))
-					this[key] := XML[key]
+				if(!IsFunc(value) && key != "Base" && SavedSettings.HasKey(key))
+					this[key] := SavedSettings[key]
 		}
-		Save(ByRef XML)
+		Save(SavedSettings)
 		{
 			for key, value in this
 				if(!IsFunc(value) && key != "Base")
-					XML[key] := value
+					SavedSettings[key] := value
 		}
 	}
 	;An action that can be performed on an Accessor result
@@ -170,7 +170,7 @@ Class CAccessor
 			FileRead, json, % Settings.ConfigPath "\Accessor.json"
 			if(!json)
 			{
-				SavedSettings := {Plugins : [], Keywords : []}
+				SavedSettings := {Plugins : {}, Keywords : []}
 				SavedSettings.Keywords.Insert({Key : "leo", 	Command : "http://dict.leo.org/ende?search=${1}"})
 				SavedSettings.Keywords.Insert({Key : "google", 	Command : "http://google.com/search?q=${1}"})
 				SavedSettings.Keywords.Insert({Key : "w", 		Command : "http://en.wikipedia.org/wiki/Special:Search?search=${1}"})
@@ -195,7 +195,7 @@ Class CAccessor
 		for index, Plugin in this.Plugins
 		{
 			Plugin.Instance := this.Plugins[index] := new Plugin()
-			SavedPlugin := SavedPluginSettings[Plugin.Type]
+			SavedPlugin := IsObject(SavedPluginSettings[Plugin.Type]) ? SavedPluginSettings[Plugin.Type] : {}
 			Plugin.Instance.Settings.Load(SavedPlugin)
 			Plugin.Instance.Init(SavedPlugin.Settings)
 		}
@@ -224,6 +224,37 @@ Class CAccessor
 		FileDelete, %A_Temp%\7plus\test.htm
 		this.GenericIcons.7plus := ExtractIcon(A_ScriptDir "\7+-w.ico")
 	}
+
+	OnExit()
+	{
+		;Close an open instance
+		if(this.GUI)
+			this.Close()
+		
+		;Save Accessor related data
+		this.ResultUsageTracker.OnExit()
+
+		FileDelete, % Settings.ConfigPath "\Accessor.xml"
+		SavedSettings := {Plugins : {}}
+		for index, Plugin in this.Plugins
+		{
+			SavedSettings.Plugins[Plugin.Type] := {}
+			Plugin.Settings.Save(SavedSettings.Plugins[Plugin.Type])
+			Plugin.OnExit(this)
+		}
+		SavedSettings.Keywords := this.Keywords
+		this.Settings.Save(SavedSettings)
+		;XML_Save(SavedSettings, Settings.ConfigPath "\Accessor.xml")
+		FileDelete, % Settings.ConfigPath "\Accessor.json"
+		FileAppend, % lson(SavedSettings), % Settings.ConfigPath "\Accessor.json"
+
+		;Clean up
+		DestroyIcon(this.GenericIcons.Application)
+		DestroyIcon(this.GenericIcons.File)
+		DestroyIcon(this.GenericIcons.Folder)
+		DestroyIcon(this.GenericIcons.URL)
+	}
+	
 	Show(Action, InitialQuery = "")
 	{
 		if(this.GUI)
@@ -282,6 +313,12 @@ Class CAccessor
 		OnMessage(0x100, "")
 	}
 	
+	Close()
+	{
+		;Needs to be delayed because it is called from within a message handler which is critical.
+		SetTimerF(new Delegate(this.GUI, "Close"), -10)
+	}
+
 	;Sets the filter and tries to wait (for max. 5 seconds) until results are there
 	SetFilter(Text)
 	{
@@ -548,41 +585,6 @@ Class CAccessor
 		return Type
 	}
 
-	Close()
-	{
-		;Needs to be delayed because it is called from within a message handler which is critical.
-		SetTimerF(new Delegate(this.GUI, "Close"), -10)
-	}
-
-	OnExit()
-	{
-		;Close an open instance
-		if(this.GUI)
-			this.Close()
-		
-		;Save Accessor related data
-		this.ResultUsageTracker.OnExit()
-
-		FileDelete, % Settings.ConfigPath "\Accessor.xml"
-		SavedSettings := {Plugins : []}
-		for index, Plugin in this.Plugins
-		{
-			SavedSettings.Plugins[Plugin.Type] := PluginSettings := {}
-			Plugin.Settings.Save(PluginSettings)
-			Plugin.OnExit(this)
-		}
-		SavedSettings.Keywords := this.Keywords
-		this.Settings.Save(SavedSettings)
-		;XML_Save(SavedSettings, Settings.ConfigPath "\Accessor.xml")
-		FileDelete, % Settings.ConfigPath "\Accessor.json"
-		FileAppend, % lson(SavedSettings), % Settings.ConfigPath "\Accessor.json"
-
-		;Clean up
-		DestroyIcon(this.GenericIcons.Application)
-		DestroyIcon(this.GenericIcons.File)
-		DestroyIcon(this.GenericIcons.Folder)
-		DestroyIcon(this.GenericIcons.URL)
-	}
 	OnSelectionChanged()
 	{
 		if(IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]))
@@ -1146,17 +1148,17 @@ Class CAccessorPlugin
 		MinChars := 2
 		
 		;Called when properties of this class are loaded. The plugin usually doesn't need to load the properties manually.
-		Load(XML)
+		Load(json)
 		{
 			for key, value in this
-				if(!IsFunc(value) && key != "Base" && XML.HasKey(key))
-					this[key] := XML[key]
+				if(!IsFunc(value) && key != "Base" && json.HasKey(key))
+					this[key] := json[key]
 		}
-		Save(ByRef XML)
+		Save(json)
 		{
 			for key, value in this
 				if(!IsFunc(value) && key != "Base")
-					XML[key] := value
+					json[key] := value
 		}
 		;Code below demonstrates read-only properties. They are still saved to disk but the values from disk aren't used.
 		;The property itself must not be declared in this class. Common read-only properties will be disabled in settings dialog.
