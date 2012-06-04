@@ -426,14 +426,14 @@ WorkerThread_OnData()
 InitWorkerThread()
 {
 	global
-	local Params := [], WorkerFunction, result
+	local Params := [], WorkerFunction, result, DetectHiddenWindows_Prev
 	Loop %0%
 		Params[A_Index] := %A_Index%
 	DetectHiddenWindows_Prev := A_DetectHiddenWindows
 	DetectHiddenWindows, On
 	if(Params.MaxIndex() = 2 && Params[1] = "-ActAsWorker:" && WinExist("ahk_id " params[2]))
 	{
-		WorkerThread := new CWorkerThread(params[2])
+		WorkerThread := new CWorkerThread(params[2]) ;Avoid making the variable global if this code is not executed
 		if(!WorkerThread)
 			ExitApp
 		while(true)
@@ -444,7 +444,6 @@ InitWorkerThread()
 				continue
 			}
 			WorkerThread.State := "Running"
-			
 			WorkerFunction := WorkerThread.Task.WorkerFunction
 			result := %WorkerFunction%(WorkerThread, WorkerThread.Task.Parameters*)
 			

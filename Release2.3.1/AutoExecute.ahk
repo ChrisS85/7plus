@@ -65,7 +65,7 @@ if(!FileExist(Settings.ConfigPath))
 
 ;initialize gdi+
 outputdebug starting gdip
-pToken := Gdip_Startup()
+ApplicationState.pToken := Gdip_Startup()
 
 ;Exit Routine
 OnExit, ExitSub
@@ -216,7 +216,7 @@ OnExit(reload=0)
 		ExplorerHistory.Save()
 		EventSystem.OnExit()
 		CAccessor.Instance.OnExit()
-		Gdip_Shutdown(pToken)
+		Gdip_Shutdown(ApplicationState.pToken)
 		SlideWindows.OnExit()
 		Settings.Save()
 		CloseAllInactiveTabs()

@@ -8,13 +8,13 @@
 <Node1>value</Node1> <Node2> <key>value</key> <key2>value</key2> </Node2>
 <key>value</key> <key2>value</key2>
 */
-xml := XML_Write("", "Node1", "value")
-node2:= XML_Write("", "key", "value")
-node2:=XML_Write(node2, "key2", "value")
-xml:=XML_Write(xml,"Node2", "`r`n" node2)
-outputdebug % xml
-obj := XML_Read(xml)
-exitapp
+;xml := XML_Write("", "Node1", "value")
+;node2:= XML_Write("", "key", "value")
+;node2:=XML_Write(node2, "key2", "value")
+;xml:=XML_Write(xml,"Node2", "`r`n" node2)
+;outputdebug % xml
+;obj := XML_Read(xml)
+;exitapp
 
 XML_Write(xml, name, value)
 {

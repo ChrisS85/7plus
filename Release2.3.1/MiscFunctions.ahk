@@ -1491,7 +1491,7 @@ GetWindowInfo()
 ; (window id, whether to get large icons)
 GetWindowIcon(wid, LargeIcons)
 {
-	Local NR_temp, h_icon
+	Local NR_temp, h_icon, Responding
 	; check status of window - if window is responding or "Not Responding"
 	NR_temp =0 ; init
 	h_icon =

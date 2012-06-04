@@ -218,7 +218,7 @@ format(f, v*) {
 ;
 format_v(f, v)
 {
-    local out, arg, i, j, s, m, key, buf, c, type, p
+    local out, arg, i, j, s, m, key, buf, c, type, p, O_
     out := "" ; To make #Warn happy.
     VarSetCapacity(arg, 8), j := 1, VarSetCapacity(s, StrLen(f)*2.4)  ; Arbitrary estimate (120% * size of Unicode char).
     O_ := A_AhkVersion >= "2" ? "" : "O)"  ; Seems useful enough to support v1.

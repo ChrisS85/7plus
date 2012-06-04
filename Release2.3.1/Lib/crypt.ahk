@@ -51,14 +51,14 @@ Encrypt(text)
 			v := k5              ; another secret 
 			p++                  ; increment counter 
 			TEA(u,v, k1,k2,k3,k4) 
-			Stream9(u,v)         ; 9 pads from encrypted counter 
+			s := Stream9(u,v)         ; 9 pads from encrypted counter 
 			i = 0 
 		 } 
 		 StringMid c, A_LoopField, A_Index, 1 
 		 a := Asc(c) 
 		 if a between 32 and 126 
 		 {                       ; chars > 126 or < 31 unchanged 
-			a += s%i% 
+			a += s[i]
 			IfGreater a, 126, SetEnv, a, % a-95 
 			c := Chr(a) 
 		 } 
@@ -94,14 +94,14 @@ Decrypt(text)
 			v := k5              ; another secret 
 			p++                  ; increment counter 
 			TEA(u,v, k1,k2,k3,k4) 
-			Stream9(u,v)         ; 9 pads from encrypted counter 
+			s := Stream9(u,v)         ; 9 pads from encrypted counter 
 			i = 0 
 		 } 
 		 StringMid c, A_LoopField, A_Index, 1 
 		 a := Asc(c) 
 		 if a between 32 and 126 
 		 {                       ; chars > 126 or < 31 unchanged 
-			a -= s%i% 
+			a -= s[i] 
 			IfLess a, 32, SetEnv, a, % a+95 
 			c := Chr(a) 
 		 } 
@@ -135,14 +135,15 @@ TEA(ByRef y,ByRef z,k0,k1,k2,k3) ; (y,z) = 64-bit I/0 block
 } 
 
 Stream9(x,y)                     ; Convert 2 32-bit words to 9 pad values 
-{                                ; 0 <= s0, s1, ... s8 <= 94 
-   Local z                       ; makes all s%i% global 
-   s0 := Floor(x*0.000000022118911147) ; 95/2**32 
+{                                ; 0 <= s[0], s[1], ... s[8] <= 94 
+   s := []
+   s[0] := Floor(x*0.000000022118911147) ; 95/2**32 
    Loop 8 
    { 
       z := (y << 25) + (x >> 7) & 0xFFFFFFFF 
       y := (x << 25) + (y >> 7) & 0xFFFFFFFF 
-      x  = %z% 
-      s%A_Index% := Floor(x*0.000000022118911147) 
+      x = %z%
+      s[A_Index] := Floor(x * 0.000000022118911147) 
    } 
+   return s
 }

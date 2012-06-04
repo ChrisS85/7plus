@@ -261,7 +261,6 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 	;May only be used while Accessor window is visible
 	GetNotepadPlusPlusActiveTab()
 	{
-		global AccessorPlugins
 		hwnd := WinExist("ahk_class " this.WindowClassName)
 		if(!hwnd)
 			return ""
