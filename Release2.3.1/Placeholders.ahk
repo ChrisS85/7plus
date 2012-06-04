@@ -80,6 +80,8 @@ ExpandPlaceholder(Placeholder)
 		return A_OSVersion
 	else if(Placeholder = "WINXP")
 		return WIN_XP
+	else if(Placeholder = "WINXP64")
+		return WIN_XP64
 	else if(Placeholder = "WINVISTA")
 		return WIN_VISTA
 	else if(Placeholder = "WIN7")
@@ -264,6 +266,7 @@ ShowPlaceholderMenu(SubEventGUI, name, ClickedMenu="")
 		Menu, Placeholders_System, add, ${WinVer} - Windows version(WIN_7`, WIN_VISTA`, WIN_XP`, WIN_2003`,...), PlaceholderHandler
 		Menu, Placeholders_System, add, ${WindowsVersion} - Numeric Windows version(XP : 5.1`, VISTA : 6.0`, 7 : 6.1`, 8 : 6.2`,...), PlaceholderHandler
 		Menu, Placeholders_System, add, ${WINXP} - Windows XP version number(5.1), PlaceholderHandler
+		Menu, Placeholders_System, add, ${WINXP64} - Windows XP x64 version number(5.2), PlaceholderHandler
 		Menu, Placeholders_System, add, ${WINVISTA} - Windows Vista version number(6.0), PlaceholderHandler
 		Menu, Placeholders_System, add, ${WIN7} - Windows 7 version number(6.1), PlaceholderHandler
 		Menu, Placeholders_System, add, ${WIN8} - Windows 8 version number(6.2), PlaceholderHandler
