@@ -36,7 +36,8 @@
 *Bugfixes:* 
  * Added a bug which caused flashing of file dialog close box while mouse was over it.
  * Fixed a bug that caused crashes and hangups on windows which contain ListViews. This fix also improves responsiveness of ListView and TreeView selections.
- * Fixed Explorer windows getting activated at the start of 7plus
+ * Fixed Explorer windows getting activated at the start of 7plus.
+ * Fixed a bug that prevented setting the current directory in save file dialogs.
 
 *Changes:* 
  * Rewrote navigation code that sets/gets paths/selections in explorer, file dialogs, CMD, Desktop etc.
