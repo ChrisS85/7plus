@@ -190,6 +190,12 @@ Class CAccessor
 				</Keyword><Keyword>
 				<Command>http://www.wolframalpha.com/input/?i=${1}</Command>
 				<Key>wa</Key>
+				</Keyword><Keyword>
+				<Command>http://www.ebay.com/sch/i.html?_nkw=${1}</Command>
+				<Key>ebay</Key>
+				</Keyword><Keyword>
+				<Command>http://de.search.yahoo.com/search?p=${1}</Command>
+				<Key>yahoo</Key>
 				</Keyword></Keywords>
 			)
 		}
