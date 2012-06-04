@@ -5512,7 +5512,10 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <ButtonText>Shutdown</ButtonText>
+<Detail1></Detail1>
+<Icon>%SystemRoot%\system32\SHELL32.dll,27</Icon>
 <Keyword>Shutdown</Keyword>
+<Path></Path>
 <Title>Shutdown Windows</Title>
 <Type>Accessor Trigger</Type>
 </Trigger>
@@ -5537,7 +5540,10 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <ButtonText>Hibernate</ButtonText>
+<Detail1></Detail1>
+<Icon>%SystemRoot%\system32\SHELL32.dll,112</Icon>
 <Keyword>Hibernate</Keyword>
+<Path></Path>
 <Title>Go into hibernation</Title>
 <Type>Accessor Trigger</Type>
 </Trigger>
@@ -5562,7 +5568,10 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <ButtonText>Standby</ButtonText>
+<Detail1></Detail1>
+<Icon>%SystemRoot%\system32\SHELL32.dll,122</Icon>
 <Keyword>Standby</Keyword>
+<Path></Path>
 <Title>Go into Standby</Title>
 <Type>Accessor Trigger</Type>
 </Trigger>
@@ -5587,7 +5596,10 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <ButtonText>Reboot</ButtonText>
+<Detail1></Detail1>
+<Icon>%SystemRoot%\system32\SHELL32.dll,238</Icon>
 <Keyword>Reboot</Keyword>
+<Path></Path>
 <Title>Reboot Windows</Title>
 <Type>Accessor Trigger</Type>
 </Trigger>
@@ -5612,7 +5624,10 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <ButtonText>Log Off</ButtonText>
+<Detail1></Detail1>
+<Icon>%SystemRoot%\system32\SHELL32.dll,160</Icon>
 <Keyword>LogOff</Keyword>
+<Path></Path>
 <Title>Log off the current user</Title>
 <Type>Accessor Trigger</Type>
 </Trigger>
@@ -5637,7 +5652,10 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <ButtonText>Lock</ButtonText>
+<Detail1></Detail1>
+<Icon>%SystemRoot%\system32\SHELL32.dll,44</Icon>
 <Keyword>Lock</Keyword>
+<Path></Path>
 <Title>Lock workstation</Title>
 <Type>Accessor Trigger</Type>
 </Trigger>
@@ -5654,9 +5672,6 @@
 <FeatureType>GetPath</FeatureType>
 <Negate>0</Negate>
 <Type>Can Window be Navigated</Type>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Active</WindowMatchType>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -5685,9 +5700,6 @@
 <FeatureType>GetPath</FeatureType>
 <Negate>0</Negate>
 <Type>Can Window be Navigated</Type>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Active</WindowMatchType>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>

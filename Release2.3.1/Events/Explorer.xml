@@ -835,9 +835,6 @@
 <FeatureType>GetPath</FeatureType>
 <Negate>0</Negate>
 <Type>Can Window be Navigated</Type>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Active</WindowMatchType>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
@@ -866,9 +863,6 @@
 <FeatureType>GetPath</FeatureType>
 <Negate>0</Negate>
 <Type>Can Window be Navigated</Type>
-<WindowFilterClass></WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Active</WindowMatchType>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
