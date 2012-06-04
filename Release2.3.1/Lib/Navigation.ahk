@@ -442,12 +442,13 @@ Class CNewFileDialogNavigationSource
 	}
 	SetPath(Path, hwnd)
 	{
-		outputdebug set path %path%
 		;Set path by entering it in the filename box (restore current text afterwards)
 		ControlGetFocus, focussed, ahk_id %hwnd%
 		ControlGetText, Edit1Text, Edit1, ahk_id %hwnd%
 		ControlClick, Edit1, ahk_id %hwnd%
 		ControlSetText, Edit1, %Path%, ahk_id %hwnd%
+		ControlSend, Edit1, {Space}{Backspace}, ahk_id %hwnd% ;This needs to be done to make the file dialog deselect the current file to prevent overwriting on save dialogs
+		Sleep 10
 		ControlSend, Edit1, {Enter}, ahk_id %hwnd%
 		Sleep, 100	; It needs extra time on some dialogs or in some cases.
 		WinGet, Style, Style, ahk_id %hwnd%
