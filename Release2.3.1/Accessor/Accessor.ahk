@@ -157,68 +157,83 @@ Class CAccessor
 			return ""
 		this.Instance := this
 		
-		FileRead, xml, % Settings.ConfigPath "\Accessor.xml"
-		if(!xml)
+		if(FileExist(Settings.ConfigPath "\Accessor.xml"))
 		{
-			xml = 
-			( LTrim
-				<Keywords>
-				<Keyword>
-				<Command>http://dict.leo.org/ende?search=${1}</Command>
-				<Key>leo</Key>
-				</Keyword><Keyword>
-				<Command>http://google.com/search?q=${1}</Command>
-				<Key>google</Key>
-				</Keyword><Keyword>
-				<Command>http://en.wikipedia.org/wiki/Special:Search?search=${1}</Command>
-				<Key>w</Key>
-				</Keyword><Keyword>
-				<Command>http://maps.google.com/maps?q=${1}</Command>
-				<Key>gm</Key>
-				</Keyword><Keyword>
-				<Command>http://www.amazon.com/s?url=search-alias`%3Daps&field-keywords=${1}</Command>
-				<Key>a</Key>
-				</Keyword><Keyword>
-				<Command>http://www.bing.com/search?q=${1}</Command>
-				<Key>bing</Key>
-				</Keyword><Keyword>
-				<Command>http://www.youtube.com/results?search_query=${1}</Command>
-				<Key>y</Key>
-				</Keyword><Keyword>
-				<Command>http://www.imdb.com/find?q=${1}</Command>
-				<Key>i</Key>
-				</Keyword><Keyword>
-				<Command>http://www.wolframalpha.com/input/?i=${1}</Command>
-				<Key>wa</Key>
-				</Keyword><Keyword>
-				<Command>http://www.ebay.com/sch/i.html?_nkw=${1}</Command>
-				<Key>ebay</Key>
-				</Keyword><Keyword>
-				<Command>http://de.search.yahoo.com/search?p=${1}</Command>
-				<Key>yahoo</Key>
-				</Keyword></Keywords>
-			)
+			FileRead, xml, % Settings.ConfigPath "\Accessor.xml"
+			if(!xml)
+			{
+				xml = 
+				( LTrim
+					<Keywords>
+					<Keyword>
+					<Command>http://dict.leo.org/ende?search=${1}</Command>
+					<Key>leo</Key>
+					</Keyword><Keyword>
+					<Command>http://google.com/search?q=${1}</Command>
+					<Key>google</Key>
+					</Keyword><Keyword>
+					<Command>http://en.wikipedia.org/wiki/Special:Search?search=${1}</Command>
+					<Key>w</Key>
+					</Keyword><Keyword>
+					<Command>http://maps.google.com/maps?q=${1}</Command>
+					<Key>gm</Key>
+					</Keyword><Keyword>
+					<Command>http://www.amazon.com/s?url=search-alias`%3Daps&field-keywords=${1}</Command>
+					<Key>a</Key>
+					</Keyword><Keyword>
+					<Command>http://www.bing.com/search?q=${1}</Command>
+					<Key>bing</Key>
+					</Keyword><Keyword>
+					<Command>http://www.youtube.com/results?search_query=${1}</Command>
+					<Key>y</Key>
+					</Keyword><Keyword>
+					<Command>http://www.imdb.com/find?q=${1}</Command>
+					<Key>i</Key>
+					</Keyword><Keyword>
+					<Command>http://www.wolframalpha.com/input/?i=${1}</Command>
+					<Key>wa</Key>
+					</Keyword><Keyword>
+					<Command>http://www.ebay.com/sch/i.html?_nkw=${1}</Command>
+					<Key>ebay</Key>
+					</Keyword><Keyword>
+					<Command>http://de.search.yahoo.com/search?p=${1}</Command>
+					<Key>yahoo</Key>
+					</Keyword></Keywords>
+				)
+			}
+			SavedSettings := XML_Read(xml)
+			SavedPluginSettings := SavedSettings
+			SavedKeywords := SavedSettings.Keywords.Keyword
+			FileDelete, % Settings.ConfigPath "\Accessor.xml"
 		}
-		XMLObject := XML_Read(xml)
-		
+		else
+		{
+			FileRead, json, % Settings.ConfigPath "\Accessor.json"
+			SavedSettings := lson(json)
+			SavedPluginSettings := SavedSettings.Plugins
+			SavedKeywords := SavedSettings.Keywords
+		}
 		;Create and load settings
-		this.Settings := new this.CSettings(XMLObject)
+		this.Settings := new this.CSettings(SavedSettings)
 		
 		;Init plugins
 		for index, Plugin in this.Plugins
 		{
 			Plugin.Instance := this.Plugins[index] := new Plugin()
-			XMLPlugin := XMLObject[Plugin.Type]
-			Plugin.Instance.Settings.Load(XMLPlugin)
-			Plugin.Instance.Init(XMLPlugin.Settings)
+			SavedPlugin := SavedPluginSettings[Plugin.Type]
+			Plugin.Instance.Settings.Load(SavedPlugin)
+			Plugin.Instance.Init(SavedPlugin.Settings)
 		}
 		
 		;Init keywords
-		if(!IsObject(XMLObject.Keywords))
-			XMLObject.Keywords := {}
-		if(!IsObject(XMLObject.Keywords.Keyword) || !XMLObject.Keywords.Keyword.MaxIndex())
-			XMLObject.Keywords.Keyword := IsObject(XMLObject.Keywords.Keyword) ? Array(XMLObject.Keywords.Keyword) : Array()
-		for index, Keyword in XMLObject.Keywords.Keyword
+		;No keywords?
+		if(!IsObject(SavedKeywords))
+			SavedKeywords := []
+		;Single keyword? (Only relevant for xml files)
+		if(!SavedKeywords.MaxIndex())
+			SavedKeywords := Array(SavedKeywords)
+
+		for index, Keyword in SavedKeywords
 			this.Keywords.Insert({Key : Keyword.Key, Command : Keyword.Command})
 		
 		;Init result usage tracker
@@ -574,17 +589,19 @@ Class CAccessor
 		this.ResultUsageTracker.OnExit()
 
 		FileDelete, % Settings.ConfigPath "\Accessor.xml"
-		XMLObject := {}
+		SavedSettings := {Plugins : []}
 		for index, Plugin in this.Plugins
 		{
-			XMLObject[Plugin.Type] := PluginSettings := {}
+			SavedSettings.Plugins[Plugin.Type] := PluginSettings := {}
 			Plugin.Settings.Save(PluginSettings)
 			Plugin.OnExit(this)
 		}
-		XMLObject.Keywords := Object("Keyword", this.Keywords)
-		this.Settings.Save(XMLObject)
-		XML_Save(XMLObject, Settings.ConfigPath "\Accessor.xml")
-		
+		SavedSettings.Keywords := this.Keywords
+		this.Settings.Save(SavedSettings)
+		;XML_Save(SavedSettings, Settings.ConfigPath "\Accessor.xml")
+		FileDelete, % Settings.ConfigPath "\Accessor.json"
+		FileAppend, % lson(SavedSettings), % Settings.ConfigPath "\Accessor.json"
+
 		;Clean up
 		DestroyIcon(this.GenericIcons.Application)
 		DestroyIcon(this.GenericIcons.File)
