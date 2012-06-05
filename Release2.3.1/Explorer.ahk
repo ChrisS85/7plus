@@ -593,13 +593,24 @@ CheckForClosedExplorerWindows()
 ;Called when an explorer window gets deactivated.
 ExplorerDeactivated(hwnd)
 {
+	global ExplorerWindows
+	TabContainer := ExplorerWindows.GetItemWithValue("hwnd", hwnd + 0).TabContainer
+	for index, window in TabContainer.Tabs
+	{
+		WinGet, Style, Style, % "ahk_id " window.hwnd
+		if(!(Style & 0x10000000)) ;WS_VISIBLE
+		{
+			TabContainer.UpdateTabPosition()
+			;UpdateTabs()
+		}
+	}
 }
 ;TODO: Continue here, implement delete method and check draw timer deactivation
 ;Called when an explorer window gets destroyed.
 ExplorerDestroyed(hwnd)
 {
 	global ExplorerWindows
-	TabContainer:=ExplorerWindows.GetItemWithValue("hwnd", hwnd+0).TabContainer
+	TabContainer := ExplorerWindows.GetItemWithValue("hwnd", hwnd + 0).TabContainer
 	if(index := ExplorerWindows.FindKeyWithValue("hwnd", hwnd))
 		ExplorerWindows.Remove(index) ;This will destroy the info gui as well
 	if(ExplorerWindows.TabContainerList.TabCloseInProgress) ;If this is set, then this event was caused by a tab closing action and must not trigger further tab close functions
