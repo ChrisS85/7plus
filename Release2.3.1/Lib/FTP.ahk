@@ -130,9 +130,9 @@ FTP_Open(Server, Username=0, Password=0) {
 ;
 FTP_GetCurrentDirectory() {
   global ftp_$obj$
-
   nSize := A_IsUnicode ? (2*260) : 260 ;Maxpath
   VarSetCapacity(ic_currdir, nSize)
+  nSize := 260 ;lpdwCurrentDirectory is in TCHARs
   If !DllCall("wininet\FtpGetCurrentDirectory", "PTR", ftp_$obj$.hInternet, "PTR", &ic_currdir, "UIntP", &nSize)
     Return 0 , ftp_$obj$.LastError := GetModuleErrorText(ftp_$obj$.hModule,A_LastError)
   Return StrGet(&ic_currdir,nSize) , ftp_$obj$.LastError := 0

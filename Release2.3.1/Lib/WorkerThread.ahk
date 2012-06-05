@@ -225,8 +225,8 @@ MainThread_Monitor(wParam, lParam, msg, hwnd)
 {
 	if(msg = 0x4a) ;WM_COPYDATA
 	{
-		StringAddress := NumGet(lParam + 4 + A_PtrSize, 0, "PTR")
-		StringLength := DllCall("lstrlen", "PTR", StringAddress) * (A_IsUnicode ? 2 : 1)
+		StringAddress := NumGet(lParam + 2 * A_PtrSize, 0, "PTR")
+		StringLength := DllCall("lstrlen", "PTR", StringAddress, "int") * (A_IsUnicode ? 2 : 1)
 		if(StringLength <= 0)
 			return 0
 		else
@@ -307,8 +307,8 @@ WorkerThread_Monitor(wParam, lParam, msg, hwnd)
 		return 0
 	if(msg = 0x4a) ;WM_COPYDATA
 	{
-		StringAddress := NumGet(lParam + 4 + A_PtrSize, 0, "PTR")  ; lParam+8 is the address of CopyDataStruct's lpData member.
-		StringLength := DllCall("lstrlen", "PTR", StringAddress) * (A_IsUnicode ? 2 : 1)
+		StringAddress := NumGet(lParam + 2 * A_PtrSize, 0, "PTR")  ; lParam+8 is the address of CopyDataStruct's lpData member.
+		StringLength := DllCall("lstrlen", "PTR", StringAddress, "int") * (A_IsUnicode ? 2 : 1)
 		if(StringLength <= 0)
 			return 0
 		else
@@ -446,7 +446,6 @@ InitWorkerThread()
 			WorkerThread.State := "Running"
 			WorkerFunction := WorkerThread.Task.WorkerFunction
 			result := %WorkerFunction%(WorkerThread, WorkerThread.Task.Parameters*)
-			
 			;if we are in stopped state, this thread was cancelled and no finish event is sent
 			if(WorkerThread.State != "Stopped")
 			{
@@ -470,10 +469,10 @@ Send_WM_COPYDATA(ByRef StringToSend, hwnd)  ; ByRef saves a little memory in thi
 ; This function sends the specified string to the specified window and returns the reply.
 ; The reply is 1 if the target window processed the message, or 0 if it ignored it.
 {
-    VarSetCapacity(CopyDataStruct, 4 + 2 * A_PtrSize, 0)  ; Set up the structure's memory area.
+    VarSetCapacity(CopyDataStruct, 3 * A_PtrSize, 0)  ; Set up the structure's memory area.
     ; First set the structure's cbData member to the size of the string, including its zero terminator:
     NumPut((StrLen(StringToSend) + 1) * (A_IsUnicode ? 2 : 1), CopyDataStruct, A_PtrSize)  ; OS requires that this be done.
-    NumPut(&StringToSend, CopyDataStruct, 4 + A_PtrSize)  ; Set lpData to point to the string itself.
+    NumPut(&StringToSend, CopyDataStruct, 2 * A_PtrSize)  ; Set lpData to point to the string itself.
 	return DllCall("SendMessage", "PTR", hwnd, "UInt", 0x4a, "PTR", 0, "PTR", &CopyDataStruct, "PTR")
 }
 #include <LSON>

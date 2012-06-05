@@ -311,7 +311,6 @@ FTPUploadThread(WorkerThread, EventScheduleID, ActionIndex, files, Hostname, Por
 					return
 				;Report the progress of the worker thread.
 				WorkerThread.SendData({Type : "File", File : File.File, RemoteName : File.TargetFile})
-
 				;Upload the file
 				result := FTPUploadThread_UploadSingleFile(File, TargetFolder, FTPBaseDir, URL)
 				if(!result.status)
