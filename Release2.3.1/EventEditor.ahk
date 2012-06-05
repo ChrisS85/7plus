@@ -98,7 +98,6 @@ Class CEventEditor extends CGUI
 		SettingsWindow.Enabled := false
 		this.Owner := SettingsWindow.hwnd
 		;Setup control states
-		
 		;Initialize trigger tab (categories and types and trigger gui)
 		IndexToSelect := 1
 		for CategoryName, Category in CTrigger.Categories
@@ -182,7 +181,6 @@ Class CEventEditor extends CGUI
 		this.DestroyOnClose := true
 		this.CloseOnEscape := true
 		this.Title := "Event Editor"
-		
 		this.Show()
 	}
 	

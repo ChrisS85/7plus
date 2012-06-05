@@ -270,6 +270,9 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 		*/
 		Add(Text, Position = -1, Select = false)
 		{
+			;Empty text can apparently cause side effects, probably because it results in a double separator which is meant for selection
+			if(!Text)
+				return
 			GUI := CGUI.GUIList[this._.GUINum]
 			Control := GUI.Controls[this._.hwnd]
 			Selected := Control.SelectedIndex

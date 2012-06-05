@@ -9,7 +9,7 @@ Class CInvertSelectionAction Extends CAction
 		return 1
 	} 
 
-	DisplayString(Action)
+	DisplayString()
 	{
 		return "Invert selection of active explorer window"
 	}
