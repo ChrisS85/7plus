@@ -524,8 +524,8 @@ Class CTabContainer
 		global ExplorerWindows
 		WinGetPos x,y,w,h, % "ahk_id " this.TabWindow
 		outputdebug draw tab window current size x%x% y%y% w%w% h%h%
-		count:=this.tabs.MaxIndex()
-		desiredwidth:=0
+		count := this.tabs.MaxIndex()
+		desiredwidth := 0
 		loop % count
 		{
 			desiredwidth += ExplorerWindows.TabContainerList.TabWidth
@@ -562,7 +562,7 @@ Class CTabContainer
 		G := Gdip_GraphicsFromHDC(hdc)
 		
 		Font := ExplorerWindows.TabContainerList.Font
-		FontSize:=ExplorerWindows.TabContainerList.FontSize
+		FontSize := ExplorerWindows.TabContainerList.FontSize
 		
 		; Set the smoothing mode to antialias = 4 to make shapes appear smother (only used for vector drawing and filling)
 		Gdip_SetSmoothingMode(G, 4)
@@ -822,6 +822,7 @@ CreateTab(hwnd, path=-1,Activate=-1)
 		AttachToolWindow(TabContainer.Active, TabContainer.TabNum, false)
 	TabContainer.UpdateTabs()
 	TabContainer.UpdatePosition()
+	Gui, % TabContainer.TabNum ":Show", NA
 	; this.DrawTabWindow()
 	; GuiControl, %TabNum%:MoveDraw, TabControl
 	CreateTab_Cleanup:
