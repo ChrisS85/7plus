@@ -594,15 +594,15 @@ CheckForClosedExplorerWindows()
 ExplorerDeactivated(hwnd)
 {
 	global ExplorerWindows
+	;Explicitly redraw the tab bar window when an explorer window gets deactivated.
+	;This is needed to make sure the window isn't visible anymore when an Explorer window is closed.
+	;Explorer window hides first so we check if all explorer windows from that tab container are hidden.
 	TabContainer := ExplorerWindows.GetItemWithValue("hwnd", hwnd + 0).TabContainer
 	for index, window in TabContainer.Tabs
 	{
 		WinGet, Style, Style, % "ahk_id " window.hwnd
 		if(!(Style & 0x10000000)) ;WS_VISIBLE
-		{
 			TabContainer.UpdateTabPosition()
-			;UpdateTabs()
-		}
 	}
 }
 ;TODO: Continue here, implement delete method and check draw timer deactivation

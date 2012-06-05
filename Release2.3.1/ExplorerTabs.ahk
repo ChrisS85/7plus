@@ -268,22 +268,22 @@ Class CTabContainer
 	{
 		global ExplorerWindows
 		; outputdebug ActivateTab(%pos%)
-		SetWinDelay,-1
-		hwnd:=this.tabs[pos].hwnd+0
+		SetWinDelay, -1
+		hwnd := this.tabs[pos].hwnd + 0
 		;DisableMinimizeAnim(1)
 		ExplorerWindows.TabContainerList.TabActivationInProgress := true
-		OldTab:=this.active
+		OldTab := this.active
 		;To hide the old tab without showing the hide anim, it is moved outside of the screen first
-		WinMove,ahk_id %OldTab%,,-10000,-10000
+		WinMove,ahk_id %OldTab%,, -10000, -10000
 		DeAttachToolWindow(this.TabNum)
 		WinHide,ahk_id %OldTab%
 		DetectHiddenWindows, On
-		if(this.w!=0)
+		if(this.w != 0)
 		{
-			if(this.state=1)
-				WinSetPlacement(hwnd,this.x,this.y,this.w,this.h,3)
+			if(this.state = 1)
+				WinSetPlacement(hwnd, this.x, this.y, this.w, this.h, 3)
 			else
-				WinSetPlacement(hwnd,this.x,this.y,this.w,this.h,1)
+				WinSetPlacement(hwnd, this.x, this.y, this.w, this.h, 1)
 			;WinMove ahk_id %hwnd%,,%x%,%y%,%w%,%h%
 		}		
 		/*
@@ -295,13 +295,14 @@ Class CTabContainer
 		
 		WinShow, ahk_id %hwnd%
 		WinActivate, ahk_id %hwnd%
-		this.Active:=hwnd
+		this.Active := hwnd
 		AttachToolWindow(hwnd, this.TabNum, false)
 		;DisableMinimizeAnim(0)
 		this.CalculateVerticalTabPosition(pos)
-		this.CalculateVerticalTabPosition(this.tabs.FindKeyWithValue("hwnd", OldTab+0))
+		this.CalculateVerticalTabPosition(this.tabs.FindKeyWithValue("hwnd", OldTab + 0))
 		this.UpdatePosition()
 		this.UpdateTabs()
+		Gui, % this.TabNum ":Show", NA
 		Sleep 10 ;To allow any message hooks to be executed
 		ExplorerWindows.TabContainerList.TabActivationInProgress := false
 	}
