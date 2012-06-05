@@ -762,7 +762,7 @@ Class CAccessor
 			;Cache if executable file is being run
 			Path := ListEntry.Path
 			SplitPath, Path,,,ext
-			if(FileExist(ListEntry.Path) && InStr("exe,cmd,bat,ahk", ext))
+			if(FileExist(ListEntry.Path))
 				CProgramLauncherPlugin.Instance.AddToCache(ListEntry)
 			
 			RunAsUser("cmd.exe /c start """" " Quote(ListEntry.Path) (ListEntry.args ? " " ListEntry.args : ""), WorkingDir, "HIDE")
