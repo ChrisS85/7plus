@@ -689,16 +689,24 @@ Class CExplorerNavigationSource
 		;Calling the menu item is more reliable than doing it through COM because right now only real files are supported
 		if(WinExist("A") = hwnd)
 		{
-			PostMessage,0x112,0xf100,0,,A
-			SendInput {Right}{Down}{Up}{Enter}
-			return
-			selected := this.GetSelectedFilenames(hwnd)
-			path := this.GetPath(hwnd)
-			NewSelection := Array()
-			Loop, %path%\* , 1
-				if(!selected.indexOf(A_LoopFileName))
-					NewSelection.Insert(A_LoopFileName)
-			this.SelectFiles(hwnd, NewSelection)
+			if(WinVer = WIN_8)
+			{
+				SendInput !rsi
+				return
+			}
+			else
+			{
+				PostMessage,0x112,0xf100,0,,A
+				SendInput {Right}{Down}{Up}{Enter}
+				return
+			}
+			;selected := this.GetSelectedFilenames(hwnd)
+			;path := this.GetPath(hwnd)
+			;NewSelection := Array()
+			;Loop, %path%\* , 1
+			;	if(!selected.indexOf(A_LoopFileName))
+			;		NewSelection.Insert(A_LoopFileName)
+			;this.SelectFiles(hwnd, NewSelection)
 		}
 	}
 }

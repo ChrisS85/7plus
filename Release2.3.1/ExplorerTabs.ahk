@@ -405,10 +405,17 @@ Class CTabContainer
 			this.w := w
 			this.h := h
 			;Now get current coordinates for tab window placement
-			WinGetPos, x,y,w,h, % "ahk_id " this.Active
+			WinGetPos, x,y,width,h, % "ahk_id " this.Active
 			x+=24
 			y+=4
-			w-=135
+			w := width - 135
+			;The Explorer in Windows 8 finally uses its window space more effectively. In return this means that there's no real space for the tabs anymore.
+			;For now they will be placed in the center of the titlebar. This increases the chance of not overlapping with other elements.
+			if(WinVer = WIN_8)
+			{
+				w -= 150
+				x := (x - 24) + (width / 2 - w / 2)
+			}
 			h:=ExplorerWindows.TabContainerList.height
 			outputdebug move tabwindow x%x% y%y% w%w% h%h%
 			WinMove, % "ahk_id " this.TabWindow,,%x%,%y%,%w%,%h%
@@ -577,7 +584,7 @@ Class CTabContainer
 			}
 			else
 			{
-				if(WinVer >= WIN_Vista)
+				if(WinVer >= WIN_Vista && WinVer < WIN_8) ;Win 8 draws on the title bar, so the tabs must be opaque to avoid partial overdrawing
 					pBrushGradient := Gdip_CreateLineBrushFromRect(0,0, tab.width, tab.height, 0xFFF8F8F8, 0x22222222)
 				else
 					pBrushGradient := Gdip_CreateLineBrushFromRect(0,0, tab.width, tab.height, 0xFFF8F8F8, 0xFFAAAAAA)
