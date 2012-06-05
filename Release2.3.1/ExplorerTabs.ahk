@@ -717,8 +717,8 @@ CreateTab(hwnd, path=-1,Activate=-1)
 		Notify("Explorer Tabs Error!", "Error creating tab: Explorer window not registered!", 5, NotifyIcons.Error)
 		return false
 	}
-	if(path="")
-		path:=ExplorerWindow.Path
+	if(path = "")
+		path := ExplorerWindow.Path
 	if(!TabContainer:=ExplorerWindow.TabContainer) ;Create new Tab Container if it doesn't exist yet
 	{
 		outputdebug add new tab container

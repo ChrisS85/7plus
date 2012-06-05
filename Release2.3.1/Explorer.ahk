@@ -291,9 +291,11 @@ RunExplorer()
 			WinMove, ahk_id %active%,, %x%,%y%,%w%,%h%
 		}
 	}
-	if(Settings.Explorer.RememberPath && Settings.Explorer.CurrentPath)
+	if(active && Settings.Explorer.AlignNewExplorer)
+		Run, % "Explorer """ Navigation.GetPath() """"
+	else if(Settings.Explorer.RememberPath && Settings.Explorer.CurrentPath)
 		Run, % "Explorer """ Settings.Explorer.CurrentPath """"
-	Else
+	else
 		run, % "Explorer C:"
 	if(Settings.Explorer.AlignNewExplorer && active)
 	{
