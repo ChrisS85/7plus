@@ -41,7 +41,7 @@ CreateUpdate(Platform, Version)
 {
 	global 7plusVersion
 	;Everything is temporarily copied to %A_TEMP%\7plusUpdateCreator
-	FileRemoveDir %A_TEMP%\7plusUpdateCreator,1
+	FileRemoveDir %A_TEMP%\7plusUpdateCreator, 1
 	FileCreateDir %A_TEMP%\7plusUpdateCreator
 	FileDelete Updater.exe
 	FileDelete Update.zip
@@ -50,14 +50,15 @@ CreateUpdate(Platform, Version)
 	{
 		FileCopy, %A_ProgramFiles%\Autohotkey\Compiler\AutoHotkeySC_UNICODE_32.bin, %A_ProgramFiles%\Autohotkey\Compiler\AutoHotkeySC.bin, 1
 		FileCopy, %A_ScriptDir%\ShellExtension\Release\ShellExtension.dll, %A_TEMP%\7plusUpdateCreator, 1
-		FileCopy, %A_ScriptDir%\x86\sqlite3.dll, %A_TEMP%\7plusUpdateCreator\lib, 1
+		FileCreateDir, %A_TEMP%\7plusUpdateCreator\lib
+		FileCopy, %A_ScriptDir%\lib\sqlite3.dll, %A_TEMP%\7plusUpdateCreator\lib, 1
 	}
 	else
 	{
 		FileCopy, %A_ProgramFiles%\Autohotkey\Compiler\AutoHotkeySC_UNICODE_64.bin, %A_ProgramFiles%\Autohotkey\Compiler\AutoHotkeySC.bin, 1
 		FileCopy, %A_ScriptDir%\ShellExtension\x64\Release\ShellExtension.dll, %A_TEMP%\7plusUpdateCreator, 1
 		FileCreateDir, %A_TEMP%\7plusUpdateCreator\lib\x64
-		FileCopy, %A_ScriptDir%\x64\sqlite3.dll, %A_TEMP%\7plusUpdateCreator\lib\x64, 1
+		FileCopy, %A_ScriptDir%\lib\x64\sqlite3.dll, %A_TEMP%\7plusUpdateCreator\lib\x64, 1
 	}
 	
 	;Compile 7plus and Uninstaller
@@ -93,7 +94,7 @@ CreateUpdate(Platform, Version)
 FolderLoop(Platform, Version)
 {
 	global 7plusVersion
-	Loop *.*,0,1 ;Find files which should be included
+	Loop *.*, 0, 1 ;Find files which should be included
 	{
 		if(Version = "Binary" && A_LoopFileExt = "ahk")
 			continue
@@ -107,21 +108,23 @@ FolderLoop(Platform, Version)
 			continue
 		if A_LoopFileName contains Kopie
 			continue
-		if(A_LoopFileName="7za.exe")
+		if(A_LoopFileName = "7za.exe")
 			continue
-		if(A_LoopFileName="Version.ini")
+		if(A_LoopFileName = "Version.ini")
 			continue
-		if(A_LoopFileName="Autohotkey.exe")
+		if(A_LoopFileName = "Autohotkey.exe")
 			continue
-		if(A_LoopFileName="Explorer.dll") ;Handled below
+		if(A_LoopFileName = "Explorer.dll") ;Handled before
 			continue
-		if(A_LoopFileName="AU3_Spy.exe")
+		if A_LoopFileName contains sqlite3.dll ;Handled before
 			continue
-		if(A_LoopFileName="7+-128.ico")
+		if(A_LoopFileName = "AU3_Spy.exe")
 			continue
-		if(A_LoopFileName="Uninstall.ico")
+		if(A_LoopFileName = "7+-128.ico")
 			continue
-		if(A_LoopFileName="Donate.ico")
+		if(A_LoopFileName = "Uninstall.ico")
+			continue
+		if(A_LoopFileName = "Donate.ico")
 			continue
 		if(A_LoopFileExt = "bak")
 			continue
@@ -153,7 +156,7 @@ FolderLoop(Platform, Version)
 			continue
 		if A_LoopFileFullPath contains Winspector
 			continue
-		if A_LoopFileFullPath contains Tools
+		if A_LoopFileFullPath contains Tools\
 			continue
 		if A_LoopFileFullPath contains Old Versions
 			continue
