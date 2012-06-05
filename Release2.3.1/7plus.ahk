@@ -52,6 +52,8 @@ ComObjError(0)
 #include <WaitForEvent>
 #include <WorkerThread>
 #include <ObjectTools>
+#include <winclipapi>
+#include <winclip>
 
 #include %A_ScriptDir%\CApplicationState.ahk
 #include %A_ScriptDir%\CSettings.ahk

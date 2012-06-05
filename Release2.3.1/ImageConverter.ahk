@@ -356,13 +356,18 @@ Class CImageConverter extends CGUI
 	}
 	
 	btnCopyToClipboard_Click()
-	{	
+	{
+		global MuteClipboardList
 		SplitPath(this.Picture.Picture, "", FilePath)
 		FilePath .= "\" FileName
 		pConverted := this.ConvertSingleImage(this.Picture.Picture, FilePath, changed)
 		if(pConverted)
 		{
-			r:=Gdip_SetBitmapToClipboard(pConverted)
+			hBitmap := Gdip_CreateHBITMAPFromBitmap(pConverted)
+			;MuteClipboardList := true
+			WinClip.Clear()
+			WinClip.SetBitmap(hbitmap)
+			DeleteObject(hBitmap)
 			Gdip_DisposeImage(pConverted)
 		}
 		else

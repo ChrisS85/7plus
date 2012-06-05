@@ -34,7 +34,10 @@ Class CClipboardAction Extends CAction
 				Clipboard := this.Append ? Clipboard content : content
 			}
 			else if(imagefiles.MaxIndex() > 0 && FileExist(imagefiles[1]))
-				Gdip_ImageToClipboard(imagefiles[1])
+			{
+				WinClip.Clear()
+				WinClip.SetBitmap(imagefiles[1])
+			}
 		}
 		return 1
 	} 
