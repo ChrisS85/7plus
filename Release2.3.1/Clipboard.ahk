@@ -75,8 +75,8 @@ ReadClipboardText()
 WriteClipboardImageToFile(path,Quality="")
 {
 	if(!Quality)
-		Quality:=Settings.Misc.ImageQuality
-	pBitmap:=Gdip_CreateBitmapFromClipboard()
+		Quality := Settings.Misc.ImageQuality
+	pBitmap := Gdip_CreateBitmapFromClipboard()
 	if(pBitmap > 0)
 	{
 		Gdip_SaveBitmapToFile(pBitmap, path, Settings.Misc.ImageQuality)

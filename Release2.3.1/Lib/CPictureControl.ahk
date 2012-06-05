@@ -11,8 +11,8 @@ Class CPictureControl Extends CControl
 	
 	__New(Name, Options, Text, GUINum)
 	{
-		if(DllCall("GetObjectType", "PTR", Text) != (OBJ_BITMAP := 7) && !FileExist(Text)) ;If Text is no bitmap or path, assume that it's an icon
-			Options .= " 0x3"
+		if(Text && DllCall("GetObjectType", "PTR", Text) != (OBJ_BITMAP := 7) && !FileExist(Text)) ;If Text is no bitmap or path, assume that it's an icon and add the matching style
+			Options .= " +0x3"
 		if Text is Number
 			base.__New(Name, Options, Text, GUINum)
 		else
@@ -107,24 +107,20 @@ Class CPictureControl Extends CControl
 	Sets the image of this control.
 	
 	Parameters:
-		hBitamp - The bitmap handle to which the picture of this control is set. Can also be hIcon.
+		hBitamp - The bitmap handle to which the picture of this control is set. Can also be hIcon if the control has a 0x3 style on creation. This style is added automatically when a hIcon is used as Text on creation.
 	*/
 	SetImageFromHBitmap(hBitmap, Path = "")
 	{
-		;SendMessage, 0x172, 0x0, hBitmap,, % "ahk_id " this.hwnd
 		if(DllCall("GetObjectType", "PTR", hBitmap) = (OBJ_BITMAP := 7))
 		{
-			this.Style := "-0x3"
 			SendMessage, STM_SETIMAGE := 0x0172, 0, hBitmap,, % "ahk_id " this.hwnd
 			DllCall("gdi32\DeleteObject", "PTR", ErrorLevel)
 		}
 		else
 		{
-			this.Style := "+0x3"
 			SendMessage, STM_SETICON := 0x0170, hBitmap, 0,, % "ahk_id " this.hwnd
 			DestroyIcon(ErrorLevel)
 		}
-		;result := DllCall("SendMessage", "Ptr", this.hwnd, "uint", 0x172, "PTR", 0, "PTR", hBitmap, "PTR")
 		this._.Remove("PictureWidth")
 		this._.Remove("PictureHeight")
 		this._.Picture := Path

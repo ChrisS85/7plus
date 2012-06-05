@@ -7,7 +7,6 @@ Class CImageConverter extends CGUI
 	*/
 	__New(Action)
 	{
-		Base.__New()
 		this.Title := "Image Converter & Uploader"
 		this.Files := Array()
 		this.TemporaryFiles := Action.TemporaryFiles
@@ -363,7 +362,7 @@ Class CImageConverter extends CGUI
 		pConverted := this.ConvertSingleImage(this.Picture.Picture, FilePath, changed)
 		if(pConverted)
 		{
-			Gdip_SetBitmapToClipboard(pConverted)
+			r:=Gdip_SetBitmapToClipboard(pConverted)
 			Gdip_DisposeImage(pConverted)
 		}
 		else
@@ -420,7 +419,7 @@ Class CImageConverter extends CGUI
 			pConverted := this.ConvertSingleImage(Source, Target, changed)
 			if(pConverted)
 			{
-				if((!changed && Source = Target) || Gdip_SaveBitmapToFile(pConverted, Target, this.editQuality.Text) = 0)
+				if((!changed && Source = Target) || Gdip_SaveBitmapToFile(pConverted, ExpandPathPlaceholders(Target), this.editQuality.Text) = 0)
 					ConvertedImages.Insert(Target)
 				else
 					FailedImages.Insert(Source)
