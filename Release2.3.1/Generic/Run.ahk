@@ -139,7 +139,7 @@ GetWorkingDir(Command)
 }
 RunAsUser(Command, WorkingDir = "", Options = "")
 {
-	result := DllCall("Explorer.dll\CreateProcessMediumIL", Str, Command, Str, WorkingDir, Str, Options, "UInt")
+	result := DllCall(Settings.DllPath "\Explorer.dll\CreateProcessMediumIL", Str, Command, Str, WorkingDir, Str, Options, "UInt")
 	if(A_LastError = 740) ;ERROR_ELEVATION_REQUIRED
 	{
 		Run, %Command% , %WorkingDir%, %Mode% UseErrorLevel, v

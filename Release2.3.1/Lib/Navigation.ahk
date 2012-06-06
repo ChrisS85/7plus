@@ -530,10 +530,10 @@ Class CExplorerNavigationSource
 	}
 	SetPath(Path, hwnd)
 	{
-		static Exists := FileExist(A_ScriptDir "\Explorer.dll")
+		static Exists := FileExist(Settings.DllPath "\Explorer.dll")
 		if(Exists)
 		{
-			DllCall(A_ScriptDir "\Explorer.dll\SetPath", "Ptr", hwnd, "Str", Path, "Cdecl")
+			DllCall(Settings.DllPath "\Explorer.dll\SetPath", "Ptr", hwnd, "Str", Path, "Cdecl")
 			SetTimerF("ExplorerPathChanged", -100)
 		}
 		else

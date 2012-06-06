@@ -245,7 +245,8 @@ RegRename(root,key,target)
 
 RegRevokePermissions(key)
 {
-	RunWait % A_ScriptDir "\SetACL.exe -on """ key """ -ot Reg -actn ace -ace ""n:S-1-5-32-545;p:full;s:y;i:so,sc;m:revoke;w:dacl""","","Hide"
+	DllPath := A_ScriptDir "\lib" (A_PtrSize = 8 ? "\x64" : "")
+	RunWait % DllPath "\SetACL.exe -on """ key """ -ot Reg -actn ace -ace ""n:S-1-5-32-545;p:full;s:y;i:so,sc;m:revoke;w:dacl""","","Hide"
 }
 ;Removes all buttons created with this script. Function can be the name of a function with these arguments: func(command,title,tooltip) and it can be used to tell the script if an entry may be deleted
 RemoveAllExplorerButtons(function="")
@@ -253,17 +254,17 @@ RemoveAllExplorerButtons(function="")
 	;go into view folders (clsid)
 	Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes, 2, 0
 	{			
-		regkey:=A_LoopRegName
+		regkey := A_LoopRegName
 		;go into number folder
 		Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected, 2, 0
 		{
-			numberfolder:=A_LoopRegName			
+			numberfolder := A_LoopRegName			
 			
 			;Custom skip function code
 			;go into clsid folder
 			Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%, 2, 0
 			{
-				skip:=false
+				skip := false
 				RegRead, value, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%\%A_LoopRegName%, InfoTip
 				RegRead, title, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%\%A_LoopRegName%, Title
 				RegRead, cmd, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%\%A_LoopRegName%\shell\InvokeTask\command
@@ -271,7 +272,7 @@ RemoveAllExplorerButtons(function="")
 				if(IsFunc(function))
 					if(!%function%(cmd,title,value))
 					{
-						skip:=true
+						skip := true
 						break
 					}
 			}

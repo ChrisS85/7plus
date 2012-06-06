@@ -3,13 +3,13 @@
 ;---------------------------------------------------------------------------------------------------------------
 RegGivePermissions(key)
 {
-	RunWait(A_ScriptDir "\SetACL.exe -on """ key """ -ot Reg -actn setowner -ownr ""n:S-1-5-32-544;s:y"" -rec yes","","Hide")
-	RunWait(A_ScriptDir "\SetACL.exe -on """ key """ -ot Reg -actn ace -ace ""n:S-1-5-32-545;p:full;s:y;i:so,sc;m:grant;w:dacl"" -rec yes","","Hide")
+	RunWait(Settings.DllPath "\SetACL.exe -on """ key """ -ot Reg -actn setowner -ownr ""n:S-1-5-32-544;s:y"" -rec yes","","Hide")
+	RunWait(Settings.DllPath "\SetACL.exe -on """ key """ -ot Reg -actn ace -ace ""n:S-1-5-32-545;p:full;s:y;i:so,sc;m:grant;w:dacl"" -rec yes","","Hide")
 }
 
 RegRevokePermissions(key)
 {
-	RunWait(A_ScriptDir "\SetACL.exe -on """ key """ -ot Reg -actn ace -ace ""n:S-1-5-32-545;p:full;s:y;i:so,sc;m:revoke;w:dacl""","","Hide")
+	RunWait(Settings.DllPath "\SetACL.exe -on """ key """ -ot Reg -actn ace -ace ""n:S-1-5-32-545;p:full;s:y;i:so,sc;m:revoke;w:dacl""","","Hide")
 }
 PrepareFolderBand()
 {

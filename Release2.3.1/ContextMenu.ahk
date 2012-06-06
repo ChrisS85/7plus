@@ -27,7 +27,7 @@ Leave 2nd parameter empty to show context menu and extract idn by clicking on an
 */ 
 ShellContextMenu(sPath,idn=0) 
 { 
-	result := DllCall(A_ScriptDir "\Explorer.dll\ExecuteContextMenuCommand", "Str", sPath, "Int", idn, "PTR", A_ScriptHwnd)
+	result := DllCall(Settings.DllPath "\Explorer.dll\ExecuteContextMenuCommand", "Str", sPath, "Int", idn, "PTR", A_ScriptHwnd)
 	if(Errorlevel != 0)
 		Notify("Couldn't execute context menu command!", "Error Calling ExecuteContextMenuCommand() in Explorer.dll!", 5, NotifyIcons.Error)
 } 

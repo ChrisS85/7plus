@@ -153,6 +153,7 @@ Class CSettings
 				FileCreateDir, %ConfigPath%
 		}
 		this.IniPath := this.ConfigPath "\Settings.ini"
+		this.DllPath := A_ScriptDir "\lib" (A_PtrSize = 8 ? "\x64" : "")
 	}
 	Load(Category = "")
 	{

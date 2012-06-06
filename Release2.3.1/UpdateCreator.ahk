@@ -52,13 +52,16 @@ CreateUpdate(Platform, Version)
 		FileCopy, %A_ScriptDir%\ShellExtension\Release\ShellExtension.dll, %A_TEMP%\7plusUpdateCreator, 1
 		FileCreateDir, %A_TEMP%\7plusUpdateCreator\lib
 		FileCopy, %A_ScriptDir%\lib\sqlite3.dll, %A_TEMP%\7plusUpdateCreator\lib, 1
+		FileCopy, %A_ScriptDir%\lib\Explorer.dll, %A_TEMP%\7plusUpdateCreator\lib, 1
+		FileCopy, %A_ScriptDir%\lib\SetACL.exe, %A_TEMP%\7plusUpdateCreator\lib, 1
 	}
 	else
 	{
 		FileCopy, %A_ProgramFiles%\Autohotkey\Compiler\AutoHotkeySC_UNICODE_64.bin, %A_ProgramFiles%\Autohotkey\Compiler\AutoHotkeySC.bin, 1
 		FileCopy, %A_ScriptDir%\ShellExtension\x64\Release\ShellExtension.dll, %A_TEMP%\7plusUpdateCreator, 1
 		FileCreateDir, %A_TEMP%\7plusUpdateCreator\lib\x64
-		FileCopy, %A_ScriptDir%\lib\x64\sqlite3.dll, %A_TEMP%\7plusUpdateCreator\lib\x64, 1
+		FileCopy, %A_ScriptDir%\lib\x64\Explorer.dll, %A_TEMP%\7plusUpdateCreator\lib\x64, 1
+		FileCopy, %A_ScriptDir%\lib\x64\SetACL.exe, %A_TEMP%\7plusUpdateCreator\lib\x64, 1
 	}
 	
 	;Compile 7plus and Uninstaller
@@ -94,99 +97,24 @@ CreateUpdate(Platform, Version)
 FolderLoop(Platform, Version)
 {
 	global 7plusVersion
+	SkipNameList := ["7za.exe", "Version.ini", "Autohotkey.exe", "Explorer.dll", "sqlite3.dll", "SetACL", "AU3_Spy.exe", "7+-128.ico", "Uninstall.ico", "Donate.ico", "Improvements.txt", "PatchInfo.xml"]
+	SkipExtList := ["ini","bak","html","bin","zip","svg","log"]
+	SkipPathList := ["To be implemented\", "Old Versions", "Tools\", "Winspector", "DebugView", ".svn", "Compiler", "Explorer\Explorer", "x64\", "x86\", "Patches\", "DefaultConfig\", "ShellExtension", "tests\", "CreateEventPatch", "SubEventBackup", "NewSettings", "Kopie", "UpdateCreator"]
 	Loop *.*, 0, 1 ;Find files which should be included
 	{
+		if(SkipNameList.IndexOf(A_LoopFileName))
+			continue
+		if(SkipExtList.IndexOf(A_LoopFileExt))
+			continue
+		for index, Path in SkipPathList
+			if(InStr(A_LoopFileLongPath, Path))
+				continue 2
+
 		if(Version = "Binary" && A_LoopFileExt = "ahk")
 			continue
 		if(Version = "Source" && A_LoopFileName = "7plus.exe")
 			continue
-		if A_LoopFileName contains UpdateCreator
-			continue
 		if(InStr(A_LoopFileName, "Update") && !InStr(A_LoopFileName, "AutoUpdate"))
-			continue
-		if(A_LoopFileExt = "ini")
-			continue
-		if A_LoopFileName contains Kopie
-			continue
-		if(A_LoopFileName = "7za.exe")
-			continue
-		if(A_LoopFileName = "Version.ini")
-			continue
-		if(A_LoopFileName = "Autohotkey.exe")
-			continue
-		if(A_LoopFileName = "Explorer.dll") ;Handled before
-			continue
-		if A_LoopFileName contains sqlite3.dll ;Handled before
-			continue
-		if(A_LoopFileName = "AU3_Spy.exe")
-			continue
-		if(A_LoopFileName = "7+-128.ico")
-			continue
-		if(A_LoopFileName = "Uninstall.ico")
-			continue
-		if(A_LoopFileName = "Donate.ico")
-			continue
-		if(A_LoopFileExt = "bak")
-			continue
-		if(A_LoopFileExt = "html")
-			continue
-		if(A_LoopFileExt = "bin")
-			continue
-		if(A_LoopFileExt = "zip")
-			continue
-		if(A_LoopFileExt = "svg")
-			continue
-		if(A_LoopFileExt = "log")
-			continue
-		; if(Version = "Binary" && A_LoopFileName = "128.png")
-			; continue
-		; if(Version = "Binary" && A_LoopFileName = "Donate.png")
-			; continue
-		; if(Version = "Binary" && A_LoopFileName = "7+-w2.ico")
-			; continue
-		; if(Version = "Binary" && A_LoopFileName = "7+-w.ico")
-			; continue
-		if A_LoopFileFullPath contains .svn
-			continue
-		if A_LoopFileFullPath contains Compiler
-			continue
-		if A_LoopFileFullPath contains DebugView
-			continue
-		if A_LoopFileFullPath contains Winspector
-			continue
-		if A_LoopFileFullPath contains Winspector
-			continue
-		if A_LoopFileFullPath contains Tools\
-			continue
-		if A_LoopFileFullPath contains Old Versions
-			continue
-		if A_LoopFileFullPath contains To be implemented\
-			continue
-		if A_LoopFileFullPath contains Explorer\Explorer
-			continue
-		if A_LoopFileFullPath contains x64\
-			continue
-		if A_LoopFileFullPath contains x86\
-			continue
-		if A_LoopFileFullPath contains SetACL ;Handled below
-			continue
-		if A_LoopFileFullPath contains Patches\
-			continue
-		if A_LoopFileFullPath contains DefaultConfig\
-			continue
-		if A_LoopFileFullPath contains ShellExtension
-			continue
-		if A_LoopFileFullPath contains tests\
-			continue
-		if A_LoopFileFullpath contains CreateEventPatch
-			continue
-		if A_LoopFileFullPath contains SubEventBackup
-			continue
-		if A_LoopFileFullPath contains NewSettings
-			continue
-		if A_LoopFileName contains Improvements.txt
-			continue
-		if A_LoopFileName contains PatchInfo.xml
 			continue
 		if(InStr(A_LoopFileFullPath, "ReleasePatch\") && !InStr(A_LoopFileName, 7plusVersion)) ;Skip release patches for wrong 7plus version
 			continue
@@ -234,3 +162,4 @@ WriteUpdater()
 	FileAppend, `trun `%ScriptDir`%\7plus.exe`n,																	%A_scriptdir%\Updater.ahk
 	FileAppend, ExitApp,																							%A_scriptdir%\Updater.ahk
 }
+#include <Array>
