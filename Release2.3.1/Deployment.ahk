@@ -158,7 +158,14 @@ ApplyUpdateFixes()
 	}
 	else if(MajorVersion "." MinorVersion "." BugfixVersion = "2.5.0")
 	{
+		;Categories were changed so this file is no longer needed
 		FileDelete, %A_ScriptDir%\Events\FTP.xml
+	}
+	else if(MajorVersion "." MinorVersion "." BugfixVersion = "2.6.0")
+	{
+		;These files were moved to different directories with this update
+		FileDelete, %A_ScriptDir%\SetACL.exe
+		FileDelete, %A_ScriptDir%\Explorer.dll
 	}
 }
 AutoUpdate_CheckPatches()
