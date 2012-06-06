@@ -556,8 +556,7 @@ Class CSlideWindows
 				index++
 		}
 		;Check if a window was closed outside of the screen and add it to a list so it can be moved inside again when it gets opened again
-		GetVirtualScreenCoordinates(VirtualLeft, VirtualTop, VirtualWidth, VirtualHeight)
-		if(IsObject(WindowList[hwnd]) && RectsSeparate(VirtualLeft, VirtualTop, VirtualWidth, VirtualHeight, WindowList[hwnd].x, WindowList[hwnd].y, WindowList[hwnd].w, WindowList[hwnd].h))
+		if(IsObject(WindowList[hwnd]) && !IsWindowOnScreen(WindowList[hwnd]))
 		{
 			class := WindowList[hwnd].class
 			if(!this.ClosedWindowsOutsideScreen.IndexOf(class))
@@ -569,19 +568,17 @@ Class CSlideWindows
 	{
 		if(IsContextMenuActive()) ;Ignore context menus
 			return
-		hwnd:=WinExist("A")+0
+		hwnd := WinExist("A") + 0
 		this.ActivatedWindow := hwnd
 		SetTimer, CheckForNewChildWindows, -100
-		SlideWindow:=this.GetByWindowHandle(hwnd, ChildIndex)
+		SlideWindow := this.GetByWindowHandle(hwnd, ChildIndex)
 		if(IsObject(SlideWindow) && SlideWindow.SlideState = 1)
-			SlideWindow.Active := WinExist("A")+0 ;Last active slide window
+			SlideWindow.Active := WinExist("A") + 0 ;Last active slide window
 		index := this.FindKeyWithValueBetween("SlideState", 1, 4)
-		CurrentSlideWindow:=this[index]
-		GetVirtualScreenCoordinates(VirtualLeft, VirtualTop, VirtualWidth, VirtualHeight)
-		WinGetPos, x, y, w, h, ahk_id %hwnd%
+		CurrentSlideWindow := this[index]
 		class := WinGetClass("ahk_id " hwnd)
 		;If a window outside of the screen was activated and it's stored in the list of windows that were closed while being outside of the screen, move it in
-		if(!SlideWindow && index := this.ClosedWindowsOutsideScreen.indexOf(class) && RectsSeparate(VirtualLeft, VirtualTop, VirtualWidth, VirtualHeight, x, y, w, h))
+		if(!SlideWindow && index := this.ClosedWindowsOutsideScreen.indexOf(class) && !IsWindowOnScreen(hwnd))
 		{
 			WinMove, ahk_id %hwnd%,, % A_ScreenWidth / 2 - w / 2, % A_ScreenHeight / 2 - h / 2
 			this.ClosedWindowsOutsideScreen.Remove(index)

@@ -1139,7 +1139,62 @@ GetVirtualScreenCoordinates(ByRef x, ByRef y, ByRef w, ByRef h)
 	SysGet, w, 78
 	SysGet, h, 79
 }
-
+;Determines if a window is visible completely on the screen. Returns 1 if it is, 2 if it's partially on a screen (also if between monitors) and 0 if it's outside of all screens.
+IsWindowOnScreen(hwnd)
+{
+	if(IsObject(hwnd))
+	{
+		x := hwnd.x
+		y := hwnd.y
+		w := hwnd.w
+		h := hwnd.h
+	}
+	else
+		WinGetPos, x, y, w, h, ahk_id %hwnd%
+	Monitors := GetMonitors()
+	for index, Monitor in Monitors
+	{
+		if(RectIncludesRect(Monitor.x, Monitor.y, Monitor.w, Monitor.h, x, y, w, h))
+			return 1
+		if(RectsOverlap(Monitor.x, Monitor.y, Monitor.w, Monitor.h, x, y, w, h))
+			return 2
+	}
+	return 0
+}
+GetMonitors()
+{
+	Monitors := []
+	SysGet, Mon0, MonitorCount
+	;Loop through each monitor
+    Loop %Mon0%
+    { 
+        SysGet, Mon, Monitor, %A_Index%
+        Monitor := {}
+        Monitor.X := MonLeft
+        Monitor.Y := MonTop
+        Monitor.Width := MonRight - Monitor.X
+        Monitor.Height := MonBottom - Monitor.Y
+        Monitors.Insert(Monitor)
+    }
+    return Monitors
+}
+GetMonitorWorkAreas()
+{
+	Monitors := []
+	SysGet, Mon0, MonitorCount
+	;Loop through each monitor
+    Loop %Mon0%
+    { 
+        SysGet, Mon, MonitorWorkArea, %A_Index%
+        Monitor := {}
+        Monitor.X := MonLeft
+        Monitor.Y := MonTop
+        Monitor.Width := MonRight - Monitor.X
+        Monitor.Height := MonBottom - Monitor.Y
+        Monitors.Insert(Monitor)
+    }
+    return Monitors
+}
 ;WinGetPos function wrapper
 WinGetPos(WinTitle = "", WinText = "", ExcludeTitle = "", ExcludeText = "")
 {
