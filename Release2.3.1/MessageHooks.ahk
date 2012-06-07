@@ -182,12 +182,12 @@ ShellMessage( wParam, lParam, Msg)
 		Trigger := new CWindowActivatedTrigger()
 		EventSystem.OnTrigger(Trigger)
 		;Blinking windows detection, remove activated windows
-		if(x:=BlinkingWindows.indexOf(lParam))
+		if(x := BlinkingWindows.indexOf(lParam))
 			BlinkingWindows.Delete(x)
-		; DecToHex(lParam)
-		class := WinGetClass("ahk_id " lParam)
-		if(IsObject(CAccessor.Instance.GUI) && CAccessor.Instance.Settings.CloseWhenDeactivated && WinGetTitle("A") != CAccessor.Instance.GUI.Title)
-			WinClose, % "ahk_id " CAccessor.Instance.GUI.hwnd
+
+		if(IsObject(CAccessor.Instance.GUI) && CAccessor.Instance.Settings.CloseWhenDeactivated && WinExist("A") != CAccessor.Instance.GUI.hwnd)
+			CAccessor.Instance.Close()
+
 		;If we change from another program to explorer/desktop/dialog
 		if((IsExplorer := WinActive("ahk_group ExplorerGroup"))||WinActive("ahk_group DesktopGroup")||IsDialog())
 		{

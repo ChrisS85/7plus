@@ -262,7 +262,7 @@ Class CAccessor
 		
 		;Show some tips
 		TipIndex := 17
-		while(TipIndex < 43 && !(TipShown := ShowTip(TipIndex)))
+		while(TipIndex < 43 && (TipShown := ShowTip(TipIndex)) = false)
 			TipIndex++
 
 		;Active window for plugins that depend on the context
@@ -911,7 +911,7 @@ Class CAccessorGUI extends CGUI
 	}
 	WM_ACTIVATE(msg, wParam, lParam, hwnd)
 	{
-		if(!this.IsDestroyed && wParam = 0 && lParam = this.hwnd)
+		if(!this.IsDestroyed && ((LoWord(wParam) = 0 && (!lParam || lParam = this.hwnd)) || (LoWord(wParam) > 0 && lParam && lParam != this.hwnd)))
 			this.Close()
 	}
 	ListView_SelectionChanged()

@@ -88,13 +88,13 @@ HasTipBeenShown(TipIndex)
 	return SubStr(Settings.General.ShownTips, TipIndex, 1) = 1
 }
 ;Tip index can be {Min : 1, Max : 10} for random index between these values
-ShowTip(TipIndex, Probability = 1)
+ShowTip(TipIndex, Probability = 0.2)
 {
 	if(!Settings.General.ShowTips)
 		return true ;Return true anyway so other code can simply assume that the tip was shown
 	Random, r, 0.0, 1.0
 	if(r > Probability)
-		return false
+		return -1
 	;Possibly choose a random tip in a specific interval
 	if(IsObject(TipIndex))
 		Random, TipIndex, % TipIndex.Min, % TipIndex.Max

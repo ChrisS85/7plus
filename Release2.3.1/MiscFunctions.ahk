@@ -1858,6 +1858,27 @@ ExpandPathPlaceholders(InputString)
 		return InputString ; unable to expand the environment string
 	return TempValue
 }
+
+;Gets (and sets) LoWord of first parameter (to the value of the second parameter)
+LoWord(value*)
+{
+	if(value.MaxIndex() = 1)
+		return value[1] & 0x0000FFFF
+	else if(value.MaxIndex() = 2)
+		return (value[1] & 0xFFFF0000) + (value[2] & 0x0000FFFF)
+}
+;Gets (and sets) HiWord of first parameter (to the value of the second parameter)
+HiWord(value*)
+{
+	if(value.MaxIndex() = 1)
+		return value[1] & 0xFFFF0000
+	else if(value.MaxIndex() = 2)
+		return (value[1] & 0x0000FFFF) + (value[2] << 16)
+}
+HighWord(value*)
+{
+	return value & 0xFFFF0000
+}
 #include <CGUI>
 #include <ObjectTools>
 Class CInputWindow extends CGUI
