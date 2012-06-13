@@ -1,4 +1,4 @@
-﻿;If program is run without admin privileges, try to run it again as admin, and exit this instance when the user confirms it
+;If program is run without admin privileges, try to run it again as admin, and exit this instance when the user confirms it
 if(!A_IsAdmin)
 {
 	If(A_IsCompiled)
@@ -53,6 +53,7 @@ CreateUpdate(Platform, Version)
 		FileCreateDir, %A_TEMP%\7plusUpdateCreator\lib
 		FileCopy, %A_ScriptDir%\lib\sqlite3.dll, %A_TEMP%\7plusUpdateCreator\lib, 1
 		FileCopy, %A_ScriptDir%\lib\Explorer.dll, %A_TEMP%\7plusUpdateCreator\lib, 1
+		FileCopy, %A_ScriptDir%\lib\FileSearch.dll, %A_TEMP%\7plusUpdateCreator\lib, 1
 		FileCopy, %A_ScriptDir%\lib\SetACL.exe, %A_TEMP%\7plusUpdateCreator\lib, 1
 	}
 	else
@@ -61,6 +62,7 @@ CreateUpdate(Platform, Version)
 		FileCopy, %A_ScriptDir%\ShellExtension\x64\Release\ShellExtension.dll, %A_TEMP%\7plusUpdateCreator, 1
 		FileCreateDir, %A_TEMP%\7plusUpdateCreator\lib\x64
 		FileCopy, %A_ScriptDir%\lib\x64\Explorer.dll, %A_TEMP%\7plusUpdateCreator\lib\x64, 1
+		FileCopy, %A_ScriptDir%\lib\x64\FileSearch.dll, %A_TEMP%\7plusUpdateCreator\lib\x64, 1
 		FileCopy, %A_ScriptDir%\lib\x64\SetACL.exe, %A_TEMP%\7plusUpdateCreator\lib\x64, 1
 	}
 	
@@ -114,6 +116,7 @@ FolderLoop(Platform, Version)
 			continue
 		if(Version = "Source" && A_LoopFileName = "7plus.exe")
 			continue
+		
 		if(InStr(A_LoopFileName, "Update") && !InStr(A_LoopFileName, "AutoUpdate"))
 			continue
 		if(InStr(A_LoopFileFullPath, "ReleasePatch\") && !InStr(A_LoopFileName, 7plusVersion)) ;Skip release patches for wrong 7plus version
@@ -162,4 +165,5 @@ WriteUpdater()
 	FileAppend, `trun `%ScriptDir`%\7plus.exe`n,																	%A_scriptdir%\Updater.ahk
 	FileAppend, ExitApp,																							%A_scriptdir%\Updater.ahk
 }
+#include <RichObject>
 #include <Array>

@@ -22,11 +22,9 @@ DebuggingStart()
 		winwait, DebugView Filter
 		winactivate, DebugView Filter
 		Winwaitactive, DebugView Filter 
-		MouseGetPos, x,y
-		mouseclick, left, 125, 85,,0
-		MouseMove, x,y,0
-		send, [%a_scriptPID%*{Enter}
-		send, !M{Down}{Enter}
+		ControlSetText, Edit1, [%a_scriptPID%*, A ;Set filter
+		Send, {Enter}
+		send, !M{Down}{Enter} ;Connect local
 		Coordmode, Mouse, Screen
 	}
 	else

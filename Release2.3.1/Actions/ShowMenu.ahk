@@ -66,21 +66,8 @@ BuildMenu(Name)
 	if(Name = "Tray")
 	{
 		Menu, tray, NoStandard
-		if(!A_IsCompiled)
-		{
-			Menu, tray, add, Open, Tray_Open
-			Menu, tray, add, Help, Tray_Help
-			Menu, tray, add
-			Menu, tray, add, Window Spy, Tray_Spy
-		}
-		Menu, tray, add, Reload This Script, Tray_Reload
-		if(!A_IsCompiled)
-			Menu, tray, add
-		Menu, tray, add, Suspend Hotkeys, Tray_Suspend
-		
-		if(!A_IsCompiled)
-			Menu, tray, add, Pause Script, Tray_Pause
-		Menu, tray, add, Exit, Tray_Exit
+		Menu, tray, add, Settings, SettingsHandler  ; Creates a new menu item.
+		menu, tray, Default, Settings
 	}
 	else if(Name = "ClipboardMenu")
 	{
@@ -159,10 +146,21 @@ BuildMenu(Name)
 		}
 		if(Added)
 			Menu, tray, add, Tools, :Tray_Debug_Tools
+
+		Menu, tray, add  ; Creates a separator line.		
+		if(!A_IsCompiled)
+		{
+			Menu, tray, add, Open, Tray_Open
+			Menu, tray, add
+		}
+		if(!A_IsCompiled)
+			Menu, tray, add
+		Menu, tray, add, Suspend Hotkeys, Tray_Suspend
 		
-		Menu, tray, add  ; Creates a separator line.
-		Menu, tray, add, Settings, SettingsHandler  ; Creates a new menu item.
-		menu, tray, Default, Settings
+		if(!A_IsCompiled)
+			Menu, tray, add, Pause Script, Tray_Pause
+		Menu, tray, add, Reload 7plus, Tray_Reload
+		Menu, tray, add, Exit, Tray_Exit
 	}
 	Menu, Tray, UseErrorLevel, Off
 	return entries

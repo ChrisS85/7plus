@@ -3,7 +3,7 @@
 	;Message number used for communication between main and worker threads.
 	;In total, 6 messages are used, starting from this value
 	static Message := 8742
-	static Threads := []
+	static Threads := {}
 	
 	;Public:
 	Task := "" ;Contains information about the task to be executed by the worker thread
@@ -109,7 +109,7 @@
 			if(!ErrorLevel)
 			{
 				this.WorkerID := PID
-				this.Threads[PID] := this
+				this.Threads["" + PID] := this
 			}
 		}
 		return 1
@@ -233,17 +233,19 @@ MainThread_Monitor(wParam, lParam, msg, hwnd)
 		{
 			CopyOfData := StrGet(NumGet(lParam + 2 * A_PtrSize))  ; Copy the string out of the structure.
 			Data := LSON(CopyOfData) ;By setting this the Worker loop can continue
-			WorkerThread := CWorkerThread.Threads[Data.PID]
+			WorkerThread := CWorkerThread.Threads["" + Data.PID]
 			if(!WorkerThread)
 				return 0
 			if(Data.Type = 1) ;Stop
 			{
+				outputdebug % "Stop Message from " Data.PID " with Param[1]=" WorkerThread.Task.Parameters[1] ", status=" WorkerThread.State
 				WorkerThread.State := "Stopped"
 				WorkerThread.Result := Data.Result
 				SetTimer, WorkerThread_OnStop, -0
 			}
 			else if(Data.Type = 2) ;Finish
 			{
+				outputdebug % "Finish Message from " Data.PID " with Param[1]=" WorkerThread.Task.Parameters[1] ", status=" WorkerThread.State
 				WorkerThread.State := "Finished"
 				WorkerThread.Result := Data.Result
 				SetTimer, WorkerThread_OnFinish, -0
@@ -257,7 +259,7 @@ MainThread_Monitor(wParam, lParam, msg, hwnd)
 		}
 	}
 	
-	WorkerThread := CWorkerThread.Threads[wParam]
+	WorkerThread := CWorkerThread.Threads["" + wParam]
 	if(!WorkerThread)
 		return
 	
@@ -367,22 +369,31 @@ return
 
 WorkerThread_OnStopOrFinish()
 {
+	outputdebug OnStopOrFinish beging
 	RemovePIDs := []
+	n := 0
+	nStopped := 0
 	for pid, WorkerThread in CWorkerThread.Threads
 	{
+		n++
 		if((WorkerThread.State = "Stopped" || WorkerThread.State = "Finished") && WorkerThread.HasKey("Result"))
 		{
+			if(WorkerThread.Task.ExitAfterTask)
+				CWorkerThread.Threads["" + pid] := "" ;Invalidate this thread to prevent the chance of threading problems in this function
+			nStopped++
 			if(WorkerThread.State = "Stopped")
 				WorkerThread.OnStop.(WorkerThread, WorkerThread.Result)
 			else
 				WorkerThread.OnFinish.(WorkerThread, WorkerThread.Result)
 			WorkerThread.Remove("Result")
 			if(WorkerThread.Task.ExitAfterTask)
-				RemovePIDs.Insert(pid)				
+				RemovePIDs.Insert(pid)
 		}
 	}
+	outputdebug WorkerThread_OnStopOrFinish(): %n% worker threads, %nStopped% were stopped in this function call
 	for i, pid in RemovePIDs
-		CWorkerThread.Threads.Remove(pid)
+		CWorkerThread.Threads.Remove("" + pid)
+	outputdebug OnStopOrFinish end
 }
 
 ;Called from worker/main message handler when custom data is received so that OnData doesn't block the message handling function.

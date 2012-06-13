@@ -911,7 +911,7 @@ Class CAccessorGUI extends CGUI
 	}
 	WM_ACTIVATE(msg, wParam, lParam, hwnd)
 	{
-		if(!this.IsDestroyed && ((LoWord(wParam) = 0 && (!lParam || lParam = this.hwnd)) || (LoWord(wParam) > 0 && lParam && lParam != this.hwnd)))
+		if(!(loword(wParam) & 0x3) && WinExist("A") != this.hwnd)
 			this.Close()
 	}
 	ListView_SelectionChanged()
@@ -1186,6 +1186,7 @@ Class CAccessorPlugin
 		static ExplorerContextMenu := new CAccessor.CAction("Explorer context menu", "ExplorerContextMenu", "", false, false, false)
 		static OpenPathWithAccessor := new CAccessor.CAction("Open path with Accessor`tCTRL + B", "OpenPathWithAccessor", "", false, false, false)
 		static OpenWith := new CAccessor.CAction("Open with`tCTRL + O", "SelectProgram", "", false, false, true)
+		static Cancel := new CAccessor.CAction("Cancel`tEscape", "Close", "", false, false, false)
 	}
 	
 	;An object representing a result of an Accessor query.
@@ -1302,9 +1303,10 @@ Processes
 twitter
 trillian
 winget
-file search using mft: http://www.autohotkey.com/community/viewtopic.php?t=85072&p=528553
 
 TODO:
 Documentation of new Accessor features
-Bug in condition/action editor: Forgets about some properties and doesn't allow pasting
+Speed up listview (maybe by checking if list items actually need to be refreshed in incremental searches)
+FileSearch:
+	- Find out why searching for 7plus is very slow on my C: drive while it isn't with the example script
 */

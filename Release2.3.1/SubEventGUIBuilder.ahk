@@ -45,7 +45,7 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 	else if(type = "UpDown")
 	{
 		y += 1
-		options := "x" x " y" y " w" w " hwndEdit_" name " -Multi R1 Number g" gLabel
+		options := "x" (description != "" ? "+10" : x) " y" y " w" 50 " hwndEdit_" name " -Multi R1 Number g" gLabel
 		options .= InStr(name, "password") ? " Password" : ""
 		Gui, Add, Edit, %options% , % ValueObj[name]
 		Gui, Add, UpDown, % "hwndUpDown_" name (text ? " Range" text : ""), % ValueObj[name]
@@ -79,7 +79,7 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 	{
 		y += 1
 		text := ValueObj[name]
-		options := "x+10 y" y " w" w " hwndEdit_" name " -Multi R1 g" glabel
+		options := "x" (description != "" ? "+10" : x) " y" y " w" w " hwndEdit_" name " -Multi R1 g" glabel
 		options .= InStr(name, "password") ? " Password" : ""
 		Gui, Add, Edit, %options% , %text%
 		y -= 1
@@ -126,7 +126,7 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 			text1 := SubStr(text1, 1, -1)
 		if(type = "DropDownList")
 		{
-			options := "x" x " y" y " w" w " hwndDropDown_" name
+			options := "x" (description != "" ? "+10" : x) " y" y " w" w " hwndDropDown_" name
 			if(gLabel != "")
 				options .= " g" gLabel
 			Gui, Add, DropDownList, %options%, %text1%
@@ -138,7 +138,7 @@ AddControl(ValueObj, GUI, type, name, text = "", glabel = "", description = "", 
 		}
 		else if(type = "ComboBox")
 		{
-			options := "x" x " y" y " w" w " hwndComboBox_" name
+			options := "x" (description != "" ? "+10" : x) " y" y " w" w " hwndComboBox_" name
 			if(gLabel != "")
 				options .= " g" gLabel
 			Gui, Add, ComboBox, %options%, %text1%
