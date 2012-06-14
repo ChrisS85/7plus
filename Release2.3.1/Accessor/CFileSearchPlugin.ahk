@@ -125,17 +125,30 @@ Class CFileSearchPlugin extends CAccessorPlugin
 			return
 
 		Results := {}
+		if((pos := InStr(Filter, " in ")) && InStr(FileExist(SubStr(Filter, pos + 4)), "D"))
+		{
+			outputdebug filter %filter%
+			SearchPath := SubStr(Filter, pos + 4)
+			Filter := SubStr(Filter, 1, pos - 1)
+			outputdebug pos %pos% Filter %filter% searchpath %searchpath%
+		}
 		if(this.hModule && StrLen(Filter) < 4 && !this.SearchAnyway)
 		{
 			Result := new this.CSearchInAccessorResult()
-			Result.Path := Filter
+			if(SearchPath)
+			{
+				Result.Title .= " " Filter
+				Result.Path := SearchPath
+			}
+			else
+				Result.Path := Filter
 			Result.Icon := Accessor.GenericIcons.7plus
 			Results.Insert(Result)
 		}
 		else if(this.hModule)
 		{
 			this.SearchAnyway := false
-			strResult := this.Search(Filter, nResults)
+			strResult := this.Search(Filter, SearchPath, nResults)
 			Loop, Parse, strResult, `n
 			{
 				SplitPath, A_LoopField, Name, Dir, ext
@@ -168,7 +181,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 		return Results
 	}
 
-	Search(Query, ByRef nAllResults)
+	Search(Query, SearchPath, ByRef nAllResults)
 	{
 		strAllDrivesResult := ""
 		nAllResults := 0
@@ -177,7 +190,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 		for Drive, DriveIndex in this.FileSystemIndex
 		{
 			outputdebug % Drive ": Start: " A_TickCount
-			pResult := DllCall(this.DllPath "\Search", "PTR", DriveIndex,  "wstr", Query, "int", true, "int", true, "int", 100, "int*", nResults, PTR)
+			pResult := DllCall(this.DllPath "\Search", "PTR", DriveIndex, "wstr", Query, SearchPath ? "wstr" : "ptr", SearchPath ? SearchPath : 0, "int", true, "int", true, "int", 100, "int*", nResults, PTR)
 			strResult := StrGet(presult + 0)
 			outputdebug % Drive ": Searched: " A_TickCount
 			if(pResult)
@@ -317,7 +330,7 @@ return
 ;Builds a database of all files on fixed drives
 BuildFileDatabaseForDrive(WorkerThread, Drive, Path)
 {
-	DllPath := A_ScriptDir "\FileSearch.dll"
+	DllPath := A_ScriptDir "\lib" (A_PtrSize = 8 ? "\x64" : "" ) "\FileSearch.dll"
 	hModule := DllCall("LoadLibrary", "Str", DllPath, "PTR")
 	result := false
 	if(!hModule)
