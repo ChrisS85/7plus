@@ -125,8 +125,11 @@ Class CFileSearchPlugin extends CAccessorPlugin
 			return
 
 		Results := {}
-		if((pos := InStr(Filter, " in ")) && InStr(FileExist(SubStr(Filter, pos + 4)), "D"))
+		if((pos := InStr(Filter, " in ")))
 		{
+			;Ignore invalid paths
+			if(!InStr(FileExist(SubStr(Filter, pos + 4)), "D"))
+				return
 			outputdebug filter %filter%
 			SearchPath := SubStr(Filter, pos + 4)
 			Filter := SubStr(Filter, 1, pos - 1)

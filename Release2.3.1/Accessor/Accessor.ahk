@@ -322,15 +322,15 @@ Class CAccessor
 	;Sets the filter and tries to wait (for max. 5 seconds) until results are there
 	SetFilter(Text)
 	{
-		this.Filter := Text
-		this.SuppressListViewUpdate := true
+		;this.Filter := Text
+		;this.IsRefreshing := true
 		this.GUI.SetFilter(Text)
 		SetTimerF(this.WaitTimer := new Delegate(this, "WaitForRefresh"), -100)
 	}
 	WaitForRefresh()
 	{
 		static count := 0
-		if(this.SuppressListViewUpdate && count < 50)
+		if(this.IsRefreshing && count < 50)
 		{
 			count++
 			SetTimerF(this.WaitTimer, -100)
@@ -339,17 +339,20 @@ Class CAccessor
 		{
 			count := 0
 			this.Remove(this.WaitTimer)
-			this.OnFilterChanged(this.Filter)
+			;this.OnFilterChanged(this.Filter)
 		}
 	}
 	OnFilterChanged(Filter)
 	{
-		this.Filter := Filter
-		if(this.SuppressListViewUpdate)
-		{
-			this.SuppressListViewUpdate := false
+		if(Filter = this.Filter)
 			return
-		}
+		outputdebug filter changed to %filter%
+		this.Filter := Filter
+		;if(this.SuppressListViewUpdate)
+		;{
+		;	this.SuppressListViewUpdate := false
+		;	return
+		;}
 		ListEntry := this.List[this.GUI.ListView.SelectedIndex]
 		
 		NeedsUpdate := 1
@@ -469,7 +472,7 @@ Class CAccessor
 	{
 		if(!this.GUI)
 			return
-
+		outputdebug RefreshList()
 		;Reset refreshing status
 		this.IsRefreshing := true
 		this.RepeatRefresh := false
@@ -571,9 +574,9 @@ Class CAccessor
 			this.GUI.btnOK.Text := "Run"
 
 		this.IsRefreshing := false
-		DllCall("QueryPerformanceCounter", "Int64*", perfEnd)
-		DllCall("QueryPerformanceFrequency", "Int64*", freq)
-		outputdebug % "Refresh: " ((perfEnd - perfstart)/freq*1000) ", SearchTime: " (SearchTime / freq*1000)
+		;DllCall("QueryPerformanceCounter", "Int64*", perfEnd)
+		;DllCall("QueryPerformanceFrequency", "Int64*", freq)
+		;outputdebug % "Refresh: " ((perfEnd - perfstart)/freq*1000) ", SearchTime: " (SearchTime / freq*1000)
 		if(this.RepeatRefresh)
 			this.RefreshList()
 	}
@@ -1306,7 +1309,8 @@ winget
 
 TODO:
 Documentation of new Accessor features
-Speed up listview (maybe by checking if list items actually need to be refreshed in incremental searches)
+Speed up listview (maybe by checking if list items actually need to be refreshed in incremental searches and maybe speed up clearing)
 FileSearch:
-	- Find out why searching for 7plus is very slow on my C: drive while it isn't with the example script
+	-Find out if indexing frequency works (doesn't look like it)
+	-Add conventional search method to DLL. Store number of files per directory and use this value to decide what to do
 */
