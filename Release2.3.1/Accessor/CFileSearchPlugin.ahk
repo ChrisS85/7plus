@@ -79,6 +79,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 				this.Insert(CAccessorPlugin.CActions.OpenCMD)
 				this.Insert(CAccessorPlugin.CActions.Copy)
 				this.Insert(CAccessorPlugin.CActions.ExplorerContextMenu)
+				this.Insert(CAccessorPlugin.CActions.SearchDir)
 			}
 		}
 		__new(Type)
@@ -125,6 +126,8 @@ Class CFileSearchPlugin extends CAccessorPlugin
 			return
 
 		Results := {}
+		if(this.HasKey("SearchPath"))
+			SearchPath := this.SearchPath
 		if((pos := InStr(Filter, " in ")))
 		{
 			;Ignore invalid paths

@@ -30,6 +30,7 @@ Class CRecentFoldersPlugin extends CAccessorPlugin
 				this.Insert(CAccessorPlugin.CActions.OpenPathWithAccessor)
 				this.Insert(CAccessorPlugin.CActions.Copy)
 				this.Insert(CAccessorPlugin.CActions.ExplorerContextMenu)
+				this.Insert(CAccessorPlugin.CActions.SearchDir)
 			}
 		}
 		Type := "Recent Folders"

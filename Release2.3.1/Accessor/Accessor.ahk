@@ -320,11 +320,11 @@ Class CAccessor
 	}
 
 	;Sets the filter and tries to wait (for max. 5 seconds) until results are there
-	SetFilter(Text)
+	SetFilter(Text, SelectionStart = -1, SelectionEnd = -1)
 	{
 		;this.Filter := Text
 		;this.IsRefreshing := true
-		this.GUI.SetFilter(Text)
+		this.GUI.SetFilter(Text, SelectionStart, SelectionEnd)
 		SetTimerF(this.WaitTimer := new Delegate(this, "WaitForRefresh"), -100)
 	}
 	WaitForRefresh()
@@ -487,10 +487,6 @@ Class CAccessor
 		;Plugins which need to use the filter string without any preparsing should use this one which doesn't contain the timer at the end
 		this.FilterWithoutTimer := Filter
 
-		this.GUI.ListView.Redraw := false
-		
-		;this.GUI.ListView.Items.Clear()
-		;this.GUI.ListView.ImageListManager.Clear()
 		this.List := Array()
 		
 		;Find out if we are in a single plugin context, and add only those items
@@ -535,6 +531,16 @@ Class CAccessor
 
 		;Sort the list by the weighting
 		this.List := ArraySort(this.List, "SortOrder", "Down")
+
+
+		this.GUI.ListView.Redraw := false
+		
+		;Much less results than with previous search string, clear the list instead of refreshing it
+		if(this.List.MaxIndex() < 5 && this.GUI.ListView.Items.MaxIndex() > 10)
+		{
+			this.GUI.ListView.Items.Clear()
+			this.GUI.ListView.ImageListManager.Clear()
+		}
 
 		ListViewCount := this.GUI.ListView.Items.MaxIndex()
 		;Now that items are available and sorted, add them to the listview
@@ -695,8 +701,6 @@ Class CAccessor
 	;Plugins may handle each function on their own, otherwise they will be handled directly by Accessor if available.
 	PerformAction(Action = "", ListEntry = "")
 	{
-		outputdebug % "object: " IsObject(CFileSystemPlugin.Instance.SearchDirAction) "index: " CAccessor.Instance.List[CAccessor.Instance.GUI.ListView.SelectedIndex].Actions.IndexOf(CFileSystemPlugin.Instance.SearchDirAction)
-		outputdebug % ExploreObj(CAccessor.Instance.List[CAccessor.Instance.GUI.ListView.SelectedIndex].Actions)
 		value := IsObject(ListEntry) || IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]) || (!this.HasKey("ClickedListEntry") && IsObject(ListEntry := this.Plugins[this.SingleContext].Result))
 		this.Remove("ClickedListEntry") ;Not needed anymore
 		
@@ -875,6 +879,11 @@ Class CAccessor
 		this.TemporaryFile := ListEntry.Path
 		this.SetFilter(CProgramLauncherPlugin.Instance.Settings.OpenWithKeyword " ")
 	}
+
+	SearchDir(ListEntry, Plugin)
+	{
+		this.SetFilter(CFileSearchPlugin.Instance.Settings.Keyword "  in " ListEntry.Path, strlen(CFileSearchPlugin.Instance.Settings.Keyword) + 1, strlen(CFileSearchPlugin.Instance.Settings.Keyword) + 1)
+	}
 }
 AccessorContextMenu:
 CAccessor.Instance.PerformAction(A_ThisMenuItem, CAccessor.Instance.ClickedListEntry) ;ClickedListEntry is only valid for clicks on empty parts of the window
@@ -944,10 +953,11 @@ Class CAccessorGUI extends CGUI
 		this.OnMessage(0x06, "WM_ACTIVATE")
 		this.Redraw()
 	}
-	SetFilter(Text)
+	SetFilter(Text, SelectionStart = -1, SelectionEnd = -1)
 	{
 		this.EditControl.Text := Text
-		Edit_Select(strLen(Text), -1, "", "ahk_id " this.EditControl.hwnd)
+		Edit_Select(SelectionStart, SelectionEnd, "", "ahk_id " this.EditControl.hwnd)
+		this.ActiveControl := this.EditControl
 	}
 	EditControl_TextChanged()
 	{
@@ -1080,9 +1090,9 @@ return
 CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.OpenWith)
 return
 #if
-#if (CAccessor.Instance.GUI && CAccessor.Instance.SingleContext = CFileSystemPlugin.Instance.Type)
+#if (CAccessor.Instance.GUI && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.SearchDir))
 ^f::
-CAccessor.Instance.PerformAction(CFileSystemPlugin.Instance.SearchDirAction, CAccessor.Instance.List[CAccessor.Instance.GUI.ListView.SelectedIndex].Actions.GetItemWithValue("Function", CFileSystemPlugin.Instance.SearchDirAction.Function) ? "" : CFileSystemPlugin.Instance.Result)
+CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.SearchDir, CAccessor.Instance.List[CAccessor.Instance.GUI.ListView.SelectedIndex].Actions.GetItemWithValue("Function", CAccessorPlugin.CActions.SearchDir.Function) ? "" : CFileSystemPlugin.Instance.Result)
 return
 #if
 #if CAccessor.Instance.GUI && !Edit_TextIsSelected("", "ahk_id " CAccessor.Instance.GUI.EditControl.hwnd)
@@ -1232,6 +1242,7 @@ Class CAccessorPlugin
 		static OpenPathWithAccessor := new CAccessor.CAction("Open path with Accessor`tCTRL + B", "OpenPathWithAccessor", "", false, false, false)
 		static OpenWith := new CAccessor.CAction("Open with`tCTRL + O", "SelectProgram", "", false, false, true)
 		static Cancel := new CAccessor.CAction("Cancel`tEscape", "Close", "", false, false, false)
+		static SearchDir := new CAccessor.CAction("Search in this directory`tCTRL + F", "SearchDir", "", false, false, false)
 	}
 	
 	;An object representing a result of an Accessor query.

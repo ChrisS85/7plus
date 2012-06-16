@@ -22,8 +22,6 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		BasePriority := 0.4
 	}
 
-	SearchDirAction := new CAccessor.CAction("Search in this directory`tCTRL + F", "SearchDir", "", false, false, false)
-
 	Class CResult extends CAccessorPlugin.CResult
 	{
 		Class CFileActions extends CArray
@@ -61,7 +59,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 				this.Insert(CAccessorPlugin.CActions.OpenCMD)
 				this.Insert(CAccessorPlugin.CActions.Copy)
 				this.Insert(CAccessorPlugin.CActions.ExplorerContextMenu)
-				this.Insert(CFileSystemPlugin.Instance.SearchDirAction)
+				this.Insert(CAccessorPlugin.CActions.SearchDir)
 			}
 		}
 		__new(Type)
@@ -210,11 +208,6 @@ Class CFileSystemPlugin extends CAccessorPlugin
 	{
 		Files := Get(GetAll(Accessor.List, "Type", "File System"), "Title")
 		Navigation.SelectFiles(Files, Accessor.PreviousWindow)
-	}
-	SearchDir(Accessor, ListEntry)
-	{
-		CFileSearchPlugin.Instance.SearchPath := ListEntry.Path
-		Accessor.SetFilter(CFileSearchPlugin.Instance.Settings.Keyword " ")
 	}
 	OnTab()
 	{
