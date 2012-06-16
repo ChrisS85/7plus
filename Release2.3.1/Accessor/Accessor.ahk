@@ -1351,7 +1351,6 @@ winget
 
 TODO:
 Documentation of new Accessor features
-Speed up listview (maybe by checking if list items actually need to be refreshed in incremental searches and maybe speed up clearing)
 Calculator:
 	-Icon not working
 Settings window:

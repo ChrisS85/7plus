@@ -933,7 +933,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 	listAccessorPlugins_SelectionChanged()
 	{
 		Page := this.Pages.Plugins.Tabs[1].Controls
-		Page.editPluginDescription.Text := CAccessor.Plugins[Page.listAccessorPlugins.SelectedIndex].Description
+		Page.editPluginDescription.Text := CAccessor.Plugins[Page.listAccessorPlugins.SelectedItem.Text].Description
 	}
 	btnAccessorHelp_Click()
 	{
