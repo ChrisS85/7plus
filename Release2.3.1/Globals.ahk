@@ -35,7 +35,6 @@ Class CNotifyIcons
 	SoundMute := ExtractIcon("%WINDIR%\System32\shell32.dll", WinVer >= WIN_Vista ? 220 : 169)
 	Question := ExtractIcon("%WINDIR%\System32\shell32.dll", 24)
 }
-
 /*
 Below follows information about important global objects:
 

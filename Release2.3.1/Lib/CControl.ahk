@@ -569,7 +569,7 @@ Class CControl ;Never created directly
 			if(Name = "LargeIcons")
 				return this._.LargeIcons
 		}
-		SetIcon(ID, PathOrhBitmap, IconNumber)
+		SetIcon(ID, PathOrhBitmap, IconNumber, debug = false)
 		{
 			GUI := CGUI.GUIList[this._.GUINum]
 			Control := GUI.Controls[this._.hwnd]

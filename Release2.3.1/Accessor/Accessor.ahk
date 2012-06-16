@@ -489,8 +489,8 @@ Class CAccessor
 
 		this.GUI.ListView.Redraw := false
 		
-		this.GUI.ListView.Items.Clear()
-		this.GUI.ListView.ImageListManager.Clear()
+		;this.GUI.ListView.Items.Clear()
+		;this.GUI.ListView.ImageListManager.Clear()
 		this.List := Array()
 		
 		;Find out if we are in a single plugin context, and add only those items
@@ -536,6 +536,7 @@ Class CAccessor
 		;Sort the list by the weighting
 		this.List := ArraySort(this.List, "SortOrder", "Down")
 
+		ListViewCount := this.GUI.ListView.Items.MaxIndex()
 		;Now that items are available and sorted, add them to the listview
 		for index3, ListEntry in this.List
 		{
@@ -546,19 +547,60 @@ Class CAccessor
 			}
 			Plugin := this.Plugins[ListEntry.Type]
 			Plugin.GetDisplayStrings(ListEntry, Title := ListEntry.Title, Path := ListEntry.Path, Detail1 := ListEntry.Detail1, Detail2 := ListEntry.Detail2)
-			if(!Settings.General.DebugEnabled)
-				item := this.GUI.ListView.Items.Add("", Title, Path, Detail1, Detail2)
-			else
-				item := this.GUI.ListView.Items.Add("", Title, Path, Detail1, ListEntry.SortOrder)
-			if(!ListEntry.HasKey("IconNumber"))
-				item.Icon := ListEntry.Icon
-			Else
-				item.SetIcon(ListEntry.Icon, ListEntry.IconNumber)
-		}
 
+			;To improve performance, the listview isn't simply cleared, instead the contents are updated.
+
+			;If more items than currently in list, add a new item
+			if(A_Index > ListViewCount)
+			{
+				if(!Settings.General.DebugEnabled)
+					item := this.GUI.ListView.Items.Add("", Title, Path, Detail1, Detail2)
+				else
+					item := this.GUI.ListView.Items.Add("", Title, Path, Detail1, ListEntry.SortOrder)
+
+				if(!ListEntry.HasKey("IconNumber"))
+					item.Icon := ListEntry.Icon
+				Else
+					item.SetIcon(ListEntry.Icon, ListEntry.IconNumber)
+			}
+			else
+			{
+				;Check if the text of the current item was changed. If it was, readd it, otherwise just keep going.
+				;This doesn't look at the icon yet, need to find out how to compare the hIcons
+				LV_GetText(t, A_Index, 1)
+				LV_GetText(p, A_Index, 2)
+				LV_GetText(d1, A_Index, 3)
+				LV_GetText(d2, A_Index, 4)
+				;msgbox % "Old item: " t ", " p ", " d1 ", " d2 "`nNew Item: " Title ", " Path ", " Detail1 ", " (Settings.General.DebugEnabled ? ListEntry.SortOrder : Detail2)
+				if(t != Title || p != Path || d1 != Detail1 || d2 != (Settings.General.DebugEnabled ? ListEntry.SortOrder : Detail2))
+				{
+					item := this.GUI.ListView.Items[A_Index]
+					LV_Modify(A_Index, "", Title, Path, Detail1, (Settings.General.DebugEnabled ? ListEntry.SortOrder : Detail2))
+					;_debug := true
+					;this.GUI.ListView.Items.Delete(A_Index)
+					;msgbox deleted
+					;if(!Settings.General.DebugEnabled)
+					;	item := this.GUI.ListView.Items.Insert(A_Index, "", Title, Path, Detail1, Detail2)
+					;else
+					;	item := this.GUI.ListView.Items.Insert(A_Index, "", Title, Path, Detail1, ListEntry.SortOrder)
+					;msgbox added
+					if(!ListEntry.HasKey("IconNumber"))
+						item.Icon := ListEntry.Icon
+					Else
+						item.SetIcon(ListEntry.Icon, ListEntry.IconNumber ? ListEntry.IconNumber : 1, 1)
+					;msgbox % "icon set: " ListENtry.Icon
+				}
+			}
+		}
+		ListViewCount := this.GUI.ListView.Items.MaxIndex()
+		ListCount := this.List.MaxIndex()
+		Loop % ListViewCount - ListCount
+		{
+			LV_Delete(ListCount + 1)
+			this.GUI.ListView.Items._.Remove(ListCount + A_Index, "")
+		}
 		this.LastFilter := Filter
 		this.LastParameters := Parameters
-		selected := LV_GetNext()
 		if(this.GUI.ListView.SelectedItems.MaxIndex() != 1)
 			this.GUI.ListView.SelectedIndex := 1
 
@@ -1311,12 +1353,13 @@ TODO:
 Documentation of new Accessor features
 Speed up listview (maybe by checking if list items actually need to be refreshed in incremental searches and maybe speed up clearing)
 Calculator:
-	-Not working!
+	-Icon not working
 Settings window:
 	-not showing descriptions of Accessor plugins
-Accessor hotkey shouldn't activate blinking windows
 favorite buttons for Accessor?
 keyboard hotkeys in settings window activate when other page is visible
 icon in context menu
 refresh filename in image converter when extension changes
+uninstall plugin not working (x64) -- Or is it?
+random accessor crashes on x64
 */

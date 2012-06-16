@@ -89,6 +89,8 @@ QueryCalcResult()
 	Headers := "Referer: http://code.google.com/p/7plus/"
 	;~ https://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=Paris%20Hilton&key=INSERT-YOUR-KEY
 	HTTPRequest(URL, GoogleQuery, Headers, "")
+	FileDelete, % Settings.ConfigPath "\GoogleQuery.html"
+	FileAppend, %GoogleQuery%, % Settings.ConfigPath "\GoogleQuery.html"
 	/*
 	FileDelete, %A_Temp%\7plus\GoogleQuery.htm
 	URLDownloadToFile, %URL%, %A_Temp%\7plus\GoogleQuery.htm
@@ -102,9 +104,9 @@ QueryCalcResult()
 
 	CCalculatorPlugin.Instance.List := Array()
 	
-	if(InStr(GoogleQuery, "More about calculator"))
+	if(InStr(GoogleQuery, "/help/features.html#calculator"))
 	{
-		RegexMatch(GoogleQuery, "s)<h2 class=""r"".*?=.*?</h2>.*?More about calculator", result)
+		RegexMatch(GoogleQuery, "s)<h2 class=""r"".*?=.*?</h2>.*?#calculator", result)
 		Result := SubStr(Result, start := InStr(Result, """>") + 2, InStr(Result, "</h2>") - start)
 		StringReplace, result, result, ">,,All
 		StringReplace, result, result, </h2>,,All
@@ -117,8 +119,9 @@ QueryCalcResult()
 		{
 			if(!FileExist( A_Temp "\7plus\calc_img.gif"))
 				URLDownloadToFile, http://www.google.com/images/calc_img.gif, %A_Temp%\7plus\calc_img.gif
-			pBitmap := Gdip_CreateBitmapFromFile(A_Temp "\7plus\calc_img.gif")
-			hIcon := Gdip_CreateHICONFromBitmap(pBitmap)
+			;pBitmap := Gdip_CreateBitmapFromFile(A_Temp "\7plus\calc_img.gif")
+			;hIcon := Gdip_CreateHICONFromBitmap(pBitmap)
+			hIcon := ExtractIcon(A_Temp "\7plus\calc_img.gif")
 			CCalculatorPlugin.Instance.List.Insert(Object("result",result,"URL", "http://www.google.com/search?q=" Filter, "Icon", hIcon))
 			CAccessor.Instance.RefreshList()
 		}

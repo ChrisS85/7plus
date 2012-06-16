@@ -117,17 +117,6 @@ QueryWeatherResult()
 		if(!city1) ;No results
 			return
 		WeatherQuery := SubStr(WeatherQuery, InStr(WeatherQuery, "/curren"))
-		;pos1 := RegexMatch(WeatherQuery, "i)<condition data=""(.*?)""/>", condition, pos1+1)
-		;RegexMatch(WeatherQuery, "i)<temp_c data=""(.*?)""/>", temp_c, 1)
-		;RegexMatch(WeatherQuery, "i)<humidity data=""(.*?)""/>", humidity, 1)
-		;RegexMatch(WeatherQuery, "i)<icon data=""(.*?)""/>", icon, 1)
-		;name := SubStr(icon1, InStr(icon1, "/", 0, 0) + 1)
-		;if(!FileExist(A_Temp "\7plus\" name))
-		;	URLDownloadToFile, http://www.google.com%icon1%, %A_Temp%\7plus\%name%
-		;outputdebug % "1: " name
-		;pBitmap := Gdip_CreateBitmapFromFile(A_Temp "\7plus\" name)
-		;hIcon := Gdip_CreateHICONFromBitmap(pBitmap)
-		;CWeatherPlugin.Instance.List.Insert(Object("Title", "Now: " condition1 ", " temp_c1 "°C, " humidity1, "Path", "Weather in " city1, "Icon", hIcon))
 		Loop
 		{
 			pos1 := RegexMatch(WeatherQuery, "i)<condition data=""(.*?)""/>", condition, pos1+1)

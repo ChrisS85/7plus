@@ -492,8 +492,8 @@ Class CListViewControl Extends CControl
 			LV_Delete()
 			Loop % Control.Items._.MaxIndex()
 				Control.Items._.Remove(A_Index, "")
-			Control._.PreviouslySelectedItem := Control.Items[Control._.SelectedIndex]
 			Control.ProcessSubControlState(Control._.PreviouslySelectedItem, "")
+			Control._.PreviouslySelectedItem := ""
 			Control._.SelectedIndex := ""
 		}
 		/*
