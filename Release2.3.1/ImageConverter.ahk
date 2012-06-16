@@ -261,6 +261,10 @@ Class CImageConverter extends CGUI
 		this.Files[(index := this.ListView.SelectedIndex) ? index : this.ListView.FocusedIndex].TargetFilename := this.editName.Text
 		this.FillTargetFilenames()
 	}
+	ddlTargetExtension_SelectionChanged()
+	{
+		this.FillTargetFilenames()
+	}
 	Picture_Click()
 	{
 		; DllCall("shell32\ShellExecute"uint, 0, str, "Edit"str, this.Files[Selected].SourceFile, str, "", str, "", int, 1)
@@ -364,7 +368,6 @@ Class CImageConverter extends CGUI
 		if(pConverted)
 		{
 			hBitmap := Gdip_CreateHBITMAPFromBitmap(pConverted)
-			;MuteClipboardList := true
 			WinClip.Clear()
 			WinClip.SetBitmap(hbitmap)
 			DeleteObject(hBitmap)

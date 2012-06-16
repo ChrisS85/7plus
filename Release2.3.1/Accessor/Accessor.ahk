@@ -1353,12 +1353,9 @@ TODO:
 Documentation of new Accessor features
 Calculator:
 	-Icon not working
-Settings window:
-	-not showing descriptions of Accessor plugins
 favorite buttons for Accessor?
 keyboard hotkeys in settings window activate when other page is visible
 icon in context menu
-refresh filename in image converter when extension changes
 uninstall plugin not working (x64) -- Or is it?
 random accessor crashes on x64
 */
