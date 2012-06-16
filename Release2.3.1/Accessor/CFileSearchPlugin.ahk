@@ -193,7 +193,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 		for Drive, DriveIndex in this.FileSystemIndex
 		{
 			outputdebug % Drive ": Start: " A_TickCount
-			pResult := DllCall(this.DllPath "\Search", "PTR", DriveIndex, "wstr", Query, SearchPath ? "wstr" : "ptr", SearchPath ? SearchPath : 0, "int", true, "int", true, "int", 100, "int*", nResults, PTR)
+			pResult := DllCall(this.DllPath "\SearchIndex", "PTR", DriveIndex, "wstr", Query, SearchPath ? "wstr" : "ptr", SearchPath ? SearchPath : 0, "int", true, "int", true, "int", 100, "int*", nResults, PTR)
 			strResult := StrGet(presult + 0)
 			outputdebug % Drive ": Searched: " A_TickCount
 			if(pResult)
@@ -229,10 +229,13 @@ Class CFileSearchPlugin extends CAccessorPlugin
 		;Get rid of old icons from last queries
 		for path, Icon in this.Icons
 			DestroyIcon(Icon)
+		this.Icons := Array()
 		for drive, DriveIndex in this.FileSystemIndex
 			DllCall(this.DllPath "\DeleteIndex", "PTR", DriveIndex)
+		this.FileSystemIndex := {}
 		if(this.hModule)
 			DllCall("FreeLibrary", "PTR", this.hModule)
+		this.Remove("hModule")
 	}
 	SearchInAccessor(Accessor, ListEntry)
 	{
@@ -254,6 +257,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 					NTFSDrives .= A_LoopField
 			}
 			DriveCount := StrLen(NTFSDrives)
+			DrivesLeft := ""
 			Loop, Parse, NTFSDrives
 			{
 				Drive := A_LoopField
@@ -262,8 +266,9 @@ Class CFileSearchPlugin extends CAccessorPlugin
 				{
 					FileGetTime, ModificationTime, %IndexPath%
 					Delta := A_Now
-					EnvSub, Delta, %ModificationTime%, hours
-					if(Delta > 0 && Delta < this.Settings.IndexingFrequency && LoadExisting)
+					EnvSub, Delta, %ModificationTime%, minutes
+					outputdebug time: %delta%
+					if(Delta > 0 && Delta / 60 < this.Settings.IndexingFrequency && LoadExisting)
 					{
 						this.LoadDriveIndex(Drive, IndexPath)
 						continue
@@ -277,13 +282,18 @@ Class CFileSearchPlugin extends CAccessorPlugin
 				WorkerThread.OnFinish.Handler := new Delegate(this, "OnFinish")
 				WorkerThread.Start(Drive, IndexPath)
 				if(WorkerThread.WaitForStart(5))
+				{
 					this.IndexingWorkerThreads[Drive] := WorkerThread
+					DrivesLeft .= (StrLen(DrivesLeft) > 0 ? ", " : "") Drive
+				}
 				else if(WorkerThread.State != "Finished")
 				{
 					outputdebug failed to wait for worker thread startup
 					Notify("File search error!", "Couldn't start the searching process!", 5, NotifyIcons.Error)
 				}
 			}
+			if(StrLen(DrivesLeft))
+				this.IndexingWorkerThreads.NotificationWindow := Notify("Indexing drives for file search", "Drives left: " DrivesLeft, "", NotifyIcons.Info)
 			if(Delta > 0 && Delta < this.Settings.IndexingFrequency)
 				SetTimer, UpdateFileSystemIndex, % (Delta - this.Settings.IndexingFrequency) * 3600000
 			else
@@ -305,6 +315,17 @@ Class CFileSearchPlugin extends CAccessorPlugin
 			this.LoadDriveIndex(Drive, File)
 		}
 		this.IndexingWorkerThreads.Remove(Drive)
+		DrivesLeft := ""
+		for d, value in this.IndexingWorkerThreads
+			if(d != "NotificationWindow")
+				DrivesLeft .= (StrLen(DrivesLeft) > 0 ? ", " : "") d
+		if(StrLen(DrivesLeft))
+			this.IndexingWorkerThreads.NotificationWindow.Text := "Drives left: " DrivesLeft
+		else
+		{
+			this.IndexingWorkerThreads.NotificationWindow.Close()
+			this.IndexingWorkerThreads.Remove("NotificationWindow")
+		}
 		outputdebug finished indexing %Drive%! Result: %Result%
 	}
 	LoadDriveIndex(Drive, Path)

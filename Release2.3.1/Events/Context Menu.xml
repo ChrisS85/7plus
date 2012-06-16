@@ -7,7 +7,6 @@
 <DataType>Text</DataType>
 <Placeholder>Input</Placeholder>
 <Rows>1</Rows>
-<Selection></Selection>
 <Text>Enter parameters. Paths might need`n to be enclosed in double quotes.</Text>
 <Title>Enter Parameters</Title>
 <Type>Ask for user input</Type>
@@ -48,10 +47,8 @@
 <Actions>
 <Action>
 <Files>${Context}</Files>
-<FTPTargetDir></FTPTargetDir>
 <Hoster>ImgUr</Hoster>
 <ReuseWindow>0</ReuseWindow>
-<TargetDir></TargetDir>
 <TemporaryFiles>0</TemporaryFiles>
 <Type>Show Image Converter</Type>
 </Action></Actions>
@@ -116,8 +113,6 @@
 <FTPProfile>1</FTPProfile>
 <Silent>0</Silent>
 <SourceFiles>${Context}</SourceFiles>
-<TargetFile></TargetFile>
-<TargetFolder></TargetFolder>
 <Type>Upload to FTP</Type>
 </Action></Actions>
 <Category>Context Menu</Category>

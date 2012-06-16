@@ -681,7 +681,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>1</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>309</ID>
 <Name>Toggle always on top -&gt; Context menu active</Name>
@@ -712,7 +712,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>310</ID>
 <Name>Toggle always on top -&gt; No context menu active</Name>
@@ -745,7 +745,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>311</ID>
 <Name>Toggle always on top -&gt; context menu timeout</Name>
@@ -880,7 +880,7 @@
 </Event><Event>
 <Actions>
 <Action>
-<FlashingWindows>1</FlashingWindows>
+<FlashingWindows>0</FlashingWindows>
 <Type>Show Accessor</Type>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
@@ -3847,7 +3847,6 @@
 <DataType>Text</DataType>
 <Placeholder>Input</Placeholder>
 <Rows>1</Rows>
-<Selection></Selection>
 <Text>Enter parameters. Paths might need`n to be enclosed in double quotes.</Text>
 <Title>Enter Parameters</Title>
 <Type>Ask for user input</Type>
@@ -3888,10 +3887,8 @@
 <Actions>
 <Action>
 <Files>${Context}</Files>
-<FTPTargetDir></FTPTargetDir>
 <Hoster>ImgUr</Hoster>
 <ReuseWindow>0</ReuseWindow>
-<TargetDir></TargetDir>
 <TemporaryFiles>0</TemporaryFiles>
 <Type>Show Image Converter</Type>
 </Action></Actions>
@@ -3956,8 +3953,6 @@
 <FTPProfile>1</FTPProfile>
 <Silent>0</Silent>
 <SourceFiles>${Context}</SourceFiles>
-<TargetFile></TargetFile>
-<TargetFolder></TargetFolder>
 <Type>Upload to FTP</Type>
 </Action></Actions>
 <Category>Context Menu</Category>
@@ -5381,7 +5376,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event sends an opening bracket character when NumpadEnd is pressed (Numpad1 with NumLock OFF). This remapping is used to enter equations into scientific calculators using only the numpad.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1646</ID>
 <Name>NumpadEnd -&gt; '('</Name>
@@ -5747,6 +5742,34 @@
 <Trigger>
 <Key>^O</Key>
 <Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Text>${Acc1}</Text>
+<Timeout>0</Timeout>
+<Title>7plus</Title>
+<Type>Message</Type>
+</Action></Actions>
+<Category>Accessor commands</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event provides a command for the Accessor launcher to lock the computer.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1662</ID>
+<Name>Accessor: Lock workstation</Name>
+<OfficialEvent>61</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<ButtonText>Message</ButtonText>
+<Icon>%SystemRoot%\system32\SHELL32.dll,114</Icon>
+<Keyword>Message</Keyword>
+<Path>${Acc1}</Path>
+<Title>Show Message:</Title>
+<Type>Accessor Trigger</Type>
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>

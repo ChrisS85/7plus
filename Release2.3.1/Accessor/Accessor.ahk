@@ -914,7 +914,7 @@ Class CAccessorGUI extends CGUI
 	}
 	WM_ACTIVATE(msg, wParam, lParam, hwnd)
 	{
-		if(!(loword(wParam) & 0x3) && WinExist("A") != this.hwnd)
+		if(CAccessor.Instance.Settings.CloseWhenDeactivated && !(loword(wParam) & 0x3) && WinExist("A") != this.hwnd)
 			this.Close()
 	}
 	ListView_SelectionChanged()
@@ -1310,7 +1310,13 @@ winget
 TODO:
 Documentation of new Accessor features
 Speed up listview (maybe by checking if list items actually need to be refreshed in incremental searches and maybe speed up clearing)
-FileSearch:
-	-Find out if indexing frequency works (doesn't look like it)
-	-Add conventional search method to DLL. Store number of files per directory and use this value to decide what to do
+Calculator:
+	-Not working!
+Settings window:
+	-not showing descriptions of Accessor plugins
+Accessor hotkey shouldn't activate blinking windows
+favorite buttons for Accessor?
+keyboard hotkeys in settings window activate when other page is visible
+icon in context menu
+refresh filename in image converter when extension changes
 */

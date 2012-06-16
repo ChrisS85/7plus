@@ -1682,6 +1682,7 @@ DuplicateIcon(hIcon)
 ;Returns an object containing the area of the monitor in pixels where the mouse cursor currently is
 FindMonitorFromMouseCursor()
 {
+	CoordMode, Mouse, Screen
     MouseGetPos, x, y
 	SysGet, Mon0, MonitorCount
     Loop %Mon0%

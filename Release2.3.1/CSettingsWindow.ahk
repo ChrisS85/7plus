@@ -1888,7 +1888,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("Link", "linkBugs", "xs+176 ys+73 w212 h13", "<A HREF=""http://code.google.com/p/7plus/issues/list"">http://code.google.com/p/7plus/issues/list</A>")
 		Page.AddControl("Link", "linkHomepage", "xs+176 ys+57 w166 h13", "<A HREF=""http://code.google.com/p/7plus/"">http://code.google.com/p/7plus/</A>")
 		Page.AddControl("Link", "linkAutoupdater", "xs+21 ys+281 w306 h13", "The Autoudater uses <A HREF=""http://www.7-zip.org"">7-Zip</A>, which is licensed under the <A HREF=""http://www.gnu.org/licenses/lgpl.html"">LGPL</A>")
-		Page.AddControl("Text", "txtCredits", "xs+21 ys+315 w392 h39", "This program would not have been possible without the many scripts, libraries and help from:`nSean, HotKeyIt, majkinetor, polyethene, Lexikos, tic, fincs, TheGood, PhiLho, Temp01, Laszlo, jballi, Shrinker,`nM@x and the other guys and gals on #ahk and the forums.")
+		Page.AddControl("Text", "txtCredits", "xs+21 ys+315", "This program would not have been possible without the many scripts, libraries and help from:`nSean, HotKeyIt, majkinetor, polyethene, Lexikos, tic, fincs, TheGood, PhiLho, Temp01, Laszlo, jballi, Shrinker,`nM@x and the other guys and gals on #ahk and the forums.")
 		Page.AddControl("Text", "txtLicense", "xs+21 ys+252 w80 h13", "Licensed under")
 		Page.AddControl("Text", "txtLanguage", "xs+21 ys+201 w146 h13", "Proudly written in AutoHotkey")
 		Page.AddControl("Text", "txtDonate", "xs+21 ys+154 w282 h13", "To support the development of this project, please donate:")

@@ -156,6 +156,34 @@
 <Title>Lock workstation</Title>
 <Type>Accessor Trigger</Type>
 </Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Text>${Acc1}</Text>
+<Timeout>0</Timeout>
+<Title>7plus</Title>
+<Type>Message</Type>
+</Action></Actions>
+<Category>Accessor commands</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event provides a command for the Accessor launcher to lock the computer.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1662</ID>
+<Name>Accessor: Lock workstation</Name>
+<OfficialEvent>61</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<ButtonText>Message</ButtonText>
+<Icon>%SystemRoot%\system32\SHELL32.dll,114</Icon>
+<Keyword>Message</Keyword>
+<Path>${Acc1}</Path>
+<Title>Show Message:</Title>
+<Type>Accessor Trigger</Type>
+</Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
 <MinorVersion>6</MinorVersion>

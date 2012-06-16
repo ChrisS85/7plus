@@ -3,7 +3,7 @@
 <Event>
 <Actions>
 <Action>
-<FlashingWindows>1</FlashingWindows>
+<FlashingWindows>0</FlashingWindows>
 <Type>Show Accessor</Type>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>

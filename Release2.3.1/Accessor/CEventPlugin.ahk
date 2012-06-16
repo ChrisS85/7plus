@@ -39,7 +39,7 @@ Class CEventPlugin extends CAccessorPlugin
 		Results := Array()
 		for index, Event in EventSystem.Events
 		{
-			if(Event.Trigger.Is(CAccessorTrigger) && (MatchQuality := FuzzySearch(Event.Trigger.Keyword, Filter, false)) > Accessor.Settings.FuzzySearchThreshold)
+			if(Event.Trigger.Is(CAccessorTrigger) && (MatchQuality := FuzzySearch(Event.Trigger.Keyword, Parameters[0], false)) > Accessor.Settings.FuzzySearchThreshold)
 			{
 				Result := new this.CResult()
 				Result.Title := Event.Trigger.Title
