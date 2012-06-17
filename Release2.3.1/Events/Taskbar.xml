@@ -3,92 +3,8 @@
 <Event>
 <Actions>
 <Action>
-<Command>C:\Windows\System32\taskmgr.exe</Command>
-<RunAsAdmin>0</RunAsAdmin>
-<Type>Run a program</Type>
-<WaitForFinish>0</WaitForFinish>
-<WorkingDirectory>C:\Windows\System32</WorkingDirectory>
-</Action></Actions>
-<Category>Taskbar</Category>
-<Conditions>
-</Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Open Task Manager when an empty part of the taskbar is double-clicked.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>897</ID>
-<Name>Run task manager</Name>
-<OfficialEvent>898</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Type>Double click on taskbar</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Action>Set volume</Action>
-<ShowVolume>1</ShowVolume>
-<Type>Change sound volume</Type>
-<Volume>+5</Volume>
-</Action></Actions>
-<Category>Taskbar</Category>
-<Conditions>
-<Condition>
-<MouseOverType>Window</MouseOverType>
-<Negate>0</Negate>
-<Type>Mouse over</Type>
-<WindowFilterClass>Shell_TrayWnd</WindowFilterClass>
-<WindowMatchType>Specific Window</WindowMatchType>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Increase the sound volume with the mouse wheel over the taskbar.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>959</ID>
-<Name>Over taskbar: Increase volume</Name>
-<OfficialEvent>960</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>WheelUp</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Action>Set volume</Action>
-<ShowVolume>1</ShowVolume>
-<Type>Change sound volume</Type>
-<Volume>-5</Volume>
-</Action></Actions>
-<Category>Taskbar</Category>
-<Conditions>
-<Condition>
-<MouseOverType>Window</MouseOverType>
-<Negate>0</Negate>
-<Type>Mouse over</Type>
-<WindowFilterClass>Shell_TrayWnd</WindowFilterClass>
-<WindowMatchType>Specific Window</WindowMatchType>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Decrease the sound volume with the mouse wheel over the taskbar.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>960</ID>
-<Name>Over taskbar: Decrease volume</Name>
-<OfficialEvent>961</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>WheelDown</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
 <Action>Trigger Event</Action>
-<EventID>1599</EventID>
+<EventID>1597</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
 </Action></Actions>
@@ -100,7 +16,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>1597</ID>
+<ID>1595</ID>
 <Name>Dynamic Timer: tray menu item</Name>
 <OfficialEvent>5</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -131,21 +47,21 @@
 </Action><Action>
 <Action>Trigger Event</Action>
 <Compare>${TimerType}</Compare>
-<EventID>1602</EventID>
+<EventID>1600</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
 <With>Message Timer</With>
 </Action><Action>
 <Action>Trigger Event</Action>
 <Compare>${TimerType}</Compare>
-<EventID>1603</EventID>
+<EventID>1601</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
 <With>Run program timer</With>
 </Action><Action>
 <Action>Trigger Event</Action>
 <Compare>${TimerType}</Compare>
-<EventID>1606</EventID>
+<EventID>1604</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
 <With>Shutdown timer</With>
@@ -158,7 +74,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>1599</ID>
+<ID>1597</ID>
 <Name>Dynamic timer: Main</Name>
 <OfficialEvent>6</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -180,7 +96,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>1600</ID>
+<ID>1598</ID>
 <Name>Dynamic Timer: Message timer</Name>
 <OfficialEvent>8</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -205,7 +121,7 @@
 <Action>Copy Event</Action>
 <DeleteAfterUse>1</DeleteAfterUse>
 <EvaluateOnCopy>1</EvaluateOnCopy>
-<EventID>1600</EventID>
+<EventID>1598</EventID>
 <Operator>equals</Operator>
 <Placeholder>MessageTimer</Placeholder>
 <Type>Control event</Type>
@@ -227,7 +143,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>1602</ID>
+<ID>1600</ID>
 <Name>Dynamic Timer: Ask for message and start message timer</Name>
 <OfficialEvent>9</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -248,7 +164,7 @@
 <Action>Copy Event</Action>
 <DeleteAfterUse>1</DeleteAfterUse>
 <EvaluateOnCopy>1</EvaluateOnCopy>
-<EventID>1604</EventID>
+<EventID>1602</EventID>
 <Operator>equals</Operator>
 <Placeholder>RunTimer</Placeholder>
 <Type>Control event</Type>
@@ -270,7 +186,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>1603</ID>
+<ID>1601</ID>
 <Name>Dynamic Timer: Ask for program and start Run program timer</Name>
 <OfficialEvent>11</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -293,7 +209,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>1604</ID>
+<ID>1602</ID>
 <Name>Dynamic Timer: Run program timer</Name>
 <OfficialEvent>12</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -319,7 +235,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>1605</ID>
+<ID>1603</ID>
 <Name>Dynamic Timer: Shutdown timer</Name>
 <OfficialEvent>13</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -336,7 +252,7 @@
 <Action>Copy Event</Action>
 <DeleteAfterUse>1</DeleteAfterUse>
 <EvaluateOnCopy>1</EvaluateOnCopy>
-<EventID>1605</EventID>
+<EventID>1603</EventID>
 <Operator>equals</Operator>
 <Placeholder>ShutdownTimer</Placeholder>
 <Type>Control event</Type>
@@ -358,7 +274,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>1606</ID>
+<ID>1604</ID>
 <Name>Dynamic Timer: Start shutdown timer</Name>
 <OfficialEvent>14</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -368,8 +284,92 @@
 </Event><Event>
 <Actions>
 <Action>
+<Command>C:\Windows\System32\taskmgr.exe</Command>
+<RunAsAdmin>0</RunAsAdmin>
+<Type>Run a program</Type>
+<WaitForFinish>0</WaitForFinish>
+<WorkingDirectory>C:\Windows\System32</WorkingDirectory>
+</Action></Actions>
+<Category>Taskbar</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Open Task Manager when an empty part of the taskbar is double-clicked.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>2511</ID>
+<Name>Run task manager</Name>
+<OfficialEvent>898</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Type>Double click on taskbar</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Action>Set volume</Action>
+<ShowVolume>1</ShowVolume>
+<Type>Change sound volume</Type>
+<Volume>+5</Volume>
+</Action></Actions>
+<Category>Taskbar</Category>
+<Conditions>
+<Condition>
+<MouseOverType>Window</MouseOverType>
+<Negate>0</Negate>
+<Type>Mouse over</Type>
+<WindowFilterClass>Shell_TrayWnd</WindowFilterClass>
+<WindowMatchType>Specific Window</WindowMatchType>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Increase the sound volume with the mouse wheel over the taskbar.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>2573</ID>
+<Name>Over taskbar: Increase volume</Name>
+<OfficialEvent>960</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>WheelUp</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Action>Set volume</Action>
+<ShowVolume>1</ShowVolume>
+<Type>Change sound volume</Type>
+<Volume>-5</Volume>
+</Action></Actions>
+<Category>Taskbar</Category>
+<Conditions>
+<Condition>
+<MouseOverType>Window</MouseOverType>
+<Negate>0</Negate>
+<Type>Mouse over</Type>
+<WindowFilterClass>Shell_TrayWnd</WindowFilterClass>
+<WindowMatchType>Specific Window</WindowMatchType>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Decrease the sound volume with the mouse wheel over the taskbar.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>2574</ID>
+<Name>Over taskbar: Decrease volume</Name>
+<OfficialEvent>961</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>WheelDown</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
 <Action>Trigger Event</Action>
-<EventID>1599</EventID>
+<EventID>3213</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
 </Action></Actions>
@@ -386,7 +386,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1609</ID>
+<ID>3223</ID>
 <Name>Dynamic Timer: Middle mouse click over clock</Name>
 <OfficialEvent>17</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -415,7 +415,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1620</ID>
+<ID>3234</ID>
 <Name>Close window of task button under mouse</Name>
 <OfficialEvent>23</OfficialEvent>
 <OneInstance>0</OneInstance>

@@ -9,6 +9,1246 @@
 <Category>Fast Folders</Category>
 <Conditions>
 <Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>Explorer is renaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 0.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>318</ID>
+<Name>Open Fast Folders Slot 0</Name>
+<OfficialEvent>321</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>Numpad0</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>1</Slot>
+<Type>Open Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>Explorer is renaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 1.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>320</ID>
+<Name>Open Fast Folders Slot 1</Name>
+<OfficialEvent>323</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>Numpad1</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>2</Slot>
+<Type>Open Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>Explorer is renaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 3.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>322</ID>
+<Name>Open Fast Folders Slot 2</Name>
+<OfficialEvent>325</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>Numpad2</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>3</Slot>
+<Type>Open Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>Explorer is renaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 4.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>324</ID>
+<Name>Open Fast Folders Slot 3</Name>
+<OfficialEvent>327</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>Numpad3</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>4</Slot>
+<Type>Open Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>Explorer is renaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 5.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>326</ID>
+<Name>Open Fast Folders Slot 4</Name>
+<OfficialEvent>329</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>Numpad4</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>5</Slot>
+<Type>Open Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>Explorer is renaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 6.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>328</ID>
+<Name>Open Fast Folders Slot 5</Name>
+<OfficialEvent>331</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>Numpad5</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>6</Slot>
+<Type>Open Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>Explorer is renaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 7.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>330</ID>
+<Name>Open Fast Folders Slot 6</Name>
+<OfficialEvent>333</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>Numpad6</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>7</Slot>
+<Type>Open Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>Explorer is renaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 8.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>332</ID>
+<Name>Open Fast Folders Slot 7</Name>
+<OfficialEvent>335</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>Numpad7</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>8</Slot>
+<Type>Open Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>Explorer is renaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 9.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>334</ID>
+<Name>Open Fast Folders Slot 8</Name>
+<OfficialEvent>337</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>Numpad8</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>9</Slot>
+<Type>Open Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>Explorer is renaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 9.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>336</ID>
+<Name>Open Fast Folders Slot 9</Name>
+<OfficialEvent>339</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>Numpad9</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>0</Slot>
+<Type>Save Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>Explorer is renaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 0.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>338</ID>
+<Name>Save Fast Folders Slot 0</Name>
+<OfficialEvent>341</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^Numpad0</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>1</Slot>
+<Type>Save Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>Explorer is renaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 1.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>340</ID>
+<Name>Save Fast Folders Slot 1</Name>
+<OfficialEvent>343</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^Numpad1</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>2</Slot>
+<Type>Save Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>Explorer is renaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 2.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>342</ID>
+<Name>Save Fast Folders Slot 2</Name>
+<OfficialEvent>345</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^Numpad2</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>3</Slot>
+<Type>Save Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>Explorer is renaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 3.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>344</ID>
+<Name>Save Fast Folders Slot 3</Name>
+<OfficialEvent>347</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^Numpad3</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>4</Slot>
+<Type>Save Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>Explorer is renaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 4.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>346</ID>
+<Name>Save Fast Folders Slot 4</Name>
+<OfficialEvent>349</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^Numpad4</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>5</Slot>
+<Type>Save Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>Explorer is renaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 5.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>348</ID>
+<Name>Save Fast Folders Slot 5</Name>
+<OfficialEvent>351</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^Numpad5</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>6</Slot>
+<Type>Save Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>Explorer is renaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 6.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>350</ID>
+<Name>Save Fast Folders Slot 6</Name>
+<OfficialEvent>353</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^Numpad6</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>7</Slot>
+<Type>Save Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>Explorer is renaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 7.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>352</ID>
+<Name>Save Fast Folders Slot 7</Name>
+<OfficialEvent>355</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^Numpad7</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>8</Slot>
+<Type>Save Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>Explorer is renaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 8.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>354</ID>
+<Name>Save Fast Folders Slot 8</Name>
+<OfficialEvent>357</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^Numpad8</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>9</Slot>
+<Type>Save Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>Explorer is renaming</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Save the path of the currently active file dialog window in FastFolders Slot 9.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>356</ID>
+<Name>Save Fast Folders Slot 9</Name>
+<OfficialEvent>359</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>^Numpad9</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>0</Slot>
+<Type>Clear Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 0.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>357</ID>
+<Name>Clear Fast Folders Slot 0</Name>
+<OfficialEvent>360</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!Numpad0</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>0</Slot>
+<Type>Clear Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 0.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>358</ID>
+<Name>Clear Fast Folders Slot 0</Name>
+<OfficialEvent>361</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!Numpad0</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>1</Slot>
+<Type>Clear Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 1.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>359</ID>
+<Name>Clear Fast Folders Slot 1</Name>
+<OfficialEvent>362</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!Numpad1</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>1</Slot>
+<Type>Clear Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 1.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>360</ID>
+<Name>Clear Fast Folders Slot 1</Name>
+<OfficialEvent>363</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!Numpad1</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>2</Slot>
+<Type>Clear Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 2.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>361</ID>
+<Name>Clear Fast Folders Slot 2</Name>
+<OfficialEvent>364</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!Numpad2</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>2</Slot>
+<Type>Clear Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 2.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>362</ID>
+<Name>Clear Fast Folders Slot 2</Name>
+<OfficialEvent>365</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!Numpad2</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>3</Slot>
+<Type>Clear Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 3.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>363</ID>
+<Name>Clear Fast Folders Slot 3</Name>
+<OfficialEvent>366</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!Numpad3</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>3</Slot>
+<Type>Clear Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 3.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>364</ID>
+<Name>Clear Fast Folders Slot 3</Name>
+<OfficialEvent>367</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!Numpad3</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>4</Slot>
+<Type>Clear Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 4.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>365</ID>
+<Name>Clear Fast Folders Slot 4</Name>
+<OfficialEvent>368</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!Numpad4</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>4</Slot>
+<Type>Clear Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 4.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>366</ID>
+<Name>Clear Fast Folders Slot 4</Name>
+<OfficialEvent>369</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!Numpad4</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>5</Slot>
+<Type>Clear Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 5.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>367</ID>
+<Name>Clear Fast Folders Slot 5</Name>
+<OfficialEvent>370</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!Numpad5</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>5</Slot>
+<Type>Clear Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 5.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>368</ID>
+<Name>Clear Fast Folders Slot 5</Name>
+<OfficialEvent>371</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!Numpad5</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>6</Slot>
+<Type>Clear Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 6.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>369</ID>
+<Name>Clear Fast Folders Slot 6</Name>
+<OfficialEvent>372</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!Numpad6</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>6</Slot>
+<Type>Clear Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 6.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>370</ID>
+<Name>Clear Fast Folders Slot 6</Name>
+<OfficialEvent>373</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!Numpad6</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>7</Slot>
+<Type>Clear Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 7.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>371</ID>
+<Name>Clear Fast Folders Slot 7</Name>
+<OfficialEvent>374</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!Numpad7</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>7</Slot>
+<Type>Clear Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 7.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>372</ID>
+<Name>Clear Fast Folders Slot 7</Name>
+<OfficialEvent>375</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!Numpad7</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>8</Slot>
+<Type>Clear Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 8.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>373</ID>
+<Name>Clear Fast Folders Slot 8</Name>
+<OfficialEvent>376</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!Numpad8</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>8</Slot>
+<Type>Clear Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 8.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>374</ID>
+<Name>Clear Fast Folders Slot 8</Name>
+<OfficialEvent>377</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!Numpad8</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>9</Slot>
+<Type>Clear Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 9.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>375</ID>
+<Name>Clear Fast Folders Slot 9</Name>
+<OfficialEvent>378</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!Numpad9</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>9</Slot>
+<Type>Clear Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>1</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>Edit</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Clear the path stored in FastFolders slot 9.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>1</EventComplexityLevel>
+<ID>376</ID>
+<Name>Clear Fast Folders Slot 9</Name>
+<OfficialEvent>379</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!Numpad9</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Slot>0</Slot>
+<Type>Open Fast Folder</Type>
+</Action></Actions>
+<Category>Fast Folders</Category>
+<Conditions>
+<Condition>
 <Compare>${Class}</Compare>
 <Negate>0</Negate>
 <Operator>matches regular expression</Operator>
@@ -29,38 +1269,9 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>319</ID>
+<ID>1933</ID>
 <Name>Open Fast Folders Slot 0</Name>
 <OfficialEvent>320</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>Numpad0</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>0</Slot>
-<Type>Open Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Negate>1</Negate>
-<Type>Explorer is renaming</Type>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 0.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>320</ID>
-<Name>Open Fast Folders Slot 0</Name>
-<OfficialEvent>321</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad0</Key>
@@ -95,38 +1306,9 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>321</ID>
+<ID>1935</ID>
 <Name>Open Fast Folders Slot 1</Name>
 <OfficialEvent>322</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>Numpad1</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>1</Slot>
-<Type>Open Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Negate>1</Negate>
-<Type>Explorer is renaming</Type>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 1.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>322</ID>
-<Name>Open Fast Folders Slot 1</Name>
-<OfficialEvent>323</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad1</Key>
@@ -161,38 +1343,9 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>323</ID>
+<ID>1937</ID>
 <Name>Open Fast Folders Slot 2</Name>
 <OfficialEvent>324</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>Numpad2</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>2</Slot>
-<Type>Open Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Negate>1</Negate>
-<Type>Explorer is renaming</Type>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 3.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>324</ID>
-<Name>Open Fast Folders Slot 2</Name>
-<OfficialEvent>325</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad2</Key>
@@ -227,38 +1380,9 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>325</ID>
+<ID>1939</ID>
 <Name>Open Fast Folders Slot 3</Name>
 <OfficialEvent>326</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>Numpad3</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>3</Slot>
-<Type>Open Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Negate>1</Negate>
-<Type>Explorer is renaming</Type>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 4.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>326</ID>
-<Name>Open Fast Folders Slot 3</Name>
-<OfficialEvent>327</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad3</Key>
@@ -293,38 +1417,9 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>327</ID>
+<ID>1941</ID>
 <Name>Open Fast Folders Slot 4</Name>
 <OfficialEvent>328</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>Numpad4</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>4</Slot>
-<Type>Open Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Negate>1</Negate>
-<Type>Explorer is renaming</Type>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 5.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>328</ID>
-<Name>Open Fast Folders Slot 4</Name>
-<OfficialEvent>329</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad4</Key>
@@ -359,38 +1454,9 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>329</ID>
+<ID>1943</ID>
 <Name>Open Fast Folders Slot 5</Name>
 <OfficialEvent>330</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>Numpad5</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>5</Slot>
-<Type>Open Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Negate>1</Negate>
-<Type>Explorer is renaming</Type>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 6.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>330</ID>
-<Name>Open Fast Folders Slot 5</Name>
-<OfficialEvent>331</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad5</Key>
@@ -425,38 +1491,9 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>331</ID>
+<ID>1945</ID>
 <Name>Open Fast Folders Slot 6</Name>
 <OfficialEvent>332</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>Numpad6</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>6</Slot>
-<Type>Open Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Negate>1</Negate>
-<Type>Explorer is renaming</Type>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 7.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>332</ID>
-<Name>Open Fast Folders Slot 6</Name>
-<OfficialEvent>333</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad6</Key>
@@ -491,38 +1528,9 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>333</ID>
+<ID>1947</ID>
 <Name>Open Fast Folders Slot 7</Name>
 <OfficialEvent>334</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>Numpad7</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>7</Slot>
-<Type>Open Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Negate>1</Negate>
-<Type>Explorer is renaming</Type>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 8.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>334</ID>
-<Name>Open Fast Folders Slot 7</Name>
-<OfficialEvent>335</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad7</Key>
@@ -557,38 +1565,9 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>335</ID>
+<ID>1949</ID>
 <Name>Open Fast Folders Slot 8</Name>
 <OfficialEvent>336</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>Numpad8</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>8</Slot>
-<Type>Open Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Negate>1</Negate>
-<Type>Explorer is renaming</Type>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 9.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>336</ID>
-<Name>Open Fast Folders Slot 8</Name>
-<OfficialEvent>337</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad8</Key>
@@ -623,38 +1602,9 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>337</ID>
+<ID>1951</ID>
 <Name>Open Fast Folders Slot 9</Name>
 <OfficialEvent>338</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>Numpad9</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>9</Slot>
-<Type>Open Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Negate>1</Negate>
-<Type>Explorer is renaming</Type>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Set the path of the currently active file dialog window to the FastFolder path saved in Slot 9.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>338</ID>
-<Name>Open Fast Folders Slot 9</Name>
-<OfficialEvent>339</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>Numpad9</Key>
@@ -683,38 +1633,9 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>339</ID>
+<ID>1953</ID>
 <Name>Save Fast Folders Slot 0</Name>
 <OfficialEvent>340</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>^Numpad0</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>0</Slot>
-<Type>Save Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Negate>1</Negate>
-<Type>Explorer is renaming</Type>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Save the path of the currently active file dialog window in FastFolders Slot 0.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>340</ID>
-<Name>Save Fast Folders Slot 0</Name>
-<OfficialEvent>341</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad0</Key>
@@ -743,38 +1664,9 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>341</ID>
+<ID>1955</ID>
 <Name>Save Fast Folders Slot 1</Name>
 <OfficialEvent>342</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>^Numpad1</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>1</Slot>
-<Type>Save Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Negate>1</Negate>
-<Type>Explorer is renaming</Type>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Save the path of the currently active file dialog window in FastFolders Slot 1.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>342</ID>
-<Name>Save Fast Folders Slot 1</Name>
-<OfficialEvent>343</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad1</Key>
@@ -803,38 +1695,9 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>343</ID>
+<ID>1957</ID>
 <Name>Save Fast Folders Slot 2</Name>
 <OfficialEvent>344</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>^Numpad2</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>2</Slot>
-<Type>Save Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Negate>1</Negate>
-<Type>Explorer is renaming</Type>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Save the path of the currently active file dialog window in FastFolders Slot 2.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>344</ID>
-<Name>Save Fast Folders Slot 2</Name>
-<OfficialEvent>345</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad2</Key>
@@ -863,38 +1726,9 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>345</ID>
+<ID>1959</ID>
 <Name>Save Fast Folders Slot 3</Name>
 <OfficialEvent>346</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>^Numpad3</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>3</Slot>
-<Type>Save Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Negate>1</Negate>
-<Type>Explorer is renaming</Type>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Save the path of the currently active file dialog window in FastFolders Slot 3.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>346</ID>
-<Name>Save Fast Folders Slot 3</Name>
-<OfficialEvent>347</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad3</Key>
@@ -923,38 +1757,9 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>347</ID>
+<ID>1961</ID>
 <Name>Save Fast Folders Slot 4</Name>
 <OfficialEvent>348</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>^Numpad4</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>4</Slot>
-<Type>Save Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Negate>1</Negate>
-<Type>Explorer is renaming</Type>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Save the path of the currently active file dialog window in FastFolders Slot 4.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>348</ID>
-<Name>Save Fast Folders Slot 4</Name>
-<OfficialEvent>349</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad4</Key>
@@ -983,38 +1788,9 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>349</ID>
+<ID>1963</ID>
 <Name>Save Fast Folders Slot 5</Name>
 <OfficialEvent>350</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>^Numpad5</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>5</Slot>
-<Type>Save Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Negate>1</Negate>
-<Type>Explorer is renaming</Type>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Save the path of the currently active file dialog window in FastFolders Slot 5.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>350</ID>
-<Name>Save Fast Folders Slot 5</Name>
-<OfficialEvent>351</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad5</Key>
@@ -1043,38 +1819,9 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>351</ID>
+<ID>1965</ID>
 <Name>Save Fast Folders Slot 6</Name>
 <OfficialEvent>352</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>^Numpad6</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>6</Slot>
-<Type>Save Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Negate>1</Negate>
-<Type>Explorer is renaming</Type>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Save the path of the currently active file dialog window in FastFolders Slot 6.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>352</ID>
-<Name>Save Fast Folders Slot 6</Name>
-<OfficialEvent>353</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad6</Key>
@@ -1103,38 +1850,9 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>353</ID>
+<ID>1967</ID>
 <Name>Save Fast Folders Slot 7</Name>
 <OfficialEvent>354</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>^Numpad7</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>7</Slot>
-<Type>Save Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Negate>1</Negate>
-<Type>Explorer is renaming</Type>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Save the path of the currently active file dialog window in FastFolders Slot 7.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>354</ID>
-<Name>Save Fast Folders Slot 7</Name>
-<OfficialEvent>355</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad7</Key>
@@ -1163,38 +1881,9 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>355</ID>
+<ID>1969</ID>
 <Name>Save Fast Folders Slot 8</Name>
 <OfficialEvent>356</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>^Numpad8</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>8</Slot>
-<Type>Save Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Negate>1</Negate>
-<Type>Explorer is renaming</Type>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Save the path of the currently active file dialog window in FastFolders Slot 8.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>356</ID>
-<Name>Save Fast Folders Slot 8</Name>
-<OfficialEvent>357</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad8</Key>
@@ -1223,701 +1912,12 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>357</ID>
+<ID>1971</ID>
 <Name>Save Fast Folders Slot 9</Name>
 <OfficialEvent>358</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^Numpad9</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>9</Slot>
-<Type>Save Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Negate>1</Negate>
-<Type>Explorer is renaming</Type>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Save the path of the currently active file dialog window in FastFolders Slot 9.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>358</ID>
-<Name>Save Fast Folders Slot 9</Name>
-<OfficialEvent>359</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>^Numpad9</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>0</Slot>
-<Type>Clear Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<Compare>${Class}</Compare>
-<Negate>0</Negate>
-<Operator>matches regular expression</Operator>
-<Type>If</Type>
-<With>(CabinetWClass|ExploreWClass)</With>
-</Condition><Condition>
-<Compare>${Control}</Compare>
-<Negate>1</Negate>
-<Operator>starts with</Operator>
-<Type>If</Type>
-<With>Edit</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Clear the path stored in FastFolders slot 0.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>359</ID>
-<Name>Clear Fast Folders Slot 0</Name>
-<OfficialEvent>360</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>!Numpad0</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>0</Slot>
-<Type>Clear Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Compare>${Control}</Compare>
-<Negate>1</Negate>
-<Operator>starts with</Operator>
-<Type>If</Type>
-<With>Edit</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Clear the path stored in FastFolders slot 0.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>360</ID>
-<Name>Clear Fast Folders Slot 0</Name>
-<OfficialEvent>361</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>!Numpad0</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>1</Slot>
-<Type>Clear Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<Compare>${Class}</Compare>
-<Negate>0</Negate>
-<Operator>matches regular expression</Operator>
-<Type>If</Type>
-<With>(CabinetWClass|ExploreWClass)</With>
-</Condition><Condition>
-<Compare>${Control}</Compare>
-<Negate>1</Negate>
-<Operator>starts with</Operator>
-<Type>If</Type>
-<With>Edit</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Clear the path stored in FastFolders slot 1.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>361</ID>
-<Name>Clear Fast Folders Slot 1</Name>
-<OfficialEvent>362</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>!Numpad1</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>1</Slot>
-<Type>Clear Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Compare>${Control}</Compare>
-<Negate>1</Negate>
-<Operator>starts with</Operator>
-<Type>If</Type>
-<With>Edit</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Clear the path stored in FastFolders slot 1.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>362</ID>
-<Name>Clear Fast Folders Slot 1</Name>
-<OfficialEvent>363</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>!Numpad1</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>2</Slot>
-<Type>Clear Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<Compare>${Class}</Compare>
-<Negate>0</Negate>
-<Operator>matches regular expression</Operator>
-<Type>If</Type>
-<With>(CabinetWClass|ExploreWClass)</With>
-</Condition><Condition>
-<Compare>${Control}</Compare>
-<Negate>1</Negate>
-<Operator>starts with</Operator>
-<Type>If</Type>
-<With>Edit</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Clear the path stored in FastFolders slot 2.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>363</ID>
-<Name>Clear Fast Folders Slot 2</Name>
-<OfficialEvent>364</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>!Numpad2</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>2</Slot>
-<Type>Clear Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Compare>${Control}</Compare>
-<Negate>1</Negate>
-<Operator>starts with</Operator>
-<Type>If</Type>
-<With>Edit</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Clear the path stored in FastFolders slot 2.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>364</ID>
-<Name>Clear Fast Folders Slot 2</Name>
-<OfficialEvent>365</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>!Numpad2</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>3</Slot>
-<Type>Clear Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<Compare>${Class}</Compare>
-<Negate>0</Negate>
-<Operator>matches regular expression</Operator>
-<Type>If</Type>
-<With>(CabinetWClass|ExploreWClass)</With>
-</Condition><Condition>
-<Compare>${Control}</Compare>
-<Negate>1</Negate>
-<Operator>starts with</Operator>
-<Type>If</Type>
-<With>Edit</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Clear the path stored in FastFolders slot 3.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>365</ID>
-<Name>Clear Fast Folders Slot 3</Name>
-<OfficialEvent>366</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>!Numpad3</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>3</Slot>
-<Type>Clear Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Compare>${Control}</Compare>
-<Negate>1</Negate>
-<Operator>starts with</Operator>
-<Type>If</Type>
-<With>Edit</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Clear the path stored in FastFolders slot 3.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>366</ID>
-<Name>Clear Fast Folders Slot 3</Name>
-<OfficialEvent>367</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>!Numpad3</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>4</Slot>
-<Type>Clear Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<Compare>${Class}</Compare>
-<Negate>0</Negate>
-<Operator>matches regular expression</Operator>
-<Type>If</Type>
-<With>(CabinetWClass|ExploreWClass)</With>
-</Condition><Condition>
-<Compare>${Control}</Compare>
-<Negate>1</Negate>
-<Operator>starts with</Operator>
-<Type>If</Type>
-<With>Edit</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Clear the path stored in FastFolders slot 4.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>367</ID>
-<Name>Clear Fast Folders Slot 4</Name>
-<OfficialEvent>368</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>!Numpad4</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>4</Slot>
-<Type>Clear Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Compare>${Control}</Compare>
-<Negate>1</Negate>
-<Operator>starts with</Operator>
-<Type>If</Type>
-<With>Edit</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Clear the path stored in FastFolders slot 4.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>368</ID>
-<Name>Clear Fast Folders Slot 4</Name>
-<OfficialEvent>369</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>!Numpad4</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>5</Slot>
-<Type>Clear Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<Compare>${Class}</Compare>
-<Negate>0</Negate>
-<Operator>matches regular expression</Operator>
-<Type>If</Type>
-<With>(CabinetWClass|ExploreWClass)</With>
-</Condition><Condition>
-<Compare>${Control}</Compare>
-<Negate>1</Negate>
-<Operator>starts with</Operator>
-<Type>If</Type>
-<With>Edit</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Clear the path stored in FastFolders slot 5.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>369</ID>
-<Name>Clear Fast Folders Slot 5</Name>
-<OfficialEvent>370</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>!Numpad5</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>5</Slot>
-<Type>Clear Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Compare>${Control}</Compare>
-<Negate>1</Negate>
-<Operator>starts with</Operator>
-<Type>If</Type>
-<With>Edit</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Clear the path stored in FastFolders slot 5.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>370</ID>
-<Name>Clear Fast Folders Slot 5</Name>
-<OfficialEvent>371</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>!Numpad5</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>6</Slot>
-<Type>Clear Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<Compare>${Class}</Compare>
-<Negate>0</Negate>
-<Operator>matches regular expression</Operator>
-<Type>If</Type>
-<With>(CabinetWClass|ExploreWClass)</With>
-</Condition><Condition>
-<Compare>${Control}</Compare>
-<Negate>1</Negate>
-<Operator>starts with</Operator>
-<Type>If</Type>
-<With>Edit</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Clear the path stored in FastFolders slot 6.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>371</ID>
-<Name>Clear Fast Folders Slot 6</Name>
-<OfficialEvent>372</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>!Numpad6</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>6</Slot>
-<Type>Clear Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Compare>${Control}</Compare>
-<Negate>1</Negate>
-<Operator>starts with</Operator>
-<Type>If</Type>
-<With>Edit</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Clear the path stored in FastFolders slot 6.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>372</ID>
-<Name>Clear Fast Folders Slot 6</Name>
-<OfficialEvent>373</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>!Numpad6</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>7</Slot>
-<Type>Clear Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<Compare>${Class}</Compare>
-<Negate>0</Negate>
-<Operator>matches regular expression</Operator>
-<Type>If</Type>
-<With>(CabinetWClass|ExploreWClass)</With>
-</Condition><Condition>
-<Compare>${Control}</Compare>
-<Negate>1</Negate>
-<Operator>starts with</Operator>
-<Type>If</Type>
-<With>Edit</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Clear the path stored in FastFolders slot 7.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>373</ID>
-<Name>Clear Fast Folders Slot 7</Name>
-<OfficialEvent>374</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>!Numpad7</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>7</Slot>
-<Type>Clear Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Compare>${Control}</Compare>
-<Negate>1</Negate>
-<Operator>starts with</Operator>
-<Type>If</Type>
-<With>Edit</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Clear the path stored in FastFolders slot 7.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>374</ID>
-<Name>Clear Fast Folders Slot 7</Name>
-<OfficialEvent>375</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>!Numpad7</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>8</Slot>
-<Type>Clear Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<Compare>${Class}</Compare>
-<Negate>0</Negate>
-<Operator>matches regular expression</Operator>
-<Type>If</Type>
-<With>(CabinetWClass|ExploreWClass)</With>
-</Condition><Condition>
-<Compare>${Control}</Compare>
-<Negate>1</Negate>
-<Operator>starts with</Operator>
-<Type>If</Type>
-<With>Edit</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Clear the path stored in FastFolders slot 8.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>375</ID>
-<Name>Clear Fast Folders Slot 8</Name>
-<OfficialEvent>376</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>!Numpad8</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>8</Slot>
-<Type>Clear Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Compare>${Control}</Compare>
-<Negate>1</Negate>
-<Operator>starts with</Operator>
-<Type>If</Type>
-<With>Edit</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Clear the path stored in FastFolders slot 8.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>376</ID>
-<Name>Clear Fast Folders Slot 8</Name>
-<OfficialEvent>377</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>!Numpad8</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>9</Slot>
-<Type>Clear Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<Compare>${Class}</Compare>
-<Negate>0</Negate>
-<Operator>matches regular expression</Operator>
-<Type>If</Type>
-<With>(CabinetWClass|ExploreWClass)</With>
-</Condition><Condition>
-<Compare>${Control}</Compare>
-<Negate>1</Negate>
-<Operator>starts with</Operator>
-<Type>If</Type>
-<With>Edit</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Clear the path stored in FastFolders slot 9.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>377</ID>
-<Name>Clear Fast Folders Slot 9</Name>
-<OfficialEvent>378</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>!Numpad9</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Slot>9</Slot>
-<Type>Clear Fast Folder</Type>
-</Action></Actions>
-<Category>Fast Folders</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Compare>${Control}</Compare>
-<Negate>1</Negate>
-<Operator>starts with</Operator>
-<Type>If</Type>
-<With>Edit</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Clear the path stored in FastFolders slot 9.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>378</ID>
-<Name>Clear Fast Folders Slot 9</Name>
-<OfficialEvent>379</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>!Numpad9</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event></Events>

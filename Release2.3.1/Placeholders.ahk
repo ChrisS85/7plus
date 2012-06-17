@@ -71,7 +71,7 @@ ExpandPlaceholder(Placeholder)
 		if(WinVer >= WIN_Vista)
 			ControlGetFocus focussed, A
 		else
-			focussed:=XPGetFocussed()
+			focussed := XPGetFocussed()
 		return focussed
 	}
 	else if(Placeholder = "WindowsVersion")

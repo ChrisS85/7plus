@@ -3,34 +3,6 @@
 <Event>
 <Actions>
 <Action>
-<Command>cmd.exe /k cd /D "${TitlePath}\"</Command>
-<RunAsAdmin>0</RunAsAdmin>
-<Type>Run a program</Type>
-<WaitForFinish>0</WaitForFinish>
-</Action></Actions>
-<Category>File Dialog</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Open CMD in the current directory of the active file dialog window.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>596</ID>
-<Name>Run CMD in current directory</Name>
-<OfficialEvent>597</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>#C</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
 <Append>1</Append>
 <Clear>0</Clear>
 <Content>${SelNM}</Content>
@@ -59,7 +31,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>597</ID>
+<ID>595</ID>
 <Name>Append file(s) to clipboard</Name>
 <OfficialEvent>598</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -98,120 +70,12 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>598</ID>
+<ID>596</ID>
 <Name>Append file(s) to clipboard: Cut</Name>
 <OfficialEvent>599</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>+X</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Path>Upward</Path>
-<Type>Set current directory</Type>
-<WindowMatchType>Active</WindowMatchType>
-</Action></Actions>
-<Category>File Dialog</Category>
-<Conditions>
-<Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition><Condition>
-<Negate>1</Negate>
-<Type>Explorer is renaming</Type>
-</Condition><Condition>
-<Compare>${Control}</Compare>
-<Negate>0</Negate>
-<Operator>equals</Operator>
-<Type>If</Type>
-<With>DirectUIHWND2</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Make backspace go upwards in file dialogs, like in the good ol' XP.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>600</ID>
-<Name>Make backspace go upwards</Name>
-<OfficialEvent>601</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>Backspace</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Append>0</Append>
-<Clear>1</Clear>
-<Content>${SelNNEM}</Content>
-<Cut>0</Cut>
-<InsertType>Text</InsertType>
-<Type>Write to clipboard</Type>
-</Action></Actions>
-<Category>File Dialog</Category>
-<Conditions>
-<Condition>
-<Compare>${Control}</Compare>
-<Negate>0</Negate>
-<Operator>equals</Operator>
-<Type>If</Type>
-<With>DirectUIHWND2</With>
-</Condition><Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Copy the names of the selected files to the clipboard.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>816</ID>
-<Name>Copy filenames to clipboard</Name>
-<OfficialEvent>817</OfficialEvent>
-<OneInstance>1</OneInstance>
-<Trigger>
-<Key>!C</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<Append>0</Append>
-<Clear>1</Clear>
-<Content>${SelNM}</Content>
-<Cut>0</Cut>
-<InsertType>Text</InsertType>
-<Type>Write to clipboard</Type>
-</Action></Actions>
-<Category>File Dialog</Category>
-<Conditions>
-<Condition>
-<Compare>${Control}</Compare>
-<Negate>0</Negate>
-<Operator>equals</Operator>
-<Type>If</Type>
-<With>DirectUIHWND2</With>
-</Condition><Condition>
-<ListViewOnly>1</ListViewOnly>
-<Negate>0</Negate>
-<Type>Window is file dialog</Type>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Copy the paths of the selected files to the clipboard.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>817</ID>
-<Name>Copy full filepaths to clipboard</Name>
-<OfficialEvent>818</OfficialEvent>
-<OneInstance>1</OneInstance>
-<Trigger>
-<Key>^!C</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event><Event>
@@ -242,7 +106,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>818</ID>
+<ID>816</ID>
 <Name>Append filenames to clipboard</Name>
 <OfficialEvent>819</OfficialEvent>
 <OneInstance>1</OneInstance>
@@ -278,12 +142,148 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>819</ID>
+<ID>817</ID>
 <Name>Append full filepaths to clipboard</Name>
 <OfficialEvent>820</OfficialEvent>
 <OneInstance>1</OneInstance>
 <Trigger>
 <Key>^+!C</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Command>cmd.exe /k cd /D "${TitlePath}\"</Command>
+<RunAsAdmin>0</RunAsAdmin>
+<Type>Run a program</Type>
+<WaitForFinish>0</WaitForFinish>
+</Action></Actions>
+<Category>File Dialog</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Open CMD in the current directory of the active file dialog window.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>2210</ID>
+<Name>Run CMD in current directory</Name>
+<OfficialEvent>597</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>#C</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Path>Upward</Path>
+<Type>Set current directory</Type>
+<WindowMatchType>Active</WindowMatchType>
+</Action></Actions>
+<Category>File Dialog</Category>
+<Conditions>
+<Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition><Condition>
+<Negate>1</Negate>
+<Type>Explorer is renaming</Type>
+</Condition><Condition>
+<Compare>${Control}</Compare>
+<Negate>0</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>DirectUIHWND2</With>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Make backspace go upwards in file dialogs, like in the good ol' XP.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>2214</ID>
+<Name>Make backspace go upwards</Name>
+<OfficialEvent>601</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>Backspace</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Append>0</Append>
+<Clear>1</Clear>
+<Content>${SelNNEM}</Content>
+<Cut>0</Cut>
+<InsertType>Text</InsertType>
+<Type>Write to clipboard</Type>
+</Action></Actions>
+<Category>File Dialog</Category>
+<Conditions>
+<Condition>
+<Compare>${Control}</Compare>
+<Negate>0</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>DirectUIHWND2</With>
+</Condition><Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Copy the names of the selected files to the clipboard.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>2430</ID>
+<Name>Copy filenames to clipboard</Name>
+<OfficialEvent>817</OfficialEvent>
+<OneInstance>1</OneInstance>
+<Trigger>
+<Key>!C</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Append>0</Append>
+<Clear>1</Clear>
+<Content>${SelNM}</Content>
+<Cut>0</Cut>
+<InsertType>Text</InsertType>
+<Type>Write to clipboard</Type>
+</Action></Actions>
+<Category>File Dialog</Category>
+<Conditions>
+<Condition>
+<Compare>${Control}</Compare>
+<Negate>0</Negate>
+<Operator>equals</Operator>
+<Type>If</Type>
+<With>DirectUIHWND2</With>
+</Condition><Condition>
+<ListViewOnly>1</ListViewOnly>
+<Negate>0</Negate>
+<Type>Window is file dialog</Type>
+</Condition></Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Copy the paths of the selected files to the clipboard.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>2431</ID>
+<Name>Copy full filepaths to clipboard</Name>
+<OfficialEvent>818</OfficialEvent>
+<OneInstance>1</OneInstance>
+<Trigger>
+<Key>^!C</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event><Event>
@@ -307,7 +307,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>826</ID>
+<ID>2440</ID>
 <Name>Create new textfile</Name>
 <OfficialEvent>827</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -336,7 +336,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>827</ID>
+<ID>2441</ID>
 <Name>Create new folder</Name>
 <OfficialEvent>828</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -371,7 +371,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>895</ID>
+<ID>2509</ID>
 <Name>Open image files in image editor</Name>
 <OfficialEvent>896</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -407,7 +407,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>896</ID>
+<ID>2510</ID>
 <Name>Open non-image files in text editor</Name>
 <OfficialEvent>897</OfficialEvent>
 <OneInstance>0</OneInstance>
