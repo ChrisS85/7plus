@@ -1362,8 +1362,6 @@ winget
 
 TODO:
 Documentation of new Accessor features
-Calculator:
-	-Icon not working
 favorite buttons for Accessor?
 keyboard hotkeys in settings window activate when other page is visible
 icon in context menu

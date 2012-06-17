@@ -44,6 +44,7 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 		Priority := CSciTE4AutoHotkeyPlugin.Instance.Priority
 		ResultIndexingKey := "Path"
 	}
+
 	Init()
 	{
 		path := this.GetSciTE4AutoHotkeyPath()
@@ -61,15 +62,18 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 			RegWrite, REG_SZ, HKCR, Scite4AHK.Application\CLSID,, {D7334085-22FB-416E-B398-B5038A5A0784}
 		}
 	}
+
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
 		return false
 	}
+
 	ShowSettings(PluginSettings, GUI, PluginGUI)
 	{
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "RememberQueries", "Remember and show the S4AHK tabs of the last query for each S4AHK tab.")
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "UseWhenActive", "Show all S4AHK tabs when Accessor opens and no saved queries for the current tab are available.")
 	}
+
 	OnOpen(Accessor)
 	{
 		this.List1 := this.GetListOfOpenSciTE4AutoHotkeyTabs()
@@ -85,8 +89,7 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 			this.Priority += 1
 			if(!Accessor.Filter && this.Settings.RememberQueries && index := this.MRUList.FindKeyWithValue("Path", Path := this.GetSciTE4AutoHotkeyActiveTab()))
 			{
-				Accessor.SetFilter(this.MRUList[index].Command)
-				Edit_Select(0, -1, "", "ahk_id " Accessor.GUI.EditControl.hwnd)
+				Accessor.SetFilter(this.MRUList[index].Command, 0, -1)
 				
 				for index2, item in Accessor.GUI.ListView.Items
 					if(item[2] = this.MRUList[index].Entry && item[3] = "S4AHK Tab")
@@ -96,12 +99,10 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 					}
 			}
 			else if(!Accessor.Filter && this.Settings.UseWhenActive)
-			{
-				Accessor.SetFilter(this.Settings.Keyword " ")
-				Edit_Select(0, -1, "", "ahk_id " Accessor.GUI.EditControl.hwnd)
-			}
+				Accessor.SetFilter(this.Settings.Keyword " ", 0, -1)
 		}
 	}
+
 	OnExit(Accessor)
 	{
 		if(this.Icon)
@@ -110,6 +111,7 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 		if(!this.IsRegistered)
 			RegDelete, HKCR, Scite4AHK.Application
 	}
+
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		if(!WinActive("ahk_class " this.WindowClassName) && strLen(Filter) < 2 && !KeywordSet)
@@ -192,6 +194,7 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 		   list.Insert(tabs[A_Index-1])
 		return list
 	}
+
 	GetSciTE4AutoHotkeyPath()
 	{
 		hwnd := WinExist("ahk_class " this.WindowClassName)
@@ -201,6 +204,7 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 		Path := GetModuleFileNameEx(pid)
 		return Path
 	}
+	
 	GetSciTE4AutoHotkeyActiveTab()
 	{		
 		scite := ComObjActive("SciTE4AHK.Application")

@@ -1925,3 +1925,11 @@ New(Obj, Params*)
 {
 	return value := new Obj(Params*)
 }
+
+;Loads an icon from a path and returns the hIcon. Needs to be freed afterwards with DestroyIcon()
+LoadIcon(Path)
+{
+	hBitmap := DllCall("LoadImage", "PTR", 0, "str", Path, "uint", IMAGE_BITMAP := 0, "int", 0, "int", 0, "uint", LD_LOADFROMFILE := 0x00000010, "PTR")
+	msgbox % "Path: " Path " bitmap: " hBitmap " errorlevel: " ErrorLevel
+	return hIcon
+}

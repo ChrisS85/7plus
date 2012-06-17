@@ -16,6 +16,7 @@ Class CWeatherPlugin extends CAccessorPlugin
 		KeywordOnly := false ;This is actually true, but IsInSinglePluginContext needs to be called every time so it is handled manually here
 		MinChars := 2
 	}
+
 	Class CResult extends CAccessorPlugin.CResult
 	{
 		Class CActions extends CArray
@@ -30,6 +31,7 @@ Class CWeatherPlugin extends CAccessorPlugin
 		Priority := CWeatherPlugin.Instance.Priority
 		MatchQuality := 1 ; All results are equally good
 	}
+
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
 		if(InStr(Filter, this.Settings.Keyword " ") = 1)
@@ -44,17 +46,20 @@ Class CWeatherPlugin extends CAccessorPlugin
 		this.Cleared := false
 		return false
 	}
+
 	OnOpen(Accessor)
 	{
 		this.List := Array()
 		this.Cleared := false
 	}
+
 	OnClose(Accessor)
 	{
 		for index, ListEntry in this.List
 			if(ListEntry.Icon)
 				DestroyIcon(ListEntry.Icon)
 	}
+
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		static Penalty := 0.00001
@@ -73,10 +78,12 @@ Class CWeatherPlugin extends CAccessorPlugin
 		}
 		return Results
 	}
+
 	Copy(Accessor, ListEntry)
 	{
 		Clipboard := ListEntry.Title
 	}
+	
 	OnFilterChanged(ListEntry, Filter, LastFilter)
 	{
 		;SetTimerF(new Delegate(this, "QueryWeatherResult"), -100)

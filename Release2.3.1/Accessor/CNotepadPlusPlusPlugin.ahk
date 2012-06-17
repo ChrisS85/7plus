@@ -44,20 +44,20 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 		Priority := CNotepadPlusPlusPlugin.Instance.Priority
 		ResultIndexingKey := "Path"
 	}
+
 	Init()
 	{
 		path := this.GetNotepadPlusPlusPath()
 		if(path)
 			this.Icon := ExtractIcon(path "\Notepad++.exe", 1, 64)
 	}
-	IsInSinglePluginContext(Filter, LastFilter)
-	{
-	}
+
 	ShowSettings(PluginSettings, GUI, PluginGUI)
 	{
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "RememberQueries", "Remember and show the NP++ tabs of the last query for each NP++ tab.")
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "UseWhenActive", "Show all NP++ tabs when Accessor opens and no saved queries for the current tab are available.")
 	}
+
 	OnOpen(Accessor)
 	{
 		this.List1 := this.GetListOfOpenNotepadPlusPlusTabs()
@@ -74,8 +74,7 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 			this.Priority += 1
 			if(!Accessor.Filter && this.Settings.RememberQueries && index := this.MRUList.FindKeyWithValue("Path", Path := this.GetNotepadPlusPlusActiveTab()))
 			{
-				Accessor.SetFilter(this.MRUList[index].Command)
-				Edit_Select(0, -1, "", "ahk_id " Accessor.GUI.EditControl.hwnd)
+				Accessor.SetFilter(this.MRUList[index].Command, 0, -1)
 				
 				for index2, item in Accessor.GUI.ListView.Items
 					if(item[2] = this.MRUList[index].Entry && item[3] = "NP++ Tab")
@@ -85,17 +84,16 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 					}
 			}
 			else if(!Accessor.Filter && this.Settings.UseWhenActive)
-			{
-				Accessor.SetFilter(this.Settings.Keyword " ")
-				Edit_Select(0, -1, "", "ahk_id " Accessor.GUI.EditControl.hwnd)
-			}
+				Accessor.SetFilter(this.Settings.Keyword " ", 0, -1)
 		}
 	}
+
 	OnExit(Accessor)
 	{
 		if(this.Icon)
 			DestroyIcon(this.Icon)
 	}
+
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		if(!WinActive("ahk_class " this.WindowClassName) && strLen(Filter) < 2 && !KeywordSet)
@@ -180,6 +178,7 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 		WinActivate ahk_id %hwnd%
 		SendMessage, 0x804, view - 1, index - 1, ,ahk_id %hwnd% ;NPPM_ACTIVATEDOC
 	}
+
 	GetListOfOpenNotepadPlusPlusTabs(WhichView = 1)
 	{
 		IsUnicode := this.IsNotepadPlusPlusUnicode()
@@ -223,6 +222,7 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 		}
 		return list
 	}
+
 	IsNotepadPlusPlusUnicode()
 	{
 		hwnd := WinExist("ahk_class " this.WindowClassName)
@@ -240,6 +240,7 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 			return 1
 		return 0
 	}
+
 	GetNotepadPlusPlusPath()
 	{
 		hwnd := WinExist("ahk_class " this.WindowClassName)
@@ -258,6 +259,7 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 			Ansi2Unicode(Path, Path)
 		return Path
 	}
+
 	;May only be used while Accessor window is visible
 	GetNotepadPlusPlusActiveTab()
 	{

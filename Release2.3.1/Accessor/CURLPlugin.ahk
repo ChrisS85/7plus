@@ -34,6 +34,7 @@ Class CURLPlugin extends CAccessorPlugin
 		IncludeIEBookmarks := true
 		UseSelectedText := true
 	}
+
 	Class CResult extends CAccessorPlugin.CResult
 	{
 		Class CActions extends CArray
@@ -48,6 +49,7 @@ Class CURLPlugin extends CAccessorPlugin
 		Priority := CURLPlugin.Instance.Priority
 		Detail1 := "Bookmark"
 	}
+
 	Init(PluginSettings)
 	{
 		if(this.Settings.IncludeOperaBookmarks)
@@ -59,10 +61,12 @@ Class CURLPlugin extends CAccessorPlugin
 		if(this.Settings.IncludeIEBookmarks)
 			this.LoadIEBookmarks()
 	}
+
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
 		return IsURL(Filter)
 	}
+
 	OnOpen(Accessor)
 	{
 		if(this.Settings.UseSelectedText && !Accessor.Filter && !Accessor.FilterWithoutTimer && Accessor.CurrentSelection && IsURL(Accessor.CurrentSelection))
@@ -70,6 +74,7 @@ Class CURLPlugin extends CAccessorPlugin
 		if({this.OperaClass : "", this.ChromeClass : "", this.IEClass : "", this.FirefoxClass : ""}.HasKey(WinGetClass("ahk_id " Accessor.PreviousWindow)))
 			this.Priority += 0.5
 	}
+
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		Results := {}
@@ -135,6 +140,7 @@ Class CURLPlugin extends CAccessorPlugin
 				}
 		return Results
 	}
+
 	ShowSettings(PluginSettings, Accessor, PluginGUI)
 	{
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "IncludeOperaBookmarks", "Include Opera bookmarks", "", "")
@@ -169,6 +175,7 @@ Class CURLPlugin extends CAccessorPlugin
 				this.ChromeBookmarks.Insert({Name : obj.Name, URL : obj.URL})
 		}
 	}
+
 	LoadOperaBookmarks()
 	{
 		/*
@@ -211,6 +218,7 @@ Class CURLPlugin extends CAccessorPlugin
 			}
 		}
 	}
+
 	LoadIEBookmarks()
 	{
 		Loop, % ExpandPathPlaceholders("%USERPROFILE%") "\Favorites\*.url", 0, 1
@@ -227,6 +235,7 @@ Class CURLPlugin extends CAccessorPlugin
 				this.IEBookmarks.Insert({Name : SubStr(A_LoopFileName, 1, -4), URL : Target})
 		}
 	}
+	
 	LoadFirefoxBookmarks()
 	{
 		Loop, % DBPath := ExpandPathPlaceholders("%APPDATA%") "\Mozilla\Firefox\Profiles\*.*", 2, 0

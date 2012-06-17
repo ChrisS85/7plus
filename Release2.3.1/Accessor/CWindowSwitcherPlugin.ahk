@@ -22,6 +22,7 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 		FuzzySearch := false
 		ShowWithEmptyQuery := false
 	}
+
 	Class CResult extends CAccessorPlugin.CResult
 	{
 		Class CActions extends CArray
@@ -43,15 +44,18 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 		Priority := CWindowSwitcherPlugin.Instance.Priority
 		ResultIndexingKey := "Title"
 	}
+
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
 		return false
 	}
+
 	OnOpen(Accessor)
 	{
 		this.List := GetWindowInfo()
 		SetTimerF(new Delegate(this, "UpdateTimes"), -2000)
 	}
+
 	OnClose(Accessor)
 	{
 		;This is apparently not desired for icons obtained by WM_GETICON or GetClassLong since they are shared? See http://msdn.microsoft.com/en-us/library/windows/desktop/ms648063(v=vs.85).aspx
@@ -60,12 +64,14 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 				;~ if(ListEntry.Icon != Accessor.GenericIcons.Application)
 					;~ DestroyIcon(ListEntry.Icon)
 	}
+
 	GetDisplayStrings(ListEntry, ByRef Title, ByRef Path, ByRef Detail1, ByRef Detail2)
 	{
 		Path := ListEntry.ExeName
 		Detail1 := "CPU: " ListEntry.CPU "%"
 		Detail2 := ListEntry.OnTop
 	}
+
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		if(!Filter && !this.Settings.ShowWithEmptyQuery)
@@ -95,23 +101,28 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 		}
 		return Results
 	}
+
 	ShowSettings(PluginSettings, Accessor, PluginGUI)
 	{
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "IgnoreFileExtensions", "Ignore .exe extension in program paths", "", "")
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "ShowWithEmptyQuery", "Show open windows when query string is empty")
 	}
+
 	ActivateWindow(Accessor, ListEntry)
 	{
 		WinActivate % "ahk_id " ListEntry.hwnd
 	}
+
 	EndProcess(Accessor, ListEntry)
 	{
 		WinKill % "ahk_id " ListEntry.hwnd
 	}
+
 	CloseWindow(Accessor, ListEntry)
 	{
 		PostMessage, 0x112, 0xF060,,, % "ahk_id " ListEntry.hwnd
 	}
+
 	ToggleOnTop(Accessor, ListEntry)
 	{
 		WinSet, AlwaysOnTop, Toggle, % "ahk_id " ListEntry.hwnd
@@ -119,6 +130,7 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 		Accessor.GUI.ListView.Items[Accessor.List.IndexOf(ListEntry)][4] := ListEntry.OnTop
 		return true
 	}
+	
 	UpdateTimes()
 	{
 		Accessor := CAccessor.Instance

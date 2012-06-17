@@ -98,10 +98,6 @@ Class CFileSearchPlugin extends CAccessorPlugin
 		Detail1 := "Search result"
 	}
 
-	OnOpen(Accessor)
-	{
-	}
-
 	Init(PluginSettings)
 	{
 		this.hModule := DllCall("LoadLibrary", "Str", this.DllPath, "PTR")
@@ -116,10 +112,12 @@ Class CFileSearchPlugin extends CAccessorPlugin
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "UseIcons", "Use proper icons (not recommended)", "", "", "", "", "", "", "If checked, 7plus will use the correct icon for each file. This can cause instabilities for large results.")
 		AddControl(PluginSettings, PluginGUI, "UpDown", "IndexingFrequency", "1-100", "", "Indexing frequency[hours]:", "", "", "", "", "This plugin uses an index to speed up the search.`nTo make sure that the retrieved files aren't outdated`nit needs to be rebuilt regularly. Depending on the`nnumber of files this can take up to a minute.")
 	}
+
 	SaveSettings(PluginSettings, GUI, PluginGUI)
 	{
 		this.BuildFileDatabase()
 	}
+
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		if(!KeywordSet)
@@ -240,6 +238,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 			DllCall("FreeLibrary", "PTR", this.hModule)
 		this.Remove("hModule")
 	}
+	
 	SearchInAccessor(Accessor, ListEntry)
 	{
 		this.SearchAnyway := true

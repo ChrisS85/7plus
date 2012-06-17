@@ -15,6 +15,7 @@ Class CRegistryPlugin extends CAccessorPlugin
 		CloseRegedit := true
 		UseSelectedText := true
 	}
+
 	Class CResult extends CAccessorPlugin.CResult
 	{
 		Class CActions extends CArray
@@ -31,20 +32,24 @@ Class CRegistryPlugin extends CAccessorPlugin
 		Path := "Open Registry"
 		Detail1 := "Registry"
 	}
+
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
 		return IsRegKey(Filter) ? true : false
 	}
+
 	OnOpen(Accessor)
 	{
 		if(this.Settings.UseSelectedText && !Accessor.FilterWithoutTimer && !Accessor.Filter && Accessor.CurrentSelection && IsRegKey(Accessor.CurrentSelection))
 			Accessor.SetFilter(Accessor.CurrentSelection)
 	}
+
 	ShowSettings(PluginSettings, GUI, PluginGUI)
 	{
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "CloseRegedit", "Close open Regedit windows when opening key (recommended)", "", "", "", "", "", "", "This is suggested since there might be problems`n to open the correct key when Regedit is already running.")
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "UseSelectedText", "Automatically open the selected text as registry path in Accessor when appropriate", "", "")
 	}
+
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		Results := Array()
@@ -58,6 +63,7 @@ Class CRegistryPlugin extends CAccessorPlugin
 		}
 		return Results
 	}
+
 	OpenKey(Accessor, ListEntry)
 	{
 		if(ListEntry.Title)
@@ -72,6 +78,9 @@ Class CRegistryPlugin extends CAccessorPlugin
 		}
 	}
 }
+
+
+
 ;Determines if a string is a registry key. Returns the full length version of it if it is.
 IsRegKey(Key)
 {

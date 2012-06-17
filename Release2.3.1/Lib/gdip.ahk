@@ -1505,7 +1505,7 @@ Gdip_CreateBitmapFromFile(sFile, IconNumber=1, IconSize="")
 	if ext in exe,dll
 	{
 		Sizes := IconSize ? IconSize : 256 "|" 128 "|" 64 "|" 48 "|" 32 "|" 16
-		VarSetCapacity(buf, 32+2*A_PtrSize)
+		VarSetCapacity(buf, 8 + 3 * A_PtrSize)
 		Loop, Parse, Sizes, |
 		{
 			DllCall("PrivateExtractIcons", "str", sFile, "int", IconNumber-1, "int", A_LoopField, "int", A_LoopField, "ptr*", hIcon, "ptr*", 0, "uint", 1, "uint", 0)
@@ -1517,8 +1517,8 @@ Gdip_CreateBitmapFromFile(sFile, IconNumber=1, IconSize="")
 				DestroyIcon(hIcon)
 				continue
 			}
-			hbmColor := NumGet(buf, 12+A_PtrSize)
-			hbmMask  := NumGet(buf, 12)
+			hbmColor := NumGet(buf, 8 + 2 * A_PtrSize)
+			hbmMask  := NumGet(buf, 8 + A_PtrSize)
 
 			if !(hbmColor && DllCall("GetObject", "ptr", hbmColor, "int", 24, "ptr", &buf))
 			{
@@ -1533,15 +1533,16 @@ Gdip_CreateBitmapFromFile(sFile, IconNumber=1, IconSize="")
 		Width := NumGet(buf, 4, "int"),  Height := NumGet(buf, 8, "int")
 		hbm := CreateDIBSection(Width, -Height), hdc := CreateCompatibleDC(), obm := SelectObject(hdc, hbm)
 
-		if !DllCall("DrawIconEx", "ptr", hdc, "int", 0, "int", 0, "ptr", hIcon, "uint", Width, "uint", Height, "uint", 0, "ptr", 0, "uint", 3)
+		if(!DllCall("DrawIconEx", "ptr", hdc, "int", 0, "int", 0, "ptr", hIcon, "uint", Width, "uint", Height, "uint", 0, "ptr", 0, "uint", 3))
 		{
 			DestroyIcon(hIcon)
 			return -2
 		}
 
-		VarSetCapacity(dib, 84)
-		DllCall("GetObject", "ptr", hbm, "int", A_PtrSize = 8 ? 96 : 84, "ptr", &dib) ; sizeof(DIBSECTION) = 76+2*(A_PtrSize=8?4:0)+2*A_PtrSize
-		Stride := NumGet(dib, 12, "int"), Bits := NumGet(dib, 20+(A_PtrSize=8?4:0)) ; padding
+		VarSetCapacity(dib, 84 + 3 * A_PtrSize)
+		DllCall("GetObject", "ptr", hbm, "int", 84 + 3 * A_PtrSize, "ptr", &dib) ; sizeof(DIBSECTION) = 76+2*(A_PtrSize=8?4:0)+2*A_PtrSize
+		Stride := NumGet(dib, 12, "int")
+		Bits := NumGet(dib, 20 + (A_PtrSize = 8 ? 4 : 0)) ; padding
 
 		DllCall("gdiplus\GdipCreateBitmapFromScan0", "int", Width, "int", Height, "int", Stride, "int", 0x26200A, "ptr", Bits, "ptr*", pBitmapOld)
 		pBitmap := Gdip_CreateBitmap(Width, Height), G := Gdip_GraphicsFromImage(pBitmap)

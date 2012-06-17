@@ -14,6 +14,7 @@ Class CRunPlugin extends CAccessorPlugin
 		MinChars := 1
 		BasePriority := 0.2
 	}
+
 	Class CResult extends CAccessorPlugin.CResult
 	{
 		Class CActions extends CArray
@@ -32,10 +33,12 @@ Class CRunPlugin extends CAccessorPlugin
 		;By indexing the results from this plugin it will rank higher when a specific command has been executed multiple times
 		ResultIndexingKey := "Path"
 	}
+
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
 		return false
 	}
+	
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		Results := Array()

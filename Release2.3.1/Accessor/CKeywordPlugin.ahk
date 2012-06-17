@@ -15,6 +15,7 @@ Class CKeywordPlugin extends CAccessorPlugin
 		KeywordOnly := true
 		MinChars := 2
 	}
+
 	Class CResult extends CAccessorPlugin.CResult
 	{
 		Class CActions extends CArray
@@ -26,10 +27,12 @@ Class CKeywordPlugin extends CAccessorPlugin
 		Priority := CKeywordPlugin.Instance.Priority
 		MatchQuality := 1 ;Only one result if this plugin applies
 	}
+
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
 		return false
 	}
+
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		if(Accessor.CurrentSelection && Filter := SubStr(Accessor.FilterWithoutTimer, StrLen(this.Settings.Keyword) + 2))
@@ -44,6 +47,7 @@ Class CKeywordPlugin extends CAccessorPlugin
 			return Results
 		}
 	}
+	
 	LearnKeyword(Accessor, ListEntry)
 	{
 		if(ListEntry.Path)

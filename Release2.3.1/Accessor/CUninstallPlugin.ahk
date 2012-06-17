@@ -20,6 +20,7 @@ Class CUninstallPlugin extends CAccessorPlugin
 		MinChars := 0
 		FuzzySearch := false
 	}
+
 	Class CResult extends CAccessorPlugin.CResult
 	{
 		Class CActions extends CArray
@@ -41,20 +42,24 @@ Class CUninstallPlugin extends CAccessorPlugin
 		Actions := new this.CActions()
 		Priority := CUninstallPlugin.Instance.Priority
 	}
+
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
 		return false
 	}
+
 	OnOpen(Accessor)
 	{
 		this.List := Array()
 	}
+
 	OnClose(Accessor)
 	{
 		for index, ListEntry in this.List
 			if(ListEntry.Icon != Accessor.GenericIcons.Application)			
 				DestroyIcon(ListEntry.Icon)
 	}
+
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		;Lazy loading
@@ -78,6 +83,7 @@ Class CUninstallPlugin extends CAccessorPlugin
 		}
 		return Results
 	}
+
 	Uninstall(Accessor, ListEntry)
 	{
 		Run(ListEntry.UninstallString)
@@ -93,6 +99,7 @@ Class CUninstallPlugin extends CAccessorPlugin
 			Accessor.RefreshList()
 		}
 	}
+	
 	LoadUninstallEntries()
 	{
 		Loop, HKLM , SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, 2, 0

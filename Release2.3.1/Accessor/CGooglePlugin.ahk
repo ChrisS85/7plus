@@ -16,6 +16,7 @@ Class CGooglePlugin extends CAccessorPlugin
 		KeywordOnly := false ;This is actually true, but IsInSinglePluginContext needs to be called every time so it is handled manually here
 		MinChars := 0
 	}
+	
 	Class CResult extends CAccessorPlugin.CResult
 	{
 		Class CActions extends CArray
@@ -32,6 +33,7 @@ Class CGooglePlugin extends CAccessorPlugin
 		MatchQuality := 1 ;Only direct matches are used by this plugin
 		Detail1 := "Google result"
 	}
+
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
 		if(InStr(Filter, this.Settings.Keyword " ") = 1)
@@ -52,6 +54,7 @@ Class CGooglePlugin extends CAccessorPlugin
 		this.List := Array()
 		this.Cleared := false
 	}
+
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		if(!KeywordSet)
@@ -68,14 +71,17 @@ Class CGooglePlugin extends CAccessorPlugin
 		}
 		return Results
 	}
+
 	OpenURL(Accessor, ListEntry)
 	{
 		Run(ListEntry.URL)
 	}
+
 	Copy(Accessor, ListEntry)
 	{
 		Clipboard := ListEntry.URL
 	}
+
 	OnFilterChanged(ListEntry, Filter, LastFilter)
 	{
 		;SetTimerF(new Delegate(this, "QueryWeatherResult"), -100)

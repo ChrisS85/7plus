@@ -45,6 +45,7 @@ Class CNotesPlugin extends CAccessorPlugin
 			this.Actions := new this.CActions(NewNote)
 		}
 	}
+
 	Init()
 	{
 		if(!FileExist(Settings.ConfigPath "\Notes.xml"))
@@ -61,6 +62,7 @@ Class CNotesPlugin extends CAccessorPlugin
 				this.List.Insert(Object("Text", XMLObjectListEntry.Text))
 		}
 	}
+
 	OnExit(Accessor)
 	{
 		FileDelete, % Settings.ConfigPath "\Notes.xml"
@@ -70,6 +72,7 @@ Class CNotesPlugin extends CAccessorPlugin
 		XML_Save(XMLObject, Settings.ConfigPath "\Notes.xml")
 		DestroyIcon(this.Icon)
 	}
+
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		Results := Array()
@@ -94,13 +97,12 @@ Class CNotesPlugin extends CAccessorPlugin
 		}
 		return Results
 	}
-	ShowSettings(PluginSettings, Accessor, PluginGUI)
-	{
-	}
+
 	Copy(Accessor, ListEntry)
 	{
 		Clipboard := ListEntry.Title
 	}
+
 	CreateNote(Accessor, ListEntry)
 	{
 		if(ListEntry.Path)
@@ -109,6 +111,7 @@ Class CNotesPlugin extends CAccessorPlugin
 			Accessor.RefreshList()
 		}
 	}
+	
 	DeleteNote(Accessor, ListEntry)
 	{
 		if(ListEntry.ID)

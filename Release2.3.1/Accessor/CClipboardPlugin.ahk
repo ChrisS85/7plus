@@ -50,17 +50,13 @@ Class CClipboardPlugin extends CAccessorPlugin
 			this.Actions := new this.CActions()
 		}
 	}
-	Init()
-	{
-	}
-	OnExit(Accessor)
-	{
-	}
+
 	OnOpen(Accessor)
 	{
 		if(IsEditControlActive())
 			this.Priority += 0.5 ;Lower priority than most other dynamic priorities, since they are more specialized
 	}
+
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		global ClipboardList
@@ -126,9 +122,7 @@ Class CClipboardPlugin extends CAccessorPlugin
 		}
 		return Results
 	}
-	ShowSettings(PluginSettings, Accessor, PluginGUI)
-	{
-	}
+
 	Paste(Accessor, ListEntry)
 	{
 		if(ListEntry.ClipType = "SelectedText")
@@ -139,6 +133,7 @@ Class CClipboardPlugin extends CAccessorPlugin
 			Settimer, CClipboardPlugin_WaitForAccessorClose, -100
 		}
 	}
+	
 	WaitForAccessorClose()
 	{
 		if(!WinActive("ahk_id " CAccessor.Instance.GUI.hwnd))

@@ -61,10 +61,7 @@ Class CControlPanelPlugin extends CAccessorPlugin
 			this.List.Insert({appname : appname, localString : localized, icon : file, IconNumber : id})
 		}
 	}
-	OnExit(Accessor)
-	{
-		
-	}
+
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		Results := Array()
@@ -84,9 +81,7 @@ Class CControlPanelPlugin extends CAccessorPlugin
 		}
 		return Results
 	}
-	ShowSettings(PluginSettings, Accessor, PluginGUI)
-	{
-	}
+	
 	Open(Accessor, ListEntry)
 	{
 		if(ListEntry.AppName)

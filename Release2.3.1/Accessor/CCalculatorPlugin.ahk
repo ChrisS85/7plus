@@ -16,6 +16,7 @@ Class CCalculatorPlugin extends CAccessorPlugin
 		KeywordOnly := false ;This is actually true, but IsInSinglePluginContext needs to be called every time so it is handled manually here
 		MinChars := 0
 	}
+
 	Class CResult extends CAccessorPlugin.CResult
 	{
 		Class CActions extends CArray
@@ -31,6 +32,7 @@ Class CCalculatorPlugin extends CAccessorPlugin
 		MatchQuality := 1
 		Detail1 := "Calculator"
 	}
+
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
 		return InStr(Filter, this.Settings.Keyword) = 1
@@ -40,6 +42,7 @@ Class CCalculatorPlugin extends CAccessorPlugin
 	{
 		this.List := Array()
 	}
+
 	OnClose(Accessor)
 	{
 		if(IsObject(this.List))
@@ -47,6 +50,7 @@ Class CCalculatorPlugin extends CAccessorPlugin
 				if(ListEntry.Icon != Accessor.GenericIcons.Application)			
 					DestroyIcon(ListEntry.Icon)
 	}
+
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		if(!KeywordSet && InStr(Accessor.FilterWithoutTimer, this.SetTimer.Keyword) != 1)
@@ -62,11 +66,13 @@ Class CCalculatorPlugin extends CAccessorPlugin
 		}
 		return Results
 	}
+
 	Copy(Accessor, ListEntry)
 	{
 		if(ListEntry)
 			Clipboard := ListEntry.Title
 	}
+
 	OnFilterChanged(ListEntry, Filter, LastFilter)
 	{
 		SetTimer, QueryCalcResult, -100
@@ -119,9 +125,10 @@ QueryCalcResult()
 		{
 			if(!FileExist( A_Temp "\7plus\calc_img.gif"))
 				URLDownloadToFile, http://www.google.com/images/calc_img.gif, %A_Temp%\7plus\calc_img.gif
-			;pBitmap := Gdip_CreateBitmapFromFile(A_Temp "\7plus\calc_img.gif")
-			;hIcon := Gdip_CreateHICONFromBitmap(pBitmap)
-			hIcon := ExtractIcon(A_Temp "\7plus\calc_img.gif")
+			pBitmap := Gdip_CreateBitmapFromFile(A_Temp "\7plus\calc_img.gif")
+			hIcon := Gdip_CreateHICONFromBitmap(pBitmap)
+			;hIcon := ExtractIcon(A_Temp "\7plus\calc_img.gif")
+			;hIcon := LoadIcon(A_Temp "\7plus\calc_img.gif")
 			CCalculatorPlugin.Instance.List.Insert(Object("result",result,"URL", "http://www.google.com/search?q=" Filter, "Icon", hIcon))
 			CAccessor.Instance.RefreshList()
 		}

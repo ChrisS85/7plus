@@ -26,18 +26,14 @@ Class CAccessorHistoryPlugin extends CAccessorPlugin
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "ShowWithEmptyQuery", "Show history when query string is empty")
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "SearchHistory", "Search in history", "", "", "", "", "", "", "This is disabled by default so history entries will only show up when Accessor is opened. This is usually desired because most history entries can still be found as regular results and duplicates can be avoided this way.")
 	}
-	IsInSinglePluginContext(Filter, LastFilter)
-	{
-	}
-	OnOpen(Accessor)
-	{
-	}
+
 	OnExit(Accessor)
 	{
 		for index, item in this.List
 			if(item.Icon)
 				DestroyIcon(item.Icon)
 	}
+
 	OnPreExecute(Accessor, ListEntry, Action, Plugin)
 	{
 		if(!ListEntry.IsHistory && Action.SaveHistory && Plugin.SaveHistory && (!ListEntry.ResultIndexingKey || !getAll(getAll(this.List, "Type", ListEntry.Type), ListEntry.ResultIndexingKey, ListEntry[ListEntry.ResultIndexingKey])))
@@ -55,6 +51,7 @@ Class CAccessorHistoryPlugin extends CAccessorPlugin
 			this.List.Insert(1, Copy)
 		}
 	}
+	
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		Results := Array()

@@ -77,6 +77,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		ResultIndexingKey := "Path"
 		MatchQuality := 1 ;Only direct matches are used by FileSystem plugin
 	}
+
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
 		Filter := ExpandPathPlaceholders(Filter)
@@ -90,6 +91,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 			return false
 		return dir != "" && !InStr(Filter, "://") && InStr(Filter, "HK") != 1 ;Don't match URLs and registry keys
 	}
+
 	GetDisplayStrings(ListEntry, ByRef Title, ByRef Path, ByRef Detail1, ByRef Detail2)
 	{
 		if(InStr(FileExist(ListEntry.Path), "D"))
@@ -97,6 +99,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		else
 			Detail1 := "File"
 	}
+
 	OnOpen(Accessor)
 	{
 		;Automatically open path when a path is selected before Accessor is opened
@@ -110,6 +113,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 				Accessor.SetFilter(Dir (strEndsWith(Dir, "\") ? "" : "\"))
 		}
 	}
+	
 	OnClose(Accessor)
 	{
 		;Get rid of old icons from last query
@@ -150,7 +154,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 			;Possibly add an action to select the currently entered files
 			if(Navigation.FindNavigationSource(Accessor.PreviousWindow, "SelectFiles"))
 				Result.Actions.Insert(new CAccessor.CAction("Select these files", "SelectFiles"))
-			Result.Actions.Insert(this.SearchDirAction)
+			Result.Actions.Insert(CAccessorPlugin.CActions.SearchDir)
 			this.Result := Result
 
 
