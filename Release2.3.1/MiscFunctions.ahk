@@ -70,7 +70,10 @@ GetFreeGuiNum(start, prefix = ""){
 IsWindowUnderCursor(hwnd)
 {
 	MouseGetPos, , , win
-	return win = hwnd
+	if hwnd is number
+		return win = hwnd
+	else
+		return InStr(WinGetClass("ahk_class " win), hwnd)
 }
 
 ;Checks if a specific control is under the cursor and returns its ClassNN if it is.

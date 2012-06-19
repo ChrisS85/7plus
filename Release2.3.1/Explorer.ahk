@@ -329,7 +329,7 @@ RunExplorer()
 }
 
 ;Scroll tree list with mouse wheel
-#if (Settings.Explorer.ScrollTreeUnderMouse && ((IsWindowUnderCursor("#32770") && IsDialog()) || IsWindowUnderCursor("CabinetWClass")||IsWindowUnderCursor("ExploreWClass")) && !IsRenaming())||(IsObject(Accessor) && Accessor.GUINum && WinActive(Accessor.WindowTitle))
+#if (Settings.Explorer.ScrollTreeUnderMouse && ((IsWindowUnderCursor("#32770") && IsDialog()) || IsWindowUnderCursor("CabinetWClass") || IsWindowUnderCursor("ExploreWClass")) && !IsRenaming()) || (CAccessor.Instance.GUI.GUINum && IsWindowUnderCursor(CAccessor.Instance.GUI.hwnd))
 WheelUp::
 WheelDown::
 Wheel()
