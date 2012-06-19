@@ -70,9 +70,7 @@ GetFreeGuiNum(start, prefix = ""){
 IsWindowUnderCursor(hwnd)
 {
 	MouseGetPos, , , win
-	if(InStr(WinGetClass("ahk_id " win), hwnd))
-		return true
-	return false
+	return win = hwnd
 }
 
 ;Checks if a specific control is under the cursor and returns its ClassNN if it is.
@@ -522,7 +520,7 @@ GetVisibleWindowAtPoint(x,y,IgnoredWindow)
 ;checks if a point is in a rectangle
 IsInArea(px,py,x,y,w,h)
 {
-	return (px>x&&py>y&&px<x+w&&py<y+h)
+	return (px > x && py > y && px < x + w && py < y + h)
 }
 
 ;Checks if two rectangles overlap

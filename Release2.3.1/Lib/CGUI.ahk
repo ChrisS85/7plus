@@ -362,12 +362,12 @@ Class CGUI
 		Options - Font options, size etc. See http://www.autohotkey.com/docs/commands/Gui.htm#Font
 		Fontname - Name of the font. See http://www.autohotkey.com/docs/commands/Gui.htm#Font
 	*/
-	;~ Font(Options, Fontname)
-	;~ {
-		;~ if(this.IsDestroyed)
-			;~ return
-		;~ Gui, % this.GUINum ":Font", %Options%, %Fontname%
-	;~ }
+	Font(Options, Fontname)
+	{
+		if(this.IsDestroyed)
+			return
+		Gui, % this.GUINum ":Font", %Options%, %Fontname%
+	}
 	
 	/*
 	Function: Color

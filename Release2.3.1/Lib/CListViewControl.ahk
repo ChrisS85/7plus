@@ -205,6 +205,8 @@ Class CListViewControl Extends CControl
 				Value := this._[Name]
 			else if(Name = "LargeIcons")
 				Value := this._.ImageListManager.LargeIcons
+			else if(Name = "BackgroundImage")
+				Value := this._.BackgroundImage
 			Loop % Params.MaxIndex()
 				if(IsObject(Value)) ;Fix unlucky multi parameter __GET
 					Value := Value[Params[A_Index]]
@@ -334,7 +336,6 @@ Class CListViewControl Extends CControl
 				return Value
 		}
 	}
-	
 	/*
 	Class: CListViewControl.CItems
 	An array of all ListView rows.

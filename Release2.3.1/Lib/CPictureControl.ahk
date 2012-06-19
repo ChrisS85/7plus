@@ -143,6 +143,9 @@ Class CPictureControl Extends CControl
 	
 	Event: Click()
 	Invoked when the user clicked on the control.
+	
+	Event: DoubleClick()
+	Invoked when the user double-clicked on the control.
 	*/
 	HandleEvent(Event)
 	{

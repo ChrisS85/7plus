@@ -12,6 +12,9 @@ Class CAccessor
 	;The current (singleton) instance
 	static Instance
 	
+	;Data for buttons in GUI that represent queries or results
+	Buttons := []
+
 	;Accessor keywords for auto expansion
 	Keywords := Array()
 	
@@ -47,13 +50,13 @@ Class CAccessor
 
 	Class CSettings
 	{
-		LargeIcons := false
+		LargeIcons := true
 		CloseWhenDeactivated := true
 		TitleBar := false
 		UseAero := true
 		Transparency := 0 ;0 to 255. 0 is considered opaque here so the attribute isn't set
 		Width := 900
-		Height := 360
+		Height := 600
 		OpenInMonitorOfMouseCursor := true ;If true, Accessor window will open in the monitor where the mouse cursor is.
 		UseSelectionForKeywords := true ;If set, the selected text will automatically be used as ${1} parameter in keywords if no text is typed
 		FuzzySearchThreshold := 0.6
@@ -87,6 +90,50 @@ Class CAccessor
 			this.SaveHistory := SaveHistory
 			this.Close := Close
 			this.AllowDelayedExecution := AllowDelayedExecution
+		}
+	}
+
+	;Represents the data for a button in Accessor for storing a query or a result
+	Class CAccessorButton
+	{
+		Text := ""
+
+		;Data for query
+		Icon := ""
+		Query := ""
+		;Selections of query
+		SelectionStart := -1
+		SelectionEnd := -1
+
+		;Instance of CResult when query is not used
+		Result := "" 
+		Load(json)
+		{
+			this.Slot := json.Slot
+			this.Text := json.Text
+			this.Icon := json.Icon
+			this.Query := json.Query
+			this.SelectionStart := json.SelectionStart
+			this.SelectionEnd := json.SelectionEnd
+			this.Result := json.Result
+		}
+		Save(json)
+		{
+			json.Slot := this.Slot
+			json.Text := this.Text
+			json.Icon := this.Icon
+			json.Query := this.Query
+			json.SelectionStart := this.SelectionStart
+			json.SelectionEnd := this.SelectionEnd
+			json.Result := this.Result
+		}
+		Execute()
+		{
+			Accessor := CAccessor.Instance
+			if(this.Query)
+				Accessor.SetFilter(this.Query, this.SelectionStart, this.SelectionEnd)
+			else
+				Accessor.PerformAction("", this.Result)
 		}
 	}
 
@@ -169,8 +216,12 @@ Class CAccessor
 		{
 			FileRead, json, % Settings.ConfigPath "\Accessor.json"
 			if(!json)
+				SavedSettings := {Plugins : {}}
+			else
+				SavedSettings := lson(json)
+			if(!SavedSettings.HasKey("Keywords"))
 			{
-				SavedSettings := {Plugins : {}, Keywords : []}
+				SavedSettings.Keywords := []
 				SavedSettings.Keywords.Insert({Key : "leo", 	Command : "http://dict.leo.org/ende?search=${1}"})
 				SavedSettings.Keywords.Insert({Key : "google", 	Command : "http://google.com/search?q=${1}"})
 				SavedSettings.Keywords.Insert({Key : "w", 		Command : "http://en.wikipedia.org/wiki/Special:Search?search=${1}"})
@@ -183,8 +234,61 @@ Class CAccessor
 				SavedSettings.Keywords.Insert({Key : "ebay", 	Command : "http://www.ebay.com/sch/i.html?_nkw=${1}"})
 				SavedSettings.Keywords.Insert({Key : "yahoo", 	Command : "http://de.search.yahoo.com/search?p=${1}"})
 			}
-			else
-				SavedSettings := lson(json)
+			if(!SavedSettings.HasKey("Buttons"))
+			{
+				outputdebug AddButtons
+				SavedSettings.Buttons := []
+				Button := new this.CAccessorButton()
+				Button.Text := "Google Search"
+				Button.Query := "google "
+				Button.Icon := A_ScriptDir "\128.png"
+				SavedSettings.Buttons.Insert(Button)
+				Button := new this.CAccessorButton()
+				Button.Text := "Wikipedia Search"
+				Button.Query := "w "
+				Button.Icon := A_ScriptDir "\128.png"
+				SavedSettings.Buttons.Insert(Button)
+				Button := new this.CAccessorButton()
+				Button.Text := "Youtube Search"
+				Button.Query := "y "
+				Button.Icon := A_ScriptDir "\Icons\Youtube.png"
+				SavedSettings.Buttons.Insert(Button)
+				Button := new this.CAccessorButton()
+				Button.Text := "Google Maps Search"
+				Button.Query := "gm "
+				Button.Icon := A_ScriptDir "\128.png"
+				SavedSettings.Buttons.Insert(Button)
+				Button := new this.CAccessorButton()
+				Button.Text := "Amazon Search"
+				Button.Query := "a "
+				Button.Icon := A_ScriptDir "\Icons\Amazon.png"
+				SavedSettings.Buttons.Insert(Button)
+				Button := new this.CAccessorButton()
+				Button.Text := "Weather"
+				Button.Query := "weather "
+				Button.Icon := A_ScriptDir "\128.png"
+				SavedSettings.Buttons.Insert(Button)
+				Button := new this.CAccessorButton()
+				Button.Text := "File Search"
+				Button.Query := "find "
+				Button.Icon := A_ScriptDir "\128.png"
+				SavedSettings.Buttons.Insert(Button)
+				Button := new this.CAccessorButton()
+				Button.Text := "Calculator"
+				Button.Query := "="
+				Button.Icon := A_ScriptDir "\128.png"
+				SavedSettings.Buttons.Insert(Button)
+				Button := new this.CAccessorButton()
+				Button.Text := "Notes"
+				Button.Query := "note "
+				Button.Icon := A_ScriptDir "\128.png"
+				SavedSettings.Buttons.Insert(Button)
+				Button := new this.CAccessorButton()
+				Button.Text := "Uninstall"
+				Button.Query := "uninstall "
+				Button.Icon := A_ScriptDir "\128.png"
+				SavedSettings.Buttons.Insert(Button)
+			}
 			SavedPluginSettings := SavedSettings.Plugins
 			SavedKeywords := SavedSettings.Keywords
 		}
@@ -211,6 +315,15 @@ Class CAccessor
 		for index, Keyword in SavedKeywords
 			this.Keywords.Insert({Key : Keyword.Key, Command : Keyword.Command})
 		
+		;Init Accessor buttons
+		Loop % 12
+		{
+			Button := new this.CAccessorButton()
+			if(SavedSettings.Buttons.HasKey(A_Index))
+				Button.Load(SavedSettings.Buttons[A_Index])
+			this.Buttons.Insert(Button)
+		}
+		outputdebug % Exploreobj(this.Buttons)
 		;Init result usage tracker
 		this.ResultUsageTracker := new this.CResultUsageTracker()
 
@@ -235,7 +348,7 @@ Class CAccessor
 		this.ResultUsageTracker.OnExit()
 
 		FileDelete, % Settings.ConfigPath "\Accessor.xml"
-		SavedSettings := {Plugins : {}}
+		SavedSettings := {Buttons : [], Plugins : {}}
 		for index, Plugin in this.Plugins
 		{
 			SavedSettings.Plugins[Plugin.Type] := {}
@@ -243,6 +356,15 @@ Class CAccessor
 			Plugin.OnExit(this)
 		}
 		SavedSettings.Keywords := this.Keywords
+
+		;Save Accessor buttons
+		Loop % 12
+		{
+			Button := {}
+			this.Buttons[A_Index].Save(Button)
+			SavedSettings.Buttons.Insert(Button)
+		}
+
 		this.Settings.Save(SavedSettings)
 		;XML_Save(SavedSettings, Settings.ConfigPath "\Accessor.xml")
 		FileDelete, % Settings.ConfigPath "\Accessor.json"
@@ -473,6 +595,7 @@ Class CAccessor
 		if(!this.GUI)
 			return
 		outputdebug RefreshList()
+
 		;Reset refreshing status
 		this.IsRefreshing := true
 		this.RepeatRefresh := false
@@ -481,14 +604,24 @@ Class CAccessor
 		Filter := this.Filter
 		Parameters := this.ExpandFilter(Filter, LastFilter, Time)
 
-		if(Time)
-			FormattedTime := "in " Floor(Time/3600) ":" Floor(Mod(Time, 3600) / 60) ":" Floor(Mod(Time, 60))
-
 		;Plugins which need to use the filter string without any preparsing should use this one which doesn't contain the timer at the end
 		this.FilterWithoutTimer := Filter
 
+		this.FetchResults(Filter, LastFilter, KeywordSet, Parameters, Time)
+		if(!this.RepeatRefresh)
+			this.UpdateGUIWithResults(Time)
+
+		this.LastFilter := Filter
+		this.LastParameters := Parameters
+
+		this.IsRefreshing := false
+		if(this.RepeatRefresh)
+			this.RefreshList()
+	}
+	
+	FetchResults(Filter, LastFilter, KeywordSet, Parameters, Time)
+	{
 		this.List := Array()
-		
 		;Find out if we are in a single plugin context, and add only those items
 		for index, Plugin in this.Plugins
 		{
@@ -531,7 +664,12 @@ Class CAccessor
 
 		;Sort the list by the weighting
 		this.List := ArraySort(this.List, "SortOrder", "Down")
+	}
 
+	UpdateGUIWithResults(Time)
+	{
+		if(Time)
+			FormattedTime := "in " Floor(Time/3600) ":" Floor(Mod(Time, 3600) / 60) ":" Floor(Mod(Time, 60))
 
 		this.GUI.ListView.Redraw := false
 		
@@ -605,8 +743,6 @@ Class CAccessor
 			LV_Delete(ListCount + 1)
 			this.GUI.ListView.Items._.Remove(ListCount + A_Index, "")
 		}
-		this.LastFilter := Filter
-		this.LastParameters := Parameters
 		if(this.GUI.ListView.SelectedItems.MaxIndex() != 1)
 			this.GUI.ListView.SelectedIndex := 1
 
@@ -617,18 +753,9 @@ Class CAccessor
 
 		this.GUI.ListView.Redraw := true
 
-		;Set default text when no results and set enabled state
-		if(!(this.GUI.btnOK.Enabled := this.List.MaxIndex()))
-			this.GUI.btnOK.Text := "Run"
-
-		this.IsRefreshing := false
-		;DllCall("QueryPerformanceCounter", "Int64*", perfEnd)
-		;DllCall("QueryPerformanceFrequency", "Int64*", freq)
-		;outputdebug % "Refresh: " ((perfEnd - perfstart)/freq*1000) ", SearchTime: " (SearchTime / freq*1000)
-		if(this.RepeatRefresh)
-			this.RefreshList()
+		this.UpdateButtonText()
 	}
-	
+
 	;Registers an Accessor plugin with this class. This needs to be done.
 	RegisterPlugin(Type, Plugin)
 	{
@@ -638,7 +765,14 @@ Class CAccessor
 
 	OnSelectionChanged()
 	{
-		if(IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]))
+		this.UpdateButtonText()
+	}
+	UpdateButtonText()
+	{
+		;Set default text when no results and set enabled state
+		if(!(this.GUI.btnOK.Enabled := this.List.MaxIndex()))
+			this.GUI.btnOK.Text := "Run"
+		else if(IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]))
 		{
 			;Remove hotkey text after tab character
 			ButtonText := (Pos := InStr(ListEntry.Actions.DefaultAction.Name, "`t")) ? SubStr(ListEntry.Actions.DefaultAction.Name, 1, Pos - 1) : ListEntry.Actions.DefaultAction.Name
@@ -891,17 +1025,88 @@ return
 
 Class CAccessorGUI extends CGUI
 {
+	s := this.SetStyle()
 	Width := CAccessor.Instance.Settings.Width
 	Height := CAccessor.Instance.Settings.Height
-	EditControl := this.AddControl("Edit", "EditControl", "w" this.Width - 94 " y10 -Multi", "")
-	ListView := this.AddControl("ListView", "ListView", "w" this.Width - 94 " y+10 h" (this.Height - 46) " AltSubmit 0x8 -Multi NoSortHdr", "Title|Path| | |")
-	btnOK := this.AddControl("Button", "btnOK", "y10 x+10 w75 section Default", "&OK")
-	btnCancel := this.AddControl("Button", "btnCancel", "y+8 w75", "&Cancel")
-	btnConfigKeywords := this.AddControl("Button", "btnConfigKeywords", "xs+0 y" this.Height - 56 " w75", "&Keywords")
-	btnConfigPlugins := this.AddControl("Button", "btnConfigPlugins", "xs+0 y" this.Height - 28 " w75", "&Plugins")
+	EditControl := this.AddControl("Edit", "EditControl", "Section x40 w" this.Width - 114 " y20 -Multi cBlack -Background", "")
+	Logo := this.AddControl("Picture", "picLogo", "x+-4 y+-32 w40 h40", A_ScriptDir "\128.png")
+	;b := this.Color(0x404040, 0x404040)
+	;f := this.Font("cWhite", "")
+	btnOK := this.AddControl("Button", "btnOK", "y10 xs+120 w75 Default hidden", "&OK")
+	ListView := this.AddControl("ListView", "ListView", "xs+0 ys+100 w" this.Width - 114 " h" (this.Height - 130) "cBlack Background0xededee AltSubmit -Multi NoSortHdr", "Title|Path| | |")
+	;btnCancel := this.AddControl("Button", "btnCancel", "y+8 w75", "&Cancel")
+	;btnConfigKeywords := this.AddControl("Button", "btnConfigKeywords", "xs+0 y" this.Height - 140 " w75", "&Keywords")
+	;btnConfigPlugins := this.AddControl("Button", "btnConfigPlugins", "xs+0 y" this.Height - 112 " w75", "&Plugins")
+	Footer := this.AddControl("Picture", "Footer", "xs+1 y+-1 w" this.Width - 116 " h20 +0xE")
+	;Settings := this.AddControl("Picture", "picSettings", "x+-20 w20 h20 +0xE", A_ScriptDir "\Icons\AccessorSettings.png")
+	Buttons := []
+	ButtonLabels := []
+	SetStyle()
+	{
+		this.Color(0x3E3D40, 0xFFFFFF)
+		;Gui, % this.GUINum ":Font", cWhite
+		GuiControl, % this.GUINum ": +Background0xFFFFFF", % this.EditControl.hwnd
+	}
 	__new()
 	{
-		if(CAccessor.Instance.Settings.OpenInMonitorOfMouseCursor)
+		Accessor := CAccessor.Instance
+
+		;Use a 7plus image as background for the listview
+		pBitmap := Gdip_CreateBitmapFromFile(A_ScriptDir "\128.png")
+		Width := Gdip_GetImageWidth(pBitmap)
+		Height := Gdip_GetImageHeight(pBitmap)
+		ListViewWidth := this.ListView.Width
+		ListViewHeight := this.ListView.Height
+		pLogo := Gdip_CreateBitmap(ListViewWidth, ListViewHeight)
+		pGraphics := Gdip_GraphicsFromImage(pLogo)
+		Gdip_SetInterpolationMode(pGraphics, 7)
+		pBrush := Gdip_BrushCreateSolid(0xFFededee)
+		Gdip_FillRectangle(pGraphics, pBrush, 0, 0, ListViewWidth, ListViewHeight)
+		Gdip_DeleteBrush(pBrush)
+		Gdip_DrawImage(pGraphics, pBitmap, ListViewWidth / 2 - Width / 2, ListViewHeight / 2 - Height / 2, Width, Height, "", "", "", "", 0.25)
+		Gdip_DeleteGraphics(pGraphics)
+		Gdip_DisposeImage(pBitmap)
+		hBitmap := Gdip_CreateHBITMAPFromBitmap(pLogo)
+		Gdip_DisposeImage(pLogo)
+		VarSetCapacity(LVBKIMAGE, 12 + 3 * A_PtrSize, 0) ; <=== 32-bit
+		NumPut(0x1 | 0x20000000 | 0x0100 | 0x10, LVBKIMAGE, 0, "UINT")  ; LVBKIF_TYPE_WATERMARK
+		NumPut(hBitmap, LVBKIMAGE, A_PtrSize, "UINT")
+		SendMessage, 0x1044, 0, &LVBKIMAGE, , % "ahk_id " this.ListView.hwnd  ; LVM_SETBKIMAGEA
+		SendMessage, 0x1026, 0, -1,, % "ahk_id " this.ListView.hwnd  ; LVM_SETTEXTBKCOLOR,, CLR_NONE
+		DeleteObject(hBitmap)
+
+		pBitmap := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\AccessorSettings.png")
+		Width := Gdip_GetImageWidth(pBitmap)
+		Height := Gdip_GetImageHeight(pBitmap)
+		FooterWidth := this.Footer.Width
+		FooterHeight := this.Footer.Height
+		pFooter := Gdip_CreateBitmap(FooterWidth, FooterHeight)
+		pGraphics := Gdip_GraphicsFromImage(pFooter)
+		Gdip_SetInterpolationMode(pGraphics, 7)
+		pBrush := Gdip_BrushCreateSolid(0xFFCCCCCC)
+		Gdip_FillRectangle(pGraphics, pBrush, 0, 0, FooterWidth, FooterHeight)
+		Gdip_DeleteBrush(pBrush)
+		Gdip_DrawImage(pGraphics, pBitmap, FooterWidth - Width, 0, Width, Height)
+		Gdip_DeleteGraphics(pGraphics)
+		Gdip_DisposeImage(pBitmap)
+		hBitmap := Gdip_CreateHBITMAPFromBitmap(pFooter)
+		this.Footer.SetImageFromHBitmap(hBitmap)
+		Gdip_DisposeImage(pFooter)
+		DeleteObject(hBitmap)
+
+		ButtonY := "s+30"
+		ButtonX := 40
+		for index, Button in Accessor.Buttons
+		{
+			ButtonControl := this.AddControl("Picture", "Button" A_Index, "x" ButtonX + 8 " ys+30 w40 h40", Button.Icon)
+			ButtonControl.Click.Handler := new Delegate(this, "OnButtonClick")
+			ButtonControl.Tooltip := "F" index
+			this.Buttons.Insert(ButtonControl)
+			ButtonLabelControl := this.AddControl("Text", "ButtonLabel" A_Index, "x" ButtonX " ys+78 w56 R1 Center cWhite", Button.Text)
+			this.ButtonLabels.Insert(ButtonLabelControl)
+			ButtonX += 56
+		}
+		if(Accessor.Settings.OpenInMonitorOfMouseCursor)
 		{
 			Monitor := FindMonitorFromMouseCursor()
 			this.X := (Monitor.Right - Monitor.Left) / 2 - this.Width / 2
@@ -916,9 +1121,9 @@ Class CAccessorGUI extends CGUI
 		this.MaximizeBox := false
 		this.AlwaysOnTop := true
 		DllCall("dwmapi\DwmIsCompositionEnabled","IntP", DWMEnabled)
-		if(!CAccessor.Instance.Settings.TitleBar && (CAccessor.Instance.Settings.UseAero && WinVer >= WIN_Vista && DWMEnabled))
+		if(!Accessor.Settings.TitleBar && (Accessor.Settings.UseAero && WinVer >= WIN_Vista && DWMEnabled))
 			this.SysMenu := false
-		else if(!CAccessor.Instance.Settings.TitleBar)
+		else if(!Accessor.Settings.TitleBar)
 			this.Caption := false
 			
 		this.Border := true
@@ -926,65 +1131,94 @@ Class CAccessorGUI extends CGUI
 		this.CloseOnEscape := true
 		this.DestroyOnClose := true
 		
-		if(CAccessor.Instance.Settings.UseAero && WinVer >= WIN_Vista && DWMEnabled)
+		if(Accessor.Settings.UseAero && WinVer >= WIN_Vista && DWMEnabled)
 		{
-			VarSetCapacity(margin,16)
-			NumPut(-1,&margin,0,Uint)
-			NumPut(-1,&margin,4,Uint)
-			NumPut(-1,&margin,8,Uint)
-			NumPut(-1,&margin,12,Uint)
+			VarSetCapacity(margin, 16)
+			NumPut(-1, &margin, 0, Uint)
+			NumPut(-1, &margin, 4, Uint)
+			NumPut(-1, &margin, 8, Uint)
+			NumPut(-1, &margin, 12, Uint)
 			Gui, % this.GUINum ":Color", 0x070809
-			WinSet,TransColor,0x070809,% "ahk_id " this.hwnd 
+			WinSet,TransColor,0x070809, % "ahk_id " this.hwnd 
 			DllCall("Dwmapi.dll\DwmExtendFrameIntoClientArea", "Ptr", this.hwnd, "Ptr", &margin)
 		}
-		else
-			this.txtConfig := this.AddControl("Text", "txtConfig", "xs+0 y" this.Height - 71, "Config:")
 		
-		if(CAccessor.Instance.Settings.Transparency)
-			WinSet, Trans, % CAccessor.Instance.Settings.Transparency, % "ahk_id " this.hwnd
+		if(Accessor.Settings.Transparency)
+			WinSet, Trans, % Accessor.Settings.Transparency, % "ahk_id " this.hwnd
 		
 		this.ListView.ExStyle := "+0x00010000"
-		this.ListView.LargeIcons := CAccessor.Instance.Settings.LargeIcons
+		this.ListView.LargeIcons := Accessor.Settings.LargeIcons
 		;this.ListView.IndependentSorting := true
 		this.ListView.ModifyCol(1, Round(this.ListView.Width * 3 / 8)) ;Col_3_w) ; resize title column
 		this.ListView.ModifyCol(2, Round(this.ListView.Width * 3.3 / 8)) ; resize path column
 		this.ListView.ModifyCol(3, Round(this.ListView.Width * 0.8 / 8)) ; resize detail1 column
 		this.ListView.ModifyCol(4, "AutoHdr") ; resize detail2 column
 		this.OnMessage(0x06, "WM_ACTIVATE")
+		WinSet, Region, 1-1 774-1 774-120 727-120 727-611 41-611 41-120 1-120, % "ahk_id " this.hwnd
+		SendMessage, 0x7, 0, 0,, % "ahk_id " this.ListView.hwnd ;Make the listview believe it has focus
 		this.Redraw()
 	}
+
+	OnButtonClick(Sender)
+	{
+		Slot := this.Buttons.IndexOf(Sender)
+		CAccessor.Instance.Buttons[Slot].Execute()
+	}
+
 	SetFilter(Text, SelectionStart = -1, SelectionEnd = -1)
 	{
 		this.EditControl.Text := Text
+		if(SelectionStart = -1)
+			SelectionStart := StrLen(Text)
 		Edit_Select(SelectionStart, SelectionEnd, "", "ahk_id " this.EditControl.hwnd)
 		this.ActiveControl := this.EditControl
 	}
+
+	ShowButtonMenu()
+	{
+		Menu, Tray, UseErrorLevel
+		Menu, AccessorButtonMenu, DeleteAll
+		Menu, AccessorButtonMenu, Add, Use current Query, SettingsHandler  ; Creates a new menu item.
+		Menu, AccessorButtonMenu, Add, Set icon, SettingsHandler
+		Menu, AccessorButtonMenu, Show
+	}
+
 	EditControl_TextChanged()
 	{
 		;Logic is handled in CAccessor
 		CAccessor.Instance.OnFilterChanged(this.EditControl.Text)
 	}
+
 	WM_ACTIVATE(msg, wParam, lParam, hwnd)
 	{
 		if(CAccessor.Instance.Settings.CloseWhenDeactivated && !(loword(wParam) & 0x3) && WinExist("A") != this.hwnd)
 			this.Close()
 	}
+
 	ListView_SelectionChanged()
 	{
 		;Logic is handled in CAccessor
 		CAccessor.Instance.OnSelectionChanged()
 	}
+
 	ListView_DoubleClick()
 	{
 		;Logic is handled in CAccessor
 		CAccessor.Instance.OnDoubleClick()
 	}
+
 	ListView_ContextMenu()
 	{
 		if(!IsObject(ListEntry := CAccessor.Instance.List[this.ListView.SelectedIndex]) && IsObject(ListEntry := CAccessor.Instance.Plugins[CAccessor.Instance.SingleContext].Result))
 			CAccessor.Instance.ClickedListEntry := ListEntry
 		CAccessor.Instance.ShowActionMenu()
 	}
+
+	ListView_FocusLost()
+	{
+		SendMessage, 0x7, 0, 0,, % "ahk_id " this.ListView.hwnd ;Make the listview believe it has focus
+	}
+
 	ContextMenu()
 	{
 		if(IsObject(ListEntry := CAccessor.Instance.Plugins[CAccessor.Instance.SingleContext].Result))
@@ -993,29 +1227,37 @@ Class CAccessorGUI extends CGUI
 			CAccessor.Instance.ShowActionMenu(ListEntry)
 		}
 	}
+
 	PreClose()
 	{
 		if(!this.IsDestroyed)
 			CAccessor.Instance.OnClose()
 	}
+
 	btnCancel_Click()
 	{
 		this.Close()
 	}
+
 	btnOK_Click()
 	{
 		CAccessor.Instance.PerformAction()
 	}
-	btnConfigPlugins_Click()
+	picLogo_Click()
 	{
-		this.Close()
-		SettingsWindow.Show("Plugins")
+		CAccessor.Instance.PerformAction()
 	}
-	btnConfigKeywords_Click()
+	Footer_Click()
 	{
-		this.Close()
-		SettingsWindow.Show("Keywords")
+		CoordMode, Mouse, Relative
+		MouseGetPos, x, y
+		if(IsInArea(x, y, this.Footer.x, this.Footer.y, this.Footer.Width, this.Footer.Height))
+		{
+			this.Close()
+			SettingsWindow.Show("Accessor")
+		}
 	}
+
 	OnUp()
 	{
 		if(GetKeyState("Control", "P"))
@@ -1036,6 +1278,7 @@ Class CAccessorGUI extends CGUI
 			this.ListView.Items[selected].Modify("Select Vis")
 		}
 	}
+
 	OnDown()
 	{
 		if(GetKeyState("Control", "P"))
@@ -1057,18 +1300,35 @@ Class CAccessorGUI extends CGUI
 	}
 }
 
+#if CAccessor.Instance.GUI && IsWindowUnderCursor(CAccessor.Instance.GUI.hwnd) && IsAccessorButtonUnderCursor()
+RButton::
+CAccessor.Instance.GUI.ShowButtonMenu()
+return
+#if
+IsAccessorButtonUnderCursor()
+{
+	MouseGetPos, , , , control
+	Number := SubStr(control, 7)
+	return Number >= 3 && Number <= 26
+}
+
+
 #if CAccessor.Instance.GUI
 Tab::Down
 *Up::CAccessor.Instance.GUI.OnUp()
 *Down::CAccessor.Instance.GUI.OnDown()
 #if
+
+
 #if CAccessor.Instance.GUI && CAccessor.Instance.GUI.ActiveControl = CAccessor.Instance.GUI.EditControl
 PgUp::
 PostMessage, 0x100, 0x21, 0,, % "ahk_id " CAccessor.Instance.GUI.ListView.hwnd
 return
+
 PgDn::
 PostMessage, 0x100, 0x22, 0,, % "ahk_id " CAccessor.Instance.GUI.ListView.hwnd
 return
+
 AppsKey::
 PostMessage, 0x100, 0x5D, 0,, % "ahk_id " CAccessor.Instance.GUI.ListView.hwnd
 return
@@ -1080,21 +1340,25 @@ return
 CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.OpenExplorer)
 return
 #if
+
 #if (CAccessor.Instance.GUI && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenPathWithAccessor))
 ^b::
 CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.OpenPathWithAccessor)
 return
 #if
+
 #if (CAccessor.Instance.GUI && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenWith))
 ^o::
 CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.OpenWith)
 return
 #if
+
 #if (CAccessor.Instance.GUI && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.SearchDir))
 ^f::
 CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.SearchDir, CAccessor.Instance.List[CAccessor.Instance.GUI.ListView.SelectedIndex].Actions.GetItemWithValue("Function", CAccessorPlugin.CActions.SearchDir.Function) ? "" : CFileSystemPlugin.Instance.Result)
 return
 #if
+
 #if CAccessor.Instance.GUI && !Edit_TextIsSelected("", "ahk_id " CAccessor.Instance.GUI.EditControl.hwnd)
 ^c::
 CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.Copy)
@@ -1139,6 +1403,7 @@ Class CAccessorPluginSettingsWindow extends CGUI
 		this.OriginalPlugin := OriginalPlugin
 		OriginalPlugin.ShowSettings(Plugin.Settings, this, this.PluginGUI)
 	}
+
 	PreClose()
 	{
 		if(SettingsWindow)
@@ -1147,6 +1412,7 @@ Class CAccessorPluginSettingsWindow extends CGUI
 			SettingsWindow.OnAccessorPluginSettingsWindowClosed(this.ModifiedPlugin)
 		}
 	}
+
 	btnOK_Click()
 	{
 		if(this.OriginalPlugin.SaveSettings(this.Plugin.Settings, this, this.PluginGUI) != false)
@@ -1156,10 +1422,12 @@ Class CAccessorPluginSettingsWindow extends CGUI
 			this.Close()
 		}
 	}
+
 	btnCancel_Click()
 	{
 		this.Close()
 	}
+
 	btnHelp_Click()
 	{
 		run % "http://code.google.com/p/7plus/wiki/docsAccessor" this.Plugin.Type ",,UseErrorLevel"
@@ -1300,9 +1568,11 @@ Class CAccessorPlugin
 	OnOpen(Accessor)
 	{
 	}
+
 	OnClose(Accessor)
 	{
 	}
+
 	OnExit(Accessor)
 	{
 	}
@@ -1317,12 +1587,14 @@ Class CAccessorPlugin
 	{
 		return false
 	}
+
 	;Called when the query is changed.
 	;This function should return true if the new query string requires an update of the results from this plugin
 	OnFilterChanged(ListEntry, Filter, LastFilter)
 	{
 		return true
 	}
+
 	;~ OnKeyDown()
 	;~ {
 	;~ }
@@ -1362,9 +1634,40 @@ winget
 
 TODO:
 Documentation of new Accessor features
-favorite buttons for Accessor?
 keyboard hotkeys in settings window activate when other page is visible
 icon in context menu
 uninstall plugin not working (x64) -- Or is it?
 random accessor crashes on x64
+
+
+favorite buttons for Accessor?
+
+clipboard clips: pasting doesn't work in Word
+find in filenames doesn't search
+infogui not working?
+google plugin icon missing
+open accessor in monitor of mouse not working
+windows minimize animation setting in slide windows settings
+explorer tabs in slide windows
+message timer on clock not working
+subevent controls not working properly
+
+Ideas:
+A slot should contain either a query or a result
+-Selecting a query would just insert it as query in Accessor while keeping it open
+-Selecting a result should execute its default action
+Slots can be assigned by right clicking on them or on a result
+F-keys are used to access the buttons as well
+Buttons that use queries need a way to use a custom icon. This can probably be done through context menu
+
+
+Using Accessor as a dock:
+There should only be one setting that enables/disables this.
+It needs to integrate with SlideWindows somehow:
+	- Either register it as a regular slide window
+	- Or write own slide routines and simply lock the screen side (up or down, depending on taskbar position) for slide windows
+The latter method has the advantage that it doesn't need lots of exceptions in the SlideWindow code at the expense of some code duplication. SlideWindows code only needs some small adjustments.
+The window would always stay visible outside of the screen (or maybe hidden...), instead of being created/destroyed like now.
+This needs to be considered for the OnOpen/OnClose routines of the plugins. They probably just need to be called as well when the window slides in.
+Window can be activated by either the hotkey or by moving the mouse to the screen border. Exceptions for this should be made for dragging windows (->LButton down or shell hook). In this case it should not get activated when the mouse is at the border.
 */
