@@ -1568,7 +1568,7 @@ Gdip_CreateBitmapFromHBITMAP(hBitmap, Palette=0)
 
 Gdip_CreateHBITMAPFromBitmap(pBitmap, Background=0xffffffff)
 {
-	DllCall("gdiplus\GdipCreateHBITMAPFromBitmap", "ptr", pBitmap, "ptr*", hbm, "uint", Background)
+	res := DllCall("gdiplus\GdipCreateHBITMAPFromBitmap", "ptr", pBitmap, "ptr*", hbm, "uint", Background)
 	return hbm
 }
 

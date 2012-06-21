@@ -220,7 +220,7 @@ Class CSettings
 		{
 			FastFolders := Array()
 			Loop 10
-				FastFolders.Insert(Object("Path", this.Explorer.FastFolders["Folder" A_Index - 1], "Name", this.Explorer.FastFolders["FolderTitle" A_Index-1]))
+				FastFolders[A_Index - 1] := Object("Path", this.Explorer.FastFolders["Folder" A_Index - 1], "Name", this.Explorer.FastFolders["FolderTitle" A_Index - 1])
 			
 			;the path where the image/text files from clipboard are saved for copying
 			this.Explorer.PasteImageAsFileTempPath := A_Temp "\" this.Explorer.PasteImageAsFileName ; temp_img
@@ -247,8 +247,8 @@ Class CSettings
 			;Update the FastFolder values in this class
 			Loop 10
 			{
-				this.Explorer.FastFolders["Folder" A_Index - 1] := FastFolders[A_Index].Path
-				this.Explorer.FastFolders["FolderTitle" A_Index - 1] := FastFolders[A_Index].Name
+				this.Explorer.FastFolders["Folder" A_Index - 1] := FastFolders[A_Index - 1].Path
+				this.Explorer.FastFolders["FolderTitle" A_Index - 1] := FastFolders[A_Index - 1].Name
 			}
 			this.General.FirstRun := 0
 		}

@@ -135,6 +135,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		Type := "Program Launcher"
 		Priority := CProgramLauncherPlugin.Instance.Priority
 		ResultIndexingKey := "Path"
+		IsFile := true
 		__new(BasePath = "")
 		{
 			this.Actions := new this.CActions(BasePath)

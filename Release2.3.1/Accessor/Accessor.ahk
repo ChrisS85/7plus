@@ -13,7 +13,9 @@ Class CAccessor
 	static Instance
 	
 	;Data for buttons in GUI that represent queries or results
-	Buttons := []
+	QueryButtons := []
+	ProgramButtons := []
+	FastFolderButtons := []
 
 	;Accessor keywords for auto expansion
 	Keywords := Array()
@@ -94,10 +96,153 @@ Class CAccessor
 	}
 
 	;Represents the data for a button in Accessor for storing a query or a result
-	Class CAccessorButton
+	Class CButton
 	{
 		Text := ""
+		static ButtonSize := 35
+		static CornerRadius := 4
+		Load(json)
+		{
+		}
 
+		Save(json)
+		{
+		}
+
+		Execute()
+		{
+		}
+
+		Draw()
+		{
+		}
+
+		Cleanup()
+		{
+		}
+		DrawHeader(pGraphics, MouseOver)
+		{
+			pBrush := Gdip_BrushCreateSolid(MouseOver ? 0xFF00A2FF : 0xFFB1B3B4)
+			this.FillHalfRoundedRectangle(pGraphics, pBrush, 0, 0, this.ButtonSize, 8, this.CornerRadius)
+			Gdip_DeleteBrush(pBrush)
+		}
+		FillHalfRoundedRectangle(pGraphics, pBrush, x, y, w, h, r)
+		{
+			Region := Gdip_GetClipRegion(pGraphics)
+			Gdip_SetClipRect(pGraphics, x-r, y-r, 2*r, 2*r, 4)
+			Gdip_SetClipRect(pGraphics, x+w-r, y-r, 2*r, 2*r, 4)
+			E := Gdip_FillRectangle(pGraphics, pBrush, x, y, w, h)
+			Gdip_SetClipRegion(pGraphics, Region, 0)
+			Gdip_SetClipRect(pGraphics, x-(2*r), y+r, w+(4*r), h-(2*r), 4)
+			Gdip_SetClipRect(pGraphics, x+r, y-(2*r), w-(2*r), h+(4*r), 4)
+			Gdip_FillEllipse(pGraphics, pBrush, x, y, 2*r, 2*r)
+			Gdip_FillEllipse(pGraphics, pBrush, x+w-(2*r), y, 2*r, 2*r)
+			Gdip_SetClipRegion(pGraphics, Region, 0)
+			Gdip_DeleteRegion(Region)
+			return E
+		}
+	}
+
+	;Button for programs
+	Class CProgramButton extends CAccessor.CButton
+	{
+		Path := ""
+		OnPathChange := new EventHandler()
+		Bitmap := 0
+
+		static ButtonSizeX := 35
+		static ButtonSizeY := 31
+
+		static ButtonIconSizeX := 18
+		static ButtonIconSizeY := 18
+		static ButtonIconOffset := 4
+
+		__new()
+		{
+			if(!this.base.BackgroundInactive)
+			{
+				this.base.BackgroundInactive := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\neutral_button_2.png")
+				this.base.BackgroundActive := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\active_button_2.png")
+			}
+			if(!this.base.base.Plus)
+				this.base.base.Plus := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\button_plus.png")
+		}
+		Load(json)
+		{
+			this.SetPath(json.Path)
+		}
+
+		Save(json)
+		{
+			json.Path := this.Path
+		}
+
+		Execute()
+		{
+			RunAsUser(ExpandPathPlaceholders(this.Path))
+		}
+
+		Draw(MouseOver = false)
+		{
+			pBitmap := this.hIcon ? Gdip_CreateBitmapFromHICON(this.hIcon) : 0
+			pButton := Gdip_CreateBitmap(this.ButtonSizeX, this.ButtonSizeY)
+			pGraphics := Gdip_GraphicsFromImage(pButton)
+
+			pBrush := Gdip_BrushCreateSolid(0xFF000000 | CAccessorGUI.BackgroundColor)
+			Gdip_FillRectangle(pGraphics, pBrush, 0, 0, this.ButtonSizeX, this.ButtonSizeY)
+			Gdip_DeleteBrush(pBrush)
+
+			Gdip_SetInterpolationMode(pGraphics, 7)
+			Gdip_SetSmoothingMode(pGraphics, 4)
+
+			;pBrush := Gdip_BrushCreateSolid(0xFFFFFFFF) ;0xFF000000 | CAccessorGUI.ControlBackgroundColor)
+			;this.FillHalfRoundedRectangle(pGraphics, pBrush, 0, 0, this.ButtonSizeX, this.ButtonSizeY, this.CornerRadius)
+			;Gdip_DeleteBrush(pBrush)
+			;this.DrawHeader(pGraphics, MouseOver)
+			Gdip_DrawImage(pGraphics, MouseOver && this.IsActive() ? this.BackgroundActive : this.BackgroundInactive, 0, 0, this.ButtonSizeX, this.ButtonSizeY)
+			Gdip_DrawImage(pGraphics, pBitmap ? pBitmap : this.Plus, this.ButtonSizeX / 2 - (pBitmap ? this.ButtonIconSizeX / 2 : 8), this.ButtonSizeY / 2 - (pBitmap ? this.ButtonIconSizeY / 2 : 8) + this.ButtonIconOffset, (pBitmap ? this.ButtonIconSizeX : 16), (pBitmap ? this.ButtonIconSizeY : 16))
+
+			Gdip_DeleteGraphics(pGraphics)
+			if(pBitmap != 0)
+				Gdip_DisposeImage(pBitmap)
+			hBitmap := Gdip_CreateHBITMAPFromBitmap(pButton)
+			Gdip_DisposeImage(pButton)
+			return hBitmap
+		}
+		Cleanup()
+		{
+			if(this.hIcon)
+				DestroyIcon(this.hIcon)
+		}
+		SetPath(Path)
+		{
+			this.CleanUp()
+			this.Path := Path
+			this.hIcon := Path ? ExtractAssociatedIcon(0, Path, lpiIcon) : 0
+			this.OnPathChange.(CAccessor.Instance.ProgramButtons.IndexOf(this))
+		}
+
+		GetShortName()
+		{
+			Path := this.Path
+			SplitPath, Path, Name
+			return Name
+		}
+
+		GetLongName()
+		{
+			return this.Path ? this.Path : (this.IsActive() ? "Click to use the selected file for this button!" : "")
+		}
+		IsActive()
+		{
+			return this.Path || CAccessor.Instance.List[CAccessor.Instance.GUI.ListView.SelectedIndex].IsFile
+		}
+	}
+
+	;Button for Accessor queries
+	Class CQueryButton extends CAccessor.CButton
+	{
+		Text := ""
 		;Data for query
 		Icon := ""
 		Query := ""
@@ -105,35 +250,204 @@ Class CAccessor
 		SelectionStart := -1
 		SelectionEnd := -1
 
-		;Instance of CResult when query is not used
-		Result := "" 
+		OnBitmapChange := new EventHandler()
+
+		Bitmap := 0
+
+		static ButtonSizeX := 35
+		static ButtonSizeY := 35
+		static ButtonIconSizeX := 35
+		static ButtonIconSizeY := 23
+		static ButtonIconOffset := 2
+		__new()
+		{
+			if(!this.base.BackgroundInactive)
+			{
+				this.base.BackgroundInactive := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\neutral_button.png")
+				this.base.BackgroundActive := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\active_button.png")
+			}
+			if(!this.base.base.Plus)
+				this.base.base.Plus := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\button_plus.png")
+		}
 		Load(json)
 		{
-			this.Slot := json.Slot
 			this.Text := json.Text
-			this.Icon := json.Icon
+			this.SetIcon(json.Icon)
 			this.Query := json.Query
 			this.SelectionStart := json.SelectionStart
 			this.SelectionEnd := json.SelectionEnd
-			this.Result := json.Result
 		}
+
 		Save(json)
 		{
-			json.Slot := this.Slot
 			json.Text := this.Text
 			json.Icon := this.Icon
 			json.Query := this.Query
 			json.SelectionStart := this.SelectionStart
 			json.SelectionEnd := this.SelectionEnd
-			json.Result := this.Result
 		}
+
 		Execute()
 		{
 			Accessor := CAccessor.Instance
 			if(this.Query)
 				Accessor.SetFilter(this.Query, this.SelectionStart, this.SelectionEnd)
+		}
+
+		Draw(MouseOver = false)
+		{
+			pButton := Gdip_CreateBitmap(this.ButtonSizeX, this.ButtonSizeY)
+			pGraphics := Gdip_GraphicsFromImage(pButton)
+
+			pBrush := Gdip_BrushCreateSolid(0xFF000000 | CAccessorGUI.BackgroundColor)
+			Gdip_FillRectangle(pGraphics, pBrush, 0, 0, this.ButtonSizeX, this.ButtonSizeY)
+			Gdip_DeleteBrush(pBrush)
+
+			Gdip_SetInterpolationMode(pGraphics, 7)
+			Gdip_SetSmoothingMode(pGraphics, 4)
+
+			;pBrush := Gdip_BrushCreateSolid(0xFF000000 | CAccessorGUI.ControlBackgroundColor)
+			;Gdip_FillRoundedRectangle(pGraphics, pBrush, 0, 0, this.ButtonSizeX, this.ButtonSizeY, this.CornerRadius)
+			;Gdip_DeleteBrush(pBrush)
+
+			;this.DrawHeader(pGraphics, MouseOver)
+
+			Gdip_DrawImage(pGraphics, MouseOver && this.IsActive() ? this.BackgroundActive : this.BackgroundInactive, 0, 0, this.ButtonSizeX, this.ButtonSizeY)
+			Gdip_DrawImage(pGraphics, this.Bitmap ? this.Bitmap : this.Plus, this.ButtonSizeX / 2 - (this.Bitmap ? this.ButtonIconSizeX / 2 : 8), this.ButtonSizeY / 2 - (this.Bitmap ? this.ButtonIconSizeY / 2 : 8) + this.ButtonIconOffset, (this.Bitmap ? this.ButtonIconSizeX : 16), (this.Bitmap ? this.ButtonIconSizeY : 16))
+
+			Gdip_DeleteGraphics(pGraphics)
+			hBitmap := Gdip_CreateHBITMAPFromBitmap(pButton)
+			Gdip_DisposeImage(pButton)
+			return hBitmap
+		}
+
+		CleanUp()
+		{
+			if(this.Bitmap)
+				Gdip_DisposeImage(this.Bitmap)
+		}
+
+		SetIcon(Path)
+		{
+			this.CleanUp()
+			this.Icon := Path
+			this.Bitmap := Gdip_CreateBitmapFromFile(Path)
+			this.OnBitmapChange.(CAccessor.Instance.QueryButtons.IndexOf(this))
+		}
+
+		SetQuery(Query, SelectionStart = -1, SelectionEnd = -1)
+		{
+			this.Query := Query
+			this.SelectionStart := SelectionStart
+			this.SelectionEnd := SelectionEnd
+		}
+		GetShortName()
+		{
+			return this.Text
+		}
+		GetLongName()
+		{
+			return this.Text ? this.Text : (this.Query ? this.Query : (this.IsActive() ? "Click to use the currently entered text for this button!" : ""))
+		}
+		IsActive()
+		{
+			return this.Query || CAccessor.Instance.Filter
+		}
+	}
+
+	;Button for FastFolders
+	Class CFastFolderButton extends CAccessor.CButton
+	{
+		Number := ""
+
+		static ButtonSizeX := 16
+		static ButtonSizeY := 35
+		static ButtonIconOffset := 4
+
+		__new()
+		{
+			if(!this.base.BackgroundInactive)
+			{
+				this.base.BackgroundInactive := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\neutral_mini_button.png")
+				this.base.BackgroundActive := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\active_mini_button.png")
+			}
+			if(!this.base.base.PlusSmall)
+				this.base.base.PlusSmall := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\mini_button_plus.png")
+		}
+
+		Load(json)
+		{
+		}
+
+		Save(json)
+		{
+		}
+
+		Execute()
+		{
+			global FastFolders
+			if(FastFolders[this.Number].Path)
+			{
+				CAccessor.Instance.Close()
+				Navigation.SetPath(FastFolders[this.Number].Path)
+			}
+		}
+
+		Draw(MouseOver = false)
+		{
+			global FastFolders
+			pButton := Gdip_CreateBitmap(this.ButtonSizeX, this.ButtonSizeY)
+			pGraphics := Gdip_GraphicsFromImage(pButton)
+
+			pBrush := Gdip_BrushCreateSolid(0xFF000000 | CAccessorGUI.BackgroundColor)
+			Gdip_FillRectangle(pGraphics, pBrush, 0, 0, this.ButtonSizeX, this.ButtonSizeY)
+			Gdip_DeleteBrush(pBrush)
+
+			Gdip_SetInterpolationMode(pGraphics, 7)
+			Gdip_SetSmoothingMode(pGraphics, 4)
+
+			;pBrush := Gdip_BrushCreateSolid(0xFFFFFFFF) ;0xFF000000 | CAccessorGUI.ControlBackgroundColor)
+			;Gdip_FillRoundedRectangle(pGraphics, pBrush, 0, 0, this.ButtonSizeX, this.ButtonSizeY, this.CornerRadius)
+			;Gdip_DeleteBrush(pBrush)
+
+			;this.DrawHeader(pGraphics, MouseOver)
+			Gdip_DrawImage(pGraphics, MouseOver && this.IsActive() ? this.BackgroundActive : this.BackgroundInactive, 0, 0, this.ButtonSizeX, this.ButtonSizeY)
+			if(FastFolders[this.Number].Path && this.Bitmap)
+				;Gdip_TextToGraphics(pGraphics, this.Number, "x8 y" this.ButtonIconOffset " Centre cFF000000 r4 s24 Regular", "Tahoma")
+				Gdip_DrawImage(pGraphics, this.Bitmap, this.ButtonSizeX / 2 - 8, this.ButtonSizeY / 2 - 12 + this.ButtonIconOffset, 16, 24)
 			else
-				Accessor.PerformAction("", this.Result)
+				Gdip_DrawImage(pGraphics, this.PlusSmall, this.ButtonSizeX / 2 - 8, this.ButtonSizeY / 2 - 8 + this.ButtonIconOffset, 16, 16)
+			
+			Gdip_DeleteGraphics(pGraphics)
+			hBitmap := Gdip_CreateHBITMAPFromBitmap(pButton)
+			Gdip_DisposeImage(pButton)
+			return hBitmap
+		}
+		Cleanup()
+		{
+		}
+		SetNumber(Number)
+		{
+			outputdebug % "setnumber " Number
+			;this.CleanUp()
+			this.Number := Number
+			this.Bitmap := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\" Number ".png")
+		}
+		GetShortName()
+		{
+			global FastFolders
+			return FastFolders[this.Number].Name
+		}
+		GetLongName()
+		{
+			global FastFolders
+			return FastFolders[this.Number].Path ? FastFolders[this.Number].Path : (this.IsActive() ? "Click to assign the selected directory to this Fast Folder slot!" : "")
+		}
+
+		IsActive()
+		{
+			global FastFolders
+			return FastFolders[this.Number].Path || CAccessor.Instance.List[CAccessor.Instance.GUI.ListView.SelectedIndex].IsFolder
 		}
 	}
 
@@ -234,60 +548,72 @@ Class CAccessor
 				SavedSettings.Keywords.Insert({Key : "ebay", 	Command : "http://www.ebay.com/sch/i.html?_nkw=${1}"})
 				SavedSettings.Keywords.Insert({Key : "yahoo", 	Command : "http://de.search.yahoo.com/search?p=${1}"})
 			}
-			if(!SavedSettings.HasKey("Buttons"))
+			if(!SavedSettings.HasKey("QueryButtons"))
 			{
-				outputdebug AddButtons
-				SavedSettings.Buttons := []
-				Button := new this.CAccessorButton()
-				Button.Text := "Google Search"
-				Button.Query := "google "
-				Button.Icon := A_ScriptDir "\128.png"
-				SavedSettings.Buttons.Insert(Button)
-				Button := new this.CAccessorButton()
-				Button.Text := "Wikipedia Search"
-				Button.Query := "w "
-				Button.Icon := A_ScriptDir "\128.png"
-				SavedSettings.Buttons.Insert(Button)
-				Button := new this.CAccessorButton()
-				Button.Text := "Youtube Search"
-				Button.Query := "y "
-				Button.Icon := A_ScriptDir "\Icons\Youtube.png"
-				SavedSettings.Buttons.Insert(Button)
-				Button := new this.CAccessorButton()
-				Button.Text := "Google Maps Search"
-				Button.Query := "gm "
-				Button.Icon := A_ScriptDir "\128.png"
-				SavedSettings.Buttons.Insert(Button)
-				Button := new this.CAccessorButton()
-				Button.Text := "Amazon Search"
-				Button.Query := "a "
-				Button.Icon := A_ScriptDir "\Icons\Amazon.png"
-				SavedSettings.Buttons.Insert(Button)
-				Button := new this.CAccessorButton()
+				SavedSettings.QueryButtons := []
+				Button := new this.CQueryButton()
+				Button.Text := "File Search"
+				Button.Query := "find "
+				Button.Icon := A_ScriptDir "\Icons\filesearch.png"
+				SavedSettings.QueryButtons.Insert(Button)
+				Button := new this.CQueryButton()
+				Button.Text := "Calculator"
+				Button.Query := "="
+				Button.Icon := A_ScriptDir "\Icons\calc.png"
+				SavedSettings.QueryButtons.Insert(Button)
+				Button := new this.CQueryButton()
+				Button.Text := "Notes"
+				Button.Query := "note "
+				Button.Icon := A_ScriptDir "\Icons\notes.png"
+				SavedSettings.QueryButtons.Insert(Button)
+				Button := new this.CQueryButton()
 				Button.Text := "Weather"
 				Button.Query := "weather "
 				Button.Icon := A_ScriptDir "\128.png"
-				SavedSettings.Buttons.Insert(Button)
-				Button := new this.CAccessorButton()
-				Button.Text := "File Search"
-				Button.Query := "find "
-				Button.Icon := A_ScriptDir "\128.png"
-				SavedSettings.Buttons.Insert(Button)
-				Button := new this.CAccessorButton()
-				Button.Text := "Calculator"
-				Button.Query := "="
-				Button.Icon := A_ScriptDir "\128.png"
-				SavedSettings.Buttons.Insert(Button)
-				Button := new this.CAccessorButton()
-				Button.Text := "Notes"
-				Button.Query := "note "
-				Button.Icon := A_ScriptDir "\128.png"
-				SavedSettings.Buttons.Insert(Button)
-				Button := new this.CAccessorButton()
+				SavedSettings.QueryButtons.Insert(Button)
+				Button := new this.CQueryButton()
 				Button.Text := "Uninstall"
 				Button.Query := "uninstall "
-				Button.Icon := A_ScriptDir "\128.png"
-				SavedSettings.Buttons.Insert(Button)
+				Button.Icon := A_ScriptDir "\Icons\uninstall.png"
+				SavedSettings.QueryButtons.Insert(Button)
+				Button := new this.CQueryButton()
+				Button.Text := "Google Search"
+				Button.Query := "google "
+				Button.Icon := A_ScriptDir "\Icons\google.png"
+				SavedSettings.QueryButtons.Insert(Button)
+				Button := new this.CQueryButton()
+				Button.Text := "Wikipedia Search"
+				Button.Query := "w "
+				Button.Icon := A_ScriptDir "\Icons\wikipedia.png"
+				SavedSettings.QueryButtons.Insert(Button)
+				Button := new this.CQueryButton()
+				Button.Text := "Youtube Search"
+				Button.Query := "y "
+				Button.Icon := A_ScriptDir "\Icons\Youtube.png"
+				SavedSettings.QueryButtons.Insert(Button)
+				Button := new this.CQueryButton()
+				Button.Text := "Google Maps Search"
+				Button.Query := "gm "
+				Button.Icon := A_ScriptDir "\Icons\googlemaps.png"
+				SavedSettings.QueryButtons.Insert(Button)
+				Button := new this.CQueryButton()
+				Button.Text := "Amazon Search"
+				Button.Query := "a "
+				Button.Icon := A_ScriptDir "\Icons\Amazon.png"
+				SavedSettings.QueryButtons.Insert(Button)
+				Button := new this.CQueryButton()
+				Button.Text := "Ebay Search"
+				Button.Query := "ebay "
+				Button.Icon := A_ScriptDir "\Icons\Ebay.png"
+				SavedSettings.QueryButtons.Insert(Button)
+			}
+			if(!SavedSettings.HasKey("ProgramButtons"))
+			{
+				SavedSettings.ProgramButtons := []
+				Button := new this.CProgramButton()
+				Button.Text := "Command Prompt"
+				Button.Path := "%windir%\system32\cmd.exe"
+				SavedSettings.ProgramButtons.Insert(Button)
 			}
 			SavedPluginSettings := SavedSettings.Plugins
 			SavedKeywords := SavedSettings.Keywords
@@ -318,12 +644,26 @@ Class CAccessor
 		;Init Accessor buttons
 		Loop % 12
 		{
-			Button := new this.CAccessorButton()
-			if(SavedSettings.Buttons.HasKey(A_Index))
-				Button.Load(SavedSettings.Buttons[A_Index])
-			this.Buttons.Insert(Button)
+			Button := new this.CQueryButton()
+			if(SavedSettings.QueryButtons.HasKey(A_Index))
+				Button.Load(SavedSettings.QueryButtons[A_Index])
+			this.QueryButtons.Insert(Button)
 		}
-		outputdebug % Exploreobj(this.Buttons)
+		Loop % 18
+		{
+			Button := new this.CProgramButton()
+			if(SavedSettings.ProgramButtons.HasKey(A_Index))
+				Button.Load(SavedSettings.ProgramButtons[A_Index])
+				outputdebug % Button.Path
+			this.ProgramButtons.Insert(Button)
+		}
+		Loop % 10
+		{
+			Button := new this.CFastFolderButton()
+			Button.SetNumber(A_Index - 1)
+			this.FastFolderButtons.Insert(Button)
+		}
+
 		;Init result usage tracker
 		this.ResultUsageTracker := new this.CResultUsageTracker()
 
@@ -348,7 +688,7 @@ Class CAccessor
 		this.ResultUsageTracker.OnExit()
 
 		FileDelete, % Settings.ConfigPath "\Accessor.xml"
-		SavedSettings := {Buttons : [], Plugins : {}}
+		SavedSettings := {QueryButtons : [], ProgramButtons : [], Plugins : {}}
 		for index, Plugin in this.Plugins
 		{
 			SavedSettings.Plugins[Plugin.Type] := {}
@@ -361,8 +701,14 @@ Class CAccessor
 		Loop % 12
 		{
 			Button := {}
-			this.Buttons[A_Index].Save(Button)
-			SavedSettings.Buttons.Insert(Button)
+			this.QueryButtons[A_Index].Save(Button)
+			SavedSettings.QueryButtons.Insert(Button)
+		}
+		Loop % 18
+		{
+			Button := {}
+			this.ProgramButtons[A_Index].Save(Button)
+			SavedSettings.ProgramButtons.Insert(Button)
 		}
 
 		this.Settings.Save(SavedSettings)
@@ -684,11 +1030,11 @@ Class CAccessor
 		;Now that items are available and sorted, add them to the listview
 		for index3, ListEntry in this.List
 		{
-			if(Time > 0)
-			{
-				ListEntry.Time := Time
-				ListEntry.Detail2 := FormattedTime
-			}
+			;if(Time > 0)
+			;{
+			;	ListEntry.Time := Time
+			;	ListEntry.Detail2 := FormattedTime
+			;}
 			Plugin := this.Plugins[ListEntry.Type]
 			Plugin.GetDisplayStrings(ListEntry, Title := ListEntry.Title, Path := ListEntry.Path, Detail1 := ListEntry.Detail1, Detail2 := ListEntry.Detail2)
 
@@ -698,9 +1044,9 @@ Class CAccessor
 			if(A_Index > ListViewCount)
 			{
 				if(!Settings.General.DebugEnabled)
-					item := this.GUI.ListView.Items.Add("", Title, Path, Detail1, Detail2)
+					item := this.GUI.ListView.Items.Add("", Title, Path, Detail1)
 				else
-					item := this.GUI.ListView.Items.Add("", Title, Path, Detail1, ListEntry.SortOrder)
+					item := this.GUI.ListView.Items.Add("", Title, Path, ListEntry.SortOrder)
 
 				if(!ListEntry.HasKey("IconNumber"))
 					item.Icon := ListEntry.Icon
@@ -714,12 +1060,12 @@ Class CAccessor
 				LV_GetText(t, A_Index, 1)
 				LV_GetText(p, A_Index, 2)
 				LV_GetText(d1, A_Index, 3)
-				LV_GetText(d2, A_Index, 4)
+				;LV_GetText(d2, A_Index, 4)
 				;msgbox % "Old item: " t ", " p ", " d1 ", " d2 "`nNew Item: " Title ", " Path ", " Detail1 ", " (Settings.General.DebugEnabled ? ListEntry.SortOrder : Detail2)
-				if(t != Title || p != Path || d1 != Detail1 || d2 != (Settings.General.DebugEnabled ? ListEntry.SortOrder : Detail2))
+				if(t != Title || p != Path || d1 != Detail1)
 				{
 					item := this.GUI.ListView.Items[A_Index]
-					LV_Modify(A_Index, "", Title, Path, Detail1, (Settings.General.DebugEnabled ? ListEntry.SortOrder : Detail2))
+					LV_Modify(A_Index, "", Title, Path, (Settings.General.DebugEnabled ? ListEntry.SortOrder : Detail1))
 					;_debug := true
 					;this.GUI.ListView.Items.Delete(A_Index)
 					;msgbox deleted
@@ -748,8 +1094,8 @@ Class CAccessor
 
 		this.GUI.ListView.ModifyCol(1, Round(this.GUI.ListView.Width * 3 / 8)) ;Col_3_w) ; resize title column
 		this.GUI.ListView.ModifyCol(2, Round(this.GUI.ListView.Width * 3.3 / 8)) ; resize path column
-		this.GUI.ListView.ModifyCol(3, Round(this.GUI.ListView.Width * 0.8 / 8)) ; resize detail1 column
-		this.GUI.ListView.ModifyCol(4, "AutoHdr") ; resize detail2 column
+		this.GUI.ListView.ModifyCol(3, 124) ; resize detail1 column
+		;this.GUI.ListView.ModifyCol(4, "AutoHdr") ; resize detail2 column
 
 		this.GUI.ListView.Redraw := true
 
@@ -770,19 +1116,15 @@ Class CAccessor
 	UpdateButtonText()
 	{
 		;Set default text when no results and set enabled state
-		if(!(this.GUI.btnOK.Enabled := this.List.MaxIndex()))
-			this.GUI.btnOK.Text := "Run"
+		if(!this.List.MaxIndex())
+			this.GUI.ActionText := "No results!"
 		else if(IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]))
 		{
 			;Remove hotkey text after tab character
 			ButtonText := (Pos := InStr(ListEntry.Actions.DefaultAction.Name, "`t")) ? SubStr(ListEntry.Actions.DefaultAction.Name, 1, Pos - 1) : ListEntry.Actions.DefaultAction.Name
-			if(this.GUI.btnOK.Text != ButtonText)
-				this.GUI.btnOK.Text := ButtonText
-			if(!ListEntry.Actions.DefaultAction.Condition || ListEntry.Actions.DefaultAction.Condition.(ListEntry))
-				this.GUI.btnOK.Enabled := true
-			else
-				this.GUI.btnOK.Enabled := false
+			this.GUI.ActionText := ButtonText
 		}
+		this.GUI.DrawActionText()
 	}
 	OnDoubleClick()
 	{
@@ -907,6 +1249,7 @@ Class CAccessor
 	}
 	ShowActionMenu(ListEntry = "")
 	{
+		global FastFolders
 		if(IsObject(ListEntry) || IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]) || IsObject(ListEntry := this.Plugins[this.SingleContext].Result))
 		{
 			Menu, AccessorContextMenu, Add, test, AccessorContextMenu
@@ -923,6 +1266,22 @@ Class CAccessor
 					entries := true
 					Menu, AccessorContextMenu, Add, % action.Name, AccessorContextMenu
 				}
+			if(ListEntry.IsFolder)
+			{
+				Menu, AccessorFastFolderSubMenu, Add, test, AccessorContextMenu
+				Menu, AccessorFastFolderSubMenu, DeleteAll
+				for index, FastFolder in FastFolders
+					Menu, AccessorFastFolderSubMenu, Add, % (index - 1) ": " Button.GetLongName(), AccessorSaveAsFastFolder
+				Menu, AccessorContextMenu, Add, Save as Fast Folder, :AccessorFastFolderSubMenu
+			}
+			if(ListEntry.IsFile)
+			{
+				Menu, AccessorProgramSubMenu, Add, test, AccessorContextMenu
+				Menu, AccessorProgramSubMenu, DeleteAll
+				for index, Button in this.ProgramButtons
+					Menu, AccessorProgramSubMenu, Add, % "F" index ": " Button.GetShortName(), AccessorSaveAsProgram
+				Menu, AccessorContextMenu, Add, Assign to Button, :AccessorProgramSubMenu
+			}
 			if(entries)
 				Menu, AccessorContextMenu, Show
 		}
@@ -931,7 +1290,6 @@ Class CAccessor
 	HasAction(Action)
 	{
 		SingleContextPlugin := this.Plugins[this.SingleContext]
-		outputdebug % "has action " (IsObject(ListEntry := SingleContextPlugin.Result) && (ListEntry.Actions.DefaultAction.Function = Action.Function || ListEntry.Actions.FindKeyWithValue("Function", Action.Function)))
 		return (IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]) && (ListEntry.Actions.DefaultAction.Function = Action.Function || ListEntry.Actions.FindKeyWithValue("Function", Action.Function)))
 			|| (IsObject(ListEntry := SingleContextPlugin.Result)				  && (ListEntry.Actions.DefaultAction.Function = Action.Function || ListEntry.Actions.FindKeyWithValue("Function", Action.Function)))
 	}
@@ -1018,94 +1376,146 @@ Class CAccessor
 	{
 		this.SetFilter(CFileSearchPlugin.Instance.Settings.Keyword "  in " ListEntry.Path, strlen(CFileSearchPlugin.Instance.Settings.Keyword) + 1, strlen(CFileSearchPlugin.Instance.Settings.Keyword) + 1)
 	}
+	SaveAsFastFolder(Slot, ListEntry)
+	{
+		global FastFolders
+		if(!ListEntry)
+			ListEntry := this.List[this.GUI.ListView.SelectedIndex]
+		if(!ListEntry.IsFolder)
+		{
+			Msgbox SaveAsFastFolder(): The selected result is no directory!
+			return
+		}
+		UpdateStoredFolder(Slot, ListEntry.Path)
+	}
+	SaveAsProgram(MenuItem, ListEntry)
+	{
+		if(!ListEntry)
+			ListEntry := this.List[this.GUI.ListView.SelectedIndex]
+		if(!ListEntry.IsFile)
+		{
+			Msgbox SaveAsProgram(): The selected result is no file!
+			return
+		}
+		outputdebug % "set path " ListEntry.Path SubStr(MenuItem, 2, InStr(MenuItem, ":") - 2)
+		this.ProgramButtons[SubStr(MenuItem, 2, InStr(MenuItem, ":") - 2)].SetPath(ListEntry.Path)
+	}
 }
+#F1::
+#F2::
+#F3::
+#F4::
+#F5::
+#F6::
+#F7::
+#F8::
+#F9::
+#F10::
+#F11::
+#F12::
+CAccessor.Instance.ProgramButtons[SubStr(A_ThisHotkey, 3)].Execute()
+return
 AccessorContextMenu:
 CAccessor.Instance.PerformAction(A_ThisMenuItem, CAccessor.Instance.ClickedListEntry) ;ClickedListEntry is only valid for clicks on empty parts of the window
+return
+AccessorSaveAsFastFolder:
+CAccessor.Instance.SaveAsFastFolder(SubStr(A_ThisMenuItem, 1, 1), CAccessor.Instance.ClickedListEntry)
+return
+AccessorSaveAsProgram:
+CAccessor.Instance.SaveAsProgram(A_ThisMenuItem, CAccessor.Instance.ClickedListEntry)
 return
 
 Class CAccessorGUI extends CGUI
 {
-	s := this.SetStyle()
-	Width := CAccessor.Instance.Settings.Width
-	Height := CAccessor.Instance.Settings.Height
-	EditControl := this.AddControl("Edit", "EditControl", "Section x40 w" this.Width - 114 " y20 -Multi cBlack -Background", "")
-	Logo := this.AddControl("Picture", "picLogo", "x+-4 y+-32 w40 h40", A_ScriptDir "\128.png")
-	;b := this.Color(0x404040, 0x404040)
-	;f := this.Font("cWhite", "")
-	btnOK := this.AddControl("Button", "btnOK", "y10 xs+120 w75 Default hidden", "&OK")
-	ListView := this.AddControl("ListView", "ListView", "xs+0 ys+100 w" this.Width - 114 " h" (this.Height - 130) "cBlack Background0xededee AltSubmit -Multi NoSortHdr", "Title|Path| | |")
-	;btnCancel := this.AddControl("Button", "btnCancel", "y+8 w75", "&Cancel")
-	;btnConfigKeywords := this.AddControl("Button", "btnConfigKeywords", "xs+0 y" this.Height - 140 " w75", "&Keywords")
-	;btnConfigPlugins := this.AddControl("Button", "btnConfigPlugins", "xs+0 y" this.Height - 112 " w75", "&Plugins")
-	Footer := this.AddControl("Picture", "Footer", "xs+1 y+-1 w" this.Width - 116 " h20 +0xE")
-	;Settings := this.AddControl("Picture", "picSettings", "x+-20 w20 h20 +0xE", A_ScriptDir "\Icons\AccessorSettings.png")
-	Buttons := []
-	ButtonLabels := []
-	SetStyle()
-	{
-		this.Color(0x3E3D40, 0xFFFFFF)
-		;Gui, % this.GUINum ":Font", cWhite
-		GuiControl, % this.GUINum ": +Background0xFFFFFF", % this.EditControl.hwnd
-	}
+	QueryButtons := []
+	ProgramButtons := []
+	FastFolderButtons := []
+
+	static ButtonsX := 40
+	static ButtonsY := 59
+	static ButtonOffsetX := 38
+	static SmallButtonOffsetX := 19
+	static ButtonOffsetY := 40
+	static BackgroundColor := "0x3E3D40"
+	static ControlBackgroundColor := "0xFFFFFF"
+
+	FooterText := "Some generic information"
+	FooterPluginText := ""
+
+	ActionText := "Some Action"
 	__new()
 	{
 		Accessor := CAccessor.Instance
 
+		this.Color("CCCCCC", this.ControlBackgroundColor)
+		Gui, % this.GUINum ":Font", cBlack s11, Tahoma
+		this.Height := 600
+		this.EditControl := this.AddControl("Edit", "EditControl", "x54 -E0x200 w515 y20 h20 -Multi", "")
+		this.InputFieldEnd := this.AddControl("Picture", "InputFieldEnd", "x+0 yp+0 w111 h20 +0xE")
+		this.DrawActionText()
+		this.ExecuteButton := this.AddControl("Picture", "ExecuteButton", "x+5 yp+0 w35 h20 +0xE")
+		this.DrawExecuteButton()
+		this.CloseButton := this.AddControl("Picture", "CloseButton", "x746 y5 w10 h9 +0xE")
+		this.DrawCloseButton()
+		Gui, % this.GUINum ":Font", cBlack s10, Tahoma
+		this.btnOK := this.AddControl("Button", "btnOK", "y10 x10 w75 Default hidden", "&OK")
+		this.ListView := this.AddControl("ListView", "ListView", "x39 y129 w683 h456 AltSubmit +LV0x100 +LV0x4000 -Multi NoSortHdr", "Title|Path| |")
+		this.lnkFooter := this.AddControl("Link", "lnkFooter", "x43 y+-1 w637 0x1 -TabStop", this.FooterText)
+		this.Footer := this.AddControl("Picture", "Footer", "x39 yp+0 w683 h20 +0xE")
+
 		;Use a 7plus image as background for the listview
-		pBitmap := Gdip_CreateBitmapFromFile(A_ScriptDir "\128.png")
-		Width := Gdip_GetImageWidth(pBitmap)
-		Height := Gdip_GetImageHeight(pBitmap)
-		ListViewWidth := this.ListView.Width
-		ListViewHeight := this.ListView.Height
-		pLogo := Gdip_CreateBitmap(ListViewWidth, ListViewHeight)
-		pGraphics := Gdip_GraphicsFromImage(pLogo)
-		Gdip_SetInterpolationMode(pGraphics, 7)
-		pBrush := Gdip_BrushCreateSolid(0xFFededee)
-		Gdip_FillRectangle(pGraphics, pBrush, 0, 0, ListViewWidth, ListViewHeight)
-		Gdip_DeleteBrush(pBrush)
-		Gdip_DrawImage(pGraphics, pBitmap, ListViewWidth / 2 - Width / 2, ListViewHeight / 2 - Height / 2, Width, Height, "", "", "", "", 0.25)
-		Gdip_DeleteGraphics(pGraphics)
-		Gdip_DisposeImage(pBitmap)
-		hBitmap := Gdip_CreateHBITMAPFromBitmap(pLogo)
-		Gdip_DisposeImage(pLogo)
-		VarSetCapacity(LVBKIMAGE, 12 + 3 * A_PtrSize, 0) ; <=== 32-bit
-		NumPut(0x1 | 0x20000000 | 0x0100 | 0x10, LVBKIMAGE, 0, "UINT")  ; LVBKIF_TYPE_WATERMARK
-		NumPut(hBitmap, LVBKIMAGE, A_PtrSize, "UINT")
-		SendMessage, 0x1044, 0, &LVBKIMAGE, , % "ahk_id " this.ListView.hwnd  ; LVM_SETBKIMAGEA
-		SendMessage, 0x1026, 0, -1,, % "ahk_id " this.ListView.hwnd  ; LVM_SETTEXTBKCOLOR,, CLR_NONE
-		DeleteObject(hBitmap)
+		this.SetListViewBackground()
+		
 
-		pBitmap := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\AccessorSettings.png")
-		Width := Gdip_GetImageWidth(pBitmap)
-		Height := Gdip_GetImageHeight(pBitmap)
-		FooterWidth := this.Footer.Width
-		FooterHeight := this.Footer.Height
-		pFooter := Gdip_CreateBitmap(FooterWidth, FooterHeight)
-		pGraphics := Gdip_GraphicsFromImage(pFooter)
-		Gdip_SetInterpolationMode(pGraphics, 7)
-		pBrush := Gdip_BrushCreateSolid(0xFFCCCCCC)
-		Gdip_FillRectangle(pGraphics, pBrush, 0, 0, FooterWidth, FooterHeight)
-		Gdip_DeleteBrush(pBrush)
-		Gdip_DrawImage(pGraphics, pBitmap, FooterWidth - Width, 0, Width, Height)
-		Gdip_DeleteGraphics(pGraphics)
-		Gdip_DisposeImage(pBitmap)
-		hBitmap := Gdip_CreateHBITMAPFromBitmap(pFooter)
-		this.Footer.SetImageFromHBitmap(hBitmap)
-		Gdip_DisposeImage(pFooter)
-		DeleteObject(hBitmap)
+		this.DrawFooter()
 
-		ButtonY := "s+30"
-		ButtonX := 40
-		for index, Button in Accessor.Buttons
+		ButtonX := this.ButtonsX
+		ButtonY := this.ButtonsY
+		for index, Button in Accessor.QueryButtons
 		{
-			ButtonControl := this.AddControl("Picture", "Button" A_Index, "x" ButtonX + 8 " ys+30 w40 h40", Button.Icon)
-			ButtonControl.Click.Handler := new Delegate(this, "OnButtonClick")
-			ButtonControl.Tooltip := "F" index
-			this.Buttons.Insert(ButtonControl)
-			ButtonLabelControl := this.AddControl("Text", "ButtonLabel" A_Index, "x" ButtonX " ys+78 w56 R1 Center cWhite", Button.Text)
-			this.ButtonLabels.Insert(ButtonLabelControl)
-			ButtonX += 56
+			hBitmap := Button.Draw(false)
+			Button.OnBitmapChange.Handler := new Delegate(this, "OnQueryButtonBitmapChange")
+			ButtonControl := this.AddControl("Picture", "Button" A_Index, "x" ButtonX " y" this.ButtonsY " w35 h35 +0xE", "")
+			ButtonControl.Click.Handler := new Delegate(this, "OnQueryButtonClick")
+			;ButtonControl.Tooltip := "F" index
+			ButtonControl.SetImageFromHBitmap(hBitmap)
+			this.QueryButtons.Insert(ButtonControl)
+			DeleteObject(hBitmap)
+			ButtonX += this.ButtonOffsetX
 		}
+		ButtonX := this.ButtonsX
+		ButtonY := this.ButtonsY + this.ButtonOffsetY
+		for index, Button in Accessor.ProgramButtons
+		{
+			hBitmap := Button.Draw(false)
+			Button.OnPathChange.Handler := new Delegate(this, "OnProgramButtonPathChange")
+			ButtonControl := this.AddControl("Picture", "Button" A_Index, "x" ButtonX " y" ButtonY " w35 h31 +0xE", "")
+			ButtonControl.Click.Handler := new Delegate(this, "OnProgramButtonClick")
+			if(index <= 12)
+				ButtonControl.Tooltip := "F" index
+			ButtonControl.SetImageFromHBitmap(hBitmap)
+			this.ProgramButtons.Insert(ButtonControl)
+			DeleteObject(hBitmap)
+			ButtonX += this.ButtonOffsetX
+		}
+
+		ButtonX := this.ButtonsX + 13 * this.ButtonOffsetX
+		ButtonY := this.ButtonsY
+		for index, Button in Accessor.FastFolderButtons
+		{
+			hBitmap := Button.Draw(false)
+			ButtonControl := this.AddControl("Picture", "Button" A_Index, "x" ButtonX " y" ButtonY " w16 h35 +0xE", "")
+			ButtonControl.Click.Handler := new Delegate(this, "OnFastFolderButtonClick")
+			ButtonControl.Tooltip := index - 1
+			ButtonControl.SetImageFromHBitmap(hBitmap)
+			this.FastFolderButtons.Insert(ButtonControl)
+			DeleteObject(hBitmap)
+			ButtonX += this.ButtonOffsetX / 2
+		}
+
+		this.BackgroundFake := this.AddControl("Picture", "BackgroundFake", "x0 y0 w761 h131 +0xE +0x04000000")
+		this.DrawBackground()
+
 		if(Accessor.Settings.OpenInMonitorOfMouseCursor)
 		{
 			Monitor := FindMonitorFromMouseCursor()
@@ -1120,49 +1530,218 @@ Class CAccessorGUI extends CGUI
 		this.MinimizeBox := false
 		this.MaximizeBox := false
 		this.AlwaysOnTop := true
-		DllCall("dwmapi\DwmIsCompositionEnabled","IntP", DWMEnabled)
-		if(!Accessor.Settings.TitleBar && (Accessor.Settings.UseAero && WinVer >= WIN_Vista && DWMEnabled))
-			this.SysMenu := false
-		else if(!Accessor.Settings.TitleBar)
-			this.Caption := false
-			
+		this.SysMenu := false
+		this.Caption := false
+		
 		this.Border := true
 		this.Title := "7Plus Accessor"
 		this.CloseOnEscape := true
 		this.DestroyOnClose := true
-		
-		if(Accessor.Settings.UseAero && WinVer >= WIN_Vista && DWMEnabled)
-		{
-			VarSetCapacity(margin, 16)
-			NumPut(-1, &margin, 0, Uint)
-			NumPut(-1, &margin, 4, Uint)
-			NumPut(-1, &margin, 8, Uint)
-			NumPut(-1, &margin, 12, Uint)
-			Gui, % this.GUINum ":Color", 0x070809
-			WinSet,TransColor,0x070809, % "ahk_id " this.hwnd 
-			DllCall("Dwmapi.dll\DwmExtendFrameIntoClientArea", "Ptr", this.hwnd, "Ptr", &margin)
-		}
-		
-		if(Accessor.Settings.Transparency)
-			WinSet, Trans, % Accessor.Settings.Transparency, % "ahk_id " this.hwnd
 		
 		this.ListView.ExStyle := "+0x00010000"
 		this.ListView.LargeIcons := Accessor.Settings.LargeIcons
 		;this.ListView.IndependentSorting := true
 		this.ListView.ModifyCol(1, Round(this.ListView.Width * 3 / 8)) ;Col_3_w) ; resize title column
 		this.ListView.ModifyCol(2, Round(this.ListView.Width * 3.3 / 8)) ; resize path column
-		this.ListView.ModifyCol(3, Round(this.ListView.Width * 0.8 / 8)) ; resize detail1 column
-		this.ListView.ModifyCol(4, "AutoHdr") ; resize detail2 column
+		this.ListView.ModifyCol(3, 100) ; resize detail1 column
+		;this.ListView.ModifyCol(4, 40) ; resize detail2 column
 		this.OnMessage(0x06, "WM_ACTIVATE")
-		WinSet, Region, 1-1 774-1 774-120 727-120 727-611 41-611 41-120 1-120, % "ahk_id " this.hwnd
+		;GuiControl, % this.GUINum ":+Redraw", % this.EditControl.hwnd
+		WinSet, Region, 1-1 762-1 762-130 723-130 723-625 40-625 40-130 1-130, % "ahk_id " this.hwnd
 		SendMessage, 0x7, 0, 0,, % "ahk_id " this.ListView.hwnd ;Make the listview believe it has focus
-		this.Redraw()
+		;this.Redraw()
+		this.Width := 892
+		for type, Plugin in CAccessor.Instance.Plugins
+			Plugin.OnGUICreate(this)
 	}
-
-	OnButtonClick(Sender)
+	SetListViewBackground()
 	{
-		Slot := this.Buttons.IndexOf(Sender)
-		CAccessor.Instance.Buttons[Slot].Execute()
+		pBitmap := Gdip_CreateBitmapFromFile(A_ScriptDir "\128.png")
+		Width := Gdip_GetImageWidth(pBitmap)
+		Height := Gdip_GetImageHeight(pBitmap)
+		ListViewWidth := this.ListView.Width
+		ListViewHeight := this.ListView.Height
+		pLogo := Gdip_CreateBitmap(ListViewWidth, ListViewHeight)
+		pGraphics := Gdip_GraphicsFromImage(pLogo)
+		Gdip_SetInterpolationMode(pGraphics, 7)
+		pBrush := Gdip_BrushCreateSolid(0xFFFFFFFF)
+		Gdip_FillRectangle(pGraphics, pBrush, 0, 0, ListViewWidth, ListViewHeight)
+		Gdip_DeleteBrush(pBrush)
+		Gdip_DrawImage(pGraphics, pBitmap, ListViewWidth / 2 - Width / 2, ListViewHeight / 2 - Height / 2, Width, Height, "", "", "", "", 0.25)
+		Gdip_DeleteGraphics(pGraphics)
+		Gdip_DisposeImage(pBitmap)
+		hBitmap := Gdip_CreateHBITMAPFromBitmap(pLogo)
+		Gdip_DisposeImage(pLogo)
+		VarSetCapacity(LVBKIMAGE, 12 + 3 * A_PtrSize, 0) ; <=== 32-bit
+		NumPut(0x1 | 0x20000000 | 0x0100 | 0x10, LVBKIMAGE, 0, "UINT")  ; LVBKIF_TYPE_WATERMARK
+		NumPut(hBitmap, LVBKIMAGE, A_PtrSize, "UINT")
+		SendMessage, 0x1044, 0, &LVBKIMAGE, , % "ahk_id " this.ListView.hwnd  ; LVM_SETBKIMAGEA
+		SendMessage, 0x1026, 0, -1,, % "ahk_id " this.ListView.hwnd  ; LVM_SETTEXTBKCOLOR,, CLR_NONE
+		DeleteObject(hBitmap)
+	}
+	DrawExecuteButton(MouseOver = false)
+	{
+		if(!this.ExecuteButton.BitmapInActive)
+		{
+			this.ExecuteButton.BitmapInactive := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\enter.png")
+			this.ExecuteButton.BitmapActive := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\enter_active.png")
+		}
+		Width := this.ExecuteButton.Width
+		Height := this.ExecuteButton.Height
+		pBitmap := Gdip_CreateBitmap(Width, Height)
+		pGraphics := Gdip_GraphicsFromImage(pBitmap)
+
+		pBrush := Gdip_BrushCreateSolid(0xFF3E3D40)
+		Gdip_FillRectangle(pGraphics, pBrush, 0, 0, Width, Height)
+		Gdip_DeleteBrush(pBrush)
+
+		Gdip_DrawImage(pGraphics, MouseOver ? this.ExecuteButton.BitmapActive : this.ExecuteButton.BitmapInactive, 0, 0, Width, Height)
+		
+		hBitmap := Gdip_CreateHBITMAPFromBitmap(pBitmap)
+		Gdip_DisposeImage(pBitmap)
+		this.ExecuteButton.SetImageFromHBitmap(hBitmap)
+		DeleteObject(hBitmap)
+	}
+	DrawCloseButton(MouseOver = false)
+	{
+		if(!this.CloseButton.BitmapInActive)
+		{
+			this.CloseButton.BitmapInactive := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\close.png")
+			this.CloseButton.BitmapActive := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\close_active.png")
+		}
+		Width := this.CloseButton.Width
+		Height := this.CloseButton.Height
+		pBitmap := Gdip_CreateBitmap(Width, Height)
+		pGraphics := Gdip_GraphicsFromImage(pBitmap)
+
+		pBrush := Gdip_BrushCreateSolid(0xFF3E3D40)
+		Gdip_FillRectangle(pGraphics, pBrush, 0, 0, Width, Height)
+		Gdip_DeleteBrush(pBrush)
+
+		Gdip_DrawImage(pGraphics, MouseOver ? this.CloseButton.BitmapActive : this.CloseButton.BitmapInactive, 0, 0, Width, Height)
+		
+		hBitmap := Gdip_CreateHBITMAPFromBitmap(pBitmap)
+		Gdip_DisposeImage(pBitmap)
+		this.CloseButton.SetImageFromHBitmap(hBitmap)
+		DeleteObject(hBitmap)
+	}
+	DrawActionText()
+	{
+		if(!this.InputFieldEnd.Bitmap)
+			this.InputFieldEnd.Bitmap := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\inputfield_end.png")
+
+		Width := this.InputFieldEnd.Width
+		Height := this.InputFieldEnd.Height
+		pBitmap := Gdip_CreateBitmap(Width, Height)
+		pGraphics := Gdip_GraphicsFromImage(pBitmap)
+
+		pBrush := Gdip_BrushCreateSolid(0xFF3E3D40)
+		Gdip_FillRectangle(pGraphics, pBrush, 0, 0, Width, Height)
+		Gdip_DeleteBrush(pBrush)
+
+		Gdip_DrawImage(pGraphics, this.InputFieldEnd.Bitmap, 0, 0, Width, Height)
+		Gdip_TextToGraphics(pGraphics, this.ActionText, "x" Width - 5 " Right y0 cFF999999 r4 s13 Regular", "Tahoma")
+
+		hBitmap := Gdip_CreateHBITMAPFromBitmap(pBitmap)
+		Gdip_DisposeImage(pBitmap)
+		this.InputFieldEnd.SetImageFromHBitmap(hBitmap)
+		DeleteObject(hBitmap)
+	}
+	DrawBackground()
+	{
+		pFake := Gdip_CreateBitmap(780, 130)
+		pGraphics := Gdip_GraphicsFromImage(pFake)
+
+		pBrush := Gdip_BrushCreateSolid(0xFF3E3D40)
+		Gdip_FillRectangle(pGraphics, pBrush, 0, 0, 780, 130)
+		Gdip_DeleteBrush(pBrush)
+
+		pBitmap := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\inputfield_start.png")
+		Gdip_DrawImage(pGraphics, pBitmap, 20, 8, 34, 39)
+
+		hBitmap := Gdip_CreateHBITMAPFromBitmap(pFake)
+		Gdip_DisposeImage(pBitmap)
+		Gdip_DisposeImage(pFake)
+		this.BackgroundFake.SetImageFromHBitmap(hBitmap)
+		DeleteObject(hBitmap)
+	}
+	DrawFooter()
+	{
+		pBitmap := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\AccessorSettings.png")
+		Width := Gdip_GetImageWidth(pBitmap)
+		Height := Gdip_GetImageHeight(pBitmap)
+		FooterWidth := this.Footer.Width
+		FooterHeight := this.Footer.Height
+		pFooter := Gdip_CreateBitmap(FooterWidth, FooterHeight)
+		pGraphics := Gdip_GraphicsFromImage(pFooter)
+		Gdip_SetInterpolationMode(pGraphics, 7)
+
+		pBrush := Gdip_BrushCreateSolid(0xFF828790)
+		Gdip_FillRectangle(pGraphics, pBrush, 0, 0, FooterWidth, FooterHeight)
+		Gdip_DeleteBrush(pBrush)
+
+		pBrush := Gdip_BrushCreateSolid(0xFFCCCCCC)
+		Gdip_FillRectangle(pGraphics, pBrush, 1, 0, FooterWidth - 2, FooterHeight)
+		Gdip_DeleteBrush(pBrush)
+
+		Gdip_DrawImage(pGraphics, pBitmap, FooterWidth - Width, 0, Width, Height)
+		;Gdip_TextToGraphics(pGraphics, this.FooterText, "x4 y1 cFF000000 r4 s16 Regular", "Tahoma")
+		Gdip_DeleteGraphics(pGraphics)
+		Gdip_DisposeImage(pBitmap)
+		hBitmap := Gdip_CreateHBITMAPFromBitmap(pFooter)
+		this.Footer.SetImageFromHBitmap(hBitmap)
+		Gdip_DisposeImage(pFooter)
+		DeleteObject(hBitmap)
+	}
+	OnQueryButtonBitmapChange(Index)
+	{
+		MouseGetPos,,,,hwnd,2
+		Button := this.QueryButtons[Index]
+		hBitmap := CAccessor.Instance.QueryButtons[Index].Draw(hwnd = Button.hwnd)
+		Button.SetImageFromHBitmap(hBitmap)
+		DeleteObject(hBitmap)
+	}
+	OnProgramButtonPathChange(Index)
+	{
+		MouseGetPos,,,,hwnd,2
+		Button := this.ProgramButtons[Index]
+		hBitmap := CAccessor.Instance.ProgramButtons[Index].Draw(hwnd = Button.hwnd)
+		Button.SetImageFromHBitmap(hBitmap)
+		DeleteObject(hBitmap)
+	}
+	Show()
+	{
+		Base.Show("w900 h604")
+		SetTimer, AccessorGUI_CheckMouseMovement, 50
+	}
+	
+	OnQueryButtonClick(Sender)
+	{
+		Slot := this.QueryButtons.IndexOf(Sender)
+		AccessorButton := CAccessor.Instance.QueryButtons[Slot]
+		if(AccessorButton.Query)
+			AccessorButton.Execute()
+		else if(this.EditControl.Text)
+			this.SetQueryButtonQuery(AccessorButton)
+	}
+	OnProgramButtonClick(Sender)
+	{
+		Slot := this.ProgramButtons.IndexOf(Sender)
+		AccessorButton := CAccessor.Instance.ProgramButtons[Slot]
+		if(AccessorButton.Path)
+			AccessorButton.Execute()
+		else if(CAccessor.Instance.List[this.ListView.SelectedIndex].IsFile)
+			AccessorButton.SetPath(CAccessor.Instance.List[this.ListView.SelectedIndex].Path)
+	}
+	OnFastFolderButtonClick(Sender)
+	{
+		global FastFolders
+		Slot := this.FastFolderButtons.IndexOf(Sender)
+		AccessorButton := CAccessor.Instance.FastFolderButtons[Slot]
+		if(FastFolders[AccessorButton.Number].Path)
+			CAccessor.Instance.FastFolderButtons[Slot].Execute()
+		else if(CAccessor.Instance.List[this.ListView.SelectedIndex].IsFolder)
+			Accessor.SaveAsFastFolder(AccessorButton.Number, CAccessor.Instance.List[this.ListView.SelectedIndex].Path)
 	}
 
 	SetFilter(Text, SelectionStart = -1, SelectionEnd = -1)
@@ -1174,15 +1753,38 @@ Class CAccessorGUI extends CGUI
 		this.ActiveControl := this.EditControl
 	}
 
+	;Links are handled elsewhere, however, let's make sure that the focus doesn't stay on this control
+	lnkFooter_Click(URLorID, Index)
+	{
+		this.ActiveControl := this.EditControl
+	}
 	ShowButtonMenu()
 	{
+		MouseGetPos, , , , hwnd, 2
+		index := this.QueryButtons.FindKeyWithValue("hwnd", hwnd)
+		this.ClickedQueryButton := CAccessor.Instance.QueryButtons[index]
 		Menu, Tray, UseErrorLevel
 		Menu, AccessorButtonMenu, DeleteAll
-		Menu, AccessorButtonMenu, Add, Use current Query, SettingsHandler  ; Creates a new menu item.
-		Menu, AccessorButtonMenu, Add, Set icon, SettingsHandler
+		Menu, AccessorButtonMenu, Add, Use current Query, AccessorQueryMenu_UseCurrentQuery  ; Creates a new menu item.
+		Menu, AccessorButtonMenu, Add, Set icon, AccessorQueryMenu_SetIcon
 		Menu, AccessorButtonMenu, Show
 	}
 
+	UpdateFooterText(Text = "")
+	{
+		MouseGetPos, , , , hwnd, 2
+		if(hwnd && hwnd = this.PreviousMouseOverButton.hwnd)
+		{
+			Text := this.PreviousMouseOverAccessorButton.GetLongName()
+		}
+		else if(Plugin := CAccessor.Instance.Plugins[CAccessor.Instance.SingleContext])
+		{
+			if(t := Plugin.GetFooterText())
+				Text := t
+		}
+		if(Text != this.lnkFooter.Text)
+			this.lnkFooter.Text := Text
+	}
 	EditControl_TextChanged()
 	{
 		;Logic is handled in CAccessor
@@ -1203,8 +1805,7 @@ Class CAccessorGUI extends CGUI
 
 	ListView_DoubleClick()
 	{
-		;Logic is handled in CAccessor
-		CAccessor.Instance.OnDoubleClick()
+		CAccessor.Instance.PerformAction()
 	}
 
 	ListView_ContextMenu()
@@ -1232,18 +1833,19 @@ Class CAccessorGUI extends CGUI
 	{
 		if(!this.IsDestroyed)
 			CAccessor.Instance.OnClose()
+		SetTimer, AccessorGUI_CheckMouseMovement, Off
 	}
 
-	btnCancel_Click()
+	CloseButton_Click()
 	{
 		this.Close()
 	}
 
-	btnOK_Click()
+	ExecuteButton_Click()
 	{
 		CAccessor.Instance.PerformAction()
 	}
-	picLogo_Click()
+	btnOK_Click()
 	{
 		CAccessor.Instance.PerformAction()
 	}
@@ -1251,7 +1853,7 @@ Class CAccessorGUI extends CGUI
 	{
 		CoordMode, Mouse, Relative
 		MouseGetPos, x, y
-		if(IsInArea(x, y, this.Footer.x, this.Footer.y, this.Footer.Width, this.Footer.Height))
+		if(IsInArea(x, y, this.Footer.x + this.Footer.Width - 20, this.Footer.y, this.Footer.Width, this.Footer.Height))
 		{
 			this.Close()
 			SettingsWindow.Show("Accessor")
@@ -1298,18 +1900,107 @@ Class CAccessorGUI extends CGUI
 			this.ListView.Items[selected].Modify("Select Vis")
 		}
 	}
+	SetQueryButtonIcon()
+	{
+		Button := this.ClickedQueryButton
+		if(Button)
+		{
+			FileSelectFile, IconFile, 1, % Button.Icon, Select Image for this button, % "Images(*.ico; *.exe; *.dll; *.png; *.gif; *.bmp; *.jpg)"
+			if(FileExist(IconFile))
+				Button.SetIcon(IconFile)
+			this.Remove("ClickedQueryButton")
+		}
+	}
+	SetQueryButtonQuery(Button = "")
+	{
+		Button := this.ClickedQueryButton
+		if(Button)
+		{
+			Button.SetQuery(this.EditControl.Text)
+			this.Remove("ClickedQueryButton")
+		}
+	}
+	CheckMouseMovement()
+	{
+		MouseGetPos, x, y, , hwnd, 2
+		for index1, Button in this.QueryButtons
+			if(Button.hwnd = hwnd)
+			{
+				NewButton := Button
+				NewAccessorButton := CAccessor.Instance.QueryButtons[index1]
+				break
+			}
+		for index2, Button in this.ProgramButtons
+			if(Button.hwnd = hwnd)
+			{
+				NewButton := Button
+				NewAccessorButton := CAccessor.Instance.ProgramButtons[index2]
+				break
+			}
+		for index3, Button in this.FastFolderButtons
+			if(Button.hwnd = hwnd)
+			{
+				NewButton := Button
+				NewAccessorButton := CAccessor.Instance.FastFolderButtons[index3]
+				break
+			}
+		if(this.ExecuteButton.hwnd = hwnd)
+			NewButton := this.ExecuteButton
+		else if(this.CloseButton.hwnd = hwnd)
+			NewButton := this.CloseButton
+		if(this.PreviousMouseOverButton != NewButton)
+		{
+			if(this.PreviousMouseOverButton)
+			{
+				if(this.PreviousMouseOverAccessorButton)
+				{
+					hBitmap := this.PreviousMouseOverAccessorButton.Draw(false)
+					this.PreviousMouseOverButton.SetImageFromHBitmap(hBitmap)
+					DeleteObject(hBitmap)
+				}
+				else if(this.PreviousMouseOverButton = this.ExecuteButton)
+					this.DrawExecuteButton(false)
+				else if(this.PreviousMouseOverButton = this.CloseButton)
+					this.DrawCloseButton(false)
+			}
+			if(NewButton)
+			{
+				if(NewAccessorButton)
+				{
+					hBitmap := NewAccessorButton.Draw(true)
+					NewButton.SetImageFromHBitmap(hBitmap)
+					DeleteObject(hBitmap)
+				}
+				else if(NewButton = this.ExecuteButton)
+					this.DrawExecuteButton(true)
+				else if(NewButton = this.CloseButton)
+					this.DrawCloseButton(true)
+			}
+			this.PreviousMouseOverButton := NewButton
+			this.PreviousMouseOverAccessorButton := NewAccessorButton
+		}
+		this.UpdateFooterText()
+	}
 }
-
-#if CAccessor.Instance.GUI && IsWindowUnderCursor(CAccessor.Instance.GUI.hwnd) && IsAccessorButtonUnderCursor()
+AccessorGUI_CheckMouseMovement:
+CAccessor.Instance.GUI.CheckMouseMovement()
+return
+AccessorQueryMenu_SetIcon:
+CAccessor.Instance.GUI.SetQueryButtonIcon()
+return
+AccessorQueryMenu_UseCurrentQuery:
+CAccessor.Instance.GUI.SetQueryButtonQuery()
+return
+#if CAccessor.Instance.GUI && IsWindowUnderCursor(CAccessor.Instance.GUI.hwnd) && IsQueryButtonUnderCursor()
 RButton::
 CAccessor.Instance.GUI.ShowButtonMenu()
 return
 #if
-IsAccessorButtonUnderCursor()
+IsQueryButtonUnderCursor()
 {
 	MouseGetPos, , , , control
 	Number := SubStr(control, 7)
-	return Number >= 3 && Number <= 26
+	return Number >= 3 && Number <= 14
 }
 
 
@@ -1565,6 +2256,10 @@ Class CAccessorPlugin
 	{
 	}
 	
+	OnGUICreate(Accessor)
+	{
+
+	}
 	OnOpen(Accessor)
 	{
 	}
@@ -1599,6 +2294,11 @@ Class CAccessorPlugin
 	;~ {
 	;~ }
 	SetupContextMenu(Accessor, ListEntry)
+	{
+	}
+
+	;The plugin can supply a string that is shown in Footer. Because the Footer is a Link control it can also contain <a> tags for links
+	GetFooterText()
 	{
 	}
 }
@@ -1645,21 +2345,11 @@ favorite buttons for Accessor?
 clipboard clips: pasting doesn't work in Word
 find in filenames doesn't search
 infogui not working?
-google plugin icon missing
 open accessor in monitor of mouse not working
 windows minimize animation setting in slide windows settings
 explorer tabs in slide windows
 message timer on clock not working
 subevent controls not working properly
-
-Ideas:
-A slot should contain either a query or a result
--Selecting a query would just insert it as query in Accessor while keeping it open
--Selecting a result should execute its default action
-Slots can be assigned by right clicking on them or on a result
-F-keys are used to access the buttons as well
-Buttons that use queries need a way to use a custom icon. This can probably be done through context menu
-
 
 Using Accessor as a dock:
 There should only be one setting that enables/disables this.

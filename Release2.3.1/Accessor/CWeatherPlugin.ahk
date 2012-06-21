@@ -15,6 +15,7 @@ Class CWeatherPlugin extends CAccessorPlugin
 		Keyword := "Weather"
 		KeywordOnly := false ;This is actually true, but IsInSinglePluginContext needs to be called every time so it is handled manually here
 		MinChars := 2
+		DefaultLocation := ""
 	}
 
 	Class CResult extends CAccessorPlugin.CResult
@@ -47,6 +48,24 @@ Class CWeatherPlugin extends CAccessorPlugin
 		return false
 	}
 
+	OnGUICreate(AccessorGUI)
+	{
+		AccessorGUI.lnkFooter.Click.Handler := new Delegate(this, "OnFooterClick")
+	}
+	OnFooterClick(Sender, URLorID, Index)
+	{
+		outputdebug click
+		if(CAccessor.Instance.SingleContext = this.Type)
+		{
+			outputdebug single
+			if(Index = 1)
+			{
+				outputdebug index
+				Filter := strTrim(CAccessor.Instance.FilterWithoutTimer, this.Settings.Keyword " ")
+				this.Settings.DefaultLocation := Filter
+			}
+		}
+	}
 	OnOpen(Accessor)
 	{
 		this.List := Array()
@@ -91,6 +110,15 @@ Class CWeatherPlugin extends CAccessorPlugin
 		return false
 	}
 
+	ShowSettings(PluginSettings, Accessor, PluginGUI)
+	{
+		AddControl(PluginSettings, PluginGUI, "Edit", "DefaultLocation", "", "", "Default Location:")
+	}
+	GetFooterText()
+	{
+		Filter := strTrim(CAccessor.Instance.FilterWithoutTimer, this.Settings.Keyword " ")
+		return Filter ? "<a>Set default location</a>" : ""
+	}
 }
 
 ;This function is not moved into the class because it seems possible that AHK can hang up when this function is called via SetTimerF().
@@ -105,7 +133,10 @@ QueryWeatherResult()
 	if(InStr(Accessor.FilterWithoutTimer, CWeatherPlugin.Instance.Settings.Keyword " ") != 1)
 		return
 	Filter := strTrim(Accessor.FilterWithoutTimer, CWeatherPlugin.Instance.Settings.Keyword " ")
-	outputdebug query weather for %filter%
+	if(RegExMatch(Filter, "^\s*$"))
+		Filter .= CWeatherPlugin.Instance.Settings.DefaultLocation
+
+	outputdebug Query Weather for %Filter%
 
 	for index, ListEntry in CWeatherPlugin.Instance.List
 		if(ListEntry.Icon)

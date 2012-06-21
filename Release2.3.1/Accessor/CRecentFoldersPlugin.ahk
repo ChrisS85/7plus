@@ -34,6 +34,7 @@ Class CRecentFoldersPlugin extends CAccessorPlugin
 				this.Insert(CAccessorPlugin.CActions.SearchDir)
 			}
 		}
+		IsFolder := true
 		Type := "Recent Folders"
 		Actions := new this.CActions()
 		Priority := CRecentFoldersPlugin.Instance.Priority

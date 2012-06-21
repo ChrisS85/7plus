@@ -65,11 +65,15 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		__new(Type)
 		{
 			if(Type = "Folder")
+			{
 				this.Actions := new this.CFolderActions()
+				this.IsFolder := true
+			}
 			else if(Type = "Executable")
 				this.Actions := new this.CExecutableActions()
 			else
 				this.Actions := new this.CFileActions()
+			this.IsFile := true
 		}
 		Type := "File System"
 		Priority := CFileSystemPlugin.Instance.Priority

@@ -3,7 +3,7 @@
 ClearStoredFolder(Slot)
 {
 	global FastFolders
-	Slot+=1
+	;Slot+=1
 	FastFolders[Slot].Path := ""
 	FastFolders[Slot].Name := ""
 	if (Settings.Explorer.FastFolders.ShowInFolderBand)
@@ -11,9 +11,9 @@ ClearStoredFolder(Slot)
 		RemoveAllExplorerButtons("IsFastFolderButton")
 		loop 10
 		{
-			pos:=A_Index-1
-			if(FastFolders[A_Index].Path)
-				AddButton("",FastFolders[A_Index].Path,,pos ":" FastFolders[A_Index].Name)
+			pos := A_Index - 1
+			if(FastFolders[pos].Path)
+				AddButton("", FastFolders[pos].Path, , pos ":" FastFolders[pos].Name)
 		}
 	}
 }
@@ -22,8 +22,8 @@ ClearStoredFolder(Slot)
 UpdateStoredFolder(Slot, Folder = "")
 {
 	global FastFolders
-	;Fast folder slots are 0-based externally
-	Slot += 1
+	;Fast folder slots are 0-based externally but 1 based in the FastFolders array
+	;Slot += 1
 	if(Folder)
 		FastFolders[Slot].Path := Folder
 	else
@@ -53,13 +53,13 @@ AddAllButtons(ToFolderBand, ToPlacesBar)
 	{
 		;Fast folder slots are 0-based externally
 		pos := A_Index - 1
-		if(FastFolders[A_Index].Path)
+		if(FastFolders[pos].Path)
 		{				
 			if(ToFolderBand)		
-				AddButton("", FastFolders[A_Index].Path, "", pos ":" FastFolders[A_Index].Name, "", "Both", 2) ;7plus now uses AHK=2 key in registry to indicate FastFolder buttons
+				AddButton("", FastFolders[pos].Path, "", pos ":" FastFolders[pos].Name, "", "Both", 2) ;7plus now uses AHK=2 key in registry to indicate FastFolder buttons
 			if(pos <= 4 && ToPlacesBar)	;Also update placesbar
 			{
-				value := FastFolders[A_Index].Path
+				value := FastFolders[pos].Path
 				RegWrite, REG_SZ,HKCU,Software\Microsoft\Windows\CurrentVersion\Policies\comdlg32\Placesbar, Place%pos%,%value%
 			}				
 		}
@@ -82,9 +82,9 @@ FastFolderMenu()
 	loop 10
 	{
 		i := A_Index - 1
-		if(FastFolders[A_Index].Path)
+		if(FastFolders[i].Path)
 		{
-			x := FastFolders[A_Index].Name
+			x := FastFolders[i].Name
 			if(x && (!InStr(x, "ftp://") = 1 || !y.MaxIndex()))
 			{
 				x := "&" i ": " x

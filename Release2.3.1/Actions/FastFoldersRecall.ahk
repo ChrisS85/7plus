@@ -9,7 +9,7 @@ Class CFastFoldersRecallAction Extends CAction
 		global FastFolders
 		Slot := this.Slot
 		if(Slot >= 0 && Slot <= 9 )
-			Navigation.SetPath(FastFolders[Slot+1].Path)
+			Navigation.SetPath(FastFolders[Slot].Path)
 		return 1
 	} 
 
