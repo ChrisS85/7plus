@@ -1513,13 +1513,13 @@ Class CAccessorGUI extends CGUI
 		if(Accessor.Settings.OpenInMonitorOfMouseCursor)
 		{
 			Monitor := FindMonitorFromMouseCursor()
-			this.X := (Monitor.Right - Monitor.Left) / 2 - this.Width / 2
-			this.Y := (Monitor.Bottom - Monitor.Top) / 2 - this.Height / 2
+			this.X := Monitor.Left + (Monitor.Right - Monitor.Left) / 2 - this.Width / 2
+			this.Y := Monitor.Top + (Monitor.Bottom - Monitor.Top) / 2 - this.Height / 2
 		}
 		else
 		{
 			this.X := A_ScreenWidth / 2 - this.Width / 2
-			this.Y := A_ScreenHeight / 2 - this.Height / 2
+			this.Y := 0
 		}
 		this.MinimizeBox := false
 		this.MaximizeBox := false
@@ -1544,7 +1544,7 @@ Class CAccessorGUI extends CGUI
 		WinSet, Region, 0-0 762-0 762-130 723-130 723-625 40-625 40-130 0-130, % "ahk_id " this.hwnd
 		SendMessage, 0x7, 0, 0,, % "ahk_id " this.ListView.hwnd ;Make the listview believe it has focus
 		;this.Redraw()
-		this.Width := 892
+		this.Width := 760
 		for type, Plugin in Accessor.Plugins
 			Plugin.OnGUICreate(this)
 	}
@@ -1739,7 +1739,18 @@ Class CAccessorGUI extends CGUI
 	Show()
 	{
 		this.ResetGUI()
-		Base.Show("w760 h604 x" Round(A_ScreenWidth / 2 - this.Width / 2) " y0")
+		if(CAccessor.Instance.Settings.OpenInMonitorOfMouseCursor)
+		{
+			Monitor := FindMonitorFromMouseCursor()
+			X := Round(Monitor.Left + (Monitor.Right - Monitor.Left) / 2 - this.Width / 2)
+			Y := Monitor.Top
+		}
+		else
+		{
+			X := A_ScreenWidth / 2 - this.Width / 2
+			Y := 0
+		}
+		Base.Show("w760 h604 x" x " y" y)
 		SetTimer, AccessorGUI_CheckMouseMovement, 50
 	}
 	
@@ -2368,7 +2379,6 @@ uninstall plugin not working (x64) -- Or is it?
 random accessor crashes on x64
 
 find in filenames doesn't search
-infogui not working?
 open accessor in monitor of mouse not working
 windows minimize animation setting in slide windows settings
 explorer tabs in slide windows
