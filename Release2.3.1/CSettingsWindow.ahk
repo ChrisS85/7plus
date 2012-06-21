@@ -847,46 +847,46 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("Text", "txtAccessorText", "xs+21 ys+19 w431 h39", "Accessor is a versatile tool that is used to perform many commands through the keyboard, `nlike launching programs, switching windows, open URLs, browsing the filesystem,...`nPress the assigned hotkey (Default: ALT+Space) and start typing!")
 		Page.AddControl("CheckBox", "chkAccessorLargeIcons", "xs+21 ys+69 h17", "Large icons")
 		Page.AddControl("CheckBox", "chkAccessorCloseWhenDeactivated", "xs+21 y+3 h17", "Close Accessor window when it gets deactivated")
-		Page.AddControl("CheckBox", "chkAccessorTitleBar", "xs+21 y+3 h17", "Show title bar")
-		Page.AddControl("CheckBox", "chkAccessorUseAero", "xs+21 y+3 h17", "Use Aero glass effect (Vista/7 and newer)")
+		;Page.AddControl("CheckBox", "chkAccessorTitleBar", "xs+21 y+3 h17", "Show title bar")
+		;Page.AddControl("CheckBox", "chkAccessorUseAero", "xs+21 y+3 h17", "Use Aero glass effect (Vista/7 and newer)")
 		Page.AddControl("CheckBox", "chkAccessorOpenInMonitorOfMouseCursor", "xs+21 y+3 h17", "Open in the monitor where the mouse cursor is")
 		chkUseSelectionForKeywords := Page.AddControl("CheckBox", "chkUseSelectionForKeywords", "xs+21 y+3 h17", "Use the selected text as first parameter in keywords when no text is entered")
 		chkUseSelectionForKeywords.ToolTip := "This can be used like this for example:`nSelect some text, open Accessor, type w and press enter.`nThis will search for the selected text on Wikipedia."
-		Page.AddControl("Slider", "sldAccessorTransparency", "x+10 y+3 Range50-255", 255)
-		Page.AddControl("Text", "txtAccessorTransparency", "xs+21 yp+3 h17", "Transparency (looks ugly with Aero enabled!):")
-		Page.AddControl("Text", "txtAccessorWidth", "xs+21 y+13 h17", "Accessor Width:")
-		Page.AddControl("Edit", "editAccessorWidth", "xs+120 yp-3 w60 h20 Number", "")
-		Page.AddControl("Text", "txtAccessorHeight", "xs+21 y+13 h17", "Accessor Height:")
-		Page.AddControl("Edit", "editAccessorHeight", "xs+120 yp-3 w60 h20 Number", "")
+		;Page.AddControl("Slider", "sldAccessorTransparency", "x+10 y+3 Range50-255", 255)
+		;Page.AddControl("Text", "txtAccessorTransparency", "xs+21 yp+3 h17", "Transparency (looks ugly with Aero enabled!):")
+		;Page.AddControl("Text", "txtAccessorWidth", "xs+21 y+13 h17", "Accessor Width:")
+		;Page.AddControl("Edit", "editAccessorWidth", "xs+120 yp-3 w60 h20 Number", "")
+		;Page.AddControl("Text", "txtAccessorHeight", "xs+21 y+13 h17", "Accessor Height:")
+		;Page.AddControl("Edit", "editAccessorHeight", "xs+120 yp-3 w60 h20 Number", "")
 	}
 	InitAccessor()
 	{
 		Page := this.Pages.Accessor.Tabs[1].Controls
 		Page.chkAccessorLargeIcons.Checked := CAccessor.Instance.Settings.LargeIcons
 		Page.chkAccessorCloseWhenDeactivated.Checked := CAccessor.Instance.Settings.CloseWhenDeactivated
-		Page.chkAccessorTitleBar.Checked := CAccessor.Instance.Settings.TitleBar
-		Page.chkAccessorUseAero.Checked := CAccessor.Instance.Settings.UseAero
+		;Page.chkAccessorTitleBar.Checked := CAccessor.Instance.Settings.TitleBar
+		;Page.chkAccessorUseAero.Checked := CAccessor.Instance.Settings.UseAero
 		Page.chkOpenInMonitorOfMouseCursor.Checked := CAccessor.Instance.Settings.OpenInMonitorOfMouseCursor
 		Page.chkUseSelectionForKeywords.Checked := CAccessor.Instance.Settings.UseSelectionForKeywords
-		if(CAccessor.Instance.Settings.Transparency)
-			Page.sldAccessorTransparency.Value := CAccessor.Instance.Settings.Transparency
-		Page.editAccessorWidth.Text := Clamp(CAccessor.Instance.Settings.Width, 600, 2000)
-		Page.editAccessorHeight.Text := Clamp(CAccessor.Instance.Settings.Height, 200, 2000)
+		;if(CAccessor.Instance.Settings.Transparency)
+		;	Page.sldAccessorTransparency.Value := CAccessor.Instance.Settings.Transparency
+		;Page.editAccessorWidth.Text := Clamp(CAccessor.Instance.Settings.Width, 600, 2000)
+		;Page.editAccessorHeight.Text := Clamp(CAccessor.Instance.Settings.Height, 200, 2000)
 	}
 	ApplyAccessor()
 	{
 		Page := this.Pages.Accessor.Tabs[1].Controls
 		CAccessor.Instance.Settings.LargeIcons := Page.chkAccessorLargeIcons.Checked
 		CAccessor.Instance.Settings.CloseWhenDeactivated := Page.chkAccessorCloseWhenDeactivated.Checked
-		CAccessor.Instance.Settings.TitleBar := Page.chkAccessorTitleBar.Checked
-		CAccessor.Instance.Settings.UseAero := Page.chkAccessorUseAero.Checked
+		;CAccessor.Instance.Settings.TitleBar := Page.chkAccessorTitleBar.Checked
+		;CAccessor.Instance.Settings.UseAero := Page.chkAccessorUseAero.Checked
 		CAccessor.Instance.Settings.OpenInMonitorOfMouseCursor := Page.chkOpenInMonitorOfMouseCursor.Checked
 		CAccessor.Instance.Settings.UseSelectionForKeywords := Page.chkUseSelectionForKeywords.Checked
-		CAccessor.Instance.Settings.Transparency := Page.sldAccessorTransparency.Value
-		if(CAccessor.Instance.Settings.Transparency = 255)
-			CAccessor.Instance.Settings.Transparency := 0
-		CAccessor.Instance.Settings.Width := Clamp(Page.editAccessorWidth.Text, 600, 2000)
-		CAccessor.Instance.Settings.Height := Clamp(Page.editAccessorHeight.Text, 200, 2000)
+		;CAccessor.Instance.Settings.Transparency := Page.sldAccessorTransparency.Value
+		;if(CAccessor.Instance.Settings.Transparency = 255)
+		;	CAccessor.Instance.Settings.Transparency := 0
+		;CAccessor.Instance.Settings.Width := Clamp(Page.editAccessorWidth.Text, 600, 2000)
+		;CAccessor.Instance.Settings.Height := Clamp(Page.editAccessorHeight.Text, 200, 2000)
 	}
 	;Accessor Plugins
 	CreatePlugins()
@@ -1828,8 +1828,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("GroupBox", "grpAdvanced", "xs+37 ys+150 w" this.Width - 300 " h350", "Advanced Settings")
 		Page.AddControl("CheckBox", "chkEnableDebugging", "xs+47 ys+380", "Enable debugging")
 		Page.Controls.chkEnableDebugging.ToolTip := "Enable this to see debug messages. A program like DebugView is recommended for this.`nThis will also affect some other parts of 7plus, such as event exporting."
-		Page.AddControl("CheckBox", "chkDontRegisterSelectionChanged", "xs+47 ys+405", "Fix hanging issues with Explorer (prevents file selection tracking and undo)")
-		Page.chkDontRegisterSelectionChanged.ToolTip := "Under some circumstances 7plus and an involved Explorer window won't react anymore.`nIf don't use the ""Restore Selection"" feature you can avoid this problem.`nClose all Explorer windows or restart 7plus to apply this setting."
+		Page.AddControl("CheckBox", "chkDontRegisterSelectionChanged", "xs+47 ys+405", "Fix hanging issues with Explorer (prevents file selection tracking + undo and Explorer status bar enhancements)")
+		Page.chkDontRegisterSelectionChanged.ToolTip := "Use this if Explorer windows won't react anymore sometimes.`n""Restore Selection"" and display of file sizes in Explorer status bar`nare not going to work if this is enabled."
 	}
 	InitMisc()
 	{

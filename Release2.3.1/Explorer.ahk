@@ -369,7 +369,7 @@ InitExplorerWindows()
 	if(WinVer = WIN_7)
 	{
 		ExplorerWindows.InfoGUI_FreeText := TranslateMUI(shell32MUIpath,12336) ;Aquire a translated version of "free"
-		ExplorerWindows.InfoGUI_FreeText:=SubStr(ExplorerWindows.InfoGUI_FreeText,InStr(ExplorerWindows.InfoGUI_FreeText," ",0,0)+1)
+		ExplorerWindows.InfoGUI_FreeText := SubStr(ExplorerWindows.InfoGUI_FreeText, InStr(ExplorerWindows.InfoGUI_FreeText, " ", 0, 0) + 1)
 	}
 }
 
@@ -752,15 +752,15 @@ Class InfoGUI
 		global ExplorerWindows
 		if(WinVer != WIN_7)
 			return
-		totalsize:=0
-		realfiles:=false ;check if only folders are selected
-		History :=ExplorerWindow.Selection.History[ExplorerWindow.Selection.History.MaxIndex()]
+		totalsize := 0
+		realfiles := false ;check if only folders are selected
+		History := ExplorerWindow.Selection.History[ExplorerWindow.Selection.History.MaxIndex()]
 		Loop % History.MaxIndex()
 		{
 			FileGetSize, size, % ExplorerWindow.Path "\" History[A_Index]
 			if(!realfiles)
-				realfiles:=!InStr(FileExist(ExplorerWindow.Path "\" History[A_Index]), "D")
-			totalsize+=size
+				realfiles := !InStr(FileExist(ExplorerWindow.Path "\" History[A_Index]), "D")
+			totalsize += size
 		}
 		DriveSpaceFree, free, % ExplorerWindow.Path
 		free := FormatFileSize(free * 1048576)
@@ -781,14 +781,13 @@ Class InfoGUI
 		{
 			WinGetPos , X, Y, Width, Height, % "ahk_id " this.hParent
 			ControlGetPos , , cY, , cHeight, msctls_statusbar321, % "ahk_id " this.hParent
-			InfoX:=X+Width-370
-			InfoY:=Round(Y+cY+cHeight/2-6) ; +Height-26
-			if(Width>540)
+			InfoX := X + Width - 370
+			InfoY := Round(Y + cY + cHeight / 2 - 6) ; +Height-26
+			if(Width > 540)
 				Gui, % this.GuiNum ":Show", AutoSize NA x%InfoX% y%InfoY%
 		}
 		else
 		{
-			outputdebug % "hide " this.GUINum
 			Gui, % this.GuiNum ": Hide"
 		}
 	}

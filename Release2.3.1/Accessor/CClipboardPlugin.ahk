@@ -72,11 +72,11 @@ Class CClipboardPlugin extends CAccessorPlugin
 			Result.MatchQuality := 1
 			Results.Insert(Result)
 		}
-		if(StrLen(Filter) >= 2)
+		if(KeywordSet || StrLen(Filter) >= 2)
 		{
 			for index, clip in ClipboardList
 			{
-				if((MatchQuality := FuzzySearch(clip, Filter, false)) > Accessor.Settings.FuzzySearchThreshold)
+				if(KeywordSet || (MatchQuality := FuzzySearch(clip, Filter, false)) > Accessor.Settings.FuzzySearchThreshold)
 				{
 					Result := new this.CResult()
 					Result.Title := index
@@ -89,7 +89,7 @@ Class CClipboardPlugin extends CAccessorPlugin
 			}
 			for index2, clip in ClipboardList.Persistent
 			{
-				if((MatchQuality := FuzzySearch(clip.Name, Filter, false)) > Accessor.Settings.FuzzySearchThreshold)
+				if(KeywordSet || (MatchQuality := FuzzySearch(clip.Name, Filter, false)) > Accessor.Settings.FuzzySearchThreshold)
 				{
 					Result := new this.CResult()
 					Result.Title := clip.Name

@@ -54,11 +54,11 @@ Class CAccessor
 	{
 		LargeIcons := true
 		CloseWhenDeactivated := true
-		TitleBar := false
-		UseAero := true
-		Transparency := 0 ;0 to 255. 0 is considered opaque here so the attribute isn't set
-		Width := 900
-		Height := 600
+		;TitleBar := false
+		;UseAero := true
+		;Transparency := 0 ;0 to 255. 0 is considered opaque here so the attribute isn't set
+		;Width := 900
+		;Height := 600
 		OpenInMonitorOfMouseCursor := true ;If true, Accessor window will open in the monitor where the mouse cursor is.
 		UseSelectionForKeywords := true ;If set, the selected text will automatically be used as ${1} parameter in keywords if no text is typed
 		FuzzySearchThreshold := 0.6
@@ -1281,7 +1281,7 @@ Class CAccessor
 				Menu, AccessorProgramSubMenu, Add, test, AccessorContextMenu
 				Menu, AccessorProgramSubMenu, DeleteAll
 				for index, Button in this.ProgramButtons
-					Menu, AccessorProgramSubMenu, Add, % "F" index ": " Button.GetShortName(), AccessorSaveAsProgram
+					Menu, AccessorProgramSubMenu, Add, % "WIN + F" index ": " Button.GetShortName(), AccessorSaveAsProgram
 				Menu, AccessorContextMenu, Add, Assign to Button, :AccessorProgramSubMenu
 			}
 			if(entries)
@@ -1491,7 +1491,7 @@ Class CAccessorGUI extends CGUI
 			ButtonControl := this.AddControl("Picture", "Button" A_Index, "x" ButtonX " y" ButtonY " w35 h31 +0xE", "")
 			ButtonControl.Click.Handler := new Delegate(this, "OnProgramButtonClick")
 			if(index <= 12)
-				ButtonControl.Tooltip := "F" index
+				ButtonControl.Tooltip := "WIN + F" index
 			this.ProgramButtons.Insert(ButtonControl)
 			ButtonX += this.ButtonOffsetX
 		}
@@ -2367,10 +2367,6 @@ icon in context menu
 uninstall plugin not working (x64) -- Or is it?
 random accessor crashes on x64
 
-
-favorite buttons for Accessor?
-
-clipboard clips: pasting doesn't work in Word
 find in filenames doesn't search
 infogui not working?
 open accessor in monitor of mouse not working
