@@ -45,11 +45,11 @@ Class CSlideWindow
 	{
 		DetectHiddenWindows, On
 		;Disable Minimize/Restore animation
-		RegRead, Animate, HKCU, Control Panel\Desktop\WindowMetrics , MinAnimate
-		VarSetCapacity(struct, 8, 0)
-		NumPut(8, struct, 0, "UInt")
-		NumPut(0, struct, 4, "Int")
-		DllCall("SystemParametersInfo", "UINT", 0x0049,"UINT", 8,"STR", struct,"UINT", 0x0003) ;SPI_SETANIMATION            0x0049 SPIF_SENDWININICHANGE 0x0002
+		;RegRead, Animate, HKCU, Control Panel\Desktop\WindowMetrics , MinAnimate
+		;VarSetCapacity(struct, 8, 0)
+		;NumPut(8, struct, 0, "UInt")
+		;NumPut(0, struct, 4, "Int")
+		;DllCall("SystemParametersInfo", "UINT", 0x0049,"UINT", 8,"STR", struct,"UINT", 0x0003) ;SPI_SETANIMATION            0x0049 SPIF_SENDWININICHANGE 0x0002
 		this.GetChildWindows(0)
 		SetWinDelay 0
 		this.SlideState := 2
@@ -113,29 +113,30 @@ Class CSlideWindow
 				this.ChildWindows[A_Index].ToY := min(this.ToY + this.ChildWindows[A_Index].Position.y - this.Position.y, VirtualBottom - this.ChildWindows[A_Index].Position.h)
 			}
 		}
+		outputdebug move
 		this.Move()
-		this.SlideState:=1
+		this.SlideState := 1
 		;Possibly activate Minimize animation again
-		if(Animate=1)
-		{
-			NumPut(1, struct, 4, "UInt")
-			DllCall("SystemParametersInfo", "UINT", 0x0049,"UINT", 8,"STR", struct,"UINT", 0x0003) ;SPI_SETANIMATION            0x0049 SPIF_SENDWININICHANGE 0x0002
-		}
+		;if(Animate = 1)
+		;{
+		;	NumPut(1, struct, 4, "UInt")
+		;	DllCall("SystemParametersInfo", "UINT", 0x0049,"UINT", 8,"STR", struct,"UINT", 0x0003) ;SPI_SETANIMATION            0x0049 SPIF_SENDWININICHANGE 0x0002
+		;}
 	}
 	;This function slides a window outside the screen, hiding it
 	SlideOut()
 	{
 		DetectHiddenWindows, On
 		;Disable Minimize/Restore animation
-		RegRead, Animate, HKCU, Control Panel\Desktop\WindowMetrics , MinAnimate
-		VarSetCapacity(struct, 8, 0)	
-		NumPut(8, struct, 0, "UInt")
-		NumPut(0, struct, 4, "Int")
-		DllCall("SystemParametersInfo", "UINT", 0x0049,"UINT", 8,"STR", struct,"UINT", 0x0003) ;SPI_SETANIMATION            0x0049 SPIF_SENDWININICHANGE 0x0002
+		;RegRead, Animate, HKCU, Control Panel\Desktop\WindowMetrics , MinAnimate
+		;VarSetCapacity(struct, 8, 0)	
+		;NumPut(8, struct, 0, "UInt")
+		;NumPut(0, struct, 4, "Int")
+		;DllCall("SystemParametersInfo", "UINT", 0x0049,"UINT", 8,"STR", struct,"UINT", 0x0003) ;SPI_SETANIMATION            0x0049 SPIF_SENDWININICHANGE 0x0002
 		SetWinDelay 0
-		this.SlideState:=3
+		this.SlideState := 3
 		this.GetChildWindows(1) ;Update the current visibility state of child windows
-		Active := WinExist("A")+0 ;Store the active slide/child window so it can be activated on next slide in
+		Active := WinExist("A") + 0 ;Store the active slide/child window so it can be activated on next slide in
 		if(this.hwnd = Active)
 			this.Active := Active
 		else if(this.ChildWindows.FindKeyWithValue("hwnd", Active))
@@ -217,14 +218,14 @@ Class CSlideWindow
 		}
 		;~ WaitForEvent("SlideWindowResize", 1000)
 		outputdebug post minimize
-		this.SlideState:=0
+		this.SlideState := 0
 		outputdebug slidestate set to 0
 		;Possibly activate Minimize animation again
-		if(Animate=1)
-		{
-			NumPut(1, struct, 4, "UInt")
-			DllCall("SystemParametersInfo", "UINT", 0x0049,"UINT", 8,"STR", struct,"UINT", 0x0003) ;SPI_SETANIMATION            0x0049 SPIF_SENDWININICHANGE 0x0002
-		}
+		;if(Animate=1)
+		;{
+		;	NumPut(1, struct, 4, "UInt")
+		;	DllCall("SystemParametersInfo", "UINT", 0x0049,"UINT", 8,"STR", struct,"UINT", 0x0003) ;SPI_SETANIMATION            0x0049 SPIF_SENDWININICHANGE 0x0002
+		;}
 	}
 	;This function moves all involved windows to the stored coordinates
 	Move()
@@ -626,25 +627,25 @@ Class CSlideWindows
 		}
 	}
 	;This is called when the mouse is moved and takes care of screen border slide window activation and deactivation when the mouse leaves the window
-	OnMouseMove(x,y)
+	OnMouseMove(x, y)
 	{
 		GetVirtualScreenCoordinates(VirtualLeft, VirtualTop, VirtualWidth, VirtualHeight)
 		VirtualRight += VirtualLeft
 		VirtualBottom += VirtualTop
-		if(x=VirtualLeft)
-			dir=1
-		else if(y=VirtualTop)
-			dir=2
-		else if(x=VirtualLeft+VirtualWidth-1)
-			dir=3
-		else if(y=VirtualTop+VirtualHeight-1)
-			dir=4
-		if((z:=GetTaskbarDirection())=dir || z<=0)
+		if(x = VirtualLeft)
+			dir = 1
+		else if(y = VirtualTop)
+			dir = 2
+		else if(x = VirtualLeft + VirtualWidth - 1)
+			dir = 3
+		else if(y = VirtualTop + VirtualHeight - 1)
+			dir = 4
+		if((z := GetTaskbarDirection()) = dir || z <= 0)
 			return
 		if(this.FindKeyWithValueBetween("SlideState", 2, 4)) ;Currently sliding a window, ignore mouse
 			return
 		;Check if mouse position matches a slide window border and don't slide in while other slide window is on the screen
-		SlideWindow:=this.IsSlideSpaceOccupied(x,y,0,0,dir)
+		SlideWindow := this.IsSlideSpaceOccupied(x, y, 0, 0, dir)
 		if(dir > 0 && SlideWindow && (!Settings.Windows.SlideWindows.BorderActivationRequiresMouseUp || !GetKeyState("LButton", "P") || GetKeyState(Settings.Windows.SlideWindows.ModifierKey, "P")) && !this.FindKeyWithValue("SlideState", 1))
 		{
 			this.ActiveWindow := WinExist("A")
@@ -654,9 +655,9 @@ Class CSlideWindows
 		}
 		;Now see if mouse is currently over a shown slide window and maybe hide it
 		MouseGetPos, , ,win
-		win+=0
-		SlideWindow:=this.GetItemWithValue("SlideState", 1)
-		if(SlideWindow && SlideWindow.AutoSlideOut && SlideWindow.hwnd!=win && !SlideWindow.ChildWindows.FindKeyWithValue("hwnd", win) && !IsContextMenuActive() && !GetKeyState(Settings.Windows.SlideWindows.ModifierKey,"P"))
+		win += 0
+		SlideWindow := this.GetItemWithValue("SlideState", 1)
+		if(SlideWindow && SlideWindow.AutoSlideOut && SlideWindow.hwnd != win && !SlideWindow.ChildWindows.FindKeyWithValue("hwnd", win) && !IsContextMenuActive() && !GetKeyState(Settings.Windows.SlideWindows.ModifierKey,"P"))
 		{
 			SlideWindow.SlideOut()
 			WinActivate % "ahk_id " this.ActiveWindow

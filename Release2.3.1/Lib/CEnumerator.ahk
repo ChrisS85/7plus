@@ -15,14 +15,14 @@ Class CEnumerator
 	}
 	Next(byref key, byref value)
 	{
-		if(!key)
-			key := 1
+		if(key = "")
+			key := this.Object.MinIndex()
 		else
 			key++
 		if(key <= this.Object.MaxIndex())
 			value := this.Object[key]
 		else
 			key := ""
-		return key > 0
+		return key != ""
 	}
 }

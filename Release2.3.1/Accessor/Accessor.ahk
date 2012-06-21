@@ -676,6 +676,8 @@ Class CAccessor
 		this.GenericIcons.URL := ExtractAssociatedIcon(0, A_Temp "\7plus\test.htm", iIndex)
 		FileDelete, %A_Temp%\7plus\test.htm
 		this.GenericIcons.7plus := ExtractIcon(A_ScriptDir "\7+-w.ico")
+
+		this.GUI := new CAccessorGUI(this)
 	}
 
 	OnExit()
@@ -725,7 +727,8 @@ Class CAccessor
 	
 	Show(Action, InitialQuery = "")
 	{
-		if(this.GUI)
+		outputdebug acc show
+		if(!this.GUI)
 			return
 		
 		;Show some tips
@@ -743,13 +746,9 @@ Class CAccessor
 		this.Filter := ""
 		this.FilterWithoutTimer := ""
 
+		outputdebug call show
 		;Create and show GUI
-		this.GUI := new CAccessorGUI()
 		this.GUI.Show()
-
-		;Redraw is needed because Aero can cause rendering issues without it
-		this.GUI.Redraw()
-		this.LauncherHotkey := Action.LauncherHotkey
 		
 		;Init History TODO: Is this correct when a plugin changes it?
 		this.History.Index := 1
@@ -881,7 +880,7 @@ Class CAccessor
 		;Parse parameters. They are split by spaces. Quotes (" ") can be used to treat multiple words as one parameter. The first parameter is the Filter variable without the options.
 		Parameters := Array()
 		p0 := Parse(Filter, "q"")1 2 3 4 5 6 7 8 9 10", p1, p2, p3, p4, p5, p6, p7, p8, p9, p10)
-
+		
 		;Make parameters available to events
 		All := ""
 		Loop 9
@@ -894,16 +893,18 @@ Class CAccessor
 		EventSystem.GlobalPlaceholders.Remove("AccAll")
 		EventSystem.GlobalPlaceholders.Insert("AccAll", All)
 
+		;Store parameters with offset of -1, so p1 will become p0 since it isn't a real parameter but rather the keyword
 		Loop % min(p0, 10)
-			Parameters.Insert(A_Index - 1, p%A_Index%) ;Store parameters with offset of -1, so p1 will become p0 since it isn't a real parameter but rather the keyword
+			Parameters.Insert(A_Index - 1, p%A_Index%) 
 		
 		if(UsingKeyword)
 		{
+			;If atleast one placeholder is used, all parameters will be inserted
 			if(InStr(Filter, "${1}"))
-				Filter := p1 ;If atleast one placeholder is used, all parameters will be inserted
+				Filter := p1
 
-			UsingPlaceholder := false
 			;Code below treats the ${1}-${10} placeholders that may be used with keywords, e.g. to launch a search engine url with a specific query.
+			UsingPlaceholder := false
 			for Index2, Parameter in Parameters
 			{
 				if(Index2 = 0)
@@ -918,6 +919,7 @@ Class CAccessor
 					UsingPlaceholder := true
 					break
 				}
+				;Common placeholder, insert its value in all occurences
 				else if(InStr(Filter, "${" Index2 "}"))
 				{
 					Filter := StringReplace(Filter, "${" Index2 "}", Parameter, "ALL")
@@ -926,8 +928,9 @@ Class CAccessor
 				else
 					break
 			}
+			;Clear parameters when they are integrated in the query
 			if(UsingPlaceholder)
-				Parameters := Array() ;Clear parameters since they are now integrated in the query
+				Parameters := Array()
 			;if no parameters are entered after query, lets try to insert the current selection so the user can quickly search for it with a keyword query.
 			else if(this.CurrentSelection && this.Settings.UseSelectionForKeywords && InStr(Filter, "${1}"))
 				Filter := StringReplace(Filter, "${1}", this.CurrentSelection, "ALL")
@@ -948,8 +951,9 @@ Class CAccessor
 
 		LastFilter := this.LastFilter
 		Filter := this.Filter
+		outputdebug filter %filter%
 		Parameters := this.ExpandFilter(Filter, LastFilter, Time)
-
+		outputdebug filter2 %filter%
 		;Plugins which need to use the filter string without any preparsing should use this one which doesn't contain the timer at the end
 		this.FilterWithoutTimer := Filter
 
@@ -973,8 +977,6 @@ Class CAccessor
 		{
 			if(Plugin.Settings.Enabled && ((Time > 0 && Plugin.AllowDelayedExecution) || !Time) && SingleContext := ((Plugin.Settings.Keyword && Filter && KeywordSet := InStr(Filter, Plugin.Settings.Keyword " ") = 1) || Plugin.IsInSinglePluginContext(Filter, LastFilter)))
 			{
-				if(KeywordSet && this.CurrentSelection && this.Settings.UseSelectionForKeywords && Filter = Plugin.Settings.Keyword " ")
-					Filter .= this.CurrentSelection
 				this.SingleContext := Plugin.Type
 				Filter := strTrimLeft(Filter, Plugin.Settings.Keyword " ")
 				Result := Plugin.RefreshList(this, Filter, LastFilter, KeywordSet, Parameters)
@@ -1145,7 +1147,7 @@ Class CAccessor
 		this.SelectedFile := ""
 		this.CurrentDirectory := ""
 		this.CurrentSelection := ""
-		this.GUI := ""
+		;this.GUI := ""
 		this.List := ""
 		OnMessage(0x100, this.OldKeyDown) ; Restore previous KeyDown handler
 	}
@@ -1443,16 +1445,13 @@ Class CAccessorGUI extends CGUI
 	FooterPluginText := ""
 
 	ActionText := "Some Action"
-	__new()
+	__new(Accessor)
 	{
-		Accessor := CAccessor.Instance
-
 		this.Color("CCCCCC", this.ControlBackgroundColor)
 		Gui, % this.GUINum ":Font", cBlack s11, Tahoma
 		this.Height := 600
 		this.EditControl := this.AddControl("Edit", "EditControl", "x54 -E0x200 w515 y20 h20 -Multi", "")
 		this.InputFieldEnd := this.AddControl("Picture", "InputFieldEnd", "x+0 yp+0 w111 h20 +0xE")
-		this.DrawActionText()
 		this.ExecuteButton := this.AddControl("Picture", "ExecuteButton", "x+5 yp+0 w35 h20 +0xE")
 		this.DrawExecuteButton()
 		this.CloseButton := this.AddControl("Picture", "CloseButton", "x746 y5 w10 h9 +0xE")
@@ -1483,19 +1482,17 @@ Class CAccessorGUI extends CGUI
 			DeleteObject(hBitmap)
 			ButtonX += this.ButtonOffsetX
 		}
+		;Create buttons. They are drawn later in ResetGUI()
 		ButtonX := this.ButtonsX
 		ButtonY := this.ButtonsY + this.ButtonOffsetY
 		for index, Button in Accessor.ProgramButtons
 		{
-			hBitmap := Button.Draw(false)
 			Button.OnPathChange.Handler := new Delegate(this, "OnProgramButtonPathChange")
 			ButtonControl := this.AddControl("Picture", "Button" A_Index, "x" ButtonX " y" ButtonY " w35 h31 +0xE", "")
 			ButtonControl.Click.Handler := new Delegate(this, "OnProgramButtonClick")
 			if(index <= 12)
 				ButtonControl.Tooltip := "F" index
-			ButtonControl.SetImageFromHBitmap(hBitmap)
 			this.ProgramButtons.Insert(ButtonControl)
-			DeleteObject(hBitmap)
 			ButtonX += this.ButtonOffsetX
 		}
 
@@ -1503,13 +1500,10 @@ Class CAccessorGUI extends CGUI
 		ButtonY := this.ButtonsY
 		for index, Button in Accessor.FastFolderButtons
 		{
-			hBitmap := Button.Draw(false)
 			ButtonControl := this.AddControl("Picture", "Button" A_Index, "x" ButtonX " y" ButtonY " w16 h35 +0xE", "")
 			ButtonControl.Click.Handler := new Delegate(this, "OnFastFolderButtonClick")
 			ButtonControl.Tooltip := index - 1
-			ButtonControl.SetImageFromHBitmap(hBitmap)
 			this.FastFolderButtons.Insert(ButtonControl)
-			DeleteObject(hBitmap)
 			ButtonX += this.ButtonOffsetX / 2
 		}
 
@@ -1536,7 +1530,7 @@ Class CAccessorGUI extends CGUI
 		this.Border := true
 		this.Title := "7Plus Accessor"
 		this.CloseOnEscape := true
-		this.DestroyOnClose := true
+		this.DestroyOnClose := false
 		
 		this.ListView.ExStyle := "+0x00010000"
 		this.ListView.LargeIcons := Accessor.Settings.LargeIcons
@@ -1547,12 +1541,45 @@ Class CAccessorGUI extends CGUI
 		;this.ListView.ModifyCol(4, 40) ; resize detail2 column
 		this.OnMessage(0x06, "WM_ACTIVATE")
 		;GuiControl, % this.GUINum ":+Redraw", % this.EditControl.hwnd
-		WinSet, Region, 1-1 762-1 762-130 723-130 723-625 40-625 40-130 1-130, % "ahk_id " this.hwnd
+		WinSet, Region, 0-0 762-0 762-130 723-130 723-625 40-625 40-130 0-130, % "ahk_id " this.hwnd
 		SendMessage, 0x7, 0, 0,, % "ahk_id " this.ListView.hwnd ;Make the listview believe it has focus
 		;this.Redraw()
 		this.Width := 892
-		for type, Plugin in CAccessor.Instance.Plugins
+		for type, Plugin in Accessor.Plugins
 			Plugin.OnGUICreate(this)
+	}
+	ResetGUI()
+	{
+		this.ListView.Items.Clear()
+		this.EditControl.Text := ""
+		this.lnkFooter.Text := ""
+		this.DrawActionText()
+		this.PreviousMouseOverButton := ""
+		this.PreviousMouseOverAccessorButton := ""
+		this.ActionText := ""
+		this.DrawActionText()
+		this.DrawCloseButton()
+		this.DrawExecuteButton()
+		for index, Button in this.QueryButtons
+		{
+			hBitmap := CAccessor.Instance.QueryButtons[index].Draw(false)
+			Button.SetImageFromHBitmap(hBitmap)
+			DeleteObject(hBitmap)
+		}
+
+		for index2, Button in this.ProgramButtons
+		{
+			hBitmap := CAccessor.Instance.ProgramButtons[index2].Draw(false)
+			Button.SetImageFromHBitmap(hBitmap)
+			DeleteObject(hBitmap)
+		}
+
+		for index3, Button in this.FastFolderButtons
+		{
+			hBitmap := CAccessor.Instance.FastFolderButtons[index3].Draw(false)
+			Button.SetImageFromHBitmap(hBitmap)
+			DeleteObject(hBitmap)
+		}
 	}
 	SetListViewBackground()
 	{
@@ -1640,7 +1667,7 @@ Class CAccessorGUI extends CGUI
 		Gdip_DeleteBrush(pBrush)
 
 		Gdip_DrawImage(pGraphics, this.InputFieldEnd.Bitmap, 0, 0, Width, Height)
-		Gdip_TextToGraphics(pGraphics, this.ActionText, "x" Width - 5 " Right y0 cFF999999 r4 s13 Regular", "Tahoma")
+		Gdip_TextToGraphics(pGraphics, this.ActionText, "x" Width - 5 " Right y1 cFF999999 r4 s13 Regular", "Tahoma")
 
 		hBitmap := Gdip_CreateHBITMAPFromBitmap(pBitmap)
 		Gdip_DisposeImage(pBitmap)
@@ -1711,7 +1738,8 @@ Class CAccessorGUI extends CGUI
 	}
 	Show()
 	{
-		Base.Show("w900 h604")
+		this.ResetGUI()
+		Base.Show("w760 h604 x" Round(A_ScreenWidth / 2 - this.Width / 2) " y0")
 		SetTimer, AccessorGUI_CheckMouseMovement, 50
 	}
 	
@@ -1991,7 +2019,7 @@ return
 AccessorQueryMenu_UseCurrentQuery:
 CAccessor.Instance.GUI.SetQueryButtonQuery()
 return
-#if CAccessor.Instance.GUI && IsWindowUnderCursor(CAccessor.Instance.GUI.hwnd) && IsQueryButtonUnderCursor()
+#if CAccessor.Instance.GUI.Visible && IsWindowUnderCursor(CAccessor.Instance.GUI.hwnd) && IsQueryButtonUnderCursor()
 RButton::
 CAccessor.Instance.GUI.ShowButtonMenu()
 return
@@ -2004,14 +2032,14 @@ IsQueryButtonUnderCursor()
 }
 
 
-#if CAccessor.Instance.GUI
+#if CAccessor.Instance.GUI.Visible
 Tab::Down
 *Up::CAccessor.Instance.GUI.OnUp()
 *Down::CAccessor.Instance.GUI.OnDown()
 #if
 
 
-#if CAccessor.Instance.GUI && CAccessor.Instance.GUI.ActiveControl = CAccessor.Instance.GUI.EditControl
+#if CAccessor.Instance.GUI.Visible && CAccessor.Instance.GUI.ActiveControl = CAccessor.Instance.GUI.EditControl
 PgUp::
 PostMessage, 0x100, 0x21, 0,, % "ahk_id " CAccessor.Instance.GUI.ListView.hwnd
 return
@@ -2026,31 +2054,31 @@ return
 #if
 
 
-#if (CAccessor.Instance.GUI && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenExplorer))
+#if (CAccessor.Instance.GUI.Visible && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenExplorer))
 ^e::
 CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.OpenExplorer)
 return
 #if
 
-#if (CAccessor.Instance.GUI && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenPathWithAccessor))
+#if (CAccessor.Instance.GUI.Visible && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenPathWithAccessor))
 ^b::
 CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.OpenPathWithAccessor)
 return
 #if
 
-#if (CAccessor.Instance.GUI && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenWith))
+#if (CAccessor.Instance.GUI.Visible && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenWith))
 ^o::
 CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.OpenWith)
 return
 #if
 
-#if (CAccessor.Instance.GUI && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.SearchDir))
+#if (CAccessor.Instance.GUI.Visible && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.SearchDir))
 ^f::
 CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.SearchDir, CAccessor.Instance.List[CAccessor.Instance.GUI.ListView.SelectedIndex].Actions.GetItemWithValue("Function", CAccessorPlugin.CActions.SearchDir.Function) ? "" : CFileSystemPlugin.Instance.Result)
 return
 #if
 
-#if CAccessor.Instance.GUI && !Edit_TextIsSelected("", "ahk_id " CAccessor.Instance.GUI.EditControl.hwnd)
+#if CAccessor.Instance.GUI.Visible && !Edit_TextIsSelected("", "ahk_id " CAccessor.Instance.GUI.EditControl.hwnd)
 ^c::
 CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.Copy)
 return

@@ -68,6 +68,7 @@ Class CRecentFoldersPlugin extends CAccessorPlugin
 	{
 		global ExplorerHistory,FastFolders
 
+		outputdebug % "recent folders, filter: " filter ", single context: " Accessor.SingleContext
 		Results := Array()
 		if(this.Settings.UseHistory)
 		{
