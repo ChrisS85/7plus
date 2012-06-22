@@ -51,14 +51,16 @@ RefreshFastFolders()
 AddAllButtons(ToFolderBand, ToPlacesBar)
 {
 	global FastFolders
+	IterationsSelected := []
+	IterationsNoSelected := []
 	loop 10
 	{
 		;Fast folder slots are 0-based externally
 		pos := A_Index - 1
 		if(FastFolders[pos].Path)
 		{				
-			if(ToFolderBand)		
-				AddButton("", FastFolders[pos].Path, "", pos ":" FastFolders[pos].Name, "", "Both", 2) ;7plus now uses AHK=2 key in registry to indicate FastFolder buttons
+			if(ToFolderBand)
+				AddButton("", FastFolders[pos].Path, "", pos ":" FastFolders[pos].Name, "", "Both", 2, IterationsSelected, IterationsNoSelected) ;7plus now uses AHK=2 key in registry to indicate FastFolder buttons
 			if(pos <= 4 && ToPlacesBar)	;Also update placesbar
 			{
 				value := FastFolders[pos].Path
@@ -257,11 +259,11 @@ RemoveButton(Command, param="")
 
 ;Adds a button. You may specify a command (and possibly an argument) or a path, and a name which should be used.
 ;Other parameters are a ToolTip
-AddButton(Command, path, Args = "", Name = "", Tooltip = "", AddTo = "Both", ahk = 1)
+AddButton(Command, path, Args = "", Name = "", Tooltip = "", AddTo = "Both", ahk = 1, IterationsSelected = "", IterationsNoSelected = "")
 {
 	outputdebug addbutton command %command% path %path% args %args% name %name%
 	if(A_IsCompiled)
-		ahk_path:="""" A_ScriptDir "\7plus.exe"""
+		ahk_path := """" A_ScriptDir "\7plus.exe"""
 	else
 		ahk_path := """" A_AhkPath """ """ A_ScriptFullPath """"
 	icon := "%SystemRoot%\System32\shell32.dll,3" ;Icon is not working, probably not supported by explorer, some ms entries have icons defined but they don't show up either
@@ -270,8 +272,8 @@ AddButton(Command, path, Args = "", Name = "", Tooltip = "", AddTo = "Both", ahk
 		if(!Name)
 		{
 			SplitPath, Command , Name
-			if(Name="")
-				Name:=Command
+			if(Name = "")
+				Name := Command
 		}
 		icon := Command ",1"
 		description := command
@@ -282,7 +284,7 @@ AddButton(Command, path, Args = "", Name = "", Tooltip = "", AddTo = "Both", ahk
 	{				
 		;Remove trailing backslash
 		if(InStr(path,"\", 0, strlen(path)))
-			StringTrimRight, path, path,1
+			StringTrimRight, path, path, 1
 		if(!name)
 		{
 			SplitPath, path , Name
@@ -298,52 +300,65 @@ AddButton(Command, path, Args = "", Name = "", Tooltip = "", AddTo = "Both", ahk
 		description := Tooltip
 	}
 	SomeCLSID := "{" . uuid(false) . "}"
+	
+	;These arrays store the next free index of the buttons in the FolderTypes subfolders for speed improvements
+	if(!IsObject(IterationsSelected))
+		IterationsSelected := []
+	if(!IsObject(IterationsNoSelected))
+		IterationsNoSelected := []
+	BasePath := "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes"
 	;go into view folders (clsid)
-	Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes, 2, 0
+	Loop, HKLM, %BasePath%, 2, 0
 	{
 		if(AddTo = "Both" || AddTo = "Selected")
-			AddButton_Write("SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\" A_LoopRegName "\TasksItemsSelected", SomeCLSID, command, Name, Description, Icon, ahk)
+			AddButton_Write(BasePath "\" A_LoopRegName "\TasksItemsSelected", SomeCLSID, command, Name, Description, Icon, ahk, A_LoopRegName, IterationsSelected)
 		if(AddTo = "Both" || AddTo = "NoSelected")
-			AddButton_Write("SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\" A_LoopRegName "\TasksNoItemsSelected", SomeCLSID, command, Name, Description, Icon, ahk)
+			AddButton_Write(BasePath "\" A_LoopRegName "\TasksNoItemsSelected", SomeCLSID, command, Name, Description, Icon, ahk, A_LoopRegName, IterationsNoSelected)
 	}
 }
 ;Writes the data for a single button (for selected or no-selected state)
-AddButton_Write(Path, SomeCLSID, command, Title, InfoTip, Icon, AHK)
+AddButton_Write(Path, SomeCLSID, command, Title, InfoTip, Icon, AHK, Name, Iterations)
 {
 	;figure out first free key number
-	iterations := 0
-	Loop, HKLM, %Path%, 2, 0
-		iterations++
-	
+	if(!Iterations.HasKey(Name))
+	{
+		Iterations[Name] := 0
+		Loop, HKLM, %Path%, 2, 0
+			Iterations[Name]++
+	}
+	Path .= "\" Iterations[Name]
 	;Marker for easier recognition of ahk-added entries
-	RegWrite, REG_SZ, HKLM, %Path%\%iterations%, AHK, %AHK%
+	RegWrite, REG_SZ, HKLM, %Path%, AHK, %AHK%
+	Path .= "\" SomeCLSID
 	;Write reg keys
-	RegWrite, REG_EXPAND_SZ, HKLM, %Path%\%iterations%\%SomeCLSID%, Icon, %icon%
-	RegWrite, REG_SZ, HKLM, %Path%\%iterations%\%SomeCLSID%, InfoTip, %InfoTip%
-	RegWrite, REG_SZ, HKLM, %Path%\%iterations%\%SomeCLSID%, Title, %Title%
-	RegWrite, REG_SZ, HKLM, %Path%\%iterations%\%SomeCLSID%\shell\InvokeTask\command, , %command%
+	RegWrite, REG_EXPAND_SZ, 	HKLM, %Path%, 							Icon, 		%icon%
+	RegWrite, REG_SZ, 			HKLM, %Path%, 							InfoTip, 	%InfoTip%
+	RegWrite, REG_SZ, 			HKLM, %Path%, 							Title, 		%Title%
+	RegWrite, REG_SZ, 			HKLM, %Path%\shell\InvokeTask\command, 	, 			%command%
+	Iterations[Name]++
 }
 FindButton(function, param)
 {
 	if(!IsFunc(function))
 		return false
+	BasePath := "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes"
 	;go into view folders (clsid)
-	Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes, 2, 0
+	Loop, HKLM, %BasePath%, 2, 0
 	{
-		regkey:=A_LoopRegName
-		maxnumber:=-1
+		regkey := A_LoopRegName
+		maxnumber := -1
 		;loop through selected item number folders (loop goes backwards)
-		Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected, 2, 0
+		Loop, HKLM, %Basepath%\%regkey%\TasksItemsSelected, 2, 0
 		{
-			numberfolder:=A_LoopRegName
-			RegRead, ahk, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%, AHK
+			numberfolder := A_LoopRegName
+			RegRead, ahk, HKLM, %Basepath%\%regkey%\TasksItemsSelected\%numberfolder%, AHK
 			if(ahk)
 			{
 				;go into clsid folder
-				Loop, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%, 2, 0
+				Loop, HKLM, %Basepath%\%regkey%\TasksItemsSelected\%numberfolder%, 2, 0
 				{
-					RegRead, value, HKLM, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\%regkey%\TasksItemsSelected\%numberfolder%\%A_LoopRegName%\shell\InvokeTask\command
-					if(%function%(value, "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderTypes\" regkey "\TasksItemsSelected\" numberfolder "\" A_LoopRegName "\shell\InvokeTask\command", param))
+					RegRead, value, HKLM, %Basepath%\%regkey%\TasksItemsSelected\%numberfolder%\%A_LoopRegName%\shell\InvokeTask\command
+					if(%function%(value, Basepath "\" regkey "\TasksItemsSelected\" numberfolder "\" A_LoopRegName "\shell\InvokeTask\command", param))
 						return true
 				}
 			}
