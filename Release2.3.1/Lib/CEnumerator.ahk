@@ -16,7 +16,11 @@ Class CEnumerator
 	Next(byref key, byref value)
 	{
 		if(key = "")
+		{
 			key := this.Object.MinIndex()
+			if(key = "")
+				key := 1
+		}
 		else
 			key++
 		if(key <= this.Object.MaxIndex())

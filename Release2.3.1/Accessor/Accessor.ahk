@@ -164,8 +164,6 @@ Class CAccessor
 				this.base.BackgroundInactive := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\neutral_button_2.png")
 				this.base.BackgroundActive := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\active_button_2.png")
 			}
-			if(!this.base.base.Plus)
-				this.base.base.Plus := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\button_plus.png")
 		}
 		Load(json)
 		{
@@ -193,15 +191,22 @@ Class CAccessor
 			Gdip_DeleteBrush(pBrush)
 
 			Gdip_SetInterpolationMode(pGraphics, 7)
-			Gdip_SetSmoothingMode(pGraphics, 4)
+			Gdip_SetSmoothingMode(pGraphics, 3)
 
 			;pBrush := Gdip_BrushCreateSolid(0xFFFFFFFF) ;0xFF000000 | CAccessorGUI.ControlBackgroundColor)
 			;this.FillHalfRoundedRectangle(pGraphics, pBrush, 0, 0, this.ButtonSizeX, this.ButtonSizeY, this.CornerRadius)
 			;Gdip_DeleteBrush(pBrush)
 			;this.DrawHeader(pGraphics, MouseOver)
 			Gdip_DrawImage(pGraphics, MouseOver && this.IsActive() ? this.BackgroundActive : this.BackgroundInactive, 0, 0, this.ButtonSizeX, this.ButtonSizeY)
-			Gdip_DrawImage(pGraphics, pBitmap ? pBitmap : this.Plus, this.ButtonSizeX / 2 - (pBitmap ? this.ButtonIconSizeX / 2 : 8), this.ButtonSizeY / 2 - (pBitmap ? this.ButtonIconSizeY / 2 : 8) + this.ButtonIconOffset, (pBitmap ? this.ButtonIconSizeX : 16), (pBitmap ? this.ButtonIconSizeY : 16))
-
+			if(pBitmap)
+				Gdip_DrawImage(pGraphics, pBitmap, this.ButtonSizeX / 2 - this.ButtonIconSizeX / 2, this.ButtonSizeY / 2 - this.ButtonIconSizeY / 2 + this.ButtonIconOffset, this.ButtonIconSizeX, this.ButtonIconSizeY)
+			else
+			{
+				pPen := Gdip_CreatePen(0xFFC6C7C8, 2)
+				Gdip_DrawLine(pGraphics, pPen, Floor(this.ButtonSizeX / 2 - 8) + 0.5, Floor(this.ButtonSizeY / 2 + this.ButtonIconOffset) + 0.5, Floor(this.ButtonSizeX / 2 + 8) + 0.5, Floor(this.ButtonSizeY / 2 + this.ButtonIconOffset) + 0.5)
+				Gdip_DrawLine(pGraphics, pPen, Floor(this.ButtonSizeX / 2) + 0.5, Floor(this.ButtonSizeY / 2 - 8 + this.ButtonIconOffset) + 0.5, Floor(this.ButtonSizeX / 2) + 0.5, Floor(this.ButtonSizeY / 2 + 8 + this.ButtonIconOffset) + 0.5)
+				Gdip_DeletePen(pPen)
+			}
 			Gdip_DeleteGraphics(pGraphics)
 			if(pBitmap != 0)
 				Gdip_DisposeImage(pBitmap)
@@ -313,8 +318,17 @@ Class CAccessor
 			;this.DrawHeader(pGraphics, MouseOver)
 
 			Gdip_DrawImage(pGraphics, MouseOver && this.IsActive() ? this.BackgroundActive : this.BackgroundInactive, 0, 0, this.ButtonSizeX, this.ButtonSizeY)
-			Gdip_DrawImage(pGraphics, this.Bitmap ? this.Bitmap : this.Plus, this.ButtonSizeX / 2 - (this.Bitmap ? this.ButtonIconSizeX / 2 : 8), this.ButtonSizeY / 2 - (this.Bitmap ? this.ButtonIconSizeY / 2 : 8) + this.ButtonIconOffset, (this.Bitmap ? this.ButtonIconSizeX : 16), (this.Bitmap ? this.ButtonIconSizeY : 16))
-
+			if(this.Bitmap)
+				Gdip_DrawImage(pGraphics, this.Bitmap, this.ButtonSizeX / 2 - this.ButtonIconSizeX / 2, this.ButtonSizeY / 2 - this.ButtonIconSizeY / 2 + this.ButtonIconOffset, this.ButtonIconSizeX, this.ButtonIconSizeY)
+			else
+			{
+				Gdip_SetInterpolationMode(pGraphics, 3)
+				Gdip_SetSmoothingMode(pGraphics, 4)
+				pPen := Gdip_CreatePen(0xFFC6C7C8, 2)
+				Gdip_DrawLine(pGraphics, pPen, Floor(this.ButtonSizeX / 2 - 8) + 0.5, Floor(this.ButtonSizeY / 2 + this.ButtonIconOffset) + 0.5, Floor(this.ButtonSizeX / 2 + 8) + 0.5, Floor(this.ButtonSizeY / 2 + this.ButtonIconOffset) + 0.5)
+				Gdip_DrawLine(pGraphics, pPen, Floor(this.ButtonSizeX / 2) + 0.5, Floor(this.ButtonSizeY / 2 - 8 + this.ButtonIconOffset) + 0.5, Floor(this.ButtonSizeX / 2) + 0.5, Floor(this.ButtonSizeY / 2 + 8 + this.ButtonIconOffset) + 0.5)
+				Gdip_DeletePen(pPen)
+			}
 			Gdip_DeleteGraphics(pGraphics)
 			hBitmap := Gdip_CreateHBITMAPFromBitmap(pButton)
 			Gdip_DisposeImage(pButton)
@@ -371,8 +385,6 @@ Class CAccessor
 				this.base.BackgroundInactive := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\neutral_mini_button.png")
 				this.base.BackgroundActive := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\active_mini_button.png")
 			}
-			if(!this.base.base.PlusSmall)
-				this.base.base.PlusSmall := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\mini_button_plus.png")
 		}
 
 		Load(json)
@@ -416,8 +428,13 @@ Class CAccessor
 				;Gdip_TextToGraphics(pGraphics, this.Number, "x8 y" this.ButtonIconOffset " Centre cFF000000 r4 s24 Regular", "Tahoma")
 				Gdip_DrawImage(pGraphics, this.Bitmap, this.ButtonSizeX / 2 - 8, this.ButtonSizeY / 2 - 12 + this.ButtonIconOffset, 16, 24)
 			else
-				Gdip_DrawImage(pGraphics, this.PlusSmall, this.ButtonSizeX / 2 - 8, this.ButtonSizeY / 2 - 8 + this.ButtonIconOffset, 16, 16)
-			
+			{
+				pPen := Gdip_CreatePen(0xFFC6C7C8, 2)
+				Gdip_DrawLine(pGraphics, pPen, Floor(this.ButtonSizeX / 2 - 5) - 0.5, Floor(this.ButtonSizeY / 2 + this.ButtonIconOffset) + 0.5, Floor(this.ButtonSizeX / 2 + 5) - 0.5, Floor(this.ButtonSizeY / 2 + this.ButtonIconOffset) + 0.5)
+				Gdip_DrawLine(pGraphics, pPen, Floor(this.ButtonSizeX / 2) - 0.5, Floor(this.ButtonSizeY / 2 - 5 + this.ButtonIconOffset) + 0.5, Floor(this.ButtonSizeX / 2) - 0.5, Floor(this.ButtonSizeY / 2 + 5 + this.ButtonIconOffset) + 0.5)
+				Gdip_DeletePen(pPen)
+			}
+
 			Gdip_DeleteGraphics(pGraphics)
 			hBitmap := Gdip_CreateHBITMAPFromBitmap(pButton)
 			Gdip_DisposeImage(pButton)
@@ -776,8 +793,8 @@ Class CAccessor
 			this.RefreshList()
 		
 		;Prevent WM_KEYDOWN messages
-		this.OldKeyDown := OnMessage(0x100)
-		OnMessage(0x100, "")
+		;this.OldKeyDown := OnMessage(0x100)
+		;OnMessage(0x100, "")
 	}
 	
 	Close()
@@ -1149,7 +1166,7 @@ Class CAccessor
 		this.CurrentSelection := ""
 		;this.GUI := ""
 		this.List := ""
-		OnMessage(0x100, this.OldKeyDown) ; Restore previous KeyDown handler
+		;OnMessage(0x100, this.OldKeyDown) ; Restore previous KeyDown handler
 	}
 	
 	;Changes the currently selected history entry and returns its text. Does not affect the GUI!
@@ -1518,7 +1535,7 @@ Class CAccessorGUI extends CGUI
 		}
 		else
 		{
-			this.X := A_ScreenWidth / 2 - this.Width / 2
+			this.X := Round(A_ScreenWidth / 2 - this.Width / 2)
 			this.Y := 0
 		}
 		this.MinimizeBox := false
@@ -1747,7 +1764,7 @@ Class CAccessorGUI extends CGUI
 		}
 		else
 		{
-			X := A_ScreenWidth / 2 - this.Width / 2
+			X := Round(A_ScreenWidth / 2 - this.Width / 2)
 			Y := 0
 		}
 		Base.Show("w760 h604 x" x " y" y)
@@ -2376,13 +2393,12 @@ Documentation of new Accessor features
 keyboard hotkeys in settings window activate when other page is visible
 icon in context menu
 uninstall plugin not working (x64) -- Or is it?
-random accessor crashes on x64
+random accessor crashes, maybe related to uninstall plugin
 
-find in filenames doesn't search
-open accessor in monitor of mouse not working
+; TODO: Method to lookup icon number rather than setting it afterwards. Maybe also add an AddRange function to listview
+find in filenames can easily be crashed with subdirectory option
 windows minimize animation setting in slide windows settings
 explorer tabs in slide windows
-message timer on clock not working
 subevent controls not working properly
 
 Using Accessor as a dock:

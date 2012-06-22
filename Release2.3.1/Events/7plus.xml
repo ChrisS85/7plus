@@ -18,7 +18,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1614</ID>
+<ID>0</ID>
 <Name>Show settings window</Name>
 <OfficialEvent>1</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -39,7 +39,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1615</ID>
+<ID>1</ID>
 <Name>Restart 7plus</Name>
 <OfficialEvent>2</OfficialEvent>
 <OneInstance>0</OneInstance>

@@ -119,7 +119,7 @@ Class CUninstallPlugin extends CAccessorPlugin
 			if(FileExist(DisplayIcon))
 				hIcon := ExtractAssociatedIcon(Number, DisplayIcon, iIndex)
 			else
-				hIcon := Accessor.GenericIcons.Application
+				hIcon := CAccessor.GenericIcons.Application
 			if(DisplayName)
 				this.List.Insert(Object("GUID", GUID, "DisplayName", DisplayName, "UninstallString", UninstallString, "InstallLocation", InstallLocation, "Icon", hIcon))
 		}
