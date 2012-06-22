@@ -19,16 +19,18 @@ ClearStoredFolder(Slot)
 }
 
 ;Assigns a new folder to a FastFolder slot and updates registry
-UpdateStoredFolder(Slot, Folder = "")
+UpdateStoredFolder(Slot, Path = "")
 {
 	global FastFolders
 	;Fast folder slots are 0-based externally but 1 based in the FastFolders array
 	;Slot += 1
-	if(Folder)
-		FastFolders[Slot].Path := Folder
+	if(Path)
+		FastFolders[Slot].Path := Path
 	else
+	{
 		FastFolders[Slot].Path := Navigation.GetPath()
-	FastFolders[Slot].Name := Navigation.GetDisplayName()
+		FastFolders[Slot].Name := Navigation.GetDisplayName()
+	}
 	if(!FastFolders[Slot].Name)
 	{
 		SplitPath, Path , split

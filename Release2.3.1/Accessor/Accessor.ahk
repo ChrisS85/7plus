@@ -377,7 +377,7 @@ Class CAccessor
 		static ButtonSizeX := 16
 		static ButtonSizeY := 35
 		static ButtonIconOffset := 4
-
+		OnFastFolderChange := new EventHandler()
 		__new()
 		{
 			if(!this.base.BackgroundInactive)
@@ -439,6 +439,11 @@ Class CAccessor
 			hBitmap := Gdip_CreateHBITMAPFromBitmap(pButton)
 			Gdip_DisposeImage(pButton)
 			return hBitmap
+		}
+		SetFastFolder(Path)
+		{
+			UpdateStoredFolder(this.Number, Path)
+			this.OnFastFolderChange.(this.Number)
 		}
 		Cleanup()
 		{
@@ -1279,7 +1284,7 @@ Class CAccessor
 				Menu, AccessorFastFolderSubMenu, Add, test, AccessorContextMenu
 				Menu, AccessorFastFolderSubMenu, DeleteAll
 				for index, FastFolder in FastFolders
-					Menu, AccessorFastFolderSubMenu, Add, % (index - 1) ": " Button.GetLongName(), AccessorSaveAsFastFolder
+					Menu, AccessorFastFolderSubMenu, Add, % index ": " Button.GetLongName(), AccessorSaveAsFastFolder
 				Menu, AccessorContextMenu, Add, Save as Fast Folder, :AccessorFastFolderSubMenu
 			}
 			if(ListEntry.IsFile)
@@ -1384,30 +1389,6 @@ Class CAccessor
 	{
 		this.SetFilter(CFileSearchPlugin.Instance.Settings.Keyword "  in " ListEntry.Path, strlen(CFileSearchPlugin.Instance.Settings.Keyword) + 1, strlen(CFileSearchPlugin.Instance.Settings.Keyword) + 1)
 	}
-	SaveAsFastFolder(Slot, ListEntry)
-	{
-		global FastFolders
-		if(!ListEntry)
-			ListEntry := this.List[this.GUI.ListView.SelectedIndex]
-		if(!ListEntry.IsFolder)
-		{
-			Msgbox SaveAsFastFolder(): The selected result is no directory!
-			return
-		}
-		UpdateStoredFolder(Slot, ListEntry.Path)
-	}
-	SaveAsProgram(MenuItem, ListEntry)
-	{
-		if(!ListEntry)
-			ListEntry := this.List[this.GUI.ListView.SelectedIndex]
-		if(!ListEntry.IsFile)
-		{
-			Msgbox SaveAsProgram(): The selected result is no file!
-			return
-		}
-		outputdebug % "set path " ListEntry.Path SubStr(MenuItem, 2, InStr(MenuItem, ":") - 2)
-		this.ProgramButtons[SubStr(MenuItem, 2, InStr(MenuItem, ":") - 2)].SetPath(ListEntry.Path)
-	}
 }
 #F1::
 #F2::
@@ -1427,10 +1408,10 @@ AccessorContextMenu:
 CAccessor.Instance.PerformAction(A_ThisMenuItem, CAccessor.Instance.ClickedListEntry) ;ClickedListEntry is only valid for clicks on empty parts of the window
 return
 AccessorSaveAsFastFolder:
-CAccessor.Instance.SaveAsFastFolder(SubStr(A_ThisMenuItem, 1, 1), CAccessor.Instance.ClickedListEntry)
+CAccessor.Instance.FastFolderButtons[A_ThisMenuItemPos].SetFastFolder(CAccessor.Instance.ClickedListEntry ? CAccessor.Instance.ClickedListEntry.Path : CAccessor.Instance.List[CAccessor.Instance.GUI.ListView.SelectedIndex].Path)
 return
 AccessorSaveAsProgram:
-CAccessor.Instance.SaveAsProgram(A_ThisMenuItem, CAccessor.Instance.ClickedListEntry)
+CAccessor.Instance.ProgramButtons[A_ThisMenuItemPos].SetPath(CAccessor.Instance.ClickedListEntry ? CAccessor.Instance.ClickedListEntry.Path : CAccessor.Instance.List[CAccessor.Instance.GUI.ListView.SelectedIndex].Path)
 return
 
 Class CAccessorGUI extends CGUI
@@ -1506,6 +1487,7 @@ Class CAccessorGUI extends CGUI
 		ButtonY := this.ButtonsY
 		for index, Button in Accessor.FastFolderButtons
 		{
+			Button.OnFastFolderChange.Handler := new Delegate(this, "OnFastFolderChange")
 			ButtonControl := this.AddControl("Picture", "Button" A_Index, "x" ButtonX " y" ButtonY " w16 h35 +0xE", "")
 			ButtonControl.Click.Handler := new Delegate(this, "OnFastFolderButtonClick")
 			ButtonControl.Tooltip := index - 1
@@ -1742,6 +1724,14 @@ Class CAccessorGUI extends CGUI
 		Button.SetImageFromHBitmap(hBitmap)
 		DeleteObject(hBitmap)
 	}
+	OnFastFolderChange(Index)
+	{
+		MouseGetPos,,,,hwnd,2
+		Button := this.FastFolderButtons[Index]
+		hBitmap := CAccessor.Instance.FastFolderButtons[Index].Draw(hwnd = Button.hwnd)
+		Button.SetImageFromHBitmap(hBitmap)
+		DeleteObject(hBitmap)
+	}
 	Show()
 	{
 		this.ResetGUI()
@@ -1786,7 +1776,7 @@ Class CAccessorGUI extends CGUI
 		if(FastFolders[AccessorButton.Number].Path)
 			CAccessor.Instance.FastFolderButtons[Slot].Execute()
 		else if(CAccessor.Instance.List[this.ListView.SelectedIndex].IsFolder)
-			Accessor.SaveAsFastFolder(AccessorButton.Number, CAccessor.Instance.List[this.ListView.SelectedIndex].Path)
+			AccessorButton.SetFastFolder(CAccessor.Instance.List[this.ListView.SelectedIndex].Path)
 	}
 
 	SetFilter(Text, SelectionStart = -1, SelectionEnd = -1)
