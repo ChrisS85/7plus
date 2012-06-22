@@ -1548,6 +1548,7 @@ Class CAccessorGUI extends CGUI
 		this.DrawActionText()
 		this.DrawCloseButton()
 		this.DrawExecuteButton()
+		this.ActiveControl := this.EditControl
 		for index, Button in this.QueryButtons
 		{
 			hBitmap := CAccessor.Instance.QueryButtons[index].Draw(false)
@@ -2039,14 +2040,14 @@ IsQueryButtonUnderCursor()
 }
 
 
-#if CAccessor.Instance.GUI.Visible
+#if CAccessor.Instance.GUI.Visible && !IsContextMenuActive()
 Tab::Down
 *Up::CAccessor.Instance.GUI.OnUp()
 *Down::CAccessor.Instance.GUI.OnDown()
 #if
 
 
-#if CAccessor.Instance.GUI.Visible && CAccessor.Instance.GUI.ActiveControl = CAccessor.Instance.GUI.EditControl
+#if CAccessor.Instance.GUI.Visible && CAccessor.Instance.GUI.ActiveControl = CAccessor.Instance.GUI.EditControl && !IsContextMenuActive()
 PgUp::
 PostMessage, 0x100, 0x21, 0,, % "ahk_id " CAccessor.Instance.GUI.ListView.hwnd
 return
@@ -2056,36 +2057,36 @@ PostMessage, 0x100, 0x22, 0,, % "ahk_id " CAccessor.Instance.GUI.ListView.hwnd
 return
 
 AppsKey::
-PostMessage, 0x100, 0x5D, 0,, % "ahk_id " CAccessor.Instance.GUI.ListView.hwnd
+CAccessor.Instance.ShowActionMenu()
 return
 #if
 
 
-#if (CAccessor.Instance.GUI.Visible && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenExplorer))
+#if (CAccessor.Instance.GUI.Visible && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenExplorer) && !IsContextMenuActive())
 ^e::
 CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.OpenExplorer)
 return
 #if
 
-#if (CAccessor.Instance.GUI.Visible && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenPathWithAccessor))
+#if (CAccessor.Instance.GUI.Visible && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenPathWithAccessor) && !IsContextMenuActive())
 ^b::
 CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.OpenPathWithAccessor)
 return
 #if
 
-#if (CAccessor.Instance.GUI.Visible && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenWith))
+#if (CAccessor.Instance.GUI.Visible && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenWith) && !IsContextMenuActive())
 ^o::
 CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.OpenWith)
 return
 #if
 
-#if (CAccessor.Instance.GUI.Visible && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.SearchDir))
+#if (CAccessor.Instance.GUI.Visible && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.SearchDir) && !IsContextMenuActive())
 ^f::
 CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.SearchDir, CAccessor.Instance.List[CAccessor.Instance.GUI.ListView.SelectedIndex].Actions.GetItemWithValue("Function", CAccessorPlugin.CActions.SearchDir.Function) ? "" : CFileSystemPlugin.Instance.Result)
 return
 #if
 
-#if CAccessor.Instance.GUI.Visible && !Edit_TextIsSelected("", "ahk_id " CAccessor.Instance.GUI.EditControl.hwnd)
+#if CAccessor.Instance.GUI.Visible && !Edit_TextIsSelected("", "ahk_id " CAccessor.Instance.GUI.EditControl.hwnd) && !IsContextMenuActive()
 ^c::
 CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.Copy)
 return
