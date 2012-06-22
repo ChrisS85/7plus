@@ -406,6 +406,33 @@ Class CListViewControl Extends CControl
 			return Row
 		}
 		/*
+		Function: AddRange
+		Adds rows.
+		
+		Parameters:
+			Entries - An array where each parameter contains an "Options" value and a "Fields" array that corresponds to the columns
+			IconsSet - Indicates if the icons are already set through the Options field. Otherwise they will be set to empty by this function.
+		Note:
+		This function does not handle selection properly, the PreviouslySelectedIndex etc. will be incorrect if any options value contains "Select".
+		*/
+		AddRange(Entries, IconsSet = false)
+		{
+			GUI := CGUI.GUIList[this._.GUINum]
+			if(GUI.IsDestroyed)
+				return
+			Control := GUI.Controls[this._.hwnd]
+			Gui, % this._.GUINum ":Default"
+			Gui, ListView, % Control.hwnd
+
+			for index, Entry in Entries
+			{
+				SortedIndex := LV_Add(Entry.Options, Entry.Fields*)
+				UnsortedIndex := (UnsortedIndex := this._.MaxIndex() + 1) ? UnsortedIndex : 1
+				Row := new this.CRow(SortedIndex, UnsortedIndex, this._.GUINum, this._.hwnd, IconsSet)
+				this._.Insert(UnsortedIndex, Row)
+			}
+		}
+		/*
 		Function: Insert
 		Inserts a row.
 		
@@ -598,7 +625,7 @@ Class CListViewControl Extends CControl
 		*/
 		Class CRow
 		{
-			__New(SortedIndex, UnsortedIndex, GUINum, hwnd)
+			__New(SortedIndex, UnsortedIndex, GUINum, hwnd, IconsSet = false)
 			{
 				this.Insert("_", {})
 				this._.RowNumber := UnsortedIndex
@@ -610,7 +637,8 @@ Class CListViewControl Extends CControl
 				Control := GUI.Controls[hwnd]
 				;Store the real unsorted index in the custom property lParam field of the list view item so it can be reidentified later
 				this.SetUnsortedIndex(SortedIndex, UnsortedIndex, Control.hwnd)
-				this.SetIcon("")
+				if(!IconsSet)
+					this.SetIcon("")
 				this._.Insert("Controls", {})
 			}
 			/*

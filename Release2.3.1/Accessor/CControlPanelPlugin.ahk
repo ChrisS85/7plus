@@ -39,9 +39,12 @@ Class CControlPanelPlugin extends CAccessorPlugin
 		;Find all registered control panel applets
 		Loop, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel\NameSpace\, 2, 0
 		{
+			if(InStr(A_LoopRegName, "{") != 1)
+				continue
 			;Appname is used to open the applet with control.exe
 			RegRead, appname, HKCR, CLSID\%A_LoopRegName%, System.ApplicationName
-
+			if(!appname)
+				RegRead, appname, HKCR, CLSID\%A_LoopRegName%
 			;Get localized name
 			RegRead, localstring, HKCR, CLSID\%A_LoopRegName%, LocalizedString
 			if(InStr(localstring, "@") = 1)
@@ -49,15 +52,15 @@ Class CControlPanelPlugin extends CAccessorPlugin
 			file := SubStr(localstring, 1, InStr(localstring, ",") - 1)
 			id := SubStr(localstring, InStr(localstring, ",-") + 2)
 			localized := TranslateMUI(ExpandPathPlaceholders(file), id)
-
+			if(!localized)
+				localized := AppName
 			;Get default icon
 			RegRead, iconstring, HKCR, CLSID\%A_LoopRegName%\DefaultIcon
 			if(InStr(iconstring, "@") = 1)
 				iconstring := SubStr(iconstring, 2)
-			file := ExpandPathPlaceholders(SubStr(iconstring, 1, InStr(iconstring, ",") - 1))
+			file := LookupFileInPATH(ExpandPathPlaceholders(SubStr(iconstring, 1, InStr(iconstring, ",") - 1)))
 			;Convert it from resource id to icon index
 			id := IndexOfIconResource(file, SubStr(iconstring, InStr(iconstring, ",-") + 2))
-			
 			this.List.Insert({appname : appname, localString : localized, icon : file, IconNumber : id})
 		}
 	}
@@ -67,7 +70,7 @@ Class CControlPanelPlugin extends CAccessorPlugin
 		Results := Array()
 		for index, applet in this.List
 		{
-			if((MatchQuality := FuzzySearch(applet.localString, Filter, false)) > Accessor.Settings.FuzzySearchThreshold)
+			if(KeywordSet || (MatchQuality := FuzzySearch(applet.localString, Filter, false)) > Accessor.Settings.FuzzySearchThreshold)
 			{
 				Result := new this.CResult()
 				Result.Title := applet.localString

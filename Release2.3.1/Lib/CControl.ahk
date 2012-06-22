@@ -569,7 +569,7 @@ Class CControl ;Never created directly
 			if(Name = "LargeIcons")
 				return this._.LargeIcons
 		}
-		SetIcon(ID, PathOrhBitmap, IconNumber, debug = false)
+		SetIcon(ID, PathOrhBitmap, IconNumber, SetIcon = true)
 		{
 			GUI := CGUI.GUIList[this._.GUINum]
 			Control := GUI.Controls[this._.hwnd]
@@ -595,9 +595,7 @@ Class CControl ;Never created directly
 						IL_Destroy(ErrorLevel)
 				}
 				else if(Control.Type = "Tab")
-				{
 					SendMessage, 0x1303, 0, this._.IconList.SmallIL_ID, % Control.ClassNN, % "ahk_id " GUI.hwnd  ; 0x1109 is TVM_SETIMAGELIST
-				}
 			}
 			if(FileExist(PathorhBitmap))
 			{
@@ -619,7 +617,7 @@ Class CControl ;Never created directly
 			else
 			{
 				Loop % this._.IconList.MaxIndex() ;IDs and paths and whatnot are identical in both lists so one is enough here
-					if(this._.IconList[A_Index].Path = PathorhBitmap && this._.IconList[A_Index].IconNumber = IconNumber)
+					if(this._.IconList[A_Index].Path = PathorhBitmap)
 					{
 						Icon := this._.IconList[A_Index]
 						break
@@ -629,20 +627,25 @@ Class CControl ;Never created directly
 					IID := DllCall("ImageList_ReplaceIcon", "Ptr", this._.IconList.SmallIL_ID, Int, -1, "Ptr", PathorhBitmap) + 1
 					if(Control.Type = "ListView")
 						IID := DllCall("ImageList_ReplaceIcon", "Ptr", this._.IconList.LargeIL_ID, Int, -1, "Ptr", PathorhBitmap) + 1
+					outputdebug added %PathorhBitmap%, ID %IID%
 					this._.IconList.Insert(Icon := {Path : PathorhBitmap, IconNumber : 1, ID : IID})
 				}
 			}
-			if(Control.Type = "ListView")
-				LV_Modify(ID, "Icon" (Icon ? Icon.ID : -1))
-			else if(Control.Type = "TreeView")
-				TV_Modify(ID, "Icon" (Icon ? Icon.ID : -1))
-			else if(Control.Type = "Tab")
+			if(SetIcon)
 			{
-				VarSetCapacity(TCITEM, 20 + 2 * A_PtrSize, 0)
-				NumPut(2, TCITEM, 0, "UInt") ;State mask TCIF_IMAGE
-				NumPut(Icon.ID - 1, TCITEM, 16 + A_PtrSize, "UInt") ;ID of icon in image list
-				SendMessage, 0x1306, ID-1, &TCITEM, % Control.ClassNN, % "ahk_id " GUI.hwnd ;TCM_SETITEM
+				if(Control.Type = "ListView")
+					LV_Modify(ID, "Icon" (Icon ? Icon.ID : -1))
+				else if(Control.Type = "TreeView")
+					TV_Modify(ID, "Icon" (Icon ? Icon.ID : -1))
+				else if(Control.Type = "Tab")
+				{
+					VarSetCapacity(TCITEM, 20 + 2 * A_PtrSize, 0)
+					NumPut(2, TCITEM, 0, "UInt") ;State mask TCIF_IMAGE
+					NumPut(Icon.ID - 1, TCITEM, 16 + A_PtrSize, "UInt") ;ID of icon in image list
+					SendMessage, 0x1306, ID - 1, &TCITEM, % Control.ClassNN, % "ahk_id " GUI.hwnd ;TCM_SETITEM
+				}
 			}
+			return Icon ? Icon.ID : -1
 		}
 	}
 }

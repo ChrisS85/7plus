@@ -1034,8 +1034,9 @@ Class CAccessor
 	UpdateGUIWithResults(Time)
 	{
 		if(Time)
-			FormattedTime := "in " Floor(Time/3600) ":" Floor(Mod(Time, 3600) / 60) ":" Floor(Mod(Time, 60))
-
+			this.FormattedTime := "in " Floor(Time/3600) ":" Floor(Mod(Time, 3600) / 60) ":" Floor(Mod(Time, 60))
+		else
+			this.FormattedTime := ""
 		this.GUI.ListView.Redraw := false
 		
 		;Much less results than with previous search string, clear the list instead of refreshing it
@@ -1049,56 +1050,44 @@ Class CAccessor
 		;Now that items are available and sorted, add them to the listview
 		for index3, ListEntry in this.List
 		{
-			;if(Time > 0)
-			;{
-			;	ListEntry.Time := Time
-			;	ListEntry.Detail2 := FormattedTime
-			;}
+			;If more items than currently in list, add a new item
+			if(A_Index > ListViewCount)
+			{
+				Plugin := this.Plugins[ListEntry.Type]
+				Offset := A_Index
+				Entries := []
+				Debug := Settings.General.DebugEnabled
+				Loop % this.List.MaxIndex() - Offset + 1
+				{
+					ListEntry2 := this.List[Offset + A_Index - 1]
+					Entry := {Options : ""}
+					Plugin.GetDisplayStrings(ListEntry2, Title := ListEntry2.Title, Path := ListEntry2.Path, Detail1 := ListEntry2.Detail1, Detail2 := ListEntry2.Detail2)
+					Entry.Fields := [Title, Path, Debug ? ListEntry2.SortOrder : Detail1]
+					IconID := this.GUI.ListView._.ImageListManager.SetIcon("", ListEntry2.Icon, ListEntry2.IconNumber, false)
+					if(IconID != -1)
+						Entry.Options := "Icon" IconID
+					Entries.Insert(Entry)
+				}
+				this.GUI.ListView.Items.AddRange(Entries, true)
+				break
+			}
 			Plugin := this.Plugins[ListEntry.Type]
 			Plugin.GetDisplayStrings(ListEntry, Title := ListEntry.Title, Path := ListEntry.Path, Detail1 := ListEntry.Detail1, Detail2 := ListEntry.Detail2)
 
 			;To improve performance, the listview isn't simply cleared, instead the contents are updated.
-
-			;If more items than currently in list, add a new item
-			if(A_Index > ListViewCount)
+			;Check if the text of the current item was changed. If it was, readd it, otherwise just keep going.
+			;This doesn't look at the icon yet, need to find out how to compare the hIcons
+			LV_GetText(t, A_Index, 1)
+			LV_GetText(p, A_Index, 2)
+			LV_GetText(d1, A_Index, 3)
+			if(t != Title || p != Path || d1 != Detail1)
 			{
-				if(!Settings.General.DebugEnabled)
-					item := this.GUI.ListView.Items.Add("", Title, Path, Detail1)
-				else
-					item := this.GUI.ListView.Items.Add("", Title, Path, ListEntry.SortOrder)
-
+				item := this.GUI.ListView.Items[A_Index]
+				LV_Modify(A_Index, "", Title, Path, (Settings.General.DebugEnabled ? ListEntry.SortOrder : Detail1))
 				if(!ListEntry.HasKey("IconNumber"))
 					item.Icon := ListEntry.Icon
 				Else
-					item.SetIcon(ListEntry.Icon, ListEntry.IconNumber)
-			}
-			else
-			{
-				;Check if the text of the current item was changed. If it was, readd it, otherwise just keep going.
-				;This doesn't look at the icon yet, need to find out how to compare the hIcons
-				LV_GetText(t, A_Index, 1)
-				LV_GetText(p, A_Index, 2)
-				LV_GetText(d1, A_Index, 3)
-				;LV_GetText(d2, A_Index, 4)
-				;msgbox % "Old item: " t ", " p ", " d1 ", " d2 "`nNew Item: " Title ", " Path ", " Detail1 ", " (Settings.General.DebugEnabled ? ListEntry.SortOrder : Detail2)
-				if(t != Title || p != Path || d1 != Detail1)
-				{
-					item := this.GUI.ListView.Items[A_Index]
-					LV_Modify(A_Index, "", Title, Path, (Settings.General.DebugEnabled ? ListEntry.SortOrder : Detail1))
-					;_debug := true
-					;this.GUI.ListView.Items.Delete(A_Index)
-					;msgbox deleted
-					;if(!Settings.General.DebugEnabled)
-					;	item := this.GUI.ListView.Items.Insert(A_Index, "", Title, Path, Detail1, Detail2)
-					;else
-					;	item := this.GUI.ListView.Items.Insert(A_Index, "", Title, Path, Detail1, ListEntry.SortOrder)
-					;msgbox added
-					if(!ListEntry.HasKey("IconNumber"))
-						item.Icon := ListEntry.Icon
-					Else
-						item.SetIcon(ListEntry.Icon, ListEntry.IconNumber ? ListEntry.IconNumber : 1, 1)
-					;msgbox % "icon set: " ListENtry.Icon
-				}
+					item.SetIcon(ListEntry.Icon, ListEntry.IconNumber ? ListEntry.IconNumber : 1, 1)
 			}
 		}
 		ListViewCount := this.GUI.ListView.Items.MaxIndex()
@@ -1111,14 +1100,14 @@ Class CAccessor
 		if(this.GUI.ListView.SelectedItems.MaxIndex() != 1)
 			this.GUI.ListView.SelectedIndex := 1
 
-		this.GUI.ListView.ModifyCol(1, Round(this.GUI.ListView.Width * 3 / 8)) ;Col_3_w) ; resize title column
+		this.GUI.ListView.ModifyCol(1, Round(this.GUI.ListView.Width * 3 / 8)) ; resize title column
 		this.GUI.ListView.ModifyCol(2, Round(this.GUI.ListView.Width * 3.3 / 8)) ; resize path column
 		this.GUI.ListView.ModifyCol(3, 124) ; resize detail1 column
-		;this.GUI.ListView.ModifyCol(4, "AutoHdr") ; resize detail2 column
 
 		this.GUI.ListView.Redraw := true
 
 		this.UpdateButtonText()
+		outputdebug update end
 	}
 
 	;Registers an Accessor plugin with this class. This needs to be done.
@@ -1830,14 +1819,14 @@ Class CAccessorGUI extends CGUI
 	{
 		MouseGetPos, , , , hwnd, 2
 		if(hwnd && hwnd = this.PreviousMouseOverButton.hwnd)
-		{
 			Text := this.PreviousMouseOverAccessorButton.GetLongName()
-		}
 		else if(Plugin := CAccessor.Instance.Plugins[CAccessor.Instance.SingleContext])
 		{
 			if(t := Plugin.GetFooterText())
 				Text := t
 		}
+		else if(CAccessor.Instance.FormattedTime)
+			Text := this.ActionText " " CAccessor.Instance.FilterWithoutTimer " " CAccessor.Instance.FormattedTime
 		if(Text != this.lnkFooter.Text)
 			this.lnkFooter.Text := Text
 	}

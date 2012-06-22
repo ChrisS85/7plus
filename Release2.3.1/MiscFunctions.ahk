@@ -1959,3 +1959,14 @@ GetBitmapFromAnything(Anything)
 		return 0
 	return pBitmap
 }
+
+LookupFileInPATH(filename)
+{
+	SplitPath, filename,,path
+	if(path)
+		return filename
+	VarSetCapacity(Path, 600, 0) ;Greater than (MAS_PATH + 1) * 2 and some extra to be sure
+	res := DllCall("SearchPath", PTR, 0, str, filename, PTR, 0, UINT, 300, str, Path, PTR, 0, "UINT")
+	if(res != 0)
+		return Path
+}
