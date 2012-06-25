@@ -73,11 +73,13 @@ AddAllButtons(ToFolderBand, ToPlacesBar)
 		WorkerThread.Start(FastFolders)
 	}
 }
+
 AddButtonsToFolderBandBar(WorkerThread, FastFolders)
 {
 	Loop 10
 		AddButton("", FastFolders[A_Index - 1].Path, "", (A_Index - 1) ":" FastFolders[A_Index - 1].Name, "", "Both", 2) ;7plus now uses AHK=2 key in registry to indicate FastFolder buttons
 }
+
 ;Callback function for determining if a specific registry key was created by 7plus
 IsFastFolderButton(Command, Name, Tooltip, ahk)
 {
@@ -128,6 +130,7 @@ RemoveAllExplorerButtons(function = "")
 		}
 	}
 }
+
 ;Removes a button. Command can either be a real command (with arguments), a path or a function with three arguments (command, key, param) which identifies the proper key
 RemoveButton(Command, param="")
 {
@@ -248,6 +251,7 @@ AddButton(Command, path, Args = "", Name = "", Tooltip = "", AddTo = "Both", ahk
 			AddButton_Write(BasePath "\" A_LoopRegName "\TasksNoItemsSelected", SomeCLSID, command, Name, Description, Icon, ahk, A_LoopRegName, IterationsNoSelected)
 	}
 }
+
 ;Writes the data for a single button (for selected or no-selected state)
 AddButton_Write(Path, SomeCLSID, command, Title, InfoTip, Icon, AHK, Name, Iterations)
 {
@@ -269,6 +273,7 @@ AddButton_Write(Path, SomeCLSID, command, Title, InfoTip, Icon, AHK, Name, Itera
 	RegWrite, REG_SZ, 			HKLM, %Path%\shell\InvokeTask\command, 	, 			%command%
 	Iterations[Name]++
 }
+
 FindButton(function, param)
 {
 	if(!IsFunc(function))

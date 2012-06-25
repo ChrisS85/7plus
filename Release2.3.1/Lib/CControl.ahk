@@ -627,7 +627,6 @@ Class CControl ;Never created directly
 					IID := DllCall("ImageList_ReplaceIcon", "Ptr", this._.IconList.SmallIL_ID, Int, -1, "Ptr", PathorhBitmap) + 1
 					if(Control.Type = "ListView")
 						IID := DllCall("ImageList_ReplaceIcon", "Ptr", this._.IconList.LargeIL_ID, Int, -1, "Ptr", PathorhBitmap) + 1
-					outputdebug added %PathorhBitmap%, ID %IID%
 					this._.IconList.Insert(Icon := {Path : PathorhBitmap, IconNumber : 1, ID : IID})
 				}
 			}

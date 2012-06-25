@@ -29,23 +29,23 @@ LocateShell32MUI()
 ;Splits a command into command and arguments
 SplitCommand(fullcmd, ByRef cmd, ByRef args)
 {
-	if(InStr(fullcmd,"""") = 1)
+	if(InStr(fullcmd, """") = 1)
 	{
-		pos:=InStr(fullcmd, """" ,0, 2)
-		cmd:=SubStr(fullcmd,2,pos-2)
-		args:=SubStr(fullcmd,pos+1)
-		args:=strTrim(args," ")
+		pos := InStr(fullcmd, """" , 0, 2)
+		cmd := SubStr(fullcmd, 2,pos - 2)
+		args := SubStr(fullcmd, pos + 1)
+		args := strTrim(args, " ")
 	}
-	else if(pos:=InStr(fullcmd, " " ,0, 1))
+	else if(pos:=InStr(fullcmd, " " , 0, 1))
 	{
-		cmd:=SubStr(fullcmd,1,pos-1)
-		args:=SubStr(fullcmd,pos+1)
-		args:=strTrim(args," ")
+		cmd := SubStr(fullcmd, 1, pos-1)
+		args := SubStr(fullcmd, pos+1)
+		args := strTrim(args, " ")
 	}
 	else
 	{
-		cmd:=fullcmd
-		args:=""
+		cmd := fullcmd
+		args := ""
 	}
 }
 
@@ -55,7 +55,8 @@ SplitCommand(fullcmd, ByRef cmd, ByRef args)
 	o Licenced under BSD <http://creativecommons.org/licenses/BSD/> 
 */
 GetFreeGuiNum(start, prefix = ""){
-	loop {
+	loop
+	{
 		Gui %prefix%%start%:+LastFoundExist
 		IfWinNotExist
 			return prefix start
@@ -1735,9 +1736,9 @@ Quote(string, once = 1)
 {
 	if(once)
 	{
-		if(InStr(string,"""") != 1)
+		if(InStr(string, """") != 1)
 			string := """" string
-		if(!strEndsWith(string,""""))
+		if(!strEndsWith(string, """"))
 			string := string """"
 		return string
 	}
@@ -1747,8 +1748,8 @@ Quote(string, once = 1)
 ;Remove quotes from a string if necessary
 UnQuote(string)
 {
-	if(InStr(string,"""") = 1 && strEndsWith(string,""""))
-		return strTrim(string,"""")
+	if(InStr(string, """") = 1 && strEndsWith(string, """"))
+		return strTrim(string, """")
 	return string
 }
 
@@ -1930,9 +1931,7 @@ New(Obj, Params*)
 ;Loads an icon from a path and returns the hIcon. Needs to be freed afterwards with DestroyIcon()
 LoadIcon(Path)
 {
-	hBitmap := DllCall("LoadImage", "PTR", 0, "str", Path, "uint", IMAGE_BITMAP := 0, "int", 0, "int", 0, "uint", LD_LOADFROMFILE := 0x00000010, "PTR")
-	msgbox % "Path: " Path " bitmap: " hBitmap " errorlevel: " ErrorLevel
-	return hIcon
+	return DllCall("LoadImage", "PTR", 0, "str", Path, "uint", IMAGE_ICON := 1, "int", 0, "int", 0, "uint", LD_LOADFROMFILE := 0x00000010, "PTR")
 }
 ;Supports paths, icon handles and hBitmaps
 GetBitmapFromAnything(Anything)

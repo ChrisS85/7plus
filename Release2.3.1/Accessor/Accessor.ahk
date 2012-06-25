@@ -120,26 +120,23 @@ Class CAccessor
 		Cleanup()
 		{
 		}
-		DrawHeader(pGraphics, MouseOver)
+		OnExit()
 		{
-			pBrush := Gdip_BrushCreateSolid(MouseOver ? 0xFF00A2FF : 0xFFB1B3B4)
-			this.FillHalfRoundedRectangle(pGraphics, pBrush, 0, 0, this.ButtonSize, 8, this.CornerRadius)
-			Gdip_DeleteBrush(pBrush)
-		}
-		FillHalfRoundedRectangle(pGraphics, pBrush, x, y, w, h, r)
-		{
-			Region := Gdip_GetClipRegion(pGraphics)
-			Gdip_SetClipRect(pGraphics, x-r, y-r, 2*r, 2*r, 4)
-			Gdip_SetClipRect(pGraphics, x+w-r, y-r, 2*r, 2*r, 4)
-			E := Gdip_FillRectangle(pGraphics, pBrush, x, y, w, h)
-			Gdip_SetClipRegion(pGraphics, Region, 0)
-			Gdip_SetClipRect(pGraphics, x-(2*r), y+r, w+(4*r), h-(2*r), 4)
-			Gdip_SetClipRect(pGraphics, x+r, y-(2*r), w-(2*r), h+(4*r), 4)
-			Gdip_FillEllipse(pGraphics, pBrush, x, y, 2*r, 2*r)
-			Gdip_FillEllipse(pGraphics, pBrush, x+w-(2*r), y, 2*r, 2*r)
-			Gdip_SetClipRegion(pGraphics, Region, 0)
-			Gdip_DeleteRegion(Region)
-			return E
+			if(this.BackgroundInactive)
+			{
+				Gdip_DisposeImage(this.BackgroundInactive)
+				this.BackgroundInactive := ""
+			}
+			if(this.BackgroundActive)
+			{
+				Gdip_DisposeImage(this.BackgroundActive)
+				this.BackgroundActive := ""
+			}
+			if(this.Plus)
+			{
+				Gdip_DisposeImage(this.Plus)
+				this.Plus := ""
+			}
 		}
 	}
 
@@ -193,10 +190,6 @@ Class CAccessor
 			Gdip_SetInterpolationMode(pGraphics, 7)
 			Gdip_SetSmoothingMode(pGraphics, 3)
 
-			;pBrush := Gdip_BrushCreateSolid(0xFFFFFFFF) ;0xFF000000 | CAccessorGUI.ControlBackgroundColor)
-			;this.FillHalfRoundedRectangle(pGraphics, pBrush, 0, 0, this.ButtonSizeX, this.ButtonSizeY, this.CornerRadius)
-			;Gdip_DeleteBrush(pBrush)
-			;this.DrawHeader(pGraphics, MouseOver)
 			Gdip_DrawImage(pGraphics, MouseOver && this.IsActive() ? this.BackgroundActive : this.BackgroundInactive, 0, 0, this.ButtonSizeX, this.ButtonSizeY)
 			if(pBitmap)
 				Gdip_DrawImage(pGraphics, pBitmap, this.ButtonSizeX / 2 - this.ButtonIconSizeX / 2, this.ButtonSizeY / 2 - this.ButtonIconSizeY / 2 + this.ButtonIconOffset, this.ButtonIconSizeX, this.ButtonIconSizeY)
@@ -236,7 +229,7 @@ Class CAccessor
 
 		GetLongName()
 		{
-			return this.Path ? this.Path : (this.IsActive() ? "Click to use the selected file for this button!" : "")
+			return this.Path ? this.Path : (this.IsActive() ? "Click to use the selected file for this button!" : "Select a program in the results list and click here to assign it to this button!")
 		}
 		IsActive()
 		{
@@ -361,7 +354,7 @@ Class CAccessor
 		}
 		GetLongName()
 		{
-			return this.Text ? this.Text : (this.Query ? this.Query : (this.IsActive() ? "Click to use the currently entered text for this button!" : ""))
+			return this.Text ? this.Text : (this.Query ? this.Query : (this.IsActive() ? "Click to use the currently entered text for this button!" : "Enter search text and click here to assign it to this button!"))
 		}
 		IsActive()
 		{
@@ -447,11 +440,12 @@ Class CAccessor
 		}
 		Cleanup()
 		{
+			if(this.Bitmap)
+				Gdip_DisposeImage(this.Bitmap)
 		}
 		SetNumber(Number)
 		{
-			outputdebug % "setnumber " Number
-			;this.CleanUp()
+			this.CleanUp()
 			this.Number := Number
 			this.Bitmap := Gdip_CreateBitmapFromFile(A_ScriptDir "\Icons\" Number ".png")
 		}
@@ -463,7 +457,7 @@ Class CAccessor
 		GetLongName()
 		{
 			global FastFolders
-			return FastFolders[this.Number].Path ? FastFolders[this.Number].Path : (this.IsActive() ? "Click to assign the selected directory to this Fast Folder slot!" : "")
+			return FastFolders[this.Number].Path ? FastFolders[this.Number].Path : (this.IsActive() ? "Click to assign the selected directory to this Fast Folder slot!" : "Select a directory in the results list and click here to assign it to this FastFolder slot!")
 		}
 
 		IsActive()
@@ -734,6 +728,12 @@ Class CAccessor
 			this.ProgramButtons[A_Index].Save(Button)
 			SavedSettings.ProgramButtons.Insert(Button)
 		}
+		
+		;Clear some bitmaps shared by the buttons
+		this.CButton.OnExit()
+		this.CProgramButton.OnExit()
+		this.CQueryButton.OnExit()
+		this.CFastFolderButton.OnExit()
 
 		this.Settings.Save(SavedSettings)
 		;XML_Save(SavedSettings, Settings.ConfigPath "\Accessor.xml")
@@ -749,7 +749,6 @@ Class CAccessor
 	
 	Show(Action, InitialQuery = "")
 	{
-		outputdebug acc show
 		if(!this.GUI)
 			return
 		
@@ -768,7 +767,6 @@ Class CAccessor
 		this.Filter := ""
 		this.FilterWithoutTimer := ""
 
-		outputdebug call show
 		;Create and show GUI
 		this.GUI.Show()
 		
@@ -796,10 +794,6 @@ Class CAccessor
 		;Check if a plugin set a custom filter
 		if(!this.Filter)
 			this.RefreshList()
-		
-		;Prevent WM_KEYDOWN messages
-		;this.OldKeyDown := OnMessage(0x100)
-		;OnMessage(0x100, "")
 	}
 	
 	Close()
@@ -811,8 +805,6 @@ Class CAccessor
 	;Sets the filter and tries to wait (for max. 5 seconds) until results are there
 	SetFilter(Text, SelectionStart = -1, SelectionEnd = -1)
 	{
-		;this.Filter := Text
-		;this.IsRefreshing := true
 		this.GUI.SetFilter(Text, SelectionStart, SelectionEnd)
 		SetTimerF(this.WaitTimer := new Delegate(this, "WaitForRefresh"), -100)
 	}
@@ -828,7 +820,6 @@ Class CAccessor
 		{
 			count := 0
 			this.Remove(this.WaitTimer)
-			;this.OnFilterChanged(this.Filter)
 		}
 	}
 	OnFilterChanged(Filter)
@@ -837,11 +828,7 @@ Class CAccessor
 			return
 		outputdebug filter changed to %filter%
 		this.Filter := Filter
-		;if(this.SuppressListViewUpdate)
-		;{
-		;	this.SuppressListViewUpdate := false
-		;	return
-		;}
+
 		ListEntry := this.List[this.GUI.ListView.SelectedIndex]
 		
 		NeedsUpdate := 1
@@ -961,11 +948,11 @@ Class CAccessor
 	}
 	
 	;This is the main function that populates the Accessor list.
-	RefreshList()
+	RefreshList() ;(depth = 0)
 	{
 		if(!this.GUI)
 			return
-		outputdebug RefreshList()
+		;outputdebug RefreshList(%depth%) start
 
 		;Reset refreshing status
 		this.IsRefreshing := true
@@ -973,9 +960,9 @@ Class CAccessor
 
 		LastFilter := this.LastFilter
 		Filter := this.Filter
-		outputdebug filter %filter%
+		;outputdebug filter %filter%
 		Parameters := this.ExpandFilter(Filter, LastFilter, Time)
-		outputdebug filter2 %filter%
+		;outputdebug filter2 %filter%
 		;Plugins which need to use the filter string without any preparsing should use this one which doesn't contain the timer at the end
 		this.FilterWithoutTimer := Filter
 
@@ -988,11 +975,13 @@ Class CAccessor
 
 		this.IsRefreshing := false
 		if(this.RepeatRefresh)
-			this.RefreshList()
+			this.RefreshList(depth + 1)
+		;outputdebug RefreshList(%depth%) end
 	}
 	
 	FetchResults(Filter, LastFilter, KeywordSet, Parameters, Time)
 	{
+		;outputdebug FetchResults() start
 		this.List := Array()
 		;Find out if we are in a single plugin context, and add only those items
 		for index, Plugin in this.Plugins
@@ -1034,10 +1023,12 @@ Class CAccessor
 
 		;Sort the list by the weighting
 		this.List := ArraySort(this.List, "SortOrder", "Down")
+		;outputdebug FetchResults() end
 	}
 
 	UpdateGUIWithResults(Time)
 	{
+		;outputdebug UpdateGUIWithResults() start
 		if(Time)
 			this.FormattedTime := "in " Floor(Time/3600) ":" Floor(Mod(Time, 3600) / 60) ":" Floor(Mod(Time, 60))
 		else
@@ -1047,11 +1038,14 @@ Class CAccessor
 		;Much less results than with previous search string, clear the list instead of refreshing it
 		if(this.List.MaxIndex() < 5 && this.GUI.ListView.Items.MaxIndex() > 10)
 		{
+			;outputdebug UpdateGUIWithResults() Pre List Clear
 			this.GUI.ListView.Items.Clear()
+			;outputdebug UpdateGUIWithResults() Pre Image Loop
 			this.GUI.ListView.ImageListManager.Clear()
 		}
 
 		ListViewCount := this.GUI.ListView.Items.MaxIndex()
+		;outputdebug UpdateGUIWithResults() Pre Loop
 		;Now that items are available and sorted, add them to the listview
 		for index3, ListEntry in this.List
 		{
@@ -1095,6 +1089,7 @@ Class CAccessor
 					item.SetIcon(ListEntry.Icon, ListEntry.IconNumber ? ListEntry.IconNumber : 1, 1)
 			}
 		}
+		;outputdebug UpdateGUIWithResults() Post Loop
 		ListViewCount := this.GUI.ListView.Items.MaxIndex()
 		ListCount := this.List.MaxIndex()
 		Loop % ListViewCount - ListCount
@@ -1112,7 +1107,7 @@ Class CAccessor
 		this.GUI.ListView.Redraw := true
 
 		this.UpdateButtonText()
-		outputdebug update end
+		;outputdebug UpdateGUIWithResults() end
 	}
 
 	;Registers an Accessor plugin with this class. This needs to be done.
@@ -1569,6 +1564,21 @@ Class CAccessorGUI extends CGUI
 			Button.SetImageFromHBitmap(hBitmap)
 			DeleteObject(hBitmap)
 		}
+	}
+	Cleanup()
+	{
+		if(this.ExecuteButton.BitmapInactive)
+			Gdip_DisposeImage(this.ExecuteButton.BitmapInactive)
+		if(this.ExecuteButton.BitmapActive)
+			Gdip_DisposeImage(this.ExecuteButton.BitmapActive)
+			
+		if(this.CloseButton.BitmapInactive)
+			Gdip_DisposeImage(this.CloseButton.BitmapInactive)
+		if(this.CloseButton.BitmapActive)
+			Gdip_DisposeImage(this.CloseButton.BitmapActive)
+
+		if(this.InputFieldEnd.Bitmap)
+			Gdip_DisposeImage(this.InputFieldEnd.Bitmap)
 	}
 	SetListViewBackground()
 	{
@@ -2045,7 +2055,6 @@ Tab::Down
 *Up::CAccessor.Instance.GUI.OnUp()
 *Down::CAccessor.Instance.GUI.OnDown()
 #if
-
 
 #if CAccessor.Instance.GUI.Visible && CAccessor.Instance.GUI.ActiveControl = CAccessor.Instance.GUI.EditControl && !IsContextMenuActive()
 PgUp::
