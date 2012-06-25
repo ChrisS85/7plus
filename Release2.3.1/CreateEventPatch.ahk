@@ -134,6 +134,7 @@ Loop % NewXMLObject.Events.Event.MaxIndex()
 		PatchXMLObject.Events.Event.Insert(NewEvent)
 }
 XML_Save(PatchXMLObject, A_ScriptDir "\Events\ReleasePatch\" PatchXMLObject.MajorVersion "." PatchXMLObject.MinorVersion "." PatchXMLObject.BugfixVersion "." PatchXMLObject.PatchVersion ".xml")
+ExitApp
 
 #include %A_ScriptDir%\lib\richobject.ahk
 #include %A_ScriptDir%\xml.ahk

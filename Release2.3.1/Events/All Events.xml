@@ -3611,13 +3611,15 @@
 <Negate>0</Negate>
 <Type>Window active</Type>
 <WindowFilterClass>Photo_Lightweight_Viewer</WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition><Condition>
-<Compare>${WinVer}</Compare>
-<Negate>1</Negate>
-<Operator>equals</Operator>
+<Compare>${WindowsVersion}</Compare>
+<Negate>0</Negate>
+<Operator>is greater than</Operator>
 <Type>If</Type>
-<With>WIN_XP</With>
+<With>${WINXP64}</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Rotate images with R in windows picture viewer.</Description>
@@ -3646,13 +3648,15 @@
 <Negate>0</Negate>
 <Type>Window active</Type>
 <WindowFilterClass>Photo_Lightweight_Viewer</WindowFilterClass>
+<WindowFilterExecutable></WindowFilterExecutable>
+<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition><Condition>
-<Compare>${WinVer}</Compare>
-<Negate>1</Negate>
-<Operator>equals</Operator>
+<Compare>${WindowsVersion}</Compare>
+<Negate>0</Negate>
+<Operator>is greater than</Operator>
 <Type>If</Type>
-<With>WIN_XP</With>
+<With>${WINXP64}</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Rotate images with L in windows picture viewer.</Description>
@@ -4408,11 +4412,11 @@
 <Type>If</Type>
 <With>ShImgVw:</With>
 </Condition><Condition>
-<Compare>${WinVer}</Compare>
+<Compare>${WindowsVersion}</Compare>
 <Negate>0</Negate>
-<Operator>equals</Operator>
+<Operator>is lower than</Operator>
 <Type>If</Type>
-<With>WIN_XP</With>
+<With>${WINVISTA}</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Rotate images with R in windows picture viewer.</Description>
@@ -4468,11 +4472,11 @@
 <Type>If</Type>
 <With>ShImgVw:</With>
 </Condition><Condition>
-<Compare>${WinVer}</Compare>
+<Compare>${WindowsVersion}</Compare>
 <Negate>0</Negate>
-<Operator>equals</Operator>
+<Operator>is lower than</Operator>
 <Type>If</Type>
-<With>WIN_XP</With>
+<With>${WINVISTA}</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Rotate images with L in windows picture viewer.</Description>
