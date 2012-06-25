@@ -51,105 +51,37 @@ RefreshFastFolders()
 AddAllButtons(ToFolderBand, ToPlacesBar)
 {
 	global FastFolders
-	IterationsSelected := []
-	IterationsNoSelected := []
-	loop 10
+	Loop 10
 	{
 		;Fast folder slots are 0-based externally
 		pos := A_Index - 1
 		if(FastFolders[pos].Path)
 		{				
-			if(ToFolderBand)
-				AddButton("", FastFolders[pos].Path, "", pos ":" FastFolders[pos].Name, "", "Both", 2, IterationsSelected, IterationsNoSelected) ;7plus now uses AHK=2 key in registry to indicate FastFolder buttons
-			if(pos <= 4 && ToPlacesBar)	;Also update placesbar
+			if(pos <= 4 && ToPlacesBar)	;update placesbar
 			{
 				value := FastFolders[pos].Path
 				RegWrite, REG_SZ,HKCU,Software\Microsoft\Windows\CurrentVersion\Policies\comdlg32\Placesbar, Place%pos%,%value%
 			}				
 		}
 	}
+	if(ToFolderBand)
+	{
+		;Explorer folder band bar buttons are added in a separate process since this takes a few seconds
+		WorkerThread := new CWorkerThread("AddButtonsToFolderBandBar", 0, 0, 1)
+		;WorkerThread.OnStop.Handler := new Delegate(this, "OnStop")
+		;WorkerThread.OnFinish.Handler := new Delegate(this, "OnFinish")
+		WorkerThread.Start(FastFolders)
+	}
 }
-
+AddButtonsToFolderBandBar(WorkerThread, FastFolders)
+{
+	Loop 10
+		AddButton("", FastFolders[A_Index - 1].Path, "", (A_Index - 1) ":" FastFolders[A_Index - 1].Name, "", "Both", 2) ;7plus now uses AHK=2 key in registry to indicate FastFolder buttons
+}
 ;Callback function for determining if a specific registry key was created by 7plus
 IsFastFolderButton(Command, Name, Tooltip, ahk)
 {
 	return ahk = 2 || RegExMatch(Name, "^\d+:") ;RegexMatch is legacy code for buttons which don't have ahk=2 set
-}
-
-FastFolderMenu()
-{
-	global FastFolders
-	Menu, FastFolders, add, 1, FastFolderMenuHandler1
-	Menu, FastFolders, DeleteAll
-	win := WinExist("A")
-	y := Navigation.GetSelectedFilepaths()
-	loop 10
-	{
-		i := A_Index - 1
-		if(FastFolders[i].Path)
-		{
-			x := FastFolders[i].Name
-			if(x && (!InStr(x, "ftp://") = 1 || !y.MaxIndex()))
-			{
-				x := "&" i ": " x
-				Menu, FastFolders, add, %x%, FastFolderMenuHandler%i%
-			}
-		} 
-	}
-	hwnd := WinExist("A")
-	Menu, FastFolders, Show
-	return true
-}
-
-FastFolderMenuHandler0:
-FastFolderMenuClicked(0)
-return
-FastFolderMenuHandler1:
-FastFolderMenuClicked(1)
-return
-FastFolderMenuHandler2:
-FastFolderMenuClicked(2)
-return
-FastFolderMenuHandler3:
-FastFolderMenuClicked(3)
-return
-FastFolderMenuHandler4:
-FastFolderMenuClicked(4)
-return
-FastFolderMenuHandler5:
-FastFolderMenuClicked(5)
-return
-FastFolderMenuHandler6:
-FastFolderMenuClicked(6)
-return
-FastFolderMenuHandler7:
-FastFolderMenuClicked(7)
-return
-FastFolderMenuHandler8:
-FastFolderMenuClicked(8)
-return
-FastFolderMenuHandler9:
-FastFolderMenuClicked(9)
-return
-
-FastFolderMenuClicked(index)
-{
-	global FastFolders
-	y := FastFolders[index].Path
-	x := Navigation.GetSelectedFilepaths().ToString("|")
-	if(x && (GetKeyState("CTRL") || GetKeyState("Shift")))
-	{	
-		if(GetKeyState("CTRL"))
-			ShellFileOperation(0x2, x, y,0,hwnd)   
-		else if(GetKeyState("Shift"))
-			ShellFileOperation(0x1, x, y,0,hwnd)
-	}
-	else
-	{
-		Sleep 100
-		Navigation.SetPath(y)
-	}
-	Menu, FastFolders, DeleteAll
 }
 
 ;Removes all buttons created with this script. Function can be the name of a function with these arguments: func(command, Title, tooltip, ahk) and it can be used to tell the script if an entry may be deleted
