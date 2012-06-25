@@ -58,10 +58,8 @@ Class CSlideWindow
 			hwnd := A_Index = 1 ? this.hwnd : this.ChildWindows[A_Index - 1].hwnd
 			WinSet, AlwaysOnTop, On , ahk_id %hwnd%
 			if(Settings.Windows.SlideWindows.HideSlideWindows)
-			{
 				if(A_Index = 1 || this.ChildWindows[A_Index - 1].WasVisible)
 					WinShow ahk_id %hwnd%
-			}
 		}
 		WinActivate % "ahk_id " this.Active
 		

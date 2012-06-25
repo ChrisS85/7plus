@@ -1018,6 +1018,9 @@ Class CAccessor
 		for index, ListEntry in this.List
 		{
 			Plugin := this.Plugins[ListEntry.Type]
+			outputdebug % Time ", " ListEntry.AllowDelayedExecution
+			if(Time > 0)
+				ListEntry.Time := Time
 			ListEntry.SortOrder := ListEntry.Priority + (ListEntry.MatchQuality - this.Settings.FuzzySearchThreshold) / (1 - this.Settings.FuzzySearchThreshold) + (ListEntry.ResultIndexingKey && this.ResultUsageTracker.Plugins[ListEntry.Type].HasKey(ListEntry[ListEntry.ResultIndexingKey]) ? this.ResultUsageTracker.Plugins[ListEntry.Type][ListEntry[ListEntry.ResultIndexingKey]] : 0)
 		}
 
@@ -1205,7 +1208,7 @@ Class CAccessor
 				;Track the usage of this result for weighting
 				this.ResultUsageTracker.TrackResultUsage(ListEntry, Plugin.Instance)
 
-				if(ListEntry.Time > 0)
+				if(ListEntry.Time > 0 && Action.AllowDelayedExecution)
 				{
 					Event := new CEvent()
 					Event.Name := "Timed Accessor Result"
@@ -1571,7 +1574,7 @@ Class CAccessorGUI extends CGUI
 			Gdip_DisposeImage(this.ExecuteButton.BitmapInactive)
 		if(this.ExecuteButton.BitmapActive)
 			Gdip_DisposeImage(this.ExecuteButton.BitmapActive)
-			
+
 		if(this.CloseButton.BitmapInactive)
 			Gdip_DisposeImage(this.CloseButton.BitmapInactive)
 		if(this.CloseButton.BitmapActive)
@@ -2382,9 +2385,8 @@ Documentation of new Accessor features
 keyboard hotkeys in settings window activate when other page is visible
 icon in context menu
 uninstall plugin not working (x64) -- Or is it?
-random accessor crashes, maybe related to uninstall plugin
+random accessor crashes, maybe related to uninstall plugin -- not occuring anymore??
 
-; TODO: Method to lookup icon number rather than setting it afterwards. Maybe also add an AddRange function to listview
 find in filenames can easily be crashed with subdirectory option
 windows minimize animation setting in slide windows settings
 explorer tabs in slide windows
