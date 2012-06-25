@@ -279,6 +279,10 @@ Class CFileSystemPlugin extends CAccessorPlugin
 	{
 		return this.Path != ListEntry.Path
 	}
+	GetFooterText()
+	{
+		return "Files launched using the file system plugin can afterwards be opened by their filename without the path!"
+	}
 }
 #if (CAccessor.Instance.GUI && CAccessor.Instance.SingleContext = "File System")
 Tab::

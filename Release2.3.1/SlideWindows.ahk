@@ -57,9 +57,9 @@ Class CSlideWindow
 		{
 			hwnd := A_Index = 1 ? this.hwnd : this.ChildWindows[A_Index - 1].hwnd
 			WinSet, AlwaysOnTop, On , ahk_id %hwnd%
-			if(Settings.Windows.SlideWindows.HideSlideWindows)
-				if(A_Index = 1 || this.ChildWindows[A_Index - 1].WasVisible)
-					WinShow ahk_id %hwnd%
+			;if(Settings.Windows.SlideWindows.HideSlideWindows)
+			;	if(A_Index = 1 || this.ChildWindows[A_Index - 1].WasVisible)
+			;		WinShow ahk_id %hwnd%
 		}
 		WinActivate % "ahk_id " this.Active
 		
@@ -124,6 +124,7 @@ Class CSlideWindow
 	;This function slides a window outside the screen, hiding it
 	SlideOut()
 	{
+		global PreviousWindow
 		DetectHiddenWindows, On
 		;Disable Minimize/Restore animation
 		;RegRead, Animate, HKCU, Control Panel\Desktop\WindowMetrics , MinAnimate
@@ -139,17 +140,20 @@ Class CSlideWindow
 			this.Active := Active
 		else if(this.ChildWindows.FindKeyWithValue("hwnd", Active))
 			this.Active := Active
+		else
+			PreviousWindow := Active
 		GetVirtualScreenCoordinates(VirtualLeft, VirtualTop, VirtualRight, VirtualBottom) ;We want the coordinates of the upper left and lower right point
 		VirtualRight += VirtualLeft
 		VirtualBottom += VirtualTop
-		
+		OffsetFromScreen := 10
+		WinActivate, % "ahk_id " PreviousWindow
 		;Calculate target position
 		this.Position := WinGetPos("ahk_id " this.hwnd)
 		Loop % this.ChildWindows.MaxIndex()
 			this.ChildWindows[A_Index].Position := WinGetPos("ahk_id " this.ChildWindows[A_Index].hwnd)
 		if(this.Direction = 1) ;Left
 		{
-			this.ToX := VirtualLeft - this.Position.w
+			this.ToX := VirtualLeft - this.Position.w - OffsetFromScreen
 			this.ToY := this.Position.y
 			Loop % this.ChildWindows.MaxIndex() ;Correct for offset of child windows
 				this.ToX := min(this.ToX, this.ToX - ((this.ChildWindows[A_Index].Position.x + this.ChildWindows[A_Index].Position.w) - (this.Position.x + this.Position.w)))
@@ -164,7 +168,7 @@ Class CSlideWindow
 		else if(this.Direction = 2) ;Top
 		{
 			this.ToX := this.Position.x
-			this.ToY := VirtualTop - this.Position.h
+			this.ToY := VirtualTop - this.Position.h - OffsetFromScreen
 			Loop % this.ChildWindows.MaxIndex() ;Correct for offset of child windows
 				this.ToY := min(this.ToY, this.ToY - ((this.ChildWindows[A_Index].Position.y + this.ChildWindows[A_Index].Position.h) - (this.Position.y + this.Position.h)))
 			Loop % this.ChildWindows.MaxIndex()
@@ -177,7 +181,7 @@ Class CSlideWindow
 		}
 		else if(this.Direction = 3) ;Right
 		{
-			this.ToX := VirtualRight
+			this.ToX := VirtualRight + OffsetFromScreen
 			this.ToY := this.Position.y
 			Loop % this.ChildWindows.MaxIndex() ;Correct for offset of child windows
 				this.ToX := max(this.ToX, this.ToX + (this.Position.x - this.ChildWindows[A_Index].Position.x))
@@ -192,7 +196,7 @@ Class CSlideWindow
 		else if(this.Direction = 4) ;Bottom
 		{
 			this.ToX := this.Position.x
-			this.ToY := VirtualBottom
+			this.ToY := VirtualBottom + OffsetFromScreen
 			Loop % this.ChildWindows.MaxIndex() ;Correct for offset of child windows
 				this.ToY := max(this.ToY, this.ToY + (this.Position.y - this.ChildWindows[A_Index].Position.y))
 			Loop % this.ChildWindows.MaxIndex()
@@ -206,14 +210,14 @@ Class CSlideWindow
 		this.Move()
 		if(!Length := this.ChildWindows.MaxIndex())
 			Length := 0
-		Loop % Length + 1 ;hide/minimize all child windows and main window
-		{
-			hwnd := A_Index = 1 ? this.hwnd : this.ChildWindows[A_Index - 1].hwnd
-			if(Settings.Windows.SlideWindows.HideSlideWindows)
-				WinHide, ahk_id %hwnd%
-			else
-				PostMessage, 0x112, 0xF020,,, ahk_id %hwnd% ;Winminimize, but apparently more reliable
-		}
+		;Loop % Length + 1 ;hide/minimize all child windows and main window
+		;{
+		;	hwnd := A_Index = 1 ? this.hwnd : this.ChildWindows[A_Index - 1].hwnd
+		;	if(Settings.Windows.SlideWindows.HideSlideWindows)
+		;		WinHide, ahk_id %hwnd%
+		;	else
+		;		PostMessage, 0x112, 0xF020,,, ahk_id %hwnd% ;Winminimize, but apparently more reliable
+		;}
 		;~ WaitForEvent("SlideWindowResize", 1000)
 		outputdebug post minimize
 		this.SlideState := 0

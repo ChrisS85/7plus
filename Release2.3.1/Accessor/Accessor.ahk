@@ -1824,13 +1824,13 @@ Class CAccessorGUI extends CGUI
 		MouseGetPos, , , , hwnd, 2
 		if(hwnd && hwnd = this.PreviousMouseOverButton.hwnd)
 			Text := this.PreviousMouseOverAccessorButton.GetLongName()
-		else if(Plugin := CAccessor.Instance.Plugins[CAccessor.Instance.SingleContext])
-		{
-			if(t := Plugin.GetFooterText())
-				Text := t
-		}
 		else if(CAccessor.Instance.FormattedTime)
 			Text := this.ActionText " " CAccessor.Instance.FilterWithoutTimer " " CAccessor.Instance.FormattedTime
+		else if(IsObject(Plugin := CAccessor.Instance.Plugins[(ListEntry := CAccessor.Instance.List[this.ListView.SelectedIndex]).Type]))
+		{
+			if((t := ListEntry.FooterText) || (t := Plugin.GetFooterText()))
+				Text := t
+		}
 		if(Text != this.lnkFooter.Text)
 			this.lnkFooter.Text := Text
 	}
@@ -2391,6 +2391,7 @@ find in filenames can easily be crashed with subdirectory option
 windows minimize animation setting in slide windows settings
 explorer tabs in slide windows
 subevent controls not working properly
+sliding accessor window breaks mouse hover effects
 
 Using Accessor as a dock:
 There should only be one setting that enables/disables this.

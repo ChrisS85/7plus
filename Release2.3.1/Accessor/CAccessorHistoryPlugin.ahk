@@ -60,6 +60,8 @@ Class CAccessorHistoryPlugin extends CAccessorPlugin
 			for index, item in this.List
 			{
 				item.MatchQuality := 1
+				;Footer text can not be shown with GetFooterText with this plugin because its results appear as if they belong to other plugins
+				item.FooterText := "You can access the previous searches by pressing CTRL + Up / Down!"
 				Results.Insert(item)
 			}
 			return Results
@@ -68,6 +70,8 @@ Class CAccessorHistoryPlugin extends CAccessorPlugin
 		{
 			for index, item in this.List
 			{
+				;Footer text can not be shown with GetFooterText with this plugin because its results appear as if they belong to other plugins
+				item.FooterText := "You can access the previous searches by pressing CTRL + Up / Down!"
 				if((item.MatchQuality := FuzzySearch(item.Title, Filter, this.Settings.FuzzySearch)) > Accessor.Settings.FuzzySearchThreshold)
 					Results.Insert(item)
 				else if((item.MatchQuality := FuzzySearch(item.Path, Filter, this.Settings.FuzzySearch)) > Accessor.Settings.FuzzySearchThreshold)

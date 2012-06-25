@@ -349,6 +349,10 @@ Class CFileSearchPlugin extends CAccessorPlugin
 			this.Remove("SearchPath")
 		return true
 	}
+	GetFooterText()
+	{
+		return "File search may take up to a few seconds, please have patience."
+	}
 }
 UpdateFileSystemIndex:
 CAccessor.Plugins[CFileSearchPlugin.Type].BuildFileDatabase(false)
