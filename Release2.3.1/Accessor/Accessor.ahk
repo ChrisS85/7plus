@@ -2176,10 +2176,10 @@ Class CAccessorPlugin
 {
 	;Register this plugin with the Accessor main object
 	;~ Type := CAccessor.RegisterType("Type", CAccessorPlugin)
+
 	;The actual priority of this plugin in the current state. Depends on the context
 	Priority := 0
-	;True if this plugin handles the enter key manually.
-	HandlesEnter := 0
+
 	;Settings specific to this plugin
 	Settings := new this.CSettings()
 	Description := "No description here, move along"
@@ -2189,6 +2189,10 @@ Class CAccessorPlugin
 	;since the result may have become invalid.
 	SaveHistory := true
 	
+	;A plugin can define if its results can be scheduled for execution at a later time. Note that this property is being combined with the 
+	;AllowDelayedExecution property of each action, so this one can only prevent delayed execution for all results of this plugin.
+	AllowDelayedExecution := false
+
 	;This class contains settings for an Accessor plugin. The values shown here are required for all plugins!
 	;Commented values can be read-only.
 	Class CSettings extends CRichObject
@@ -2270,7 +2274,8 @@ Class CAccessorPlugin
 		Detail1 := ""
 		Detail2 := ""
 
-		;The ranking of the results is calculated by the indicators below. Accessor takes the average value of these indicators and sorts all results by this value
+		;The ranking of the results is calculated by the two indicators below in addition to the usage frequency of the result.
+		;Accessor takes the average value of these indicators and sorts all results by this value.
 
 		;The priority is determined by the plugin and the current context. Entries from the same plugin may have different priorities, this is up to the plugin.
 		;This value should be between 0 and 1, where 1 is the highest priority.
@@ -2283,13 +2288,25 @@ Class CAccessorPlugin
 		;This value is calculated by the Accessor and isn't used directly by the plugin. Accessor keeps a table of usage histories which is used to create an additional
 		;ranking measure for results. It also goes from 0 (never used) to 1(always used). It does not use a linear scale because its impact would be too little then.
 		;The addressing of the results is done through a table that is indexed by the plugin type, name and text of a single result. If this is undesirable and a plugin 
-		;doesn't want to store a usage history it can disable this by TODO: Create Setting for this.
+		;doesn't want to store a usage history it can disable this by.
 		UsageFrequency := 0
+
+		;If instances of this result can be uniquely identified by one of its member variables, the name of said variable should be set here.
+		;It is used to store the usage frequency and map it to instances of the result classes.
+		ResultIndexingKey := "Path"
+
+		;A result can define its own footer text which is visible when the result is selected
+		FooterText := ""
+
+		;These two properties control whether this result can be assigned to Accessor Program buttons or Accessor FastFolder buttons.
+		IsFile := false
+		IsFolder := false
 	}
 	
 	__New()
 	{
 	}
+	
 	ShowSettings(Settings, GUI, PluginGUI)
 	{
 	}
@@ -2306,16 +2323,16 @@ Class CAccessorPlugin
 	
 	OnGUICreate(Accessor)
 	{
-
 	}
+	
 	OnOpen(Accessor)
 	{
 	}
-
+	
 	OnClose(Accessor)
 	{
 	}
-
+	
 	OnExit(Accessor)
 	{
 	}
@@ -2338,9 +2355,6 @@ Class CAccessorPlugin
 		return true
 	}
 
-	;~ OnKeyDown()
-	;~ {
-	;~ }
 	SetupContextMenu(Accessor, ListEntry)
 	{
 	}

@@ -14,6 +14,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 	DllPath := A_ScriptDir "\lib" (A_PtrSize = 8 ? "\x64" : "" ) "\FileSearch.dll"
 	IndexingWorkerThreads := {}
 	FileSystemIndex := {}
+
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "find"
@@ -22,6 +23,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 		UseIcons := true
 		IndexingFrequency := 5 ;Indexing frequency [hours]
 	}
+
 	Class CSearchInAccessorResult extends CAccessorPlugin.CResult
 	{
 		Actions := {DefaultAction : new CAccessor.CAction("Search", "SearchInAccessor", "", false, false, false)}
@@ -31,6 +33,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 		Title := "Show search results in Accessor for:"
 		Detail1 := "File search"
 	}
+
 	Class CMoreResultsResult extends CAccessorPlugin.CResult
 	{
 		Actions := {DefaultAction : CAccessorPlugin.CActions.Cancel}
@@ -40,6 +43,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 		Title := "There were more results which are not shown"
 		Detail1 := "File search"
 	}
+
 	Class CSearchResult extends CAccessorPlugin.CResult
 	{
 		Class CFileActions extends CArray
@@ -55,6 +59,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 				this.Insert(CAccessorPlugin.CActions.ExplorerContextMenu)
 			}
 		}
+
 		Class CExecutableActions extends CArray
 		{
 			DefaultAction := CAccessorPlugin.CActions.Run
@@ -70,6 +75,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 				this.Insert(CAccessorPlugin.CActions.ExplorerContextMenu)
 			}
 		}
+
 		Class CFolderActions extends CArray
 		{
 			DefaultAction := CAccessorPlugin.CActions.OpenExplorer
@@ -82,6 +88,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 				this.Insert(CAccessorPlugin.CActions.SearchDir)
 			}
 		}
+
 		__new(Type)
 		{
 			if(Type = "Folder")
@@ -91,6 +98,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 			else
 				this.Actions := new this.CFileActions()
 		}
+		
 		ResultIndexingKey := "Path"
 		Type := "File Search"
 		Priority := CFileSearchPlugin.Instance.Priority

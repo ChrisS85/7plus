@@ -26,6 +26,10 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		;RefreshOnStartup := true
 		BasePriority := 0.7
 	}
+
+	/*
+	represents a path which is included in the indexing of this plugin
+	*/
 	Class CIndexingPath
 	{
 		Path := ""
@@ -34,6 +38,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		UpdateOnStart := true
 		UpdateOnOpen := false
 		Exclude := "setup,install,uninst,remove"
+
 		Load(json)
 		{
 			if(json.HasKey("Path"))
@@ -54,6 +59,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 				}
 			}
 		}
+
 		Write(json)
 		{
 			jsonPath := {}
@@ -72,6 +78,10 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			json.Insert(jsonPath)
 		}
 	}
+
+	/*
+	Represents an indexed file for the Program Launcher plugin.
+	*/
 	Class CIndexedFile
 	{
 		args := ""
@@ -79,6 +89,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		Command := ""
 		ResolvedName := ""
 		Filename := ""
+
 		Load(json)
 		{
 			if(json.HasKey("Command"))
@@ -92,6 +103,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 				this.ResolvedName := Command
 			}
 		}
+
 		Write(json)
 		{
 			jsonFile := {}
@@ -101,6 +113,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			json.Insert(jsonFile)
 		}
 	}
+
 	Class CResult extends CAccessorPlugin.CResult
 	{
 		Class CActions extends CArray
@@ -141,20 +154,24 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			this.Actions := new this.CActions(BasePath)
 		}
 	}
+
 	;result for open with actions
 	Class COpenWithResult extends CAccessorPlugin.CResult
 	{
+		Type := "Program Launcher"
+		ResultIndexingKey := "Path" ;By using the same index for normal and OpenWith results the weighting can be shared
+
 		Class CActions extends CArray
 		{
 			DefaultAction := new CAccessor.CAction("Open With", "OpenWith")
 		}
-		Type := "Program Launcher"
-		ResultIndexingKey := "Path" ;By using the same index for normal and OpenWith results the weighting can be shared
+		
 		__new()
 		{
 			this.Actions := new this.CActions()
 		}
 	}
+
 	Init()
 	{
 		this.ReadCache()
@@ -198,6 +215,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			GUI.btnDeletePath.Enabled := false
 		}
 	}
+
 	SaveSettings(PluginSettings, GUI, PluginGUI)
 	{
 		this.Paths := Array()
@@ -211,6 +229,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		this.RefreshCache()
 		this.Remove("SettingsWindow")
 	}
+
 	Settings_PathSelectionChanged(Sender, Row)
 	{
 		if(this.SettingsWindow.GUI.ListBox.SelectedItem)
@@ -224,6 +243,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			this.SettingsWindow.GUI.btnEdit.Enabled := false
 		}
 	}
+
 	Settings_AddPath(Sender)
 	{
 		fd := new CFolderDialog()
@@ -237,6 +257,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			PathEditorWindow.Show()
 		}
 	}
+
 	Settings_Edit(Params*)
 	{
 		if(this.SettingsWindow.GUI.ListBox.SelectedItem)
@@ -246,6 +267,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			PathEditorWindow.Show()
 		}
 	}
+
 	IndexPath_OnClose(Sender)
 	{
 		this.SettingsWindow.GUI.Enabled := true
@@ -263,6 +285,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			}
 		}
 	}
+
 	Settings_DeletePath(Sender)
 	{
 		if(this.SettingsWindow.GUI.ListBox.SelectedItem)
@@ -271,6 +294,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 			this.SettingsWindow.GUI.ListBox.Items.Delete(this.SettingsWindow.GUI.ListBox.SelectedIndex)
 		}
 	}
+
 	Settings_RefreshCache(Sender)
 	{
 		this.RefreshCache()
@@ -280,22 +304,31 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 	{
 		return this.Settings.OpenWithKeyword && InStr(Filter, this.Settings.OpenWithKeyword " ") = 1
 	}
+
 	GetDisplayStrings(ListEntry, ByRef Title, ByRef Path, ByRef Detail1, ByRef Detail2)
 	{
 		Detail1 := "Program"
 	}
+
 	OnOpen(Accessor)
 	{
 		for index, IndexingPath in this.Paths
 			if(IndexingPath.UpdateOnOpen)
 				this.RefreshCache(IndexingPath)
 	}
+
 	OnExit(Accessor)
 	{
 		for index, ListEntry in this.List
 			DestroyIcon(this.List.hIcon)
 		this.WriteCache()
 	}
+
+	GetFooterText()
+	{
+		return "If a file is not found by this plugin you can add it by executing it through File Search/System plugins."
+	}
+	
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		Results := Array()
@@ -367,6 +400,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		Command := StringReplace(Action.Command, "${File}", ListEntry.Path)
 		RunAsUser(Command)
 	}
+
 	;Open a file with a specific program
 	OpenWith(Accessor, ListEntry, Action)
 	{
@@ -606,6 +640,7 @@ Class CProgramLauncherPathEditorWindow extends CGUI
 	btnBrowse := this.AddControl("Button", "btnBrowse", "x+10 yp-2 w60", "Browse")
 	btnOK := this.AddControl("BUtton", "btnOK", "xs+350 y+15 w80 Default", "&OK")
 	btnCancel := this.AddControl("BUtton", "btnCancel", "x+10 yp+0 w80", "&Cancel")
+
 	__new(IndexPathObject, Temporary)
 	{
 		this.Temporary := Temporary
@@ -628,6 +663,7 @@ Class CProgramLauncherPathEditorWindow extends CGUI
 		this.listActions.ModifyCol(2, "AutoHdr")
 		this.listActions_SelectionChanged()
 	}
+
 	btnOK_Click()
 	{
 		IndexPathObject := new CProgramLauncherPlugin.CIndexingPath()
@@ -675,10 +711,12 @@ Class CProgramLauncherPathEditorWindow extends CGUI
 		this.Result := IndexPathObject
 		this.Close()
 	}
+
 	btnCancel_Click()
 	{
 		this.Close()
 	}
+
 	btnPath_Click()
 	{
 		fd := new CFolderDialog()
@@ -687,6 +725,7 @@ Class CProgramLauncherPathEditorWindow extends CGUI
 		if(fd.Show())
 			this.editPath.Text := fd.Folder
 	}
+
 	btnBrowse_Click()
 	{
 		fd := new CFolderDialog()
@@ -695,6 +734,7 @@ Class CProgramLauncherPathEditorWindow extends CGUI
 		if(fd.Show())
 			this.editCommand.Text := fd.Folder
 	}
+
 	btnAddAction_Click()
 	{
 		found := false
@@ -733,11 +773,13 @@ Class CProgramLauncherPathEditorWindow extends CGUI
 			}
 		}
 	}
+
 	btnDeleteAction_Click()
 	{
 		if(this.listActions.SelectedItems.MaxIndex() = 1)
 			this.listActions.Items.Delete(this.listActions.SelectedIndex)
 	}
+
 	btnMoveActionUp_Click()
 	{
 		if(this.listActions.SelectedIndex > 1)
@@ -750,6 +792,7 @@ Class CProgramLauncherPathEditorWindow extends CGUI
 			this.listActions.Items[this.listActions.SelectedIndex - 1][2] := Command
 		}
 	}
+
 	btnMoveActionDown_Click()
 	{
 		if(this.listActions.SelectedIndex && this.listActions.SelectedIndex < this.listActions.Items.MaxIndex())
@@ -762,6 +805,7 @@ Class CProgramLauncherPathEditorWindow extends CGUI
 			this.listActions.Items[this.listActions.SelectedIndex + 1][2] := Command
 		}
 	}
+
 	listActions_SelectionChanged()
 	{
 		if(this.listActions.SelectedItems.MaxIndex() = 1)
@@ -785,11 +829,13 @@ Class CProgramLauncherPathEditorWindow extends CGUI
 			this.editCommand.Text := ""
 		}
 	}
+
 	editAction_TextChanged()
 	{
 		if(this.listActions.SelectedItems.MaxIndex() = 1)
 			this.listActions.SelectedItem.Text := this.editAction.Text
 	}
+
 	editCommand_TextChanged()
 	{
 		if(this.listActions.SelectedItems.MaxIndex() = 1)
