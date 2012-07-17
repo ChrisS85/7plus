@@ -1015,10 +1015,10 @@ Class CAccessor
 		}
 
 		;Calculate the weighting of the individual results as the average value of the single weighting indicators
-		for index, ListEntry in this.List
+		for index2, ListEntry in this.List
 		{
 			Plugin := this.Plugins[ListEntry.Type]
-			outputdebug % Time ", " ListEntry.AllowDelayedExecution
+			outputdebug % Time ", " ListEntry.Actions.DefaultAction.AllowDelayedExecution
 			if(Time > 0)
 				ListEntry.Time := Time
 			ListEntry.SortOrder := ListEntry.Priority + (ListEntry.MatchQuality - this.Settings.FuzzySearchThreshold) / (1 - this.Settings.FuzzySearchThreshold) + (ListEntry.ResultIndexingKey && this.ResultUsageTracker.Plugins[ListEntry.Type].HasKey(ListEntry[ListEntry.ResultIndexingKey]) ? this.ResultUsageTracker.Plugins[ListEntry.Type][ListEntry[ListEntry.ResultIndexingKey]] : 0)
@@ -1271,11 +1271,11 @@ Class CAccessor
 				Menu, AccessorContextMenu, Add, % ListEntry.Actions.DefaultAction.Name, AccessorContextMenu
 				Menu, AccessorContextMenu, Default, % ListEntry.Actions.DefaultAction.Name
 			}
-			for key, action in ListEntry.Actions
-				if((!action.Condition || action.Condition.(ListEntry)) && ((ListEntry.Time > 0 && action.AllowDelayedExecution) || !ListEntry.Time))
+			for key, Action in ListEntry.Actions
+				if((!Action.Condition || Action.Condition.(ListEntry)) && ((ListEntry.Time > 0 && Action.AllowDelayedExecution) || !ListEntry.Time))
 				{
 					entries := true
-					Menu, AccessorContextMenu, Add, % action.Name, AccessorContextMenu
+					Menu, AccessorContextMenu, Add, % Action.Name, AccessorContextMenu
 				}
 			if(ListEntry.IsFolder)
 			{
@@ -2306,7 +2306,7 @@ Class CAccessorPlugin
 	__New()
 	{
 	}
-	
+
 	ShowSettings(Settings, GUI, PluginGUI)
 	{
 	}
@@ -2324,15 +2324,15 @@ Class CAccessorPlugin
 	OnGUICreate(Accessor)
 	{
 	}
-	
+
 	OnOpen(Accessor)
 	{
 	}
-	
+
 	OnClose(Accessor)
 	{
 	}
-	
+
 	OnExit(Accessor)
 	{
 	}
@@ -2400,9 +2400,9 @@ keyboard hotkeys in settings window activate when other page is visible
 icon in context menu
 uninstall plugin not working (x64) -- Or is it?
 random accessor crashes, maybe related to uninstall plugin -- not occuring anymore??
+Improve URL escaping
 
 find in filenames can easily be crashed with subdirectory option
-windows minimize animation setting in slide windows settings
 explorer tabs in slide windows
 subevent controls not working properly
 sliding accessor window breaks mouse hover effects
