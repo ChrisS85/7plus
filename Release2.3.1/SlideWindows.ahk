@@ -133,7 +133,7 @@ Class CSlideWindow
 	;This function slides a window outside the screen, hiding it
 	SlideOut()
 	{
-		global PreviousWindow
+		global PreviousWindow, SlideWindows
 		outputdebug Slide out
 		DetectHiddenWindows, On
 		;Disable Minimize/Restore animation
@@ -156,7 +156,6 @@ Class CSlideWindow
 		VirtualRight += VirtualLeft
 		VirtualBottom += VirtualTop
 		OffsetFromScreen := 10
-		WinActivate, % "ahk_id " PreviousWindow
 		;Calculate target position
 		this.Position := WinGetPos("ahk_id " this.hwnd)
 		Loop % this.ChildWindows.MaxIndex()
@@ -218,6 +217,18 @@ Class CSlideWindow
 			this.SlideOutLen := this.Position.w
 		}
 		this.Move()
+
+		WinGet, win, List
+		found := false
+		Loop, %win%
+			if (win%A_Index% = this.hwnd)
+				found := true
+			else if(found && !SlideWindows.GetByWindowHandle(win%A_Index%))
+			{
+				found := win%A_Index%
+				break
+			}
+		WinActivate, % "ahk_id " found
 		if(!Length := this.ChildWindows.MaxIndex())
 			Length := 0
 		;Loop % Length + 1 ;hide/minimize all child windows and main window
