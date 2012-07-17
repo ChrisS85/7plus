@@ -585,7 +585,7 @@ Class CAccessor
 				Button := new this.CQueryButton()
 				Button.Text := "Weather"
 				Button.Query := "weather "
-				Button.Icon := A_ScriptDir "\128.png"
+				Button.Icon := A_ScriptDir "\Icons\weather.png"
 				SavedSettings.QueryButtons.Insert(Button)
 				Button := new this.CQueryButton()
 				Button.Text := "Uninstall"
@@ -2399,7 +2399,7 @@ Documentation of new Accessor features
 keyboard hotkeys in settings window activate when other page is visible
 icon in context menu
 uninstall plugin not working (x64) -- Or is it?
-random accessor crashes, maybe related to uninstall plugin -- not occuring anymore??
+random accessor crashes, maybe related to uninstall plugin
 Improve URL escaping
 
 find in filenames can easily be crashed with subdirectory option
