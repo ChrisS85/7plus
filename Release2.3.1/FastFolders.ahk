@@ -68,8 +68,6 @@ AddAllButtons(ToFolderBand, ToPlacesBar)
 	{
 		;Explorer folder band bar buttons are added in a separate process since this takes a few seconds
 		WorkerThread := new CWorkerThread("AddButtonsToFolderBandBar", 0, 0, 1)
-		;WorkerThread.OnStop.Handler := new Delegate(this, "OnStop")
-		;WorkerThread.OnFinish.Handler := new Delegate(this, "OnFinish")
 		WorkerThread.Start(FastFolders)
 	}
 }

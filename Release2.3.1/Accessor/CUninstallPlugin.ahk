@@ -29,9 +29,9 @@ Class CUninstallPlugin extends CAccessorPlugin
 			__new()
 			{
 				this.Insert(new CAccessor.CAction("Remove entry", "RemoveUninstallEntry", "", false, false))
-				this.Insert(new CAccessor.CAction("Open installation path in explorer`tCTRL + E", "OpenExplorer", new Delegate(this, "HasInstallLocation"), true, false))
-				this.Insert(new CAccessor.CAction("Open installation path in CMD", "OpenCMD", new Delegate(this, "HasInstallLocation"), true, false))
-				this.Insert(new CAccessor.CAction("Copy installation path`tCTRL + C", "Copy", new Delegate(this, "HasInstallLocation"), false, false))
+				this.Insert(new CAccessor.CAction("Open installation path in explorer`tCTRL + E", "OpenExplorer", new Delegate(CUninstallPlugin.CResult.CActions, "HasInstallLocation"), true, false))
+				this.Insert(new CAccessor.CAction("Open installation path in CMD", "OpenCMD", new Delegate(CUninstallPlugin.CResult.CActions, "HasInstallLocation"), true, false))
+				this.Insert(new CAccessor.CAction("Copy installation path`tCTRL + C", "Copy", new Delegate(CUninstallPlugin.CResult.CActions, "HasInstallLocation"), false, false))
 			}
 			HasInstallLocation(ListEntry)
 			{

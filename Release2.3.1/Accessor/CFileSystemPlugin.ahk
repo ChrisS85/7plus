@@ -52,7 +52,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		}
 		Class CFolderActions extends CArray
 		{
-			DefaultAction := new CAccessor.CAction("Enter folder", "EnterDirectory", new Delegate(CFileSystemPlugin.Instance, "IsInDifferentPath"), false, false, false)
+			DefaultAction := new CAccessor.CAction("Enter folder", "EnterDirectory", Func("FileSystemPlugin_IsInDifferentPath"), false, false, false)
 			__new()
 			{
 				this.Insert(CAccessorPlugin.CActions.OpenExplorer)
@@ -275,15 +275,18 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		this.AutocompletionString := ""
 		return true
 	}
-	IsInDifferentPath(ListEntry)
-	{
-		return this.Path != ListEntry.Path
-	}
 	GetFooterText()
 	{
 		return "Files launched using the file system plugin can afterwards be opened by their filename without the path!"
 	}
 }
+
+;Not included in class to avoid circular references
+FileSystemPlugin_IsInDifferentPath(ListEntry)
+{
+	return CFileSystemPlugin.Instance.Path != ListEntry.Path
+}
+
 #if (CAccessor.Instance.GUI && CAccessor.Instance.SingleContext = "File System")
 Tab::
 CFileSystemPlugin.Instance.OnTab()

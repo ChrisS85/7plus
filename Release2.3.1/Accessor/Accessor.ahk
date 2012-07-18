@@ -799,14 +799,14 @@ Class CAccessor
 	Close()
 	{
 		;Needs to be delayed because it is called from within a message handler which is critical.
-		SetTimerF(new Delegate(this.GUI, "Close"), -10)
+		SetTimer, AccessorGUIClose, -10
 	}
 
 	;Sets the filter and tries to wait (for max. 5 seconds) until results are there
 	SetFilter(Text, SelectionStart = -1, SelectionEnd = -1)
 	{
 		this.GUI.SetFilter(Text, SelectionStart, SelectionEnd)
-		SetTimerF(this.WaitTimer := new Delegate(this, "WaitForRefresh"), -100)
+		SetTimer, AccessorWaitForRefresh, -100
 	}
 	WaitForRefresh()
 	{
@@ -814,13 +814,10 @@ Class CAccessor
 		if(this.IsRefreshing && count < 50)
 		{
 			count++
-			SetTimerF(this.WaitTimer, -100)
+			SetTimer, AccessorWaitForRefresh, -100
 		}
 		else
-		{
 			count := 0
-			this.Remove(this.WaitTimer)
-		}
 	}
 	OnFilterChanged(Filter)
 	{
@@ -1018,7 +1015,6 @@ Class CAccessor
 		for index2, ListEntry in this.List
 		{
 			Plugin := this.Plugins[ListEntry.Type]
-			outputdebug % Time ", " ListEntry.Actions.DefaultAction.AllowDelayedExecution
 			if(Time > 0)
 				ListEntry.Time := Time
 			ListEntry.SortOrder := ListEntry.Priority + (ListEntry.MatchQuality - this.Settings.FuzzySearchThreshold) / (1 - this.Settings.FuzzySearchThreshold) + (ListEntry.ResultIndexingKey && this.ResultUsageTracker.Plugins[ListEntry.Type].HasKey(ListEntry[ListEntry.ResultIndexingKey]) ? this.ResultUsageTracker.Plugins[ListEntry.Type][ListEntry[ListEntry.ResultIndexingKey]] : 0)
@@ -1044,7 +1040,7 @@ Class CAccessor
 			;outputdebug UpdateGUIWithResults() Pre List Clear
 			this.GUI.ListView.Items.Clear()
 			;outputdebug UpdateGUIWithResults() Pre Image Loop
-			this.GUI.ListView.ImageListManager.Clear()
+			this.GUI.ListView._.ImageListManager.Clear()
 		}
 
 		ListViewCount := this.GUI.ListView.Items.MaxIndex()
@@ -1388,6 +1384,12 @@ Class CAccessor
 		this.SetFilter(CFileSearchPlugin.Instance.Settings.Keyword "  in " ListEntry.Path, strlen(CFileSearchPlugin.Instance.Settings.Keyword) + 1, strlen(CFileSearchPlugin.Instance.Settings.Keyword) + 1)
 	}
 }
+AccessorGUIClose:
+CAccessor.Instance.GUI.Close()
+return
+AccessorWaitForRefresh:
+CAccessor.Instance.WaitForRefresh()
+return
 #F1::
 #F2::
 #F3::
@@ -1539,7 +1541,6 @@ Class CAccessorGUI extends CGUI
 		this.ListView.Items.Clear()
 		this.EditControl.Text := ""
 		this.lnkFooter.Text := ""
-		this.DrawActionText()
 		this.PreviousMouseOverButton := ""
 		this.PreviousMouseOverAccessorButton := ""
 		this.ActionText := ""
@@ -1630,6 +1631,7 @@ Class CAccessorGUI extends CGUI
 		Gdip_DisposeImage(pBitmap)
 		this.ExecuteButton.SetImageFromHBitmap(hBitmap)
 		DeleteObject(hBitmap)
+		Gdip_DeleteGraphics(pGraphics)
 	}
 	DrawCloseButton(MouseOver = false)
 	{
@@ -1653,6 +1655,7 @@ Class CAccessorGUI extends CGUI
 		Gdip_DisposeImage(pBitmap)
 		this.CloseButton.SetImageFromHBitmap(hBitmap)
 		DeleteObject(hBitmap)
+		Gdip_DeleteGraphics(pGraphics)
 	}
 	DrawActionText()
 	{
@@ -1675,6 +1678,7 @@ Class CAccessorGUI extends CGUI
 		Gdip_DisposeImage(pBitmap)
 		this.InputFieldEnd.SetImageFromHBitmap(hBitmap)
 		DeleteObject(hBitmap)
+		Gdip_DeleteGraphics(pGraphics)
 	}
 	DrawBackground()
 	{
@@ -1693,6 +1697,7 @@ Class CAccessorGUI extends CGUI
 		Gdip_DisposeImage(pFake)
 		this.BackgroundFake.SetImageFromHBitmap(hBitmap)
 		DeleteObject(hBitmap)
+		Gdip_DeleteGraphics(pGraphics)
 	}
 	DrawFooter()
 	{

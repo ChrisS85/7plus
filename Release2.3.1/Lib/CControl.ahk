@@ -569,6 +569,24 @@ Class CControl ;Never created directly
 			if(Name = "LargeIcons")
 				return this._.LargeIcons
 		}
+		Clear()
+		{
+			SmallIL_ID := this._.IconList.SmallIL_ID
+			LargeIL_ID := this._.IconList.LargeIL_ID
+			this._.IconList := {}
+			if(SmallIL_ID)
+			{
+				this._.IconList.SmallIL_ID := IL_Create(5, 5, 1)
+				old := LV_SetImageList(this._.IconList.SmallIL_ID, 0)
+				IL_Destroy(old)
+			}
+			if(LargeIL_ID)
+			{
+				this._.IconList.LargeIL_ID := IL_Create(5, 5, 0)
+				old := LV_SetImageList(this._.IconList.LargeIL_ID, this._.LargeIcons = 1)
+				IL_Destroy(old)
+			}
+		}
 		SetIcon(ID, PathOrhBitmap, IconNumber, SetIcon = true)
 		{
 			GUI := CGUI.GUIList[this._.GUINum]
@@ -582,10 +600,10 @@ Class CControl ;Never created directly
 			{
 				if(Control.Type = "ListView") ;Listview also has large icons
 				{
-					this._.IconList.LargeIL_ID := IL_Create(5,5,1)
+					this._.IconList.LargeIL_ID := IL_Create(5, 5, 1)
 					LV_SetImageList(this._.IconList.LargeIL_ID, this._.LargeIcons = 1)
 				}
-				this._.IconList.SmallIL_ID := IL_Create(5,5,0)
+				this._.IconList.SmallIL_ID := IL_Create(5, 5, 0)
 				if(Control.Type = "ListView" && !this._.LargeIcons)
 					LV_SetImageList(this._.IconList.SmallIL_ID)
 				else if(Control.Type = "TreeView")
@@ -599,7 +617,8 @@ Class CControl ;Never created directly
 			}
 			if(FileExist(PathorhBitmap))
 			{
-				Loop % this._.IconList.MaxIndex() ;IDs and paths and whatnot are identical in both lists so one is enough here
+				;Icon IDs are identical in both lists so it's enough to look it up in one list
+				Loop % this._.IconList.MaxIndex()
 					if(this._.IconList[A_Index].Path = PathorhBitmap && this._.IconList[A_Index].IconNumber = IconNumber)
 					{
 						Icon := this._.IconList[A_Index]
@@ -616,7 +635,8 @@ Class CControl ;Never created directly
 			}
 			else
 			{
-				Loop % this._.IconList.MaxIndex() ;IDs and paths and whatnot are identical in both lists so one is enough here
+				;Icon IDs are identical in both lists so it's enough to look it up in one list
+				Loop % this._.IconList.MaxIndex()
 					if(this._.IconList[A_Index].Path = PathorhBitmap)
 					{
 						Icon := this._.IconList[A_Index]
@@ -624,9 +644,14 @@ Class CControl ;Never created directly
 					}
 				if(!Icon)
 				{
-					IID := DllCall("ImageList_ReplaceIcon", "Ptr", this._.IconList.SmallIL_ID, Int, -1, "Ptr", PathorhBitmap) + 1
-					if(Control.Type = "ListView")
-						IID := DllCall("ImageList_ReplaceIcon", "Ptr", this._.IconList.LargeIL_ID, Int, -1, "Ptr", PathorhBitmap) + 1
+					if(PathOrhBitmap)
+					{
+						IID := DllCall("ImageList_ReplaceIcon", "Ptr", this._.IconList.SmallIL_ID, Int, -1, "Ptr", PathorhBitmap) + 1
+						if(Control.Type = "ListView")
+							IID := DllCall("ImageList_ReplaceIcon", "Ptr", this._.IconList.LargeIL_ID, Int, -1, "Ptr", PathorhBitmap) + 1
+					}
+					else
+						IID := -1
 					this._.IconList.Insert(Icon := {Path : PathorhBitmap, IconNumber : 1, ID : IID})
 				}
 			}

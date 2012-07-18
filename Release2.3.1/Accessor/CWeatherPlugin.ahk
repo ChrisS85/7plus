@@ -105,7 +105,6 @@ Class CWeatherPlugin extends CAccessorPlugin
 	
 	OnFilterChanged(ListEntry, Filter, LastFilter)
 	{
-		;SetTimerF(new Delegate(this, "QueryWeatherResult"), -100)
 		SetTimer, QueryWeatherResult, -100
 		return false
 	}

@@ -21,7 +21,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 		KeywordOnly := true
 		MinChars := 3
 		UseIcons := true
-		IndexingFrequency := 5 ;Indexing frequency [hours]
+		IndexingFrequency := 24 ;Indexing frequency [hours]
 	}
 
 	Class CSearchInAccessorResult extends CAccessorPlugin.CResult

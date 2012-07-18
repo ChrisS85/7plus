@@ -84,7 +84,6 @@ Class CGooglePlugin extends CAccessorPlugin
 
 	OnFilterChanged(ListEntry, Filter, LastFilter)
 	{
-		;SetTimerF(new Delegate(this, "QueryWeatherResult"), -100)
 		SetTimer, QueryGoogleResult, -100
 		return false
 	}
