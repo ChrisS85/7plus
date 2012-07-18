@@ -23,6 +23,9 @@ Class CURLPlugin extends CAccessorPlugin
 
 	AllowDelayedExecution := false
 	
+	Column1Text := "URL"
+	Column2Text := "Action"
+	
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "URL"

@@ -9,6 +9,9 @@ Class CKeywordPlugin extends CAccessorPlugin
 	
 	AllowDelayedExecution := false
 
+	Column1Text := "New Keyword"
+	Column2Text := "New Command"
+	
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "Learn as"

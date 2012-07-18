@@ -7,6 +7,9 @@ Class CRegistryPlugin extends CAccessorPlugin
 	
 	AllowDelayedExecution := false
 	
+	Column1Text := "Registry Key"
+	Column2Text := "Action"
+	
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "reg"

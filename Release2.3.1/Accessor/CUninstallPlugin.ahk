@@ -13,6 +13,8 @@ Class CUninstallPlugin extends CAccessorPlugin
 
 	AllowDelayedExecution := false
 	
+	Column2Text := "Install path"
+
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "Uninstall"

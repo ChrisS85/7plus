@@ -11,6 +11,8 @@ Class CClipboardPlugin extends CAccessorPlugin
 	
 	Icon := ExtractIcon("shell32.dll", 261, 64)
 
+	Column2Text := "Content"
+	
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "clip"

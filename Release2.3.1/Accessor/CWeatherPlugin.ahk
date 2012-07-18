@@ -10,6 +10,9 @@ Class CWeatherPlugin extends CAccessorPlugin
 
 	AllowDelayedExecution := false
 	
+	Column1Text := "Weather Prediction"
+	Column2Text := "Location"
+	
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "Weather"

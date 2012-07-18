@@ -9,6 +9,9 @@ Class CCalculatorPlugin extends CAccessorPlugin
 	List := Array()
 
 	AllowDelayedExecution := false
+
+	Column1Text := "Calculation"
+	Column2Text := "URL"
 	
 	Class CSettings extends CAccessorPlugin.CSettings
 	{

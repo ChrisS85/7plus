@@ -576,13 +576,13 @@ Class CControl ;Never created directly
 			this._.IconList := {}
 			if(SmallIL_ID)
 			{
-				this._.IconList.SmallIL_ID := IL_Create(5, 5, 1)
+				this._.IconList.SmallIL_ID := IL_Create(5, 5, 0)
 				old := LV_SetImageList(this._.IconList.SmallIL_ID, 0)
 				IL_Destroy(old)
 			}
 			if(LargeIL_ID)
 			{
-				this._.IconList.LargeIL_ID := IL_Create(5, 5, 0)
+				this._.IconList.LargeIL_ID := IL_Create(5, 5, 1)
 				old := LV_SetImageList(this._.IconList.LargeIL_ID, this._.LargeIcons = 1)
 				IL_Destroy(old)
 			}

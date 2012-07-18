@@ -13,6 +13,9 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 
 	AllowDelayedExecution := false
 	
+	Column1Text := "Window Title"
+	Column2Text := "Executable Name"
+
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "switch"
@@ -74,7 +77,7 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
-		if(!Filter && !this.Settings.ShowWithEmptyQuery)
+		if(!Filter && !KeywordSet && !this.Settings.ShowWithEmptyQuery)
 			return
 		Results := Array()
 		FuzzyList := Array()

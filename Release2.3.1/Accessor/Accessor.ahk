@@ -823,7 +823,7 @@ Class CAccessor
 	{
 		if(Filter = this.Filter)
 			return
-		outputdebug filter changed to %filter%
+		outputdebug filter changed to "%filter%"
 		this.Filter := Filter
 
 		ListEntry := this.List[this.GUI.ListView.SelectedIndex]
@@ -980,12 +980,14 @@ Class CAccessor
 	{
 		;outputdebug FetchResults() start
 		this.List := Array()
+		
 		;Find out if we are in a single plugin context, and add only those items
 		for index, Plugin in this.Plugins
 		{
 			if(Plugin.Settings.Enabled && ((Time > 0 && Plugin.AllowDelayedExecution) || !Time) && SingleContext := ((Plugin.Settings.Keyword && Filter && KeywordSet := InStr(Filter, Plugin.Settings.Keyword " ") = 1) || Plugin.IsInSinglePluginContext(Filter, LastFilter)))
 			{
 				this.SingleContext := Plugin.Type
+				outputdebug % "single context " this.SingleContext
 				Filter := strTrimLeft(Filter, Plugin.Settings.Keyword " ")
 				Result := Plugin.RefreshList(this, Filter, LastFilter, KeywordSet, Parameters)
 				if(Result)
@@ -1099,8 +1101,8 @@ Class CAccessor
 		if(this.GUI.ListView.SelectedItems.MaxIndex() != 1)
 			this.GUI.ListView.SelectedIndex := 1
 
-		this.GUI.ListView.ModifyCol(1, Round(this.GUI.ListView.Width * 3 / 8)) ; resize title column
-		this.GUI.ListView.ModifyCol(2, Round(this.GUI.ListView.Width * 3.3 / 8)) ; resize path column
+		this.GUI.ListView.ModifyCol(1, Round(this.GUI.ListView.Width * 3 / 8), this.SingleContext && this.Plugins[this.SingleContext].Column1Text ? this.Plugins[this.SingleContext].Column1Text : "Title") ; resize title column
+		this.GUI.ListView.ModifyCol(2, Round(this.GUI.ListView.Width * 3.3 / 8), this.SingleContext && this.Plugins[this.SingleContext].Column2Text ? this.Plugins[this.SingleContext].Column2Text : "Path") ; resize path column
 		this.GUI.ListView.ModifyCol(3, 124) ; resize detail1 column
 
 		this.GUI.ListView.Redraw := true

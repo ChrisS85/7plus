@@ -10,6 +10,8 @@ Class CGooglePlugin extends CAccessorPlugin
 	
 	AllowDelayedExecution := false
 	
+	Column2Text := "URL"
+	
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "g"
