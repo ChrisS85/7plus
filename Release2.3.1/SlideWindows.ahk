@@ -67,9 +67,9 @@ Class CSlideWindow
 		{
 			hwnd := A_Index = 1 ? this.hwnd : this.ChildWindows[A_Index - 1].hwnd
 			WinSet, AlwaysOnTop, On , ahk_id %hwnd%
-			;if(Settings.Windows.SlideWindows.HideSlideWindows)
-			;	if(A_Index = 1 || this.ChildWindows[A_Index - 1].WasVisible)
-			;		WinShow ahk_id %hwnd%
+			if(Settings.Windows.SlideWindows.HideSlideWindows)
+				if(A_Index = 1 || this.ChildWindows[A_Index - 1].WasVisible)
+					WinShow ahk_id %hwnd%
 		}
 		WinActivate % "ahk_id " this.Active
 		
@@ -231,14 +231,14 @@ Class CSlideWindow
 		WinActivate, % "ahk_id " found
 		if(!Length := this.ChildWindows.MaxIndex())
 			Length := 0
-		;Loop % Length + 1 ;hide/minimize all child windows and main window
-		;{
-		;	hwnd := A_Index = 1 ? this.hwnd : this.ChildWindows[A_Index - 1].hwnd
-		;	if(Settings.Windows.SlideWindows.HideSlideWindows)
-		;		WinHide, ahk_id %hwnd%
-		;	else
-		;		PostMessage, 0x112, 0xF020,,, ahk_id %hwnd% ;Winminimize, but apparently more reliable
-		;}
+		;hide/minimize all child windows and main wind
+		if(Settings.Windows.SlideWindows.HideSlideWindows)
+			Loop % Length + 1
+			{
+				outputdebug hide
+				hwnd := A_Index = 1 ? this.hwnd : this.ChildWindows[A_Index - 1].hwnd
+				WinHide, ahk_id %hwnd%
+			}
 		;~ WaitForEvent("SlideWindowResize", 1000)
 		;outputdebug post minimize
 		this.SlideState := SlideStates.HIDDEN
