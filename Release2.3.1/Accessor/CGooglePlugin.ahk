@@ -104,17 +104,11 @@ QueryGoogleResult()
 	outputdebug do it
 	Filter := strTrim(CAccessor.Instance.FilterWithoutTimer, CGooglePlugin.Instance.Settings.Keyword " ")
 	
-	URL := uriEncode("http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=") uriEncode(Filter, 1) "&rsz=8&key=ABQIAAAA7YzZ21dHSNKA2c0eu0LVKRTn4CuOUlhiyluSCHXJ1XXcqBr54RRnE69I0b16vHAVgBri6LxRQYtELw"
+	URL := "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=" uriEncode(Filter) "&rsz=8&key=ABQIAAAA7YzZ21dHSNKA2c0eu0LVKRTn4CuOUlhiyluSCHXJ1XXcqBr54RRnE69I0b16vHAVgBri6LxRQYtELw"
 	Headers := "Referer: http://code.google.com/p/7plus/"
 	;~ https://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=Paris%20Hilton&key=INSERT-YOUR-KEY
 	HTTPRequest(URL, GoogleQuery, Headers, "")
-	/*
-	FileDelete, %A_Temp%\7plus\GoogleQuery.htm
-	URLDownloadToFile, %URL%, %A_Temp%\7plus\GoogleQuery.htm
-	FileEncoding, UTF-8
-	FileRead, GoogleQuery, %A_Temp%\7plus\GoogleQuery.htm
-	FileEncoding
-	*/
+	
 	CGooglePlugin.Instance.List := Array()
 	
 	pos1 := 0, pos2 := 0, pos3 := 0

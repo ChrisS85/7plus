@@ -1699,21 +1699,25 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("Text", "txtSlideWindows", "xs+42 ys+20 w269 h17", "WIN + SHIFT + Arrow keys: Slide Window function")
 		Page.Controls.txtSlideWindows.ToolTip := "A Slide Window is moved off screen and will not be shown until you activate it`n through task bar / ALT + TAB or move the mouse to the border where it was hidden.`nIt will then slide into the screen, and slide out again when the mouse leaves the window`nor when another window gets activated. Deactivate this mode by moving the window`nor pressing WIN+SHIFT+Arrow key in another direction."
 		Page.AddControl("CheckBox", "chkHideSlideWindows", "xs+59 ys+45 w272 h17", "Hide Slide Windows in taskbar and from ALT + TAB")
-		Page.AddControl("CheckBox", "chkLimitToOnePerSide", "xs+59 ys+68 w239 h17", "Allow only one Slide Window per screen side")
-		Page.AddControl("CheckBox", "chkBorderActivationRequiresMouseUp", "xs+59 ys+91 w387 h17", "Require left mouse button to be up to activate slide window at screen border")
+		Page.AddControl("CheckBox", "chkDisableMinimizeAnim", "xs+79 ys+68 w272 h17", "Disable window minimize animation")
+		Page.AddControl("CheckBox", "chkLimitToOnePerSide", "xs+59 ys+91 w239 h17", "Allow only one Slide Window per screen side")
+		Page.AddControl("CheckBox", "chkBorderActivationRequiresMouseUp", "xs+59 ys+114 w387 h17", "Require left mouse button to be up to activate slide window at screen border")
 		Page.Controls.chkBorderActivationRequiresMouseUp.ToolTip := "This feature is used to prevent accidently activating a slide window while dragging with the mouse.`n It's still possible to drag something to the slide window by holding the modifier key which is set below."
-		Page.AddControl("Text", "txtModifierKey", "xs+59 ys+117 w139 h13", "Slide Windows modifier key:")
-		Page.AddControl("DropDownList", "ddlModifierKey", "xs+245 ys+114 w111", "Control|Alt|Shift|Win")
+		Page.AddControl("Text", "txtModifierKey", "xs+59 ys+140 w139 h13", "Slide Windows modifier key:")
+		Page.AddControl("DropDownList", "ddlModifierKey", "xs+245 ys+137 w111", "Control|Alt|Shift|Win")
 		Page.Controls.ddlModifierKey.ToolTip := "If this key is pressed, the mouse may be moved out of the currently active slide window without sliding it out.`n This is useful if the slide window has child windows that don't overlap with the main window.`n If the option above is enabled, it may also be used to drag something into a hidden slide window by moving the mouse to the screen border and holding this key."
-		Page.AddControl("CheckBox", "chkAutoCloseWindowsUpdate", "xs+42 ys+184 w321 h17", "Automatically close Windows Update reboot notification dialog")
+		Page.AddControl("CheckBox", "chkAutoCloseWindowsUpdate", "xs+42 ys+207 w321 h17", "Automatically close Windows Update reboot notification dialog")
 		Page.Controls.chkAutoCloseWindowsUpdate.ToolTip :=  "If you enable this setting you will not be able to open this dialog anymore. You can simply reboot windows though..."
-		Page.AddControl("CheckBox", "chkShowResizeTooltip", "xs+42 ys+161 w225 h17", "Show window size as tooltip while resizing")
+		Page.AddControl("CheckBox", "chkShowResizeTooltip", "xs+42 ys+184 w225 h17", "Show window size as tooltip while resizing")
 		;~ Page.AddControl("Link", "linkUseSlideWindows", "xs+24 ys+23 w13 h13", "?")
 	}
 	InitWindows()
 	{
 		Page := this.Pages.Windows.Tabs[1].Controls
 		Page.chkHideSlideWindows.Checked := Settings.Windows.SlideWindows.HideSlideWindows
+		Page.chkDisableMinimizeAnim.Checked := Page.chkDisableMinimizeAnim.origState := WindowsSettings.GetDisableMinimizeAnim()
+		this.chkHideSlideWindows_CheckedChanged()
+		
 		Page.chkLimitToOnePerSide.Checked := Settings.Windows.SlideWindows.LimitToOnePerSide
 		Page.chkBorderActivationRequiresMouseUp.Checked := Settings.Windows.SlideWindows.chkBorderActivationRequiresMouseUp
 		Page.ddlModifierKey.Text := Settings.Windows.SlideWindows.ModifierKey
@@ -1727,14 +1731,21 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page := this.Pages.Windows.Tabs[1].Controls
 		
 		;Slide Windows need to be notified about changes of its settings
-		oldState := Settings.Windows.SlideWindows.HideSlideWindows
+		State := Settings.Windows.SlideWindows.HideSlideWindows
 		Settings.Windows.SlideWindows.HideSlideWindows := Page.chkHideSlideWindows.Checked
-		if(Settings.Windows.SlideWindows.HideSlideWindows != oldState)
+		if(Settings.Windows.SlideWindows.HideSlideWindows != State)
 			SlideWindows.On_HideSlideWindows_Changed()
 		
-		oldState := Settings.Windows.SlideWindows.LimitToOnePerSide
+		State := Page.chkDisableMinimizeAnim.Checked
+		if(State != Page.chkDisableMinimizeAnim.origState)
+		{
+			WindowsSettings.SetDisableMinimizeAnim(State)
+			Page.chkDisableMinimizeAnim.origState := State
+		}
+
+		State := Settings.Windows.SlideWindows.LimitToOnePerSide
 		Settings.Windows.SlideWindows.LimitToOnePerSide := Page.chkLimitToOnePerSide.Checked
-		if(Settings.Windows.SlideWindows.LimitToOnePerSide != oldState)
+		if(Settings.Windows.SlideWindows.LimitToOnePerSide != State)
 			SlideWindows.On_LimitToOnePerSide_Changed()
 		
 		Settings.Windows.SlideWindows.BorderActivationRequiresMouseUp := Page.chkBorderActivationRequiresMouseUp.Checked
@@ -1747,7 +1758,14 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Settings.Windows.ShowResizeToolTip := Page.chkShowResizeTooltip.Checked
 	}
 	
-	
+	chkHideSlideWindows_CheckedChanged()
+	{
+		Page := this.Pages.Windows.Tabs[1].Controls
+		if(Page.chkHideSlideWindows.Checked)
+			Page.chkDisableMinimizeAnim.Text := "Disable window minimize animation (Recommended)"
+		else
+			Page.chkDisableMinimizeAnim.Text := "Disable window minimize animation"
+	}
 	;WindowsSettings
 	CreateWindowsSettings()
 	{

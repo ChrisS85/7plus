@@ -137,7 +137,7 @@ LoadHotstrings()
 ;Try closing the windows update window if needed on startup since it might already be there.
 AutoCloseWindowsUpdate(WinExist("Windows Update ahk_class #32770"))
 
-ThemedWindows:=DllCall("uxtheme.dll\IsThemeActive") ; On non-themed environments, standard icon is used
+ThemedWindows := DllCall("uxtheme.dll\IsThemeActive") ; On non-themed environments, standard icon is used
 ; if(A_IsCompiled)
 ; {
 	; if(result)
@@ -152,7 +152,11 @@ ThemedWindows:=DllCall("uxtheme.dll\IsThemeActive") ; On non-themed environments
 	else
 		Menu, tray, Icon, %A_ScriptDir%\7+-w.ico,,1
 ; }
+
+CGUI.WindowIcon := ExtractIcon(A_ScriptDir "\7+-w.ico")
+
 Menu, tray, Tip, % "7plus " VersionString(1)
+
 ;Show tray icon when loading is complete
 if(!Settings.Misc.HidetrayIcon)
 	menu, tray, Icon

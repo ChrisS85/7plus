@@ -1,4 +1,4 @@
-Class CCalculatorPlugin extends CAccessorPlugin
+﻿Class CCalculatorPlugin extends CAccessorPlugin
 {
 	;Register this plugin with the Accessor main object
 	static Type := CAccessor.RegisterPlugin("Calculator", CCalculatorPlugin)
@@ -94,19 +94,13 @@ QueryCalcResult()
 	Filter := strTrimLeft(CAccessor.Instance.FilterWithoutTimer, CCalculatorPlugin.Instance.Settings.Keyword)
 	Filter := strTrimLeft(Filter, " ")
 	
-	URL := uriEncode("http://www.google.com/search?q=" Filter)
-	Headers := "Referer: http://code.google.com/p/7plus/"
+	URL := "http://www.google.com/search?q=" uriEncode(Filter)
 	;~ https://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=Paris%20Hilton&key=INSERT-YOUR-KEY
-	HTTPRequest(URL, GoogleQuery, Headers, "")
-	FileDelete, % Settings.ConfigPath "\GoogleQuery.html"
-	FileAppend, %GoogleQuery%, % Settings.ConfigPath "\GoogleQuery.html"
-	/*
-	FileDelete, %A_Temp%\7plus\GoogleQuery.htm
-	URLDownloadToFile, %URL%, %A_Temp%\7plus\GoogleQuery.htm
-	FileEncoding, UTF-8
-	FileRead, GoogleQuery, %A_Temp%\7plus\GoogleQuery.htm
-	FileEncoding
-	*/
+	Headers := "Referer: http://code.google.com/p/7plus/`nUser-Agent: Mozilla/5.0 (Windows NT 6.1; rv:12.0) Gecko/20100101 Firefox/12.0"
+	
+	HTTPRequest(URL, GoogleQuery, Headers, "BINARY")
+	GoogleQuery := StrGet(&GoogleQuery, "utf-8")
+
 	for index, entry in CCalculatorPlugin.Instance.List
 		if(entry.Icon)
 			DestroyIcon(entry.Icon)
@@ -115,15 +109,21 @@ QueryCalcResult()
 	
 	if(InStr(GoogleQuery, "/help/features.html#calculator"))
 	{
-		RegexMatch(GoogleQuery, "s)<h2 class=""r"".*?=.*?</h2>.*?#calculator", result)
-		Result := SubStr(Result, start := InStr(Result, """>") + 2, InStr(Result, "</h2>") - start)
+		outputdebug 1
+		RegexMatch(GoogleQuery, "s)<h2 class=r.*?=.*?</h2>.*?#calculator", result)
+		outputdebug res %result%
+		Result := SubStr(Result, start := InStr(Result, "b>") + 2, InStr(Result, "</b>") - start)
+		outputdebug res %result%
 		StringReplace, result, result, ">,,All
+		StringReplace, result, result, ,,All
 		StringReplace, result, result, </h2>,,All
 		StringReplace, result, result, `r,,All
 		StringReplace, result, result, `n,,All
 		StringReplace, result, result, <sup>, ^,,All
 		Result := RegExReplace(Result, "[ ]{2,}", " ")
+		Result := RegExReplace(Result, "(?=\d) (?=\d)", "")
 		result := unhtml(Deref_Umlauts(result))
+		outputdebug res2 %result%
 		if(result)
 		{
 			if(!FileExist( A_Temp "\7plus\calc_img.gif"))

@@ -119,12 +119,18 @@ Class WindowsSettings
 		return -1
 	}
 	
-	
+	;Returns true if minimize animation is disabled
+	GetDisableMinimizeAnim()
+	{
+		RegRead, Animate, HKCU, Control Panel\Desktop\WindowMetrics , MinAnimate
+		return Animate = 0
+	}
 	;======================================================================================
 	;Setter functions: Return 1 when PC needs to be restarted to apply a setting, and 2 when explorer needs to be restarted, 0/"" otherwise
 	;======================================================================================
-	;TODO: Check if permissions are properly set
-	;TODO: Additional steps for wmp context menus
+	
+	; TODO: Check if permissions are properly set
+	; TODO: Additional steps for wmp context menus
 	SetShowAllNotifications(ShowAllNotifications)
 	{
 		RegWrite, REG_DWORD, HKCU, Software\Microsoft\Windows\CurrentVersion\Explorer, EnableAutoTray, % ShowAllNotifications = 1 ? 0 : 1
@@ -244,5 +250,13 @@ Class WindowsSettings
 			return 2
 		}
 		return 0
+	}
+
+	SetDisableMinimizeAnim(Disabled)
+	{
+		VarSetCapacity(struct, 8, 0)	
+		NumPut(8, struct, 0, "UInt")
+		NumPut(!Disabled, struct, 4, "Int")
+		DllCall("SystemParametersInfo", "UINT", 0x0049,"UINT", 8,"STR", struct,"UINT", 0x0003) ;SPI_SETANIMATION 0x0049 SPIF_SENDWININICHANGE 0x0002
 	}
 }

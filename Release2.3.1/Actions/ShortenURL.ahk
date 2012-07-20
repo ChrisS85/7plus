@@ -55,10 +55,10 @@ return
 ;Written By Flak
 googl(url) 
 { 
-  static apikey:="AIzaSyBXD-RmnD2AKzQcDHGnzZh4humG-7Rpdmg" 
-  http:=ComObjCreate("WinHttp.WinHttpRequest.5.1") 
-  main:="https://www.googleapis.com/urlshortener/v1/url" 
-  params:="?key=" apikey 
+  static apikey := "AIzaSyBXD-RmnD2AKzQcDHGnzZh4humG-7Rpdmg" 
+  http := ComObjCreate("WinHttp.WinHttpRequest.5.1") 
+  main := "https://www.googleapis.com/urlshortener/v1/url" 
+  params := "?key=" apikey 
   http.open("POST", main . params, false) 
   http.SetRequestHeader("Content-Type", "application/json") 
   http.send("{""longUrl"": """ url """}") 

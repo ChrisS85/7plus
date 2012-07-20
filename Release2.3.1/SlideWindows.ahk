@@ -235,7 +235,6 @@ Class CSlideWindow
 		if(Settings.Windows.SlideWindows.HideSlideWindows)
 			Loop % Length + 1
 			{
-				outputdebug hide
 				hwnd := A_Index = 1 ? this.hwnd : this.ChildWindows[A_Index - 1].hwnd
 				WinHide, ahk_id %hwnd%
 			}

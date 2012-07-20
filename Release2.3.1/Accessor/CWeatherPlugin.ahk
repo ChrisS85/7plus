@@ -1,4 +1,4 @@
-Class CWeatherPlugin extends CAccessorPlugin
+﻿Class CWeatherPlugin extends CAccessorPlugin
 {
 	;Register this plugin with the Accessor main object
 	static Type := CAccessor.RegisterPlugin("Weather", CWeatherPlugin)
@@ -57,10 +57,8 @@ Class CWeatherPlugin extends CAccessorPlugin
 	}
 	OnFooterClick(Sender, URLorID, Index)
 	{
-		outputdebug click
 		if(CAccessor.Instance.SingleContext = this.Type)
 		{
-			outputdebug single
 			if(Index = 1)
 			{
 				outputdebug index
@@ -147,12 +145,15 @@ QueryWeatherResult()
 	CWeatherPlugin.Instance.List := Array()
 	if(Filter)
 	{
-		URL := uriEncode("http://www.google.com/ig/api?weather=") uriEncode(Filter, 1) ;"&rsz=8"
+		URL := "http://www.google.com/ig/api?weather=" uriEncode(Filter) "&oe=utf-8"
 		FileDelete, %A_Temp%\7plus\WeatherQuery.xml
-		URLDownloadToFile, %URL%, %A_Temp%\7plus\WeatherQuery.xml
-		FileRead, WeatherQuery, %A_Temp%\7plus\WeatherQuery.xml
+		headers := ""
+		HttpRequest(URL, WeatherQuery, headers, "BINARY")
+		WeatherQuery := StrGet(&WeatherQuery, "UTF-8")
+
 		Loop 5
 			pos%A_Index% := 0
+		
 		RegexMatch(WeatherQuery, "i)<city data=""(.*?)""/>", city, 1)
 		if(!city1) ;No results
 			return
@@ -174,7 +175,6 @@ QueryWeatherResult()
 				hIcon := Gdip_CreateHICONFromBitmap(pBitmap)
 				low1 := Round((5/9)*(low1-32)) ;Convert °F to °C
 				high1 := Round((5/9)*(high1-32)) ;Convert °F to °C
-				outputdebug % (A_Index) ": " name
 				CWeatherPlugin.Instance.List.Insert(Object("Title", day_of_week1 ": " condition1 ", Low: " low1 "°C, high: " high1 "°C", "Path", "Weather in " city1, "Icon", hIcon ))
 			}
 			else
