@@ -763,7 +763,7 @@ Class InfoGUI
 			totalsize += size
 		}
 		DriveSpaceFree, free, % ExplorerWindow.Path
-		free := FormatFileSize(free * 1048576)
+		free := FormatFileSize(free * 1048576, free < 1000 ? 0 : 1)
 		GuiControl % this.GUINum ":Text", Static1, % free " " ExplorerWindows.InfoGUI_FreeText
 		if(realfiles)
 		{

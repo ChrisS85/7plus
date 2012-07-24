@@ -67,6 +67,7 @@ BuildMenu(Name)
 	{
 		Menu, tray, NoStandard
 		Menu, tray, add, Settings, SettingsHandler  ; Creates a new menu item.
+		Menu, tray, Icon, Settings, % A_WinDir "\system32\shell32.dll", 166
 		menu, tray, Default, Settings
 	}
 	else if(Name = "ClipboardMenu")
@@ -75,26 +76,39 @@ BuildMenu(Name)
 		Menu, PersistentClipboard, DeleteAll
 
 		if(text := GetSelectedText())
+		{
 			Menu, PersistentClipboard, add, Add selected text as persistent clip ..., AddClip
-
+			Menu, PersistentClipboard, Icon, Add selected text as persistent clip ..., % A_WinDir "\system32\wmploc.dll", 16
+		}
 		Menu, PersistentClipboard, add, Edit persistent clips ..., EditClips
+		Menu, PersistentClipboard, Icon, Edit persistent clips ..., % A_WinDir "\system32\shell32.dll", 270
 
 		if(ClipboardList.Persistent.MaxIndex())
 			for index, Entry in ClipboardList.Persistent
 				Menu, PersistentClipboard, add, % Entry.Name, PersistentClipboardHandler
 		Menu, ClipboardMenu, add, Clips, :PersistentClipboard
+		Menu, ClipboardMenu, Icon, Clips, % A_WinDir "\system32\shell32.dll", 55
+		
 
 		;Explorer history
 		if(ExplorerHistory.MaxIndex())
 		{
 			Menu, ExplorerHistory, DeleteAll
 			for index, Entry in ExplorerHistory.History
+			{
 				Menu, ExplorerHistory, add, % Entry.Path, ExplorerHistoryHandler
+				Menu, ExplorerHistory, Icon, % Entry.Path, % A_WinDir "\system32\shell32.dll", 4
+			}
 			Menu, ClipboardMenu, add, Path History, :ExplorerHistory
+			Menu, ClipboardMenu, Icon, Path History, % A_WinDir "\system32\shell32.dll", 4
 			Menu, ExplorerFrequent, DeleteAll
 			for index, Entry in ExplorerHistory.FrequentPaths
+			{
 				Menu, ExplorerFrequent, add, % Entry.Path, ExplorerHistoryHandler
+				Menu, ExplorerFrequent, Icon, % Entry.Path, % A_WinDir "\system32\shell32.dll", 4
+			}
 			Menu, ClipboardMenu, add, Frequent Paths, :ExplorerFrequent
+			Menu, ClipboardMenu, Icon, Frequent Paths, % A_WinDir "\system32\shell32.dll", 4
 		}
 
 		;Clipboard history
@@ -107,7 +121,10 @@ BuildMenu(Name)
 			StringReplace, x, x, %y%, [TAB], All ;Weird syntax bug requires `t to be stored in a variable here
 			x := "&" (A_Index - 1) ": " Substr(x, 1, 100)
 			if(x)
+			{
 				Menu, ClipboardMenu, add, %x%, ClipboardHandler%A_Index%
+				Menu, ClipboardMenu, Icon, %x%, % A_WinDir "\system32\shell32.dll", 2
+			}
 		}
 	}
 	;Add menu entries that are defined through events
@@ -160,7 +177,9 @@ BuildMenu(Name)
 		if(!A_IsCompiled)
 			Menu, tray, add, Pause Script, Tray_Pause
 		Menu, tray, add, Reload 7plus, Tray_Reload
+		Menu, tray, Icon, Reload 7plus, % A_WinDir "\system32\shell32.dll", 239
 		Menu, tray, add, Exit, Tray_Exit
+		Menu, tray, Icon, Exit, % A_WinDir "\system32\shell32.dll", 28
 	}
 	Menu, Tray, UseErrorLevel, Off
 	return entries

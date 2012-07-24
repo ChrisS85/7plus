@@ -948,7 +948,7 @@ CouldBeURL(string)
 ;Tests for write access to a specific file
 WriteAccess( F ) {
 	if(FileExist(F))
-		Return ((h:=DllCall("_lopen", AStr, F, Int, 1, "Ptr")) > 0 ? 1 : 0) (DllCall("_lclose","Ptr",h)+NULL) 
+		Return ((h := DllCall("_lopen", AStr, F, Int, 1, "Ptr")) > 0 ? 1 : 0) (DllCall("_lclose", "Ptr", h) + NULL) 
 	else
 	{
 		F := FindFreeFilename(F)
@@ -958,41 +958,52 @@ WriteAccess( F ) {
 }
 
 ;Generates MD5 value of a file
-FileMD5( sFile="", cSz=4 ) { ; www.autohotkey.com/forum/viewtopic.php?p=275910#275910 
- cSz  := (cSz<0||cSz>8) ? 2**22 : 2**(18+cSz), VarSetCapacity( Buffer,cSz,0 ) 
- hFil := DllCall( "CreateFile", Str,sFile,UInt,0x80000000, Int,1,Int,0,Int,3,Int,0,Int,0, "Ptr") 
- IfLess,hFil,1, Return,hFil 
- DllCall( "GetFileSizeEx", Ptr,hFil, Ptr, &Buffer ),   fSz := NumGet( Buffer,0,"Int64" ) 
- VarSetCapacity( MD5_CTX,104,0 ),    DllCall( "advapi32\MD5Init", PTR, &MD5_CTX ) 
- Loop % ( fSz//cSz+!!Mod(fSz,cSz) ) 
-   DllCall( "ReadFile", PTR,hFil, PTR, &Buffer, UInt,cSz, UIntP,bytesRead, UInt,0 ) 
- , DllCall( "advapi32\MD5Update", PTR, &MD5_CTX, PTR, &Buffer, UInt,bytesRead ) 
- DllCall( "advapi32\MD5Final", PTR, &MD5_CTX ), DllCall( "CloseHandle", PTR,hFil ) 
- Loop % StrLen( Hex:="123456789ABCDEF0" )
-  N := NumGet( MD5_CTX,87+A_Index,"Char"), MD5 .= SubStr(Hex,N>>4,1) . SubStr(Hex,N&15,1) 
- Return MD5
+FileMD5(sFile´= "", cSz = 4 )
+{ ; www.autohotkey.com/forum/viewtopic.php?p=275910#275910 
+	cSz := (cSz < 0 || cSz > 8) ? 2 ** 22 : 2 ** (18 + cSz)
+	VarSetCapacity(Buffer, cSz, 0) 
+	hFil := DllCall("CreateFile", Str, sFile, UInt, 0x80000000, Int, 1, Int, 0, Int, 3, Int, 0, Int, 0, "Ptr") 
+	if(hFil < 1)
+		return hFil
+	DllCall("GetFileSizeEx", Ptr, hFil, Ptr, &Buffer)
+	fSz := NumGet(Buffer, 0, "Int64")
+	VarSetCapacity(MD5_CTX, 104, 0)
+	DllCall("advapi32\MD5Init", PTR, &MD5_CTX)
+	Loop % (fSz // cSz + !!Mod(fSz, cSz))
+	DllCall("ReadFile", PTR, hFil, PTR, &Buffer, UInt, cSz, UIntP, bytesRead, UInt, 0)
+	DllCall("advapi32\MD5Update", PTR, &MD5_CTX, PTR, &Buffer, UInt,bytesRead)
+	DllCall("advapi32\MD5Final", PTR, &MD5_CTX )
+	DllCall("CloseHandle", PTR, hFil)
+	Loop % StrLen(Hex := "123456789ABCDEF0")
+	{
+		N := NumGet(MD5_CTX, 87 + A_Index, "Char")
+		MD5 .= SubStr(Hex, N >> 4, 1) SubStr(Hex, N & 15, 1)
+	}
+	return MD5
 }
 
 ;Formats a file size in bytes to a human-readable size string
-FormatFileSize(Bytes, Decimals=1, Prefixes="B,KB,MB,GB,TB,PB,EB,ZB,YB")
+FormatFileSize(Bytes, Decimals = 1, Prefixes = "B,KB,MB,GB,TB,PB,EB,ZB,YB")
 {
 	StringSplit, Prefix, Prefixes, `,
 	Loop, Parse, Prefixes, `,
-		if(Bytes < e := 1024**A_Index)
-			return % Round(Bytes/(e/1024), decimals) Prefix%A_Index%
+		if(Bytes < e := 1024 ** A_Index)
+			return % Round(Bytes / (e / 1024), decimals) Prefix%A_Index%
 }
 
 ;Returns a string containing the formatted object keys and values
-ExploreObj(Obj, NewRow="`n", Equal="  =  ", Indent="`t", Depth=12, CurIndent="") { 
-    for k,v in Obj 
-        ToReturn .= CurIndent . k . (IsObject(v) && depth>1 ? NewRow . ExploreObj(v, NewRow, Equal, Indent, Depth-1, CurIndent . Indent) : Equal . v) . NewRow 
-    return RTrim(ToReturn, NewRow) 
+ExploreObj(Obj, NewRow = "`n", Equal = "  =  ", Indent = "`t", Depth = 12, CurIndent = "")
+{
+    for k,v in Obj
+        ToReturn .= CurIndent k (IsObject(v) && depth > 1 ? NewRow ExploreObj(v, NewRow, Equal, Indent, Depth - 1, CurIndent Indent) : Equal v) NewRow
+    return RTrim(ToReturn, NewRow)
 }
 
 
 GetFullPathName(SPath)
 {
-	VarSetCapacity(lPath,A_IsUnicode ? 520 : 260,0), DllCall("GetLongPathName", Str,SPath, Str,lPath, UInt,260 ) 
+	VarSetCapacity(lPath,A_IsUnicode ? 520 : 260, 0)
+	DllCall("GetLongPathName", Str, SPath, Str, lPath, UInt, 260)
 	Return lPath 
 }
 
@@ -1086,59 +1097,60 @@ DeAttachToolWindow(GUINumber)
 }
 
 ;Adds a tooltip to a control.
-AddToolTip(con,text,Modify = 0)
+AddToolTip(con, text, Modify = 0)
 {
 	Static TThwnd,GuiHwnd
-	l_DetectHiddenWindows:=A_DetectHiddenWindows
-	If (!TThwnd)
+	l_DetectHiddenWindows := A_DetectHiddenWindows
+	If(!TThwnd)
 	{
-		Gui,+LastFound
-		GuiHwnd:=WinExist()
-		TThwnd:=CreateTooltipControl(GuiHwnd)
-		Varsetcapacity(TInfo,6*4+6*A_PtrSize,0)
-		Numput(6*4+6*A_PtrSize,TInfo, "UInt")
-		Numput(1|16,TInfo,4, "UInt")
-		Numput(GuiHwnd,TInfo,8, "PTR")
-		Numput(GuiHwnd,TInfo,8+A_PtrSize, "PTR")
+		Gui, +LastFound
+		GuiHwnd := WinExist()
+		TThwnd := CreateTooltipControl(GuiHwnd)
+		Varsetcapacity(TInfo, 6 * 4 + 6 * A_PtrSize, 0)
+		Numput(6 * 4 + 6 * A_PtrSize, TInfo, "UInt")
+		Numput(1 | 16, TInfo, 4, "UInt")
+		Numput(GuiHwnd, TInfo, 8, "PTR")
+		Numput(GuiHwnd, TInfo, 8 + A_PtrSize, "PTR")
 		;Numput(&text,TInfo,36)
-		Detecthiddenwindows,on
-		Sendmessage,1028,0,&TInfo,,ahk_id %TThwnd%
-		SendMessage,1048,0,300,,ahk_id %TThwnd%
+		Detecthiddenwindows, on
+		Sendmessage, 1028, 0, &TInfo, , ahk_id %TThwnd%
+		SendMessage, 1048, 0, 300, , ahk_id %TThwnd%
 	}
-	Varsetcapacity(TInfo,6*4+6*A_PtrSize,0)
-	Numput(6*4+6*A_PtrSize,TInfo, "UInt")
-	Numput(1|16,TInfo,4, "UInt")
-	Numput(GuiHwnd,TInfo,8, "PTR")
-	Numput(con,TInfo,8+A_PtrSize, "PTR")
+	Varsetcapacity(TInfo, 6 * 4 + 6 * A_PtrSize, 0)
+	Numput(6 * 4 + 6 * A_PtrSize, TInfo, "UInt")
+	Numput(1 | 16, TInfo, 4, "UInt")
+	Numput(GuiHwnd, TInfo, 8, "PTR")
+	Numput(con, TInfo, 8 + A_PtrSize, "PTR")
 	VarSetCapacity(ANSItext, StrPut(text, ""))
     StrPut(text, &ANSItext, "")
-	Numput(&ANSIText,TInfo,6*4+3*A_PtrSize, "PTR")
+	Numput(&ANSIText, TInfo, 6 * 4 + 3 * A_PtrSize, "PTR")
 
-	Detecthiddenwindows,on
-	If (Modify)
-		SendMessage,1036,0,&TInfo,,ahk_id %TThwnd%
-	Else {
-		Sendmessage,1028,0,&TInfo,,ahk_id %TThwnd%
-		SendMessage,1048,0,300,,ahk_id %TThwnd%
+	Detecthiddenwindows, on
+	if(Modify)
+		SendMessage, 1036, 0, &TInfo, , ahk_id %TThwnd%
+	else
+	{
+		Sendmessage, 1028, 0, &TInfo, , ahk_id %TThwnd%
+		SendMessage, 1048, 0, 300, , ahk_id %TThwnd%
 	}
 	DetectHiddenWindows %l_DetectHiddenWindows%
 }
 CreateTooltipControl(hwind)
 {
-	Ret:=DllCall("CreateWindowEx"
-	,"Uint",0
-	,"Str","TOOLTIPS_CLASS32"
-	,"PTR",0
-	,"Uint",2147483648 | 3
-	,"Uint",-2147483648
-	,"Uint",-2147483648
-	,"Uint",-2147483648
-	,"Uint",-2147483648
-	,"PTR",hwind
-	,"PTR",0
-	,"PTR",0
-	,"PTR",0, "PTR")
-	Return Ret
+	Ret := DllCall("CreateWindowEx"
+	,"Uint", 0
+	,"Str", "TOOLTIPS_CLASS32"
+	,"PTR", 0
+	,"Uint", 2147483648 | 3
+	,"Uint", -2147483648
+	,"Uint", -2147483648
+	,"Uint", -2147483648
+	,"Uint", -2147483648
+	,"PTR", hwind
+	,"PTR", 0
+	,"PTR", 0
+	,"PTR", 0, "PTR")
+	return Ret
 }
 
 ;Gets width of all screens combined. NOTE: Single screens may have different vertical resolutions so some parts of the area returned here might not belong to any screens!
