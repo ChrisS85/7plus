@@ -175,8 +175,14 @@ BuildMenu(Name)
 			Menu, tray, add, Open, Tray_Open
 			Menu, tray, add
 		}
-		if(!A_IsCompiled)
-			Menu, tray, add
+		Menu, tray, add, Help, Tray_FAQ
+		Menu, tray, Icon, Help, % A_WinDir "\system32\shell32.dll", 155
+		Menu, tray, add, Report Bug, Tray_ReportBug
+		Menu, tray, Icon, Report Bug, % A_WinDir "\system32\shell32.dll", 134
+		Menu, tray, add, Visit Homepage, Tray_VisitHP
+		Menu, tray, Icon, Visit Homepage, % A_WinDir "\system32\shell32.dll", 136
+
+		Menu, tray, add
 		Menu, tray, add, Suspend Hotkeys, Tray_Suspend
 		
 		if(!A_IsCompiled)
@@ -196,6 +202,18 @@ return
 
 Tray_Open:
 ListLines
+return
+
+Tray_FAQ:
+OpenWikiPage("FAQ")
+return
+
+Tray_ReportBug:
+run http://code.google.com/p/7plus/issues/list
+return
+
+Tray_VisitHP:
+run http://code.google.com/p/7plus
 return
 
 Tray_Help:

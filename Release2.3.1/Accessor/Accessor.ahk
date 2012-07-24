@@ -2413,6 +2413,8 @@ keyboard hotkeys in settings window activate when other page is visible
 icon in context menu
 uninstall plugin not working (x64) -- Or is it?
 random accessor crashes, maybe related to uninstall plugin
+Ask user input uses | separators in the listbox
+Start timer in tray does not work anymore
 
 find in filenames can easily be crashed with subdirectory option
 explorer tabs in slide windows
