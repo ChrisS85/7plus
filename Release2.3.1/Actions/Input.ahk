@@ -78,12 +78,14 @@ Class CInputAction Extends CAction
 				
 				if(DataType = "Selection")
 				{
+					Gui, +Delimiter|
 					Gui, Add, ListBox, % "-ReadOnly -Multi AltSubmit hwndListBox w300 h95 x" sGUI.x " y" sGUI.y, % this.Selection
 					Gui, Add, Button, % "hwndAdd gAction_Input_Add w60 x+10 y" sGUI.y, Add
 					Gui, Add, Button, % "hwndRemove gAction_Input_Remove w60 y+10", Remove
 					sGUI.ListBox := ListBox
 					sGUI.Add := Add
 					sGUI.Remove := Remove
+					Gui, % "+Delimiter" sGUI.Delimiter
 				}
 			}
 			sPreviousSelection := DataType
@@ -91,15 +93,18 @@ Class CInputAction Extends CAction
 		else if(GoToLabel = "ListBoxSubmit")
 		{
 			this.Selection := ""
+			Gui, +Delimiter|
 			ControlGet, list, list,,,% "ahk_id " sGUI.ListBox
 			StringReplace,list, list,`n,|, A
 			this.Selection := list
 			WinKill, % "ahk_id " sGUI.ListBox
 			WinKill, % "ahk_id " sGUI.Add
 			WinKill, % "ahk_id " sGUI.Remove
+			Gui, % "+Delimiter" sGUI.Delimiter
 		}
 		else if(GoToLabel = "ListBox_Add")
 		{
+			Gui, +Delimiter|
 			ControlGet, list, list,,,% "ahk_id " sGUI.ListBox
 			StringReplace,list, list,`n,|,UseErrorLevel
 			NewItemIndex := ErrorLevel + 2
@@ -107,9 +112,11 @@ Class CInputAction Extends CAction
 			GuiControl,Choose, % sGUI.ListBox, %NewItemIndex%
 			ControlFocus,, % "ahk_id " sGUI.ListBox
 			ControlSend,, {F2}, % "ahk_id " sGUI.ListBox
+			Gui, % "+Delimiter" sGUI.Delimiter
 		}
 		else if(GoToLabel = "ListBox_Remove")
 		{
+			Gui, +Delimiter|
 			GuiControlGet, SelectedIndex,, % sGUI.ListBox
 			ControlGet, list, list,,,% "ahk_id " sGUI.ListBox
 			newlist := ""
@@ -120,6 +127,7 @@ Class CInputAction Extends CAction
 				newlist .= "|" A_LoopField
 			}
 			GuiControl, , % sGUI.ListBox, %newlist%
+			Gui, % "+Delimiter" sGUI.Delimiter
 		}
 	}
 	
