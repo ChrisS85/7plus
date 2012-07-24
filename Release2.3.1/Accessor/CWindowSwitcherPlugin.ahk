@@ -33,8 +33,8 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 			DefaultAction := new CAccessor.CAction("Activate", "ActivateWindow", "", true, false)
 			__new()
 			{
-				this.Insert(new CAccessor.CAction("End process", "EndProcess", "", false, false))
-				this.Insert(new CAccessor.CAction("Close window", "CloseWindow", "", false, false))
+				this.Insert(new CAccessor.CAction("End process", "EndProcess", "", false, false, true, A_WinDir "\System32\Shell32.dll", 216))
+				this.Insert(new CAccessor.CAction("Close window", "CloseWindow", "", false, false, true, A_WinDir "\System32\Shell32.dll", 132))
 				this.Insert(CAccessorPlugin.CActions.OpenExplorer)
 				this.Insert(CAccessorPlugin.CActions.OpenCMD)
 				this.Insert(CAccessorPlugin.CActions.Copy)

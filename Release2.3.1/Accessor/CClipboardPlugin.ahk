@@ -12,7 +12,7 @@ Class CClipboardPlugin extends CAccessorPlugin
 	Icon := ExtractIcon("shell32.dll", 261, 64)
 
 	Column2Text := "Content"
-	
+
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
 		Keyword := "clip"
@@ -40,7 +40,7 @@ Class CClipboardPlugin extends CAccessorPlugin
 	{
 		Class CActions extends CArray
 		{
-			DefaultAction := new CAccessor.CAction("Store clip", "Paste")
+			DefaultAction := new CAccessor.CAction("Store clip", "Paste", "", true, true, true, A_WinDir "\System32\wmploc.dll", 16)
 		}
 
 		Type := "Clipboard"

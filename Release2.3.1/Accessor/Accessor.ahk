@@ -84,7 +84,7 @@ Class CAccessor
 		; SaveHistory: If true, the result will be saved in the history when this action is performed.
 		; Close: If true, Accessor will be closed after this action is performed.
 		; AllowDelayedExecution: If true, this action will be visible when a timer is set by the user
-		__new(Name, Function, Condition = "", SaveHistory = true, Close = true, AllowDelayedExecution = true)
+		__new(Name, Function, Condition = "", SaveHistory = true, Close = true, AllowDelayedExecution = true, Icon = "", IconNumber = "")
 		{
 			this.Name := Name
 			this.Function := Function
@@ -92,6 +92,8 @@ Class CAccessor
 			this.SaveHistory := SaveHistory
 			this.Close := Close
 			this.AllowDelayedExecution := AllowDelayedExecution
+			this.Icon := Icon
+			this.IconNumber := IconNumber
 		}
 	}
 
@@ -980,7 +982,7 @@ Class CAccessor
 	{
 		;outputdebug FetchResults() start
 		this.List := Array()
-		
+
 		;Find out if we are in a single plugin context, and add only those items
 		for index, Plugin in this.Plugins
 		{
@@ -1267,6 +1269,8 @@ Class CAccessor
 			{
 				entries := true
 				Menu, AccessorContextMenu, Add, % ListEntry.Actions.DefaultAction.Name, AccessorContextMenu
+				if(ListEntry.Actions.DefaultAction.Icon)
+					Menu, AccessorContextMenu, Icon, % ListEntry.Actions.DefaultAction.Name, % ListEntry.Actions.DefaultAction.Icon, % ListEntry.Actions.DefaultAction.IconNumber
 				Menu, AccessorContextMenu, Default, % ListEntry.Actions.DefaultAction.Name
 			}
 			for key, Action in ListEntry.Actions
@@ -1274,6 +1278,8 @@ Class CAccessor
 				{
 					entries := true
 					Menu, AccessorContextMenu, Add, % Action.Name, AccessorContextMenu
+					if(Action.Icon)
+						Menu, AccessorContextMenu, Icon, % Action.Name, % Action.Icon, % Action.IconNumber
 				}
 			if(ListEntry.IsFolder)
 			{
@@ -2250,17 +2256,17 @@ Class CAccessorPlugin
 	;A template class containing default actions that can be used in plugins
 	Class CActions
 	{
-		static Run := new CAccessor.CAction("Run", "Run")
-		static RunAsAdmin := new CAccessor.CAction("Run as admin", "RunAsAdmin")
-		static RunWithArgs := new CAccessor.CAction("Run with arguments", "RunWithArgs")
+		static Run := new CAccessor.CAction("Run", "Run", "", true, true, true, A_WinDir "\System32\Shell32.dll", 177)
+		static RunAsAdmin := new CAccessor.CAction("Run as admin", "RunAsAdmin", "", true, true, true, A_WinDir "\System32\ImageRes.dll", 74)
+		static RunWithArgs := new CAccessor.CAction("Run with arguments", "RunWithArgs", "", true, true, true, A_WinDir "\System32\Shell32.dll", 134)
 		static Copy := new CAccessor.CAction("Copy path`tCTRL + C", "Copy", "", false, false, false)
-		static OpenExplorer := new CAccessor.CAction("Open in Explorer`tCTRL + E", "OpenExplorer")
-		static OpenCMD := new CAccessor.CAction("Open in CMD", "OpenCMD")
+		static OpenExplorer := new CAccessor.CAction("Open in Explorer`tCTRL + E", "OpenExplorer", "", true, true, true, A_WinDir "\System32\Shell32.dll", 4)
+		static OpenCMD := new CAccessor.CAction("Open in CMD", "OpenCMD", "", true, true, true, A_WinDir "\System32\cmd.exe", 1)
 		static ExplorerContextMenu := new CAccessor.CAction("Explorer context menu", "ExplorerContextMenu", "", false, false, false)
 		static OpenPathWithAccessor := new CAccessor.CAction("Open path with Accessor`tCTRL + B", "OpenPathWithAccessor", "", false, false, false)
 		static OpenWith := new CAccessor.CAction("Open with`tCTRL + O", "SelectProgram", "", false, false, true)
 		static Cancel := new CAccessor.CAction("Cancel`tEscape", "Close", "", false, false, false)
-		static SearchDir := new CAccessor.CAction("Search in this directory`tCTRL + F", "SearchDir", "", false, false, false)
+		static SearchDir := new CAccessor.CAction("Search in this directory`tCTRL + F", "SearchDir", "", false, false, false, A_WinDir "\System32\Shell32.dll", 210)
 	}
 	
 	;An object representing a result of an Accessor query.
@@ -2407,7 +2413,6 @@ keyboard hotkeys in settings window activate when other page is visible
 icon in context menu
 uninstall plugin not working (x64) -- Or is it?
 random accessor crashes, maybe related to uninstall plugin
-Improve URL escaping
 
 find in filenames can easily be crashed with subdirectory option
 explorer tabs in slide windows

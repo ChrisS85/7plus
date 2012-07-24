@@ -26,7 +26,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 
 	Class CSearchInAccessorResult extends CAccessorPlugin.CResult
 	{
-		Actions := {DefaultAction : new CAccessor.CAction("Search", "SearchInAccessor", "", false, false, false)}
+		Actions := {DefaultAction : new CAccessor.CAction("Search", "SearchInAccessor", "", false, false, false, A_WinDir "\System32\Shell32.dll", 210)}
 		Type := "File Search"
 		Priority := CFileSearchPlugin.Instance.Priority
 		MatchQuality := 1 ;Only direct matches are used by this plugin

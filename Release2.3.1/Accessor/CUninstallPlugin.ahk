@@ -30,9 +30,9 @@ Class CUninstallPlugin extends CAccessorPlugin
 			DefaultAction := new CAccessor.CAction("Uninstall", "Uninstall", "", true, false)
 			__new()
 			{
-				this.Insert(new CAccessor.CAction("Remove entry", "RemoveUninstallEntry", "", false, false))
-				this.Insert(new CAccessor.CAction("Open installation path in explorer`tCTRL + E", "OpenExplorer", new Delegate(CUninstallPlugin.CResult.CActions, "HasInstallLocation"), true, false))
-				this.Insert(new CAccessor.CAction("Open installation path in CMD", "OpenCMD", new Delegate(CUninstallPlugin.CResult.CActions, "HasInstallLocation"), true, false))
+				this.Insert(new CAccessor.CAction("Remove entry", "RemoveUninstallEntry", "", false, false, true, A_WinDir "\System32\Shell32.dll", 132))
+				this.Insert(new CAccessor.CAction("Open installation path in explorer`tCTRL + E", "OpenExplorer", new Delegate(CUninstallPlugin.CResult.CActions, "HasInstallLocation"), true, false, true, A_WinDir "\System32\Shell32.dll", 4))
+				this.Insert(new CAccessor.CAction("Open installation path in CMD", "OpenCMD", new Delegate(CUninstallPlugin.CResult.CActions, "HasInstallLocation"), true, false, true, A_WinDir "\System32\cmd.exe", 1))
 				this.Insert(new CAccessor.CAction("Copy installation path`tCTRL + C", "Copy", new Delegate(CUninstallPlugin.CResult.CActions, "HasInstallLocation"), false, false))
 			}
 			HasInstallLocation(ListEntry)

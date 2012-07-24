@@ -18,7 +18,7 @@ Class CEventPlugin extends CAccessorPlugin
 	{
 		Class CActions extends CArray
 		{
-			DefaultAction := new CAccessor.CAction("Execute", "TriggerEvent")
+			DefaultAction := new CAccessor.CAction("Execute", "TriggerEvent", "", true, true, true, A_WinDir "\System32\Shell32.dll", 177)
 		}
 		Type := "Event Plugin"
 		Actions := new this.CActions()
