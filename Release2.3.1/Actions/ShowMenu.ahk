@@ -135,6 +135,11 @@ BuildMenu(Name)
 			if(Event.Trigger.Submenu = "")
 			{
 				Menu, %Name%, add, % Event.Trigger.Name, MenuItemHandler
+				if(icon := Event.Trigger.Icon)
+				{
+					StringSplit, icon, icon, `,,%A_Space%
+					Menu, %Name%, Icon, % Event.Trigger.Name, %icon1%, %icon2%
+				}
 				if(!Event.Enabled)
 					Menu, %Name%, disable, % Event.Trigger.Name
 			}

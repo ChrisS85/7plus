@@ -53,7 +53,7 @@ Class CEventPlugin extends CAccessorPlugin
 				if(Icon := Event.Trigger.Icon)
 				{
 					StringSplit, icon, icon, `,,%A_Space%
-					Result.Icon := ExtractIcon(icon1, icon2 + 1, 64)
+					Result.Icon := ExtractIcon(icon1, icon2, 64)
 				}
 				else
 					Result.Icon := Accessor.GenericIcons.Application

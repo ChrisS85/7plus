@@ -63,8 +63,6 @@
 <Negate>0</Negate>
 <Type>Window active</Type>
 <WindowFilterClass>Photo_Lightweight_Viewer</WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition><Condition>
 <Compare>${WindowsVersion}</Compare>
@@ -100,8 +98,6 @@
 <Negate>0</Negate>
 <Type>Window active</Type>
 <WindowFilterClass>Photo_Lightweight_Viewer</WindowFilterClass>
-<WindowFilterExecutable></WindowFilterExecutable>
-<WindowFilterTitle></WindowFilterTitle>
 <WindowMatchType>Specific Window</WindowMatchType>
 </Condition><Condition>
 <Compare>${WindowsVersion}</Compare>

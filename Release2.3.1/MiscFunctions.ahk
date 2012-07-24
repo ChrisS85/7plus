@@ -1731,10 +1731,11 @@ IsWow64Process()
 PickIcon(ByRef sIconPath, ByRef nIndex)
 {
 	VarSetCapacity(IconPath, 260 * 2, 0)
-	DllCall("shell32\PickIconDlg", "Ptr", 0, "str", IconPath, "Uint", 260, "PTRP", nIndex)
+	DllCall("shell32\PickIconDlg", "Ptr", 0, "str", IconPath, "Uint", 260, "PTRP", nIndex - 1)
 	if(IconPath)
 	{
 		sIconPath := IconPath
+		nIndex++
 		return true
 	}
 	return false
