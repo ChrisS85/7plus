@@ -1,5 +1,5 @@
 #labels Featured,Phase-Support
-= 7plus Frequently Asked Questions =
+= 7plus Frequently Asked Questions and Common Features=
 If you use 7plus for the first time, it may appear overwhelming in features, so here are some small pointers to get you started.
 If you have further questions, please refer to the docs first (click the help buttons available on specific event/trigger/condition/action pages) before requesting help.
 
@@ -28,7 +28,7 @@ See [Accessor here] for more information about the Accessor.
 
 == About Explorer enhancements ==
 7plus adds many features to Explorer. Here are the most common ones:
- * 7plus features a concept named Fast Folders. These are 10 slots to which paths are assigned by pressing *CTRL + Numpad0-9* in Explorer or similar windows. They can be recalled in those windows by pressing the corresponding Numpad key. In Windows Vista and Windows 7 these paths will also appear as buttons in the Explorer band bar so they can be clicked like favorite buttons in browsers.
+ * 7plus features a concept named Fast Folders. These are 10 slots to which paths are assigned by pressing *CTRL + Numpad0-9* in Explorer or similar windows. They can be recalled in those windows by pressing the corresponding *Numpad* key. In Windows Vista and Windows 7 these paths will also appear as buttons in the Explorer band bar so they can be clicked like favorite buttons in browsers.
  * It adds the ability to use tabs in Explorer. You can create a new tab by pressing *CTRL + T*. The tabs appear on top of the title bar and can be activated by clicking on them or by pressing *CTRL + (SHIFT) + TAB*. They can be closed by middle clicking on the tab or by pressing *CTRL + W*. You can press *CTRL + M* when an Explorer window is active to merge all Explorer windows into one tabbed window.
  * 7plus can upload the selected files and folders to an FTP server by pressing *CTRL + U*.
  * 7plus adds dialogs to perform mass-rename and replace-in-files operations. They can be accessed by pressing *CTRL + (SHIFT) + H* in Explorer.
