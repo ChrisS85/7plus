@@ -5,9 +5,7 @@ The Accessor comes with many different plugins. A plugin takes care of a specifi
 
 When you type something in the text box at the top of the Accessor window, all matching results will show up in the list below. If you press Enter, the action displayed on the right of the textbox is executed. For many plugins there are multiple actions available which can be accessed by right clicking a list item.
 
-In addition to the plugins the Accessor supports the concept of keywords, which means that the keyword is internally expanded to a command. A popular example for this are web searches. You can type "w AutoHotkey" and you'll get the same results as if you typed "http://en.wikipedia.org/wiki/Special:Search?search=AutoHotkey".
-
-In short: 
+In addition to the plugins the Accessor supports the concept of keywords, which means that the keyword is internally expanded to a command. A popular example for this are web searches. You can type "w AutoHotkey" and you'll get the same results as if you typed "http://en.wikipedia.org/wiki/Special:Search?search=AutoHotkey". In short: 
  * Keywords are only supported at the start of the entered text.
  * Words typed after the keyword can be inserted into the command at predefined places. For this you can use ${1} - ${9} placeholders in the settings.
  * New keywords can be created through the settings window or through the Keyword plugin.
