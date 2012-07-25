@@ -13,5 +13,3 @@ In addition, this plugin allows to:
   * Open the path of a folder/file in explorer or CMD or copying it to the clipboard
   * Running a program with arguments
   * Showing the explorer context menu of the selected item.
-
-This plugin has some advanced configuration settings. It's possible to add cache paths in which it will look for files with proper extensions (usually exe and lnk). For each cache path its possible to define custom actions which appear in the context menu. An example for this might be a cache path for music files, where the default action would play the file. A custom action can be defined to enqueue the file to the current playlist (if the player has an appropriate command line option).
