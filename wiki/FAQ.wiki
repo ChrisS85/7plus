@@ -58,7 +58,7 @@ Hotstrings can be used to expand abbreviations (i.e. "btw" -> "by the way"). You
 
 == Portable mode, admin permissions, interfacing with 7plus... ==
 
- * *Portable mode:* It is possible to run 7plus in portable mode by adding *"-portable"* to its command line. If you don't know how to do this, you can create a shortcut to 7plus.exe, go to file properties in explorer, and append *-portable* in the command text box (after the quotes). In addition, there is also a *%7plusDrive%* placeholder available, so you can add events that refer to paths on an USB stick where 7plus is located.
+ * *Portable mode:* It is possible to run 7plus in portable mode by adding *"-portable"* to its command line. If you don't know how to do this, you can create a shortcut to 7plus.exe, go to file properties in explorer, and append *-portable* in the command text box (after the quotes). In addition, there is also a *%7plusDrive%* placeholder available in 7plus, so you can add events that refer to paths on an USB stick where 7plus is located.
 
  * *Admin permissions:* If you don't have admin permissions on a system, you can still use 7plus, even though some/many features won't be available then. It is not possible to work with other windows which are running elevated, and features like FastFolders can't add buttons to the explorer window or the context menu. It is possible to always run 7plus in non-admin mode by setting "Run as admin" to "Never" on the Introduction settings page.
 
