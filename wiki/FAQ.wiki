@@ -18,6 +18,7 @@ For more details about the event system, please see [EventsOverview Event System
 
 == About the Accessor ==
 The Accessor is a launcher similar to programs like Launchy or Exekutor. By default you can make it show up by pressing *ALT + SPACE*, but you can change it to any other hotkey or make it show up through some other obscure way by modifying the Accessor event. The Accessor comes with many different plugins. A plugin takes care of a specific task, such as browsing the file system or looking up the weather. Most plugins have a specific keyword that is required to use them. You can adjust this keyword and other settings in the "Accessor Plugins" settings page. You can also gain an overview over the available plugins there. When you type something in the text box at the top of the Accessor window, all matching results will show up in the list below. If you press Enter, the action displayed on the top button is executed. For many plugins there are multiple actions available which can be accessed by right clicking a list item.
+
 See [Accessor here] for more information about the Accessor.
 
 == About Clipboard enhancements ==
