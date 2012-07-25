@@ -8,7 +8,7 @@ If you have further questions, please refer to the docs first (click the help bu
 7plus is mostly based around the *event system*. An event consists of a trigger, multiple conditions and actions.
 A trigger can be a hotkey, a timer, a context menu entry or many other things. When it triggers the event, the event is put on an event queue.
 The events in this queue are (normally) processed one after another. At first, the conditions of an event are evaluated. A popular condition is that a specific window is active.
-This is often used in combination with a hotkey trigger, to make application specific hotkeys.
+This is often used in combination with a hotkey trigger to make application specific hotkeys.
 The actions are performed when all conditions evaluate to TRUE. There are all kinds of actions available that deal with windows, explorer, files or general system actions (run programs, write something to clipboard,...).
 The combinations are nearly endless! :)
 
