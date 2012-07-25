@@ -2,23 +2,23 @@
 
 The following is a list of Accessor plugins that are shipped with 7plus.
 
- * [docsAccessorAccessorHistory Accessor History] 
- * [docsAccessorCalculator Calculator] 
- * [docsAccessorClipboard Clipboard] 
- * [docsAccessorControlPanel Control Panel] 
- * [docsAccessorEventPlugin Event Plugin] 
- * [docsAccessorFileSearch File Search] 
- * [docsAccessorFileSystem File System] 
- * [docsAccessorGoogle Google] 
- * [docsAccessorKeyword Keyword Plugin] 
- * [docsAccessorNotepadTabSwitcher Notepad++ Tab Switcher] 
- * [docsAccessorNotes Notes] 
- * [docsAccessorProgramLauncher Program Launcher] 
- * [docsAccessorRecentFolders Recent Folders] 
- * [docsAccessorRegistry Registry] 
- * [docsAccessorRun Run] 
- * [docsAccessorSciTE4AutoHotkeyTabSwitcher SciTE4AutoHotkey Tab Switcher] 
- * [docsAccessorUninstall Uninstall] 
- * [docsAccessorURL URL] 
- * [docsAccessorWeather Weather] 
- * [docsAccessorWindowSwitcher Window Switcher]
+ * [docsAccessorAccessorHistory Accessor History] - Shows previously executed results in Accessor
+ * [docsAccessorCalculator Calculator] - Performs calculations and unit conversions
+ * [docsAccessorClipboard Clipboard] - Searches through clipboard history and stored clips
+ * [docsAccessorControlPanel Control Panel] - Provides access to control panel applets
+ * [docsAccessorEventPlugin Event Plugin] - Shows results defined by events that use the Accessor Trigger
+ * [docsAccessorFileSearch File Search] - Makes it possible to search for files
+ * [docsAccessorFileSystem File System] - Browses and shows directories
+ * [docsAccessorGoogle Google] - Shows the result of Google searches.
+ * [docsAccessorKeyword Keyword Plugin] - Used to create new keywords
+ * [docsAccessorNotepadTabSwitcher Notepad++ Tab Switcher] - Activates Notepad++ Tabs
+ * [docsAccessorNotes Notes] - Used to store and show short notes
+ * [docsAccessorProgramLauncher Program Launcher] - Used to launch programs and other files
+ * [docsAccessorRecentFolders Recent Folders] - Used to open recent folders and navigate to them
+ * [docsAccessorRegistry Registry] - Used to open RegEdit at a specific key
+ * [docsAccessorRun Run] - Directly executes the entered text
+ * [docsAccessorSciTE4AutoHotkeyTabSwitcher SciTE4AutoHotkey Tab Switcher] - Activates SciTE4AutoHotkey Tabs
+ * [docsAccessorUninstall Uninstall] - Uninstalls programs
+ * [docsAccessorURL URL] - Searches through browser bookmarks and provides web searches via Keywords
+ * [docsAccessorWeather Weather] - Provides weather information at specified location
+ * [docsAccessorWindowSwitcher Window Switcher] - Searches through existing windows and activates them
