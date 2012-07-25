@@ -137,7 +137,7 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 	UpdateTimes()
 	{
 		Accessor := CAccessor.Instance
-		if(!Accessor.GUI)
+		if(!Accessor.GUI.Visible)
 			return
 		for index, item in Accessor.GUI.ListView.Items
 		{

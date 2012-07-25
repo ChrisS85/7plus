@@ -50,14 +50,3 @@ Class CRunPlugin extends CAccessorPlugin
 		return Results
 	}
 }
-
-#if (Accessor.GUI)
-^Enter::
-^NumpadEnter::
-Accessor.Instance.PerformAction(CAccessorPlugin.CActions.Run, Accessor.Instance.List.GetItemWithValue("Type", "Run"))
-return
-+Enter::
-+NumpadEnter::
-Accessor.Instance.PerformAction(CAccessorPlugin.CActions.RunAsAdmin, Accessor.Instance.List.GetItemWithValue("Type", "Run"))
-return
-#if
