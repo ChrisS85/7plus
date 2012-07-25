@@ -11,7 +11,7 @@ The events in this queue are (normally) processed one after another. At first, t
 This is often used in combination with a hotkey trigger to make application specific hotkeys.
 The actions are performed when all conditions evaluate to TRUE. There are all kinds of actions available that deal with windows, explorer, files or general system actions (run programs, write something to clipboard,...).
 The combinations are nearly endless! :)
-For more details about the event system, please see [FastFolderButtons Event System Overview].
+For more details about the event system, please see [EventsOverview Event System Overview].
 == About some key features ==
 
  * *Using the event system:* You can quickly find a specific event by using the categories on the left of the settings page or by typing a part of the event name, trigger text or event description in the search box at the top of the page. This can be useful if you're looking for a specific feature. Keep in mind that some features require more than one event; there might be different events for explorer, desktop and file dialogs for example.
