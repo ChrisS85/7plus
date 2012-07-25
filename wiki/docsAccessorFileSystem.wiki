@@ -13,3 +13,6 @@ In addition, this plugin allows to:
   * Open the path of a folder/file in explorer or CMD or copying it to the clipboard
   * Running a program with arguments
   * Showing the explorer context menu of the selected item.
+
+== Other uses ==
+This plugin can be opened in the currently active directory by pressing *CTRL + .* in Explorer or similar windows.
