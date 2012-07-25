@@ -1,0 +1,14 @@
+= Accessor =
+The Accessor is a launcher similar to programs like Launchy or Exekutor. By default you can make it show up by pressing *ALT + SPACE*, but you can change it to any other hotkey or make it show up through some other obscure way by modifying the Accessor event. 
+
+The Accessor comes with many different plugins. A plugin takes care of a specific task, such as browsing the file system or looking up the weather. Most plugins have a specific keyword that is required to use them. You can adjust this keyword and other settings in the "Accessor Plugins" settings page. You can also gain an overview over the available plugins there.
+
+When you type something in the text box at the top of the Accessor window, all matching results will show up in the list below. If you press Enter, the action displayed on the right of the textbox is executed. For many plugins there are multiple actions available which can be accessed by right clicking a list item.
+
+There are also three different types of buttons on the Accessor window:
+
+ * The Query buttons (upper row, left side) are used to quickly enter a specific text in the textbox. They serve as reminder for the keywords and different plugins that are available in Accessor so you don't need to remember all keywords. By right clicking this button it's possible to assign the currently entered text to this button and to set a new icon for the button.
+
+ * The Fast Folder buttons (upper row, right side) provide quick access to the Fast Folders defined in 7plus. Clicking one of these buttons or pressing its hotkey will open an Explorer window in the folder or navigate the window that was active when Accessor was opened to it. It's possible to assign a Fast Folder in Accessor by selecting a result that represents a directory and clicking on an empty button or by using the context menu of the result.
+
+ * The Program buttons are used to execute programs. They are comparable to the quick launch buttons in earlier versions of windows or to pinned buttons in WIN 7 and later. They can be accessed by pressing their hotkeys, even when the Accessor window isn't open. Programs are assigned to a button by selecting a program from the result list in Accessor and clicking on an empty button or using the context menu of the result.
