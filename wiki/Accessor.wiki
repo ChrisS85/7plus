@@ -1,7 +1,7 @@
 = Accessor =
 Accessor is a multi-purpose window introduced in 7plus 2.1.0.
 
-http://i51.tinypic.com/10rohf9.png
+http://i45.tinypic.com/w14p74.png
 
 It is similar to launchers like Launchy or Exekutor. The user types a command and possible matches and actions will appear in the list below. By default you can open it by pressing *ALT + SPACE*, but you can change it to any other hotkey or make it show up through some other obscure way by modifying the Accessor event. 
 
