@@ -1248,6 +1248,7 @@ Class CAccessor
 			}
 		}
 	}
+
 	;Used to copy an Accessor result
 	CopyResult(Result)
 	{
@@ -1258,6 +1259,7 @@ Class CAccessor
 		Result.Actions := Actions
 		return Copy
 	}
+
 	ShowActionMenu(ListEntry = "")
 	{
 		global FastFolders
@@ -1301,6 +1303,7 @@ Class CAccessor
 				Menu, AccessorContextMenu, Show
 		}
 	}
+
 	;Checks if the selected result has a specific action
 	HasAction(Action)
 	{
@@ -1308,6 +1311,7 @@ Class CAccessor
 		return (IsObject(ListEntry := this.List[this.GUI.ListView.SelectedIndex]) && (ListEntry.Actions.DefaultAction.Function = Action.Function || ListEntry.Actions.FindKeyWithValue("Function", Action.Function)))
 			|| (IsObject(ListEntry := SingleContextPlugin.Result)				  && (ListEntry.Actions.DefaultAction.Function = Action.Function || ListEntry.Actions.FindKeyWithValue("Function", Action.Function)))
 	}
+
 	;Runs the selected entry as command and possibly caches it in program launcher plugin
 	Run(ListEntry, Plugin)
 	{
@@ -1324,6 +1328,7 @@ Class CAccessor
 			RunAsUser("cmd.exe /c start """" " Quote(ListEntry.Path) (ListEntry.args ? " " ListEntry.args : ""), WorkingDir, "HIDE")
 		}
 	}
+
 	RunAsAdmin(ListEntry, Plugin)
 	{
 		if(ListEntry.Path)
@@ -1333,6 +1338,7 @@ Class CAccessor
 			Run(Quote(ListEntry.Path) (ListEntry.args ? " " ListEntry.args : ""), WorkingDir, "", 0)
 		}
 	}
+
 	RunWithArgs(ListEntry, Plugin)
 	{
 		if(ListEntry.Path)
@@ -1352,6 +1358,7 @@ Class CAccessor
 			Event.TriggerThisEvent()
 		}
 	}
+
 	Copy(ListEntry, Plugin, Action, Field = "Path")
 	{
 		Clipboard := ListEntry[Field]
@@ -1362,6 +1369,7 @@ Class CAccessor
 		if(type := FileExist(ListEntry.Path))
 			Navigation.SetPath(ListEntry.Path, CAccessor.Instance.PreviousWindow)
 	}
+
 	OpenCMD(ListEntry, Plugin)
 	{
 		if(path := ListEntry.Path)
@@ -1371,16 +1379,19 @@ Class CAccessor
 			Run("cmd.exe /k cd /D """ path """", GetWorkingDir(ListEntry.Path))
 		}
 	}
+
 	ExplorerContextMenu(ListEntry, Plugin)
 	{
 		if(ListEntry.Path)
 			ShellContextMenu(ListEntry.Path)
 	}
+
 	OpenPathWithAccessor(ListEntry, Plugin)
 	{
 		if(ListEntry.Path)
 			this.SetFilter(ListEntry.Path (strEndsWith(ListEntry.Path, "\") ? "" : "\"))
 	}
+
 	SelectProgram(ListEntry, Plugin)
 	{
 		this.TemporaryFile := ListEntry.Path
@@ -1392,12 +1403,15 @@ Class CAccessor
 		this.SetFilter(CFileSearchPlugin.Instance.Settings.Keyword "  in " ListEntry.Path, strlen(CFileSearchPlugin.Instance.Settings.Keyword) + 1, strlen(CFileSearchPlugin.Instance.Settings.Keyword) + 1)
 	}
 }
+
 AccessorGUIClose:
 CAccessor.Instance.GUI.Close()
 return
+
 AccessorWaitForRefresh:
 CAccessor.Instance.WaitForRefresh()
 return
+
 #F1::
 #F2::
 #F3::
@@ -1412,15 +1426,35 @@ return
 #F12::
 CAccessor.Instance.ProgramButtons[SubStr(A_ThisHotkey, 3)].Execute()
 return
+
+#if CAccessor.Instance.GUI.Visible
+Numpad0::
+Numpad1::
+Numpad2::
+Numpad3::
+Numpad4::
+Numpad5::
+Numpad6::
+Numpad7::
+Numpad8::
+Numpad9::
+CAccessor.Instance.FastFolderButtons[SubStr(A_ThisHotkey, 7) + 1].Execute()
+return
+#if
+
 AccessorContextMenu:
 CAccessor.Instance.PerformAction(A_ThisMenuItem, CAccessor.Instance.ClickedListEntry) ;ClickedListEntry is only valid for clicks on empty parts of the window
 return
+
 AccessorSaveAsFastFolder:
 CAccessor.Instance.FastFolderButtons[A_ThisMenuItemPos].SetFastFolder(CAccessor.Instance.ClickedListEntry ? CAccessor.Instance.ClickedListEntry.Path : CAccessor.Instance.List[CAccessor.Instance.GUI.ListView.SelectedIndex].Path)
 return
+
 AccessorSaveAsProgram:
 CAccessor.Instance.ProgramButtons[A_ThisMenuItemPos].SetPath(CAccessor.Instance.ClickedListEntry ? CAccessor.Instance.ClickedListEntry.Path : CAccessor.Instance.List[CAccessor.Instance.GUI.ListView.SelectedIndex].Path)
 return
+
+
 
 Class CAccessorGUI extends CGUI
 {
@@ -1486,7 +1520,7 @@ Class CAccessorGUI extends CGUI
 			ButtonControl := this.AddControl("Picture", "Button" A_Index, "x" ButtonX " y" ButtonY " w35 h31 +0xE", "")
 			ButtonControl.Click.Handler := new Delegate(this, "OnProgramButtonClick")
 			if(index <= 12)
-				ButtonControl.Tooltip := "WIN + F" index
+				ButtonControl.Tooltip := "Hotkey: WIN + F" index " (Everywhere)"
 			this.ProgramButtons.Insert(ButtonControl)
 			ButtonX += this.ButtonOffsetX
 		}
@@ -1498,7 +1532,7 @@ Class CAccessorGUI extends CGUI
 			Button.OnFastFolderChange.Handler := new Delegate(this, "OnFastFolderChange")
 			ButtonControl := this.AddControl("Picture", "Button" A_Index, "x" ButtonX " y" ButtonY " w16 h35 +0xE", "")
 			ButtonControl.Click.Handler := new Delegate(this, "OnFastFolderButtonClick")
-			ButtonControl.Tooltip := index - 1
+			ButtonControl.Tooltip := "Hotkey: Numpad" index - 1 " (In Accessor and navigatable windows like Explorer, File dialogs or CMD)"
 			this.FastFolderButtons.Insert(ButtonControl)
 			ButtonX += this.ButtonOffsetX / 2
 		}
