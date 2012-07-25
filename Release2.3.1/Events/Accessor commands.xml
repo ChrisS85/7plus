@@ -15,7 +15,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1654</ID>
+<ID>1653</ID>
 <Name>Accessor: Shutdown</Name>
 <OfficialEvent>53</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -41,7 +41,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1655</ID>
+<ID>1654</ID>
 <Name>Accessor: Hibernate</Name>
 <OfficialEvent>54</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -67,7 +67,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1656</ID>
+<ID>1655</ID>
 <Name>Accessor: Standby</Name>
 <OfficialEvent>55</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -93,7 +93,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1657</ID>
+<ID>1656</ID>
 <Name>Accessor: Reboot</Name>
 <OfficialEvent>56</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -119,7 +119,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1658</ID>
+<ID>1657</ID>
 <Name>Accessor: Log Off</Name>
 <OfficialEvent>57</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -145,7 +145,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1659</ID>
+<ID>1658</ID>
 <Name>Accessor: Lock workstation</Name>
 <OfficialEvent>58</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -172,7 +172,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1662</ID>
+<ID>1661</ID>
 <Name>Accessor: Lock workstation</Name>
 <OfficialEvent>61</OfficialEvent>
 <OneInstance>0</OneInstance>

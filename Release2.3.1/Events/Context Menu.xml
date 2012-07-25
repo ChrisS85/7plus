@@ -27,7 +27,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1584</ID>
+<ID>1583</ID>
 <Name>Run with parameters</Name>
 <OfficialEvent>988</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -60,7 +60,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1585</ID>
+<ID>1584</ID>
 <Name>Batch image converter</Name>
 <OfficialEvent>989</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -90,7 +90,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1586</ID>
+<ID>1585</ID>
 <Name>MD5 Checksums</Name>
 <OfficialEvent>990</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -123,7 +123,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1587</ID>
+<ID>1586</ID>
 <Name>Context Menu Upload</Name>
 <OfficialEvent>991</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -153,7 +153,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1588</ID>
+<ID>1587</ID>
 <Name>Toggle Hidden Files</Name>
 <OfficialEvent>992</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -183,7 +183,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1624</ID>
+<ID>1623</ID>
 <Name>Flat View in directory menus</Name>
 <OfficialEvent>21</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -220,7 +220,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1635</ID>
+<ID>1634</ID>
 <Name>Replace in filenames</Name>
 <OfficialEvent>35</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -257,7 +257,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1636</ID>
+<ID>1635</ID>
 <Name>Replace in files</Name>
 <OfficialEvent>36</OfficialEvent>
 <OneInstance>0</OneInstance>

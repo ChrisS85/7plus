@@ -25,7 +25,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>305</ID>
+<ID>304</ID>
 <Name>Middle click on title: Close window under mouse</Name>
 <OfficialEvent>306</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -49,7 +49,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>307</ID>
+<ID>306</ID>
 <Name>Activate notification/flashing/previous window</Name>
 <OfficialEvent>308</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -67,26 +67,26 @@
 <WindowMatchType>UnderMouse</WindowMatchType>
 </Action><Action>
 <Action>Start timer</Action>
-<TimerID>311</TimerID>
+<TimerID>310</TimerID>
 <Type>Control timer</Type>
 </Action><Action>
 <Action>Enable Event</Action>
-<EventID>309</EventID>
+<EventID>308</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
 </Action><Action>
 <Action>Enable Event</Action>
-<EventID>310</EventID>
-<Operator>equals</Operator>
-<Type>Control event</Type>
-</Action><Action>
-<Action>Trigger Event</Action>
 <EventID>309</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
 </Action><Action>
 <Action>Trigger Event</Action>
-<EventID>310</EventID>
+<EventID>308</EventID>
+<Operator>equals</Operator>
+<Type>Control event</Type>
+</Action><Action>
+<Action>Trigger Event</Action>
+<EventID>309</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
 </Action></Actions>
@@ -102,7 +102,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>308</ID>
+<ID>307</ID>
 <Name>Right click on titlebar: Toggle always on top</Name>
 <OfficialEvent>309</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -119,12 +119,12 @@
 <WriteText>0</WriteText>
 </Action><Action>
 <Action>Disable Event</Action>
-<EventID>311</EventID>
+<EventID>310</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
 </Action><Action>
 <Action>Disable Event</Action>
-<EventID>310</EventID>
+<EventID>309</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
 </Action></Actions>
@@ -139,7 +139,7 @@
 <DisableAfterUse>1</DisableAfterUse>
 <Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>309</ID>
+<ID>308</ID>
 <Name>Toggle always on top -&gt; Context menu active</Name>
 <OfficialEvent>310</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -150,12 +150,12 @@
 <Actions>
 <Action>
 <Action>Trigger Event</Action>
-<EventID>309</EventID>
+<EventID>308</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
 </Action><Action>
 <Action>Trigger Event</Action>
-<EventID>310</EventID>
+<EventID>309</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
 </Action></Actions>
@@ -170,7 +170,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>310</ID>
+<ID>309</ID>
 <Name>Toggle always on top -&gt; No context menu active</Name>
 <OfficialEvent>311</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -181,17 +181,17 @@
 <Actions>
 <Action>
 <Action>Disable Event</Action>
+<EventID>308</EventID>
+<Operator>equals</Operator>
+<Type>Control event</Type>
+</Action><Action>
+<Action>Disable Event</Action>
 <EventID>309</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
 </Action><Action>
 <Action>Disable Event</Action>
 <EventID>310</EventID>
-<Operator>equals</Operator>
-<Type>Control event</Type>
-</Action><Action>
-<Action>Disable Event</Action>
-<EventID>311</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
 </Action></Actions>
@@ -203,7 +203,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>311</ID>
+<ID>310</ID>
 <Name>Toggle always on top -&gt; context menu timeout</Name>
 <OfficialEvent>312</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -228,7 +228,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>316</ID>
+<ID>315</ID>
 <Name>Remove always on top when window gets maximized</Name>
 <OfficialEvent>317</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -257,7 +257,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>312</ID>
+<ID>311</ID>
 <Name>Right click on close button: Force-close window</Name>
 <OfficialEvent>313</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -279,7 +279,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>313</ID>
+<ID>312</ID>
 <Name>Force-close active program</Name>
 <OfficialEvent>314</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -302,7 +302,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>314</ID>
+<ID>313</ID>
 <Name>Maximize window under mouse</Name>
 <OfficialEvent>315</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -325,7 +325,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>315</ID>
+<ID>314</ID>
 <Name>Restore / Minimize window under mouse</Name>
 <OfficialEvent>316</OfficialEvent>
 <OneInstance>1</OneInstance>
@@ -347,7 +347,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>1582</ID>
+<ID>1581</ID>
 <Name>Move window to bottom</Name>
 <OfficialEvent>986</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -373,7 +373,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1625</ID>
+<ID>1624</ID>
 <Name>Show Aero Flip 3D</Name>
 <OfficialEvent>26</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -404,7 +404,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1629</ID>
+<ID>1628</ID>
 <Name>Mouse Window Drag</Name>
 <OfficialEvent>29</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -434,7 +434,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1630</ID>
+<ID>1629</ID>
 <Name>Mouse Window Drag</Name>
 <OfficialEvent>30</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -464,7 +464,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1631</ID>
+<ID>1630</ID>
 <Name>Mouse Window Resize</Name>
 <OfficialEvent>31</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -494,7 +494,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1632</ID>
+<ID>1631</ID>
 <Name>Mouse Window Resize</Name>
 <OfficialEvent>32</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -521,7 +521,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1640</ID>
+<ID>1639</ID>
 <Name>Slide Window left</Name>
 <OfficialEvent>40</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -548,7 +548,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1641</ID>
+<ID>1640</ID>
 <Name>Slide Window right</Name>
 <OfficialEvent>41</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -575,7 +575,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1642</ID>
+<ID>1641</ID>
 <Name>Slide Window up</Name>
 <OfficialEvent>42</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -602,7 +602,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1643</ID>
+<ID>1642</ID>
 <Name>Slide window down</Name>
 <OfficialEvent>43</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -627,12 +627,35 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1644</ID>
+<ID>1643</ID>
 <Name>Toggle always on top of active window</Name>
 <OfficialEvent>44</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>#A</Key>
+<Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<FlashingWindows>0</FlashingWindows>
+<InitialQuery>switch </InitialQuery>
+<Type>Show Accessor</Type>
+</Action></Actions>
+<Category>Window Handling</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event replaces the default ALT + TAB dialog with the window switcher plugin of Accessor.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>0</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1662</ID>
+<Name>Replace ALT + TAB dialog with Accessor</Name>
+<OfficialEvent>1</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<Key>!Tab</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event></Events>

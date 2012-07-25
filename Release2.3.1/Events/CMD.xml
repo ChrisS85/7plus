@@ -31,7 +31,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>384</ID>
+<ID>383</ID>
 <Name>Run CMD</Name>
 <OfficialEvent>385</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -70,7 +70,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>385</ID>
+<ID>384</ID>
 <Name>Run CMD with path from window title</Name>
 <OfficialEvent>386</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -97,7 +97,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>387</ID>
+<ID>386</ID>
 <Name>Close CMD with ALT + F4</Name>
 <OfficialEvent>388</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -134,7 +134,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>388</ID>
+<ID>387</ID>
 <Name>Enable CTRL+V to paste from clipboard</Name>
 <OfficialEvent>389</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -164,7 +164,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1583</ID>
+<ID>1582</ID>
 <Name>Run CMD in desktop directory</Name>
 <OfficialEvent>987</OfficialEvent>
 <OneInstance>0</OneInstance>

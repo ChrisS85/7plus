@@ -20,7 +20,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>596</ID>
+<ID>595</ID>
 <Name>Run CMD in current directory</Name>
 <OfficialEvent>597</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -59,7 +59,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>597</ID>
+<ID>596</ID>
 <Name>Append file(s) to clipboard</Name>
 <OfficialEvent>598</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -98,7 +98,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>598</ID>
+<ID>597</ID>
 <Name>Append file(s) to clipboard: Cut</Name>
 <OfficialEvent>599</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -134,7 +134,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>600</ID>
+<ID>599</ID>
 <Name>Make backspace go upwards</Name>
 <OfficialEvent>601</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -170,7 +170,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>816</ID>
+<ID>815</ID>
 <Name>Copy filenames to clipboard</Name>
 <OfficialEvent>817</OfficialEvent>
 <OneInstance>1</OneInstance>
@@ -206,7 +206,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>817</ID>
+<ID>816</ID>
 <Name>Copy full filepaths to clipboard</Name>
 <OfficialEvent>818</OfficialEvent>
 <OneInstance>1</OneInstance>
@@ -242,7 +242,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>818</ID>
+<ID>817</ID>
 <Name>Append filenames to clipboard</Name>
 <OfficialEvent>819</OfficialEvent>
 <OneInstance>1</OneInstance>
@@ -278,7 +278,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>819</ID>
+<ID>818</ID>
 <Name>Append full filepaths to clipboard</Name>
 <OfficialEvent>820</OfficialEvent>
 <OneInstance>1</OneInstance>
@@ -307,7 +307,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>826</ID>
+<ID>825</ID>
 <Name>Create new textfile</Name>
 <OfficialEvent>827</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -336,7 +336,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>827</ID>
+<ID>826</ID>
 <Name>Create new folder</Name>
 <OfficialEvent>828</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -371,7 +371,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>895</ID>
+<ID>894</ID>
 <Name>Open image files in image editor</Name>
 <OfficialEvent>896</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -407,7 +407,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>896</ID>
+<ID>895</ID>
 <Name>Open non-image files in text editor</Name>
 <OfficialEvent>897</OfficialEvent>
 <OneInstance>0</OneInstance>

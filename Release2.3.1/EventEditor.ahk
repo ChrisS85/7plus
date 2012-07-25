@@ -546,7 +546,7 @@ Class CEventEditor extends CGUI
 	}
 	btnAddAction_Click()
 	{
-		this.Event.Actions.Insert(Action := new CWindowActiveAction())
+		this.Event.Actions.Insert(Action := new CRunAction())
 		this.listActions.Items.Add(Action.DisplayString())
 		this.UseAction := true
 		this.listActions.SelectedIndex := this.listActions.Items.MaxIndex()

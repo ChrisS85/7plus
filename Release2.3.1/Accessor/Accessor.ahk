@@ -2216,7 +2216,7 @@ Class CAccessorPluginSettingsWindow extends CGUI
 
 	btnHelp_Click()
 	{
-		run % "http://code.google.com/p/7plus/wiki/docsAccessor" this.Plugin.Type ",,UseErrorLevel"
+		OpenWikiPage("http://code.google.com/p/7plus/wiki/docsAccessor" RegexReplace(this.Plugin.Type, "\s\+", ""))
 	}
 }
 Class CAccessorPlugin
