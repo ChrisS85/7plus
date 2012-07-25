@@ -1,5 +1,5 @@
 = Window Switcher Accessor Plugin =
-The main purpose of the accessor window switcher plugin is to activate windows by typing a part of their window title.
+The main purpose of the window switcher plugin is to activate windows by typing a part of their window title.
 In addition, it can:
   * Close windows
   * Kill the process of a window
