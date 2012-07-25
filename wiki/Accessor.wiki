@@ -25,6 +25,11 @@ There are also three different types of buttons on the Accessor window:
 
  * The Program buttons are used to execute programs. They are comparable to the quick launch buttons in earlier versions of windows or to pinned buttons in WIN 7 and later. They can be accessed by pressing their hotkeys, even when the Accessor window isn't open. Programs are assigned to a button by selecting a program from the result list in Accessor and clicking on an empty button or using the context menu of the result.
 
+== Timed execution ==
+Many Accessor actions can be executed with a delay. To do this, simply add " in `[time`]" to your query, where Time can be formatted in free speech (i.e. " in 10 minutes, 5 seconds", "in 01:10:05", "in 5mins", etc...). This is especially useful for shutting down the PC or showing a delayed message to remind you of something:
+ * "Shutdown in 1 hour"
+ * "Message Pizza in 10mins"
+
 == Other tips ==
  * You can press *CTRL + Up / Down* to access the history of previously entered text.
  * Many times Accessor will take note of the current context (i.e. the active program, selected file or selected text) and use this information to show other results, order them differently or integrate the selected text or file as parameter in the query. A popular example is selecting a word, open Accessor and enter "w" to search for the word on Wikipedia.
