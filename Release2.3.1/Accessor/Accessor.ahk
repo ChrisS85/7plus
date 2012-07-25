@@ -752,7 +752,7 @@ Class CAccessor
 	Show(Action, InitialQuery = "")
 	{
 		if(!this.GUI)
-			return
+			return 0
 		
 		;Show some tips
 		TipIndex := 17
@@ -796,6 +796,8 @@ Class CAccessor
 		;Check if a plugin set a custom filter
 		if(!this.Filter)
 			this.RefreshList()
+		
+		return true
 	}
 	
 	Close()
