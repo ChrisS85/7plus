@@ -1,0 +1,24 @@
+= List of Accessor plugins =
+
+The following is a list of Accessor plugins that are shipped with 7plus.
+
+ * [docsAccessorHistory Accessor History] 
+ * [docsAccessorCalculator Calculator] 
+ * [docsAccessorClipboard Clipboard] 
+ * [docsAccessorControlPanel ControlPanel] 
+ * [docsAccessorEventPlugin Event Plugin] 
+ * [docsAccessorFileSearch File Search] 
+ * [docsAccessorFileSystem File System] 
+ * [docsAccessorGoogle Google] 
+ * [docsAccessorKeyword Keyword Plugin] 
+ * [docsAccessorNotepad Notepad++ Tab Switcher] 
+ * [docsAccessorNotes Notes] 
+ * [docsAccessorProgramLauncher Program Launcher] 
+ * [docsAccessorRecentFolders Recent Folders] 
+ * [docsAccessorRegistry Registry] 
+ * [docsAccessorRun Run] 
+ * [docsAccessorSciTE4AutoHotkey SciTE4AutoHotkey Tab Switcher] 
+ * [docsAccessorUninstall Uninstall] 
+ * [docsAccessorURL URL] 
+ * [docsAccessorWeather Weather] 
+ * [docsAccessorWindowSwitcher WindowSwitcher]
