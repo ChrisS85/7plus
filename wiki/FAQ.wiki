@@ -11,6 +11,7 @@ The events in this queue are (normally) processed one after another. At first, t
 This is often used in combination with a hotkey trigger to make application specific hotkeys.
 The actions are performed when all conditions evaluate to TRUE. There are all kinds of actions available that deal with windows, explorer, files or general system actions (run programs, write something to clipboard,...).
 The combinations are nearly endless! :)
+
 For more details about the event system, please see [EventsOverview Event System Overview].
 == About some key features ==
 
