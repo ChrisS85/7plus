@@ -3,7 +3,7 @@ Accessor is a multi-purpose window introduced in 7plus 2.1.0.
 
 http://i45.tinypic.com/w14p74.png
 
-It is similar to launchers like Launchy or Exekutor. By default you can open it by pressing *ALT + SPACE*, but you can change it to any other hotkey or make it show up through some other obscure way by modifying the Accessor event. Type a command and possible matches and actions will appear in the list below. If you press Enter, the action displayed on the right of the textbox is executed. For many results there are multiple actions available which can be accessed by right clicking a list item.
+It is similar to launchers like Launchy or Exekutor. By default you can open it by pressing *ALT + SPACE*, but you can change it to any other hotkey or make it show up through some other obscure way by modifying the Accessor event. Type a command and possible matches and actions will appear in the list below. If you press *Enter*, the action displayed on the right of the textbox is executed. For many results there are multiple actions available which can be accessed by right clicking a list item.
 
 == Plugins ==
 The Accessor comes with many different plugins. A plugin takes care of a specific task, such as browsing the file system or looking up the weather. Most plugins have a specific keyword that is required to use them. You can adjust this keyword and other settings in the "Accessor Plugins" settings page. You can also gain an overview over the available plugins [AccessorPlugins here].
@@ -24,6 +24,6 @@ There are also three different types of buttons on the Accessor window:
  * The Program buttons are used to execute programs. They are comparable to the quick launch buttons in earlier versions of windows or to pinned buttons in WIN 7 and later. They can be accessed by pressing their hotkeys, even when the Accessor window isn't open. Programs are assigned to a button by selecting a program from the result list in Accessor and clicking on an empty button or using the context menu of the result.
 
 == Other tips ==
- * You can press CTRL + Up / Down to access the history of previously entered text.
+ * You can press *CTRL + Up / Down* to access the history of previously entered text.
  * Many times Accessor will take note of the current context (i.e. the active program, selected file or selected text) and use this information to show other results, order them differently or integrate the selected text or file as parameter in the query. A popular example is selecting a word, open Accessor and enter "w" to search for the word on Wikipedia.
  * Accessor learns about your usage habits and orders the results so that often used results will appear at or near the top of the list. You can also assign different priorities to the single plugins to modify the ordering manually.
