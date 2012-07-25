@@ -17,3 +17,6 @@ Like the [docsAccessorFileSystem file system accessor plugin], you can:
   * Show the context menu of the executable file
 
 This plugin has some advanced configuration settings. For each cache path its possible to define custom actions which appear in the context menu. An example for this might be a cache path for music files, where the default action would play the file. A custom action can be defined to enqueue the file to the current playlist (if the player has an appropriate command line option).
+
+== Other uses ==
+This plugin features another mode which is used to open a file with a program from one of these plugins. To access this mode, select a file in Explorer or similar windows and press *CTRL + O*. Accessor will open with "ow " typed into it. Simply type a part of the program's name now to open the selected file with the program.
