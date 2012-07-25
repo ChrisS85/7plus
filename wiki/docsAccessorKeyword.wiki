@@ -1,0 +1,2 @@
+= Keyword plugin =
+The keyword plugin can be used to quickly create new keywords. To do this, select some text or a file which should be used as command for the keyword, open Accessor, and type "Learn as [Name of the keyword]".
