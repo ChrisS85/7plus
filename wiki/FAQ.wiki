@@ -12,14 +12,48 @@ This is often used in combination with a hotkey trigger to make application spec
 The actions are performed when all conditions evaluate to TRUE. There are all kinds of actions available that deal with windows, explorer, files or general system actions (run programs, write something to clipboard,...).
 The combinations are nearly endless! :)
 
-For more details about the event system, please see [EventsOverview Event System Overview].
-== About some key features ==
-
  * *Using the event system:* You can quickly find a specific event by using the categories on the left of the settings page or by typing a part of the event name, trigger text or event description in the search box at the top of the page. This can be useful if you're looking for a specific feature. Keep in mind that some features require more than one event; there might be different events for explorer, desktop and file dialogs for example.
 
- * *Using the Accessor:* The Accessor is a launcher similar to programs like Launchy or Exekutor. By default you can make it show up by pressing *ALT + SPACE*, but you can change it to any other hotkey or make it show up through some other obscure way by modifying the Accessor event. The Accessor comes with many different plugins. A plugin takes care of a specific task, such as browsing the file system or looking up the weather. Most plugins have a specific keyword that is required to use them. You can adjust this keyword and other settings in the "Accessor Plugins" settings page. You can also gain an overview over the available plugins there. When you type something in the text box at the top of the Accessor window, all matching results will show up in the list below. If you press Enter, the action displayed on the top button is executed. For many plugins there are multiple actions available which can be accessed by right clicking a list item. See [Accessor here] for more information about the Accessor.
+For more details about the event system, please see [EventsOverview Event System Overview].
 
- * *Hotstrings:* Hotstrings can be used to expand abbreviations (i.e. "btw" -> "by the way"). You can use PCRE-style regular expressions (see [http://www.autohotkey.com/docs/misc/RegEx-QuickRef.htm here]) for the hotstring. This allows very precise control about the hotstring, but also makes it a bit more difficult to use unfortunately. The value field contains the keys that will be send when a hotstring is matched. You can also use keys like "{Enter}" to write a new line.
+== About the Accessor ==
+The Accessor is a launcher similar to programs like Launchy or Exekutor. By default you can make it show up by pressing *ALT + SPACE*, but you can change it to any other hotkey or make it show up through some other obscure way by modifying the Accessor event. The Accessor comes with many different plugins. A plugin takes care of a specific task, such as browsing the file system or looking up the weather. Most plugins have a specific keyword that is required to use them. You can adjust this keyword and other settings in the "Accessor Plugins" settings page. You can also gain an overview over the available plugins there. When you type something in the text box at the top of the Accessor window, all matching results will show up in the list below. If you press Enter, the action displayed on the top button is executed. For many plugins there are multiple actions available which can be accessed by right clicking a list item.
+See [Accessor here] for more information about the Accessor.
+
+== About Clipboard enhancements ==
+7plus enhances the clipboard in various ways:
+ * First, it provides a clipboard manager that keeps a history of previously copied text. It's also possible to create persistent clips that can be pasted anytime. To access these, press *WIN + V* and select them from the menu. Alternatively it's possible to search for them in the Accessor.
+ * 7plus adds various enhancements to clipboard handling in Explorer. It makes it possible to paste text or images as files into the current directory. There are also some new hotkeys to append files to the currently copied files without replacing them and hotkeys to copy the name or path of the selected files.
+
+== About Explorer enhancements ==
+7plus adds many features to Explorer. Here are the most common ones:
+ * 7plus features a concept named Fast Folders. These are 10 slots to which paths are assigned by pressing *CTRL + Numpad0-9* in Explorer or similar windows. They can be recalled in those windows by pressing the corresponding Numpad key. In Windows Vista and Windows 7 these paths will also appear as buttons in the Explorer band bar so they can be clicked like favorite buttons in browsers.
+ * It adds the ability to use tabs in Explorer. You can create a new tab by pressing *CTRL + T*. The tabs appear on top of the title bar and can be activated by clicking on them or by pressing *CTRL + (SHIFT) + TAB*. They can be closed by middle clicking on the tab or by pressing *CTRL + W*. You can press *CTRL + M* when an Explorer window is active to merge all Explorer windows into one tabbed window.
+ * 7plus can upload the selected files and folders to an FTP server by pressing *CTRL + U*.
+ * 7plus adds dialogs to perform mass-rename and replace-in-files operations. They can be accessed by pressing *CTRL + (SHIFT) + H* in Explorer.
+ * 7plus adds context menu entries to access some of its functions.
+ * Another useful feature is double-clicking on empty space in Explorer to go upwards.
+
+== About Window enhancements ==
+7plus adds many improvements to the ways windows are used:
+ * The always-on-top state of a window can be quickly toggled by right-clicking its title bar or by pressing *WIN + A*.
+ * Windows can be moved outside of the screen by pressing *WIN + SHIFT + Arrow Key*. When they are activated or the mouse is moved at the border they slide into the screen temporarily to allow interaction.
+ * Any window can be moved or resized by holding the ALT keys and grabbing it with the left or right mouse button anywhere (not just its borders).
+ * Windows can be closed by middle-clicking on them in the taskbar.
+
+== About Screenshot and Image Converter tools ==
+7plus supports enhanced screenshot capturing and editing. Press *PrintScreen* to capture the current screen, *WIN + PrintScreen* to capture the current window and *ALT + PrintScreen* to select a region to capture. Captured screenshots can be edited by clicking on the image and can be stored on the hdd, an FTP server or an image hoster in the desired format.
+It's also possible to mass convert or upload images from the hard disk through the context menu.
+
+== About HotStrings ==
+Hotstrings can be used to expand abbreviations (i.e. "btw" -> "by the way"). You can use PCRE-style regular expressions (see [http://www.autohotkey.com/docs/misc/RegEx-QuickRef.htm here]) for the hotstring. This allows very precise control about the hotstring, but also makes it a bit more difficult to use unfortunately. The value field contains the keys that will be send when a hotstring is matched. You can also use keys like "{Enter}" to write a new line.
+
+== About other useful features ==
+7plus provides many more useful features. Often these are just tiny improvements which aren't documented here. However, here are some of the more important ones:
+ * Sound volume can be quickly changed by scrolling the mouse wheel over the taskbar.
+ * The selected text can be quickly searched with Google by pressing *WIN + G*.
+ * Command prompt windows can be opened in the current directory with *WIN + C*
+ * For AHK developers: Temporary scripts can be executed by pressing *WIN + T* and pasting the script in the dialog box.
 
 == Portable mode, admin permissions, interfacing with 7plus... ==
 
