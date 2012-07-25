@@ -6,7 +6,9 @@ http://i45.tinypic.com/w14p74.png
 It is similar to launchers like Launchy or Exekutor. By default you can open it by pressing *ALT + SPACE*, but you can change it to any other hotkey or make it show up through some other obscure way by modifying the Accessor event. Type a command and possible matches and actions will appear in the list below. If you press *Enter*, the action displayed on the right of the textbox is executed. For many results there are multiple actions available which can be accessed by right clicking a list item.
 
 == Plugins ==
-The Accessor comes with many different plugins. A plugin takes care of a specific task, such as browsing the file system or looking up the weather. Most plugins have a specific keyword that is required to use them. You can adjust this keyword and other settings in the "Accessor Plugins" settings page. You can also gain an overview over the available plugins [AccessorPlugins here].
+The Accessor comes with many different plugins. A plugin takes care of a specific task, such as browsing the file system or looking up the weather. Most plugins have a specific keyword that is required to use them. You can adjust this keyword and other settings in the "Accessor Plugins" settings page.
+
+You can also gain an overview over the available plugins [AccessorPlugins here].
 
 == Keywords ==
 In addition to the plugins the Accessor supports the concept of keywords, which means that the keyword is internally expanded to a command. A popular example for this are web searches. You can type "w AutoHotkey" and you'll get the same results as if you typed "http://en.wikipedia.org/wiki/Special:Search?search=AutoHotkey". In short: 
