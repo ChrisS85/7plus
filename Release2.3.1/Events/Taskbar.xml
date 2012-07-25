@@ -17,7 +17,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>896</ID>
+<ID>897</ID>
 <Name>Run task manager</Name>
 <OfficialEvent>898</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -46,7 +46,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>958</ID>
+<ID>959</ID>
 <Name>Over taskbar: Increase volume</Name>
 <OfficialEvent>960</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -76,7 +76,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>959</ID>
+<ID>960</ID>
 <Name>Over taskbar: Decrease volume</Name>
 <OfficialEvent>961</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -88,7 +88,7 @@
 <Actions>
 <Action>
 <Action>Trigger Event</Action>
-<EventID>1598</EventID>
+<EventID>1599</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
 </Action></Actions>
@@ -100,7 +100,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>1596</ID>
+<ID>1597</ID>
 <Name>Dynamic Timer: tray menu item</Name>
 <OfficialEvent>5</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -132,21 +132,21 @@
 </Action><Action>
 <Action>Trigger Event</Action>
 <Compare>${TimerType}</Compare>
-<EventID>1601</EventID>
+<EventID>1602</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
 <With>Message Timer</With>
 </Action><Action>
 <Action>Trigger Event</Action>
 <Compare>${TimerType}</Compare>
-<EventID>1602</EventID>
+<EventID>1603</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
 <With>Run program timer</With>
 </Action><Action>
 <Action>Trigger Event</Action>
 <Compare>${TimerType}</Compare>
-<EventID>1605</EventID>
+<EventID>1606</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
 <With>Shutdown timer</With>
@@ -159,7 +159,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>1598</ID>
+<ID>1599</ID>
 <Name>Dynamic timer: Main</Name>
 <OfficialEvent>6</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -181,7 +181,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>1599</ID>
+<ID>1600</ID>
 <Name>Dynamic Timer: Message timer</Name>
 <OfficialEvent>8</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -206,7 +206,7 @@
 <Action>Copy Event</Action>
 <DeleteAfterUse>1</DeleteAfterUse>
 <EvaluateOnCopy>1</EvaluateOnCopy>
-<EventID>1599</EventID>
+<EventID>1600</EventID>
 <Operator>equals</Operator>
 <Placeholder>MessageTimer</Placeholder>
 <Type>Control event</Type>
@@ -226,9 +226,9 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event asks for a message and starts the message timer.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>1601</ID>
+<ID>1602</ID>
 <Name>Dynamic Timer: Ask for message and start message timer</Name>
 <OfficialEvent>9</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -249,7 +249,7 @@
 <Action>Copy Event</Action>
 <DeleteAfterUse>1</DeleteAfterUse>
 <EvaluateOnCopy>1</EvaluateOnCopy>
-<EventID>1603</EventID>
+<EventID>1604</EventID>
 <Operator>equals</Operator>
 <Placeholder>RunTimer</Placeholder>
 <Type>Control event</Type>
@@ -271,7 +271,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>1602</ID>
+<ID>1603</ID>
 <Name>Dynamic Timer: Ask for program and start Run program timer</Name>
 <OfficialEvent>11</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -294,7 +294,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>1603</ID>
+<ID>1604</ID>
 <Name>Dynamic Timer: Run program timer</Name>
 <OfficialEvent>12</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -320,7 +320,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>1604</ID>
+<ID>1605</ID>
 <Name>Dynamic Timer: Shutdown timer</Name>
 <OfficialEvent>13</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -337,7 +337,7 @@
 <Action>Copy Event</Action>
 <DeleteAfterUse>1</DeleteAfterUse>
 <EvaluateOnCopy>1</EvaluateOnCopy>
-<EventID>1604</EventID>
+<EventID>1605</EventID>
 <Operator>equals</Operator>
 <Placeholder>ShutdownTimer</Placeholder>
 <Type>Control event</Type>
@@ -359,7 +359,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>1605</ID>
+<ID>1606</ID>
 <Name>Dynamic Timer: Start shutdown timer</Name>
 <OfficialEvent>14</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -370,7 +370,7 @@
 <Actions>
 <Action>
 <Action>Trigger Event</Action>
-<EventID>1598</EventID>
+<EventID>1599</EventID>
 <Operator>equals</Operator>
 <Type>Control event</Type>
 </Action></Actions>
@@ -387,7 +387,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1608</ID>
+<ID>1609</ID>
 <Name>Dynamic Timer: Middle mouse click over clock</Name>
 <OfficialEvent>17</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -416,7 +416,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1619</ID>
+<ID>1620</ID>
 <Name>Close window of task button under mouse</Name>
 <OfficialEvent>23</OfficialEvent>
 <OneInstance>0</OneInstance>

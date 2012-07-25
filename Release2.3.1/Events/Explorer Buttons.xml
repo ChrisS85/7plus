@@ -18,7 +18,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>977</ID>
+<ID>978</ID>
 <Name>Upload selected files</Name>
 <OfficialEvent>979</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -43,7 +43,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>978</ID>
+<ID>979</ID>
 <Name>New text file</Name>
 <OfficialEvent>980</OfficialEvent>
 <OneInstance>0</OneInstance>

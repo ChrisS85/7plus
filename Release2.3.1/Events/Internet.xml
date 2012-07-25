@@ -26,7 +26,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>380</ID>
+<ID>381</ID>
 <Name>Explorer: Upload selected files</Name>
 <OfficialEvent>382</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -58,7 +58,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>381</ID>
+<ID>382</ID>
 <Name>File Dialog: Upload selected files</Name>
 <OfficialEvent>383</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -88,7 +88,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1626</ID>
+<ID>1627</ID>
 <Name>URL shortener</Name>
 <OfficialEvent>27</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -112,7 +112,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1651</ID>
+<ID>1652</ID>
 <Name>Search selected text with Google</Name>
 <OfficialEvent>52</OfficialEvent>
 <OneInstance>0</OneInstance>

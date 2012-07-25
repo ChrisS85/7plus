@@ -33,7 +33,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>1</ID>
+<ID>2</ID>
 <Name>Append file(s) to clipboard</Name>
 <OfficialEvent>3</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -74,7 +74,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>2</ID>
+<ID>3</ID>
 <Name>Append file(s) to clipboard: Cut</Name>
 <OfficialEvent>4</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -112,7 +112,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>5</ID>
+<ID>6</ID>
 <Name>Make backspace go upwards</Name>
 <OfficialEvent>7</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -142,7 +142,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>8</ID>
+<ID>9</ID>
 <Name>Run CMD  in current directory</Name>
 <OfficialEvent>10</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -174,7 +174,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>226</ID>
+<ID>227</ID>
 <Name>Copy filenames to clipboard</Name>
 <OfficialEvent>228</OfficialEvent>
 <OneInstance>1</OneInstance>
@@ -206,7 +206,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>227</ID>
+<ID>228</ID>
 <Name>Copy full filepaths to clipboard</Name>
 <OfficialEvent>229</OfficialEvent>
 <OneInstance>1</OneInstance>
@@ -238,7 +238,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>228</ID>
+<ID>229</ID>
 <Name>Append filenames to clipboard</Name>
 <OfficialEvent>230</OfficialEvent>
 <OneInstance>1</OneInstance>
@@ -270,7 +270,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>229</ID>
+<ID>230</ID>
 <Name>Append full filepaths to clipboard</Name>
 <OfficialEvent>231</OfficialEvent>
 <OneInstance>1</OneInstance>
@@ -301,7 +301,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>230</ID>
+<ID>231</ID>
 <Name>Create new textfile</Name>
 <OfficialEvent>232</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -332,7 +332,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>231</ID>
+<ID>232</ID>
 <Name>Create new folder</Name>
 <OfficialEvent>233</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -356,7 +356,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>234</ID>
+<ID>235</ID>
 <Name>Run explorer</Name>
 <OfficialEvent>236</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -378,7 +378,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>236</ID>
+<ID>237</ID>
 <Name>Double click go upwards</Name>
 <OfficialEvent>238</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -414,7 +414,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>299</ID>
+<ID>300</ID>
 <Name>Open image files in image editor</Name>
 <OfficialEvent>301</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -452,7 +452,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>300</ID>
+<ID>301</ID>
 <Name>Open non-image files in text editor</Name>
 <OfficialEvent>302</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -489,7 +489,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>303</ID>
+<ID>304</ID>
 <Name>Select files</Name>
 <OfficialEvent>305</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -533,7 +533,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>317</ID>
+<ID>318</ID>
 <Name>Allow right-click on files in inactive window</Name>
 <OfficialEvent>319</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -569,7 +569,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1580</ID>
+<ID>1581</ID>
 <Name>Restore selection</Name>
 <OfficialEvent>985</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -600,7 +600,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>979</ID>
+<ID>980</ID>
 <Name>Toggle hidden files</Name>
 <OfficialEvent>981</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -637,7 +637,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1615</ID>
+<ID>1616</ID>
 <Name>Show flat view of selected files</Name>
 <OfficialEvent>19</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -667,7 +667,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1618</ID>
+<ID>1619</ID>
 <Name>Open folder in new window/tab</Name>
 <OfficialEvent>22</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -696,7 +696,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1621</ID>
+<ID>1622</ID>
 <Name>Close explorer tab under mouse</Name>
 <OfficialEvent>25</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -728,7 +728,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1622</ID>
+<ID>1623</ID>
 <Name>Show Explorer Rename/Replace dialog</Name>
 <OfficialEvent>20</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -755,7 +755,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1627</ID>
+<ID>1628</ID>
 <Name>Merge all explorer windows</Name>
 <OfficialEvent>28</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -782,7 +782,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1632</ID>
+<ID>1633</ID>
 <Name>Invert selection</Name>
 <OfficialEvent>33</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -814,7 +814,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1633</ID>
+<ID>1634</ID>
 <Name>Explorer Replace in Files Dialog</Name>
 <OfficialEvent>34</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -825,7 +825,6 @@
 </Event><Event>
 <Actions>
 <Action>
-<FlashingWindows>0</FlashingWindows>
 <InitialQuery>\</InitialQuery>
 <Type>Show Accessor</Type>
 </Action></Actions>
@@ -837,7 +836,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1659</ID>
+<ID>1660</ID>
 <Name>Open Accessor to execute files from the current directory</Name>
 <OfficialEvent>59</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -848,7 +847,6 @@
 </Event><Event>
 <Actions>
 <Action>
-<FlashingWindows>0</FlashingWindows>
 <InitialQuery>ow </InitialQuery>
 <Type>Show Accessor</Type>
 </Action></Actions>
@@ -860,7 +858,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1660</ID>
+<ID>1661</ID>
 <Name>Use Accessor to open the selected file with a program</Name>
 <OfficialEvent>60</OfficialEvent>
 <OneInstance>0</OneInstance>

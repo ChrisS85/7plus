@@ -3,7 +3,6 @@
 <Event>
 <Actions>
 <Action>
-<FlashingWindows>0</FlashingWindows>
 <Type>Show Accessor</Type>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
@@ -19,7 +18,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>316</ID>
+<ID>317</ID>
 <Name>Show Accessor</Name>
 <OfficialEvent>318</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -41,7 +40,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>382</ID>
+<ID>383</ID>
 <Name>Clipboard Manager</Name>
 <OfficialEvent>384</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -76,7 +75,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>960</ID>
+<ID>961</ID>
 <Name>Picture viewer: Rotate image right with R</Name>
 <OfficialEvent>962</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -111,7 +110,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>961</ID>
+<ID>962</ID>
 <Name>Picture viewer: Rotate image left with L</Name>
 <OfficialEvent>963</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -135,7 +134,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1588</ID>
+<ID>1589</ID>
 <Name>Show volume window</Name>
 <OfficialEvent>993</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -159,7 +158,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1589</ID>
+<ID>1590</ID>
 <Name>Show volume window</Name>
 <OfficialEvent>994</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -183,7 +182,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1590</ID>
+<ID>1591</ID>
 <Name>Show volume window</Name>
 <OfficialEvent>995</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -219,7 +218,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>1613</ID>
+<ID>1614</ID>
 <Name>Picture viewer: Rotate image right with R</Name>
 <OfficialEvent>15</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -243,7 +242,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>1609</ID>
+<ID>1610</ID>
 <Name>Write newline characters</Name>
 <OfficialEvent>16</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -279,7 +278,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
-<ID>1614</ID>
+<ID>1615</ID>
 <Name>Picture viewer: Rotate image left with L</Name>
 <OfficialEvent>18</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -311,7 +310,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1620</ID>
+<ID>1621</ID>
 <Name>Toggle Wallpaper (Mouse over desktop)</Name>
 <OfficialEvent>24</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -359,7 +358,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1636</ID>
+<ID>1637</ID>
 <Name>Take screenshot: Use Image Converter</Name>
 <OfficialEvent>37</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -407,7 +406,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1637</ID>
+<ID>1638</ID>
 <Name>Take screenshot of custom area: Use Image Converter</Name>
 <OfficialEvent>38</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -455,7 +454,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1638</ID>
+<ID>1639</ID>
 <Name>Take screenshot of window: Use Image Converter</Name>
 <OfficialEvent>39</OfficialEvent>
 <OneInstance>0</OneInstance>
@@ -497,7 +496,7 @@
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
-<ID>1644</ID>
+<ID>1645</ID>
 <Name>Run temporary AHK script</Name>
 <OfficialEvent>45</OfficialEvent>
 <OneInstance>0</OneInstance>
