@@ -53,7 +53,7 @@ Hotstrings can be used to expand abbreviations (i.e. "btw" -> "by the way"). You
 7plus provides many more useful features. Often these are just tiny improvements which aren't documented here. However, here are some of the more important ones:
  * Sound volume can be quickly changed by scrolling the mouse wheel over the taskbar.
  * The selected text can be quickly searched with Google by pressing *WIN + G*.
- * Command prompt windows can be opened in the current directory with *WIN + C*
+ * Command prompt windows can be opened in the current directory with *WIN + C*.
  * For AHK developers: Temporary scripts can be executed by pressing *WIN + T* and pasting the script in the dialog box.
 
 == Portable mode, admin permissions, interfacing with 7plus... ==
