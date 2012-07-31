@@ -1520,6 +1520,7 @@ GetWindowInfo()
 	DetectHiddenWindows, Off
 	WinGet, Window_List, List ; Gather a list of running programs
 	hInstance := GetModuleHandle(0)
+	order := 0
 	Loop, %Window_List%
 	{
 		wid := Window_List%A_Index%
@@ -1562,8 +1563,8 @@ GetWindowInfo()
 			hIcon := ExtractIcon(hInstance, CPA_file_name, 1)
 		Else
 			hIcon := GetWindowIcon(wid, 1) ; (window id, whether to get large icons)
-		
-		windows.Insert(Object("hwnd",wid,"Title", wid_Title, "Class", Win_Class, "Style", Style, "ExStyle", es, "ExeName", Exe_Name, "Path", FullPath, "OnTop", (es&0x8 > 0 ? "On top" : ""), "PID", PID, "Type", "Window", "Icon", hIcon))
+		order++
+		windows.Insert(Object("hwnd",wid,"Title", wid_Title, "Class", Win_Class, "Style", Style, "ExStyle", es, "ExeName", Exe_Name, "Path", FullPath, "OnTop", (es&0x8 > 0 ? "On top" : ""), "PID", PID, "Order", order, "Type", "Window", "Icon", hIcon))
 	}
 	return windows
 }

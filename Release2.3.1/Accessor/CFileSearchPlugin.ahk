@@ -259,25 +259,24 @@ Class CFileSearchPlugin extends CAccessorPlugin
 		if(this.hModule)
 		{
 			DriveGet, Drives, List, FIXED
-			NTFSDrives := ""
+			NTFSDrives := []
 			Loop, Parse, Drives
 			{
 				DriveGet, FS, FS, %A_LoopField%:
 				if(FS = "NTFS")
-					NTFSDrives .= A_LoopField
+					NTFSDrives.Insert(A_LoopField)
 			}
-			DriveCount := StrLen(NTFSDrives)
+			DriveCount := NTFSDrives.MaxIndex()
 			DrivesLeft := ""
-			Loop, Parse, NTFSDrives
+			Critical, On
+			for index, Drive in NTFSDrives
 			{
-				Drive := A_LoopField
 				IndexPath := Settings.ConfigPath "\" Drive ".index"
 				if(FileExist(IndexPath))
 				{
 					FileGetTime, ModificationTime, %IndexPath%
 					Delta := A_Now
 					EnvSub, Delta, %ModificationTime%, minutes
-					outputdebug time: %delta%
 					if(Delta > 0 && Delta / 60 < this.Settings.IndexingFrequency && LoadExisting)
 					{
 						this.LoadDriveIndex(Drive, IndexPath)
@@ -285,7 +284,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 					}
 				}
 				Outputdebug Start worker thread to build index for %Drive%
-				WorkerThread := new CWorkerThread("BuildFileDatabaseForDrive", 0, 0, 1)
+				WorkerThread := new CWorkerThread("BuildFileDatabaseForDrive", 0, 1, 1)
 				;WorkerThread.OnProgress.Handler := new Delegate(this, "ProgressHandler")
 				WorkerThread.OnStop.Handler := new Delegate(this, "OnStop")
 				;WorkerThread.OnData.Handler := new Delegate(this, "OnData")
@@ -293,6 +292,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 				WorkerThread.Start(Drive, IndexPath)
 				if(WorkerThread.WaitForStart(5))
 				{
+					outputdebug Started worker thread for %Drive%
 					this.IndexingWorkerThreads[Drive] := WorkerThread
 					DrivesLeft .= (StrLen(DrivesLeft) > 0 ? ", " : "") Drive
 				}
@@ -302,8 +302,12 @@ Class CFileSearchPlugin extends CAccessorPlugin
 					Notify("File search error!", "Couldn't start the searching process!", 5, NotifyIcons.Error)
 				}
 			}
+
 			if(StrLen(DrivesLeft))
 				this.IndexingWorkerThreads.NotificationWindow := Notify("Indexing drives for file search", "Drives left: " DrivesLeft, "", NotifyIcons.Info)
+			
+			Critical, Off
+
 			if(Delta > 0 && Delta < this.Settings.IndexingFrequency)
 				SetTimer, UpdateFileSystemIndex, % (Delta - this.Settings.IndexingFrequency) * 3600000
 			else
@@ -362,9 +366,11 @@ Class CFileSearchPlugin extends CAccessorPlugin
 		return "File search may take up to a few seconds, please have patience."
 	}
 }
+
 UpdateFileSystemIndex:
 CAccessor.Plugins[CFileSearchPlugin.Type].BuildFileDatabase(false)
 return
+
 ;Builds a database of all files on fixed drives
 BuildFileDatabaseForDrive(WorkerThread, Drive, Path)
 {

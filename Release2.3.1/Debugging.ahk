@@ -164,6 +164,15 @@ Class CErrorDisplay extends CGUI
 #i::
 x := new CErrorDisplay()
 return
+
+#x::
+debug := debug ? false : true
+return
+
+#y::
+DetectHiddenWindows On
+PostMessage DllCall("RegisterWindowMessage", "str", "AHK_ATTACH_DEBUGGER"),,,, ahk_id %A_ScriptHwnd%
+return
 #if
 
 FormatMessageFromSystem(ErrorCode)
@@ -178,4 +187,17 @@ FormatMessageFromSystem(ErrorCode)
       , "UInt", 500
       , "PTR", 0)
    Return Buffer
+}
+
+CallStack(deepness = 5, printLines = 1)
+{
+	loop % deepness
+	{
+		ident .= A_Index = 1 ? "" : " "
+		lvl := -1 - deepness + A_Index
+		oEx := Exception("", lvl)
+		oExPrev := Exception("", lvl - 1)
+		stack .= (A_index = 1 ? "" : "`n") ident "File '" oEx.file "', Line " oEx.line ", in " oExPrev.What (printLines ? ":`n" ident "     " FileReadLine(oEx.file, oEx.line) : "")
+	}
+	return stack
 }

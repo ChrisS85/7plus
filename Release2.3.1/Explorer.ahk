@@ -340,7 +340,7 @@ Wheel()
 	Critical 
 	CoordMode, Mouse, Screen
 	MouseGetPos, MouseX, MouseY 
-	DllCall("SendMessage","PTR",DllCall( "WindowFromPoint", "INT64", MouseX | (MouseY << 32), "Ptr"),"UInt", 0x20A, "PTR",(120 * (A_ThisHotkey = "WheelUp" ? 1 : -1)) << 16,"PTR", ( MouseY << 16 )|MouseX)
+	DllCall("SendMessage", "PTR", DllCall("WindowFromPoint", "INT64", MouseX | (MouseY << 32), "Ptr"), "UInt", 0x20A, "PTR", (120 * (A_ThisHotkey = "WheelUp" ? 1 : -1)) << 16, "PTR", (MouseY << 16) | MouseX)
 	if(!WasCritical)
 		Critical, Off
 	return

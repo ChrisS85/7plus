@@ -24,6 +24,7 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 		IgnoreFileExtensions := true
 		FuzzySearch := false
 		ShowWithEmptyQuery := false
+		HideCurrentWindow := true
 	}
 
 	Class CResult extends CAccessorPlugin.CResult
@@ -83,6 +84,8 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 		FuzzyList := Array()
 		for index, window in this.List
 		{
+			if(this.Settings.HideCurrentWindow && !Filter && window.hwnd = Accessor.PreviousWindow)
+				continue
 			ExeName := this.Settings.IgnoreFileExtensions ? strTrimRight(window.ExeName,".exe") : window.ExeName
 			EmptyMatch := this.Settings.ShowWithEmptyQuery && Filter = ""
 			TitleMatch := FuzzySearch(window.Title, Filter, this.Settings.FuzzySearch)
@@ -90,6 +93,7 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 			if((MatchQuality := max(EmptyMatch, TitleMatch, ExeMatch)) > Accessor.Settings.FuzzySearchThreshold)
 			{
 				Result := new this.CResult()
+				Result.Priority -= window.Order * 0.001
 				Result.Title := window.Title
 				Result.Path := window.Path
 				Result.ExeName := window.ExeName
