@@ -951,8 +951,11 @@ WriteAccess( F ) {
 		Return ((h := DllCall("_lopen", AStr, F, Int, 1, "Ptr")) > 0 ? 1 : 0) (DllCall("_lclose", "Ptr", h) + NULL) 
 	else
 	{
-		F := FindFreeFilename(F)
-		FileAppend, x, %F$%
+		SplitPath, F,,Dir
+		F := FindFreeFilename(Dir)
+		FileAppend, x, %F%
+		Success := !ErrorLevel
+		FileDelete, %F%
 		return !ErrorLevel
 	}
 }

@@ -53,10 +53,12 @@ outputdebug 7plus Starting...
 ;If the current config path is set to the program directory but there is no write access because UAC is activated and 7plus is running as user,
 ;7plus cannot store its settings and warns the user about it
 if((ApplicationState.IsPortable && !WriteAccess(Settings.ConfigPath "\Accessor.xml")))
-	MsgBox No file access to settings files in 7plus directory. 7plus will not be able to store its settings. Please move 7plus to a folder with write permissions, run it as administrator, or grant write permissions to this directory.
-
+{
+	MsgBox % "No file access to settings files in 7plus directory """ Settings.ConfigPath "\Accessor.xml"". 7plus will not be able to store its settings. Please move 7plus to a folder with write permissions, run it as administrator, or grant write permissions to this directory."
+	ExitApp
+}
 ;Fresh install, copy default events file into config directory
-if(!FileExist(Settings.ConfigPath)) 
+if(!FileExist(Settings.ConfigPath "\Settings.ini")) 
 {
 	FileCreateDir % Settings.ConfigPath
 	FileCopy, %A_ScriptDir%\Events\All Events.xml, % Settings.ConfigPath "\Events.xml"
