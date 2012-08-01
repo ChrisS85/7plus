@@ -7,7 +7,7 @@ Class CMouseWindowResizeAction Extends CAction
 	{
 		if(this.HasKey("tmpResizingWindow") && this.tmpResizingWindow = false) ;This only happens when the event has finished already
 			return 1
-		else if(this.HasKey("tmpResizingWindow")) ;Resizeging still in progress
+		else if(this.HasKey("tmpResizingWindow")) ;Resizing still in progress
 			return -1
 		for index, QueuedEvent in EventSystem.EventSchedule ;Make sure no Resize event is in progress
 		{

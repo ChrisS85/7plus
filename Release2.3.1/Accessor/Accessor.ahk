@@ -806,22 +806,10 @@ Class CAccessor
 		SetTimer, AccessorGUIClose, -10
 	}
 
-	;Sets the filter and tries to wait (for max. 5 seconds) until results are there
+	;Sets the filter
 	SetFilter(Text, SelectionStart = -1, SelectionEnd = -1)
 	{
 		this.GUI.SetFilter(Text, SelectionStart, SelectionEnd)
-		SetTimer, AccessorWaitForRefresh, -100
-	}
-	WaitForRefresh()
-	{
-		static count := 0
-		if(this.IsRefreshing && count < 50)
-		{
-			count++
-			SetTimer, AccessorWaitForRefresh, -100
-		}
-		else
-			count := 0
 	}
 	OnFilterChanged(Filter)
 	{
@@ -1390,8 +1378,12 @@ Class CAccessor
 
 	OpenPathWithAccessor(ListEntry, Plugin)
 	{
-		if(ListEntry.Path)
-			this.SetFilter(ListEntry.Path (strEndsWith(ListEntry.Path, "\") ? "" : "\"))
+		if(Path := ListEntry.Path)
+		{
+			if(!InStr(FileExist(Path), "D"))
+				SplitPath, Path,,Path
+			this.SetFilter(Path (strEndsWith(Path, "\") ? "" : "\"))
+		}
 	}
 
 	SelectProgram(ListEntry, Plugin)
@@ -1408,10 +1400,6 @@ Class CAccessor
 
 AccessorGUIClose:
 CAccessor.Instance.GUI.Close()
-return
-
-AccessorWaitForRefresh:
-CAccessor.Instance.WaitForRefresh()
 return
 
 #F1::
@@ -2129,7 +2117,7 @@ CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.OpenExplorer)
 return
 #if
 
-#if (CAccessor.Instance.GUI.Visible && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenPathWithAccessor) && !IsContextMenuActive())
+#if CAccessor.Instance.GUI.Visible && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenPathWithAccessor) && !IsContextMenuActive()
 ^b::
 CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.OpenPathWithAccessor)
 return

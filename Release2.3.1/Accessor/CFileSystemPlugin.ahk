@@ -103,7 +103,7 @@ Class CFileSystemPlugin extends CAccessorPlugin
 		else
 			Detail1 := "File"
 	}
-
+	
 	OnOpen(Accessor)
 	{
 		;Automatically open path when a path is selected before Accessor is opened

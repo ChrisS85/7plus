@@ -141,6 +141,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 				this.Insert(CAccessorPlugin.CActions.OpenWith)
 				this.Insert(CAccessorPlugin.CActions.OpenExplorer)
 				this.Insert(CAccessorPlugin.CActions.OpenCMD)
+				this.Insert(CAccessorPlugin.CActions.OpenPathWithAccessor)
 				this.Insert(CAccessorPlugin.CActions.Copy)
 				this.Insert(CAccessorPlugin.CActions.ExplorerContextMenu)
 			}

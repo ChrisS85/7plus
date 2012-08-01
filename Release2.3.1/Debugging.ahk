@@ -173,6 +173,9 @@ return
 DetectHiddenWindows On
 PostMessage DllCall("RegisterWindowMessage", "str", "AHK_ATTACH_DEBUGGER"),,,, ahk_id %A_ScriptHwnd%
 return
+#b::
+msgbox % Callstack(5, 1)
+return
 #if
 
 FormatMessageFromSystem(ErrorCode)
@@ -188,16 +191,17 @@ FormatMessageFromSystem(ErrorCode)
       , "PTR", 0)
    Return Buffer
 }
-
 CallStack(deepness = 5, printLines = 1)
 {
 	loop % deepness
 	{
-		ident .= A_Index = 1 ? "" : " "
 		lvl := -1 - deepness + A_Index
 		oEx := Exception("", lvl)
 		oExPrev := Exception("", lvl - 1)
-		stack .= (A_index = 1 ? "" : "`n") ident "File '" oEx.file "', Line " oEx.line ", in " oExPrev.What (printLines ? ":`n" ident "     " FileReadLine(oEx.file, oEx.line) : "")
+		FileReadLine, line, % oEx.file, % oEx.line
+		if(line = "		oEx := Exception("""", lvl)")
+			continue
+		stack .= (stack ? "`n" : "") "File '" oEx.file "', Line " oEx.line ", in " oExPrev.What (printLines ? ":`n" line : "") "`n"
 	}
 	return stack
 }

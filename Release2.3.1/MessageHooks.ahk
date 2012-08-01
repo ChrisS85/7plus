@@ -14,7 +14,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 		return
 	WinGet, style, Style, ahk_id %hwnd%
 	if (style & 0x40000000)	;return if hwnd is child window, for some reason idChild may be 0 for some children ?!?! ( I hate ms )
-		return	
+		return
 	if(event=0x0016) ;EVENT_SYSTEM_MINIMIZEEND
 	{
 		Trigger := new CWindowStateChangeTrigger()

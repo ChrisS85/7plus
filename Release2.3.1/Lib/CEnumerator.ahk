@@ -15,6 +15,9 @@ Class CEnumerator
 	}
 	Next(byref key, byref value)
 	{
+		global debug
+		if(debug)
+			msgbox % "Next(" key ", " value ")`nClass: " this.Object.__Class "`nstart`nCallstack:`n" Callstack(20, 1)
 		if(key = "")
 		{
 			key := this.Object.MinIndex()
@@ -23,10 +26,16 @@ Class CEnumerator
 		}
 		else
 			key++
+
+		if(debug)
+			msgbox % "Next(" key ", " value ") middle`nCallstack:`n" Callstack(20, 1)
 		if(key <= this.Object.MaxIndex())
 			value := this.Object[key]
 		else
 			key := ""
+
+		if(debug)
+			msgbox % "Next(" key ", " value ") end`nCallstack:`n" Callstack(20, 1)
 		return key != ""
 	}
 }
