@@ -95,6 +95,7 @@ Class CSettings
 		static FullscreenInclude             := "Project64"
 		static RunAsAdmin                    := "Always/Ask"
 		static HideTrayIcon                  := 0
+		static IgnoredPrograms				 := "KeePass.exe"
 	}
 	Misc := new this.CMisc()
 	

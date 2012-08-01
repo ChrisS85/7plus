@@ -117,14 +117,14 @@ WindowFilter_Matches(WindowFilter, TargetWindow, TriggerFilter = "")
 					&&(!WindowFilter.WindowFilterClass || class = WindowFilter.WindowFilterClass)
 					&&(!WindowFilter.WindowFilterTitle || InStr(title,WindowFilter.WindowFilterTitle) = 1))
 		}
-		else if(WindowFilter.WindowMatchType = "Active")	
+		else if(WindowFilter.WindowMatchType = "Active")
 		{
 			if(!TargetWindow || WinActive("ahk_id " TargetWindow))
 				return true
 		}
 		else if(WindowFilter.WindowMatchType = "UnderMouse")
 		{
-			MouseGetPos,,,UnderMouse
+			MouseGetPos, , , UnderMouse
 			if(!TargetWindow || UnderMouse = TargetWindow)
 				return true
 		}

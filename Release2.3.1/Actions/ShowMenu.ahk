@@ -75,11 +75,12 @@ BuildMenu(Name)
 		;Persistent clips
 		Menu, PersistentClipboard, DeleteAll
 
-		if(text := GetSelectedText())
-		{
+		;Unfortunately this check will change the clipboard owner which results in capturing a clipboard change although the original owner should be ignored
+		;if(text := GetSelectedText())
+		;{
 			Menu, PersistentClipboard, add, Add selected text as persistent clip ..., AddClip
 			Menu, PersistentClipboard, Icon, Add selected text as persistent clip ..., % A_WinDir "\system32\wmploc.dll", 16
-		}
+		;}
 		Menu, PersistentClipboard, add, Edit persistent clips ..., EditClips
 		Menu, PersistentClipboard, Icon, Edit persistent clips ..., % A_WinDir "\system32\shell32.dll", 270
 

@@ -1096,18 +1096,25 @@ Finally, here are some settings that you're likely to change at the beginning:
 	CreateClipboard()
 	{
 		Page := this.Pages.Clipboard.Tabs[1]
-		Page.AddControl("Text", "txtClipboardDescription", "xs+21 ys+19", "You can define custom clips here that can be inserted through the clipboard manager menu (Default: WIN + V)`nor through Accessor (Default: ALT + Space). These clips support %Parameters%.")
-		Page.AddControl("Text", "txtClipboardName", "xs+21 ys+290 w51 h13", "Name:")
-		Page.AddControl("Edit", "editClipboardName", "xs+84 ys+287 w462 h20", "")
-		Page.Controls.editClipboardName.ToolTip := "The name of the clip"
-		Page.AddControl("Text", "txtClipboardText", "xs+21 ys+316 w57 h13", "Text:")
-		Page.AddControl("Edit", "editClipboardText", "xs+84 ys+313 w462 r13 Multi", "")
-		Page.Controls.editClipboardText.ToolTip := "The text of the clip. You can use parameters like this: ""Hello %Name%""`nWhen the clip is inserted, a dialog will show up and ask for a value."
 		
-		Page.AddControl("Button", "btnDeleteClip", "xs+554 ys+78 w90 h23", "&Delete Clip")
+		Page.AddControl("Text", "txtClipboardDescription", "xs+21 ys+19", "You can define custom clips here that can be inserted through the clipboard manager menu (Default: WIN + V)`nor through Accessor (Default: ALT + Space). These clips support %Parameters%.")
+		
 		Page.AddControl("Button", "btnAddClip", "xs+554 ys+49 w90 h23", "&Add Clip")
-		Page.AddControl("ListView", "listClipboard", "xs+21 ys+49 w525 h232", "Name|Text")
+		Page.AddControl("Button", "btnDeleteClip", "xs+554 ys+79 w90 h23", "&Delete Clip")
+		Page.AddControl("ListView", "listClipboard", "xs+21 ys+49 w525 h152", "Name|Text")
 		Page.Controls.listClipboard.IndependentSorting := true
+		
+		Page.AddControl("Text", "txtClipboardName", "xs+21 ys+210 w51 h13", "Name:")
+		Page.AddControl("Edit", "editClipboardName", "xs+84 ys+207 w462 h20", "")
+		Page.Controls.editClipboardName.ToolTip := "The name of the clip"
+		Page.AddControl("Text", "txtClipboardText", "xs+21 ys+236 w57 h13", "Text:")
+		Page.AddControl("Edit", "editClipboardText", "xs+84 ys+233 w462 r7 Multi", "")
+		Page.Controls.editClipboardText.ToolTip := "The text of the clip. You can use parameters like this: ""Hello %Name%""`nWhen the clip is inserted, a dialog will show up and ask for a value."
+
+		Page.AddControl("Text", "txtClipboardIgnoreDescription", "xs+21 ys+353", "The programs listed here will be ignored by any clipboard related functions of 7plus. This can be used`nto protect the privacy of some clipboard contents such as passwords copied by password managers.")
+		Page.AddControl("Button", "btnAddClipboardProgram", "xs+554 ys+383 w90 h23", "Add Program")
+		Page.AddControl("Button", "btnDeleteClipboardProgram", "xs+554 ys+413 w90 h23", "Delete Program")
+		Page.AddControl("ListBox", "listClipboardIgnore", "xs+21 ys+383 w525 h120", "")
 	}
 	InitClipboard()
 	{
@@ -1120,6 +1127,9 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Loop % this.ClipboardList.MaxIndex()
 			Page.listClipboard.Items.Add(A_Index = 1 ? "Select" : "", this.ClipboardList[A_Index].Name, this.ClipboardList[A_Index].Text)
 		this.listClipboard_SelectionChanged("")
+
+		for index, program in ToArray(Settings.Misc.IgnoredPrograms, "|")
+			Page.listClipboardIgnore.Items.Add(program)
 	}
 
 	ShowClipboard()
@@ -1151,6 +1161,11 @@ Finally, here are some settings that you're likely to change at the beginning:
 				pos++
 		}
 		ClipboardList.Persistent := this.ClipboardList.DeepCopy()
+
+		IgnoredPrograms := ""
+		for index, item in Page.listClipboardIgnore.Items
+			IgnoredPrograms .= (A_Index = 1 ? "" : "|") item.Text
+		Settings.Misc.IgnoredPrograms := IgnoredPrograms
 	}
 	btnAddClip_Click()
 	{
@@ -1210,6 +1225,25 @@ Finally, here are some settings that you're likely to change at the beginning:
 		this.ClipboardList[Page.listClipboard.SelectedIndex].Text := Page.editClipboardText.Text
 	}
 	
+	btnAddClipboardProgram_Click()
+	{
+		Page := this.Pages.Clipboard.Tabs[1].Controls
+		fd := new CFileDialog("Open")
+		fd.Filter := "Executable files (*.exe)"
+		if(fd.Show())
+		{
+			SplitPath(fd.Filename, Filename)
+			Page.listClipboardIgnore.Items.Add(Filename)
+		}
+			
+	}
+
+	btnDeleteClipboardProgram_Click()
+	{
+		Page := this.Pages.Clipboard.Tabs[1].Controls
+		Page.listClipboardIgnore.Items.Delete(Page.listClipboardIgnore.SelectedIndex)
+	}
+
 	;Explorer
 	CreateExplorer()
 	{

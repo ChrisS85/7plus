@@ -1502,7 +1502,7 @@ GetSelectedText()
 	ClipWait, 0.05, 1
 	result := clipboard
 	clipboard := clipboardbackup
-	MuteClipboardList:=false
+	MuteClipboardList := false
 	return result
 }
 
