@@ -2,7 +2,7 @@
 *New Functions:* 
  * Complete rewrite of the Accessor launcher and its plugins. See below for details.
  * Full Windows 8 compatibility
- * Improved Clipboard Manager by adding persistent clipboard entries that can be searched and support parameters. This is now backed by an Accessor plugin, see below.
+ * Improved Clipboard Manager by adding persistent clipboard entries that can be searched and support parameters. This is now backed by an Accessor plugin, see below. Additionally, programs can now be excluded from the clipboard history to protect the privacy of sensitive data copied from these programs.
  * Added Explorer path history and frequent paths to the Clipboard Manager menu.
  * FTP upload action can now upload directories. In addition, FTP and image uploads are carried out in a separate process for better responsiveness.
  * TAB key can now be used for autocompletion instead of switching the focus whenever a common autocompletion-list is visible (Examples: Path fields, Run dialog).
