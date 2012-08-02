@@ -361,7 +361,6 @@ Class CImageConverter extends CGUI
 	
 	btnCopyToClipboard_Click()
 	{
-		global MuteClipboardList
 		SplitPath(this.Picture.Picture, "", FilePath)
 		FilePath .= "\" FileName
 		pConverted := this.ConvertSingleImage(this.Picture.Picture, FilePath, changed)

@@ -378,13 +378,13 @@ Class COldFileDialogNavigationSource
 		MuteClipboardList := true
 		ClipboardBackup := ClipboardAll
 		clipboard := ""
-		ClipWait, 2, 1
+		WaitForEvent("ClipboardChange", 100)
 		ControlSend, SysListView321, ^c, ahk_id %hwnd%
-		ClipWait, 2
 		result := Clipboard
 		Clipboard := ClipboardBackup
+		WaitForEvent("ClipboardChange", 100)
 		ControlFocus %focused%, ahk_id %hwnd%
-		MuteClipboardList:=false
+		MuteClipboardList := false
 		Files := Array()
 		Loop, Parse, result, `n, `r
 			Files.Insert(A_LoopField)
@@ -486,13 +486,13 @@ Class CNewFileDialogNavigationSource
 		MuteClipboardList := true
 		ClipboardBackup := ClipboardAll
 		clipboard := ""
-		ClipWait, 2, 1
+		WaitForEvent("ClipboardChange", 100)
 		ControlSend, DirectUIHWND2, ^c, ahk_id %hwnd%
-		ClipWait, 2
 		result := Clipboard
 		Clipboard := ClipboardBackup
+		WaitForEvent("ClipboardChange", 100)
 		ControlFocus %focussed%, ahk_id %hwnd%
-		MuteClipboardList:=false
+		MuteClipboardList := false
 		Files := Array()
 		Loop, Parse, result, `n, `r
 			Files.Insert(A_LoopField)

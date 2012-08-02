@@ -8,6 +8,7 @@ return
 OnClipboardChange()
 {
 	global MuteClipboardList, ClipboardList
+	RaiseEvent("ClipboardChange")
 	if(MuteClipboardList)
 	{
 		FileAppend, %A_Now%: Clipboard changed to %Clipboard% but it's muted`n, %A_Temp%\7plus\Log.log
@@ -64,6 +65,7 @@ CreateFileFromClipboard()
 		ShowTip({Min : 14, Max : 15})
 		outputdebug a file is already in the clipboard
 	}
+	WaitForEvent("ClipboardChange", 100)
 	MuteClipboardList := false
 }
 ;Read real text (=not filenames, when CF_HDROP is in clipboard) from clipboard
@@ -339,14 +341,15 @@ Class CClipVariableWindow extends CGUI
 			PasteText(text)
 	}
 }
+
+; Write text at cursor position, overwriting selected text
 PasteText(Text)
 {
 	global MuteClipboardList
 	ClipboardBackup := ClipboardAll
 	MuteClipboardList := true
 	Clipboard := Text
-	Clipwait, 1
-	if(!Errorlevel)
+	if(WaitForEvent("ClipboardChange", 100))
 	{
 		Sleep 100 ;Some extra sleep to increase reliability
 		if(WinActive("ahk_class ConsoleWindowClass"))
@@ -366,6 +369,6 @@ PasteText(Text)
 	else
 		SendInput, {Raw}%Text%
 	Clipboard := ClipboardBackup
-	Clipwait, 1, 1
+	WaitForEvent("ClipboardChange", 100)
 	MuteClipboardList := false
 }

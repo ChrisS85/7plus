@@ -12,7 +12,7 @@ Class CSendKeysAction Extends CAction
 		if(this.WriteText)
 		{
 			Transform, Text, deref, %keys%
-			WriteText(Text)
+			PasteText(Text)
 		}
 		else
 		{

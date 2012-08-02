@@ -1027,20 +1027,6 @@ objDeepPerform(obj, function, Event)
 	}
 }
 
-; Write text at cursor position, overwriting selected text
-WriteText(Text) 
-{
-	global MuteClipboardList
-	MuteClipboardList := true
-	ClipboardBackup := ClipboardAll
-	Clipboard := Text
-	Send ^v
-	Sleep 100
-	Clipboard := ClipboardBackup
-	MuteClipboardList := false
-	return
-}
-
 ;Finds a non-existing filename for Filepath by appending a number in brackets to the name
 FindFreeFileName(FilePath)
 {
@@ -1491,17 +1477,20 @@ GetClientRect(hwnd)
 	return {x : NumGet(rc, 0, "int"), y : NumGet(rc, 4, "int"), w : NumGet(rc, 8, "int"), h : NumGet(rc, 12, "int")}
 }
 
-;Gets the selected text by copying it to the clipboard. OnClipboardChange ignores this due to MuteClipboardList flag
+;Gets the selected text by copying it to the clipboard.
+;OnClipboardChange ignores this due to MuteClipboardList flag, however, calling this function changes the clipboard owner to AHK.
 GetSelectedText()
 {
+	global MuteClipboardList
 	MuteClipboardList := true
 	clipboardbackup := clipboardall
 	clipboard := ""
-	ClipWait, 0.05, 1
+	WaitForEvent("ClipboardChange", 100)
 	Send ^c
-	ClipWait, 0.05, 1
+	WaitForEvent("ClipboardChange", 100)
 	result := clipboard
 	clipboard := clipboardbackup
+	WaitForEvent("ClipboardChange", 100)
 	MuteClipboardList := false
 	return result
 }
