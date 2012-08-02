@@ -81,6 +81,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 			DefaultAction := CAccessorPlugin.CActions.OpenExplorer
 			__new()
 			{
+				this.Insert(CAccessorPlugin.CActions.OpenWith)
 				this.Insert(CAccessorPlugin.CActions.OpenPathWithAccessor)
 				this.Insert(CAccessorPlugin.CActions.OpenCMD)
 				this.Insert(CAccessorPlugin.CActions.Copy)

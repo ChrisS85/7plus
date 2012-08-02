@@ -45,6 +45,7 @@ Class CURLPlugin extends CAccessorPlugin
 			DefaultAction := new CAccessor.CAction("Open URL", "OpenURL")
 			__new()
 			{
+				this.Insert(CAccessorPlugin.CActions.OpenWith)
 			}
 		}
 		Type := "URL"
@@ -72,8 +73,8 @@ Class CURLPlugin extends CAccessorPlugin
 
 	OnOpen(Accessor)
 	{
-		if(this.Settings.UseSelectedText && !Accessor.Filter && !Accessor.FilterWithoutTimer && Accessor.CurrentSelection && IsURL(Accessor.CurrentSelection))
-			Accessor.SetFilter(Accessor.CurrentSelection)
+		if(this.Settings.UseSelectedText && !Accessor.Filter && !Accessor.FilterWithoutTimer && Accessor.SelectedText && IsURL(Accessor.SelectedText))
+			Accessor.SetFilter(Accessor.SelectedText)
 		if({this.OperaClass : "", this.ChromeClass : "", this.IEClass : "", this.FirefoxClass : ""}.HasKey(WinGetClass("ahk_id " Accessor.PreviousWindow)))
 			this.Priority += 0.5
 	}
@@ -86,9 +87,9 @@ Class CURLPlugin extends CAccessorPlugin
 		{
 			Result := new this.CResult()
 			Result.Title := Filter
-			Result.Path := "Open URL"
+			Result.Path := InStr(Filter, "://") ? Filter : "http://" Filter
 			Result.Icon := Accessor.GenericIcons.URL
-			Result.Detail1 := "URL"
+			Result.Detail1 := "Open URL"
 			Result.ResultIndexingKey := "Title"
 			Result.MatchQuality := 0.8 ;Not sure if this is a good match, so lower value
 			Results.Insert(Result)

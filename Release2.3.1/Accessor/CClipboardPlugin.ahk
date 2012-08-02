@@ -25,6 +25,10 @@ Class CClipboardPlugin extends CAccessorPlugin
 		Class CActions extends CArray
 		{
 			DefaultAction := new CAccessor.CAction("Paste", "Paste")
+			__new()
+			{
+				this.Insert(CAccessorPlugin.CActions.OpenWith)
+			}
 		}
 
 		Type := "Clipboard"
@@ -65,11 +69,11 @@ Class CClipboardPlugin extends CAccessorPlugin
 		Results := Array()
 		NameResults := Array()
 		TextResults := Array()
-		if(Accessor.CurrentSelection && !Filter)
+		if(Accessor.SelectedText && !Filter)
 		{
 			Result := new this.CStoreResult()
 			Result.Title := "Store selected text as clip"
-			Result.Path := Accessor.CurrentSelection
+			Result.Path := Accessor.SelectedText
 			Result.ClipType := "SelectedText"
 			Result.MatchQuality := 1
 			Results.Insert(Result)

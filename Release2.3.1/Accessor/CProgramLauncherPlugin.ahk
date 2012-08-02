@@ -161,6 +161,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 	{
 		Type := "Program Launcher"
 		ResultIndexingKey := "Path" ;By using the same index for normal and OpenWith results the weighting can be shared
+		SaveHistory := false ;Doesn't make sense to save it since the context is not preserved
 
 		Class CActions extends CArray
 		{
@@ -327,7 +328,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 
 	GetFooterText()
 	{
-		return "If a file is not found by this plugin you can add it by executing it through File Search/System plugins."
+		return this.OpenWithActive ? "Choose a program to open " (CAccessor.Instance.SelectedFile ? CAccessor.Instance.SelectedFile : (CAccessor.Instance.TemporaryFile ? CAccessor.Instance.TemporaryFile : (CAccessor.Instance.TemporaryText ? CAccessor.Instance.TemporaryText : CAccessor.Instance.SelectedText))) " with." : "If a file is not found by this plugin you can add it by executing it through File Search/System plugins."
 	}
 	
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
@@ -335,13 +336,15 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		Results := Array()
 		
 		;Detect "Open with" functionality
-		if((Accessor.SelectedFile || Accessor.TemporaryFile) && this.Settings.OpenWithKeyword && InStr(Filter, this.Settings.OpenWithKeyword " ") = 1)
+		if((Accessor.SelectedFile || Accessor.TemporaryFile || Accessor.TemporaryText || Accessor.SelectedText) && this.Settings.OpenWithKeyword && InStr(Filter, this.Settings.OpenWithKeyword " ") = 1)
 		{
-			OpenWith := true
+			this.OpenWithActive := true
 			Filter := strTrimLeft(SubStr(Filter, strlen(this.Settings.OpenWithKeyword) + 2), " ")
 			if(strlen(Filter) < this.Settings.MinChars)
 				return
 		}
+		else
+			this.OpenWithActive := false
 
 		;Possibly remove file extension from filter
 		strippedFilter := this.Settings.IgnoreFileExtensions ? RegexReplace(Filter, "\.\w+") : Filter
@@ -377,7 +380,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 				Name := ListEntry.Filename ? ListEntry.Filename : ListEntry.ResolvedName
 				
 				;Create result
-				if(OpenWith)
+				if(this.OpenWithActive)
 					result := new this.COpenWithResult()
 				else
 					result := new this.CResult(ListEntry.BasePath)
@@ -405,13 +408,20 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 	;Open a file with a specific program
 	OpenWith(Accessor, ListEntry, Action)
 	{
-		OpenFileWithProgram(Accessor.SelectedFile ? Accessor.SelectedFile : Accessor.TemporaryFile, ListEntry.Path)
+		if(Accessor.SelectedFile || Accessor.TemporaryFile)
+			OpenFileWithProgram(Accessor.SelectedFile ? Accessor.SelectedFile : Accessor.TemporaryFile, ListEntry.Path)
+		else if(Accessor.TemporaryText || Accessor.SelectedText)
+			RunAsUser(Quote(ListEntry.Path) " " Quote(Accessor.TemporaryText ? Accessor.TemporaryText : Accessor.SelectedText))
 	}
 
 	OnFilterChanged(ListEntry, Filter, LastFilter)
 	{
 		if(InStr(LastFilter, this.Settings.OpenWithKeyword " ") = 1 && InStr(Filter, this.Settings.OpenWithKeyword " ") != 1)
+		{
 			CAccessor.Remove("TemporaryFile")
+			CAccessor.Remove("TemporaryText")
+			this.OpenWithActive := false
+		}
 	}
 
 	;Possibly add the selected program to ProgramLauncher cache

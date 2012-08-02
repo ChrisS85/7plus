@@ -465,10 +465,14 @@
 <Action>
 <Cancel>1</Cancel>
 <DataType>Text</DataType>
+<Placeholder>Input</Placeholder>
+<Rows>1</Rows>
+<Selection></Selection>
 <Text>Filter Text</Text>
 <Title>Select Files</Title>
 <Type>Ask for user input</Type>
 <Validate>1</Validate>
+<Width>200</Width>
 </Action><Action>
 <Filter>${Input}</Filter>
 <Type>Select files</Type>
@@ -852,7 +856,13 @@
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
-</Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This hotkey opens Accessor in a mode that can be used to open the selected file with a program other than the default file association. It's like Open With dialog, just faster!</Description>
 <DisableAfterUse>0</DisableAfterUse>

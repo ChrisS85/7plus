@@ -42,7 +42,7 @@ Class CAccessor
 	CurrentDirectory := ""
 
 	;Selected filepath of a previously active navigateable program (first file only)
-	CurrentSelection := ""
+	SelectedText := ""
 
 	;Used to manage parallelism of quick query text changes
 	;If the Accessor is currently refreshing, it is instructed to refresh again when the text changes while it is refreshing
@@ -763,7 +763,7 @@ Class CAccessor
 		this.PreviousWindow := WinExist("A")
 
 		;Store current selection and selected file (if available) so they can be inserted into keyword queries
-		this.CurrentSelection := GetSelectedText()
+		this.SelectedText := GetSelectedText()
 		this.SelectedFile := Navigation.GetSelectedFilepaths()[1]
 		this.CurrentDirectory := Navigation.GetPath()
 		this.Filter := ""
@@ -930,8 +930,8 @@ Class CAccessor
 			if(UsingPlaceholder)
 				Parameters := Array()
 			;if no parameters are entered after query, lets try to insert the current selection so the user can quickly search for it with a keyword query.
-			else if(this.CurrentSelection && this.Settings.UseSelectionForKeywords && InStr(Filter, "${1}"))
-				Filter := StringReplace(Filter, "${1}", this.CurrentSelection, "ALL")
+			else if(this.SelectedText && this.Settings.UseSelectionForKeywords && InStr(Filter, "${1}"))
+				Filter := StringReplace(Filter, "${1}", this.SelectedText, "ALL")
 		}
 		return Parameters
 	}
@@ -1145,7 +1145,7 @@ Class CAccessor
 		this.FilterWithoutTimer := ""
 		this.SelectedFile := ""
 		this.CurrentDirectory := ""
-		this.CurrentSelection := ""
+		this.SelectedText := ""
 		;this.GUI := ""
 		this.List := ""
 		;OnMessage(0x100, this.OldKeyDown) ; Restore previous KeyDown handler
@@ -1388,7 +1388,13 @@ Class CAccessor
 
 	SelectProgram(ListEntry, Plugin)
 	{
-		this.TemporaryFile := ListEntry.Path
+		Context := ListEntry.Path ? ListEntry.Path : ListEntry.URL
+		if(FileExist(Context))
+			this.TemporaryFile := Context
+		else if(Context)
+			this.TemporaryText := Context
+		else
+			return
 		this.SetFilter(CProgramLauncherPlugin.Instance.Settings.OpenWithKeyword " ")
 	}
 
@@ -2125,6 +2131,7 @@ return
 
 #if (CAccessor.Instance.GUI.Visible && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenWith) && !IsContextMenuActive())
 ^o::
+outputdebug % CAccessor.Instance.GUI.Visible ", " CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenWith) "; " !IsContextMenuActive()
 CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.OpenWith)
 return
 #if
@@ -2436,6 +2443,9 @@ keyboard hotkeys in settings window activate when other page is visible
 icon in context menu
 uninstall plugin not working (x64) -- Or is it?
 random accessor crashes, maybe related to uninstall plugin
+infinite loop somewhere, possibly CEnumerator. Need to debug with callstack when it happens
+File search is too slow...should maybe run in a separate thread
+Open with feature in program launcher should also work with text such as urls ?
 
 find in filenames can easily be crashed with subdirectory option
 explorer tabs in slide windows

@@ -32,6 +32,7 @@ Class CNotepadPlusPlusPlugin extends CAccessorPlugin
 			__new()
 			{
 				this.Insert(CAccessorPlugin.CActions.Run)
+				this.Insert(CAccessorPlugin.CActions.OpenWith)
 				this.Insert(CAccessorPlugin.CActions.OpenExplorer)
 				this.Insert(CAccessorPlugin.CActions.OpenCMD)
 				this.Insert(CAccessorPlugin.CActions.Copy)

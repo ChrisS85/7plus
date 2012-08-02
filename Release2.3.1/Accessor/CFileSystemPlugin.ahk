@@ -107,9 +107,9 @@ Class CFileSystemPlugin extends CAccessorPlugin
 	OnOpen(Accessor)
 	{
 		;Automatically open path when a path is selected before Accessor is opened
-		if(this.Settings.UseSelectedText && Accessor.CurrentSelection && !Accessor.SelectedFile && !Accessor.Filter && !Accessor.FilterWithoutTimer)
+		if(this.Settings.UseSelectedText && Accessor.SelectedText && !Accessor.SelectedFile && !Accessor.Filter && !Accessor.FilterWithoutTimer)
 		{
-			Path := ExpandPathPlaceholders(Accessor.CurrentSelection)
+			Path := ExpandPathPlaceholders(Accessor.SelectedText)
 			SplitPath, Path, Name, Dir
 			if(InStr(FileExist(Path), "D"))
 				Accessor.SetFilter(Path (strEndsWith(Path, "\") ? "" : "\"))

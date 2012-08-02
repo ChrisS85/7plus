@@ -32,7 +32,10 @@ Class CNotesPlugin extends CAccessorPlugin
 				if(NewNote)
 					this.DefaultAction := new CAccessor.CAction("Create note", "CreateNote", "", false, false)
 				else
+				{
 					this.Insert(new CAccessor.CAction("Delete note", "DeleteNote", "", false, false))
+					this.Insert(CAccessorPlugin.CActions.OpenWith)
+				}
 			}
 		}
 		Type := "Notes"
@@ -76,8 +79,8 @@ Class CNotesPlugin extends CAccessorPlugin
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		Results := Array()
-		if(!Filter && Accessor.CurrentSelection)
-			Filter := Accessor.CurrentSelection
+		if(!Filter && Accessor.SelectedText)
+			Filter := Accessor.SelectedText
 		if(Filter)
 		{
 			Result := new this.CResult(true)

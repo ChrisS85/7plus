@@ -43,8 +43,8 @@ Class CRegistryPlugin extends CAccessorPlugin
 
 	OnOpen(Accessor)
 	{
-		if(this.Settings.UseSelectedText && !Accessor.FilterWithoutTimer && !Accessor.Filter && Accessor.CurrentSelection && IsRegKey(Accessor.CurrentSelection))
-			Accessor.SetFilter(Accessor.CurrentSelection)
+		if(this.Settings.UseSelectedText && !Accessor.FilterWithoutTimer && !Accessor.Filter && Accessor.SelectedText && IsRegKey(Accessor.SelectedText))
+			Accessor.SetFilter(Accessor.SelectedText)
 	}
 
 	ShowSettings(PluginSettings, GUI, PluginGUI)

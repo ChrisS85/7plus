@@ -27,6 +27,7 @@ Class CGooglePlugin extends CAccessorPlugin
 			__new()
 			{
 				this.Insert(new CAccessor.CAction("Copy URL`tCTRL + C", "Copy", "", false, false))
+				this.Insert(CAccessorPlugin.CActions.OpenWith)
 			}
 		}
 		Type := "Google"
@@ -66,22 +67,26 @@ Class CGooglePlugin extends CAccessorPlugin
 		{
 			Result := new this.CResult()
 			Result.Title := ListEntry.titleNoFormatting
-			Result.Path := ListEntry.visibleUrl
-			Result.URL := ListEntry.unescapedUrl
+			Result.VisibleURL := ListEntry.VisibleURL
+			Result.Path := ListEntry.UnescapedUrl
 			Result.Icon := Accessor.GenericIcons.URL
 			Results.Insert(Result)
 		}
 		return Results
 	}
 
+	GetDisplayStrings(ListEntry, ByRef Title, ByRef Path, ByRef Detail1, ByRef Detail2)
+	{
+		Path := ListEntry.VisibleURL
+	}
 	OpenURL(Accessor, ListEntry)
 	{
-		Run(ListEntry.URL)
+		Run(ListEntry.Path)
 	}
 
 	Copy(Accessor, ListEntry)
 	{
-		Clipboard := ListEntry.URL
+		Clipboard := ListEntry.Path
 	}
 
 	OnFilterChanged(ListEntry, Filter, LastFilter)
@@ -114,9 +119,9 @@ QueryGoogleResult()
 	pos1 := 0, pos2 := 0, pos3 := 0
 	Loop
 	{
-		pos1 := RegexMatch(GoogleQuery, "i)""unescapedUrl"":""(.*?)""", unescapedURL, pos1+1)
-		pos2 := RegexMatch(GoogleQuery, "i)""visibleUrl"":""(.*?)""", visibleUrl, pos2+1)
-		pos3 := RegexMatch(GoogleQuery, "i)""titleNoFormatting"":""(.*?)""", titleNoFormatting, pos3+1)
+		pos1 := RegexMatch(GoogleQuery, "i)""unescapedUrl"":""(.*?)""", unescapedURL, pos1 + 1)
+		pos2 := RegexMatch(GoogleQuery, "i)""visibleUrl"":""(.*?)""", visibleUrl, pos2 + 1)
+		pos3 := RegexMatch(GoogleQuery, "i)""titleNoFormatting"":""(.*?)""", titleNoFormatting, pos3 + 1)
 		titleNoFormatting1 := unhtml(Deref_Umlauts(titleNoFormatting1))
 		if(pos1 && pos2 && pos3 && unescapedURL1 && visibleURL1 && titleNoFormatting1)
 			CGooglePlugin.Instance.List.Insert(Object("unescapedURL",unescapedURL1,"visibleUrl", visibleUrl1, "titleNoFormatting", titleNoFormatting1))

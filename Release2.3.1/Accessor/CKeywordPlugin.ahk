@@ -38,12 +38,12 @@ Class CKeywordPlugin extends CAccessorPlugin
 
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
-		if(Accessor.CurrentSelection && Filter := SubStr(Accessor.FilterWithoutTimer, StrLen(this.Settings.Keyword) + 2))
+		if(Accessor.SelectedText && Filter := SubStr(Accessor.FilterWithoutTimer, StrLen(this.Settings.Keyword) + 2))
 		{
 			Results := Array()
 			Result := new this.CResult()
 			Result.Title := Filter
-			Result.Path := Accessor.CurrentSelection
+			Result.Path := Accessor.SelectedText
 			Result.Detail1 := "Keyword"
 			Result.Icon := Accessor.GenericIcons.7plus
 			Results.Insert(Result)

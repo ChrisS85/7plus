@@ -512,10 +512,14 @@
 <Action>
 <Cancel>1</Cancel>
 <DataType>Text</DataType>
+<Placeholder>Input</Placeholder>
+<Rows>1</Rows>
+<Selection></Selection>
 <Text>Filter Text</Text>
 <Title>Select Files</Title>
 <Type>Ask for user input</Type>
 <Validate>1</Validate>
+<Width>200</Width>
 </Action><Action>
 <Filter>${Input}</Filter>
 <Type>Select files</Type>
@@ -5509,31 +5513,6 @@
 </Event><Event>
 <Actions>
 <Action>
-<KeyDelay>0</KeyDelay>
-<Keys>{Escape}</Keys>
-<Type>Send keyboard input</Type>
-<WriteText>0</WriteText>
-</Action></Actions>
-<Category>Uncategorized</Category>
-<Conditions>
-</Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description></Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>0</EventComplexityLevel>
-<ID>1653</ID>
-<Name>New event</Name>
-<OfficialEvent>51</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Type>Window activated</Type>
-<WindowFilterTitle>This is an unregistered copy</WindowFilterTitle>
-<WindowMatchType>Specific Window</WindowMatchType>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
 <ForceClose>0</ForceClose>
 <ShutDownSelection>Shutdown</ShutDownSelection>
 <Type>Shutdown computer</Type>
@@ -5717,7 +5696,13 @@
 </Action></Actions>
 <Category>Explorer</Category>
 <Conditions>
-</Conditions>
+<Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>matches regular expression</Operator>
+<Type>If</Type>
+<With>(CabinetWClass|ExploreWClass)</With>
+</Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This hotkey opens Accessor in a mode that can be used to open the selected file with a program other than the default file association. It's like Open With dialog, just faster!</Description>
 <DisableAfterUse>0</DisableAfterUse>
@@ -5771,7 +5756,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event replaces the default ALT + TAB dialog with the window switcher plugin of Accessor.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1663</ID>
 <Name>Replace ALT + TAB dialog with Accessor</Name>

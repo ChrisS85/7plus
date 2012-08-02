@@ -27,6 +27,7 @@ Class CRecentFoldersPlugin extends CAccessorPlugin
 			DefaultAction := new CAccessor.CAction("Open Folder", "OpenExplorer", "", true, true, true, A_WinDir "\System32\Shell32.dll", 4)
 			__new()
 			{
+				this.Insert(CAccessorPlugin.CActions.OpenWith)
 				this.Insert(CAccessorPlugin.CActions.OpenCMD)
 				this.Insert(CAccessorPlugin.CActions.OpenPathWithAccessor)
 				this.Insert(CAccessorPlugin.CActions.Copy)
