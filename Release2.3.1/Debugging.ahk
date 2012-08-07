@@ -28,7 +28,7 @@ DebuggingStart()
 		Coordmode, Mouse, Screen
 	}
 	else
-		MsgBox DebugView not found! Please make sure that it's located in %A_ScriptDir%\DebugView\Dbgview.exe, or disable debugging in the Settings.ini file.
+		Notify("Debugging", "DebugView not found!`nPlease make sure that it's located in %A_ScriptDir%\DebugView\Dbgview.exe,`nor disable debugging in the Settings.ini file.")
 }
 
 DebuggingEnd()
@@ -170,14 +170,18 @@ debug := debug ? false : true
 return
 
 #y::
-DetectHiddenWindows On
-PostMessage DllCall("RegisterWindowMessage", "str", "AHK_ATTACH_DEBUGGER"),,,, ahk_id %A_ScriptHwnd%
+AttachDebugger()
 return
 #b::
 msgbox % Callstack(5, 1)
 return
 #if
 
+AttachDebugger()
+{
+	DetectHiddenWindows On
+	PostMessage DllCall("RegisterWindowMessage", "str", "AHK_ATTACH_DEBUGGER"),,,, ahk_id %A_ScriptHwnd%
+}
 FormatMessageFromSystem(ErrorCode)
 {
    VarSetCapacity(Buffer, 2000)
@@ -199,9 +203,9 @@ CallStack(deepness = 5, printLines = 1)
 		oEx := Exception("", lvl)
 		oExPrev := Exception("", lvl - 1)
 		FileReadLine, line, % oEx.file, % oEx.line
-		if(line = "		oEx := Exception("""", lvl)")
+		if(oEx.What = lvl)
 			continue
-		stack .= (stack ? "`n" : "") "File '" oEx.file "', Line " oEx.line ", in " oExPrev.What (printLines ? ":`n" line : "") "`n"
+		stack .= (stack ? "`n" : "") "File '" oEx.file "', Line " oEx.line (oExPrev.What = lvl-1 ? "" : ", in " oExPrev.What) (printLines ? ":`n" line : "") "`n"
 	}
 	return stack
 }

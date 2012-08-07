@@ -10,6 +10,8 @@ ShowSettings(Page = "Events")
 	;Settings window is created in AutoExecute to save some time when this function is called the first time.
 	if(!IsObject(SettingsWindow))
 		SetTimer, SettingsHandler, -20
+	if(SettingsActive() && !Page)
+		return
 	SettingsWindow.Show(Page)
 }
 Class CSettingsWindow Extends CGUI
@@ -75,7 +77,7 @@ Class CSettingsWindow Extends CGUI
 	}
 	
 	;Shows the settings window, optionally specifying a page to show
-	Show(Page="Events")
+	Show(Page = "Events")
 	{
 		;On first run of 7plus, start with Introduction page
 		if(!Page)
@@ -119,8 +121,8 @@ Class CSettingsWindow Extends CGUI
 				}
 			}
 		}
-		else
-			this.RecreateTreeView()
+		;else
+		;	this.RecreateTreeView()
 		Monitor := FindMonitorFromMouseCursor()
 		this.X := (Monitor.Right - Monitor.Left) / 2 - this.Width / 2
 		this.Y := (Monitor.Bottom - Monitor.Top) / 2 - this.Height / 2

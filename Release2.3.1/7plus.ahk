@@ -1,4 +1,3 @@
-;~ WatchDirectory("C:\test\|*.txt", "ReportChanges")
 ;~ #Warn, UseUnsetGlobal
 Suspend, On
 #SingleInstance off

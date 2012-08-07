@@ -126,14 +126,18 @@ ApplicationState.WinEventHook3 := API_SetWinEventHook(0x000A,0x000B,0,Applicatio
 if(WinVer >= WIN_Vista && (ApplicationState.ClipboardListenerRegistered := DllCall("AddClipboardFormatListener", "PTR", A_ScriptHwnd)))
 	OnMessage(0x031D, "OnClipboardChange")
 
+outputdebug Creating Slide Windows
 SlideWindows := new CSlideWindows()
 
 SetTimer, MouseMovePolling, 50
 
+outputdebug Creating ClipboardList
 ClipboardList := new CClipboardList()
 
+outputdebug Initializing Explorer Windows
 InitExplorerWindows()
 
+outputdebug Loading HotStrings
 LoadHotstrings()
 
 ;Try closing the windows update window if needed on startup since it might already be there.
@@ -166,6 +170,7 @@ if(!Settings.Misc.HidetrayIcon)
 ;possibly start wizard
 if (Settings.General.Firstrun)
 {
+	outputdebug Registering Shell Extension
 	RegisterShellExtension(1)
 	GoSub, wizardry
 }
@@ -175,6 +180,7 @@ ApplicationState.ProgramStartupFinished := true
 
 Suspend, Off
 ;Create settings window in advance to save some time when it is first shown.
+outputdebug Creating Settings Window
 global SettingsWindow := new CSettingsWindow()
 
 outputdebug 7plus startup procedure finished, entering event loop.
