@@ -176,16 +176,22 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 	
 	ActivateSciTE4AutoHotkeyTab(Index)
 	{
+		ComObjError(0)
 		scite := ComObjActive("SciTE4AHK.Application")
+		ComObjError(1)
 		if(scite)
 		{
 			scite.SwitchToTab(Index - 1) ; the index is zero-based
 			WinActivate, % "ahk_id " scite.SciTEHandle
 		}
+		else
+			Outputdebug SciTE4AHK COM dispatch object not available.
 	}
 	GetListOfOpenSciTE4AutoHotkeyTabs()
 	{
+		ComObjError(0)
 		scite := ComObjActive("SciTE4AHK.Application")
+		ComObjError(1)
 		if(!scite) ;SciTE not running, empty list
 			return Array()
 		list := Array()
@@ -207,8 +213,10 @@ Class CSciTE4AutoHotkeyPlugin extends CAccessorPlugin
 	}
 	
 	GetSciTE4AutoHotkeyActiveTab()
-	{		
+	{
+		ComObjError(0)
 		scite := ComObjActive("SciTE4AHK.Application")
+		ComObjError(1)
 		if(!scite)
 			return ""
 		return scite.CurrentFile

@@ -1,13 +1,13 @@
 ;~ #Warn, UseUnsetGlobal
-Suspend, On
-#SingleInstance off
+Suspend On
+#SingleInstance Off
 #NoTrayIcon ;Added later
 ; #InstallMouseHook
 ; #InstallKeyBdHook
 #MaxThreads 255
 #IfTimeout 150ms ;Might soften up mouse hook timeout problem
 #MaxHotkeysPerInterval 1000 ;Required for mouse wheel
-SetBatchLines -1
+SetBatchLines, -1
 SetMouseDelay, -1 ; no pause after mouse clicks 
 SetKeyDelay, -1 ; no pause after keys sent 
 SetDefaultMouseSpeed, 0
@@ -15,13 +15,13 @@ CoordMode, Mouse, Screen
 SetWinDelay, -1
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases. 
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability. 
-SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
+SetWorkingDir, %A_ScriptDir%  ; Ensures a consistent starting directory.
 DetectHiddenWindows, On ;We don't want to miss any usually
 ;SetFormat, Integer, D
 MajorVersion := 2
 MinorVersion := 6
 BugfixVersion := 0
-ComObjError(0)
+ComObjError(1)
 
 #include %A_ScriptDir%\Globals.ahk ;Some global variable definitions
 #include %A_ScriptDir%\AutoExecute.ahk ;include first to avoid issues with autoexecute ending too soon because of labels

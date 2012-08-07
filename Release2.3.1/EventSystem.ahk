@@ -1183,6 +1183,7 @@ Class CExampleAction extends CAction
 #include %A_ScriptDir%\Triggers\ScreenCorner.ahk
 #include %A_ScriptDir%\Triggers\Trigger.ahk
 #include %A_ScriptDir%\Triggers\Timer.ahk
+;#include %A_ScriptDir%\Triggers\VoiceCommand.ahk
 #include %A_ScriptDir%\Triggers\WindowActivated.ahk
 #include %A_ScriptDir%\Triggers\WindowClosed.ahk
 #include %A_ScriptDir%\Triggers\WindowCreated.ahk

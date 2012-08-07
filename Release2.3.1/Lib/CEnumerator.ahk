@@ -1,8 +1,9 @@
 /*
 Class: CEnumerator
-Generic enumerator object that can be used for dynamically generated array members.
+Generic enumerator object that can be used for iterating over numeric keys.
+The array must not be modified during iteration, otherwise the iterated range will be invalid.
 It's possible to define custom MinIndex() and MaxIndex() functions for array boundaries.
-If there are missing array members between min and max index, they will be iterated but will have a value of 0.
+If there are missing array members between min and max index, they will be iterated but will have a value of "".
 This means that real sparse arrays are not supported by this enumerator by design.
 To make an object use this iterator, insert this function in the class definition:
 |_NewEnum()
@@ -16,6 +17,9 @@ Class CEnumerator
 	{
 		this.Object := Object
 		this.first := true
+		;Cache for speed. Useful if custom MaxIndex() functions have crappy performance.
+		;In return that means that no key-value pairs may be inserted during iteration or the range will become invalid.
+		this.ObjMaxIndex := Object.MaxIndex()
 	}
 	Next(byref key, byref value)
 	{
@@ -28,8 +32,8 @@ Class CEnumerator
 		}
 		else
 			key++
-		if(key <= this.Object.MaxIndex())
-			value := ObjHasKey(this.Object, key) ? this.Object[key] : 0
+		if(key <= this.ObjMaxIndex)
+			value := this.Object[key]
 		else
 			key := ""
 		return key != ""
