@@ -460,10 +460,6 @@ ExplorerPathFrequencySort(index1, index2)
 	global ExplorerHistory
 	return ExplorerHistory[index2].Usage - ExplorerHistory[index1].Usage
 }
-;Called by clipboard manager menu
-ExplorerHistoryHandler:
-PasteText(A_ThisMenuItem)
-return
 
 #if IsDialog()
 ~Enter::

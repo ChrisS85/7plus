@@ -2445,7 +2445,8 @@ uninstall plugin not working (x64) -- Or is it?
 random accessor crashes, maybe related to uninstall plugin
 infinite loop somewhere, possibly CEnumerator. Need to debug with callstack when it happens
 File search is too slow...should maybe run in a separate thread
-Open with feature in program launcher should also work with text such as urls ?
+Ability to clear and set FastFolders through context menu
+Accessor button creation is fucked up
 
 find in filenames can easily be crashed with subdirectory option
 explorer tabs in slide windows

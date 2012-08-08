@@ -59,7 +59,7 @@ return
 
 BuildMenu(Name)
 {
-	global ClipboardList, ExplorerHistory
+	global ClipboardList, ExplorerHistory, FastFolders
 	Menu, Tray, UseErrorLevel
 	Menu, %Name%, DeleteAll
 	;Fake default menu items
@@ -90,27 +90,96 @@ BuildMenu(Name)
 		Menu, ClipboardMenu, add, Clips, :PersistentClipboard
 		Menu, ClipboardMenu, Icon, Clips, % A_WinDir "\system32\shell32.dll", 55
 		
-
+		CanNavigate := Navigation.FindNavigationSource(WinExist("A"), "SetPath")
 		;Explorer history
 		if(ExplorerHistory.MaxIndex())
 		{
 			Menu, ExplorerHistory, DeleteAll
-			for index, Entry in ExplorerHistory.History
+			if(CanNavigate)
 			{
-				Menu, ExplorerHistory, add, % Entry.Path, ExplorerHistoryHandler
-				Menu, ExplorerHistory, Icon, % Entry.Path, % A_WinDir "\system32\shell32.dll", 4
+				for index, Entry in ExplorerHistory.History
+				{
+					Menu, % "ExplorerHistory_" Entry.Path, DeleteAll
+					Menu, % "ExplorerHistory_" Entry.Path, Add, Paste, ClipboardMenu_DeepPasteHandler
+					Menu, % "ExplorerHistory_" Entry.Path, Icon, Paste, % A_WinDir "\system32\shell32.dll", 2
+					Menu, % "ExplorerHistory_" Entry.Path, Add, SetPath, ClipboardMenu_SetPathHandler
+					Menu, % "ExplorerHistory_" Entry.Path, Icon, SetPath, % A_WinDir "\system32\shell32.dll", 4
+
+					Menu, ExplorerHistory, Add, % Entry.Path, % ":ExplorerHistory_" Entry.Path
+					Menu, ExplorerHistory, Icon, % Entry.Path, % A_WinDir "\system32\shell32.dll", 4
+				}
 			}
-			Menu, ClipboardMenu, add, Path History, :ExplorerHistory
+			else
+			{
+				for index, Entry in ExplorerHistory.History
+				{
+					Menu, ExplorerHistory, Add, % Entry.Path, ClipboardMenu_PasteHandler
+					Menu, ExplorerHistory, Icon, % Entry.Path, % A_WinDir "\system32\shell32.dll", 4
+				}
+			}
+			Menu, ClipboardMenu, Add, Path History, :ExplorerHistory
 			Menu, ClipboardMenu, Icon, Path History, % A_WinDir "\system32\shell32.dll", 4
+
+
 			Menu, ExplorerFrequent, DeleteAll
-			for index, Entry in ExplorerHistory.FrequentPaths
+			if(CanNavigate)
 			{
-				Menu, ExplorerFrequent, add, % Entry.Path, ExplorerHistoryHandler
-				Menu, ExplorerFrequent, Icon, % Entry.Path, % A_WinDir "\system32\shell32.dll", 4
+				for index, Entry in ExplorerHistory.FrequentPaths
+				{
+					Menu, % "ExplorerFrequent_" Entry.Path, DeleteAll
+					Menu, % "ExplorerFrequent_" Entry.Path, Add, Paste, ClipboardMenu_DeepPasteHandler
+					Menu, % "ExplorerFrequent_" Entry.Path, Icon, Paste, % A_WinDir "\system32\shell32.dll", 2
+					Menu, % "ExplorerFrequent_" Entry.Path, Add, SetPath, ClipboardMenu_SetPathHandler
+					Menu, % "ExplorerFrequent_" Entry.Path, Icon, SetPath, % A_WinDir "\system32\shell32.dll", 4
+
+					Menu, ExplorerFrequent, Add, % Entry.Path, % ":ExplorerFrequent_" Entry.Path
+					Menu, ExplorerFrequent, Icon, % Entry.Path, % A_WinDir "\system32\shell32.dll", 4
+				}
 			}
-			Menu, ClipboardMenu, add, Frequent Paths, :ExplorerFrequent
+			else
+			{
+				for index, Entry in ExplorerHistory.FrequentPaths
+				{
+					Menu, ExplorerFrequent, Add, % Entry.Path, ClipboardMenu_PasteHandler
+					Menu, ExplorerFrequent, Icon, % Entry.Path, % A_WinDir "\system32\shell32.dll", 4
+				}
+			}
+			;for index, Entry in ExplorerHistory.FrequentPaths
+			;{
+			;	Menu, ExplorerFrequent, Add, % Entry.Path, PathHandler
+			;	Menu, ExplorerFrequent, Icon, % Entry.Path, % A_WinDir "\system32\shell32.dll", 4
+			;}
+			Menu, ClipboardMenu, Add, Frequent Paths, :ExplorerFrequent
 			Menu, ClipboardMenu, Icon, Frequent Paths, % A_WinDir "\system32\shell32.dll", 4
 		}
+
+		;FastFolders
+		Menu, FastFoldersMenu, DeleteAll
+		if(CanNavigate)
+		{
+			for index, Entry in FastFolders
+			{
+				outputdebug % "path " Entry.Path
+				Menu, % "FastFolders_" Entry.Path, DeleteAll
+				Menu, % "FastFolders_" Entry.Path, Add, Paste, ClipboardMenu_DeepPasteHandler
+				Menu, % "FastFolders_" Entry.Path, Icon, Paste, % A_WinDir "\system32\shell32.dll", 2
+				Menu, % "FastFolders_" Entry.Path, Add, SetPath, ClipboardMenu_SetPathHandler
+				Menu, % "FastFolders_" Entry.Path, Icon, SetPath, % A_WinDir "\system32\shell32.dll", 4
+
+				Menu, FastFoldersMenu, Add, % Entry.Path, % ":FastFolders_" Entry.Path
+				Menu, FastFoldersMenu, Icon, % Entry.Path, % A_WinDir "\system32\shell32.dll", 4
+			}
+		}
+		else
+		{
+			for index, Entry in FastFolders
+			{
+				Menu, FastFoldersMenu, add, % Entry.Path, ClipboardMenu_PasteHandler
+				Menu, FastFoldersMenu, Icon, % Entry.Path, % A_WinDir "\system32\shell32.dll", 4
+			}
+		}
+		Menu, ClipboardMenu, add, Fast Folders, :FastFoldersMenu
+		Menu, ClipboardMenu, Icon, Fast Folders, % A_WinDir "\system32\shell32.dll", 4
 
 		;Clipboard history
 		Loop % ClipboardList.MaxIndex()
@@ -248,4 +317,18 @@ Return
 
 Tray_Exit: ; exit script label 
    GoSub ExitSub
+return
+
+
+;Called by clipboard manager menu
+ClipboardMenu_SetPathHandler:
+Navigation.SetPath(SubStr(A_ThisMenu, InStr(A_ThisMenu, "_") + 1))
+return
+
+ClipboardMenu_DeepPasteHandler:
+PasteText(SubStr(A_ThisMenu, InStr(A_ThisMenu, "_") + 1))
+return
+
+ClipboardMenu_PasteHandler:
+PasteText(A_ThisMenuItem)
 return

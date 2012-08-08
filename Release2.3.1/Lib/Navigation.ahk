@@ -6,6 +6,7 @@ Class Navigation
 	FindNavigationSource(hwnd, func)
 	{
 		WinGetClass, class, ahk_id %hwnd%
+		outputdebug class %class%
 		for index, NavigationSource in this.NavigationSources
 			if(NavigationSource.Processes(hwnd, class) && IsFunc(NavigationSource[func]))
 				return NavigationSource
@@ -18,6 +19,7 @@ Class Navigation
 		this.NavigationSources.Insert(Class)
 		return Type
 	}
+
 	;Default call operation for functions in this class.
 	;Gets a window handle of active window if not provided,
 	;finds the navigation source and calls the function on it.
@@ -34,15 +36,18 @@ Class Navigation
 		}
 		return DefaultReturnValue
 	}
+
 	GetPath(hwnd = 0)
 	{
 		return this.Call("GetPath", "", hwnd)
 	}
+
 	;Gets the name of the current path in a nice form for displaying
 	GetDisplayName(hwnd = 0)
 	{
 		return this.Call("GetDisplayName", "", hwnd)
 	}
+
 	SetPath(Path, hwnd = 0)
 	{
 		;If Path is a file, select it in new explorer instances or ignore it elsewhere
@@ -58,14 +63,17 @@ Class Navigation
 				RunAsUser(A_WinDir "\explorer.exe /select," Path)
 		}
 	}
+
 	GetSelectedFilepaths(hwnd = 0)
 	{
 		return this.Call("GetSelectedFilepaths", Array(), hwnd)
 	}
+
 	GetSelectedFilenames(hwnd = 0)
 	{
 		return this.Call("GetSelectedFilenames", Array(), hwnd)
 	}
+
 	;Selects the files in Files in the view
 	SelectFiles(Files, hwnd = 0)
 	{
@@ -73,31 +81,39 @@ Class Navigation
 			Files := Array(Files)
 		return this.Call("SelectFiles", 0, Files, hwnd)
 	}
+
 	GetFocusedFilename(hwnd = 0)
 	{
 		return this.Call("GetFocusedFilename", "", hwnd)
 	}
+
 	GetFocusedFilePath(hwnd = 0)
 	{
 		return this.Call("GetFocusedFilePath", "", hwnd)
 	}
+
 	Refresh(hwnd = 0)
 	{
 		return this.Call("Refresh", 0, hwnd)
 	}
+
 	GoBack(hwnd = 0)
 	{
 		return this.Call("GoBack", 0, hwnd)
 	}
+
 	GoForward(hwnd = 0)
 	{
 		return this.Call("GoForward", 0, hwnd)
 	}
+
 	GoUpward(hwnd = 0)
 	{
 		return this.Call("GoUpward", 0, hwnd)
 	}
 }
+
+
 Class CWinRarNavigationSource
 {
 	static Type := Navigation.RegisterNavigationSource(CWinRarNavigationSource, "WinRar")
@@ -129,17 +145,21 @@ Class CWinRarNavigationSource
 		}
 		return false
 	}
+
 	SetPath(Path, hwnd)
 	{
 		ControlSetText , Edit1, %Path%, ahk_id %hwnd%
 		ControlClick, Button1, ahk_id %hwnd%
 	}
+
 	GetPath(hwnd)
 	{
 		ControlGetText, Path, Edit1, ahk_id %hwnd%
 		return Path
 	}
 }
+
+
 Class CConsoleNavigationSource
 {
 	static Type := Navigation.RegisterNavigationSource(CConsoleNavigationSource, "Console")
@@ -147,6 +167,7 @@ Class CConsoleNavigationSource
 	{
 		return (class = "ConsoleWindowClass")
 	}
+
 	GetPath(hwnd)
 	{
 		WinGet, pid, PID, ahk_id %hwnd%
@@ -159,6 +180,7 @@ Class CConsoleNavigationSource
 			result := Match
 		return result
 	}
+
 	SetPath(Path, hwnd)
 	{
 		WinGet, pid, PID, ahk_id %hwnd%
@@ -176,6 +198,7 @@ Class CConsoleNavigationSource
 		CurrentCommand := RegExReplace(CurrentCommand, "\s*$", "")
 		this.ConsoleSend(CurrentCommand, pid)
 	}
+
 	;By Lexikos
 	GetConsoleText(pid)
 	{
@@ -212,6 +235,7 @@ Class CConsoleNavigationSource
 		; Finally, display the text.
 		Return text
 	}
+
 	; Sends text to a console's input stream. WinTitle may specify any window in
 	; the target process. Since each process may be attached to only one console,
 	; ConsoleSend fails if the script is already attached to a console.
@@ -258,6 +282,7 @@ Class CConsoleNavigationSource
 			DllCall("FreeConsole")
 		return
 	}
+
 	AttachConsole(pid)
 	{
 		;~ this.FreeConsole()
@@ -276,7 +301,8 @@ Class CConsoleNavigationSource
 			return ""
 		}
 		return hConOut
-	} 
+	}
+
 	FreeConsole(hCon=0)
 	{
 		DllCall("FreeConsole", "uint")
@@ -284,6 +310,8 @@ Class CConsoleNavigationSource
 			DllCall("CloseHandle", "uint", hCon)
 	}
 }
+
+
 Class CDesktopNavigationSource
 {
 	static Type := Navigation.RegisterNavigationSource(CDesktopNavigationSource, "Desktop")
@@ -291,10 +319,12 @@ Class CDesktopNavigationSource
 	{
 		return (class = "Progman" || class = "WorkerW")
 	}
+
 	GetPath(hwnd)
 	{
 		return A_Desktop
 	}
+
 	GetSelectedFilepaths(hwnd)
 	{
 		Files := Array()
@@ -304,6 +334,8 @@ Class CDesktopNavigationSource
 				Files.Insert(A_Desktop "\" A_LoopField)
 		return Files
 	}
+
+
 	GetSelectedFilenames(hwnd)
 	{
 		Files := Array()
@@ -314,6 +346,8 @@ Class CDesktopNavigationSource
 		return Files
 	}
 }
+
+
 Class COldFileDialogNavigationSource
 {
 	static Type := Navigation.RegisterNavigationSource(COldFileDialogNavigationSource, "Old file dialog")
@@ -343,6 +377,7 @@ Class COldFileDialogNavigationSource
 		}
 		return false
 	}
+
 	; Not supported :(
 	; GetPath(hwnd)
 	GetFocusedFilename(hwnd)
@@ -350,26 +385,32 @@ Class COldFileDialogNavigationSource
 		ControlGet, focussed, list,focus, SysListView321, A
 		return focussed
 	}
+
 	SetPath(Path, hwnd)
 	{
 		return CNewFileDialogNavigationSource.SetPath(Path, hwnd)
 	}
+
 	Refresh(hwnd)
 	{
 		ControlSend, SysListView321, {F5}, ahk_id %hwnd%
 	}
+
 	GoBack(hwnd)
 	{
 		ControlSend, SysListView321, !{Left}, ahk_id %hwnd%
 	}
+
 	GoForward(hwnd)
 	{
 		ControlSend, SysListView321, !{Right}, ahk_id %hwnd%
 	}
+
 	GoUpward(hwnd)
 	{
 		ControlSend, SysListView321, !{Up}, ahk_id %hwnd%
 	}
+
 	GetSelectedFilepaths(hwnd)
 	{
 		global MuteClipboardList
@@ -390,6 +431,7 @@ Class COldFileDialogNavigationSource
 			Files.Insert(A_LoopField)
 		return Files
 	}
+
 	GetSelectedFilenames(hwnd)
 	{
 		Files := this.GetSelectedFilepaths(hwnd)
@@ -401,6 +443,8 @@ Class COldFileDialogNavigationSource
 		return Files
 	}
 }
+
+
 Class CNewFileDialogNavigationSource
 {
 	static Type := Navigation.RegisterNavigationSource(CNewFileDialogNavigationSource, "New file dialog")
@@ -435,11 +479,13 @@ Class CNewFileDialogNavigationSource
 		}
 		return false
 	}
+
 	GetPath(hwnd)
 	{
 		ControlGetText, text , ToolBarWindow322, ahk_id %hwnd%
 		return strTrim(SubStr(text,InStr(text," ")), " ")
 	}
+
 	SetPath(Path, hwnd)
 	{
 		;Set path by entering it in the filename box (restore current text afterwards)
@@ -462,22 +508,27 @@ Class CNewFileDialogNavigationSource
 		ControlSetText, Edit1, %Edit1Text%, ahk_id %hwnd%
 		ControlFocus, %focussed%, ahk_id %hwnd%
 	}
+
 	Refresh(hwnd)
 	{
 		ControlSend, DirectUIHWND2, {F5}, ahk_id %hwnd%
 	}
+
 	GoBack(hwnd)
 	{
 		ControlSend, DirectUIHWND2, !{Left}, ahk_id %hwnd%
 	}
+
 	GoForward(hwnd)
 	{
 		ControlSend, DirectUIHWND2, !{Right}, ahk_id %hwnd%
 	}
+
 	GoUpward(hwnd)
 	{
 		ControlSend, DirectUIHWND2, !{Up}, ahk_id %hwnd%
 	}
+
 	GetSelectedFilepaths(hwnd)
 	{
 		global MuteClipboardList
@@ -498,6 +549,7 @@ Class CNewFileDialogNavigationSource
 			Files.Insert(A_LoopField)
 		return Files
 	}
+
 	GetSelectedFilenames(hwnd)
 	{
 		Files := this.GetSelectedFilepaths(hwnd)
@@ -509,6 +561,8 @@ Class CNewFileDialogNavigationSource
 		return Files
 	}
 }
+
+
 Class CExplorerNavigationSource
 {
 	static Type := Navigation.RegisterNavigationSource(CExplorerNavigationSource, "Explorer")
@@ -516,18 +570,21 @@ Class CExplorerNavigationSource
 	{
 		return (class = "ExploreWClass" || class = "CabinetWClass")
 	}
+
 	GetPath(hwnd)
 	{
 		for Window in ComObjCreate("Shell.Application").Windows
 			if(Window.hwnd = hwnd)
 				return Window.Document.Folder.Self.path
 	}
+
 	GetDisplayName(hwnd)
 	{
 		for Window in ComObjCreate("Shell.Application").Windows
 			if(Window.hwnd = hwnd)
 				return Window.Document.Folder.Self.Name
 	}
+
 	SetPath(Path, hwnd)
 	{
 		Exists := FileExist(Settings.DllPath "\Explorer.dll")
@@ -544,6 +601,7 @@ Class CExplorerNavigationSource
 					SetTimerF("ExplorerPathChanged", -100)
 				}
 	}
+
 	GetSelectedFilepaths(hwnd)
 	{
 		Files := Array()
@@ -556,6 +614,7 @@ Class CExplorerNavigationSource
 			}
 		return Files
 	}
+
 	GetSelectedFilenames(hwnd)
 	{
 		Files := Array()
@@ -568,18 +627,21 @@ Class CExplorerNavigationSource
 			}
 		return Files
 	}
+
 	GetFocusedFilePath(hwnd)
 	{
 		for Window in ComObjCreate("Shell.Application").Windows
 			if(Window.hwnd = hwnd)
 				return Window.Document.FocusedItem.Path
 	}
+
 	GetFocusedFilename(hwnd)
 	{
 		for Window in ComObjCreate("Shell.Application").Windows
 			if(Window.hwnd = hwnd)
 				return Window.Document.FocusedItem.Name
 	}
+
 	SelectFiles(Files, hWnd)
 	{
 		for Window in ComObjCreate("Shell.Application").Windows
@@ -646,6 +708,7 @@ Class CExplorerNavigationSource
 		}
 		return 0
 	}
+
 	GoBack(hwnd)
 	{
 		for Window in ComObjCreate("Shell.Application").Windows
@@ -656,6 +719,7 @@ Class CExplorerNavigationSource
 				return
 			}
 	}
+
 	GoForward(hwnd)
 	{
 		for Window in ComObjCreate("Shell.Application").Windows
@@ -666,6 +730,7 @@ Class CExplorerNavigationSource
 				return
 			}
 	}
+
 	GoUpward(hwnd)
 	{
 		path := this.GetPath(hwnd)
@@ -675,6 +740,7 @@ Class CExplorerNavigationSource
 			Send {Backspace}
 		SetTimerF("ExplorerPathChanged", -100)
 	}
+
 	Refresh(hwnd)
 	{
 		for Window in ComObjCreate("Shell.Application").Windows
@@ -684,6 +750,7 @@ Class CExplorerNavigationSource
 				return
 			}
 	}
+
 	InvertSelection(hwnd)
 	{
 		;Calling the menu item is more reliable than doing it through COM because right now only real files are supported
