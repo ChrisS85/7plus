@@ -80,12 +80,10 @@ Make sure to use the Unicode version of the correct bitness.
 As this code is actively developed upon, most of the time it's not going to be stable and will likely have errors. It's even possible that it isn't startable due to syntax errors, but this should happen rarely. If this happens you can either wait for the next commit of source code or switch to an earlier revision.
 
 == Known problems ==
-*The buttons in the Explorer bar don't appear/appear multiple times/don't work!*
-
+====The buttons in the Explorer bar don't appear/appear multiple times/don't work!====
 It's best to start over by going into Settings, Fast Folders and clicking on "Remove custom Explorer buttons". Afterwards, click on Ok or Apply to recreate them. You should also know that this feature only works in Vista and 7 and not without admin privileges or in portable mode.
 
-*7plus does not react to any hotkeys anymore!*
-
+====7plus does not react to any hotkeys anymore!====
 I believe that this can happen sometimes if 7plus takes too long to react to key presses and Windows removes it from the keyboard hook chain. Simply restart 7plus to fix it.
 
 == If you encounter other errors ==
