@@ -91,5 +91,6 @@ There are a few things that you should try:
 
  * Try to start with a fresh event config file, or even better a fresh installation of 7plus. Uninstall 7plus and make sure that %Appdata%\7plus is deleted.
  * If you use any other tweaking software or special drivers (especially mouse and keyboard drivers that implement extra functionality, like Logitech SetPoint driver), try to disable them and use the standard windows keyboard/mouse drivers. Such software often implements features that conflict with the features in 7plus. Contrary, it may also happen that 7plus disturbs other programs. If you encounter such behavior please let me know.
+ * Other software like Antivirus programs or Firewalls may also cause problems. I'm not going to try to convince you that these programs are snake-oil (even though they are!), but don't be surprised if you find that they caused any issues.
 
 If this doesn't help, please report the problems on the bugtracker.
