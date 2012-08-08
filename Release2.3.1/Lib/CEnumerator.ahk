@@ -2,8 +2,8 @@
 Class: CEnumerator
 Generic enumerator object that can be used for iterating over numeric keys.
 The array must not be modified during iteration, otherwise the iterated range will be invalid.
-It's possible to define custom MinIndex() and MaxIndex() functions for array boundaries.
-If there are missing array members between min and max index, they will be iterated but will have a value of "".
+It's possible to define a custom MaxIndex() functions for array boundaries.
+If there are missing array members between 1 and max index, they will be iterated but will have a value of "".
 This means that real sparse arrays are not supported by this enumerator by design.
 To make an object use this iterator, insert this function in the class definition:
 |_NewEnum()

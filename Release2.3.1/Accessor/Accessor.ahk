@@ -176,7 +176,7 @@ Class CAccessor
 
 		Execute()
 		{
-			RunAsUser(ExpandPathPlaceholders(this.Path))
+			OpenFileWithProgram(ExpandPathPlaceholders(this.Path))
 		}
 
 		Draw(MouseOver = false)
@@ -437,7 +437,11 @@ Class CAccessor
 		}
 		SetFastFolder(Path)
 		{
-			UpdateStoredFolder(this.Number, Path)
+			outputdebug SetFastFolder %Path%
+			if(Path)
+				UpdateStoredFolder(this.Number, Path)
+			else
+				ClearStoredFolder(this.Number)
 			this.OnFastFolderChange.(this.Number)
 		}
 		Cleanup()
@@ -1273,16 +1277,17 @@ Class CAccessor
 					if(Action.Icon)
 						Menu, AccessorContextMenu, Icon, % Action.Name, % Action.Icon, % Action.IconNumber
 				}
-			if(ListEntry.IsFolder)
+
+			if(ListEntry.IsFile || ListEntry.IsFolder)
 			{
-				Menu, AccessorFastFolderSubMenu, Add, test, AccessorContextMenu
-				Menu, AccessorFastFolderSubMenu, DeleteAll
-				for index, FastFolder in FastFolders
-					Menu, AccessorFastFolderSubMenu, Add, % index ": " Button.GetLongName(), AccessorSaveAsFastFolder
-				Menu, AccessorContextMenu, Add, Save as Fast Folder, :AccessorFastFolderSubMenu
-			}
-			if(ListEntry.IsFile)
-			{
+				if(ListEntry.IsFolder)
+				{
+					Menu, AccessorFastFolderSubMenu, Add, test, AccessorContextMenu
+					Menu, AccessorFastFolderSubMenu, DeleteAll
+					for index, FastFolder in FastFolders
+						Menu, AccessorFastFolderSubMenu, Add, % index ": " Button.GetLongName(), AccessorSaveAsFastFolder
+					Menu, AccessorContextMenu, Add, Save as Fast Folder, :AccessorFastFolderSubMenu
+				}
 				Menu, AccessorProgramSubMenu, Add, test, AccessorContextMenu
 				Menu, AccessorProgramSubMenu, DeleteAll
 				for index, Button in this.ProgramButtons
@@ -1443,13 +1448,26 @@ CAccessor.Instance.PerformAction(A_ThisMenuItem, CAccessor.Instance.ClickedListE
 return
 
 AccessorSaveAsFastFolder:
-CAccessor.Instance.FastFolderButtons[A_ThisMenuItemPos].SetFastFolder(CAccessor.Instance.ClickedListEntry ? CAccessor.Instance.ClickedListEntry.Path : CAccessor.Instance.List[CAccessor.Instance.GUI.ListView.SelectedIndex].Path)
+if(CAccessor.Instance.GUI.ClickedFastFolderButton)
+	CAccessor.Instance.GUI.ClickedFastFolderButton.SetFastFolder(CAccessor.Instance.List[CAccessor.Instance.GUI.ListView.SelectedIndex].Path)
+else
+	CAccessor.Instance.FastFolderButtons[A_ThisMenuItemPos].SetFastFolder(CAccessor.Instance.ClickedListEntry ? CAccessor.Instance.ClickedListEntry.Path : CAccessor.Instance.List[CAccessor.Instance.GUI.ListView.SelectedIndex].Path)
+return
+
+AccessorClearFastFolder:
+CAccessor.Instance.GUI.ClickedFastFolderButton.SetFastFolder("")
 return
 
 AccessorSaveAsProgram:
-CAccessor.Instance.ProgramButtons[A_ThisMenuItemPos].SetPath(CAccessor.Instance.ClickedListEntry ? CAccessor.Instance.ClickedListEntry.Path : CAccessor.Instance.List[CAccessor.Instance.GUI.ListView.SelectedIndex].Path)
+if(CAccessor.Instance.GUI.ClickedProgramButton)
+	CAccessor.Instance.GUI.ClickedProgramButton.SetPath(CAccessor.Instance.List[CAccessor.Instance.GUI.ListView.SelectedIndex].Path)
+else
+	CAccessor.Instance.ProgramButtons[A_ThisMenuItemPos].SetPath(CAccessor.Instance.ClickedListEntry ? CAccessor.Instance.ClickedListEntry.Path : CAccessor.Instance.List[CAccessor.Instance.GUI.ListView.SelectedIndex].Path)
 return
 
+AccessorClearProgram:
+CAccessor.Instance.GUI.ClickedProgramButton.SetPath("")
+return
 
 
 Class CAccessorGUI extends CGUI
@@ -1784,9 +1802,13 @@ Class CAccessorGUI extends CGUI
 	OnFastFolderChange(Index)
 	{
 		MouseGetPos,,,,hwnd,2
-		Button := this.FastFolderButtons[Index]
-		hBitmap := CAccessor.Instance.FastFolderButtons[Index].Draw(hwnd = Button.hwnd)
-		Button.SetImageFromHBitmap(hBitmap)
+		a := this.FastFolderButtons
+		b := CAccessor.Instance.FastFolderButtons
+		ButtonControl := this.FastFolderButtons[Index + 1]
+		Button := CAccessor.Instance.FastFolderButtons[Index + 1]
+		outputdebug % "redraw button " Index ", " Button.Path
+		hBitmap := Button.Draw(hwnd = ButtonControl.hwnd)
+		ButtonControl.SetImageFromHBitmap(hBitmap)
 		DeleteObject(hBitmap)
 	}
 	Show()
@@ -1852,6 +1874,7 @@ Class CAccessorGUI extends CGUI
 	}
 	ShowButtonMenu()
 	{
+		global FastFolders
 		MouseGetPos, , , , hwnd, 2
 		
 		if(index := this.QueryButtons.FindKeyWithValue("hwnd", hwnd))
@@ -1868,18 +1891,36 @@ Class CAccessorGUI extends CGUI
 			this.ClickedFastFolderButton := CAccessor.Instance.FastFolderButtons[index]
 			Menu, AccessorFastFoldersMenu, UseErrorLevel
 			Menu, AccessorFastFoldersMenu, DeleteAll
-			Menu, AccessorFastFoldersMenu, Add, Clear this Fast Folder slot, AccessorFastFoldersMenu_ClearSlot  ; Creates a new menu item.
-			Menu, AccessorFastFoldersMenu, Add, Assign selected Folder to current slot, AccessorFastFoldersMenu_AssignSlot
-			Menu, AccessorFastFoldersMenu, Show
+			if(CAccessor.Instance.List[this.ListView.SelectedIndex].IsFolder)
+			{
+				Entries := true
+				Menu, AccessorFastFoldersMenu, Add, Assign selected Folder to current slot, AccessorSaveAsFastFolder
+			}
+			if(FastFolders[this.ClickedFastFolderButton.Number].Path)
+			{
+				Entries := true
+				Menu, AccessorFastFoldersMenu, Add, Clear this Fast Folder slot, AccessorClearFastFolder  ; Creates a new menu item.
+			}
+			if(Entries)
+				Menu, AccessorFastFoldersMenu, Show
 		}
 		else if(index := this.ProgramButtons.FindKeyWithValue("hwnd", hwnd))
 		{
 			this.ClickedProgramButton := CAccessor.Instance.ProgramButtons[index]
 			Menu, AccessorProgramsMenu, UseErrorLevel
 			Menu, AccessorProgramsMenu, DeleteAll
-			Menu, AccessorProgramsMenu, Add, Clear this program slot, AccessorProgramsMenu_ClearSlot  ; Creates a new menu item.
-			Menu, AccessorProgramsMenu, Add, Assign selected program to current slot, AccessorProgramsMenu_AssignSlot
-			Menu, AccessorProgramsMenu, Show
+			if(CAccessor.Instance.List[this.ListView.SelectedIndex].IsFile)
+			{
+				Entries := true
+				Menu, AccessorProgramsMenu, Add, Assign selected file to current slot, AccessorSaveAsProgram
+			}
+			if(this.ClickedProgramButton.Path)
+			{
+				Entries := true
+				Menu, AccessorProgramsMenu, Add, Clear this program slot, AccessorClearProgram  ; Creates a new menu item.
+			}
+			if(Entries)
+				Menu, AccessorProgramsMenu, Show
 		}
 	}
 	UpdateFooterText(Text = "")
@@ -2103,16 +2144,16 @@ return
 AccessorQueryMenu_UseCurrentQuery:
 CAccessor.Instance.GUI.SetQueryButtonQuery()
 return
-#if CAccessor.Instance.GUI.Visible && IsWindowUnderCursor(CAccessor.Instance.GUI.hwnd) && IsQueryButtonUnderCursor()
+#if CAccessor.Instance.GUI.Visible && IsWindowUnderCursor(CAccessor.Instance.GUI.hwnd) && IsAccessorButtonUnderCursor()
 RButton::
 CAccessor.Instance.GUI.ShowButtonMenu()
 return
 #if
-IsQueryButtonUnderCursor()
+IsAccessorButtonUnderCursor()
 {
 	MouseGetPos, , , , control
 	Number := SubStr(control, 7)
-	return Number >= 3 && Number <= 14
+	return Number >= 5 && Number <= 44
 }
 
 
@@ -2261,7 +2302,7 @@ Class CAccessorPlugin
 	;Column1Text := "Something"
 	;Column2Text := "Something else"
 	;Column3Text := "Something different"
-	
+
 	;This class contains settings for an Accessor plugin. The values shown here are required for all plugins!
 	;Commented values can be read-only.
 	Class CSettings extends CRichObject
