@@ -176,7 +176,14 @@ Class CAccessor
 
 		Execute()
 		{
-			OpenFileWithProgram(ExpandPathPlaceholders(this.Path))
+			Path := ExpandPathPlaceholders(this.Path)
+			PreviousWindow := CAccessor.Instance.PreviousWindow
+			if(CAccessor.Instance.GUI.Visible)
+				CAccessor.Close()
+			if(InStr(FileExist(Path), "D"))
+				Navigation.SetPath(Path, PreviousWindow)
+			else
+				OpenFileWithProgram(Path)
 		}
 
 		Draw(MouseOver = false)
