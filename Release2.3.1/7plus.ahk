@@ -17,6 +17,7 @@ SetWinDelay, -1
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability. 
 SetWorkingDir, %A_ScriptDir%  ; Ensures a consistent starting directory.
 DetectHiddenWindows, On ;We don't want to miss any usually
+SetTitleMatchMode, 2 ;Match anywhere in title
 ;SetFormat, Integer, D
 MajorVersion := 2
 MinorVersion := 6

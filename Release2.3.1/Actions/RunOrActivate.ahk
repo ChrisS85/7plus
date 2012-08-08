@@ -6,15 +6,21 @@ Class CRunOrActivateAction Extends CAction
 	
 	Execute(Event)
 	{
-		if(this.tmpPid)
-			return this.RunExecute(Event)
+		Path := this.Command
+		SplitCommandLine(Path, Args)
+		Path := Event.ExpandPlaceholders(Path)
+		SplitPath, Path, Name
+		Process, Exist, % Name
+
+		if(Errorlevel != 0)
+		{
+			Outputdebug RunOrActivate: %Name% is running with PID = %ErrorLevel%
+			WinActivate ahk_pid %ErrorLevel%
+		}
 		else
 		{
-			Process, Exist, %name%
-			if(Errorlevel != 0)
-				WinActivate ahk_pid %ErrorLevel%
-			else
-				return this.RunExecute(Event)
+			Outputdebug RunOrActivate: %Name% is not running and will now be started
+			return this.RunExecute(Event)
 		}
 		return 1
 	}
