@@ -1039,6 +1039,7 @@ Class CAccessor
 
 		ListViewCount := this.GUI.ListView.Items.MaxIndex()
 		;outputdebug UpdateGUIWithResults() Pre Loop
+		Debug := Settings.General.DebugEnabled
 		;Now that items are available and sorted, add them to the listview
 		for index3, ListEntry in this.List
 		{
@@ -1048,13 +1049,12 @@ Class CAccessor
 				Plugin := this.Plugins[ListEntry.Type]
 				Offset := A_Index
 				Entries := []
-				Debug := Settings.General.DebugEnabled
 				Loop % this.List.MaxIndex() - Offset + 1
 				{
 					ListEntry2 := this.List[Offset + A_Index - 1]
 					Entry := {Options : ""}
 					Plugin.GetDisplayStrings(ListEntry2, Title := ListEntry2.Title, Path := ListEntry2.Path, Detail1 := ListEntry2.Detail1, Detail2 := ListEntry2.Detail2)
-					Entry.Fields := [Title, Path, Debug ? ListEntry2.SortOrder : Detail1]
+					Entry.Fields := [Title, Path, Detail1] ; Debug ? ListEntry2.SortOrder : Detail1]
 					IconID := this.GUI.ListView._.ImageListManager.SetIcon("", ListEntry2.Icon, ListEntry2.IconNumber, false)
 					if(IconID != -1)
 						Entry.Options := "Icon" IconID
@@ -1075,7 +1075,7 @@ Class CAccessor
 			if(t != Title || p != Path || d1 != Detail1)
 			{
 				item := this.GUI.ListView.Items[A_Index]
-				LV_Modify(A_Index, "", Title, Path, (Settings.General.DebugEnabled ? ListEntry.SortOrder : Detail1))
+				LV_Modify(A_Index, "", Title, Path, Detail1) ;(Debug ? ListEntry.SortOrder : Detail1))
 				if(!ListEntry.HasKey("IconNumber"))
 					item.Icon := ListEntry.Icon
 				Else
@@ -1095,7 +1095,7 @@ Class CAccessor
 
 		this.GUI.ListView.ModifyCol(1, Round(this.GUI.ListView.Width * 3 / 8), this.SingleContext && this.Plugins[this.SingleContext].Column1Text ? this.Plugins[this.SingleContext].Column1Text : "Title") ; resize title column
 		this.GUI.ListView.ModifyCol(2, Round(this.GUI.ListView.Width * 3.3 / 8), this.SingleContext && this.Plugins[this.SingleContext].Column2Text ? this.Plugins[this.SingleContext].Column2Text : "Path") ; resize path column
-		this.GUI.ListView.ModifyCol(3, 124) ; resize detail1 column
+		this.GUI.ListView.ModifyCol(3, 124, this.SingleContext && this.Plugins[this.SingleContext].Column3Text ? this.Plugins[this.SingleContext].Column3Text : "") ; resize detail1 column
 
 		this.GUI.ListView.Redraw := true
 
@@ -1853,15 +1853,35 @@ Class CAccessorGUI extends CGUI
 	ShowButtonMenu()
 	{
 		MouseGetPos, , , , hwnd, 2
-		index := this.QueryButtons.FindKeyWithValue("hwnd", hwnd)
-		this.ClickedQueryButton := CAccessor.Instance.QueryButtons[index]
-		Menu, Tray, UseErrorLevel
-		Menu, AccessorButtonMenu, DeleteAll
-		Menu, AccessorButtonMenu, Add, Use current Query, AccessorQueryMenu_UseCurrentQuery  ; Creates a new menu item.
-		Menu, AccessorButtonMenu, Add, Set icon, AccessorQueryMenu_SetIcon
-		Menu, AccessorButtonMenu, Show
+		
+		if(index := this.QueryButtons.FindKeyWithValue("hwnd", hwnd))
+		{
+			this.ClickedQueryButton := CAccessor.Instance.QueryButtons[index]
+			Menu, AccessorButtonMenu, UseErrorLevel
+			Menu, AccessorButtonMenu, DeleteAll
+			Menu, AccessorButtonMenu, Add, Use current Query, AccessorQueryMenu_UseCurrentQuery  ; Creates a new menu item.
+			Menu, AccessorButtonMenu, Add, Set icon, AccessorQueryMenu_SetIcon
+			Menu, AccessorButtonMenu, Show
+		}
+		else if(index := this.FastFolderButtons.FindKeyWithValue("hwnd", hwnd))
+		{
+			this.ClickedFastFolderButton := CAccessor.Instance.FastFolderButtons[index]
+			Menu, AccessorFastFoldersMenu, UseErrorLevel
+			Menu, AccessorFastFoldersMenu, DeleteAll
+			Menu, AccessorFastFoldersMenu, Add, Clear this Fast Folder slot, AccessorFastFoldersMenu_ClearSlot  ; Creates a new menu item.
+			Menu, AccessorFastFoldersMenu, Add, Assign selected Folder to current slot, AccessorFastFoldersMenu_AssignSlot
+			Menu, AccessorFastFoldersMenu, Show
+		}
+		else if(index := this.ProgramButtons.FindKeyWithValue("hwnd", hwnd))
+		{
+			this.ClickedProgramButton := CAccessor.Instance.ProgramButtons[index]
+			Menu, AccessorProgramsMenu, UseErrorLevel
+			Menu, AccessorProgramsMenu, DeleteAll
+			Menu, AccessorProgramsMenu, Add, Clear this program slot, AccessorProgramsMenu_ClearSlot  ; Creates a new menu item.
+			Menu, AccessorProgramsMenu, Add, Assign selected program to current slot, AccessorProgramsMenu_AssignSlot
+			Menu, AccessorProgramsMenu, Show
+		}
 	}
-
 	UpdateFooterText(Text = "")
 	{
 		MouseGetPos, , , , hwnd, 2
@@ -2237,6 +2257,11 @@ Class CAccessorPlugin
 	;AllowDelayedExecution property of each action, so this one can only prevent delayed execution for all results of this plugin.
 	AllowDelayedExecution := false
 
+	;A plugin may define custom headers for the columns of the ListView which are shown in SingleContext mode
+	;Column1Text := "Something"
+	;Column2Text := "Something else"
+	;Column3Text := "Something different"
+	
 	;This class contains settings for an Accessor plugin. The values shown here are required for all plugins!
 	;Commented values can be read-only.
 	Class CSettings extends CRichObject
@@ -2446,7 +2471,6 @@ random accessor crashes, maybe related to uninstall plugin
 infinite loop somewhere, possibly CEnumerator. Need to debug with callstack when it happens
 File search is too slow...should maybe run in a separate thread
 Ability to clear and set FastFolders through context menu
-Accessor button creation is fucked up
 
 find in filenames can easily be crashed with subdirectory option
 explorer tabs in slide windows

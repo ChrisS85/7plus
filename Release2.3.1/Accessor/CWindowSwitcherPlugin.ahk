@@ -15,6 +15,7 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 	
 	Column1Text := "Window Title"
 	Column2Text := "Executable Name"
+	Column3Text := "CPU Usage"
 
 	Class CSettings extends CAccessorPlugin.CSettings
 	{
@@ -57,7 +58,7 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 	OnOpen(Accessor)
 	{
 		this.List := GetWindowInfo()
-		SetTimerF(new Delegate(this, "UpdateTimes"), -2000)
+		SetTimer, UpdateTimes, -2000
 	}
 
 	OnClose(Accessor)
@@ -143,11 +144,14 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 		Accessor := CAccessor.Instance
 		if(!Accessor.GUI.Visible)
 			return
+		outputdebug visible
 		for index, item in Accessor.GUI.ListView.Items
 		{
+			outputdebug loop %index%
 			ListEntry := Accessor.List[index]
 			if(ListEntry.Type = this.Type)
 			{
+				outputdebug found
 				ListEntry.oldKrnlTime := ListEntry.newKrnlTime
 				ListEntry.oldUserTime := ListEntry.newUserTime
 
@@ -162,6 +166,9 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 				item[3] := "CPU: " ListEntry.CPU "%"
 			}
 		}
-		SetTimerF(new Delegate(this, "UpdateTimes"), -2000)
+		SetTimer, UpdateTimes, -2000
 	}
 }
+UpdateTimes:
+CWindowSwitcherPlugin.Instance.UpdateTimes()
+return

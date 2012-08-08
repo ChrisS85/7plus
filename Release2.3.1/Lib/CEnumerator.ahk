@@ -26,9 +26,7 @@ Class CEnumerator
 		if(this.first)
 		{
 			this.Remove("first")
-			key := this.Object.MinIndex()
-			if(!ObjHasKey(this.Object, key))
-				key := ""
+			key := 1
 		}
 		else
 			key++
