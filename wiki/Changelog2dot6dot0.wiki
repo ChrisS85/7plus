@@ -6,6 +6,7 @@
  * Added Explorer path history and frequent paths to the Clipboard Manager menu.
  * FTP upload action can now upload directories. In addition, FTP and image uploads are carried out in a separate process for better responsiveness.
  * TAB key can now be used for autocompletion instead of switching the focus whenever a common autocompletion-list is visible (Examples: Path fields, Run dialog).
+ * New action for text-to-speech voice output.
 
 *Accessor:*
  * Accessor has been rewritten from scratch and is now much more modular and powerful. All of its plugins were also rewritten and improved. There are also some new ones. Here's an excerpt of the most important new things:
@@ -25,7 +26,7 @@
   * Recent folders plugin: Keeps track of recently used folders. It can be used to quickly switch folders in Explorer, file dialogs, CMD and WinRar. Very useful!
   * Keyword plugin: Quickly create keywords by selecting text or a file, open Accessor and type "Learn as [Keyword]". Credits go out to Enso Launcher for the idea!
   * Event plugin: Allows to create Accessor commands that trigger events. This allows to combine the ease of access(or) with the feature-rich event system.
-    * New commands created with this plugin: Shutdown, Reboot, Hibernate, Standby, LogOff, Lock, Message
+    * New commands created with this plugin: Shutdown, Reboot, Hibernate, Standby, LogOff, Lock, Message, Say
   * Clipboard plugin: Allows to quickly search for stored clipboard entries and paste them. Selected text can also be stored with this plugin.
   * Control Panel plugin: Indexes the control panel and makes it possible to access the control panel applets.
 
