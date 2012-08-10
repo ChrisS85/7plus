@@ -48,5 +48,6 @@
  * Improved Slide Windows to be much more responsive.
  * Adjusted some window sizes to get rid of redundant scrollbars.
  * Added a setting to avoid 7plus-related Explorer hang-ups.
+ * More operations run in separate processes now to improve responsivity.
 
 If you like this program and want to support its development, please consider donating!
