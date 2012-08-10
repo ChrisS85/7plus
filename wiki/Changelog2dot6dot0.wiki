@@ -41,6 +41,8 @@
  * Fixed a bug that caused crashes and hangups on windows which contain ListViews. This fix also improves responsiveness of ListView and TreeView selections.
  * Fixed Explorer windows getting activated at the start of 7plus.
  * Fixed a bug that prevented setting the current directory in save file dialogs.
+ * Fixed enabling/disabling of Explorer bar buttons.
+ * Fixed "Run or activate" action.
 
 *Changes:* 
  * Rewrote navigation code that sets/gets paths/selections in explorer, file dialogs, CMD, Desktop etc.
@@ -49,6 +51,5 @@
  * Adjusted some window sizes to get rid of redundant scrollbars.
  * Added a setting to avoid 7plus-related Explorer hang-ups.
  * More operations run in separate processes now to improve responsivity.
- * Fixed enabling/disabling of Explorer bar buttons.
- * Fixed "Run or activate" action.
+
 If you like this program and want to support its development, please consider donating!
