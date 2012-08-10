@@ -69,6 +69,21 @@
 <Operator>is greater than</Operator>
 <Type>If</Type>
 <With>${WINXP64}</With>
+</Condition><Condition>
+<Negate>0</Negate>
+<Type>OR</Type>
+</Condition><Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>ShImgVw:</With>
+</Condition><Condition>
+<Compare>${WindowsVersion}</Compare>
+<Negate>0</Negate>
+<Operator>is lower than</Operator>
+<Type>If</Type>
+<With>${WINVISTA}</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Rotate images with R in windows picture viewer.</Description>
@@ -104,6 +119,21 @@
 <Operator>is greater than</Operator>
 <Type>If</Type>
 <With>${WINXP64}</With>
+</Condition><Condition>
+<Negate>0</Negate>
+<Type>OR</Type>
+</Condition><Condition>
+<Compare>${Class}</Compare>
+<Negate>0</Negate>
+<Operator>starts with</Operator>
+<Type>If</Type>
+<With>ShImgVw:</With>
+</Condition><Condition>
+<Compare>${WindowsVersion}</Compare>
+<Negate>0</Negate>
+<Operator>is lower than</Operator>
+<Type>If</Type>
+<With>${WINVISTA}</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Rotate images with L in windows picture viewer.</Description>
@@ -194,42 +224,6 @@
 <Actions>
 <Action>
 <KeyDelay>0</KeyDelay>
-<Keys>^k</Keys>
-<Type>Send keyboard input</Type>
-<WriteText>0</WriteText>
-</Action></Actions>
-<Category>Misc Hotkeys</Category>
-<Conditions>
-<Condition>
-<Compare>${Class}</Compare>
-<Negate>0</Negate>
-<Operator>starts with</Operator>
-<Type>If</Type>
-<With>ShImgVw:</With>
-</Condition><Condition>
-<Compare>${WindowsVersion}</Compare>
-<Negate>0</Negate>
-<Operator>is lower than</Operator>
-<Type>If</Type>
-<With>${WINVISTA}</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Rotate images with R in windows picture viewer.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>1614</ID>
-<Name>Picture viewer: Rotate image right with R</Name>
-<OfficialEvent>15</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>R</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<KeyDelay>0</KeyDelay>
 <Keys>`r`n</Keys>
 <Type>Send keyboard input</Type>
 <WriteText>1</WriteText>
@@ -248,42 +242,6 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <Key>^#Enter</Key>
-<Type>Hotkey</Type>
-</Trigger>
-</Event><Event>
-<Actions>
-<Action>
-<KeyDelay>0</KeyDelay>
-<Keys>^l</Keys>
-<Type>Send keyboard input</Type>
-<WriteText>0</WriteText>
-</Action></Actions>
-<Category>Misc Hotkeys</Category>
-<Conditions>
-<Condition>
-<Compare>${Class}</Compare>
-<Negate>0</Negate>
-<Operator>starts with</Operator>
-<Type>If</Type>
-<With>ShImgVw:</With>
-</Condition><Condition>
-<Compare>${WindowsVersion}</Compare>
-<Negate>0</Negate>
-<Operator>is lower than</Operator>
-<Type>If</Type>
-<With>${WINVISTA}</With>
-</Condition></Conditions>
-<DeleteAfterUse>0</DeleteAfterUse>
-<Description>Rotate images with L in windows picture viewer.</Description>
-<DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
-<EventComplexityLevel>1</EventComplexityLevel>
-<ID>1615</ID>
-<Name>Picture viewer: Rotate image left with L</Name>
-<OfficialEvent>18</OfficialEvent>
-<OneInstance>0</OneInstance>
-<Trigger>
-<Key>L</Key>
 <Type>Hotkey</Type>
 </Trigger>
 </Event><Event>

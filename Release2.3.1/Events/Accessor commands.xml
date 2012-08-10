@@ -204,7 +204,6 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <ButtonText>Say</ButtonText>
-<Detail1></Detail1>
 <Icon>%SystemRoot%\system32\SHELL32.dll,173</Icon>
 <Keyword>Say</Keyword>
 <Path>${AccAll}</Path>

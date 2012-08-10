@@ -135,7 +135,7 @@
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>388</ID>
-<Name>Enable CTRL+V to paste from clipboard</Name>
+<Name>CMD: CTRL+V to paste from clipboard</Name>
 <OfficialEvent>389</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
