@@ -1,7 +1,7 @@
 Class CMessageAction Extends CAction
 {
 	static Type := RegisterType(CMessageAction, "Message")
-	static Category := RegisterCategory(CMessageAction, "System")
+	static Category := RegisterCategory(CMessageAction, "Input/Output")
 	static Text := "Example Message"
 	static Title := "7plus"
 	static Timeout := 0

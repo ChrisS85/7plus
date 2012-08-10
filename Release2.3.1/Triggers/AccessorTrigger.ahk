@@ -8,6 +8,7 @@ Class CAccessorTrigger Extends CTrigger
 	static Keyword := "Event"
 	static ButtonText := "Execute"
 	static Icon := "%SystemRoot%\system32\SHELL32.dl,2"
+	
 	Matches(Filter, Event)
 	{
 		return false ; Match is handled through type trigger in Accessor.ahk already
@@ -32,13 +33,13 @@ Class CAccessorTrigger Extends CTrigger
 			this.AddControl(GUI, "Edit", "Path", "", "", "Path:", "", "", "", "", "", "The text of the path column in Accessor window.")
 			this.AddControl(GUI, "Edit", "Detail1", "", "", "Detail1:", "", "", "", "", "", "The text of the third column in Accessor window.")
 			this.AddControl(GUI, "Edit", "Icon", "", "", "Icon:","Browse", "Action_AccessorTrigger_Icon")
-		}
+		} 
 		else if(GoToLabel = "Icon")
 		{
-			ControlGetText, icon,, % "ahk_id " sGUI.Edit_Icon
-			StringSplit, icon, icon, `,,%A_Space%
+			ControlGetText, icon, , % "ahk_id " sGUI.Edit_Icon
+			StringSplit, icon, icon, `, ,%A_Space%
 			if(PickIcon(icon1, icon2))
-				ControlSetText,, %icon1%`,%icon2%, % "ahk_id " sGUI.Edit_Icon
+				ControlSetText, , %icon1%`, %icon2%, % "ahk_id " sGUI.Edit_Icon
 		}
 	}
 }

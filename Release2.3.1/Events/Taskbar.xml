@@ -226,7 +226,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event asks for a message and starts the message timer.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>1602</ID>
 <Name>Dynamic Timer: Ask for message and start message timer</Name>

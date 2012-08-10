@@ -32,7 +32,7 @@ Class CLanguage
 	
 	}
 }
-OpenWikiPage(Page, SkipTranslation=false)
+OpenWikiPage(Page, SkipTranslation = false)
 {
 	global Languages
 	run % "http://code.google.com/p/7plus/wiki/" (SkipTranslation ? "" : Languages.GetCurrentLanguage().WikiPrefix) Page, UseErrorLevel

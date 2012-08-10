@@ -14,7 +14,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event sends an opening bracket character when NumpadEnd is pressed (Numpad1 with NumLock OFF). This remapping is used to enter equations into scientific calculators using only the numpad.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1646</ID>
 <Name>NumpadEnd -&gt; '('</Name>

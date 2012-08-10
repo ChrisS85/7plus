@@ -144,7 +144,7 @@ Class CSettingsWindow Extends CGUI
 	{
 		this.Events := ""
 	}
-	ApplySettings(Close=0)
+	ApplySettings(Close = 0)
 	{
 		this.Enabled := false
 		PageNames := this.PageNames
@@ -338,8 +338,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page := this.Pages.Events.Tabs[1].Controls
 		Settings.General.ShowAdvancedEvents := Page.chkShowAdvancedEvents.Checked
 		
-		;TODO: Improve code quality here.
-		;Remove events that were deleted in settings window and refresh the settings copies to consider recent changes in the original events (such as timer state)
+		; TODO: Improve code quality here.
+		; Remove events that were deleted in settings window and refresh the settings copies to consider recent changes in the original events (such as timer state)
 		pos := 1
 		Loop % EventSystem.Events.MaxIndex()
 		{
@@ -370,6 +370,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 			else
 				Event.Trigger.Disable(Event)
 		}
+		EventSystem.EventsChanged()
 	}
 	RecreateTreeView()
 	{

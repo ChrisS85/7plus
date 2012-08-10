@@ -1,7 +1,7 @@
 Class CImageUploadAction Extends CAction
 {
-	static Type := RegisterType(CImageUploadAction, "ImageUpload")
-	static Category := RegisterCategory(CImageUploadAction, "File")
+	static Type := RegisterType(CImageUploadAction, "Upload image to image hoster")
+	static Category := RegisterCategory(CImageUploadAction, "Internet")
 	static Hoster := "ImgUr"
 	static SourceFiles := "${SelNM}" ;All upload actions need to have SourceFiles property (used in ImageConverter)
 	static CopyToClipboard := 1

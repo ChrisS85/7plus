@@ -647,7 +647,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event replaces the default ALT + TAB dialog with the window switcher plugin of Accessor.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1663</ID>
 <Name>Replace ALT + TAB dialog with Accessor</Name>

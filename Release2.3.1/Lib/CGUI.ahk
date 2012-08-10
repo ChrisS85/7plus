@@ -113,11 +113,10 @@ Class CGUI
 		}
 		
 		Gui, % instance.GUINum ":Show", Hide Autosize Center
-		outputdebug % "Icon: " instance.WindowIcon
 		if(instance.WindowIcon)
 		{
-			SendMessage, ( WM_SETICON:=0x80 ), 0, instance.WindowIcon,, % "ahk_id " instance.hwnd ;Set the titlebar icon
-			SendMessage, ( WM_SETICON:=0x80 ), 1, instance.WindowIcon,, % "ahk_id " instance.hwnd ;Set the Alt-Tab icon
+			SendMessage, ( WM_SETICON := 0x80 ), 0, instance.WindowIcon, , % "ahk_id " instance.hwnd ;Set the titlebar icon
+			SendMessage, ( WM_SETICON := 0x80 ), 1, instance.WindowIcon, , % "ahk_id " instance.hwnd ;Set the Alt-Tab icon
 		}
 		;~ WinGetPos, x, y, w, h, % "ahk_id " instance.hwnd
 		;~ msgbox % "w " w " h " h
@@ -277,11 +276,10 @@ Class CGUI
 		if(this.HasKey("_Initialized")) ;Prevent recalculating size after it has been shown the first time
 			this.Remove("_Initiliazed")
 
-		outputdebug % "Icon: " this.WindowIcon
 		if(this.WindowIcon)
 		{
-			SendMessage, ( WM_SETICON:=0x80 ), 0, this.WindowIcon,, % "ahk_id " this.hwnd ;Set the titlebar icon
-			SendMessage, ( WM_SETICON:=0x80 ), 1, this.WindowIcon,, % "ahk_id " this.hwnd ;Set the Alt-Tab icon
+			SendMessage, ( WM_SETICON := 0x80 ), 0, this.WindowIcon, , % "ahk_id " this.hwnd ;Set the titlebar icon
+			SendMessage, ( WM_SETICON := 0x80 ), 1, this.WindowIcon, , % "ahk_id " this.hwnd ;Set the Alt-Tab icon
 		}
 		Gui, % this.GUINum ":Show",%Options%, % this.Title
 	}

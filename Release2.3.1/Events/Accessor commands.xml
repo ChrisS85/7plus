@@ -184,6 +184,33 @@
 <Title>Show Message:</Title>
 <Type>Accessor Trigger</Type>
 </Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Text>${AccAll}</Text>
+<Type>Speak text</Type>
+</Action></Actions>
+<Category>Accessor commands</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event creates the possibility to use voice output with Accessor by typing "say text".</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1664</ID>
+<Name>Accessor: Voice output</Name>
+<OfficialEvent>63</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<ButtonText>Say</ButtonText>
+<Detail1></Detail1>
+<Icon>%SystemRoot%\system32\SHELL32.dll,173</Icon>
+<Keyword>Say</Keyword>
+<Path>${AccAll}</Path>
+<Title>Speak text:</Title>
+<Type>Accessor Trigger</Type>
+</Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>
 <MinorVersion>6</MinorVersion>

@@ -6,7 +6,6 @@ Class Navigation
 	FindNavigationSource(hwnd, func)
 	{
 		WinGetClass, class, ahk_id %hwnd%
-		outputdebug class %class%
 		for index, NavigationSource in this.NavigationSources
 			if(NavigationSource.Processes(hwnd, class) && IsFunc(NavigationSource[func]))
 				return NavigationSource

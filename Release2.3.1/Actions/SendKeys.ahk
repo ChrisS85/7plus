@@ -1,7 +1,7 @@
 Class CSendKeysAction Extends CAction
 {
 	static Type := RegisterType(CSendKeysAction, "Send keyboard input")
-	static Category := RegisterCategory(CSendKeysAction, "Input")	
+	static Category := RegisterCategory(CSendKeysAction, "Input/Output")	
 	static Keys := ""
 	static WriteText := False
 	static KeyDelay := 0

@@ -467,7 +467,6 @@
 <DataType>Text</DataType>
 <Placeholder>Input</Placeholder>
 <Rows>1</Rows>
-<Selection></Selection>
 <Text>Filter Text</Text>
 <Title>Select Files</Title>
 <Type>Ask for user input</Type>

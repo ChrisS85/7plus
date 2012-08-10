@@ -514,7 +514,6 @@
 <DataType>Text</DataType>
 <Placeholder>Input</Placeholder>
 <Rows>1</Rows>
-<Selection></Selection>
 <Text>Filter Text</Text>
 <Title>Select Files</Title>
 <Type>Ask for user input</Type>
@@ -4226,7 +4225,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event asks for a message and starts the message timer.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>1602</ID>
 <Name>Dynamic Timer: Ask for message and start message timer</Name>
@@ -5380,7 +5379,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event sends an opening bracket character when NumpadEnd is pressed (Numpad1 with NumLock OFF). This remapping is used to enter equations into scientific calculators using only the numpad.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1646</ID>
 <Name>NumpadEnd -&gt; '('</Name>
@@ -5756,7 +5755,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>This event replaces the default ALT + TAB dialog with the window switcher plugin of Accessor.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1663</ID>
 <Name>Replace ALT + TAB dialog with Accessor</Name>
@@ -5765,6 +5764,33 @@
 <Trigger>
 <Key>!Tab</Key>
 <Type>Hotkey</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Text>${AccAll}</Text>
+<Type>Speak text</Type>
+</Action></Actions>
+<Category>Accessor commands</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>This event creates the possibility to use voice output with Accessor by typing "say text".</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1664</ID>
+<Name>Accessor: Voice output</Name>
+<OfficialEvent>63</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<ButtonText>Say</ButtonText>
+<Detail1></Detail1>
+<Icon>%SystemRoot%\system32\SHELL32.dll,173</Icon>
+<Keyword>Say</Keyword>
+<Path>${AccAll}</Path>
+<Title>Speak text:</Title>
+<Type>Accessor Trigger</Type>
 </Trigger>
 </Event></Events>
 <MajorVersion>2</MajorVersion>

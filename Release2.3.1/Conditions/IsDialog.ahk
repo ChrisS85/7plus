@@ -1,7 +1,7 @@
 Class CIsDialogCondition Extends CCondition
 {
 	static Type := RegisterType(CIsDialogCondition, "Window is file dialog")
-	static Category := RegisterCategory(CIsDialogCondition, "Other")
+	static Category := RegisterCategory(CIsDialogCondition, "Window")
 	static ListViewOnly := True
 	Evaluate()
 	{

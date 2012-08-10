@@ -444,7 +444,6 @@ Class CAccessor
 		}
 		SetFastFolder(Path)
 		{
-			outputdebug SetFastFolder %Path%
 			if(Path)
 				UpdateStoredFolder(this.Number, Path)
 			else
@@ -683,7 +682,6 @@ Class CAccessor
 			Button := new this.CProgramButton()
 			if(SavedSettings.ProgramButtons.HasKey(A_Index))
 				Button.Load(SavedSettings.ProgramButtons[A_Index])
-				outputdebug % Button.Path
 			this.ProgramButtons.Insert(Button)
 		}
 		Loop % 10
@@ -826,7 +824,6 @@ Class CAccessor
 	{
 		if(Filter = this.Filter)
 			return
-		outputdebug filter changed to "%filter%"
 		this.Filter := Filter
 
 		ListEntry := this.List[this.GUI.ListView.SelectedIndex]
@@ -952,7 +949,6 @@ Class CAccessor
 	{
 		if(!this.GUI)
 			return
-		;outputdebug RefreshList(%depth%) start
 
 		;Reset refreshing status
 		this.IsRefreshing := true
@@ -960,9 +956,9 @@ Class CAccessor
 
 		LastFilter := this.LastFilter
 		Filter := this.Filter
-		;outputdebug filter %filter%
+
 		Parameters := this.ExpandFilter(Filter, LastFilter, Time)
-		;outputdebug filter2 %filter%
+
 		;Plugins which need to use the filter string without any preparsing should use this one which doesn't contain the timer at the end
 		this.FilterWithoutTimer := Filter
 
@@ -976,12 +972,10 @@ Class CAccessor
 		this.IsRefreshing := false
 		if(this.RepeatRefresh)
 			this.RefreshList(depth + 1)
-		;outputdebug RefreshList(%depth%) end
 	}
 	
 	FetchResults(Filter, LastFilter, KeywordSet, Parameters, Time)
 	{
-		;outputdebug FetchResults() start
 		this.List := Array()
 
 		;Find out if we are in a single plugin context, and add only those items
@@ -990,7 +984,6 @@ Class CAccessor
 			if(Plugin.Settings.Enabled && ((Time > 0 && Plugin.AllowDelayedExecution) || !Time) && SingleContext := ((Plugin.Settings.Keyword && Filter && KeywordSet := InStr(Filter, Plugin.Settings.Keyword " ") = 1) || Plugin.IsInSinglePluginContext(Filter, LastFilter)))
 			{
 				this.SingleContext := Plugin.Type
-				outputdebug % "single context " this.SingleContext
 				Filter := strTrimLeft(Filter, Plugin.Settings.Keyword " ")
 				PreRefreshTime := A_TickCount
 				Result := Plugin.RefreshList(this, Filter, LastFilter, KeywordSet, Parameters)
@@ -1035,12 +1028,10 @@ Class CAccessor
 
 		;Sort the list by the weighting
 		this.List := ArraySort(this.List, "SortOrder", "Down")
-		;outputdebug FetchResults() end
 	}
 
 	UpdateGUIWithResults(Time)
 	{
-		;outputdebug UpdateGUIWithResults() start
 		if(Time)
 			this.FormattedTime := "in " Floor(Time/3600) ":" Floor(Mod(Time, 3600) / 60) ":" Floor(Mod(Time, 60))
 		else
@@ -1050,14 +1041,11 @@ Class CAccessor
 		;Much less results than with previous search string, clear the list instead of refreshing it
 		if(this.List.MaxIndex() < 5 && this.GUI.ListView.Items.MaxIndex() > 10)
 		{
-			;outputdebug UpdateGUIWithResults() Pre List Clear
 			this.GUI.ListView.Items.Clear()
-			;outputdebug UpdateGUIWithResults() Pre Image Loop
 			this.GUI.ListView._.ImageListManager.Clear()
 		}
 
 		ListViewCount := this.GUI.ListView.Items.MaxIndex()
-		;outputdebug UpdateGUIWithResults() Pre Loop
 		Debug := Settings.General.DebugEnabled
 		;Now that items are available and sorted, add them to the listview
 		for index3, ListEntry in this.List
@@ -1101,7 +1089,7 @@ Class CAccessor
 					item.SetIcon(ListEntry.Icon, ListEntry.IconNumber ? ListEntry.IconNumber : 1, 1)
 			}
 		}
-		;outputdebug UpdateGUIWithResults() Post Loop
+
 		ListViewCount := this.GUI.ListView.Items.MaxIndex()
 		ListCount := this.List.MaxIndex()
 		Loop % ListViewCount - ListCount
@@ -1119,7 +1107,6 @@ Class CAccessor
 		this.GUI.ListView.Redraw := true
 
 		this.UpdateButtonText()
-		;outputdebug UpdateGUIWithResults() end
 	}
 
 	;Registers an Accessor plugin with this class. This needs to be done.
@@ -1821,7 +1808,6 @@ Class CAccessorGUI extends CGUI
 		b := CAccessor.Instance.FastFolderButtons
 		ButtonControl := this.FastFolderButtons[Index + 1]
 		Button := CAccessor.Instance.FastFolderButtons[Index + 1]
-		outputdebug % "redraw button " Index ", " Button.Path
 		hBitmap := Button.Draw(hwnd = ButtonControl.hwnd)
 		ButtonControl.SetImageFromHBitmap(hBitmap)
 		DeleteObject(hBitmap)
@@ -2207,7 +2193,6 @@ return
 
 #if (CAccessor.Instance.GUI.Visible && CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenWith) && !IsContextMenuActive())
 ^o::
-outputdebug % CAccessor.Instance.GUI.Visible ", " CAccessor.Instance.HasAction(CAccessorPlugin.CActions.OpenWith) "; " !IsContextMenuActive()
 CAccessor.Instance.PerformAction(CAccessorPlugin.CActions.OpenWith)
 return
 #if

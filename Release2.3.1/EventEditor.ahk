@@ -37,10 +37,11 @@ Class CEventEditor extends CGUI
 	listConditions := this.Tab.Tabs[2].AddControl("ListBox", "listConditions", "x31 y56 w270 h454", "")
 	btnAddCondition := this.Tab.Tabs[2].AddControl("Button", "btnAddCondition", "x311 y56 w90", "Add Condition")
 	btnDeleteCondition := this.Tab.Tabs[2].AddControl("Button", "btnDeleteCondition", "x311 y86 w90", "Delete Condition")
-	btnCopyCondition := this.Tab.Tabs[2].AddControl("Button", "btnCopyCondition", "x311 y116 w90", "Copy Condition")
-	btnPasteCondition := this.Tab.Tabs[2].AddControl("Button", "btnPasteCondition", "x311 y146 w90", "Paste Condition")
-	btnMoveConditionUp := this.Tab.Tabs[2].AddControl("Button", "btnMoveConditionUp", "x311 y176 w90", "Move Up")
-	btnMoveConditionDown := this.Tab.Tabs[2].AddControl("Button", "btnMoveConditionDown", "x311 y206 w90", "Move Down")
+	btnAddOR := this.Tab.Tabs[2].AddControl("Button", "btnAddOR", "x311 y116 w90", "Add OR branch")
+	btnCopyCondition := this.Tab.Tabs[2].AddControl("Button", "btnCopyCondition", "x311 y146 w90", "Copy Condition")
+	btnPasteCondition := this.Tab.Tabs[2].AddControl("Button", "btnPasteCondition", "x311 y176 w90", "Paste Condition")
+	btnMoveConditionUp := this.Tab.Tabs[2].AddControl("Button", "btnMoveConditionUp", "x311 y206 w90", "Move Up")
+	btnMoveConditionDown := this.Tab.Tabs[2].AddControl("Button", "btnMoveConditionDown", "x311 y236 w90", "Move Down")
 	txtCondition2 := this.Tab.Tabs[2].AddControl("Text", "txtCondition2", "x431 y36", "Here you can define the selected condition.")
 	chkNegateCondition := this.Tab.Tabs[2].AddControl("Checkbox", "chkNegateCondition", "x431 y56", "Negate Condition")
 	txtConditionCategory := this.Tab.Tabs[2].AddControl("Text", "txtConditionCategory", "x431 y89", "Category:")
@@ -281,7 +282,21 @@ Class CEventEditor extends CGUI
 	}
 	btnTriggerHelp_Click()
 	{
-		static OldTypes := {"On 7plus start" : "7plusStart", "Context menu" : "ContextMenu", "Double click on desktop" : "DoubleClickDesktop", "Double click on taskbar" : "DoubleClickTaskbar", "Explorer bar button" : "ExplorerButton", "Double click on empty space" : "ExplorerDoubleClickSpace", "Explorer path changed" : "ExplorerPathChanged", "Menu item clicked" : "MenuItem", "On window message" : "OnMessage", "Screen corner" : "ScreenCorner", "Triggered by an action" : "None", "Window activated" : "WindowActivated", "Window closed" : "WindowClosed", "Window created" : "WindowCreated", "Window state changed" : "WindowStateChange"}
+		static OldTypes :=  { "On 7plus start" : "7plusStart"
+							, "Context menu" : "ContextMenu"
+							, "Double click on desktop" : "DoubleClickDesktop"
+							, "Double click on taskbar" : "DoubleClickTaskbar"
+							, "Explorer bar button" : "ExplorerButton"
+							, "Double click on empty space" : "ExplorerDoubleClickSpace"
+							, "Explorer path changed" : "ExplorerPathChanged"
+							, "Menu item clicked" : "MenuItem"
+							, "On window message" : "OnMessage"
+							, "Screen corner" : "ScreenCorner"
+							, "Triggered by an action" : "None"
+							, "Window activated" : "WindowActivated"
+							, "Window closed" : "WindowClosed"
+							, "Window created" : "WindowCreated"
+							, "Window state changed" : "WindowStateChange" }
 		OpenWikiPage("docsTriggers" (OldTypes.HasKey(this.Event.Trigger.Type) ? OldTypes[this.Event.Trigger.Type] : this.Event.Trigger.Type))
 	}
 
@@ -357,7 +372,8 @@ Class CEventEditor extends CGUI
 	}
 	ShowCondition()
 	{
-		this.chkNegateCondition.Checked := this.Condition.Negate
+		this.chkNegateCondition.Checked := this.Condition.Negate && !this.Condition.Is(CORCondition)
+		this.chkNegateCondition.Enabled := !this.Condition.Is(CORCondition)
 		this.ConditionGUI := {Type: this.Condition.Type, Delimiter : this.Delimiter, glabel : "EventEditor_ConditionLabel"}
 		this.ConditionGUI.x := 438
 		this.ConditionGUI.y := 178
@@ -389,6 +405,7 @@ Class CEventEditor extends CGUI
 		this.UseCondition := true
 		this.listConditions.SelectedIndex := this.listConditions.Items.MaxIndex()
 	}
+
 	btnDeleteCondition_Click()
 	{
 		if(SelectedIndex := this.listConditions.SelectedIndex)
@@ -401,12 +418,21 @@ Class CEventEditor extends CGUI
 				this.listConditions.SelectedIndex := clamp(SelectedIndex, 1, Count)
 		}
 	}
+
+	btnAddOR_Click()
+	{
+		this.Event.Conditions.Insert(Condition := new CORCondition())
+		this.listConditions.Items.Add(Condition.DisplayString())
+		this.UseCondition := true
+		this.listConditions.SelectedIndex := this.listConditions.Items.MaxIndex()
+	}
+
 	RefreshConditionControlStates()
 	{
 		SelectedIndex := this.listConditions.SelectedIndex
 		this.ddlConditionCategory.Enabled 	:= SelectedIndex > 0
 		this.ddlConditionType.Enabled 		:= SelectedIndex > 0
-		this.chkNegateCondition.Enabled 	:= SelectedIndex > 0
+		this.chkNegateCondition.Enabled 	:= SelectedIndex > 0 && !this.Condition.Is(CORCondition)
 		if(!(SelectedIndex > 0))
 			this.chkNegateCondition.Checked := false
 		this.btnConditionHelp.Enabled 		:= SelectedIndex > 0
@@ -453,7 +479,19 @@ Class CEventEditor extends CGUI
 	}
 	btnConditionHelp_Click()
 	{
-		static OldTypes := {"Context menu active" : "IsContextMenuActive", "Window is file dialog" : "IsDialog", "Window is dragable" : "IsDragable", "Fullscreen window active" : "IsFullScreen", "Explorer is renaming" : "IsRenaming", "Key is down" : "KeyIsDown", "Mouse over" : "MouseOver", "Mouse over file list" : "MouseOverFileList", "Mouse over tab button" : "MouseOverTabButton", "Mouse over taskbar list" : "MouseOverTaskList", "Window active" : "WindowActive", "Window exists" : "WindowExists", "Can Window be Navigated" : "NavigatableWindow"}
+		static OldTypes :=  { "Context menu active" : "IsContextMenuActive"
+							, "Window is file dialog" : "IsDialog"
+							, "Window is dragable" : "IsDragable"
+							, "Fullscreen window active" : "IsFullScreen"
+							, "Explorer is renaming" : "IsRenaming"
+							, "Key is down" : "KeyIsDown"
+							, "Mouse over" : "MouseOver"
+							, "Mouse over file list" : "MouseOverFileList"
+							, "Mouse over tab button" : "MouseOverTabButton"
+							, "Mouse over taskbar list" : "MouseOverTaskList"
+							, "Window active" : "WindowActive"
+							, "Window exists" : "WindowExists"
+							, "Can Window be Navigated" : "NavigatableWindow" }
 		OpenWikiPage("docsConditions" (OldTypes.HasKey(this.Condition.Type) ? OldTypes[this.Condition.Type] : this.Condition.Type))
 	}
 	
@@ -612,7 +650,73 @@ Class CEventEditor extends CGUI
 	}
 	btnActionHelp_Click()
 	{
-		static OldTypes := {"Show Accessor" : "Accessor", "Show Aero Flip" : "ShowAeroFlip", "Check for updates" : "AutoUpdate", "Write to clipboard" : "Clipboard", "Clipboard Manager menu" : "ClipMenu", "Paste clipboard entry" : "ClipPaste", "Control event" : "ControlEvent", "Control timer" : "ControlTimer", "Exit 7plus" : "Exit7plus", "Explorer replace dialog" : "ExplorerReplaceDialog", "Clear Fast Folder" : "FastFoldersClear", "Fast Folders menu" : "FastFoldersMenu", "Open Fast Folder" : "FastFoldersRecall", "Save Fast Folder" : "FastFoldersStore", "Copy file" : "Copy", "Delete file" : "Delete", "Move file" : "Move", "Write to file" : "Write", "Filter list" : "FilterList", "Flashing windows" : "FlashingWindows", "Show Explorer flat view" : "FlatView", "Focus a control" : "FocusControl", "Upload to FTP" : "Upload", "Show Image Converter" : "ImageConverter", "Ask for user input" : "Input", "Invert file selection" : "InvertSelection", "Show Explorer checksum dialog" : "MD5", "Merge Explorer windows" : "MergeTabs", "Mouse click" : "MouseClick", "Close tab under mouse" : "MouseCloseTab", "Drag window with mouse" : "MouseWindowDrag", "Resize window with mouse" : "MouseWindowResize", "Create new file" : "NewFile", "Create new folder" : "NewFolder", "Open folder in new window / tab" : "OpenInNewFolder", "Play a sound" : "PlaySound", "Restart 7plus" : "Restart7plus", "Restore file selection" : "RestoreSelection", "Run a program" : "Run", "Run a program or activate it" : "RunOrActivate", "Take a screenshot" : "Screenshot", "Select files" : "SelectFiles", "Send keyboard input" : "SendKeys", "Send a window message" : "SendMessage", "Set current directory" : "SetDirectory", "Set window title" : "SetWindowTitle", "Shorten a URL" : "ShortenURL", "Show menu" : "ShowMenu", "Show settings" : "ShowSettings", "Shutdown computer" : "Shutdown", "Move Slide Window out of screen" : "SlideWindowOut", "Close taskbar button under mouse" : "TaskButtonClose", "Change desktop wallpaper" : "ToggleWallpaper", "Send an email" : "SendMail", "Show a tooltip" : "ToolTip", "Change explorer view mode" : "ViewMode", "Change sound volume" : "Volume", "Activate a window" : "WindowActivate", "Close a window" : "WindowClose", "Hide a window" : "WindowHide", "Move a window" : "WindowMove", "Resize a window" : "WindowResize", "Put window in background" : "WindowSendToBottom", "Show a window" : "WindowShow", "Show Tip" : "ShowTip", "Change window state" : "WindowState"}
+		static OldTypes :=  { "Show Accessor" : "Accessor"
+							, "Show Aero Flip" : "ShowAeroFlip"
+							, "Check for updates" : "AutoUpdate"
+							, "Write to clipboard" : "Clipboard"
+							, "Clipboard Manager menu" : "ClipMenu"
+							, "Paste clipboard entry" : "ClipPaste"
+							, "Control event" : "ControlEvent"
+							, "Control timer" : "ControlTimer"
+							, "Exit 7plus" : "Exit7plus"
+							, "Explorer replace dialog" : "ExplorerReplaceDialog"
+							, "Clear Fast Folder" : "FastFoldersClear"
+							, "Fast Folders menu" : "FastFoldersMenu"
+							, "Open Fast Folder" : "FastFoldersRecall"
+							, "Save Fast Folder" : "FastFoldersStore"
+							, "Copy file" : "Copy"
+							, "Delete file" : "Delete"
+							, "Move file" : "Move"
+							, "Write to file" : "Write"
+							, "Filter list" : "FilterList"
+							, "Flashing windows" : "FlashingWindows"
+							, "Show Explorer flat view" : "FlatView"
+							, "Focus a control" : "FocusControl"
+							, "Upload to FTP" : "Upload"
+							, "Upload image to image hoster" : "ImageUpload"
+							, "Show Image Converter" : "ImageConverter"
+							, "Ask for user input" : "Input"
+							, "Invert file selection" : "InvertSelection"
+							, "Show Explorer checksum dialog" : "MD5"
+							, "Merge Explorer windows" : "MergeTabs"
+							, "Mouse click" : "MouseClick"
+							, "Close tab under mouse" : "MouseCloseTab"
+							, "Drag window with mouse" : "MouseWindowDrag"
+							, "Resize window with mouse" : "MouseWindowResize"
+							, "Create new file" : "NewFile"
+							, "Create new folder" : "NewFolder"
+							, "Open folder in new window / tab" : "OpenInNewFolder"
+							, "Play a sound" : "PlaySound"
+							, "Restart 7plus" : "Restart7plus"
+							, "Restore file selection" : "RestoreSelection"
+							, "Run a program" : "Run"
+							, "Run a program or activate it" : "RunOrActivate"
+							, "Take a screenshot" : "Screenshot"
+							, "Select files" : "SelectFiles"
+							, "Send keyboard input" : "SendKeys"
+							, "Send a window message" : "SendMessage"
+							, "Set current directory" : "SetDirectory"
+							, "Set window title" : "SetWindowTitle"
+							, "Shorten a URL" : "ShortenURL"
+							, "Show menu" : "ShowMenu"
+							, "Show settings" : "ShowSettings"
+							, "Shutdown computer" : "Shutdown"
+							, "Move Slide Window out of screen" : "SlideWindowOut"
+							, "Close taskbar button under mouse" : "TaskButtonClose"
+							, "Change desktop wallpaper" : "ToggleWallpaper"
+							, "Send an email" : "SendMail"
+							, "Show a tooltip" : "ToolTip"
+							, "Change explorer view mode" : "ViewMode"
+							, "Change sound volume" : "Volume"
+							, "Activate a window" : "WindowActivate"
+							, "Close a window" : "WindowClose"
+							, "Hide a window" : "WindowHide"
+							, "Move a window" : "WindowMove"
+							, "Resize a window" : "WindowResize"
+							, "Put window in background" : "WindowSendToBottom"
+							, "Show a window" : "WindowShow"
+							, "Show Tip" : "ShowTip"
+							, "Change window state" : "WindowState" }
 		OpenWikiPage("docsActions" (OldTypes.HasKey(this.Action.Type) ? OldTypes[this.Action.Type] : this.Action.Type))
 	}
 }

@@ -167,7 +167,7 @@ Class CEventSystem extends CRichObject
 			EventPos++
 		}
 	}
-	
+
 	;Finds the queued event and subevent in which a subevent has a specific key with a specific value. Filter specifies which types of subevents should be searched.
 	EventFromSubEventKey(ByRef pEvent, ByRef pSubEvent, Key, Value, Filter = "TCA")
 	{
@@ -292,35 +292,55 @@ Class CEvent extends CRichObject
 	;Main function to expand placeholders. Placeholders are marked by ${key} and by %PATH%
 	;This function is implemented as a global function so it can be called independently of a subevent
 	static ExpandPlaceholders := Func("ExpandPlaceholders")
-	
+
 	;Evaluates the conditions of this event. Returns -1 if the conditions can't be evaluated completely, 0 if they evaluated to false and 1 if they evuated to true
-	CheckConditions(RemoveSuccessfulConditions)
+	CheckConditions()
 	{
 		result := this.Enabled || this.Trigger.Type = "Timer" ;Check enabled state again here, because it might have changed since it was appended to queue
 		if(result)
 		{
-			ConditionPos := 1
-			Loop % this.Conditions.MaxIndex()
+			;Group conditions separated by OR conditions
+			ConditionGroups := Array()
+			ConditionGroup := Array()
+			for index, Condition in this.Conditions
 			{
-				result := Round(Clamp(this.Conditions[ConditionPos].Evaluate(this), -1, 1))
-				if( result = -1) ;Not decided yet, check later
-					break
-				else if(this.Conditions[ConditionPos].Negate) ;Result is 0 or 1 before, now invert it
-					result := !result
-				
-				;Condition did not match
-				if(result = 0)
-					break
-				else if(result = 1 && RemoveSuccessfulConditions) ;This condition was fulfilled, remove it from conditions and continue with next condition
+				if(!Condition.Is(CORCondition))
+					ConditionGroup.Insert(Condition)
+				else
 				{
-					this.Conditions.Remove(ConditionPos)
-					continue
+					if(ConditionGroup.MaxIndex()) ;Skip empty groups
+					{
+						ConditionGroups.Insert(ConditionGroup)
+						ConditionGroup := Array()
+					}
 				}
-				ConditionPos++
+			}
+			if(ConditionGroup.MaxIndex()) ;Skip empty group
+				ConditionGroups.Insert(ConditionGroup)
+
+			for index, ConditionGroup in ConditionGroups
+			{
+				for index2, Condition in ConditionGroup
+				{
+					result := Round(Clamp(Condition.Evaluate(this), -1, 1))
+					if(result = -1) ;Not decided yet, check later
+						break
+					else if(Condition.Negate) ;Result is 0 or 1 before, now invert it
+						result := !result
+					
+					;Condition did not match
+					if(result = 0)
+						break
+					else if(result = 1) ;This condition was fulfilled, remove it from conditions and continue with next condition
+						continue
+				}
+				if(result = 1)
+					return 1
 			}
 		}
 		return result
 	}
+
 	;Tests if this event matches to a trigger. If it does, this event is schedule for execution.
 	;To just trigger it without performing trigger matching, leave Trigger Parameter empty.
 	;It returns the event on the EventSchedule so its state can be examined later.
@@ -381,7 +401,7 @@ Class CEvents extends CArray
 
 	;This function needs to be used to remove events from the main Events object, to allow syncing with settings window
 	;It returns true when a category was deleted.
-	Delete(Event, UpdateGUI=true) 
+	Delete(Event, UpdateGUI = true) 
 	{
 		if(!IsObject(Event) || ! (index := this.FindKeyWithValue("ID", Event.ID)))
 			return
@@ -453,7 +473,7 @@ Class CEvents extends CArray
 		this.WriteEventsFile(Settings.ConfigPath "\Events.xml")
 	}
 
-	ReadEventsFile(Path, OverwriteCategory="", Update="")
+	ReadEventsFile(Path, OverwriteCategory = "", Update = "")
 	{
 		global MajorVersion, MinorVersion, BugfixVersion, PatchVersion, XMLMajorVersion, XMLMinorVersion, XMLBugfixVersion
 		FileRead, xml, %path%
@@ -1102,6 +1122,7 @@ Class CAction extends CSubEvent
 		static FlatView := "Show Explorer flat view"
 		static FocusControl := "Focus a control"
 		static ImageConverter := "Show Image Converter"
+		static ImageUpload := "Upload image to image hoster"
 		static Input := "Ask for user input"
 		static InvertSelection := "Invert file selection"
 		static MergeTabs := "Merge Explorer windows"
@@ -1148,6 +1169,7 @@ Class CAction extends CSubEvent
 	Execute(Event)
 	{
 	}
+
 	;This function can be implemented by the action implementation inheriting from CAction
 	;Called when the program exits so the action can perform any steps necessary to stop itself if it's currently running.
 	OnExit()
@@ -1160,10 +1182,12 @@ Class CExampleAction extends CAction
 	static Type := "ExampleAction"
 	static Category := "ExampleActionCategory"
 	Static Property := 5
+
 	Execute(Event)
 	{
 		Do.Something()
 	}
+
 	DisplayString()
 	{
 		return "ExampleAction"
@@ -1202,6 +1226,7 @@ Class CExampleAction extends CAction
 #include %A_ScriptDir%\Conditions\MouseOverTaskList.ahk
 #include %A_ScriptDir%\Conditions\MouseOverTabButton.ahk
 #include %A_ScriptDir%\Conditions\NavigatableWindow.ahk
+#include %A_ScriptDir%\Conditions\OR.ahk
 #include %A_ScriptDir%\Conditions\WindowActive.ahk
 #include %A_ScriptDir%\Conditions\WindowExists.ahk
 
@@ -1265,6 +1290,7 @@ Class CExampleAction extends CAction
 #include %A_ScriptDir%\Actions\ToggleWallpaper.ahk
 #include %A_ScriptDir%\Actions\Tooltip.ahk
 #include %A_ScriptDir%\Actions\ViewMode.ahk
+#include %A_ScriptDir%\Actions\VoiceAction.ahk
 #include %A_ScriptDir%\Actions\Volume.ahk
 #include %A_ScriptDir%\Actions\Wait.ahk
 #include %A_ScriptDir%\Actions\WindowActivate.ahk

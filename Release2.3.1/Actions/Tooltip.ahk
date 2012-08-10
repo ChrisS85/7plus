@@ -1,7 +1,7 @@
 Class CTooltipAction Extends CAction
 {
 	static Type := RegisterType(CTooltipAction, "Show a tooltip")
-	static Category := RegisterCategory(CTooltipAction, "System")	
+	static Category := RegisterCategory(CTooltipAction, "Input/Output")	
 	static TrayToolTip := false
 	static Timeout := 5
 	static Tooltip := "Some Tooltip"

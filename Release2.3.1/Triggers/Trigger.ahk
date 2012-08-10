@@ -1,7 +1,7 @@
 Class CTriggerTrigger extends CTrigger
 {
 	static Type := RegisterType(CTriggerTrigger, "Triggered by an action")
-	static Category := RegisterCategory(CTriggerTrigger, "Other")
+	static Category := RegisterCategory(CTriggerTrigger, "7plus")
 	
 	Matches(Filter)
 	{
