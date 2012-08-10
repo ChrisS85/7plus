@@ -219,7 +219,7 @@ Class CSettings
 		;Main recursion, do some further specific processing
 		if(Category = this)
 		{
-			FastFolders := Array()
+			FastFolders := new CFastFolders()
 			Loop 10
 				FastFolders[A_Index - 1] := Object("Path", this.Explorer.FastFolders["Folder" A_Index - 1], "Name", this.Explorer.FastFolders["FolderTitle" A_Index - 1])
 			

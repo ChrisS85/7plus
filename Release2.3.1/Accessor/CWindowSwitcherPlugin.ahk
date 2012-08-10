@@ -144,14 +144,11 @@ Class CWindowSwitcherPlugin extends CAccessorPlugin
 		Accessor := CAccessor.Instance
 		if(!Accessor.GUI.Visible)
 			return
-		outputdebug visible
 		for index, item in Accessor.GUI.ListView.Items
 		{
-			outputdebug loop %index%
 			ListEntry := Accessor.List[index]
 			if(ListEntry.Type = this.Type)
 			{
-				outputdebug found
 				ListEntry.oldKrnlTime := ListEntry.newKrnlTime
 				ListEntry.oldUserTime := ListEntry.newUserTime
 

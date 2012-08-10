@@ -1,21 +1,23 @@
 #include *i %A_ScriptDir%\Navigate.ahk
 #include *i %A_ScriptDir%\MiscFunctions.ahk
+Class CFastFolders extends CArray
+{
+	MinIndex()
+	{
+		return 0
+	}
+	MaxIndex()
+	{
+		return 9
+	}
+}
 ClearStoredFolder(Slot)
 {
 	global FastFolders
 	;Slot+=1
 	FastFolders[Slot].Path := ""
 	FastFolders[Slot].Name := ""
-	if (Settings.Explorer.FastFolders.ShowInFolderBand)
-	{
-		RemoveAllExplorerButtons("IsFastFolderButton")
-		loop 10
-		{
-			pos := A_Index - 1
-			if(FastFolders[pos].Path)
-				AddButton("", FastFolders[pos].Path, , pos ":" FastFolders[pos].Name)
-		}
-	}
+	RefreshFastFolders()
 }
 
 ;Assigns a new folder to a FastFolder slot and updates registry
@@ -36,7 +38,7 @@ UpdateStoredFolder(Slot, Path = "")
 		SplitPath, Path , split
 		FastFolders[Slot].Name := split
 	}
-	RefreshFastFolders()	
+	RefreshFastFolders()
 }
 
 ;Removes and re-adds all FastFolder Buttons
@@ -67,15 +69,44 @@ AddAllButtons(ToFolderBand, ToPlacesBar)
 	if(ToFolderBand)
 	{
 		;Explorer folder band bar buttons are added in a separate process since this takes a few seconds
-		WorkerThread := new CWorkerThread("AddButtonsToFolderBandBar", 0, 0, 1)
-		WorkerThread.Start(FastFolders)
+		if(FastFolders.WorkerThread)
+			FastFolders.WorkerThread.Repeat := true ;Mark for repetition with new data
+		else
+		{
+			outputdebug starting new worker thread to refresh FastFolder buttons
+			FastFolders.WorkerThread := new CWorkerThread("AddButtonsToFolderBandBar", 0, 0, 1)
+			FastFolders.WorkerThread.OnFinish.Handler := "FastFolders_WorkerThread_OnFinish"
+			FastFolders.WorkerThread.Start(FastFolders)
+			FastFolders.WorkerThread.WaitForStart(5)
+		}
 	}
 }
 
+;Called on main thread when the Fast Folders worker thread has finished
+FastFolders_WorkerThread_OnFinish(WorkerThread, Result)
+{
+	global FastFolders
+	outputdebug Fast Folder buttons refresh finished
+	if(WorkerThread.Repeat)
+	{
+		RemoveAllExplorerButtons("IsFastFolderButton")
+					outputdebug starting new worker thread to refresh FastFolder buttons
+		FastFolders.WorkerThread := new CWorkerThread("AddButtonsToFolderBandBar", 0, 0, 1)
+		FastFolders.WorkerThread.OnFinish.Handler := "FastFolders_WorkerThread_OnFinish"
+		FastFolders.WorkerThread.Start(FastFolders)
+		FastFolders.WorkerThread.WaitForStart(5)
+	}
+	else
+		;Remove the worker thread to indicate that a new one is needed next time
+		FastFolders.Remove("WorkerThread")
+}
+
+;Worker function executed in seperate thread
 AddButtonsToFolderBandBar(WorkerThread, FastFolders)
 {
 	Loop 10
-		AddButton("", FastFolders[A_Index - 1].Path, "", (A_Index - 1) ":" FastFolders[A_Index - 1].Name, "", "Both", 2) ;7plus now uses AHK=2 key in registry to indicate FastFolder buttons
+		if(FastFolders[A_Index - 1].Path)
+			AddButton("", FastFolders[A_Index - 1].Path, "", (A_Index - 1) ":" FastFolders[A_Index - 1].Name, "", "Both", 2) ;7plus now uses AHK=2 key in registry to indicate FastFolder buttons
 }
 
 ;Callback function for determining if a specific registry key was created by 7plus

@@ -252,7 +252,7 @@ MainThread_Monitor(wParam, lParam, msg, hwnd)
 			}
 			else if(Data.Type = 3) ;Data
 			{
-				WorkerThread.Data.Insert(Data.Data)
+				WorkerThread.Data.Insert(1, Data.Data) ;Queue like behavior so each OnData() event treats the data in chronological order
 				SetTimer, WorkerThread_OnData, -0
 			}
 			return true  ; Returning 1 (true) is the traditional way to acknowledge this message.
@@ -326,7 +326,7 @@ WorkerThread_Monitor(wParam, lParam, msg, hwnd)
 			}
 			else if(Data.Type = 3) ;Data
 			{
-				WorkerThread.Data.Insert(Data.Data)
+				WorkerThread.Data.Insert(1, Data.Data) ;Queue like behavior so each OnData() event treats the data in chronological order
 				SetTimer, WorkerThread_OnData, -0
 			}
 			return true  ; Returning 1 (true) is the traditional way to acknowledge this message.

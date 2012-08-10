@@ -4,7 +4,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 	ListLines, Off
 	hwnd += 0
 	;On dialog popup, check if its an explorer confirmation dialog
-	if(event=0x00008002) ;EVENT_OBJECT_SHOW
+	if(event = 0x00008002) ;EVENT_OBJECT_SHOW
 	{
 		if(IsObject(Settings) && Settings.Explorer.AutoCheckApplyToAllFiles && WinVer >= WIN_Vista)
 			FixExplorerConfirmationDialogs()
@@ -15,7 +15,7 @@ HookProc(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsEvent
 	WinGet, style, Style, ahk_id %hwnd%
 	if (style & 0x40000000)	;return if hwnd is child window, for some reason idChild may be 0 for some children ?!?! ( I hate ms )
 		return
-	if(event=0x0016) ;EVENT_SYSTEM_MINIMIZEEND
+	if(event = 0x0016) ;EVENT_SYSTEM_MINIMIZEEND
 	{
 		Trigger := new CWindowStateChangeTrigger()
 		Trigger.Window := hwnd
