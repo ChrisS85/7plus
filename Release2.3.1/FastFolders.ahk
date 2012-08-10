@@ -90,7 +90,7 @@ FastFolders_WorkerThread_OnFinish(WorkerThread, Result)
 	if(WorkerThread.Repeat)
 	{
 		RemoveAllExplorerButtons("IsFastFolderButton")
-					outputdebug starting new worker thread to refresh FastFolder buttons
+		outputdebug starting new worker thread to refresh FastFolder buttons
 		FastFolders.WorkerThread := new CWorkerThread("AddButtonsToFolderBandBar", 0, 0, 1)
 		FastFolders.WorkerThread.OnFinish.Handler := "FastFolders_WorkerThread_OnFinish"
 		FastFolders.WorkerThread.Start(FastFolders)
@@ -303,6 +303,7 @@ AddButton_Write(Path, SomeCLSID, command, Title, InfoTip, Icon, AHK, Name, Itera
 	Iterations[Name]++
 }
 
+;Checks if a particular button exists
 FindButton(function, param)
 {
 	if(!IsFunc(function))

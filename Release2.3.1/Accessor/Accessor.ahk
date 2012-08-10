@@ -992,7 +992,11 @@ Class CAccessor
 				this.SingleContext := Plugin.Type
 				outputdebug % "single context " this.SingleContext
 				Filter := strTrimLeft(Filter, Plugin.Settings.Keyword " ")
+				PreRefreshTime := A_TickCount
 				Result := Plugin.RefreshList(this, Filter, LastFilter, KeywordSet, Parameters)
+				PostRefreshTime := A_TickCount
+				if(PostRefreshTime - PreRefreshTime > 1000 && Settings.General.DebugEnabled)
+					Notify("", Plugin.Type " took unusually long for refresh: " PostRefreshTime - PreRefreshTime " ms")
 				if(Result)
 					this.List.Extend(Result)
 				break
@@ -1008,7 +1012,11 @@ Class CAccessor
 			{
 				if(Plugin.Settings.Enabled && ((Time > 0 && Plugin.AllowDelayedExecution) || !Time) && !Plugin.Settings.KeywordOnly && StrLen(Filter) >= Plugin.Settings.MinChars)
 				{
+					PreRefreshTime := A_TickCount
 					Result := Plugin.RefreshList(this, Filter, LastFilter, False, Parameters)
+					PostRefreshTime := A_TickCount
+					if(PostRefreshTime - PreRefreshTime > 1000 && Settings.General.DebugEnabled)
+						Notify("", Plugin.Type " took unusually long for refresh: " PostRefreshTime - PreRefreshTime " ms")
 					if(Result)
 						this.List.Extend(Result)
 				}
@@ -2518,7 +2526,6 @@ uninstall plugin not working (x64) -- Or is it?
 random accessor crashes, maybe related to uninstall plugin
 infinite loop somewhere, possibly CEnumerator. Need to debug with callstack when it happens
 File search is too slow...should maybe run in a separate thread
-Ability to clear and set FastFolders through context menu
 
 find in filenames can easily be crashed with subdirectory option
 explorer tabs in slide windows

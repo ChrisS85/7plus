@@ -38,7 +38,7 @@
 
 	IsInSinglePluginContext(Filter, LastFilter)
 	{
-		if(InStr(Filter, this.Settings.Keyword " ") = 1)
+		if(InStr(Filter, this.Settings.Keyword) = 1)
 		{
 			if(!this.Cleared)
 			{
@@ -83,7 +83,7 @@
 	RefreshList(Accessor, Filter, LastFilter, KeywordSet, Parameters)
 	{
 		static Penalty := 0.00001
-		if(!KeywordSet)
+		if(!KeywordSet && Filter != this.Settings.Keyword)
 			return
 		Results := Array()
 
