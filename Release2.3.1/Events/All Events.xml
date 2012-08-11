@@ -459,6 +459,7 @@
 </Event><Event>
 <Actions>
 <Action>
+<Filename>Neues Textdokument.txt</Filename>
 <Rename>1</Rename>
 <Type>Create new file</Type>
 </Action></Actions>
@@ -500,6 +501,7 @@
 </Event><Event>
 <Actions>
 <Action>
+<FolderName>Neuer Ordner</FolderName>
 <Rename>1</Rename>
 <Type>Create new folder</Type>
 </Action></Actions>
@@ -594,7 +596,7 @@
 <Separator>`n</Separator>
 <Type>Filter list</Type>
 </Action><Action>
-<Command>"%ProgramFiles%\Paint.NET\PaintDotNet.exe" ${SelNQ}</Command>
+<Command>"%ImageEditor%" ${SelNQ}</Command>
 <RunAsAdmin>0</RunAsAdmin>
 <Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
@@ -639,7 +641,7 @@
 <Separator>`n</Separator>
 <Type>Filter list</Type>
 </Action><Action>
-<Command>"%ProgramFiles%\Notepad++\notepad++.exe" ${SelNQ}</Command>
+<Command>"%TextEditor%" ${SelNQ}</Command>
 <RunAsAdmin>0</RunAsAdmin>
 <Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
@@ -850,7 +852,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>1</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>309</ID>
 <Name>Toggle always on top -&gt; Context menu active</Name>
@@ -881,7 +883,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>310</ID>
 <Name>Toggle always on top -&gt; No context menu active</Name>
@@ -914,7 +916,7 @@
 <DeleteAfterUse>0</DeleteAfterUse>
 <Description>Help event for "Toggle always on top" event.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>0</Enabled>
+<Enabled>1</Enabled>
 <EventComplexityLevel>1</EventComplexityLevel>
 <ID>311</ID>
 <Name>Toggle always on top -&gt; context menu timeout</Name>

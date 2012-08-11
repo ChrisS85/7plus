@@ -258,8 +258,11 @@ Class CImageConverter extends CGUI
 
 	Picture_Click()
 	{
-		; DllCall("shell32\ShellExecute"uint, 0, str, "Edit"str, this.Files[Selected].SourceFile, str, "", str, "", int, 1)
-		run, % "edit """ this.Picture.Picture """",,UseErrorLevel
+		ImageEditor := ExpandPathPlaceholders(Settings.Misc.DefaultImageEditor)
+		if(FileExist(ImageEditor))
+			OpenFileWithProgram(this.Picture.Picture, ImageEditor)
+		else
+			run, % "edit """ this.Picture.Picture """",,UseErrorLevel
 	}
 	
 	btnCopyToClipboard_Click()

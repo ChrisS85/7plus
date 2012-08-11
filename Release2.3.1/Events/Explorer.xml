@@ -412,6 +412,7 @@
 </Event><Event>
 <Actions>
 <Action>
+<Filename>Neues Textdokument.txt</Filename>
 <Rename>1</Rename>
 <Type>Create new file</Type>
 </Action></Actions>
@@ -453,6 +454,7 @@
 </Event><Event>
 <Actions>
 <Action>
+<FolderName>Neuer Ordner</FolderName>
 <Rename>1</Rename>
 <Type>Create new folder</Type>
 </Action></Actions>
@@ -547,7 +549,7 @@
 <Separator>`n</Separator>
 <Type>Filter list</Type>
 </Action><Action>
-<Command>"%ProgramFiles%\Paint.NET\PaintDotNet.exe" ${SelNQ}</Command>
+<Command>"%ImageEditor%" ${SelNQ}</Command>
 <RunAsAdmin>0</RunAsAdmin>
 <Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
@@ -592,7 +594,7 @@
 <Separator>`n</Separator>
 <Type>Filter list</Type>
 </Action><Action>
-<Command>"%ProgramFiles%\Notepad++\notepad++.exe" ${SelNQ}</Command>
+<Command>"%TextEditor%" ${SelNQ}</Command>
 <RunAsAdmin>0</RunAsAdmin>
 <Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>

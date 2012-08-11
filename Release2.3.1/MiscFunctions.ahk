@@ -451,7 +451,7 @@ GetProcessName(hwnd)
 }
 
 ;Gets the path of a process by its pid
-GetModuleFileNameEx( pid ) 
+GetModuleFileNameEx(pid) 
 { 
    if A_OSVersion in WIN_95,WIN_98,WIN_ME 
    { 
@@ -463,22 +463,22 @@ GetModuleFileNameEx( pid )
       #define PROCESS_VM_READ           (0x0010) 
       #define PROCESS_QUERY_INFORMATION (0x0400) 
    */ 
-   h_process := DllCall( "OpenProcess", "uint", 0x10|0x400, "int", false, "uint", pid, "Ptr") 
-   if ( ErrorLevel or h_process = 0 ) 
+   h_process := DllCall("OpenProcess", "uint", 0x10|0x400, "int", false, "uint", pid, "Ptr") 
+   if (ErrorLevel || h_process = 0) 
    { 
       outputdebug [OpenProcess] failed. PID = %pid%
       return 
    } 
     
    name_size := A_IsUnicode ? 510 : 255 
-   VarSetCapacity( name, name_size ) 
+   VarSetCapacity(name, name_size) 
     
-   result := DllCall( "psapi.dll\GetModuleFileNameEx", "Ptr", h_process, "uint", 0, "str", name, "uint", name_size ) 
-   if ( ErrorLevel or result = 0 ) 
-      outputdebug, [GetModuleFileNameExA] failed 
+   result := DllCall("psapi.dll\GetModuleFileNameEx", "Ptr", h_process, "uint", 0, "str", name, "uint", name_size) 
+   if(ErrorLevel || result = 0) 
+      outputdebug [GetModuleFileNameExA] failed 
     
-   DllCall( "CloseHandle", "Ptr", h_process )
-   return, name 
+   DllCall("CloseHandle", "Ptr", h_process)
+   return name 
 }
 
 ; Extract an icon from an executable, DLL or icon file. 
