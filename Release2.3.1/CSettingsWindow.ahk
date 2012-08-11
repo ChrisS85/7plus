@@ -23,9 +23,10 @@ Class CSettingsWindow Extends CGUI
 	btnOK := this.AddControl("Button", "btnOK", "x" this.Width - 254 " y" this.Height - 29 " w73 h23", "OK")
 	btnCancel := this.AddControl("Button", "btnCancel", "x+5 w73 h23", "Cancel")
 	btnApply := this.AddControl("Button", "btnApply", "x+5 w73 h23", "Apply")
-	;~ txtVideoHint := this.AddControl("Text", "txtVideoHint", "x16 y436 w175 h13", "Click on ? to see video tutorial help!")
+	
 	;This contains the settings pages after Introduction, Events and Accessor
 	PageNames := "Clipboard|Explorer|Explorer Tabs|Fast Folders|FTP Profiles|HotStrings|Windows|Windows Settings|Misc|About"
+	
 	__New()
 	{
 		this.treePages.RegisterEvent("ItemSelected", "PageSelected")
@@ -1327,7 +1328,6 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("Text", "txtTabDescription", "xs+40 ys+20 w469 h39", "7plus makes it possible to use tabs in explorer. New tabs are opened with the middle mouse button,`nand with CTRL+T, Tabs are cycled by clicking the Tabs or pressing CTRL+(SHIFT)+TAB,`nand closed by middle clicking a tab and with CTRL+W.")
 		Page.Controls.chkTabWindowClose := chkUseTabs.AddControl("CheckBox", "chkTabWindowClose", "xs+53 ys+161 h17", "Close all tabs when window is closed", 1)
 		Page.Controls.chkActivateTab := chkUseTabs.AddControl("CheckBox", "chkActivateTab", "xs+53 ys+138 h17", "Activate tab on tab creation", 1)
-		;~ Page.AddControl("Link", "linkUseTabs", "x19 ys+63 w13 h13", "?")
 	}
 	InitExplorerTabs()
 	{
@@ -1362,15 +1362,13 @@ Finally, here are some settings that you're likely to change at the beginning:
 	CreateFastFolders()
 	{
 		Page := this.Pages.FastFolders.Tabs[1]
-		Page.AddControl("Text", "txtFastFoldersDescription", "xs+37 ys+20 w482 h26", "In explorer and file dialogs you can store a path in one of ten slots by pressing CTRL`nand a numpad number key (default settings), and restore it by pressing the numpad number key again.")
-		Page.AddControl("CheckBox", "chkShowInFolderBand", "xs+40 ys+51 h17", "Integrate Fast Folders into explorer folder band bar (Vista/7 only)")
-		;~ Page.AddControl("Link", "linkShowInFolderBand", "x19 ys+52 w13 h13", "?")
-		Page.AddControl("CheckBox", "chkCleanFolderBand", "xs+40 ys+74 h17", "Remove windows folder band buttons (Vista/7 only)")
-		;~ Page.AddControl("Link", "linkCleanFolderBand", "xs+21 ys+75 w13 h13", "?")
+		Page.AddControl("Text", 	"txtFastFoldersDescription", 	"xs+37 ys+20", 	"In explorer and file dialogs you can store a path in one of ten slots by pressing CTRL`nand a numpad number key (default settings), and restore it by pressing the numpad number key again.")
+		Page.AddControl("CheckBox", "chkShowInFolderBand",			"xs+40 ys+51", 	"Integrate Fast Folders into explorer folder band bar (Vista/7 only)")
+		Page.AddControl("CheckBox", "chkCleanFolderBand", 			"xs+40 ys+74", 	"Remove windows folder band buttons (Vista/7 only)")
 		Page.Controls.chkCleanFolderBand.ToolTip := "If you use the folder band as a favorites bar like in browsers, it is recommended that you get rid of the buttons predefined by windows whereever possible (such as Slideshow, Add to Library,...)"
-		Page.AddControl("CheckBox", "chkShowInPlacesBar", "xs+40 ys+97 h17", "Integrate Fast Folders into open/save dialog places bar (First 5 Entries)")
-		;~ Page.AddControl("Link", "linkShowInPlacesBar", "xs+21 ys+98 w13 h13", "?")
-		Page.AddControl("Button", "btnRemoveCustomButtons", "xs+40 ys+120 w179 h23", "&Remove custom Explorer buttons")
+		
+		Page.AddControl("CheckBox", "chkShowInPlacesBar", 			"xs+40 ys+97", 	"Integrate Fast Folders into open/save dialog places bar (First 5 Entries)")
+		Page.AddControl("Button", 	"btnRemoveCustomButtons", 		"xs+40 ys+120", "&Remove custom Explorer buttons")
 		Page.Controls.btnRemoveCustomButtons.ToolTip := "By doing this all custom buttons in the explorer folder band bar will be removed. This is useful if an error occurred and some buttons get duplicated. Once you press OK or Apply in this dialog, the buttons created with an ExplorerButton trigger will reappear. To make the FastFolder buttons reappear, save a directory to a FastFolder slot by pressing CTRL+Numpad[0-9] (Default keys)"
 	}
 	InitFastFolders()
@@ -1441,26 +1439,28 @@ Finally, here are some settings that you're likely to change at the beginning:
 	CreateFTPProfiles()
 	{
 		Page := this.Pages.FTPProfiles.Tabs[1]
-		Page.AddControl("Text", "txtFTPDescription", "xs+37 ys+20 w307 h13", "You can define FTP profiles for use with the upload action here.`nBy default the selected files and folders can be uploaded by pressing CTRL + U.")
-		Page.AddControl("DropDownList", "ddlFTPProfile", "xs+40 ys+38 w297", "")
-		Page.AddControl("Button", "btnAddFTPProfile", "xs+343 ys+36 w79 h23", "&Add profile")
-		Page.AddControl("Button", "btnDeleteFTPProfile", "xs+428 ys+36 w79 h23", "&Delete profile")
-		Page.AddControl("Button", "btnTestFTPProfile", "xs+513 ys+36 w79 h23", "&Test profile")
-		Page.AddControl("Text", "txtFTPHostname", "xs+37 ys+81 w58 h13", "Hostname:")
-		Page.AddControl("Edit", "editFTPHostname", "xs+258 ys+78 w249 h20", "")
-		Page.AddControl("Text", "txtFTPPort", "xs+37 ys+107 w29 h13", "Port:")
-		Page.AddControl("Edit", "editFTPPort", "xs+258 ys+104 w45 h20", "")
-		Page.AddControl("Text", "txtFTPUser", "xs+37 ys+133 w32 h13", "User:")
-		Page.AddControl("Edit", "editFTPUser", "xs+258 ys+130 w249 h20", "")
-		Page.AddControl("Text", "txtFTPPassword", "xs+37 ys+159 w56 h13", "Password:")
-		Page.AddControl("Edit", "editFTPPassword", "xs+258 ys+156 w249 h20 Password", "")
-		Page.AddControl("Text", "txtFTPURL", "xs+37 ys+183 w32 h13", "URL:")
-		Page.AddControl("Edit", "editFTPURL", "xs+258 ys+180 w249 h20", "")
-		Page.AddControl("Text", "txtFTPNumberOfSubDirs", "xs+37 ys+207 h13", "Number of subdirectories:")
-		subdirs := Page.AddControl("Edit", "editFTPNumberOfSubDirs", "xs+258 ys+204 w29 h20", "")
+					Page.AddControl("Text",			"txtFTPDescription",		"xs+37 ys+20", 				"You can define FTP profiles for use with the upload action here.`nBy default the selected files and folders can be uploaded by pressing CTRL + U.")
+					Page.AddControl("DropDownList",	"ddlFTPProfile",			"xs+40 ys+38 w297", 		"")
+					Page.AddControl("Button",		"btnAddFTPProfile",			"xs+343 ys+36",				"&Add profile")
+					Page.AddControl("Button",		"btnDeleteFTPProfile",		"xs+428 ys+36",				"&Delete profile")
+					Page.AddControl("Button",		"btnTestFTPProfile",		"xs+513 ys+36",				"&Test profile")
+					Page.AddControl("Text",			"txtFTPHostname",			"xs+37 ys+81",				"Hostname:")
+					Page.AddControl("Edit",			"editFTPHostname",			"xs+258 ys+78",				"")
+					Page.AddControl("Text",			"txtFTPPort",				"xs+37 ys+107",				"Port:")
+					Page.AddControl("Edit",			"editFTPPort",				"xs+258 ys+104",			"")
+					Page.AddControl("Text",			"txtFTPUser",				"xs+37 ys+133",				"User:")
+					Page.AddControl("Edit",			"editFTPUser",				"xs+258 ys+130",			"")
+					Page.AddControl("Text",			"txtFTPPassword",			"xs+37 ys+159",				"Password:")
+					Page.AddControl("Edit",			"editFTPPassword",			"xs+258 ys+156 Password", 	"")
+					Page.AddControl("Text",			"txtFTPURL",				"xs+37 ys+183",				"URL:")
+					Page.AddControl("Edit",			"editFTPURL",				"xs+258 ys+180",			"")
+					Page.AddControl("Text",			"txtFTPNumberOfSubDirs",	"xs+37 ys+207",				"Number of subdirectories:")
+		subdirs := 	Page.AddControl("Edit",			"editFTPNumberOfSubDirs",	"xs+258 ys+204",			"")
 		subdirs.ToolTip := "Some webservers display a deeper file structure on FTP compared to the HTTP URL.`nEnter the number of additional directories here to adjust the copied URL"
-		Page.AddControl("Text", "txtFTPDescription2", "xs+37 ys+239 w454 h26", "Target folder and filename are set separately for each event that uses the FTP upload function on the Events page.")
+					
+					Page.AddControl("Text",			"txtFTPDescription2",		"xs+37 ys+239", 			"Target folder and filename are set separately for each event that uses the FTP upload function on the Events page.")
 	}
+
 	InitFTPProfiles()
 	{
 		Page := this.Pages.FTPProfiles.Tabs[1].Controls
@@ -1472,17 +1472,20 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.ddlFTPProfile.Enabled := this.FTPProfiles.MaxIndex() > 0
 		this.ddlFTPProfile_SelectionChanged()
 	}
+
 	ApplyFTPProfiles()
 	{
 		Page := this.Pages.FTPProfiles.Tabs[1].Controls
 		this.StoreCurrentFTPProfile(this.FTPProfiles[Page.ddlFTPProfile.SelectedIndex])
 		CFTPUploadAction.FTPProfiles := this.FTPProfiles
 	}
+
 	HideFTPProfiles()
 	{
 		Page := this.Pages.FTPProfiles.Tabs[1].Controls
 		this.StoreCurrentFTPProfile(this.FTPProfiles[Page.ddlFTPProfile.SelectedIndex])
 	}
+
 	StoreCurrentFTPProfile(CurrentProfile)
 	{
 		Page := this.Pages.FTPProfiles.Tabs[1].Controls
@@ -1496,10 +1499,12 @@ Finally, here are some settings that you're likely to change at the beginning:
 			CurrentProfile.NumberOfFTPSubDirs := Page.editFTPNumberOfSubDirs.Text
 		}
 	}
+
 	btnAddFTPProfile_Click()
 	{
 		this.AddFTPProfile()
 	}
+
 	AddFTPProfile()
 	{
 		Page := this.Pages.FTPProfiles.Tabs[1].Controls
@@ -1509,10 +1514,12 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.ddlFTPProfile.SelectedIndex := len
 		Page.ddlFTPProfile.Enabled := true
 	}
+
 	btnDeleteFTPProfile_Click()
 	{
 		this.DeleteFTPProfile()
-	}	
+	}
+
 	DeleteFTPProfile()
 	{
 		Page := this.Pages.FTPProfiles.Tabs[1].Controls
@@ -1524,10 +1531,12 @@ Finally, here are some settings that you're likely to change at the beginning:
 			Page.ddlFTPProfile.Enabled := false
 		Notify("Info", "Make sure to update any FTP event profile assignments that pointed to the deleted profile!", 2, NotifyIcons.Info)
 	}
+
 	btnTestFTPProfile_Click()
 	{
 		this.TestFTPProfile()
 	}
+
 	TestFTPProfile()
 	{
 		Page := this.Pages.FTPProfiles.Tabs[1].Controls
@@ -1546,6 +1555,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		MsgBox % "Connection to " FTP.Hostname " successfully established!"
 		return 1
 	}
+
 	ddlFTPProfile_SelectionChanged()
 	{
 		Page := this.Pages.FTPProfiles.Tabs[1].Controls
@@ -1566,56 +1576,32 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.editFTPURL.Enabled := IsObject(FTPProfile)
 		Page.editFTPNumberOfSubDirs.Enabled := IsObject(FTPProfile)
 	}
+
 	editFTPHostname_TextChanged()
 	{
 		Page := this.Pages.FTPProfiles.Tabs[1].Controls
 		if(FTPProfile := this.FTPProfiles[Page.ddlFTPProfile.SelectedIndex])
-		{
 			Page.ddlFTPProfile.SelectedItem.Text := Page.ddlFTPProfile.SelectedIndex ": " Page.editFTPHostname.Text
-			;~ FTPProfile.Hostname := Page.editFTPHostname.Text
-		}
 	}
-	;~ editFTPPort_TextChanged()
-	;~ {
-		;~ Page := this.Pages.FTPProfiles.Tabs[1].Controls
-		;~ if(FTPProfile := this.FTPProfiles[Page.ddlFTPProfile.SelectedIndex])
-			;~ FTPProfile.Port := Page.editFTPPort.Text
-	;~ }
-	;~ editFTPUser_TextChanged()
-	;~ {
-		;~ Page := this.Pages.FTPProfiles.Tabs[1].Controls
-		;~ if(FTPProfile := this.FTPProfiles[Page.ddlFTPProfile.SelectedIndex])
-			;~ FTPProfile.User := Page.editFTPUser.Text
-	;~ }
-	;~ editFTPPassword_TextChanged()
-	;~ {
-		;~ Page := this.Pages.FTPProfiles.Tabs[1].Controls
-		;~ if(FTPProfile := this.FTPProfiles[Page.ddlFTPProfile.SelectedIndex])
-			;~ FTPProfile.Password := Encrypt(Page.editFTPPassword.Text)
-	;~ }
-	;~ editFTPURL_TextChanged()
-	;~ {
-		;~ Page := this.Pages.FTPProfiles.Tabs[1].Controls
-		;~ if(FTPProfile := this.FTPProfiles[Page.ddlFTPProfile.SelectedIndex])
-			;~ FTPProfile.URL := Page.editFTPURL.Text
-	;~ }
 	
 	
 	;HotStrings
 	CreateHotStrings()
 	{
 		Page := this.Pages.HotStrings.Tabs[1]
-		Page.AddControl("Text", "txtHotStringDescription", "xs+21 ys+364", "HotStrings are used to expand abbreviations and acronyms, such as ""btw"" -> ""by the way"". They support regular`nexpressions in PCRE format. If you want a HotString to trigger only when typed as a seperate word, prepend \b`nand append \s.  For case-insensitive HotStrings, put i) at the start. You can also use keys like {Enter}.")
-		Page.AddControl("ListView", "listHotStrings", "xs+21 ys+19 w525 h282", "HotString|Output")
+		Page.AddControl("Text",		"txtHotStringDescription",	"xs+21 ys+364", 			"HotStrings are used to expand abbreviations and acronyms, such as ""btw"" -> ""by the way"". They support regular`nexpressions in PCRE format. If you want a HotString to trigger only when typed as a seperate word, prepend \b`nand append \s.  For case-insensitive HotStrings, put i) at the start. You can also use keys like {Enter}.")
+		Page.AddControl("ListView",	"listHotStrings",		 	"xs+21 ys+19 w525 h282", 	"HotString|Output")
 		Page.Controls.listHotStrings.IndependentSorting := true
-		Page.AddControl("Button", "btnAddHotString", "xs+554 ys+19 w90 h23", "&Add HotString")
-		Page.AddControl("Button", "btnDeleteHotString", "xs+554 ys+48 w90 h23", "&Delete HotString")
-		Page.AddControl("Text", "txtHotStringInput", "xs+21 ys+310 w50 h13", "HotString:")
-		Page.AddControl("Edit", "editHotStringInput", "xs+84 ys+307 w462 h20", "")
-		Page.AddControl("Text", "txtHotStringOutput", "xs+21 ys+336 w42 h13", "Output:")
-		Page.AddControl("Edit", "editHotStringOutput", "xs+84 ys+333 w462 h20", "")
-		Page.AddControl("Button", "btnHotStringRegExHelp", "xs+554 ys+77 w90 h23", "&RegEx Help")
+		
+		Page.AddControl("Button",	"btnAddHotString",		 	"xs+554 ys+19", 			"&Add HotString")
+		Page.AddControl("Button",	"btnDeleteHotString",		"xs+554 ys+48", 			"&Delete HotString")
+		Page.AddControl("Text",		"txtHotStringInput",		"xs+21 ys+310", 			"HotString:")
+		Page.AddControl("Edit",		"editHotStringInput",		"xs+84 ys+307", 			"")
+		Page.AddControl("Text",		"txtHotStringOutput",		"xs+21 ys+336", 			"Output:")
+		Page.AddControl("Edit",		"editHotStringOutput",		"xs+84 ys+333", 			"")
+		Page.AddControl("Button",	"btnHotStringRegExHelp",	"xs+554 ys+77", 			"&RegEx Help")
 	}
+
 	InitHotStrings()
 	{
 		global HotStrings
@@ -1733,20 +1719,23 @@ Finally, here are some settings that you're likely to change at the beginning:
 	CreateWindows()
 	{
 		Page := this.Pages.Windows.Tabs[1]
-		Page.AddControl("Text", "txtSlideWindows", "xs+42 ys+20 w269 h17", "WIN + SHIFT + Arrow keys: Slide Window function")
+		Page.AddControl("Text", 		"txtSlideWindows", 						"xs+42 ys+20",			"WIN + SHIFT + Arrow keys: Slide Window function")
 		Page.Controls.txtSlideWindows.ToolTip := "A Slide Window is moved off screen and will not be shown until you activate it`n through task bar / ALT + TAB or move the mouse to the border where it was hidden.`nIt will then slide into the screen, and slide out again when the mouse leaves the window`nor when another window gets activated. Deactivate this mode by moving the window`nor pressing WIN+SHIFT+Arrow key in another direction."
-		Page.AddControl("CheckBox", "chkHideSlideWindows", "xs+59 ys+45 w272 h17", "Hide Slide Windows in taskbar and from ALT + TAB")
-		Page.AddControl("CheckBox", "chkDisableMinimizeAnim", "xs+79 ys+68 w272 h17", "Disable window minimize animation")
-		Page.AddControl("CheckBox", "chkLimitToOnePerSide", "xs+59 ys+91 w239 h17", "Allow only one Slide Window per screen side")
-		Page.AddControl("CheckBox", "chkBorderActivationRequiresMouseUp", "xs+59 ys+114 w387 h17", "Require left mouse button to be up to activate slide window at screen border")
+		
+		Page.AddControl("CheckBox", 	"chkHideSlideWindows", 					"xs+59 ys+45",			"Hide Slide Windows in taskbar and from ALT + TAB")
+		Page.AddControl("CheckBox", 	"chkDisableMinimizeAnim", 				"xs+79 ys+68",			"Disable window minimize animation")
+		Page.AddControl("CheckBox", 	"chkLimitToOnePerSide", 				"xs+59 ys+91",			"Allow only one Slide Window per screen side")
+		Page.AddControl("CheckBox", 	"chkBorderActivationRequiresMouseUp", 	"xs+59 ys+114",			"Require left mouse button to be up to activate slide window at screen border")
 		Page.Controls.chkBorderActivationRequiresMouseUp.ToolTip := "This feature is used to prevent accidently activating a slide window while dragging with the mouse.`n It's still possible to drag something to the slide window by holding the modifier key which is set below."
-		Page.AddControl("Text", "txtModifierKey", "xs+59 ys+140 w139 h13", "Slide Windows modifier key:")
-		Page.AddControl("DropDownList", "ddlModifierKey", "xs+245 ys+137 w111", "Control|Alt|Shift|Win")
+		
+		Page.AddControl("Text", 		"txtModifierKey", 						"xs+59 ys+140",			"Slide Windows modifier key:")
+		Page.AddControl("DropDownList", "ddlModifierKey", 						"xs+245 ys+137 w111",	"Control|Alt|Shift|Win")
 		Page.Controls.ddlModifierKey.ToolTip := "If this key is pressed, the mouse may be moved out of the currently active slide window without sliding it out.`n This is useful if the slide window has child windows that don't overlap with the main window.`n If the option above is enabled, it may also be used to drag something into a hidden slide window by moving the mouse to the screen border and holding this key."
-		Page.AddControl("CheckBox", "chkAutoCloseWindowsUpdate", "xs+42 ys+207 w321 h17", "Automatically close Windows Update reboot notification dialog")
+		
+		Page.AddControl("CheckBox", 	"chkAutoCloseWindowsUpdate", 			"xs+42 ys+207",			"Automatically close Windows Update reboot notification dialog")
 		Page.Controls.chkAutoCloseWindowsUpdate.ToolTip :=  "If you enable this setting you will not be able to open this dialog anymore. You can simply reboot windows though..."
-		Page.AddControl("CheckBox", "chkShowResizeTooltip", "xs+42 ys+184 w225 h17", "Show window size as tooltip while resizing")
-		;~ Page.AddControl("Link", "linkUseSlideWindows", "xs+24 ys+23 w13 h13", "?")
+		
+		Page.AddControl("CheckBox", 	"chkShowResizeTooltip", 				"xs+42 ys+184",			"Show window size as tooltip while resizing")
 	}
 	InitWindows()
 	{
@@ -1807,22 +1796,22 @@ Finally, here are some settings that you're likely to change at the beginning:
 	CreateWindowsSettings()
 	{
 		Page := this.Pages.WindowsSettings.Tabs[1]
-		Page.AddControl("Text", "txtExplorer", "xs+21 ys+19", "Explorer:")
-		Page.AddControl("CheckBox", "chkRemoveUserDir", "xs+21 ys+35", "Remove user directory from directory tree")
-		Page.AddControl("CheckBox", "chkRemoveWMP", "xs+21 ys+58", "Remove Windows Media Player context menu entries (Play, Add to playlist, Buy music")
-		Page.AddControl("CheckBox", "chkRemoveOpenWith", "xs+21 ys+81", "Remove ""Open With Webservice or choose program"" dialogs for unknown file extensions")
-		Page.AddControl("CheckBox", "chkShowExtensions", "xs+21 ys+104", "Always show file extensions")
-		Page.AddControl("CheckBox", "chkShowHiddenFiles", "xs+21 ys+127", "Show hidden files")
-		Page.AddControl("CheckBox", "chkShowSystemFiles", "xs+21 ys+150", "Show system files")
-		Page.AddControl("CheckBox", "chkRemoveExplorerLibraries", "xs+21 ys+173", "Remove explorer libraries (from directory tree and context menus) (WIN7 or later)")
-		Page.AddControl("CheckBox", "chkClassicExplorerView", "xs+21 ys+196", "Use classic explorer view (XP only)")
-		Page.AddControl("Text", "txtWindows", "xs+21 ys+235 w54 h13", "Windows:")
-		Page.AddControl("CheckBox", "chkCycleThroughTaskbarGroup", "xs+21 ys+251", "Left click on task group button: cycle through windows (7 or later)")
-		Page.AddControl("CheckBox", "chkShowAllNotifications", "xs+21 ys+274", "Show all tray notification icons")
-		Page.AddControl("CheckBox", "chkRemoveCrashReporting", "xs+21 ys+297", "Remove crash reporting dialog")
-		Page.AddControl("CheckBox", "chkDisableUAC", "xs+21 ys+320", "Disable UAC (Vista or later)")
-		Page.AddControl("Text", "txtThumbnailHoverTime", "xs+21 ys+346", "Taskbar thumbnail hover time [ms] (WIN7 or later):")
-		Page.AddControl("Edit", "editThumbnailHoverTime", "xs+258 ys+343", "")
+		Page.AddControl("Text", 	"txtExplorer",					"xs+21 ys+19",			"Explorer:")
+		Page.AddControl("CheckBox", "chkRemoveUserDir",				"xs+21 ys+35",			"Remove user directory from directory tree")
+		Page.AddControl("CheckBox", "chkRemoveWMP",					"xs+21 ys+58",			"Remove Windows Media Player context menu entries (Play, Add to playlist, Buy music")
+		Page.AddControl("CheckBox", "chkRemoveOpenWith",			"xs+21 ys+81",			"Remove ""Open With Webservice or choose program"" dialogs for unknown file extensions")
+		Page.AddControl("CheckBox", "chkShowExtensions",			"xs+21 ys+104",			"Always show file extensions")
+		Page.AddControl("CheckBox", "chkShowHiddenFiles",			"xs+21 ys+127",			"Show hidden files")
+		Page.AddControl("CheckBox", "chkShowSystemFiles",			"xs+21 ys+150",			"Show system files")
+		Page.AddControl("CheckBox", "chkRemoveExplorerLibraries",	"xs+21 ys+173",			"Remove explorer libraries (from directory tree and context menus) (WIN7 or later)")
+		Page.AddControl("CheckBox", "chkClassicExplorerView",		"xs+21 ys+196",			"Use classic explorer view (XP only)")
+		Page.AddControl("Text", 	"txtWindows",					"xs+21 ys+235 w54 h13",	"Windows:")
+		Page.AddControl("CheckBox", "chkCycleThroughTaskbarGroup",	"xs+21 ys+251",			"Left click on task group button: cycle through windows (7 or later)")
+		Page.AddControl("CheckBox", "chkShowAllNotifications",		"xs+21 ys+274",			"Show all tray notification icons")
+		Page.AddControl("CheckBox", "chkRemoveCrashReporting",		"xs+21 ys+297",			"Remove crash reporting dialog")
+		Page.AddControl("CheckBox", "chkDisableUAC",				"xs+21 ys+320",			"Disable UAC (Vista or later)")
+		Page.AddControl("Text", 	"txtThumbnailHoverTime",		"xs+21 ys+346",			"Taskbar thumbnail hover time [ms] (WIN7 or later):")
+		Page.AddControl("Edit", 	"editThumbnailHoverTime",		"xs+258 ys+343",		"")
 	}
 	InitWindowsSettings()
 	{
@@ -1860,32 +1849,41 @@ Finally, here are some settings that you're likely to change at the beginning:
 			MsgBox, 4,,Some settings that you changed require that you restart Explorer, log off or reboot.
 	}
 	
+
 	;Misc
 	CreateMisc()
 	{
 		Page := this.Pages.Misc.Tabs[1]
-		;~ Page.AddControl("Link", "linkGamepadRemoteControl", "x19 ys+23 w13 h13", "?")
-		Page.AddControl("CheckBox", "chkGamepadRemoteControl", "xs+40 ys+20", "Use joystick/gamepad as remote control when not in fullscreen (optimized for XBOX360 controller)")
-		;~ Page.AddControl("Link", "linkFixEditControlWordDelete", "xs+21 y58 w13 h13", "?")
-		Page.AddControl("CheckBox", "chkFixEditControlWordDelete", "xs+40 ys+43", "Make CTRL+Backspace and CTRL+Delete work in all textboxes")
+		;~ Page.AddControl("Link",	"linkGamepadRemoteControl",			"x19 ys+23 w13 h13",						"?")
+		Page.AddControl("CheckBox",	"chkGamepadRemoteControl",			"xs+40 ys+20",								"Use joystick/gamepad as remote control when not in fullscreen (optimized for XBOX360 controller)")
+		;~ Page.AddControl("Link",	"linkFixEditControlWordDelete",		"xs+21 y58 w13 h13",						"?")
+		Page.AddControl("CheckBox",	"chkFixEditControlWordDelete",		"xs+40 ys+43",								"Make CTRL+Backspace and CTRL+Delete work in all textboxes")
 		Page.Controls.chkFixEditControlWordDelete.ToolTip := "Many text boxes in windows have the problem that it's not possible to use CTRL+Backspace to delete a word. Instead, it will write a square character. Enabling this will fix it."
-		Page.AddControl("CheckBox", "chkTabAutocompletion", "xs+40 ys+66 h17", "Autocomplete filenames and paths with TAB in file dialogs")
+		Page.AddControl("CheckBox",	"chkTabAutocompletion",				"xs+40 ys+66 h17",							"Autocomplete filenames and paths with TAB in file dialogs")
 		
-		Page.AddControl("Text", "txtImageQuality", "xs+47 ys+180", "Image compression quality:")
-		Page.AddControl("Edit", "editImageQuality", "xs+228 ys+177 w52", "")
-		Page.AddControl("Text", "txtDefaultImageExtension", "xs+47 ys+206", "Default image extension:")
-		Page.AddControl("Edit", "editDefaultImageExtension", "xs+228 ys+202 w52", "")
-		Page.AddControl("Text", "txtFullScreenDescription", "xs+47 ys+240", "Many features of 7plus check if there is a fullscreen window active.`nYou can add window class names to include and exclude filters here to influence the fullscreen recognition.")
-		Page.AddControl("Text", "txtFullscreenInclude", "xs+47 ys+272", "Fullscreen detection include list:")
-		Page.AddControl("Edit", "editFullscreenInclude", "xs+228 ys+269 w261", "")
-		Page.AddControl("Text", "txtFullscreenExclude", "xs+47 ys+298", "Fullscreen detection exclude list:")
-		Page.AddControl("Edit", "editFullscreenExclude", "xs+228 ys+295 w261", "")
-		Page.AddControl("GroupBox", "grpAdvanced", "xs+37 ys+150 w" this.Width - 300 " h350", "Advanced Settings")
-		Page.AddControl("CheckBox", "chkEnableDebugging", "xs+47 ys+380", "Enable debugging")
+		Page.AddControl("GroupBox",	"grpAdvanced",						"xs+37 ys+150 w" this.Width - 300 " h350",	"Advanced Settings")
+		Page.AddControl("Text",		"txtImageQuality",					"xs+47 ys+180",								"Image compression quality:")
+		Page.AddControl("Edit",		"editImageQuality",					"xs+228 ys+177 w52",						"")
+		Page.AddControl("Text",		"txtDefaultImageExtension",			"xs+47 ys+206",								"Default image extension:")
+		Page.AddControl("Edit",		"editDefaultImageExtension",		"xs+228 ys+202 w52",						"")
+		Page.AddControl("Text",		"txtDefaultImageEditor",			"xs+47 ys+232",								"Default image editor:")
+		Page.AddControl("Edit",		"editDefaultImageEditor",			"xs+228 ys+228 w300",						"")
+		Page.AddControl("Button", 	"btnDefaultImageEditor", 			"x+5",			 							"...")
+		Page.AddControl("Text",		"txtDefaultTextEditor",				"xs+47 ys+254",								"Default image text editor:")
+		Page.AddControl("Edit",		"editDefaultTextEditor",			"xs+228 ys+250 w300",						"")
+		Page.AddControl("Button", 	"btnDefaultTextEditor", 			"x+5",			 							"...")
+		
+		Page.AddControl("Text",		"txtFullScreenDescription",			"xs+47 ys+292",								"Many features of 7plus check if there is a fullscreen window active.`nYou can add window class names to include and exclude filters here to influence the fullscreen recognition.")
+		Page.AddControl("Text",		"txtFullscreenInclude",				"xs+47 ys+324",								"Fullscreen detection include list:")
+		Page.AddControl("Edit",		"editFullscreenInclude",			"xs+228 ys+321 w261",						"")
+		Page.AddControl("Text",		"txtFullscreenExclude",				"xs+47 ys+350",								"Fullscreen detection exclude list:")
+		Page.AddControl("Edit",		"editFullscreenExclude",			"xs+228 ys+347 w261",						"")
+		Page.AddControl("CheckBox",	"chkEnableDebugging",				"xs+47 ys+432",								"Enable debugging")
 		Page.Controls.chkEnableDebugging.ToolTip := "Enable this to see debug messages. A program like DebugView is recommended for this.`nThis will also affect some other parts of 7plus, such as event exporting."
-		Page.AddControl("CheckBox", "chkDontRegisterSelectionChanged", "xs+47 ys+405", "Fix hanging issues with Explorer (prevents file selection tracking + undo and Explorer status bar enhancements)")
+		Page.AddControl("CheckBox",	"chkDontRegisterSelectionChanged",	"xs+47 ys+457",								"Fix hanging issues with Explorer (prevents file selection tracking + undo and Explorer status bar enhancements)")
 		Page.chkDontRegisterSelectionChanged.ToolTip := "Use this if Explorer windows won't react anymore sometimes.`n""Restore Selection"" and display of file sizes in Explorer status bar`nare not going to work if this is enabled."
 	}
+
 	InitMisc()
 	{
 		Page := this.Pages.Misc.Tabs[1].Controls
@@ -1896,11 +1894,16 @@ Finally, here are some settings that you're likely to change at the beginning:
 		
 		Page.editImageQuality.Text := Settings.Misc.ImageQuality
 		Page.editDefaultImageExtension.Text := Settings.Misc.DefaultImageExtension
+		Page.editDefaultImageEditor.Text := Settings.Misc.DefaultImageEditor
+		Page.editDefaultTextEditor.Text := Settings.Misc.DefaultTextEditor
+
 		Page.editFullscreenInclude.Text := Settings.Misc.FullscreenInclude
 		Page.editFullscreenExclude.Text := Settings.Misc.FullscreenExclude
+
 		Page.chkEnableDebugging.Checked := Settings.General.DebugEnabled
 		Page.chkDontRegisterSelectionChanged.Checked := Settings.General.DontRegisterSelectionChanged
 	}
+
 	ApplyMisc()
 	{
 		Page := this.Pages.Misc.Tabs[1].Controls
@@ -1915,44 +1918,67 @@ Finally, here are some settings that you're likely to change at the beginning:
 		
 		Settings.Misc.ImageQuality := Page.editImageQuality.Text
 		Settings.Misc.DefaultImageExtension := Page.editDefaultImageExtension.Text
+		Settings.Misc.DefaultImageEditor := Page.editDefaultImageEditor.Text
+		Settings.Misc.DefaultTextEditor := Page.editDefaultTextEditor.Text
+
 		Settings.Misc.FullscreenInclude := Page.editFullscreenInclude.Text
 		Settings.Misc.FullscreenExclude := Page.editFullscreenExclude.Text
 		Settings.General.DebugEnabled := Page.chkEnableDebugging.Checked
 		Settings.General.DontRegisterSelectionChanged := Page.chkDontRegisterSelectionChanged.Checked
 	}
-	; Doesn't work :(
-	/*
-	editImageQuality_Validate(Text)
+
+	btnDefaultImageEditor_Click()
 	{
-		if(!(Text >= 5 && Text <= 100))
-			return 95
+		Page := this.Pages.Misc.Tabs[1].Controls
+		FileDialog := new CFileDialog("Open")
+		FileDialog.Filter := "Executable files (*.exe)"
+		FileDialog.Title := "Select Image Editor"
+		FileDialog.FileMustExist := true
+		FileDialog.PathMustExist := true
+		FileDialog.Filename := Page.editDefaultImageEditor.Text
+		if(FileDialog.Show())
+			Page.editDefaultImageEditor.Text := FileDialog.Filename
 	}
-	*/
+
+	btnDefaultTextEditor_Click()
+	{
+		Page := this.Pages.Misc.Tabs[1].Controls
+		FileDialog := new CFileDialog("Open")
+		FileDialog.Filter := "Executable files (*.exe)"
+		FileDialog.Title := "Select Text Editor"
+		FileDialog.FileMustExist := true
+		FileDialog.PathMustExist := true
+		FileDialog.Filename := Page.editDefaultTextEditor.Text
+		if(FileDialog.Show())
+			Page.editDefaultTextEditor.Text := FileDialog.Filename
+	}
+
+
 	; About	
 	CreateAbout()
 	{
 		Page := this.Pages.About.Tabs[1]
-		txt7plusVersion := Page.AddControl("Text", "txt7plusVersion", "xs+21 w400 ys+19 h40", "7plus Version " VersionString(1) (ApplicationState.IsPortable ? " Portable" : ""))
+		txt7plusVersion := 	Page.AddControl("Text", 	"txt7plusVersion", 	"xs+21 w400 ys+19 h40", 	"7plus Version " VersionString(1) (ApplicationState.IsPortable ? " Portable" : ""))
 		txt7plusVersion.Font.Size := 20
-		Page.AddControl("Picture", "img7plus", "xs+380 ys+19 w128 h128", A_ScriptDir "\128.png")
-		Page.AddControl("Picture", "imgDonate", "xs+24 ys+170", A_ScriptDir "\Donate.png")
-		Page.AddControl("Link", "linkLicense", "xs+176 ys+252 w158 h13", "<A HREF=""http://www.gnu.org/licenses/gpl.html"">GNU General Public License v3</A>")
-		Page.AddControl("Link", "linkAHK", "xs+21 ys+217 w110 h13", "<A HREF=""www.autohotkey.com"">www.autohotkey.com</A>")
-		Page.AddControl("Link", "linkTwitter", "xs+176 ys+121 w38 h13", "<A HREF=""http://www.twitter.com/7_plus"">7_plus</A>")
-		Page.AddControl("Link", "linkEmail", "xs+176 ys+105 w103 h13", "<A HREF=""mailto://fragman@gmail.com"">fragman@gmail.com</A>")
-		Page.AddControl("Link", "linkBugs", "xs+176 ys+73 w212 h13", "<A HREF=""http://code.google.com/p/7plus/issues/list"">http://code.google.com/p/7plus/issues/list</A>")
-		Page.AddControl("Link", "linkHomepage", "xs+176 ys+57 w166 h13", "<A HREF=""http://code.google.com/p/7plus/"">http://code.google.com/p/7plus/</A>")
-		Page.AddControl("Link", "linkAutoupdater", "xs+21 ys+281 w306 h13", "The Autoudater uses <A HREF=""http://www.7-zip.org"">7-Zip</A>, which is licensed under the <A HREF=""http://www.gnu.org/licenses/lgpl.html"">LGPL</A>")
-		Page.AddControl("Text", "txtCredits", "xs+21 ys+315", "This program would not have been possible without the many scripts, libraries and help from:`nSean, HotKeyIt, majkinetor, polyethene, Lexikos, tic, fincs, TheGood, PhiLho, Temp01, Laszlo, jballi, Shrinker,`nM@x and the other guys and gals on #ahk and the forums.")
-		Page.AddControl("Text", "txtLicense", "xs+21 ys+252 w80 h13", "Licensed under")
-		Page.AddControl("Text", "txtLanguage", "xs+21 ys+201 w146 h13", "Proudly written in AutoHotkey")
-		Page.AddControl("Text", "txtDonate", "xs+21 ys+154 w282 h13", "To support the development of this project, please donate:")
-		Page.AddControl("Text", "txtTwitter", "xs+21 ys+121 w39 h13", "Twitter")
-		Page.AddControl("Text", "txtEmail", "xs+21 ys+105 w36 h13", "E-Mail")
-		Page.AddControl("Text", "txtAuthor2", "xs+176 ys+89 w84 h13", "Christian Sander")
-		Page.AddControl("Text", "txtAuthor", "xs+21 ys+89 w38 h13", "Author")
-		Page.AddControl("Text", "txtBugs", "xs+21 ys+73 w65 h13", "Report bugs")
-		Page.AddControl("Text", "txtHomepage", "xs+21 ys+57 w70 h13", "Project page:")
+							Page.AddControl("Picture", 	"img7plus",			"xs+380 ys+19 w128 h128", 	A_ScriptDir "\128.png")
+							Page.AddControl("Picture", 	"imgDonate",		"xs+24 ys+170", 			A_ScriptDir "\Donate.png")
+							Page.AddControl("Link", 	"linkLicense",		"xs+176 ys+252", 			"<A HREF=""http://www.gnu.org/licenses/gpl.html"">GNU General Public License v3</A>")
+							Page.AddControl("Link", 	"linkAHK",			"xs+21 ys+217", 			"<A HREF=""www.autohotkey.com"">www.autohotkey.com</A>")
+							Page.AddControl("Link", 	"linkTwitter",		"xs+176 ys+121", 			"<A HREF=""http://www.twitter.com/7_plus"">7_plus</A>")
+							Page.AddControl("Link", 	"linkEmail",		"xs+176 ys+105", 			"<A HREF=""mailto://fragman@gmail.com"">fragman@gmail.com</A>")
+							Page.AddControl("Link", 	"linkBugs",			"xs+176 ys+73", 			"<A HREF=""http://code.google.com/p/7plus/issues/list"">http://code.google.com/p/7plus/issues/list</A>")
+							Page.AddControl("Link", 	"linkHomepage",		"xs+176 ys+57", 			"<A HREF=""http://code.google.com/p/7plus/"">http://code.google.com/p/7plus/</A>")
+							Page.AddControl("Link", 	"linkAutoupdater",	"xs+21 ys+281", 			"The Autoupdater uses <A HREF=""http://www.7-zip.org"">7-Zip</A>, which is licensed under the <A HREF=""http://www.gnu.org/licenses/lgpl.html"">LGPL</A>")
+							Page.AddControl("Text", 	"txtCredits",		"xs+21 ys+315", 			"This program would not have been possible without the many scripts, libraries and help from:`nSean, HotKeyIt, majkinetor, polyethene, Lexikos, tic, fincs, TheGood, PhiLho, Temp01, Laszlo, jballi, Shrinker,`nM@x and the other guys and gals on #ahk and the forums.")
+							Page.AddControl("Text", 	"txtLicense",		"xs+21 ys+252", 			"Licensed under")
+							Page.AddControl("Text", 	"txtLanguage",		"xs+21 ys+201", 			"Proudly written in AutoHotkey")
+							Page.AddControl("Text", 	"txtDonate",		"xs+21 ys+154", 			"To support the development of this project, please donate:")
+							Page.AddControl("Text", 	"txtTwitter",		"xs+21 ys+121", 			"Twitter")
+							Page.AddControl("Text", 	"txtEmail",			"xs+21 ys+105", 			"E-Mail")
+							Page.AddControl("Text", 	"txtAuthor2",		"xs+176 ys+89", 			"Christian Sander")
+							Page.AddControl("Text", 	"txtAuthor",		"xs+21 ys+89", 				"Author")
+							Page.AddControl("Text", 	"txtBugs",			"xs+21 ys+73", 				"Report bugs")
+							Page.AddControl("Text", 	"txtHomepage",		"xs+21 ys+57", 				"Project page:")
 	}
 	
 	;Placeholder function, nothing to do yet

@@ -23,8 +23,8 @@ Class CShowTipAction Extends CAction
 		this.AddControl(ActionGUI, "Edit", "Min", "", "", "Min Index:")
 		this.AddControl(ActionGUI, "Edit", "Max", "", "", "Max Index:")
 	}
-	
 }
+
 Class CTips
 {
 	static 1  := new CTips.Tip("Clipboard Manager", "You can press WIN + V to open the clipboard manager, which can be used to paste recently copied text, persistent clips or recently used directories")
@@ -83,17 +83,20 @@ Class CTips
 		}
 	}
 }
+
 HasTipBeenShown(TipIndex)
 {
 	return SubStr(Settings.General.ShownTips, TipIndex, 1) = 1
 }
+
 ;Tip index can be {Min : 1, Max : 10} for random index between these values
 ShowTip(TipIndex, Probability = 0.2)
 {
+	global StartupTime
 	if(!Settings.General.ShowTips)
 		return true ;Return true anyway so other code can simply assume that the tip was shown
 	Random, r, 0.0, 1.0
-	if(r > Probability)
+	if(r > Probability || A_TickCount - StartupTime < 10000)
 		return -1
 	;Possibly choose a random tip in a specific interval
 	if(IsObject(TipIndex))

@@ -85,8 +85,9 @@ Action_Run_Placeholders_WD:
 GetCurrentSubEvent().RunGuiShow("", "Placeholders_WD")
 return
 
-Run(Target, WorkingDir = "", Mode = "", NonElevated=-1) 
+Run(Target, WorkingDir = "", Mode = "", NonElevated = -1) 
 {
+	outputdebug running: %Target%
 	;run as current user
 	if(WinVer < WIN_Vista || NonElevated = -1 || (!A_IsAdmin && NonElevated) || (A_IsAdmin && !NonElevated))
 	{

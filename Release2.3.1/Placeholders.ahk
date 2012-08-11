@@ -246,6 +246,8 @@ ShowPlaceholderMenu(SubEventGUI, name, ClickedMenu="")
 		Menu, Placeholders_FilePaths, add, `%StartMenuCommon`% - Common Start Menu Directory, PlaceholderHandler
 		Menu, Placeholders_FilePaths, add, `%7plusDrive`% - Drive 7plus is running from, PlaceholderHandler
 		Menu, Placeholders_FilePaths, add, `%7plusDir`% - 7plus Directory, PlaceholderHandler
+		Menu, Placeholders_FilePaths, add, `%ImageEditor`% - Default image editor, PlaceholderHandler
+		Menu, Placeholders_FilePaths, add, `%TextEditor`% - Default text editor, PlaceholderHandler
 		
 		Menu, Placeholders_Mouse, add, ${U} - Handle of window under mouse, PlaceholderHandler
 		Menu, Placeholders_Mouse, add, ${MC} - Class of window under mouse, PlaceholderHandler

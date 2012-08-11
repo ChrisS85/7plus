@@ -96,6 +96,8 @@ Class CSettings
 		static RunAsAdmin                    := "Always/Ask"
 		static HideTrayIcon                  := 0
 		static IgnoredPrograms				 := "KeePass.exe"
+		static DefaultImageEditor			 := "%ProgramFiles%\Paint.NET\PaintDotNet.exe"
+		static DefaultTextEditor			 := "%ProgramFiles%\Notepad++\notepad++.exe"
 	}
 	Misc := new this.CMisc()
 	

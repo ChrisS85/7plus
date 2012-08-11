@@ -1851,29 +1851,36 @@ RegReadUser(Key, Name)
 ;It's basically ExpandEnvironmentStrings() with some additional directories
 ExpandPathPlaceholders(InputString)
 {
-	static sStartMenu := GetFullPathName(A_StartMenu)
-	static sStartMenuCommon := GetFullPathName(A_StartMenuCommon)
-	static sMyDocuments := GetFullPathName(A_MyDocuments)
-	static sDesktop := GetFullPathName(A_Desktop)
-	static s7plusDrive
-	if(!s7plusDrive)
+	static Replacements := {  "Desktop" : 			GetFullPathName(A_Desktop)
+							, "MyDocuments" :		GetFullPathName(A_MyDocuments)
+							, "StartMenu" :			GetFullPathName(A_StartMenu)
+							, "StartMenuCommon" : 	GetFullPathName(A_StartMenuCommon)
+							, "7plusDrive" : 		""
+							, "7plusDir" :			A_ScriptDir
+							, "ImageEditor"	:		""
+							, "TextEditor" :		""}
+	if(!Replacements.7plusDrive)
+	{
 		SplitPath, A_ScriptDir,,,,,s7plusDrive
-	StringReplace, InputString, InputString, `%Desktop`%, %sDesktop%, All
-	StringReplace, InputString, InputString, `%MyDocuments`%, %sMyDocuments%, All
-	StringReplace, InputString, InputString, `%StartMenu`%, %sStartMenu%, All
-	StringReplace, InputString, InputString, `%StartMenuCommon`%, %sStartMenuCommon%, All
-	StringReplace, InputString, InputString, `%7plusDrive`%, %s7plusDrive%, All
-	StringReplace, InputString, InputString, `%7plusDir`%, %A_ScriptDir%, All
+		Replacements.7plusDrive := s7plusDrive
+	}
+	Replacements.ImageEditor := Settings.Misc.DefaultImageEditor
+	Replacements.TextEditor := Settings.Misc.DefaultTextEditor
+
+	for Placeholder, Replacement in Replacements
+		while(InStr(InputString, Placeholder) && A_Index < 10)
+			StringReplace, InputString, InputString, % "%" Placeholder "%", % Replacement, All
+	
 	; get the required size for the expanded string
 	SizeNeeded := DllCall("ExpandEnvironmentStrings", "Str", InputString, "PTR", 0, "Int", 0)
-	If (SizeNeeded == "" || SizeNeeded <= 0)
+	if(SizeNeeded == "" || SizeNeeded <= 0)
 		return InputString ; unable to get the size for the expanded string for some reason
 
 	ByteSize := SizeNeeded * 2 + 2
 	VarSetCapacity(TempValue, ByteSize, 0)
 
 	; attempt to expand the environment string
-	If (!DllCall("ExpandEnvironmentStrings", "Str", InputString, "Str", TempValue, "Int", SizeNeeded))
+	if(!DllCall("ExpandEnvironmentStrings", "Str", InputString, "Str", TempValue, "Int", SizeNeeded))
 		return InputString ; unable to expand the environment string
 	return TempValue
 }
