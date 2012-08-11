@@ -51,7 +51,7 @@
  * Rewrote notifications to properly stack and to add support for hyperlinks.
  * Improved Slide Windows to be much more responsive.
  * Simplified Image Converter by removing resizing and cropping options for simpler layout. It's recommended to perform these operations in a dedicated image editor (which can be launched by clicking on the image).
- * Global settings for image and text editors.
+ * Global settings for image and text editor paths.
  * Adjusted some window sizes to get rid of redundant scrollbars.
  * Added a setting to avoid 7plus-related Explorer hang-ups.
  * More operations run in separate processes now to improve responsivity.
