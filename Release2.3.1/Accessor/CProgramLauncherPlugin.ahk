@@ -37,7 +37,7 @@ Class CProgramLauncherPlugin extends CAccessorPlugin
 		Actions := [{Action : "Run", Command : "${File}"}]
 		UpdateOnStart := true
 		UpdateOnOpen := false
-		Exclude := "setup,install,uninst,remove"
+		Exclude := "setup,install,unins,remove"
 
 		Load(json)
 		{
