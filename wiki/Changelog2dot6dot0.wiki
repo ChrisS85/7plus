@@ -41,6 +41,7 @@
  * Various hotkeys and additional actions have been added for the plugins. As an example, results that are folders can now be opened directly in the file system plugin by pressing CTRL + F while the result is selected.
  
 *Bugfixes:* 
+ * Fixed a severe bug in xml file storing.
  * Added a bug which caused flashing of file dialog close box while mouse was over it.
  * Fixed a bug that caused crashes and hangups on windows which contain ListViews. This fix also improves responsiveness of ListView and TreeView selections.
  * Fixed Explorer windows getting activated at the start of 7plus.
