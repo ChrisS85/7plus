@@ -3,6 +3,7 @@
  * Complete rewrite of the Accessor launcher and its plugins. See below for details.
  * Full Windows 8 compatibility
  * Improved Clipboard Manager by adding persistent clipboard entries that can be searched and support parameters. This is now backed by an Accessor plugin, see below. Additionally, programs can now be excluded from the clipboard history to protect the privacy of sensitive data copied from these programs.
+ * Added an action to send Email triggers to [http://www.ifttt.com If this then that]. Some possible uses are included in 7plus, but this requires that you enter your Email login in 7plus and add the matching recipes in IFTTT. Matching recipes are linked to on the Settings page.
  * Added Explorer path history and frequent paths to the Clipboard Manager menu.
  * FTP upload action can now upload directories. In addition, FTP and image uploads are carried out in a separate process for better responsiveness.
  * TAB key can now be used for autocompletion instead of switching the focus whenever a common autocompletion-list is visible (Examples: Path fields, Run dialog).
@@ -28,6 +29,7 @@
   * Keyword plugin: Quickly create keywords by selecting text or a file, open Accessor and type "Learn as [Keyword]". Credits go out to Enso Launcher for the idea!
   * Event plugin: Allows to create Accessor commands that trigger events. This allows to combine the ease of access(or) with the feature-rich event system.
     * New commands created with this plugin: Shutdown, Reboot, Hibernate, Standby, LogOff, Lock, Message, Say
+    * This plugin is particularly useful in combination with the IFTTT integration mentioned above. It allows to create commands to write tweets, facebook posts and access many other web services supported by IFTTT from withing Accessor.
   * Clipboard plugin: Allows to quickly search for stored clipboard entries and paste them. Selected text can also be stored with this plugin.
   * Control Panel plugin: Indexes the control panel and makes it possible to access the control panel applets.
 
