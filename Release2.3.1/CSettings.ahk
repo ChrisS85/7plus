@@ -115,6 +115,18 @@ Class CSettings
 		static DontRegisterSelectionChanged			:= false
 	}
 	General := new this.CGeneral()
+
+	Class CIFTTT
+	{
+		static From 		               			:= "The email address you use in the email channel of IFTTT"
+		static Server 	                			:= "SMTP Server address, e.g. smtp.gmail.com"
+		static Port 		                   		:= 465
+		static TLS									:= true
+		static Username	                			:= "Email login name, e.g. user@gmail.com"
+		static Password             	    		:= ""
+		static Timeout								:= 10
+	}
+	IFTTT := new this.CIFTTT()
 	
 	;ModifiedKeyNames is a class containing mappings of new key names to old key names. It's used to ease transform from older
 	;nondescriptive key names to better fitting ones.
@@ -158,6 +170,7 @@ Class CSettings
 		this.IniPath := this.ConfigPath "\Settings.ini"
 		this.DllPath := A_ScriptDir "\lib" (A_PtrSize = 8 ? "\x64" : "")
 	}
+
 	Load(Category = "")
 	{
 		global FastFolders

@@ -107,7 +107,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 		Detail1 := "Search result"
 	}
 
-	Init(PluginSettings)
+	Enable()
 	{
 		this.hModule := DllCall("LoadLibrary", "Str", this.DllPath, "PTR")
 		if(!this.hModule)
@@ -116,6 +116,26 @@ Class CFileSearchPlugin extends CAccessorPlugin
 			this.BuildFileDatabase()
 	}
 
+	Disable()
+	{
+		this.FreeResources()
+		SetTimer, UpdateFileSystemIndex, Off
+	}
+
+	FreeResources()
+	{
+		;Get rid of old icons from last queries
+		for path, Icon in this.Icons
+			DestroyIcon(Icon)
+		this.Icons := Array()
+		for drive, DriveIndex in this.FileSystemIndex
+			DllCall(this.DllPath "\DeleteIndex", "PTR", DriveIndex)
+		this.FileSystemIndex := {}
+		if(this.hModule)
+			DllCall("FreeLibrary", "PTR", this.hModule)
+		this.Remove("hModule")
+	}
+	
 	ShowSettings(PluginSettings, GUI, PluginGUI)
 	{
 		AddControl(PluginSettings, PluginGUI, "Checkbox", "UseIcons", "Use proper icons (not recommended)", "", "", "", "", "", "", "If checked, 7plus will use the correct icon for each file. This can cause instabilities for large results.")
@@ -236,16 +256,7 @@ Class CFileSearchPlugin extends CAccessorPlugin
 
 	OnExit()
 	{
-		;Get rid of old icons from last queries
-		for path, Icon in this.Icons
-			DestroyIcon(Icon)
-		this.Icons := Array()
-		for drive, DriveIndex in this.FileSystemIndex
-			DllCall(this.DllPath "\DeleteIndex", "PTR", DriveIndex)
-		this.FileSystemIndex := {}
-		if(this.hModule)
-			DllCall("FreeLibrary", "PTR", this.hModule)
-		this.Remove("hModule")
+		this.FreeResources()
 	}
 	
 	SearchInAccessor(Accessor, ListEntry)

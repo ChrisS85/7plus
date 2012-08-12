@@ -204,10 +204,40 @@
 <OneInstance>0</OneInstance>
 <Trigger>
 <ButtonText>Say</ButtonText>
+<Detail1></Detail1>
 <Icon>%SystemRoot%\system32\SHELL32.dll,173</Icon>
-<Keyword>Say</Keyword>
+<Keyword>say</Keyword>
 <Path>${AccAll}</Path>
 <Title>Speak text:</Title>
+<Type>Accessor Trigger</Type>
+</Trigger>
+</Event><Event>
+<Actions>
+<Action>
+<Attach></Attach>
+<Body>${AccAll}</Body>
+<Tag>#tweet</Tag>
+<Type>Trigger an "If this then that" recipe</Type>
+</Action></Actions>
+<Category>Accessor commands</Category>
+<Conditions>
+</Conditions>
+<DeleteAfterUse>0</DeleteAfterUse>
+<Description>Post a tweet from within the Accessor by writing "tweet Text". This event works in conjunction with the "If this then that" integration so it requires an account at this web service and you need to enter the login details of the email address you use for it in 7plus.&n;Additionally, you need to use &lt;A HREF="http://ifttt.com/recipes/50333"&gt;this recipe&lt;/A&gt;.</Description>
+<DisableAfterUse>0</DisableAfterUse>
+<Enabled>1</Enabled>
+<EventComplexityLevel>0</EventComplexityLevel>
+<ID>1665</ID>
+<Name>Accessor & IFTTT: Post a tweet</Name>
+<OfficialEvent>15</OfficialEvent>
+<OneInstance>0</OneInstance>
+<Trigger>
+<ButtonText>Post</ButtonText>
+<Detail1></Detail1>
+<Icon>%7plusDir%\Icons\twitter.ico</Icon>
+<Keyword>tweet</Keyword>
+<Path>${AccAll}</Path>
+<Title>Tweet</Title>
 <Type>Accessor Trigger</Type>
 </Trigger>
 </Event></Events>

@@ -656,6 +656,8 @@ Class CAccessor
 			SavedPlugin := IsObject(SavedPluginSettings[Plugin.Type]) ? SavedPluginSettings[Plugin.Type] : {}
 			Plugin.Instance.Settings.Load(SavedPlugin)
 			Plugin.Instance.Init(SavedPlugin.Settings)
+			if(SavedPlugin.Settings.Enabled)
+				Plugin.Enable()
 		}
 		
 		;Init keywords
@@ -889,12 +891,14 @@ Class CAccessor
 		
 		;Make parameters available to events
 		All := ""
-		Loop 9
+		Loop, Parse, Filter, %A_Space%
 		{
-			Index := A_Index + 1
-			EventSystem.GlobalPlaceholders.Remove("Acc" A_Index)
-			EventSystem.GlobalPlaceholders.Insert("Acc" A_Index, p%Index%)
-			All .= (A_Index = 1 ? "" : " ") p%Index%
+			if(A_Index = 1)
+				continue
+			Index := A_Index - 1
+			EventSystem.GlobalPlaceholders.Remove("Acc" Index)
+			EventSystem.GlobalPlaceholders.Insert("Acc" Index, A_LoopField)
+			All .= (Index = 1 ? "" : " ") A_LoopField
 		}
 		EventSystem.GlobalPlaceholders.Remove("AccAll")
 		EventSystem.GlobalPlaceholders.Insert("AccAll", All)

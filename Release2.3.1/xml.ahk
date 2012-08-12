@@ -112,14 +112,9 @@ XML_Read(xml,node = 0)
 				continue
 			}
 		}
-		value := SubStr(xml,start,end - start - 2 - strlen(key) - 1)
-		value := strTrimLeft(value,"`r`n")
-		value := strTrimLeft(value,"`n")
-		if(value = "")
-		{
-			start := InStr(xml, "<",0,end)
-			continue
-		}
+		value := SubStr(xml, start, end - start - 2 - strlen(key) - 1)
+		value := strTrimLeft(value, "`r`n")
+		value := strTrimLeft(value, "`n")
 		
 		if(InStr(value, "<"))
 		{

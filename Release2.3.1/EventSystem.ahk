@@ -1254,6 +1254,7 @@ Class CExampleAction extends CAction
 #include %A_ScriptDir%\Actions\FlatView.ahk
 #include %A_ScriptDir%\Actions\FocusControl.ahk
 #include %A_ScriptDir%\Actions\FTPUpload.ahk
+#include %A_ScriptDir%\Actions\IfThisThenThat.ahk
 #include %A_ScriptDir%\Actions\ImageConverter.ahk
 #include %A_ScriptDir%\Actions\ImageUpload.ahk
 #include %A_ScriptDir%\Actions\Input.ahk

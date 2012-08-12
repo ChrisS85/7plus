@@ -25,7 +25,7 @@ Class CSettingsWindow Extends CGUI
 	btnApply := this.AddControl("Button", "btnApply", "x+5 w73 h23", "Apply")
 	
 	;This contains the settings pages after Introduction, Events and Accessor
-	PageNames := "Clipboard|Explorer|Explorer Tabs|Fast Folders|FTP Profiles|HotStrings|Windows|Windows Settings|Misc|About"
+	PageNames := "Clipboard|Explorer|Explorer Tabs|Fast Folders|FTP Profiles|HotStrings|If this then that Integration|Windows|Windows Settings|Misc|About"
 	
 	__New()
 	{
@@ -64,7 +64,7 @@ Class CSettingsWindow Extends CGUI
 		Loop, Parse, PageNames, |
 		{
 			Item := this.treePages.Items.Add(A_LoopField, "Expand")
-			Name := StringReplace(A_LoopField, " ", "")
+			Name := StringReplace(A_LoopField, " ", "", "All")
 			Page := this.Pages[Name] := Item.AddControl("Tab", Name, "xs+0 ys+2 w" this.Width - 386 " h350", "bla")
 			this["Create" Name]()
 			Page.Hide()
@@ -96,7 +96,7 @@ Class CSettingsWindow Extends CGUI
 			this.InitPlugins()
 			Loop, Parse, PageNames, |
 			{
-				Name := StringReplace(A_LoopField, " ", "")
+				Name := StringReplace(A_LoopField, " ", "", "All")
 				this["Init"  Name]()			
 			}
 		}
@@ -156,7 +156,7 @@ Class CSettingsWindow Extends CGUI
 		this.ApplyPlugins()
 		Loop, Parse, PageNames, |
 		{
-			Name := StringReplace(A_LoopField, " ", "")
+			Name := StringReplace(A_LoopField, " ", "", "All")
 			this["Apply" Name]()
 		}
 		Settings.Save()
@@ -172,7 +172,7 @@ Class CSettingsWindow Extends CGUI
 	;Called when a settings page gets selected
 	PageSelected(Item)
 	{
-		if(IsObject(this.treePages.PreviouslySelectedItem) && PreviousText := StringReplace(this.treePages.PreviouslySelectedItem.Text, " ", ""))
+		if(IsObject(this.treePages.PreviouslySelectedItem) && PreviousText := StringReplace(this.treePages.PreviouslySelectedItem.Text, " ", "", "All"))
 			this["Hide" PreviousText]()
 		
 
@@ -195,7 +195,7 @@ Class CSettingsWindow Extends CGUI
 		GuiControl, % this.GUINum ":MoveDraw", % this.BtnCancel.hwnd
 		GuiControl, % this.GUINum ":MoveDraw", % this.BtnApply.hwnd
 
-		this["Show" StringReplace(this.treePages.SelectedItem.Text, " ", "")]()
+		this["Show" StringReplace(this.treePages.SelectedItem.Text, " ", "", "All")]()
 	}
 	
 	
@@ -310,9 +310,9 @@ Finally, here are some settings that you're likely to change at the beginning:
 		lv.ExStyle := "+0x00010000"
 		Page.Controls.listEvents.IndependentSorting := true
 
-		Page.AddControl("Edit", "editEventDescription", "xs+21 y+5 w536 h81 ReadOnly", "")
+		Page.AddControl("GroupBox", "grpEventDescription", "xs+21 y+5 w536 h120", "Description")
+		Page.AddControl("Link", "lnkEventDescription", "xp+10 yp+20 w500 h81", "")
 		Page.AddControl("Text", "txtEventDescription", "xs+21 ys+16 w606 h26", "You can add events here that are triggered under certain conditions. When triggered, the event can launch a series of actions.`n This is a very powerful tool to add all kinds of features, and many features from 7plus are now implemented with this system.")
-		Page.Controls.editEventDescription.Multi := 1
 	}	
 	InitEvents()
 	{
@@ -438,7 +438,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		if(!Page.listEvents.SelectedItems.MaxIndex() && Page.listEvents.Items.MaxIndex())
 			Page.listEvents.SelectedIndex := 1
 		if(Page.listEvents.SelectedItems.MaxIndex() = 1)
-			Page.editEventDescription.Text := this.Events.GetItemWithValue("ID", Page.listEvents.SelectedItem[2]).Description
+			Page.lnkEventDescription.Text := this.Events.GetItemWithValue("ID", Page.listEvents.SelectedItem[2]).Description
 		this.listEvents_SelectionChanged("")
 
 		Page.listEvents.ModifyCol(2, 40)
@@ -490,13 +490,13 @@ Finally, here are some settings that you're likely to change at the beginning:
 		}
 		if(items = 1)
 		{
-			Page.editEventDescription.Text := this.Events.GetItemWithValue("ID", Page.listEvents.SelectedItem[2]).Description
+			Page.lnkEventDescription.Text := this.Events.GetItemWithValue("ID", Page.listEvents.SelectedItem[2]).Description
 			Page.btnEditEvent.Enabled := true
 			Page.btnCreateShortcut.Enabled := true
 		}
 		else
 		{
-			Page.editEventDescription.Text := ""
+			Page.lnkEventDescription.Text := ""
 			Page.btnEditEvent.Enabled := false
 			Page.btnCreateShortcut.Enabled := false
 		}
@@ -692,7 +692,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		ListItem.Checked := ChangedEvent.Enabled
 		ListItem[3] := ChangedEvent.Trigger.DisplayString()
 		ListItem[4] := ChangedEvent.Name
-		Page.editEventDescription.Text := ChangedEvent.Description
+		Page.lnkEventDescription.Text := ChangedEvent.Description
 		Page.listEvents.DisableNotifications := false
 	}
 	DeleteEvents()
@@ -930,8 +930,13 @@ Finally, here are some settings that you're likely to change at the beginning:
 		for index, Plugin in CAccessor.Plugins
 		{
 			SettingsPlugin := this.AccessorPlugins.GetItemWithValue("Type", Plugin.Type)
+			Enabled := Plugin.Settings.Enabled
 			SettingsPlugin.Settings.Enabled := Page.listAccessorPlugins.Items[this.AccessorPlugins.FindKeyWithValue("Type", Plugin.Type)].Checked
 			Plugin.Settings := SettingsPlugin.Settings.DeepCopy()
+			if(Enabled && !Plugin.Settings.Enabled)
+				Plugin.Disable()
+			else if(!Enabled && Plugin.Settings.Enabled)
+				Plugin.Enable()
 		}
 	}
 	listAccessorPlugins_SelectionChanged()
@@ -1714,6 +1719,56 @@ Finally, here are some settings that you're likely to change at the beginning:
 		run http://www.autohotkey.com/docs/misc/RegEx-QuickRef.htm
 	}
 	
+
+	;Windows
+	CreateIfThisThenThatIntegration()
+	{
+		Page := this.Pages.IfThisThenThatIntegration.Tabs[1]
+		Page.AddControl("Link", 		"lnkIfThisThenThatDescription",			"xs+42 ys+20",					"7plus can integrate with <A HREF=""www.ifttt.com"">If this then that</A>, a popular web automation service,`nby sending mails to it with special #tags in the subject. This requires that you have an event in 7plus`nthat sends an email to trigger@ifttt.com from the email address you use in the email channel of ifttt (usually your registration mail).`nAdditionally you need to create a receipt on the page to react to a specific tag in the email subject.`nHere you can enter your email details to enable the predefined IFTTT events in 7plus and to be able to use the IFTTT action.")
+		
+		Page.AddControl("Text", 		"txtIfThisThenThatFrom", 				"xs+42 ys+103",					"From:")
+		Page.AddControl("Edit", 		"editIfThisThenThatFrom", 				"xs+100 ys+100 w300",			"")
+		Page.Controls.editIfThisThenThatFrom.ToolTip := "The email address you use in the email channel of IFTTT"
+		Page.AddControl("Text", 		"txtIfThisThenThatServer", 				"xs+42 ys+133",					"Server:")
+		Page.AddControl("Edit", 		"editIfThisThenThatServer", 			"xs+100 ys+130 w300",			"")
+		Page.Controls.editIfThisThenThatServer.ToolTip := "SMTP Server address, e.g. smtp.gmail.com"
+		Page.AddControl("Text", 		"txtIfThisThenThatPort", 				"xs+42 ys+163",					"Port:")
+		Page.AddControl("Edit", 		"editIfThisThenThatPort", 				"xs+100 ys+160 w50",			"")
+		Page.AddControl("CheckBox", 	"chkIfThisThenThatTLS", 				"xs+42 ys+193",					"TLS")
+		Page.AddControl("Text", 		"txtIfThisThenThatUsername", 			"xs+42 ys+223",					"Username:")
+		Page.AddControl("Edit", 		"editIfThisThenThatUsername", 			"xs+100 ys+220 w300",			"")
+		Page.Controls.editIfThisThenThatUsername.ToolTip := "Email login name, e.g. user@gmail.com"
+		Page.AddControl("Text", 		"txtIfThisThenThatPassword", 			"xs+42 ys+253",					"Password:")
+		Page.AddControl("Edit", 		"editIfThisThenThatPassword", 			"xs+100 ys+250 w300 Password",	"")
+		Page.AddControl("Text", 		"txtIfThisThenThatTimeout", 			"xs+42 ys+283",					"Timeout:")
+		Page.AddControl("Edit", 		"editIfThisThenThatTimeout", 			"xs+100 ys+280 w50",			"")
+		Page.AddControl("Link", 		"lnkIfThisThenThatRecipeLink",			"xs+42 ys+480",					"Tip: You can find premade recipes for 7plus <A HREF=""http://ifttt.com/people/7plus"">here</A>.")
+	}
+
+	InitIfThisThenThatIntegration()
+	{
+		Page := this.Pages.IfThisThenThatIntegration.Tabs[1].Controls
+		Page.editIfThisThenThatFrom.Text := Settings.IFTTT.From
+		Page.editIfThisThenThatServer.Text := Settings.IFTTT.Server
+		Page.editIfThisThenThatPort.Text := Settings.IFTTT.Port
+		Page.chkIfThisThenThatTLS.Checked := Settings.IFTTT.TLS
+		Page.editIfThisThenThatUsername.Text := Settings.IFTTT.Username
+		Page.editIfThisThenThatPassword.Text := Decrypt(Settings.IFTTT.Password)
+		Page.editIfThisThenThatTimeout.Text := Settings.IFTTT.Timeout
+	}
+
+	ApplyIfThisThenThatIntegration()
+	{
+		Page := this.Pages.IfThisThenThatIntegration.Tabs[1].Controls
+		Settings.IFTTT.From := Page.editIfThisThenThatFrom.Text
+		Settings.IFTTT.Server := Page.editIfThisThenThatServer.Text
+		Settings.IFTTT.Port := Page.editIfThisThenThatPort.Text
+		Settings.IFTTT.TLS := Page.chkIfThisThenThatTLS.Checked
+		Settings.IFTTT.Username := Page.editIfThisThenThatUsername.Text
+		Settings.IFTTT.Password := Encrypt(Page.editIfThisThenThatPassword.Text)
+		Settings.IFTTT.Timeout := Page.editIfThisThenThatTimeout.Text
+	}
+
 	
 	;Windows
 	CreateWindows()

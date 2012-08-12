@@ -8,7 +8,7 @@ Class CAccessorTrigger Extends CTrigger
 	static Keyword := "Event"
 	static ButtonText := "Execute"
 	static Icon := "%SystemRoot%\system32\SHELL32.dl,2"
-	
+
 	Matches(Filter, Event)
 	{
 		return false ; Match is handled through type trigger in Accessor.ahk already
@@ -16,7 +16,7 @@ Class CAccessorTrigger Extends CTrigger
 
 	DisplayString()
 	{
-		return "Accessor Trigger:" this.Keyword
+		return "Accessor Trigger: " this.Keyword
 	}
 
 	GuiShow(GUI, GoToLabel = "")

@@ -98,7 +98,7 @@ ShellMessage( wParam, lParam, Msg)
 	Trigger.lParam := lParam
 	Trigger.Msg := Msg
 	EventSystem.OnTrigger(Trigger)
-	if(wParam=1||wParam=2) ;Window Created/Closed
+	if(wParam = 1 || wParam = 2) ;Window Created/Closed
 	{
 		lParam += 0
 		;Keep a list of recently received create/close messages, because they can be sent multiple times and we only want one.
@@ -129,7 +129,7 @@ ShellMessage( wParam, lParam, Msg)
 				}
 			}
 		}
-		if(wParam=2)
+		if(wParam = 2)
 		{
 			if(IsObject(WindowList[lParam]) && InStr("CabinetWClass,ExploreWClass", WindowList[lParam].class))
 				GoSub WaitForClose

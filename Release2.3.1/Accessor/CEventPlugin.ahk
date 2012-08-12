@@ -52,8 +52,13 @@ Class CEventPlugin extends CAccessorPlugin
 				Result.MatchQuality := MatchQuality
 				if(Icon := Event.Trigger.Icon)
 				{
-					StringSplit, icon, icon, `,,%A_Space%
-					Result.Icon := ExtractIcon(icon1, icon2, 64)
+					if(InStr(Icon, ","))
+					{
+						StringSplit, icon, icon, `,,%A_Space%
+						Result.Icon := ExtractIcon(ExpandPathPlaceholders(icon1), icon2, 64)
+					}
+					else
+						Result.Icon := ExtractIcon(ExpandPathPlaceholders(Icon))
 				}
 				else
 					Result.Icon := Accessor.GenericIcons.Application
