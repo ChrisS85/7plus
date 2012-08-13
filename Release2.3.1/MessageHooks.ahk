@@ -219,7 +219,7 @@ ShellMessage( wParam, lParam, Msg)
 			SlideWindows.WindowActivated()
 	}
 	;Redraw is fired on Explorer path change
-	else if(wParam=6)
+	else if(wParam = 6)
 	{
 		lParam += 0
 		;Detect changed path

@@ -177,13 +177,16 @@ Class CAccessor
 		Execute()
 		{
 			Path := ExpandPathPlaceholders(this.Path)
-			PreviousWindow := CAccessor.Instance.PreviousWindow
-			if(CAccessor.Instance.GUI.Visible)
-				CAccessor.Close()
-			if(InStr(FileExist(Path), "D"))
-				Navigation.SetPath(Path, PreviousWindow)
-			else
-				OpenFileWithProgram(Path)
+			if(Path)
+			{
+				PreviousWindow := CAccessor.Instance.PreviousWindow
+				if(CAccessor.Instance.GUI.Visible)
+					CAccessor.Close()
+				if(InStr(FileExist(Path), "D"))
+					Navigation.SetPath(Path, PreviousWindow)
+				else
+					OpenFileWithProgram(Path)
+			}
 		}
 
 		Draw(MouseOver = false)
@@ -888,7 +891,7 @@ Class CAccessor
 		;Parse parameters. They are split by spaces. Quotes (" ") can be used to treat multiple words as one parameter. The first parameter is the Filter variable without the options.
 		Parameters := Array()
 		p0 := Parse(Filter, "q"")1 2 3 4 5 6 7 8 9 10", p1, p2, p3, p4, p5, p6, p7, p8, p9, p10)
-		
+
 		;Make parameters available to events
 		All := ""
 		Loop, Parse, Filter, %A_Space%
@@ -1417,21 +1420,6 @@ Class CAccessor
 
 AccessorGUIClose:
 CAccessor.Instance.GUI.Close()
-return
-
-#F1::
-#F2::
-#F3::
-#F4::
-#F5::
-#F6::
-#F7::
-#F8::
-#F9::
-#F10::
-#F11::
-#F12::
-CAccessor.Instance.ProgramButtons[SubStr(A_ThisHotkey, 3)].Execute()
 return
 
 #if CAccessor.Instance.GUI.Visible
@@ -2504,7 +2492,6 @@ Class CAccessorPlugin
 Future plugins:
 Services
 Processes
-twitter
 trillian
 winget
 
