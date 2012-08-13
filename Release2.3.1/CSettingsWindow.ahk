@@ -1,4 +1,4 @@
-SettingsActive()
+﻿SettingsActive()
 {
 	return IsObject(SettingsWindow) && IsObject(SettingsWindow.Events) 
 }
@@ -567,6 +567,15 @@ Finally, here are some settings that you're likely to change at the beginning:
 			FileCreateShortcut, % (A_IsCompiled ? A_ScriptFullPath : A_AhkPath), % (strEndsWith(fd.Filename, ".lnk") ? fd.Filename : fd.Filename ".lnk"), %A_ScriptDir%, % (A_IsCompiled ? "": """" A_ScriptFullPath """ ") "-id:" Event.ID, % "7plus: Trigger """ Event.Name """", %A_ScriptDir%\7+-128.ico
 	}
 	
+	lnkEventDescription_Click(URL)
+	{
+		outputdebug check1
+		if(InStr(URL, "Settings:") = 1)
+		{
+			this.Show(SubStr(URL, 10))
+			outputdebug check 2
+		}
+	}
 	AddEvent()
 	{
 		Page := this.Pages.Events.Tabs[1].Controls
@@ -1724,7 +1733,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 	CreateIfThisThenThatIntegration()
 	{
 		Page := this.Pages.IfThisThenThatIntegration.Tabs[1]
-		Page.AddControl("Link", 		"lnkIfThisThenThatDescription",			"xs+42 ys+20",					"7plus can integrate with <A HREF=""www.ifttt.com"">If this then that</A>, a popular web automation service,`nby sending mails to it with special #tags in the subject. This requires that you have an event in 7plus`nthat sends an email to trigger@ifttt.com from the email address you use in the email channel of ifttt (usually your registration mail).`nAdditionally you need to create a receipt on the page to react to a specific tag in the email subject.`nHere you can enter your email details to enable the predefined IFTTT events in 7plus and to be able to use the IFTTT action.")
+		Page.AddControl("Link", 		"lnkIfThisThenThatDescription",			"xs+42 ys+20",					"7plus can be used with <A HREF=""www.ifttt.com"">If this then that</A>, a popular web automation service,`nby sending mails to it with special #tags in the subject. This requires that you have an event in 7plus`nthat sends an email to trigger@ifttt.com from the email address you use in the email channel of ifttt (usually your registration mail).`nAdditionally you need to create a receipt on the page to react to a specific tag in the email subject.`nHere you can enter your email details to enable the predefined IFTTT events in 7plus and to be able to use the IFTTT action.")
 		
 		Page.AddControl("Text", 		"txtIfThisThenThatFrom", 				"xs+42 ys+103",					"From:")
 		Page.AddControl("Edit", 		"editIfThisThenThatFrom", 				"xs+100 ys+100 w300",			"")
@@ -1742,7 +1751,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("Edit", 		"editIfThisThenThatPassword", 			"xs+100 ys+250 w300 Password",	"")
 		Page.AddControl("Text", 		"txtIfThisThenThatTimeout", 			"xs+42 ys+283",					"Timeout:")
 		Page.AddControl("Edit", 		"editIfThisThenThatTimeout", 			"xs+100 ys+280 w50",			"")
-		Page.AddControl("Link", 		"lnkIfThisThenThatRecipeLink",			"xs+42 ys+480",					"Tip: You can find premade recipes for 7plus <A HREF=""http://ifttt.com/people/7plus"">here</A>.")
+		Page.AddControl("Link", 		"lnkIfThisThenThatRecipeLink",			"xs+42 ys+450",					"Tips:`n• You can find premade recipes for 7plus <A HREF=""http://ifttt.com/people/7plus"">here</A>.`n• 7plus includes an Accessor command to post Twitter messages that uses this method. Enter your details here`n    and use the Twitter recipe from the link of the previous tip, then you can post to Twitter with ""Tweet TEXT"".")
 	}
 
 	InitIfThisThenThatIntegration()

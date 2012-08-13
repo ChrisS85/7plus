@@ -3,6 +3,7 @@
 <Event>
 <Actions>
 <Action>
+<InitialQuery></InitialQuery>
 <Type>Show Accessor</Type>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
@@ -14,7 +15,7 @@
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Show accessor window, which can be used to access many things by keyboard. Be sure to check out the Accessor options in Settings dialog!</Description>
+<Description>Show the Accessor window, which can be used to access many things by keyboard. Be sure to check out the &lt;A HREF="Settings:Accessor"&gt;Accessor options&lt;/A&gt;!</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -160,12 +161,12 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Shows the volume window when Mute button is pressed.</Description>
+<Description>Shows the volume notification window when the Mute button is pressed.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1589</ID>
-<Name>Show volume window</Name>
+<Name>Show volume notification window</Name>
 <OfficialEvent>993</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -184,12 +185,12 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Shows the volume window when volume down is pressed.</Description>
+<Description>Shows the volume notification window when Volume Down is pressed.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1590</ID>
-<Name>Show volume window</Name>
+<Name>Show volume notification window</Name>
 <OfficialEvent>994</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -208,12 +209,12 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Shows the volume window when volume up is pressed.</Description>
+<Description>Shows the volume notification window when Volume Up is pressed.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1591</ID>
-<Name>Show volume window</Name>
+<Name>Show volume notification window</Name>
 <OfficialEvent>995</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -427,6 +428,7 @@
 <DataType>Text</DataType>
 <Placeholder>Script</Placeholder>
 <Rows>30</Rows>
+<Selection></Selection>
 <Text>Enter script here</Text>
 <Title>Enter Script</Title>
 <Type>Ask for user input</Type>
@@ -450,7 +452,7 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event allows to paste an AutoHotkey script in a dialog  and runs it afterwards. This event requires that you have installed an AutoHotkey interpreter and assigned it to the .ahk file extension. The script file is deleted when 7plus exits. This event can be used as a template for other scripting languages.</Description>
+<Description>This event allows to paste an AutoHotkey script in a dialog  and runs it afterwards. This event requires that you have installed an &lt;A HREF="www.autohotkey.com"&gt;AutoHotkey&lt;/A&gt; interpreter and assigned it to the .ahk file extension. The script file is deleted when 7plus exits. This event can be used as a template for other scripting languages.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>

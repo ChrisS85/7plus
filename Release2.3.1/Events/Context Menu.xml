@@ -7,6 +7,7 @@
 <DataType>Text</DataType>
 <Placeholder>Input</Placeholder>
 <Rows>1</Rows>
+<Selection></Selection>
 <Text>Enter parameters. Paths might need`n to be enclosed in double quotes.</Text>
 <Title>Enter Parameters</Title>
 <Type>Ask for user input</Type>
@@ -23,7 +24,7 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description></Description>
+<Description>This event adds a context menu option for executable files and asks for parameters and runs the selected file with them. It requires that the context menu shell extension is properly installed, which is normally the case. If this option does not show up, edit this event and click on "Register context menu shell extension".</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -47,6 +48,7 @@
 <Actions>
 <Action>
 <Files>${Context}</Files>
+<FTPTargetDir></FTPTargetDir>
 <Hoster>ImgUr</Hoster>
 <ReuseWindow>0</ReuseWindow>
 <TemporaryFiles>0</TemporaryFiles>
@@ -56,7 +58,7 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Opens a dialog for batch image conversion.</Description>
+<Description>This event adds a menu option in the context menu of image files that opens a dialog for batch image conversion. It requires that the context menu shell extension is properly installed, which is normally the case. If this option does not show up, edit this event and click on "Register context menu shell extension".</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -86,7 +88,7 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Opens a dialog that displays MD5 checksums of the selected files.</Description>
+<Description>This event adds a context menu option for files that opens a dialog that displays MD5 checksums of the selected files. It requires that the context menu shell extension is properly installed, which is normally the case. If this option does not show up, edit this event and click on "Register context menu shell extension".</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -113,13 +115,15 @@
 <FTPProfile>1</FTPProfile>
 <Silent>0</Silent>
 <SourceFiles>${Context}</SourceFiles>
+<TargetFile></TargetFile>
+<TargetFolder></TargetFolder>
 <Type>Upload to FTP</Type>
 </Action></Actions>
 <Category>Context Menu</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Uploads the selected files to an FTP server.</Description>
+<Description>This event adds a context menu option for files and folders that uploads the selected files/folders to an FTP server. It requires that the context menu shell extension is properly installed, which is normally the case. If this option does not show up, edit this event and click on "Register context menu shell extension".</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -149,7 +153,7 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Toggles the visibility of hidden files.</Description>
+<Description>This event adds a context menu option that appears in the background menu of directories. It toggles the visibility of hidden files. It requires that the context menu shell extension is properly installed, which is normally the case. If this option does not show up, edit this event and click on "Register context menu shell extension".</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -179,7 +183,7 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event adds a context menu on directories to show them in a flat view.</Description>
+<Description>This event adds a context menu for directories that shows them in a flat view. It requires that the context menu shell extension is properly installed, which is normally the case. If this option does not show up, edit this event and click on "Register context menu shell extension".</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -216,7 +220,7 @@
 <With>(CabinetWClass|ExploreWClass)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event adds a context menu entry to batch-replace parts of the filenames of the selected files.</Description>
+<Description>This event adds a context menu entry for batch-replacing parts of the filenames of the selected files. It requires that the context menu shell extension is properly installed, which is normally the case. If this option does not show up, edit this event and click on "Register context menu shell extension".</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -253,7 +257,7 @@
 <With>(CabinetWClass|ExploreWClass)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event adds a context menu entry to replace text in the selected files.</Description>
+<Description>This event adds a context menu entry for replacing text in the selected files. It requires that the context menu shell extension is properly installed, which is normally the case. If this option does not show up, edit this event and click on "Register context menu shell extension".</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>

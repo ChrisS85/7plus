@@ -45,9 +45,9 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Activate notification windows, flashing windows in the taskbar, or toggle between the current and the previously active window. Very useful for quickly responding to chats and switching back.</Description>
+<Description>Activate notification windows, flashing windows in the taskbar, or toggle between the current and the previously active window. Very useful for quickly responding to chats and switching back. Capslock state can still be changed by pressing a modifier key like CONTROL together with CAPSLOCK.&n;&n;This event is disabled by default to avoid confusing new users.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>307</ID>
 <Name>Activate notification/flashing/previous window</Name>
@@ -517,7 +517,7 @@
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event slides a window out of the left side of the screen.</Description>
+<Description>This event slides a window out of the left side of the screen. Also take a look at the Slide Window &lt;A HREF="Settings:Windows"&gt;settings&lt;/A&gt;.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -544,7 +544,7 @@
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event slides a window out of the right side of the screen.</Description>
+<Description>This event slides a window out of the right side of the screen. Also take a look at the Slide Window &lt;A HREF="Settings:Windows"&gt;settings&lt;/A&gt;.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -571,7 +571,7 @@
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event slides a window out of the top side of the screen.</Description>
+<Description>This event slides a window out of the top side of the screen. Also take a look at the Slide Window &lt;A HREF="Settings:Windows"&gt;settings&lt;/A&gt;.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -598,7 +598,7 @@
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event slides a window out of the bottom side of the screen.</Description>
+<Description>This event slides a window out of the bottom side of the screen. Also take a look at the Slide Window &lt;A HREF="Settings:Windows"&gt;settings&lt;/A&gt;.&n;&n;NOTE: This event usually does nothing as the taskbar is at the bottom of the screen on most systems.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -645,7 +645,7 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event replaces the default ALT + TAB dialog with the window switcher plugin of Accessor.</Description>
+<Description>This event replaces the default ALT + TAB dialog with the window switcher plugin of Accessor.&n;&n;This event is disabled by default to avoid confusing new users.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>

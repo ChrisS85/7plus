@@ -760,9 +760,9 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Activate notification windows, flashing windows in the taskbar, or toggle between the current and the previously active window. Very useful for quickly responding to chats and switching back.</Description>
+<Description>Activate notification windows, flashing windows in the taskbar, or toggle between the current and the previously active window. Very useful for quickly responding to chats and switching back. Capslock state can still be changed by pressing a modifier key like CONTROL together with CAPSLOCK.&n;&n;This event is disabled by default to avoid confusing new users.</Description>
 <DisableAfterUse>0</DisableAfterUse>
-<Enabled>1</Enabled>
+<Enabled>0</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>307</ID>
 <Name>Activate notification/flashing/previous window</Name>
@@ -1051,6 +1051,7 @@
 </Event><Event>
 <Actions>
 <Action>
+<InitialQuery></InitialQuery>
 <Type>Show Accessor</Type>
 </Action></Actions>
 <Category>Misc Hotkeys</Category>
@@ -1062,7 +1063,7 @@
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Show accessor window, which can be used to access many things by keyboard. Be sure to check out the Accessor options in Settings dialog!</Description>
+<Description>Show the Accessor window, which can be used to access many things by keyboard. Be sure to check out the &lt;A HREF="Settings:Accessor"&gt;Accessor options&lt;/A&gt;!</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -2535,6 +2536,8 @@
 <FTPProfile>1</FTPProfile>
 <Silent>0</Silent>
 <SourceFiles>${SelNQ}</SourceFiles>
+<TargetFile></TargetFile>
+<TargetFolder></TargetFolder>
 <Type>Upload to FTP</Type>
 </Action></Actions>
 <Category>Internet</Category>
@@ -2560,7 +2563,7 @@
 <Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Uploads the file(s) selected in the currently active explorer window/file dialog to the FTP server defined in FTP profile 1. Make sure to configure the FTP profile with your FTP login data.</Description>
+<Description>Uploads the file(s) selected in the currently active explorer window/file dialog to the FTP server defined in FTP profile 1. Make sure to &lt;A HREF="Settings:FTP Profiles"&gt;enter&lt;/A&gt; FTP login data for FTP profile 1.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -2928,13 +2931,14 @@
 <Silent>0</Silent>
 <SourceFiles>${SelNNEM}</SourceFiles>
 <TargetFile>${Input}</TargetFile>
+<TargetFolder></TargetFolder>
 <Type>Upload to FTP</Type>
 </Action></Actions>
 <Category>Explorer Buttons</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Upload the selected files to the FTP server defined in FTP profile 1 by clicking on the "Upload" button in explorer. Make sure to enter FTP login data for FTP profile 1.</Description>
+<Description>Upload the selected files to the FTP server defined in FTP profile 1 by clicking on the "Upload" button in explorer. Make sure to &lt;A HREF="Settings:FTP Profiles"&gt;enter&lt;/A&gt; FTP login data for FTP profile 1. If you notice problems with these kind of buttons you can remove them on the &lt;A HREF="Settings:Fast Folders"&gt;Fast Folders&lt;/A&gt; page. They will be readded when you press OK or Apply though.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -2952,6 +2956,8 @@
 </Event><Event>
 <Actions>
 <Action>
+<BaseFile></BaseFile>
+<Filename>Neues Textdokument.txt</Filename>
 <Rename>1</Rename>
 <Type>Create new file</Type>
 </Action></Actions>
@@ -2959,7 +2965,7 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Create a new text file by clicking on the "New text file" button in explorer.</Description>
+<Description>Create a new text file by clicking on the "New text file" button in explorer.If you notice problems with these kind of buttons you can remove them on the &lt;A HREF="Settings:Fast Folders"&gt;Fast Folders&lt;/A&gt; page. They will be readded when you press OK or Apply though.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -2998,7 +3004,7 @@
 <With>(DirectUIHWND3|SysListView321)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Restores the previous file selection. This is very useful if you need to select many files and accidently click somewhere wrong.</Description>
+<Description>Restores the previous file selection. This is very useful if you need to select many files and accidently click somewhere wrong. This event only works if the last option on the &lt;A HREF="Settings:Misc"&gt;Misc&lt;/A&gt; page is disabled.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -3100,6 +3106,7 @@
 <DataType>Text</DataType>
 <Placeholder>Input</Placeholder>
 <Rows>1</Rows>
+<Selection></Selection>
 <Text>Enter parameters. Paths might need`n to be enclosed in double quotes.</Text>
 <Title>Enter Parameters</Title>
 <Type>Ask for user input</Type>
@@ -3116,7 +3123,7 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description></Description>
+<Description>This event adds a context menu option for executable files and asks for parameters and runs the selected file with them. It requires that the context menu shell extension is properly installed, which is normally the case. If this option does not show up, edit this event and click on "Register context menu shell extension".</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -3140,6 +3147,7 @@
 <Actions>
 <Action>
 <Files>${Context}</Files>
+<FTPTargetDir></FTPTargetDir>
 <Hoster>ImgUr</Hoster>
 <ReuseWindow>0</ReuseWindow>
 <TemporaryFiles>0</TemporaryFiles>
@@ -3149,7 +3157,7 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Opens a dialog for batch image conversion.</Description>
+<Description>This event adds a menu option in the context menu of image files that opens a dialog for batch image conversion. It requires that the context menu shell extension is properly installed, which is normally the case. If this option does not show up, edit this event and click on "Register context menu shell extension".</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -3179,7 +3187,7 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Opens a dialog that displays MD5 checksums of the selected files.</Description>
+<Description>This event adds a context menu option for files that opens a dialog that displays MD5 checksums of the selected files. It requires that the context menu shell extension is properly installed, which is normally the case. If this option does not show up, edit this event and click on "Register context menu shell extension".</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -3206,13 +3214,15 @@
 <FTPProfile>1</FTPProfile>
 <Silent>0</Silent>
 <SourceFiles>${Context}</SourceFiles>
+<TargetFile></TargetFile>
+<TargetFolder></TargetFolder>
 <Type>Upload to FTP</Type>
 </Action></Actions>
 <Category>Context Menu</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Uploads the selected files to an FTP server.</Description>
+<Description>This event adds a context menu option for files and folders that uploads the selected files/folders to an FTP server. It requires that the context menu shell extension is properly installed, which is normally the case. If this option does not show up, edit this event and click on "Register context menu shell extension".</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -3242,7 +3252,7 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Toggles the visibility of hidden files.</Description>
+<Description>This event adds a context menu option that appears in the background menu of directories. It toggles the visibility of hidden files. It requires that the context menu shell extension is properly installed, which is normally the case. If this option does not show up, edit this event and click on "Register context menu shell extension".</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -3274,12 +3284,12 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Shows the volume window when Mute button is pressed.</Description>
+<Description>Shows the volume notification window when the Mute button is pressed.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1589</ID>
-<Name>Show volume window</Name>
+<Name>Show volume notification window</Name>
 <OfficialEvent>993</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -3298,12 +3308,12 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Shows the volume window when volume down is pressed.</Description>
+<Description>Shows the volume notification window when Volume Down is pressed.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1590</ID>
-<Name>Show volume window</Name>
+<Name>Show volume notification window</Name>
 <OfficialEvent>994</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -3322,12 +3332,12 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Shows the volume window when volume up is pressed.</Description>
+<Description>Shows the volume notification window when Volume Up is pressed.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
 <ID>1591</ID>
-<Name>Show volume window</Name>
+<Name>Show volume notification window</Name>
 <OfficialEvent>995</OfficialEvent>
 <OneInstance>0</OneInstance>
 <Trigger>
@@ -3868,7 +3878,7 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event adds a context menu on directories to show them in a flat view.</Description>
+<Description>This event adds a context menu for directories that shows them in a flat view. It requires that the context menu shell extension is properly installed, which is normally the case. If this option does not show up, edit this event and click on "Register context menu shell extension".</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -3933,7 +3943,7 @@
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event will shorten an URL in the clipboard by using the goo.gl service. The URL in clipboard will be replaced with the shortened version.</Description>
+<Description>This event will shorten an URL in the clipboard by using the &lt;A HREF="www.goo.gl"&gt;goo.gl&lt;/A&gt; service. The URL in clipboard will be replaced with the shortened version.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -4168,7 +4178,7 @@
 <With>(CabinetWClass|ExploreWClass)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event adds a context menu entry to batch-replace parts of the filenames of the selected files.</Description>
+<Description>This event adds a context menu entry for batch-replacing parts of the filenames of the selected files. It requires that the context menu shell extension is properly installed, which is normally the case. If this option does not show up, edit this event and click on "Register context menu shell extension".</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -4205,7 +4215,7 @@
 <With>(CabinetWClass|ExploreWClass)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event adds a context menu entry to replace text in the selected files.</Description>
+<Description>This event adds a context menu entry for replacing text in the selected files. It requires that the context menu shell extension is properly installed, which is normally the case. If this option does not show up, edit this event and click on "Register context menu shell extension".</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -4384,7 +4394,7 @@
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event slides a window out of the left side of the screen.</Description>
+<Description>This event slides a window out of the left side of the screen. Also take a look at the Slide Window &lt;A HREF="Settings:Windows"&gt;settings&lt;/A&gt;.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -4411,7 +4421,7 @@
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event slides a window out of the right side of the screen.</Description>
+<Description>This event slides a window out of the right side of the screen. Also take a look at the Slide Window &lt;A HREF="Settings:Windows"&gt;settings&lt;/A&gt;.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -4438,7 +4448,7 @@
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event slides a window out of the top side of the screen.</Description>
+<Description>This event slides a window out of the top side of the screen. Also take a look at the Slide Window &lt;A HREF="Settings:Windows"&gt;settings&lt;/A&gt;.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -4465,7 +4475,7 @@
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event slides a window out of the bottom side of the screen.</Description>
+<Description>This event slides a window out of the bottom side of the screen. Also take a look at the Slide Window &lt;A HREF="Settings:Windows"&gt;settings&lt;/A&gt;.&n;&n;NOTE: This event usually does nothing as the taskbar is at the bottom of the screen on most systems.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -4509,6 +4519,7 @@
 <DataType>Text</DataType>
 <Placeholder>Script</Placeholder>
 <Rows>30</Rows>
+<Selection></Selection>
 <Text>Enter script here</Text>
 <Title>Enter Script</Title>
 <Type>Ask for user input</Type>
@@ -4532,7 +4543,7 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event allows to paste an AutoHotkey script in a dialog  and runs it afterwards. This event requires that you have installed an AutoHotkey interpreter and assigned it to the .ahk file extension. The script file is deleted when 7plus exits. This event can be used as a template for other scripting languages.</Description>
+<Description>This event allows to paste an AutoHotkey script in a dialog  and runs it afterwards. This event requires that you have installed an &lt;A HREF="www.autohotkey.com"&gt;AutoHotkey&lt;/A&gt; interpreter and assigned it to the .ahk file extension. The script file is deleted when 7plus exits. This event can be used as a template for other scripting languages.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -4671,12 +4682,13 @@
 <RunAsAdmin>-1</RunAsAdmin>
 <Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
+<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>Internet</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event runs a google search for the selected text.</Description>
+<Description>This event runs a Google search for the selected text.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -4932,7 +4944,7 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event replaces the default ALT + TAB dialog with the window switcher plugin of Accessor.</Description>
+<Description>This event replaces the default ALT + TAB dialog with the window switcher plugin of Accessor.&n;&n;This event is disabled by default to avoid confusing new users.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>0</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -4966,7 +4978,7 @@
 <ButtonText>Say</ButtonText>
 <Detail1></Detail1>
 <Icon>%SystemRoot%\system32\SHELL32.dll,173</Icon>
-<Keyword>say</Keyword>
+<Keyword>Say</Keyword>
 <Path>${AccAll}</Path>
 <Title>Speak text:</Title>
 <Type>Accessor Trigger</Type>
@@ -4983,7 +4995,7 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Post a tweet from within the Accessor by writing "tweet Text". This event works in conjunction with the "If this then that" integration so it requires an account at this web service and you need to enter the login details of the email address you use for it in 7plus. Additionally, you need to use this recipe here: http://ifttt.com/recipes/50333</Description>
+<Description>Post a tweet from within the Accessor by writing "tweet Text". This event works in conjunction with the &lt;A HREF="www.ifttt.com"&gt;If this then that&lt;/A&gt; integration so it requires an account at this web service and you need to enter the login details of the email address you use for it &lt;A HREF="Settings:If this then that Integration"&gt;here&lt;/A&gt;. Additionally, you need to use &lt;A HREF="http://ifttt.com/recipes/50333"&gt;this recipe&lt;/A&gt;.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -4995,7 +5007,7 @@
 <ButtonText>Post</ButtonText>
 <Detail1></Detail1>
 <Icon>%7plusDir%\Icons\twitter.ico</Icon>
-<Keyword>tweet</Keyword>
+<Keyword>Tweet</Keyword>
 <Path>${AccAll}</Path>
 <Title>Tweet</Title>
 <Type>Accessor Trigger</Type>

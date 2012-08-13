@@ -7,6 +7,8 @@
 <FTPProfile>1</FTPProfile>
 <Silent>0</Silent>
 <SourceFiles>${SelNQ}</SourceFiles>
+<TargetFile></TargetFile>
+<TargetFolder></TargetFolder>
 <Type>Upload to FTP</Type>
 </Action></Actions>
 <Category>Internet</Category>
@@ -32,7 +34,7 @@
 <Type>Explorer is renaming</Type>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Uploads the file(s) selected in the currently active explorer window/file dialog to the FTP server defined in FTP profile 1. Make sure to configure the FTP profile with your FTP login data.</Description>
+<Description>Uploads the file(s) selected in the currently active explorer window/file dialog to the FTP server defined in FTP profile 1. Make sure to &lt;A HREF="Settings:FTP Profiles"&gt;enter&lt;/A&gt; FTP login data for FTP profile 1.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -62,7 +64,7 @@
 <UseIncludeList>1</UseIncludeList>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event will shorten an URL in the clipboard by using the goo.gl service. The URL in clipboard will be replaced with the shortened version.</Description>
+<Description>This event will shorten an URL in the clipboard by using the &lt;A HREF="www.goo.gl"&gt;goo.gl&lt;/A&gt; service. The URL in clipboard will be replaced with the shortened version.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -81,12 +83,13 @@
 <RunAsAdmin>-1</RunAsAdmin>
 <Type>Run a program</Type>
 <WaitForFinish>0</WaitForFinish>
+<WorkingDirectory></WorkingDirectory>
 </Action></Actions>
 <Category>Internet</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>This event runs a google search for the selected text.</Description>
+<Description>This event runs a Google search for the selected text.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>

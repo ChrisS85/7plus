@@ -8,13 +8,14 @@
 <Silent>0</Silent>
 <SourceFiles>${SelNNEM}</SourceFiles>
 <TargetFile>${Input}</TargetFile>
+<TargetFolder></TargetFolder>
 <Type>Upload to FTP</Type>
 </Action></Actions>
 <Category>Explorer Buttons</Category>
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Upload the selected files to the FTP server defined in FTP profile 1 by clicking on the "Upload" button in explorer. Make sure to enter FTP login data for FTP profile 1.</Description>
+<Description>Upload the selected files to the FTP server defined in FTP profile 1 by clicking on the "Upload" button in explorer. Make sure to &lt;A HREF="Settings:FTP Profiles"&gt;enter&lt;/A&gt; FTP login data for FTP profile 1. If you notice problems with these kind of buttons you can remove them on the &lt;A HREF="Settings:Fast Folders"&gt;Fast Folders&lt;/A&gt; page. They will be readded when you press OK or Apply though.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
@@ -32,6 +33,8 @@
 </Event><Event>
 <Actions>
 <Action>
+<BaseFile></BaseFile>
+<Filename>Neues Textdokument.txt</Filename>
 <Rename>1</Rename>
 <Type>Create new file</Type>
 </Action></Actions>
@@ -39,7 +42,7 @@
 <Conditions>
 </Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Create a new text file by clicking on the "New text file" button in explorer.</Description>
+<Description>Create a new text file by clicking on the "New text file" button in explorer.If you notice problems with these kind of buttons you can remove them on the &lt;A HREF="Settings:Fast Folders"&gt;Fast Folders&lt;/A&gt; page. They will be readded when you press OK or Apply though.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>

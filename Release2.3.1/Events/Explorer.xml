@@ -736,7 +736,7 @@
 <With>(DirectUIHWND3|SysListView321)</With>
 </Condition></Conditions>
 <DeleteAfterUse>0</DeleteAfterUse>
-<Description>Restores the previous file selection. This is very useful if you need to select many files and accidently click somewhere wrong.</Description>
+<Description>Restores the previous file selection. This is very useful if you need to select many files and accidently click somewhere wrong. This event only works if the last option on the &lt;A HREF="Settings:Misc"&gt;Misc&lt;/A&gt; page is disabled.</Description>
 <DisableAfterUse>0</DisableAfterUse>
 <Enabled>1</Enabled>
 <EventComplexityLevel>0</EventComplexityLevel>
