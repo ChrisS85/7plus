@@ -569,12 +569,8 @@ Finally, here are some settings that you're likely to change at the beginning:
 	
 	lnkEventDescription_Click(URL)
 	{
-		outputdebug check1
 		if(InStr(URL, "Settings:") = 1)
-		{
 			this.Show(SubStr(URL, 10))
-			outputdebug check 2
-		}
 	}
 	AddEvent()
 	{
@@ -1454,25 +1450,25 @@ Finally, here are some settings that you're likely to change at the beginning:
 	{
 		Page := this.Pages.FTPProfiles.Tabs[1]
 					Page.AddControl("Text",			"txtFTPDescription",		"xs+37 ys+20", 				"You can define FTP profiles for use with the upload action here.`nBy default the selected files and folders can be uploaded by pressing CTRL + U.")
-					Page.AddControl("DropDownList",	"ddlFTPProfile",			"xs+40 ys+38 w297", 		"")
-					Page.AddControl("Button",		"btnAddFTPProfile",			"xs+343 ys+36",				"&Add profile")
-					Page.AddControl("Button",		"btnDeleteFTPProfile",		"xs+428 ys+36",				"&Delete profile")
-					Page.AddControl("Button",		"btnTestFTPProfile",		"xs+513 ys+36",				"&Test profile")
-					Page.AddControl("Text",			"txtFTPHostname",			"xs+37 ys+81",				"Hostname:")
-					Page.AddControl("Edit",			"editFTPHostname",			"xs+258 ys+78",				"")
-					Page.AddControl("Text",			"txtFTPPort",				"xs+37 ys+107",				"Port:")
-					Page.AddControl("Edit",			"editFTPPort",				"xs+258 ys+104",			"")
-					Page.AddControl("Text",			"txtFTPUser",				"xs+37 ys+133",				"User:")
-					Page.AddControl("Edit",			"editFTPUser",				"xs+258 ys+130",			"")
-					Page.AddControl("Text",			"txtFTPPassword",			"xs+37 ys+159",				"Password:")
-					Page.AddControl("Edit",			"editFTPPassword",			"xs+258 ys+156 Password", 	"")
-					Page.AddControl("Text",			"txtFTPURL",				"xs+37 ys+183",				"URL:")
-					Page.AddControl("Edit",			"editFTPURL",				"xs+258 ys+180",			"")
-					Page.AddControl("Text",			"txtFTPNumberOfSubDirs",	"xs+37 ys+207",				"Number of subdirectories:")
-		subdirs := 	Page.AddControl("Edit",			"editFTPNumberOfSubDirs",	"xs+258 ys+204",			"")
+					Page.AddControl("DropDownList",	"ddlFTPProfile",			"xs+37 ys+62 w297", 		"")
+					Page.AddControl("Button",		"btnAddFTPProfile",			"x+10 ys+60",				"&Add profile")
+					Page.AddControl("Button",		"btnDeleteFTPProfile",		"x+10",						"&Delete profile")
+					Page.AddControl("Button",		"btnTestFTPProfile",		"x+30",						"&Test profile")
+					Page.AddControl("Text",			"txtFTPHostname",			"xs+37 ys+101",				"Hostname:")
+					Page.AddControl("Edit",			"editFTPHostname",			"xs+258 ys+98",				"")
+					Page.AddControl("Text",			"txtFTPPort",				"xs+37 ys+127",				"Port:")
+					Page.AddControl("Edit",			"editFTPPort",				"xs+258 ys+124",			"")
+					Page.AddControl("Text",			"txtFTPUser",				"xs+37 ys+153",				"User:")
+					Page.AddControl("Edit",			"editFTPUser",				"xs+258 ys+150",			"")
+					Page.AddControl("Text",			"txtFTPPassword",			"xs+37 ys+179",				"Password:")
+					Page.AddControl("Edit",			"editFTPPassword",			"xs+258 ys+176 Password", 	"")
+					Page.AddControl("Text",			"txtFTPURL",				"xs+37 ys+203",				"URL:")
+					Page.AddControl("Edit",			"editFTPURL",				"xs+258 ys+200",			"")
+					Page.AddControl("Text",			"txtFTPNumberOfSubDirs",	"xs+37 ys+227",				"Number of subdirectories:")
+		subdirs := 	Page.AddControl("Edit",			"editFTPNumberOfSubDirs",	"xs+258 ys+224",			"")
 		subdirs.ToolTip := "Some webservers display a deeper file structure on FTP compared to the HTTP URL.`nEnter the number of additional directories here to adjust the copied URL"
 					
-					Page.AddControl("Text",			"txtFTPDescription2",		"xs+37 ys+239", 			"Target folder and filename are set separately for each event that uses the FTP upload function on the Events page.")
+					Page.AddControl("Text",			"txtFTPDescription2",		"xs+37 ys+259", 			"Target folder and filename are set separately for each event that uses the FTP upload function on the Events page.")
 	}
 
 	InitFTPProfiles()
@@ -1787,7 +1783,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.Controls.txtSlideWindows.ToolTip := "A Slide Window is moved off screen and will not be shown until you activate it`n through task bar / ALT + TAB or move the mouse to the border where it was hidden.`nIt will then slide into the screen, and slide out again when the mouse leaves the window`nor when another window gets activated. Deactivate this mode by moving the window`nor pressing WIN+SHIFT+Arrow key in another direction."
 		
 		Page.AddControl("CheckBox", 	"chkHideSlideWindows", 					"xs+59 ys+45",			"Hide Slide Windows in taskbar and from ALT + TAB")
-		Page.AddControl("CheckBox", 	"chkDisableMinimizeAnim", 				"xs+79 ys+68",			"Disable window minimize animation")
+		Page.AddControl("CheckBox", 	"chkDisableMinimizeAnim", 				"xs+79 ys+68",			"Disable window minimize animation (Recommended)")
 		Page.AddControl("CheckBox", 	"chkLimitToOnePerSide", 				"xs+59 ys+91",			"Allow only one Slide Window per screen side")
 		Page.AddControl("CheckBox", 	"chkBorderActivationRequiresMouseUp", 	"xs+59 ys+114",			"Require left mouse button to be up to activate slide window at screen border")
 		Page.Controls.chkBorderActivationRequiresMouseUp.ToolTip := "This feature is used to prevent accidently activating a slide window while dragging with the mouse.`n It's still possible to drag something to the slide window by holding the modifier key which is set below."
