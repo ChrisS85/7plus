@@ -1,0 +1,31 @@
+#summary Tasks that need to be carried out to cleanup the project and make it more presentable.
+
+= Main tasks =
+
+  * Check out [http://www.atlassian.com/software/jira/overview Jira]
+   * Register for a trial, see how it works and if it's beneficial to the project, then possibly apply for a free account
+  * Clean up the wiki
+   * Add a sitemap as navigation tree for most important things
+   * Merge the localized french pages to make use of the integrated localization features
+   * Improve documentation
+   * Add page(s) for user contributed events
+   * Write some more technical documentation:
+    * How does 7plus work internally?
+    * How does it link to wiki pages?
+    * How does the updating process work?
+    * How are events handled? (Loading/Store, Importing/Exporting, Creating/Merging updates)
+    * How does deployment work?
+     * Update creation
+     * How does the AutoUpdater work?
+     * What steps are performed when an update is installed?
+   * Add a page that describes the steps required for new developers to get the source and all needed tools
+   * Some info about debugging
+  * Clean up the SVN
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
