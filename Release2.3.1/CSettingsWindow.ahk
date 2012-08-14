@@ -210,7 +210,7 @@ Class CSettingsWindow Extends CGUI
  - Be sure to check out the events settings page (or more specifically, the subpages for specific categories).
    The event system allows to create all kinds of functions (hotkeys, timers, context menu entries...).
    If you look for a specific feature, use the search field on that page. To edit an event, just double-click it.
-   Use the help buttons in the "Edit Event" and "Edit Subevent" windows for help on specific triggers/conditions/actions.
+   Use the help buttons in the "Edit Event" window for help on specific triggers/conditions/actions.
 
  - You should also check out the Accessor settings. The Accessor is a launcher program that can be used
    to launch programs with the keyboard (and much more!).
@@ -301,7 +301,7 @@ Finally, here are some settings that you're likely to change at the beginning:
 		Page.AddControl("Button", "btnImportEvents", "xs+567 y+9 w80 h23", "&Import")
 		Page.AddControl("Button", "btnExportEvents", "xs+567 y+9 w80 h23", "E&xport")
 		Page.AddControl("Button", "btnCreateShortcut", "xs+567 y+9 w80 h23", "Create &Shortcut")
-		
+		Page.Controls.btnCreateShortcut.ToolTip := "Creates a shortcut for the selected event"
 		Page.AddControl("Edit", "editEventFilter", "xs+413 ys+50 w144 h20", "")
 		Page.AddControl("Text", "txtEventSearch", "xs+332 ys+53 w75 h13", "Event Search:")
 		
