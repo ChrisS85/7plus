@@ -21,3 +21,7 @@
    * Add a page that describes the steps required for new developers to get the source and all needed tools
    * Some info about debugging
   * Clean up the SVN
+  * Changes to source code:
+   * Modify the system used to link to wiki pages to use keys in the single classes instead of a lookup table for better modularity
+   * Remove internal translation system as this can be done with the GCode wiki already.
+   * Add some pointers for the users to submit their events to the page.
