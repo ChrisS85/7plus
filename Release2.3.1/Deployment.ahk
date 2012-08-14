@@ -232,11 +232,16 @@ IsAutorunEnabled()
 {
 	if(WinVer >= WIN_Vista)
 	{
-		objService := ComObjCreate("Schedule.Service") 
-		objService.Connect()
-		objFolder := objService.GetFolder("\")
-		objTask := objFolder.GetTask("7plus Autorun")
-		return objTask.Name != ""
+		try
+		{
+			objService := ComObjCreate("Schedule.Service") 
+			objService.Connect()
+			objFolder := objService.GetFolder("\")
+			objTask := objFolder.GetTask("7plus Autorun")
+			return objTask.Name != ""
+		}
+		catch e
+			return false
 	}
 	else
 	{
