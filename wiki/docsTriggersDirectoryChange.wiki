@@ -4,4 +4,4 @@ You can set if the event will get triggered on changed files, created files, ren
 
 It provides two placeholders which are named "File" and "NewFile" by default.
 
-Examples uses for this trigger can be uploading changed files to FTP, copy to DropBox directory or use a hoster through [www.IFTTT.com If this then that].
+Examples uses for this trigger can be uploading changed files to FTP, copy to DropBox directory or use a hoster through [http://www.IFTTT.com If this then that].
