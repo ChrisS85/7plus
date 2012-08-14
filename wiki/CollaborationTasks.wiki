@@ -20,6 +20,7 @@
      * What steps are performed when an update is installed?
    * Add a page that describes the steps required for new developers to get the source and all needed tools
    * Some info about debugging
+   * Add full documentation of the source code
   * Changes to source code:
    * Remove internal translation system as this can be done with the GCode wiki already.
    * Add some pointers for the users to submit their events to the page.
