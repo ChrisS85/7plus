@@ -11,6 +11,6 @@
    * Link to source
   * Bug tracker
   * Documentation
-	Link to Wiki on GCode or Confluence
+   * Link to Wiki on GCode or Confluence
   * Forum (maybe)
   * Contact
