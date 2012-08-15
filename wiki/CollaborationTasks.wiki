@@ -12,11 +12,6 @@
     * How does 7plus work internally?
     * How does it link to wiki pages?
     * How does the updating process work?
-    * How are events handled? (Loading/Store, Importing/Exporting, Creating/Merging updates)
-    * How does deployment work?
-     * Update creation
-     * How does the AutoUpdater work?
-     * What steps are performed when an update is installed?
    * Add a page that describes the steps required for new developers to get the source and all needed tools
    * Some info about debugging
    * Add full documentation of the source code
