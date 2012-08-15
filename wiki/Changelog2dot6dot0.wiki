@@ -43,6 +43,7 @@
  
 *Bugfixes:* 
  * Fixed a severe bug in xml file loading.
+ * Fixed encoding of some web requests.
  * Fixed a bug which caused flashing of file dialog close box while mouse was over it.
  * Fixed a bug that caused crashes and hangups on windows which contain ListViews. This fix also improves responsiveness of ListView and TreeView selections.
  * Fixed Explorer windows getting activated at the start of 7plus.
