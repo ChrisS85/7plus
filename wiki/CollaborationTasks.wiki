@@ -9,7 +9,6 @@
    * Improve documentation
    * Add page(s) for user contributed events
    * Add a page that describes the steps required for new developers to get the source and all needed tools
-   * Some info about debugging
   * Changes to source code:
    * Add some pointers for the users to submit their events to the page.
    * Add full documentation of the source code
