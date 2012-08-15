@@ -6,7 +6,6 @@
    * Register for a trial, see how it works and if it's beneficial to the project, then possibly apply for a free account
   * Clean up the wiki
    * Add a sitemap as navigation tree for most important things
-   * Merge the localized french pages to make use of the integrated localization features
    * Improve documentation
    * Add page(s) for user contributed events
    * Write some more technical documentation:
@@ -22,5 +21,4 @@
    * Some info about debugging
    * Add full documentation of the source code
   * Changes to source code:
-   * Remove internal translation system as this can be done with the GCode wiki already.
    * Add some pointers for the users to submit their events to the page.
