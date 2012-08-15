@@ -10,8 +10,6 @@
    * Add page(s) for user contributed events
    * Write some more technical documentation:
     * How does 7plus work internally?
-    * How does it link to wiki pages?
-    * How does the updating process work?
    * Add a page that describes the steps required for new developers to get the source and all needed tools
    * Some info about debugging
    * Add full documentation of the source code
