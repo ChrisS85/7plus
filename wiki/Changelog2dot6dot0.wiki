@@ -50,6 +50,7 @@
  * Fixed a bug that prevented setting the current directory in save file dialogs.
  * Fixed enabling/disabling of Explorer bar buttons.
  * Fixed "Run or activate" action.
+ * Fixed a possible issue in event patching during the update process.
 
 *Changes:* 
  * Rewrote navigation code that sets/gets paths/selections in explorer, file dialogs, CMD, Desktop etc.
