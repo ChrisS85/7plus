@@ -9,7 +9,7 @@
  * TAB key can now be used for autocompletion instead of switching the focus whenever a common autocompletion-list is visible (Examples: Path fields, Run dialog).
  * The event system now supports OR operators for its conditions. This results in about 1/3rd less stock events which have been combined with others now.
  * Middle clicking empty taskbar area now toggles mute.
- * 7plus will now display a notification when an USB device is connected that provides a disk volume to quickly open the drive in Explorer.
+ * 7plus will now display a notification when an drive is connected/mounted to quickly open the drive in Explorer.
  * New action for text-to-speech voice output.
 
 *Accessor:*
