@@ -1,0 +1,2 @@
+# NewFolder #
+This action creates a new folder in an active explorer window. You can specify the name of the folder and whether you want explorer to go into renaming mode. If the folder already exists, a (Number) is attached to the end of the name.

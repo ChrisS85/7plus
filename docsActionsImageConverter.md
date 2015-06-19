@@ -1,0 +1,2 @@
+# Image Converter #
+This action opens the image converter with the files specified in its only settings field. You can use the image converter to batch convert lots of images to another format or resize them.

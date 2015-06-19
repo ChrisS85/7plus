@@ -1,0 +1,2 @@
+# Accessor Command Trigger #
+This trigger creates a new command that can be entered in Accessor that will execute this event. The event may use ${Acc1} - ${Acc9} and ${AccAll} placeholders to make use of the additional arguments entered after the command. Additionally it's possible to specify an icon that shows up in Accessor.

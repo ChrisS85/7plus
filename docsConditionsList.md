@@ -1,0 +1,13 @@
+# List of Conditions #
+  * [Context menu active](docsConditionsIsContextMenuActive.md)
+  * [Window is file dialog](docsConditionsIsDialog.md)
+  * [Window is dragable](docsConditionsIsDragable.md)
+  * [Fullscreen window active](docsConditionsIsFullScreen.md)
+  * [Explorer is renaming](docsConditionsIsRenaming.md)
+  * [Key is down](docsConditionsKeyIsDown.md)
+  * [Mouse over](docsConditionsMouseOver.md)
+  * [Mouse over file list](docsConditionsMouseOverFileList.md)
+  * [Mouse over tab button](docsConditionsMouseOverTabButton.md)
+  * [Mouse over taskbar list](docsConditionsMouseOverTaskList.md)
+  * [Window active](docsConditionsWindowActive.md)
+  * [Window exists](docsConditionsWindowExists.md)

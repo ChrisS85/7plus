@@ -1,0 +1,2 @@
+# FlatView #
+This action displays all contents of the files in the Paths setting in a flat view, showing all files without directory structure. Paths is a list of paths that should be added to the flat view. The placeholder ${SelNM} is probably the most used one here for the selected files in explorer.

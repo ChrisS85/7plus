@@ -1,0 +1,2 @@
+# WindowStateChange #
+This trigger gets activated when the state of a window changes. Currently minimize and maximize events are supported. You can use the [window filter](docsGenericWindowFilter.md) controls to limit the trigger to specific windows.

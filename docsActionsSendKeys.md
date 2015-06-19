@@ -1,0 +1,3 @@
+# SendKeys #
+This action sends keyboard input to the system. It can be used to remote control other programs by sending hotkeys to them, confirming dialogs, ...
+If characters are to be send, just enter them directly here. If you need to send hotkeys or symbol keys, please refer to the documenatation [here](http://www.autohotkey.com/docs/commands/Send.htm) for a list of key names.
